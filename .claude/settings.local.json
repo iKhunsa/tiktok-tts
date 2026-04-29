@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "Bash(npm install *)",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/tiktok-live-connector/package.json'\\).version\\)\")",
+      "Bash(netstat -ano)",
+      "Bash(findstr \":3000 \")",
+      "Bash(findstr LISTENING)",
+      "Bash(powershell \"Stop-Process -Id 28560 -Force -ErrorAction SilentlyContinue; Write-Host 'killed'\")",
+      "Bash(grep -E '\\\\.\\(js|json|md|html|bat\\)$')",
+      "Bash(npm start *)",
+      "Bash(tasklist /FI \"PID eq 24672\" /FO LIST)",
+      "Bash(powershell -Command \"Get-Process -Id 24672 | Select-Object Name, Id, Path\")",
+      "Bash(powershell -Command \"Stop-Process -Id 24672 -Force\")",
+      "Bash(powershell -Command \"Stop-Process -Id 8268 -Force\")",
+      "Bash(powershell -Command \"Start-Process 'C:\\\\Users\\\\liber\\\\OneDrive\\\\Documentos\\\\tiktok-tts\\\\Iniciar TikTok TTS.bat'\")"
+    ]
+  }
+}

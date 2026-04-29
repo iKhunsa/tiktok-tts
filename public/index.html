@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TikTok Live TTS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --border: #1e1e2e;
+      --tiktok-red: #fe2c55;
+      --tiktok-cyan: #25f4ee;
+      --text: #e8e8f0;
+      --muted: #5a5a7a;
+      --chat-bg: #0d0d15;
+      --green: #00ff88;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Noise texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* Grid lines */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(37,244,238,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(37,244,238,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 32px 20px;
+    }
+
+    /* HEADER */
+    header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--tiktok-red);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logo-icon::before {
+      content: '';
+      position: absolute;
+      top: -4px; left: -4px;
+      width: 20px; height: 20px;
+      background: var(--tiktok-cyan);
+      border-radius: 50%;
+      opacity: 0.6;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    h1 span {
+      color: var(--tiktok-red);
+    }
+
+    .subtitle {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* CONNECT PANEL */
+    .connect-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .connect-panel::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--tiktok-red), var(--tiktok-cyan));
+    }
+
+    .panel-title {
+      font-size: 12px;
+      font-family: 'Space Mono', monospace;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .input-wrapper {
+      flex: 1;
+      position: relative;
+    }
+
+    .input-wrapper span {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--tiktok-cyan);
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      background: var(--chat-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 14px 13px 36px;
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--tiktok-cyan);
+    }
+
+    input[type="text"]::placeholder {
+      color: var(--muted);
+    }
+
+    .btn {
+      padding: 13px 28px;
+      border-radius: 10px;
+      border: none;
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-connect {
+      background: var(--tiktok-red);
+      color: white;
+    }
+
+    .btn-connect:hover {
+      background: #ff4d6d;
+      transform: translateY(-1px);
+    }
+
+    .btn-connect:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-disconnect {
+      background: transparent;
+      color: var(--tiktok-red);
+      border: 1px solid var(--tiktok-red);
+    }
+
+    .btn-disconnect:hover {
+      background: rgba(254,44,85,0.1);
+    }
+
+    /* STATUS */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--muted);
+      flex-shrink: 0;
+    }
+
+    .status-dot.online {
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse-dot 2s infinite;
+    }
+
+    .status-dot.error {
+      background: var(--tiktok-red);
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .status-text {
+      color: var(--muted);
+    }
+
+    .status-text.online { color: var(--green); }
+    .status-text.error { color: var(--tiktok-red); }
+
+    /* TTS SETTINGS */
+    .settings-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .settings-panel { grid-template-columns: 1fr; }
+    }
+
+    .setting-group label {
+      display: block;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 8px;
+    }
+
+    select, input[type="range"] {
+      width: 100%;
+      background: var(--chat-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    select:focus {
+      border-color: var(--tiktok-cyan);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      padding: 0;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--border);
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--tiktok-cyan);
+      cursor: pointer;
+    }
+
+    .range-labels {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* TOGGLES */
+    .toggles-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .toggle-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 13px;
+      font-weight: 600;
+      user-select: none;
+    }
+
+    .toggle-chip input {
+      display: none;
+    }
+
+    .toggle-chip.active {
+      border-color: var(--tiktok-cyan);
+      background: rgba(37,244,238,0.08);
+      color: var(--tiktok-cyan);
+    }
+
+    .toggle-chip .chip-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--muted);
+    }
+
+    .toggle-chip.active .chip-dot {
+      background: var(--tiktok-cyan);
+      box-shadow: 0 0 6px var(--tiktok-cyan);
+    }
+
+    /* CHAT LOG */
+    .chat-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .chat-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chat-count {
+      background: var(--tiktok-red);
+      color: white;
+      border-radius: 20px;
+      padding: 2px 8px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .btn-clear {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-clear:hover {
+      border-color: var(--muted);
+      color: var(--text);
+    }
+
+    #chatLog {
+      height: 400px;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    #chatLog::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    #chatLog::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    #chatLog::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 2px;
+    }
+
+    /* CHAT MESSAGES */
+    .chat-msg {
+      display: flex;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      transition: background 0.15s;
+      animation: slide-in 0.2s ease;
+    }
+
+    @keyframes slide-in {
+      from { opacity: 0; transform: translateX(-8px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .chat-msg:hover {
+      background: rgba(255,255,255,0.03);
+    }
+
+    .chat-msg.speaking {
+      background: rgba(37,244,238,0.06);
+      border-left: 2px solid var(--tiktok-cyan);
+    }
+
+    .chat-msg.gift-msg {
+      background: rgba(254,44,85,0.06);
+      border-left: 2px solid var(--tiktok-red);
+    }
+
+    .msg-avatar {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .msg-body { flex: 1; min-width: 0; }
+
+    .msg-user {
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .msg-text {
+      font-size: 14px;
+      color: var(--text);
+      word-break: break-word;
+      line-height: 1.4;
+    }
+
+    .msg-time {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+
+    .msg-badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      margin-left: 6px;
+    }
+
+    .badge-speaking {
+      background: rgba(37,244,238,0.15);
+      color: var(--tiktok-cyan);
+    }
+
+    /* SPEAKING INDICATOR */
+    .speaking-now {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      background: rgba(37,244,238,0.05);
+      border-top: 1px solid rgba(37,244,238,0.15);
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--tiktok-cyan);
+    }
+
+    .speaking-now.visible {
+      display: flex;
+    }
+
+    .wave {
+      display: flex;
+      gap: 2px;
+      align-items: center;
+    }
+
+    .wave span {
+      width: 3px;
+      border-radius: 2px;
+      background: var(--tiktok-cyan);
+      animation: wave 1s ease-in-out infinite;
+    }
+
+    .wave span:nth-child(1) { height: 8px; animation-delay: 0s; }
+    .wave span:nth-child(2) { height: 14px; animation-delay: 0.1s; }
+    .wave span:nth-child(3) { height: 10px; animation-delay: 0.2s; }
+    .wave span:nth-child(4) { height: 16px; animation-delay: 0.15s; }
+    .wave span:nth-child(5) { height: 8px; animation-delay: 0.05s; }
+
+    @keyframes wave {
+      0%, 100% { transform: scaleY(0.5); }
+      50% { transform: scaleY(1.2); }
+    }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--muted);
+      gap: 10px;
+    }
+
+    .empty-icon {
+      font-size: 36px;
+      opacity: 0.3;
+    }
+
+    .empty-text {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    /* QUEUE BADGE */
+    .queue-badge {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      padding: 8px 20px;
+      border-top: 1px solid var(--border);
+      text-align: right;
+    }
+
+    /* GLOW effect when speaking */
+    .app-glow {
+      position: fixed;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 300px; height: 2px;
+      background: var(--tiktok-cyan);
+      box-shadow: 0 0 40px 10px rgba(37,244,238,0.2);
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .app-glow.active {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🎵</div>
+      <div>
+        <h1>TikLive <span>TTS</span></h1>
+        <div class="subtitle">Chat Reader Pro</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONNECT -->
+  <div class="connect-panel">
+    <div class="panel-title">🔴 Conectar al Live</div>
+    <div class="input-row">
+      <div class="input-wrapper">
+        <span>@</span>
+        <input type="text" id="usernameInput" placeholder="tu_usuario_tiktok" autocomplete="off" value="khunsauwu" />
+      </div>
+      <button class="btn btn-connect" id="btnConnect" onclick="connect()">Conectar</button>
+      <button class="btn btn-disconnect" id="btnDisconnect" onclick="disconnect()" style="display:none">Desconectar</button>
+    </div>
+    <div class="status-bar">
+      <div class="status-dot" id="statusDot"></div>
+      <span class="status-text" id="statusText">Esperando conexión...</span>
+    </div>
+  </div>
+
+  <!-- TTS SETTINGS -->
+  <div class="settings-panel">
+    <div class="setting-group">
+      <label>🎙 Voz</label>
+      <select id="voiceSelect"></select>
+    </div>
+    <div class="setting-group">
+      <label>🔬 Probar voz</label>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="text" id="testVoiceInput" placeholder="Escribe algo para probar..." style="flex:1;background:#1a1a2e;border:1px solid #2a2a4a;border-radius:8px;padding:8px 12px;color:#e8e8f0;font-family:inherit;font-size:13px;" />
+        <button id="btnTestVoice" onclick="testVoice()" style="background:#25f4ee;color:#0a0a0f;border:none;border-radius:8px;padding:8px 14px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;">▶ Probar voz</button>
+      </div>
+    </div>
+    <div class="setting-group">
+      <label>⚡ Velocidad — <span id="rateVal">1.0</span>x</label>
+      <input type="range" id="rateRange" min="0.5" max="2" step="0.1" value="1" oninput="updateRate(this.value)" />
+      <div class="range-labels"><span>Lento</span><span>Rápido</span></div>
+    </div>
+    <div class="setting-group">
+      <label>🔊 Volumen — <span id="volVal">100</span>%</label>
+      <input type="range" id="volRange" min="0" max="1" step="0.05" value="1" oninput="updateVol(this.value)" />
+      <div class="range-labels"><span>Mute</span><span>Máx</span></div>
+    </div>
+    <div class="setting-group">
+      <label>🎵 Tono — <span id="pitchVal">1.0</span></label>
+      <input type="range" id="pitchRange" min="0.5" max="2" step="0.1" value="1" oninput="updatePitch(this.value)" />
+      <div class="range-labels"><span>Grave</span><span>Agudo</span></div>
+    </div>
+  </div>
+
+  <!-- TOGGLES -->
+  <div class="toggles-row">
+    <label class="toggle-chip active" id="chip-chat">
+      <input type="checkbox" checked onchange="toggleOption('readChat', this)" />
+      <span class="chip-dot"></span>
+      💬 Leer comentarios
+    </label>
+    <label class="toggle-chip" id="chip-gifts">
+      <input type="checkbox" onchange="toggleOption('readGifts', this)" />
+      <span class="chip-dot"></span>
+      🎁 Anunciar regalos
+    </label>
+    <label class="toggle-chip" id="chip-joins">
+      <input type="checkbox" onchange="toggleOption('readJoins', this)" />
+      <span class="chip-dot"></span>
+      👋 Anunciar entradas
+    </label>
+    <label class="toggle-chip" id="chip-follows">
+      <input type="checkbox" onchange="toggleOption('readFollows', this)" />
+      <span class="chip-dot"></span>
+      ❤️‍🔥 Anunciar follows
+    </label>
+    <label class="toggle-chip" id="chip-likes">
+      <input type="checkbox" onchange="toggleOption('readLikes', this)" />
+      <span class="chip-dot"></span>
+      👍 Anunciar likes
+    </label>
+    <label class="toggle-chip active" id="chip-username">
+      <input type="checkbox" checked onchange="toggleOption('sayUsername', this)" />
+      <span class="chip-dot"></span>
+      🏷 Decir nombre
+    </label>
+  </div>
+
+  <!-- CHAT LOG -->
+  <div class="chat-section">
+    <div class="chat-header">
+      <div class="chat-title">
+        📨 Chat en vivo
+        <span class="chat-count" id="msgCount">0</span>
+      </div>
+      <button class="btn-clear" onclick="clearChat()">Limpiar</button>
+    </div>
+
+    <div id="chatLog">
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">🎤</div>
+        <div class="empty-text">Conecta tu TikTok Live<br>para ver el chat aquí</div>
+      </div>
+    </div>
+
+    <div class="speaking-now" id="speakingNow">
+      <div class="wave">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <span id="speakingText">Leyendo...</span>
+    </div>
+
+    <div class="queue-badge" id="queueBadge">Cola: 0 mensajes</div>
+  </div>
+</div>
+
+<div class="app-glow" id="appGlow"></div>
+
+<script>
+  // ─── State ───────────────────────────────────────────────
+  let ws = null;
+  let msgCount = 0;
+  let speechQueue = [];
+  let isSpeaking = false;
+  let currentMsgId = null;
+
+  const options = {
+    readChat: true,
+    readGifts: false,
+    readJoins: false,
+    readFollows: false,
+    readLikes: false,
+    sayUsername: true
+  };
+
+  let ttsRate = 1.0;
+  let ttsVol = 1.0;
+  let ttsPitch = 1.0;
+  let selectedVoice = null;
+
+  // ─── Voice Setup - Google TTS (Natural, Gratis) ─────────────
+  const voiceSelect = document.getElementById('voiceSelect');
+  let availableVoices = [];
+
+  async function loadVoices() {
+    try {
+      const response = await fetch('/api/voices');
+      availableVoices = await response.json();
+      voiceSelect.innerHTML = '';
+
+      const addGroup = (label, voices) => {
+        if (!voices.length) return;
+        const grp = document.createElement('optgroup');
+        grp.label = label;
+        voices.forEach(v => {
+          const opt = document.createElement('option');
+          opt.value = v.id;
+          opt.textContent = v.name;
+          grp.appendChild(opt);
+        });
+        voiceSelect.appendChild(grp);
+      };
+
+      // Google: español
+      addGroup('🌎 Google — Español',
+        availableVoices.filter(v => v.id.startsWith('es')));
+
+      // Google: otros
+      addGroup('🌐 Google — Otros idiomas',
+        availableVoices.filter(v => !v.id.startsWith('es')));
+
+      // Auto-seleccionar primer español
+      const firstEs = availableVoices.find(v => v.id.startsWith('es'));
+      if (firstEs) {
+        voiceSelect.value = firstEs.id;
+        selectedVoice = firstEs.id;
+      }
+
+    } catch (err) {
+      console.error('Error loading voices:', err);
+    }
+  }
+
+  loadVoices();
+
+  voiceSelect.addEventListener('change', (e) => {
+    selectedVoice = e.target.value;
+    console.log('[VOICE] Voz seleccionada:', selectedVoice);
+  });
+
+  // ─── Referencia al audio actualmente en reproducción ─────────
+  let activeAudio = null;
+
+  // ─── Helper: reproducir blob de audio con settings actuales ──
+  function playAudioBlob(blob, { onEnd, onError } = {}) {
+    const url   = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+    audio.playbackRate   = ttsRate;
+    audio.volume         = ttsVol;
+    audio.preservesPitch = false;
+    activeAudio = audio;
+
+    let settled = false;
+    const finish = (cb) => {
+      if (settled) return;
+      settled = true;
+      activeAudio = null;
+      URL.revokeObjectURL(url);
+      cb?.();
+    };
+
+    audio.onended = () => finish(onEnd);
+    audio.onerror = () => finish(onError);
+    audio.play().catch(() => finish(onError));
+  }
+
+  // ─── Probar voz ──────────────────────────────────────────────
+  async function testVoice() {
+    const input = document.getElementById('testVoiceInput');
+    const btn   = document.getElementById('btnTestVoice');
+    const text  = input.value.trim() || 'Hola, esta es la voz seleccionada';
+    const selectedVoiceValue = voiceSelect.value || 'es';
+
+    console.log('[TEST VOICE] Intentando con voz:', selectedVoiceValue);
+
+    btn.disabled = true;
+    btn.textContent = '🔊 Reproduciendo...';
+
+    const done = () => { btn.disabled = false; btn.textContent = '▶ Probar voz'; };
+
+    try {
+      const response = await fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, voice: selectedVoiceValue })
+      });
+
+      if (!response.ok) throw new Error('TTS error');
+
+      playAudioBlob(await response.blob(), { onEnd: done, onError: done });
+    } catch (err) {
+      console.error('Test voice error:', err);
+      done();
+    }
+  }
+
+  // ─── TTS Controls (aplican en tiempo real al audio activo) ───
+  function updateRate(v) {
+    ttsRate = parseFloat(v);
+    document.getElementById('rateVal').textContent = ttsRate.toFixed(1);
+    if (activeAudio) activeAudio.playbackRate = ttsRate;
+  }
+
+  function updateVol(v) {
+    ttsVol = parseFloat(v);
+    document.getElementById('volVal').textContent = Math.round(ttsVol * 100);
+    if (activeAudio) activeAudio.volume = ttsVol;
+  }
+
+  function updatePitch(v) {
+    ttsPitch = parseFloat(v);
+    document.getElementById('pitchVal').textContent = ttsPitch.toFixed(1);
+    // pitch no aplica en tiempo real (requeriría WebAudio API),
+    // toma efecto en el siguiente mensaje
+  }
+
+  function toggleOption(key, checkbox) {
+    options[key] = checkbox.checked;
+    const chipId = {
+      readChat: 'chip-chat', readGifts: 'chip-gifts',
+      readJoins: 'chip-joins', readFollows: 'chip-follows',
+      readLikes: 'chip-likes', sayUsername: 'chip-username'
+    }[key];
+    document.getElementById(chipId).classList.toggle('active', checkbox.checked);
+  }
+
+  // ─── TTS Queue - Edge TTS Backend ──────────────────────────
+  function speak(text, msgId) {
+    speechQueue.push({ text, msgId });
+    updateQueueBadge();
+    if (!isSpeaking) processQueue();
+  }
+
+  async function processQueue() {
+    if (speechQueue.length === 0) {
+      isSpeaking = false;
+      hideSpeakingIndicator();
+      document.getElementById('appGlow').classList.remove('active');
+      if (currentMsgId) {
+        const el = document.getElementById(currentMsgId);
+        if (el) el.classList.remove('speaking');
+        currentMsgId = null;
+      }
+      return;
+    }
+
+    isSpeaking = true;
+    const { text, msgId } = speechQueue.shift();
+    updateQueueBadge();
+
+    // Highlight speaking message
+    if (currentMsgId) {
+      const prev = document.getElementById(currentMsgId);
+      if (prev) prev.classList.remove('speaking');
+    }
+    currentMsgId = msgId;
+    const msgEl = document.getElementById(msgId);
+    if (msgEl) {
+      msgEl.classList.add('speaking');
+      msgEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    showSpeakingIndicator(text);
+    document.getElementById('appGlow').classList.add('active');
+
+    const selectedVoiceValue = voiceSelect.value || 'es';
+    console.log('[SPEAK] Usando voz:', selectedVoiceValue, 'para:', text.substring(0, 50));
+
+    try {
+      const response = await fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, voice: selectedVoiceValue })
+      });
+
+      if (!response.ok) throw new Error('TTS error');
+
+      playAudioBlob(await response.blob(), {
+        onEnd:   () => processQueue(),
+        onError: () => processQueue()
+      });
+
+    } catch (err) {
+      console.error('TTS error:', err);
+      processQueue();
+    }
+  }
+
+  function showSpeakingIndicator(text) {
+    const el = document.getElementById('speakingNow');
+    el.classList.add('visible');
+    document.getElementById('speakingText').textContent =
+      text.length > 60 ? text.substring(0, 60) + '…' : text;
+  }
+
+  function hideSpeakingIndicator() {
+    document.getElementById('speakingNow').classList.remove('visible');
+  }
+
+  function updateQueueBadge() {
+    document.getElementById('queueBadge').textContent =
+      `Cola: ${speechQueue.length} mensaje${speechQueue.length !== 1 ? 's' : ''}`;
+  }
+
+  // ─── WebSocket ────────────────────────────────────────────
+  function connectWS() {
+    const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    ws = new WebSocket(`${proto}//${location.host}`);
+
+    ws.onmessage = (e) => {
+      const data = JSON.parse(e.data);
+      handleMessage(data);
+    };
+
+    ws.onclose = () => {
+      setTimeout(connectWS, 2000);
+    };
+  }
+
+  function handleMessage(data) {
+    switch (data.type) {
+      case 'connected':
+        setStatus('online', `🟢 Conectado a @${data.username}`);
+        document.getElementById('btnConnect').style.display = 'none';
+        document.getElementById('btnDisconnect').style.display = 'block';
+        break;
+
+      case 'disconnected':
+        setStatus('', 'Desconectado');
+        document.getElementById('btnConnect').style.display = 'block';
+        document.getElementById('btnDisconnect').style.display = 'none';
+        break;
+
+      case 'chat':
+        // Incrementar msgCount ANTES de usarlo
+        msgCount++;
+        document.getElementById('msgCount').textContent = msgCount;
+        const chatMsgId = `msg-${msgCount}`;
+        addChatMsg(data, chatMsgId);
+        if (options.readChat) {
+          const text = options.sayUsername
+            ? `${data.user}: ${data.comment}`
+            : data.comment;
+          speak(text, chatMsgId);
+        }
+        break;
+
+      case 'gift':
+        if (options.readGifts) {
+          // Incrementar msgCount ANTES de usarlo
+          msgCount++;
+          document.getElementById('msgCount').textContent = msgCount;
+          const giftMsgId = `msg-${msgCount}`;
+          const text = `${data.user} envió ${data.repeatCount} ${data.giftName}`;
+          addSystemMsg(`🎁 ${text}`, 'gift', giftMsgId);
+          speak(text, giftMsgId);
+        }
+        break;
+
+      case 'join':
+        if (options.readJoins) {
+          // Incrementar msgCount ANTES de usarlo
+          msgCount++;
+          document.getElementById('msgCount').textContent = msgCount;
+          const joinMsgId = `msg-${msgCount}`;
+          const text = `${data.user} entró al live`;
+          addSystemMsg(`👋 ${text}`, 'join', joinMsgId);
+          speak(text, joinMsgId);
+        }
+        break;
+
+      case 'follow':
+        if (options.readFollows) {
+          msgCount++;
+          document.getElementById('msgCount').textContent = msgCount;
+          const followMsgId = `msg-${msgCount}`;
+          const followText = `${data.user} te acaba de seguir`;
+          addSystemMsg(`❤️‍🔥 ${followText}`, 'join', followMsgId);
+          speak(followText, followMsgId);
+        }
+        break;
+
+      case 'like':
+        if (options.readLikes) {
+          msgCount++;
+          document.getElementById('msgCount').textContent = msgCount;
+          const likeMsgId = `msg-${msgCount}`;
+          const likeText = `${data.user} dio ${data.likeCount} likes`;
+          addSystemMsg(`👍 ${likeText}`, 'join', likeMsgId);
+          speak(likeText, likeMsgId);
+        }
+        break;
+
+      case 'error':
+        setStatus('error', `❌ ${data.message}`);
+        break;
+    }
+  }
+
+  // ─── Chat UI ──────────────────────────────────────────────
+  const COLORS = ['#fe2c55','#25f4ee','#ff6b6b','#ffd93d','#6bcb77','#4d96ff','#ff922b'];
+  const colorMap = {};
+
+  function getUserColor(user) {
+    if (!colorMap[user]) {
+      colorMap[user] = COLORS[Object.keys(colorMap).length % COLORS.length];
+    }
+    return colorMap[user];
+  }
+
+  function addChatMsg(data, msgId) {
+    const empty = document.getElementById('emptyState');
+    if (empty) empty.remove();
+
+    const color = getUserColor(data.user);
+    const time = new Date(data.timestamp).toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
+    const initials = data.user.substring(0, 2).toUpperCase();
+
+    const div = document.createElement('div');
+    div.className = 'chat-msg';
+    div.id = msgId;
+    div.innerHTML = `
+      <div class="msg-avatar" style="background:${color}22;color:${color}">${initials}</div>
+      <div class="msg-body">
+        <div class="msg-user" style="color:${color}">@${data.user}</div>
+        <div class="msg-text">${escapeHtml(data.comment)}</div>
+      </div>
+      <div class="msg-time">${time}</div>
+    `;
+
+    const log = document.getElementById('chatLog');
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function addSystemMsg(text, type, msgId) {
+    const empty = document.getElementById('emptyState');
+    if (empty) empty.remove();
+
+    const div = document.createElement('div');
+    div.className = `chat-msg ${type === 'gift' ? 'gift-msg' : ''}`;
+    div.id = msgId;
+    div.style.opacity = '0.7';
+    div.innerHTML = `
+      <div class="msg-body">
+        <div class="msg-text" style="font-size:13px">${escapeHtml(text)}</div>
+      </div>
+    `;
+
+    const log = document.getElementById('chatLog');
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function clearChat() {
+    const log = document.getElementById('chatLog');
+    log.innerHTML = `<div class="empty-state" id="emptyState">
+      <div class="empty-icon">🎤</div>
+      <div class="empty-text">Chat limpiado</div>
+    </div>`;
+    msgCount = 0;
+    document.getElementById('msgCount').textContent = '0';
+    speechQueue = [];
+    // Cancelar síntesis anterior si está en progreso
+    isSpeaking = false;
+    isSpeaking = false;
+    hideSpeakingIndicator();
+    updateQueueBadge();
+  }
+
+  function escapeHtml(text) {
+    const d = document.createElement('div');
+    d.textContent = text;
+    return d.innerHTML;
+  }
+
+  // ─── Status ───────────────────────────────────────────────
+  function setStatus(type, text) {
+    const dot = document.getElementById('statusDot');
+    const label = document.getElementById('statusText');
+    dot.className = 'status-dot' + (type ? ` ${type}` : '');
+    label.className = 'status-text' + (type ? ` ${type}` : '');
+    label.textContent = text;
+  }
+
+  // ─── Connect/Disconnect ───────────────────────────────────
+  async function connect() {
+    const username = document.getElementById('usernameInput').value.trim();
+    if (!username) {
+      setStatus('error', '❌ Escribe tu nombre de usuario');
+      return;
+    }
+
+    const btn = document.getElementById('btnConnect');
+    btn.disabled = true;
+    btn.textContent = 'Conectando...';
+    setStatus('', `Conectando a @${username.replace('@','')}...`);
+
+    try {
+      const res = await fetch('/api/connect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setStatus('error', `❌ ${data.error}`);
+        btn.disabled = false;
+        btn.textContent = 'Conectar';
+      }
+    } catch (err) {
+      setStatus('error', '❌ Error de red');
+      btn.disabled = false;
+      btn.textContent = 'Conectar';
+    }
+  }
+
+  async function disconnect() {
+    await fetch('/api/disconnect', { method: 'POST' });
+    // Cancelar síntesis anterior si está en progreso
+    isSpeaking = false;
+    speechQueue = [];
+    isSpeaking = false;
+    hideSpeakingIndicator();
+    updateQueueBadge();
+  }
+
+  // Enter key to connect
+  document.getElementById('usernameInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') connect();
+  });
+
+  // ─── Init ─────────────────────────────────────────────────
+  connectWS();
+  updateQueueBadge();
+</script>
+</body>
+</html>
