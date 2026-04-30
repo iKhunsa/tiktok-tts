@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TikTok Live TTS</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode.js/1.5.3/qrcode.min.js"></script>
   <style>
     :root {
       --bg: #0a0a0f;
@@ -16,6 +17,11 @@
       --muted: #5a5a7a;
       --chat-bg: #0d0d15;
       --green: #00ff88;
+      --modal-radius: 20px;
+      --btn-radius: 12px;
+      --shadow-subtle: 0 10px 30px rgba(0,0,0,0.2);
+      --cyan-light: rgba(37, 244, 238, 0.05);
+      --cyan-border: rgba(37, 244, 238, 0.15);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -639,6 +645,239 @@
     .app-glow.active {
       opacity: 1;
     }
+
+    /* Navigation buttons */
+    .btn-nav {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: transparent;
+      color: #e8e8f0;
+      border: 1px solid #1e1e2e;
+    }
+
+    .btn-nav:hover {
+      transform: translateY(-2px);
+      border-color: #25f4ee;
+      box-shadow: 0 0 12px rgba(37, 244, 238, 0.2);
+    }
+
+    /* Modal overlay */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-overlay.show {
+      display: flex;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .modal-content {
+      background: var(--surface);
+      border: 1px solid var(--cyan-border);
+      border-radius: var(--modal-radius);
+      padding: 40px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 85vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: var(--shadow-subtle);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Syne', sans-serif;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 24px;
+      cursor: pointer;
+      transition: color 0.2s;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-close:hover {
+      color: var(--text);
+    }
+
+    .modal-content h2 {
+      margin-top: 0;
+      margin-bottom: 32px;
+      font-size: 26px;
+      color: var(--tiktok-cyan);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Syne', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .modal-content h3 {
+      margin: 0 0 8px 0;
+      font-size: 15px;
+      color: var(--text);
+      font-weight: 600;
+      letter-spacing: -0.3px;
+    }
+
+    /* QR Card */
+    .qr-card {
+      background: var(--cyan-light);
+      border: 1px solid var(--cyan-border);
+      border-radius: 16px;
+      padding: 28px 24px;
+      margin: 24px 0;
+    }
+
+    .qr-code-display {
+      display: inline-block;
+      margin: 18px 0;
+      padding: 12px;
+      background: var(--bg);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    /* Donations modal */
+    .donation-section {
+      text-align: center;
+    }
+
+    .donation-section p {
+      margin: 6px 0 12px 0;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.3px;
+    }
+
+    .donation-input {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--tiktok-cyan);
+      border-radius: var(--btn-radius);
+      font-size: 13px;
+      font-family: 'Space Mono', monospace;
+      margin: 14px 0;
+      cursor: text;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .donation-input:focus {
+      outline: none;
+      border-color: var(--tiktok-cyan);
+      box-shadow: 0 0 0 3px rgba(37, 244, 238, 0.1);
+    }
+
+    .btn-copy {
+      width: 100%;
+      padding: 16px 20px;
+      background: var(--tiktok-red);
+      color: white;
+      border: none;
+      border-radius: var(--btn-radius);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.2s;
+      margin-top: 12px;
+      letter-spacing: 0.3px;
+    }
+
+    .btn-copy:hover {
+      background: #ff4d6d;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(254, 44, 85, 0.3);
+    }
+
+    .btn-copy:active {
+      transform: translateY(0);
+    }
+
+    /* Social grid */
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .social-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px;
+      background: var(--cyan-light);
+      border: 1px solid var(--cyan-border);
+      border-radius: 16px;
+      text-decoration: none;
+      color: var(--text);
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .social-card:hover {
+      border-color: var(--tiktok-cyan);
+      background: rgba(37, 244, 238, 0.1);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(37, 244, 238, 0.2);
+    }
+
+    .social-card h3 {
+      margin: 12px 0 4px 0;
+      font-size: 15px;
+      color: var(--tiktok-cyan);
+      font-weight: 600;
+    }
+
+    .social-card p {
+      font-size: 12px;
+      color: var(--muted);
+      margin: 0;
+      letter-spacing: 0.2px;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
   </style>
 </head>
 <body>
@@ -652,7 +891,11 @@
         <div class="subtitle">Chat Reader Pro</div>
       </div>
     </div>
-    <a href="/advanced.html" class="nav-link">⚙ Configuración</a>
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-nav" onclick="openDonationsModal()" style="background: #00ff88; color: #0a0a0f;">💚 Donar</button>
+      <button class="btn-nav" onclick="openSocialModal()">📱 Canales</button>
+      <a href="/advanced.html" class="btn-nav">⚙ Configuración</a>
+    </div>
   </header>
 
   <!-- CONNECT -->
@@ -765,6 +1008,61 @@
 </div>
 
 <div class="app-glow" id="appGlow"></div>
+
+<!-- Donations Modal -->
+<div id="donationsModal" class="modal-overlay" onclick="closeDonationsModal(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeDonationsModal()">✕</button>
+    <h2>💚 Apoya mi contenido</h2>
+
+    <div class="qr-card">
+      <h3>Lightning Network (Instant)</h3>
+      <p>Khunsa@coinos.io</p>
+      <div id="qrLightning" class="qr-code-display"></div>
+      <input type="text" value="Khunsa@coinos.io" readonly class="donation-input" onclick="this.select()">
+      <button class="btn-copy" onclick="copyToClipboard('Khunsa@coinos.io')">📋 Copiar dirección</button>
+    </div>
+
+    <div class="qr-card">
+      <h3>Bitcoin Nativo</h3>
+      <p>bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk</p>
+      <div id="qrBTC" class="qr-code-display"></div>
+      <input type="text" value="bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk" readonly class="donation-input" onclick="this.select()">
+      <button class="btn-copy" onclick="copyToClipboard('bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk')">📋 Copiar dirección</button>
+    </div>
+  </div>
+</div>
+
+<!-- Social Modal -->
+<div id="socialModal" class="modal-overlay" onclick="closeSocialModal(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeSocialModal()">✕</button>
+    <h2>📱 Sigue mi contenido</h2>
+
+    <div class="social-grid">
+      <a href="https://www.youtube.com/@SpeedMucho" target="_blank" class="social-card">
+        <span style="font-size: 32px;">📺</span>
+        <h3>YouTube</h3>
+        <p>@SpeedMucho</p>
+      </a>
+      <a href="https://www.tiktok.com/@khunsauwu" target="_blank" class="social-card">
+        <span style="font-size: 32px;">🎵</span>
+        <h3>TikTok</h3>
+        <p>@khunsauwu</p>
+      </a>
+      <a href="https://www.twitch.tv/speedmucho" target="_blank" class="social-card">
+        <span style="font-size: 32px;">🎮</span>
+        <h3>Twitch</h3>
+        <p>speedmucho</p>
+      </a>
+      <a href="https://kick.com/speedmucho" target="_blank" class="social-card">
+        <span style="font-size: 32px;">⚡</span>
+        <h3>Kick</h3>
+        <p>speedmucho</p>
+      </a>
+    </div>
+  </div>
+</div>
 
 <script>
   // ─── State ───────────────────────────────────────────────
@@ -1348,6 +1646,85 @@
   // ─── Init ─────────────────────────────────────────────────
   connectWS();
   updateQueueBadge();
+
+  // ─── Donations & Social Modals ───────────────────────
+  function openDonationsModal() {
+    document.getElementById('donationsModal').classList.add('show');
+    generateQRCodes();
+  }
+
+  function closeDonationsModal(e) {
+    if (e && e.target.id !== 'donationsModal') return;
+    document.getElementById('donationsModal').classList.remove('show');
+  }
+
+  function generateQRCodes() {
+    document.getElementById('qrLightning').innerHTML = '';
+    document.getElementById('qrBTC').innerHTML = '';
+
+    new QRCode(document.getElementById('qrLightning'), {
+      text: 'lightning:Khunsa@coinos.io',
+      width: 200,
+      height: 200,
+      colorDark: '#e8e8f0',
+      colorLight: '#111118',
+    });
+
+    new QRCode(document.getElementById('qrBTC'), {
+      text: 'bitcoin:bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk',
+      width: 200,
+      height: 200,
+      colorDark: '#e8e8f0',
+      colorLight: '#111118',
+    });
+  }
+
+  function openSocialModal() {
+    document.getElementById('socialModal').classList.add('show');
+  }
+
+  function closeSocialModal(e) {
+    if (e && e.target.id !== 'socialModal') return;
+    document.getElementById('socialModal').classList.remove('show');
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.getElementById('donationsModal').classList.remove('show');
+      document.getElementById('socialModal').classList.remove('show');
+    }
+  });
+
+  function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('Copiado al portapapeles');
+    }).catch(() => {
+      showToast('Error al copiar');
+    });
+  }
+
+  function showToast(message) {
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--tiktok-red);
+      color: white;
+      padding: 14px 24px;
+      border-radius: var(--btn-radius);
+      font-size: 14px;
+      z-index: 3000;
+      animation: slideUp 0.3s ease-out;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      box-shadow: 0 8px 24px rgba(254, 44, 85, 0.3);
+    `;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2000);
+  }
 </script>
 </body>
 </html>
