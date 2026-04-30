@@ -4,24 +4,35 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TikTok Live TTS</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode.js/1.5.3/qrcode.min.js"></script>
   <style>
     :root {
-      --bg: #0a0a0f;
-      --surface: #111118;
-      --border: #1e1e2e;
-      --tiktok-red: #fe2c55;
-      --tiktok-cyan: #25f4ee;
-      --text: #e8e8f0;
-      --muted: #5a5a7a;
-      --chat-bg: #0d0d15;
-      --green: #00ff88;
-      --modal-radius: 20px;
-      --btn-radius: 12px;
-      --shadow-subtle: 0 10px 30px rgba(0,0,0,0.2);
-      --cyan-light: rgba(37, 244, 238, 0.05);
-      --cyan-border: rgba(37, 244, 238, 0.15);
+      --bg: #171717;
+      --bg-button: #0f0f0f;
+      --surface: #1a1a1a;
+      --border-subtle: #242424;
+      --border: #2e2e2e;
+      --border-strong: #363636;
+      --text: #fafafa;
+      --text-secondary: #b4b4b4;
+      --text-muted: #898989;
+      --accent: #3ecf8e;
+      --accent-link: #00c573;
+      --accent-border: rgba(62, 207, 142, 0.3);
+      --glass: rgba(41, 41, 41, 0.84);
+
+      /* Legacy aliases — JS uses these */
+      --muted: #898989;
+      --green: #3ecf8e;
+      --chat-bg: #0f0f0f;
+      --tiktok-red: #2e2e2e;
+      --tiktok-cyan: #3ecf8e;
+      --cyan-light: rgba(62, 207, 142, 0.05);
+      --cyan-border: rgba(62, 207, 142, 0.2);
+      --modal-radius: 12px;
+      --btn-radius: 9999px;
+      --shadow-subtle: none;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -29,33 +40,11 @@
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Syne', sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
       min-height: 100vh;
       overflow-x: hidden;
-    }
-
-    /* Noise texture overlay */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 9999;
-      opacity: 0.4;
-    }
-
-    /* Grid lines */
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: 
-        linear-gradient(rgba(37,244,238,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(37,244,238,0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-      z-index: 0;
     }
 
     .app {
@@ -76,24 +65,27 @@
     }
 
     .nav-link {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Syne', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
-      color: var(--text);
-      text-decoration: none;
-      letter-spacing: 0px;
-      padding: 12px 20px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      transition: all 0.2s;
-      white-space: nowrap;
       font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      border-radius: 9999px;
+      transition: border-color 0.2s, color 0.2s;
+      white-space: nowrap;
       cursor: pointer;
+      background: transparent;
+      opacity: 0.8;
+      display: inline-flex;
+      align-items: center;
     }
 
     .nav-link:hover {
-      color: var(--tiktok-cyan);
-      border-color: var(--tiktok-cyan);
-      background: rgba(37,244,238,0.06);
+      border-color: var(--border-strong);
+      color: var(--text);
+      opacity: 1;
     }
 
     .logo {
@@ -103,70 +95,51 @@
     }
 
     .logo-icon {
-      width: 44px;
-      height: 44px;
-      background: var(--tiktok-red);
-      border-radius: 10px;
+      width: 36px;
+      height: 36px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .logo-icon::before {
-      content: '';
-      position: absolute;
-      top: -4px; left: -4px;
-      width: 20px; height: 20px;
-      background: var(--tiktok-cyan);
-      border-radius: 50%;
-      opacity: 0.6;
+      font-size: 18px;
     }
 
     h1 {
-      font-size: 26px;
-      font-weight: 800;
+      font-family: 'Inter', sans-serif;
+      font-size: 22px;
+      font-weight: 400;
       letter-spacing: -0.5px;
+      line-height: 1.0;
+      color: var(--text);
     }
 
-    h1 span {
-      color: var(--tiktok-red);
-    }
+    h1 span { color: var(--text); }
 
     .subtitle {
-      font-family: 'Space Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 2px;
+      color: var(--text-muted);
+      letter-spacing: 1.2px;
       text-transform: uppercase;
     }
 
     /* CONNECT PANEL */
     .connect-panel {
-      background: var(--surface);
+      background: var(--bg);
       border: 1px solid var(--border);
       border-radius: 16px;
       padding: 28px;
       margin-bottom: 24px;
       position: relative;
-      overflow: hidden;
-    }
-
-    .connect-panel::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--tiktok-red), var(--tiktok-cyan));
     }
 
     .panel-title {
-      font-size: 12px;
-      font-family: 'Space Mono', monospace;
-      color: var(--muted);
-      letter-spacing: 2px;
+      font-family: 'Source Code Pro', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 1.2px;
       text-transform: uppercase;
       margin-bottom: 16px;
     }
@@ -187,68 +160,70 @@
       left: 14px;
       top: 50%;
       transform: translateY(-50%);
-      color: var(--tiktok-cyan);
-      font-weight: 700;
+      color: var(--text-muted);
+      font-weight: 500;
       font-size: 16px;
     }
 
     input[type="text"] {
       width: 100%;
-      background: var(--chat-bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
+      background: var(--bg-button);
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
       padding: 13px 14px 13px 36px;
       color: var(--text);
-      font-family: 'Space Mono', monospace;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
       outline: none;
       transition: border-color 0.2s;
     }
 
     input[type="text"]:focus {
-      border-color: var(--tiktok-cyan);
+      border-color: rgba(62, 207, 142, 0.5);
     }
 
     input[type="text"]::placeholder {
-      color: var(--muted);
+      color: var(--text-muted);
     }
 
     .btn {
-      padding: 14px 28px;
-      border-radius: 10px;
-      border: none;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Syne', sans-serif;
+      padding: 8px 32px;
+      border-radius: 9999px;
+      border: 1px solid var(--text);
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 500;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: opacity 0.2s;
       white-space: nowrap;
+      background: var(--bg-button);
+      color: var(--text);
     }
 
     .btn-connect {
-      background: var(--tiktok-red);
-      color: white;
+      background: var(--bg-button);
+      color: var(--text);
+      border: 1px solid var(--text);
     }
 
-    .btn-connect:hover {
-      background: #ff4d6d;
-      transform: translateY(-1px);
-    }
+    .btn-connect:hover { opacity: 0.8; }
 
     .btn-connect:disabled {
-      opacity: 0.5;
+      opacity: 0.4;
       cursor: not-allowed;
-      transform: none;
     }
 
     .btn-disconnect {
       background: transparent;
-      color: var(--tiktok-red);
-      border: 1px solid var(--tiktok-red);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      opacity: 0.8;
     }
 
     .btn-disconnect:hover {
-      background: rgba(254,44,85,0.1);
+      border-color: var(--border-strong);
+      color: var(--text);
+      opacity: 1;
     }
 
     /* STATUS */
@@ -257,7 +232,7 @@
       align-items: center;
       gap: 8px;
       margin-top: 14px;
-      font-family: 'Space Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 12px;
     }
 
@@ -265,38 +240,33 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: var(--muted);
+      background: var(--text-muted);
       flex-shrink: 0;
     }
 
     .status-dot.online {
-      background: var(--green);
-      box-shadow: 0 0 8px var(--green);
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(62, 207, 142, 0.4);
       animation: pulse-dot 2s infinite;
     }
 
-    .status-dot.error {
-      background: var(--tiktok-red);
-    }
+    .status-dot.error { background: var(--text-muted); }
 
     @keyframes pulse-dot {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.4; }
     }
 
-    .status-text {
-      color: var(--muted);
-    }
-
-    .status-text.online { color: var(--green); }
-    .status-text.error { color: var(--tiktok-red); }
+    .status-text { color: var(--text-muted); }
+    .status-text.online { color: var(--accent); }
+    .status-text.error { color: var(--text-muted); }
 
     /* TTS SETTINGS */
     .settings-panel {
-      background: var(--surface);
+      background: var(--bg);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 28px;
+      border-radius: 12px;
+      padding: 24px;
       margin-bottom: 24px;
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -309,62 +279,68 @@
 
     .setting-group label {
       display: block;
-      font-family: 'Space Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 11px;
-      color: var(--muted);
+      color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 1.2px;
       margin-bottom: 8px;
     }
 
-    select, input[type="range"] {
+    select {
       width: 100%;
-      background: var(--chat-bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
+      background: var(--bg-button);
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
       padding: 10px 12px;
       color: var(--text);
-      font-family: 'Space Mono', monospace;
+      font-family: 'Inter', sans-serif;
       font-size: 13px;
       outline: none;
       cursor: pointer;
     }
 
-    select:focus {
-      border-color: var(--tiktok-cyan);
-    }
+    select:focus { border-color: rgba(62, 207, 142, 0.5); }
 
     input[type="range"] {
+      width: 100%;
       -webkit-appearance: none;
       padding: 0;
-      height: 6px;
-      border-radius: 3px;
+      height: 4px;
+      border-radius: 2px;
       background: var(--border);
       cursor: pointer;
       margin-top: 10px;
+      outline: none;
+      border: none;
     }
 
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 18px; height: 18px;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
-      background: var(--tiktok-cyan);
+      background: var(--text);
       cursor: pointer;
+      border: 2px solid var(--bg);
+      transition: background 0.2s;
     }
+
+    input[type="range"]::-webkit-slider-thumb:hover { background: var(--accent); }
 
     .range-labels {
       display: flex;
       justify-content: space-between;
-      font-family: 'Space Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 10px;
-      color: var(--muted);
+      color: var(--text-muted);
       margin-top: 4px;
     }
 
     /* TOGGLES */
     .toggles-row {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
       margin-bottom: 24px;
     }
@@ -373,41 +349,32 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      background: var(--surface);
+      background: transparent;
       border: 1px solid var(--border);
-      border-radius: 50px;
-      padding: 8px 16px;
+      border-radius: 9999px;
+      padding: 7px 16px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: border-color 0.2s, background 0.2s, color 0.2s;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      color: var(--text-muted);
       user-select: none;
     }
 
-    .toggle-chip input {
-      display: none;
-    }
+    .toggle-chip input { display: none; }
 
     .toggle-chip.active {
-      border-color: var(--tiktok-cyan);
-      background: rgba(37,244,238,0.08);
-      color: var(--tiktok-cyan);
+      background: rgba(62, 207, 142, 0.1);
+      border-color: rgba(62, 207, 142, 0.3);
+      color: var(--accent);
     }
 
-    .toggle-chip .chip-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--muted);
-    }
-
-    .toggle-chip.active .chip-dot {
-      background: var(--tiktok-cyan);
-      box-shadow: 0 0 6px var(--tiktok-cyan);
-    }
+    .chip-dot { display: none; }
 
     /* CHAT LOG */
     .chat-section {
-      background: var(--surface);
+      background: var(--bg);
       border: 1px solid var(--border);
       border-radius: 16px;
       overflow: hidden;
@@ -422,41 +389,42 @@
     }
 
     .chat-title {
-      font-family: 'Space Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 11px;
-      color: var(--muted);
+      color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 1.2px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
     .chat-count {
-      background: var(--tiktok-red);
-      color: white;
+      background: var(--border);
+      color: var(--text);
       border-radius: 20px;
       padding: 2px 8px;
+      font-family: 'Source Code Pro', monospace;
       font-size: 10px;
-      font-weight: 700;
+      font-weight: 400;
     }
 
     .btn-clear {
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      border-radius: 8px;
-      padding: 10px 14px;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Syne', sans-serif;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-family: 'Inter', sans-serif;
       font-size: 13px;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: color 0.2s, border-color 0.2s;
     }
 
     .btn-clear:hover {
-      border-color: var(--muted);
       color: var(--text);
+      border-color: var(--border);
     }
 
     #chatLog {
@@ -468,18 +436,9 @@
       gap: 4px;
     }
 
-    #chatLog::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    #chatLog::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    #chatLog::-webkit-scrollbar-thumb {
-      background: var(--border);
-      border-radius: 2px;
-    }
+    #chatLog::-webkit-scrollbar { width: 4px; }
+    #chatLog::-webkit-scrollbar-track { background: transparent; }
+    #chatLog::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
     /* CHAT MESSAGES */
     .chat-msg {
@@ -487,7 +446,8 @@
       gap: 8px;
       padding: 8px 10px;
       border-radius: 8px;
-      transition: background 0.15s;
+      border: 1px solid transparent;
+      transition: border-color 0.15s;
       animation: slide-in 0.2s ease;
     }
 
@@ -496,28 +456,32 @@
       to { opacity: 1; transform: translateX(0); }
     }
 
-    .chat-msg:hover {
-      background: rgba(255,255,255,0.03);
-    }
+    .chat-msg:hover { border-color: var(--border-strong); }
 
     .chat-msg.speaking {
-      background: rgba(37,244,238,0.06);
-      border-left: 2px solid var(--tiktok-cyan);
+      background: rgba(62, 207, 142, 0.04);
+      border-left: 2px solid var(--accent);
+      border-color: var(--border-subtle);
     }
 
     .chat-msg.gift-msg {
-      background: rgba(254,44,85,0.06);
-      border-left: 2px solid var(--tiktok-red);
+      background: rgba(62, 207, 142, 0.03);
+      border-left: 2px solid rgba(62, 207, 142, 0.3);
+      border-color: var(--border-subtle);
     }
 
     .msg-avatar {
-      width: 28px; height: 28px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
+      background: var(--border);
       display: flex;
       align-items: center;
       justify-content: center;
+      font-family: 'Source Code Pro', monospace;
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 500;
+      color: var(--text);
       flex-shrink: 0;
       margin-top: 1px;
     }
@@ -526,7 +490,8 @@
 
     .msg-user {
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
       margin-bottom: 2px;
     }
 
@@ -535,27 +500,29 @@
       color: var(--text);
       word-break: break-word;
       line-height: 1.4;
+      font-family: 'Inter', sans-serif;
     }
 
     .msg-time {
-      font-family: 'Space Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 10px;
-      color: var(--muted);
+      color: var(--text-muted);
       flex-shrink: 0;
       margin-top: 3px;
     }
 
     .msg-badge {
+      font-family: 'Source Code Pro', monospace;
       font-size: 10px;
       padding: 2px 6px;
       border-radius: 4px;
-      font-weight: 700;
+      font-weight: 400;
       margin-left: 6px;
     }
 
     .badge-speaking {
-      background: rgba(37,244,238,0.15);
-      color: var(--tiktok-cyan);
+      background: rgba(62, 207, 142, 0.12);
+      color: var(--accent);
     }
 
     /* SPEAKING INDICATOR */
@@ -564,16 +531,15 @@
       align-items: center;
       gap: 10px;
       padding: 12px 20px;
-      background: rgba(37,244,238,0.05);
-      border-top: 1px solid rgba(37,244,238,0.15);
-      font-family: 'Space Mono', monospace;
+      background: rgba(62, 207, 142, 0.04);
+      border-top: 1px solid rgba(62, 207, 142, 0.15);
+      font-family: 'Source Code Pro', monospace;
       font-size: 11px;
-      color: var(--tiktok-cyan);
+      color: var(--accent);
+      letter-spacing: 0.5px;
     }
 
-    .speaking-now.visible {
-      display: flex;
-    }
+    .speaking-now.visible { display: flex; }
 
     .wave {
       display: flex;
@@ -584,7 +550,7 @@
     .wave span {
       width: 3px;
       border-radius: 2px;
-      background: var(--tiktok-cyan);
+      background: var(--accent);
       animation: wave 1s ease-in-out infinite;
     }
 
@@ -605,17 +571,17 @@
       align-items: center;
       justify-content: center;
       height: 100%;
-      color: var(--muted);
+      color: var(--text-muted);
       gap: 10px;
     }
 
     .empty-icon {
-      font-size: 36px;
-      opacity: 0.3;
+      font-size: 32px;
+      opacity: 0.25;
     }
 
     .empty-text {
-      font-family: 'Space Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 12px;
       text-align: center;
       line-height: 1.6;
@@ -623,9 +589,9 @@
 
     /* QUEUE BADGE */
     .queue-badge {
-      font-family: 'Space Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 10px;
-      color: var(--muted);
+      color: var(--text-muted);
       padding: 8px 20px;
       border-top: 1px solid var(--border);
       text-align: right;
@@ -634,50 +600,75 @@
     /* GLOW effect when speaking */
     .app-glow {
       position: fixed;
-      bottom: 0; left: 50%;
+      bottom: 0;
+      left: 50%;
       transform: translateX(-50%);
-      width: 300px; height: 2px;
-      background: var(--tiktok-cyan);
-      box-shadow: 0 0 40px 10px rgba(37,244,238,0.2);
+      width: 200px;
+      height: 1px;
+      background: var(--accent);
+      box-shadow: 0 0 24px 6px rgba(62, 207, 142, 0.15);
       opacity: 0;
       transition: opacity 0.3s;
       pointer-events: none;
       z-index: 100;
     }
 
-    .app-glow.active {
-      opacity: 1;
-    }
+    .app-glow.active { opacity: 1; }
 
     /* Navigation buttons */
     .btn-nav {
-      padding: 12px 20px;
+      padding: 8px 16px;
       border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 15px;
+      border-radius: 9999px;
+      font-size: 14px;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: border-color 0.2s, opacity 0.2s, color 0.2s;
       background: transparent;
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Syne', sans-serif;
-      letter-spacing: 0px;
+      color: var(--text-secondary);
+      font-family: 'Inter', sans-serif;
+      opacity: 0.8;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
     }
 
     .btn-nav:hover {
-      transform: translateY(-2px);
-      border-color: var(--tiktok-cyan);
-      box-shadow: 0 0 12px rgba(37, 244, 238, 0.2);
+      border-color: var(--border-strong);
+      color: var(--text);
+      opacity: 1;
+    }
+
+    /* Test voice button */
+    .btn-test {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: 6px;
+      padding: 10px 16px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-test:hover {
+      border-color: var(--border-strong);
+      color: var(--text);
+    }
+
+    .btn-test:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
     }
 
     /* Modal overlay */
     .modal-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.7);
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
       display: none;
       align-items: center;
       justify-content: center;
@@ -687,21 +678,20 @@
 
     .modal-overlay.show {
       display: flex;
-      animation: fadeIn 0.3s ease-out;
+      animation: fadeIn 0.2s ease-out;
     }
 
     .modal-content {
-      background: var(--surface);
-      border: 1px solid var(--cyan-border);
-      border-radius: var(--modal-radius);
-      padding: 40px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 36px;
       max-width: 500px;
       width: 90%;
       max-height: 85vh;
       overflow-y: auto;
       position: relative;
-      box-shadow: var(--shadow-subtle);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Syne', sans-serif;
+      font-family: 'Inter', sans-serif;
     }
 
     .modal-close {
@@ -710,205 +700,145 @@
       right: 20px;
       background: none;
       border: none;
-      color: var(--muted);
-      font-size: 24px;
+      color: var(--text-muted);
+      font-size: 20px;
       cursor: pointer;
       transition: color 0.2s;
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
       display: flex;
       align-items: center;
       justify-content: center;
+      border-radius: 4px;
     }
 
-    .modal-close:hover {
-      color: var(--text);
-    }
+    .modal-close:hover { color: var(--text); }
 
     .modal-content h2 {
-      margin-top: 0;
-      margin-bottom: 32px;
-      font-size: 26px;
-      color: var(--tiktok-cyan);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Syne', sans-serif;
-      font-weight: 700;
-      letter-spacing: -0.5px;
+      margin: 0 0 28px 0;
+      font-size: 20px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      letter-spacing: -0.3px;
     }
 
     .modal-content h3 {
       margin: 0 0 8px 0;
-      font-size: 15px;
+      font-size: 14px;
       color: var(--text);
-      font-weight: 600;
-      letter-spacing: -0.3px;
+      font-weight: 500;
     }
 
     /* QR Card */
     .qr-card {
-      background: var(--cyan-light);
-      border: 1px solid var(--cyan-border);
-      border-radius: 16px;
-      padding: 28px 24px;
-      margin: 24px 0;
+      background: rgba(62, 207, 142, 0.04);
+      border: 1px solid rgba(62, 207, 142, 0.2);
+      border-radius: 12px;
+      padding: 24px;
+      margin: 20px 0;
     }
 
     .qr-code-display {
       display: inline-block;
-      margin: 18px 0;
-      padding: 12px;
+      margin: 16px 0;
+      padding: 10px;
       background: var(--bg);
-      border-radius: 12px;
+      border-radius: 8px;
       border: 1px solid var(--border);
     }
 
-    /* Donations modal */
-    .donation-section {
-      text-align: center;
-    }
+    .donation-section { text-align: center; }
 
     .donation-section p {
       margin: 6px 0 12px 0;
       font-size: 13px;
-      color: var(--muted);
-      letter-spacing: 0.3px;
+      color: var(--text-muted);
     }
 
     .donation-input {
       width: 100%;
-      padding: 14px 16px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--tiktok-cyan);
-      border-radius: var(--btn-radius);
+      padding: 12px 16px;
+      background: var(--bg-button);
+      border: 1px solid var(--border-strong);
+      color: var(--text-secondary);
+      border-radius: 6px;
       font-size: 13px;
-      font-family: 'Space Mono', monospace;
-      margin: 14px 0;
+      font-family: 'Source Code Pro', monospace;
+      margin: 12px 0;
       cursor: text;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: border-color 0.2s;
+      outline: none;
     }
 
-    .donation-input:focus {
-      outline: none;
-      border-color: var(--tiktok-cyan);
-      box-shadow: 0 0 0 3px rgba(37, 244, 238, 0.1);
-    }
+    .donation-input:focus { border-color: rgba(62, 207, 142, 0.5); }
 
     .btn-copy {
       width: 100%;
-      padding: 16px 20px;
-      background: var(--tiktok-red);
-      color: white;
-      border: none;
-      border-radius: var(--btn-radius);
+      padding: 12px 20px;
+      background: var(--bg-button);
+      color: var(--text);
+      border: 1px solid var(--text);
+      border-radius: 9999px;
       cursor: pointer;
-      font-weight: 600;
-      font-size: 15px;
-      transition: all 0.2s;
-      margin-top: 12px;
-      letter-spacing: 0px;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Syne', sans-serif;
-    }
-
-    .btn-copy:hover {
-      background: #ff4d6d;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(254, 44, 85, 0.3);
-    }
-
-    .btn-copy:active {
-      transform: translateY(0);
-    }
-
-    /* Test voice button */
-    .btn-test {
-      background: var(--tiktok-cyan);
-      color: #0a0a0f;
-      border: none;
-      border-radius: 8px;
-      padding: 12px 16px;
       font-weight: 500;
       font-size: 14px;
-      cursor: pointer;
-      white-space: nowrap;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Syne', sans-serif;
-      transition: all 0.2s;
+      transition: opacity 0.2s;
+      margin-top: 12px;
+      font-family: 'Inter', sans-serif;
     }
 
-    .btn-test:hover {
-      background: #20d4d1;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(37, 244, 238, 0.2);
-    }
-
-    .btn-test:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
+    .btn-copy:hover { opacity: 0.8; }
+    .btn-copy:active { opacity: 0.6; }
 
     /* Social grid */
     .social-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-      gap: 16px;
-      margin-top: 24px;
+      gap: 12px;
+      margin-top: 20px;
     }
 
     .social-card {
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 24px 16px;
-      background: var(--cyan-light);
-      border: 1px solid var(--cyan-border);
-      border-radius: 16px;
+      padding: 20px 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
       text-decoration: none;
-      color: var(--text);
-      transition: all 0.2s;
+      color: var(--text-secondary);
+      transition: border-color 0.2s, color 0.2s;
       text-align: center;
     }
 
     .social-card:hover {
-      border-color: var(--tiktok-cyan);
-      background: rgba(37, 244, 238, 0.1);
-      transform: translateY(-4px);
-      box-shadow: 0 12px 32px rgba(37, 244, 238, 0.2);
+      border-color: var(--border-strong);
+      color: var(--text);
     }
 
     .social-card h3 {
-      margin: 12px 0 4px 0;
-      font-size: 15px;
-      color: var(--tiktok-cyan);
-      font-weight: 600;
+      margin: 10px 0 4px 0;
+      font-size: 14px;
+      color: inherit;
+      font-weight: 500;
     }
 
     .social-card p {
       font-size: 12px;
-      color: var(--muted);
+      color: var(--text-muted);
       margin: 0;
-      letter-spacing: 0.2px;
     }
 
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
+      from { opacity: 0; transform: scale(0.97); }
+      to { opacity: 1; transform: scale(1); }
     }
 
     @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateX(-50%) translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-      }
+      from { opacity: 0; transform: translateX(-50%) translateY(16px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
     }
   </style>
 </head>
@@ -924,7 +854,7 @@
       </div>
     </div>
     <div style="display: flex; gap: 10px;">
-      <button class="btn-nav" onclick="openDonationsModal()" style="background: #00ff88; color: #0a0a0f;">💚 Donar</button>
+      <button class="btn-nav" onclick="openDonationsModal()">💚 Donar</button>
       <button class="btn-nav" onclick="openSocialModal()">📱 Canales</button>
       <a href="/advanced.html" class="btn-nav">⚙ Configuración</a>
     </div>
@@ -956,7 +886,7 @@
     <div class="setting-group">
       <label>🔬 Probar voz</label>
       <div style="display:flex;gap:8px;align-items:center;">
-        <input type="text" id="testVoiceInput" placeholder="Escribe algo para probar..." style="flex:1;background:#1a1a2e;border:1px solid #2a2a4a;border-radius:8px;padding:8px 12px;color:#e8e8f0;font-family:inherit;font-size:13px;" />
+        <input type="text" id="testVoiceInput" placeholder="Escribe algo para probar..." style="flex:1;" />
         <button id="btnTestVoice" class="btn-test" onclick="testVoice()">▶ Probar voz</button>
       </div>
     </div>
@@ -1050,7 +980,6 @@
     <div class="qr-card">
       <h3>Lightning Network (Instant)</h3>
       <p>Khunsa@coinos.io</p>
-      <div id="qrLightning" class="qr-code-display"></div>
       <input type="text" value="Khunsa@coinos.io" readonly class="donation-input" onclick="this.select()">
       <button class="btn-copy" onclick="copyToClipboard('Khunsa@coinos.io')">📋 Copiar dirección</button>
     </div>
@@ -1058,7 +987,6 @@
     <div class="qr-card">
       <h3>Bitcoin Nativo</h3>
       <p>bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk</p>
-      <div id="qrBTC" class="qr-code-display"></div>
       <input type="text" value="bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk" readonly class="donation-input" onclick="this.select()">
       <button class="btn-copy" onclick="copyToClipboard('bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk')">📋 Copiar dirección</button>
     </div>
