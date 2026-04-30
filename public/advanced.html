@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TikLive TTS — Configuración</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --border: #1e1e2e;
+      --tiktok-red: #fe2c55;
+      --tiktok-cyan: #25f4ee;
+      --text: #e8e8f0;
+      --muted: #5a5a7a;
+      --chat-bg: #0d0d15;
+      --green: #00ff88;
+      --yellow: #ffd93d;
+      --orange: #ff922b;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(37,244,238,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(37,244,238,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+    }
+
+    /* HEADER & NAV */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--tiktok-red);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logo-icon::before {
+      content: '';
+      position: absolute;
+      top: -4px; left: -4px;
+      width: 20px; height: 20px;
+      background: var(--tiktok-cyan);
+      border-radius: 50%;
+      opacity: 0.6;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    h1 span { color: var(--tiktok-red); }
+
+    .subtitle {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .nav-link {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 1px;
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: var(--tiktok-cyan);
+      border-color: var(--tiktok-cyan);
+      background: rgba(37,244,238,0.06);
+    }
+
+    /* PAGE TITLE */
+    .page-title {
+      margin-bottom: 32px;
+    }
+
+    .page-title h2 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      margin-bottom: 8px;
+    }
+
+    .page-title p {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* PANELS */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+    }
+
+    .panel-rate::before { background: linear-gradient(90deg, var(--tiktok-red), var(--orange)); }
+    .panel-filter::before { background: linear-gradient(90deg, var(--tiktok-cyan), var(--green)); }
+    .panel-status::before { background: linear-gradient(90deg, #4d96ff, var(--tiktok-cyan)); }
+
+    .panel-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .panel-desc {
+      font-size: 14px;
+      color: var(--text);
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    /* EXPLAINER */
+    .explainer {
+      background: var(--chat-bg);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--orange);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-bottom: 24px;
+    }
+
+    .explainer-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--orange);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .explainer p {
+      font-size: 13px;
+      color: #a0a0c0;
+      line-height: 1.7;
+      margin-bottom: 8px;
+    }
+
+    .explainer p:last-child { margin-bottom: 0; }
+    .explainer strong { color: var(--text); }
+
+    .explainer .highlight {
+      display: inline-block;
+      background: rgba(255,146,43,0.12);
+      color: var(--orange);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+    }
+
+    .explainer .code {
+      display: inline-block;
+      background: rgba(37,244,238,0.1);
+      color: var(--tiktok-cyan);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+    }
+
+    /* GRID */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      header { flex-direction: column; align-items: flex-start; }
+    }
+
+    .control-group label {
+      display: block;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 8px;
+    }
+
+    .control-group .val-display {
+      color: var(--tiktok-cyan);
+      font-weight: 700;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      -webkit-appearance: none;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--border);
+      cursor: pointer;
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--tiktok-cyan);
+      cursor: pointer;
+      transition: box-shadow 0.2s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      box-shadow: 0 0 10px rgba(37,244,238,0.5);
+    }
+
+    .range-labels {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    /* TOGGLE ROW */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .toggle-row:last-child { border-bottom: none; }
+
+    .toggle-info { flex: 1; padding-right: 20px; }
+
+    .toggle-name {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+
+    .toggle-hint {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .switch input { display: none; }
+
+    .switch-track {
+      position: absolute;
+      inset: 0;
+      background: var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .switch-track::after {
+      content: '';
+      position: absolute;
+      top: 3px; left: 3px;
+      width: 18px; height: 18px;
+      background: var(--muted);
+      border-radius: 50%;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .switch input:checked + .switch-track {
+      background: rgba(37,244,238,0.2);
+      border: 1px solid var(--tiktok-cyan);
+    }
+
+    .switch input:checked + .switch-track::after {
+      transform: translateX(20px);
+      background: var(--tiktok-cyan);
+    }
+
+    /* TAGS */
+    .tag-input-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .tag-input-row input[type="text"] {
+      flex: 1;
+      background: var(--chat-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .tag-input-row input[type="text"]:focus {
+      border-color: var(--tiktok-cyan);
+    }
+
+    .tag-input-row input[type="text"]::placeholder {
+      color: var(--muted);
+    }
+
+    .btn-add {
+      background: rgba(37,244,238,0.1);
+      border: 1px solid var(--tiktok-cyan);
+      color: var(--tiktok-cyan);
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-add:hover {
+      background: rgba(37,244,238,0.2);
+    }
+
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 40px;
+    }
+
+    .tag {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(37,244,238,0.08);
+      border: 1px solid rgba(37,244,238,0.2);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      color: var(--tiktok-cyan);
+      animation: pop-in 0.15s ease;
+    }
+
+    @keyframes pop-in {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .tag-remove {
+      cursor: pointer;
+      color: var(--muted);
+      transition: color 0.15s;
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .tag-remove:hover { color: var(--tiktok-red); }
+
+    .tags-empty {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      padding: 8px 0;
+    }
+
+    /* STATUS */
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 600px) {
+      .status-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .stat-card {
+      background: var(--chat-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-family: 'Space Mono', monospace;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .stat-card.green .stat-value { color: var(--green); }
+    .stat-card.cyan .stat-value { color: var(--tiktok-cyan); }
+    .stat-card.red .stat-value { color: var(--tiktok-red); }
+    .stat-card.yellow .stat-value { color: var(--yellow); }
+    .stat-card.orange .stat-value { color: var(--orange); }
+    .stat-card.blue .stat-value { color: #4d96ff; }
+
+    .conn-info {
+      background: var(--chat-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+    }
+
+    .conn-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    .conn-row:last-child { border-bottom: none; }
+
+    .conn-key {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .conn-val {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .conn-val.online { color: var(--green); }
+    .conn-val.offline { color: var(--muted); }
+
+    .dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+
+    .dot.green {
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
+      animation: pulse-dot 2s infinite;
+    }
+
+    .dot.red { background: var(--tiktok-red); }
+    .dot.muted { background: var(--muted); }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* SAVE */
+    .save-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    .btn-save {
+      background: var(--tiktok-red);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 28px;
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-save:hover {
+      background: #ff4d6d;
+      transform: translateY(-1px);
+    }
+
+    .btn-save.saved {
+      background: var(--green);
+      color: #0a0a0f;
+    }
+
+    .btn-refresh {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-refresh:hover {
+      border-color: var(--tiktok-cyan);
+      color: var(--tiktok-cyan);
+    }
+
+    .status-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin: 20px 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--surface);
+      border: 1px solid var(--tiktok-cyan);
+      color: var(--tiktok-cyan);
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-left: 8px;
+    }
+
+    .badge-off {
+      background: rgba(90,90,122,0.2);
+      color: var(--muted);
+    }
+
+    .badge-on {
+      background: rgba(0,255,136,0.15);
+      color: var(--green);
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🎵</div>
+      <div>
+        <h1>TikLive <span>TTS</span></h1>
+        <div class="subtitle">Configuración del Servidor</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="/" class="nav-link">← Chat Live</a>
+      <a href="/advanced.html" class="nav-link active">⚙ Configuración</a>
+    </nav>
+  </header>
+
+  <!-- PAGE TITLE -->
+  <div class="page-title">
+    <h2>Ajustes del Servidor</h2>
+    <p>Controla el rate limiting, filtros de mensajes y monitorea el estado del sistema en tiempo real. Estos cambios aplican inmediatamente al backend.</p>
+  </div>
+
+  <!-- ═══ PANEL 1: RATE LIMITING ═══ -->
+  <div class="panel panel-rate">
+    <div class="panel-title">⚡ Rate Limiting de TTS</div>
+    <div class="panel-desc">Control de velocidad del servidor<span class="badge badge-off" id="rlBadge">OFF</span></div>
+
+    <div class="explainer">
+      <div class="explainer-title">¿Cómo funciona?</div>
+      <p>
+        Durante un live activo pueden llegar <strong>decenas de mensajes por segundo</strong>. Sin límites,
+        la cola TTS crecería sin control y el bot acumularía minutos de retraso.
+      </p>
+      <p>
+        El rate limiting actúa como un <strong>filtro en el servidor</strong>: decide cuántas peticiones TTS
+        se permiten en una ventana de tiempo. Si se supera el límite, las peticiones adicionales se rechazan
+        con error 429 y el mensaje no entra a la cola de voz.
+      </p>
+      <p>
+        <span class="highlight">Por defecto está DESACTIVADO</span>. Actívalo solo si ves que el bot se satura
+        o si Google TTS empieza a dar errores por demasiadas peticiones.
+      </p>
+      <p>
+        Ejemplo práctico: con <span class="code">10 peticiones / 5 segundos</span>, si llegan 20 mensajes en 5 segundos,
+        solo los primeros 10 se leerán. El resto se descartan silenciosamente.
+      </p>
+    </div>
+
+    <div class="toggle-row" style="border-bottom:1px solid var(--border); margin-bottom:20px;">
+      <div class="toggle-info">
+        <div class="toggle-name">Activar rate limit en el servidor</div>
+        <div class="toggle-hint">Desactivado por defecto. Solo actívalo si el live tiene mucho spam o el TTS se satura.</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="rlEnabled" onchange="toggleRateLimit()" />
+        <span class="switch-track"></span>
+      </label>
+    </div>
+
+    <div class="grid-2">
+      <div class="control-group">
+        <label>Máximo de peticiones — <span class="val-display" id="rlMaxVal">10</span></label>
+        <input type="range" id="rlMax" min="1" max="30" step="1" value="10"
+          oninput="document.getElementById('rlMaxVal').textContent = this.value" />
+        <div class="range-labels"><span>1</span><span>30</span></div>
+      </div>
+
+      <div class="control-group">
+        <label>Ventana de tiempo — <span class="val-display" id="rlWindowVal">5</span> seg</label>
+        <input type="range" id="rlWindow" min="1" max="60" step="1" value="5"
+          oninput="document.getElementById('rlWindowVal').textContent = this.value" />
+        <div class="range-labels"><span>1s</span><span>60s</span></div>
+      </div>
+
+      <div class="control-group" style="grid-column: 1 / -1;">
+        <label>Máx. mensajes en cola — <span class="val-display" id="rlQueueVal">15</span></label>
+        <input type="range" id="rlQueue" min="5" max="50" step="1" value="15"
+          oninput="document.getElementById('rlQueueVal').textContent = this.value" />
+        <div class="range-labels"><span>5 msgs</span><span>50 msgs</span></div>
+      </div>
+    </div>
+
+    <div class="save-row">
+      <button class="btn-save" id="btnSaveRL" onclick="saveRateLimit()">Guardar cambios</button>
+    </div>
+  </div>
+
+  <!-- ═══ PANEL 2: CONFIGURACIÓN GENERAL ═══ -->
+  <div class="panel panel-rate">
+    <div class="panel-title">🔧 Configuración General</div>
+    <div class="panel-desc">Otros parámetros del servidor TTS</div>
+
+    <div class="grid-2">
+      <div class="control-group">
+        <label>Máx. caracteres TTS — <span class="val-display" id="cfgCharsVal">500</span></label>
+        <input type="range" id="cfgChars" min="50" max="500" step="10" value="500"
+          oninput="document.getElementById('cfgCharsVal').textContent = this.value" />
+        <div class="range-labels"><span>50</span><span>500</span></div>
+      </div>
+
+      <div class="control-group">
+        <label>Debounce de likes — <span class="val-display" id="cfgDebounceVal">1500</span> ms</label>
+        <input type="range" id="cfgDebounce" min="0" max="5000" step="100" value="1500"
+          oninput="document.getElementById('cfgDebounceVal').textContent = this.value" />
+        <div class="range-labels"><span>0ms</span><span>5s</span></div>
+      </div>
+    </div>
+
+    <div class="save-row">
+      <button class="btn-save" id="btnSaveGeneral" onclick="saveGeneral()">Guardar cambios</button>
+    </div>
+  </div>
+
+  <!-- ═══ PANEL 3: FILTROS DE MENSAJES ═══ -->
+  <div class="panel panel-filter">
+    <div class="panel-title">🔍 Filtros de Mensajes</div>
+    <div class="panel-desc">Palabras prohibidas en el servidor</div>
+
+    <div class="explainer">
+      <div class="explainer-title">Reglas automáticas del servidor</div>
+      <p>El servidor ya filtra automáticamente: <strong>mensajes repetitivos</strong> (aaaaaa), <strong>URLs</strong> (se reemplazan por "link"), <strong>menciones</strong> (@usuario se eliminan), <strong>emojis</strong> (se convierten a espacio) y <strong>mensajes mayores a 300 caracteres</strong>.</p>
+      <p>Aquí puedes añadir <strong>palabras adicionales</strong> para bloquear mensajes que las contengan.</p>
+    </div>
+
+    <div class="section-label">Palabras bloqueadas</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;">
+      Los mensajes que contengan estas palabras serán ignorados completamente por el TTS. El filtro no distingue mayúsculas/minúsculas.
+    </p>
+
+    <div class="tag-input-row">
+      <input type="text" id="blockedWordInput" placeholder="Escribe una palabra y presiona Agregar..."
+        onkeydown="if(event.key==='Enter') addBlockedWord()" />
+      <button class="btn-add" onclick="addBlockedWord()">+ Agregar</button>
+    </div>
+
+    <div class="tags-container" id="blockedWordsTags">
+      <span class="tags-empty" id="blockedEmpty">Sin palabras bloqueadas</span>
+    </div>
+
+    <div class="save-row" style="margin-top:10px;">
+      <button class="btn-save" id="btnSaveFilters" onclick="saveBlockedWords()">Sincronizar con servidor</button>
+    </div>
+
+    <div class="section-label">Editar lista completa</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;">
+      Puedes editar el archivo <code>blocked-words.md</code> directamente aquí o subir uno nuevo. El formato es una palabra por línea empezando con <code>- </code>.
+    </p>
+
+    <textarea id="mdEditor" style="width:100%;min-height:160px;background:var(--chat-bg);border:1px solid var(--border);border-radius:10px;padding:14px;color:var(--text);font-family:'Space Mono',monospace;font-size:12px;line-height:1.6;outline:none;resize:vertical;" placeholder="- palabra1
+- palabra2"></textarea>
+
+    <div class="save-row" style="margin-top:12px;gap:10px;display:flex;justify-content:flex-end;flex-wrap:wrap;">
+      <button class="btn-refresh" onclick="loadMdContent()">↻ Recargar desde archivo</button>
+      <button class="btn-add" onclick="downloadMd()">⬇ Descargar .md</button>
+      <button class="btn-save" onclick="saveMdContent()">💾 Guardar cambios al archivo</button>
+    </div>
+
+    <div class="section-label">Subir archivo .md</div>
+    <div class="tag-input-row">
+      <input type="file" id="mdFileInput" accept=".md" style="flex:1;background:var(--chat-bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'Space Mono',monospace;font-size:13px;cursor:pointer;" />
+      <button class="btn-add" onclick="uploadMdFile()">📤 Subir y reemplazar</button>
+    </div>
+  </div>
+
+  <!-- ═══ PANEL 4: ESTADO DEL SISTEMA ═══ -->
+  <div class="panel panel-status">
+    <div class="status-header">
+      <div>
+        <div class="panel-title">📊 Estado del Servidor</div>
+        <div class="panel-desc">Monitoreo en tiempo real</div>
+      </div>
+      <button class="btn-refresh" onclick="refreshStatus()">↻ Actualizar</button>
+    </div>
+
+    <div class="status-grid">
+      <div class="stat-card green">
+        <div class="stat-value" id="statUptime">0m</div>
+        <div class="stat-label">Tiempo activo</div>
+      </div>
+      <div class="stat-card cyan">
+        <div class="stat-value" id="statClients">0</div>
+        <div class="stat-label">Clientes WS</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-value" id="statConn">—</div>
+        <div class="stat-label">TikTok</div>
+      </div>
+      <div class="stat-card yellow">
+        <div class="stat-value" id="statMem">0</div>
+        <div class="stat-label">Memoria MB</div>
+      </div>
+      <div class="stat-card orange">
+        <div class="stat-value" id="statRateMax">10</div>
+        <div class="stat-label">Rate max</div>
+      </div>
+      <div class="stat-card red">
+        <div class="stat-value" id="statRateEnabled">OFF</div>
+        <div class="stat-label">Rate limit</div>
+      </div>
+    </div>
+
+    <div class="section-label">Configuración actual</div>
+    <div class="conn-info">
+      <div class="conn-row">
+        <span class="conn-key">Rate limit activo</span>
+        <span class="conn-val" id="statusRateEnabled" style="color:var(--muted)">—</span>
+      </div>
+      <div class="conn-row">
+        <span class="conn-key">Máximo peticiones</span>
+        <span class="conn-val" id="statusRateMax">—</span>
+      </div>
+      <div class="conn-row">
+        <span class="conn-key">Ventana de tiempo</span>
+        <span class="conn-val" id="statusRateWindow">—</span>
+      </div>
+      <div class="conn-row">
+        <span class="conn-key">Máx. caracteres TTS</span>
+        <span class="conn-val" id="statusMaxChars">—</span>
+      </div>
+      <div class="conn-row">
+        <span class="conn-key">Debounce likes</span>
+        <span class="conn-val" id="statusDebounce">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PANEL 5: LOGS ═══ -->
+  <div class="panel panel-status">
+    <div class="status-header">
+      <div>
+        <div class="panel-title">📋 Logs</div>
+        <div class="panel-desc">Historial de eventos y errores</div>
+      </div>
+      <button class="btn-refresh" onclick="refreshLogs()">↻ Actualizar</button>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; margin-bottom: 12px;">
+        <input type="text" id="logSearch" placeholder="Buscar logs..." style="background: var(--chat-bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 13px; outline: none;">
+        <select id="logLevelFilter" style="background: var(--chat-bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 13px; outline: none; cursor: pointer;">
+          <option value="">🔹 Todos los niveles</option>
+          <option value="error">🔴 Error</option>
+          <option value="warn">🟡 Warn</option>
+          <option value="info">🔵 Info</option>
+        </select>
+        <select id="logSourceFilter" style="background: var(--chat-bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 13px; outline: none; cursor: pointer;">
+          <option value="">🔹 Todas las fuentes</option>
+          <option value="server">🖥️ Servidor</option>
+          <option value="client">💻 Cliente</option>
+          <option value="network">🌐 Red</option>
+        </select>
+        <div style="display: flex; gap: 5px;">
+          <button class="btn-add" onclick="exportLogs()" title="Exportar logs">📥</button>
+          <button class="btn-refresh" onclick="clearLogs()" title="Limpiar logs">🗑️</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="logsContainer" style="max-height: 350px; overflow-y: auto; background: var(--chat-bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-size: 12px; font-family: 'Space Mono', monospace; color: var(--text); line-height: 1.5;">
+      <div style="color: var(--muted); text-align: center; padding: 20px;">Sin logs aún</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ─── Load config from server ────────────────────────────────────────
+  async function loadConfig() {
+    try {
+      const res = await fetch('/api/config');
+      const cfg = await res.json();
+
+      document.getElementById('rlEnabled').checked = cfg.rateLimitEnabled;
+      document.getElementById('rlMax').value = cfg.TTS_RATE_LIMIT_MAX;
+      document.getElementById('rlMaxVal').textContent = cfg.TTS_RATE_LIMIT_MAX;
+      document.getElementById('rlWindow').value = Math.round(cfg.TTS_RATE_WINDOW_MS / 1000);
+      document.getElementById('rlWindowVal').textContent = Math.round(cfg.TTS_RATE_WINDOW_MS / 1000);
+      document.getElementById('rlQueue').value = cfg.MAX_QUEUE_MSG;
+      document.getElementById('rlQueueVal').textContent = cfg.MAX_QUEUE_MSG;
+
+      document.getElementById('cfgChars').value = cfg.TTS_MAX_CHARS;
+      document.getElementById('cfgCharsVal').textContent = cfg.TTS_MAX_CHARS;
+      document.getElementById('cfgDebounce').value = cfg.LIKE_DEBOUNCE_MS;
+      document.getElementById('cfgDebounceVal').textContent = cfg.LIKE_DEBOUNCE_MS;
+
+      updateRlBadge(cfg.rateLimitEnabled);
+    } catch (e) {
+      showToast('Error cargando configuración');
+    }
+  }
+
+  // ─── Load blocked words from server ─────────────────────────────────
+  async function loadBlockedWords() {
+    try {
+      const res = await fetch('/api/blocked-words');
+      const data = await res.json();
+      blockedWords = data.words || [];
+      renderTags();
+    } catch (e) {
+      showToast('Error cargando palabras bloqueadas');
+    }
+  }
+
+  // ─── Rate Limit ─────────────────────────────────────────────────────
+  function toggleRateLimit() {
+    const enabled = document.getElementById('rlEnabled').checked;
+    updateRlBadge(enabled);
+    ['rlMax', 'rlWindow', 'rlQueue'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.disabled = !enabled;
+      el.closest('.control-group').style.opacity = enabled ? '1' : '0.4';
+      el.closest('.control-group').style.pointerEvents = enabled ? '' : 'none';
+    });
+  }
+
+  function updateRlBadge(enabled) {
+    const badge = document.getElementById('rlBadge');
+    badge.textContent = enabled ? 'ON' : 'OFF';
+    badge.className = 'badge ' + (enabled ? 'badge-on' : 'badge-off');
+  }
+
+  async function saveRateLimit() {
+    const payload = {
+      rateLimitEnabled: document.getElementById('rlEnabled').checked,
+      TTS_RATE_LIMIT_MAX: parseInt(document.getElementById('rlMax').value),
+      TTS_RATE_WINDOW_MS: parseInt(document.getElementById('rlWindow').value) * 1000,
+      MAX_QUEUE_MSG: parseInt(document.getElementById('rlQueue').value),
+    };
+    try {
+      await fetch('/api/config', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      flashSave('btnSaveRL');
+      showToast('Rate limit actualizado');
+      refreshStatus();
+    } catch (e) {
+      showToast('Error guardando rate limit');
+    }
+  }
+
+  // ─── General Config ─────────────────────────────────────────────────
+  async function saveGeneral() {
+    const payload = {
+      TTS_MAX_CHARS: parseInt(document.getElementById('cfgChars').value),
+      LIKE_DEBOUNCE_MS: parseInt(document.getElementById('cfgDebounce').value),
+    };
+    try {
+      await fetch('/api/config', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      flashSave('btnSaveGeneral');
+      showToast('Configuración general actualizada');
+      refreshStatus();
+    } catch (e) {
+      showToast('Error guardando configuración');
+    }
+  }
+
+  // ─── Blocked Words ──────────────────────────────────────────────────
+  let blockedWords = [];
+
+  function addBlockedWord() {
+    const input = document.getElementById('blockedWordInput');
+    const word = input.value.trim().toLowerCase();
+    if (!word || blockedWords.includes(word)) { input.value = ''; return; }
+    blockedWords.push(word);
+    input.value = '';
+    renderTags();
+  }
+
+  function removeBlockedWord(word) {
+    blockedWords = blockedWords.filter(w => w !== word);
+    renderTags();
+  }
+
+  function renderTags() {
+    const container = document.getElementById('blockedWordsTags');
+    container.innerHTML = '';
+
+    if (blockedWords.length === 0) {
+      const empty = document.createElement('span');
+      empty.className = 'tags-empty';
+      empty.id = 'blockedEmpty';
+      empty.textContent = 'Sin palabras bloqueadas';
+      container.appendChild(empty);
+      return;
+    }
+
+    blockedWords.forEach(word => {
+      const tag = document.createElement('span');
+      tag.className = 'tag';
+      tag.innerHTML = `${escHtml(word)} <span class="tag-remove" onclick="removeBlockedWord('${escHtml(word)}')" title="Eliminar">×</span>`;
+      container.appendChild(tag);
+    });
+  }
+
+  async function saveBlockedWords() {
+    try {
+      // Fetch current server list
+      const currentRes = await fetch('/api/blocked-words');
+      const currentData = await currentRes.json();
+      const serverWords = currentData.words || [];
+
+      // Remove words not in local list
+      for (const w of serverWords) {
+        if (!blockedWords.includes(w)) {
+          await fetch('/api/block-word', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ word: w })
+          });
+        }
+      }
+
+      // Add words not on server
+      for (const w of blockedWords) {
+        if (!serverWords.includes(w)) {
+          await fetch('/api/block-word', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ word: w })
+          });
+        }
+      }
+
+      flashSave('btnSaveFilters');
+      showToast('Palabras sincronizadas con el servidor');
+      loadMdContent();
+    } catch (e) {
+      showToast('Error sincronizando palabras');
+    }
+  }
+
+  // ─── Markdown editor ────────────────────────────────────────────────
+  async function loadMdContent() {
+    try {
+      const res = await fetch('/api/blocked-words/export');
+      const text = await res.text();
+      document.getElementById('mdEditor').value = text;
+    } catch (e) {
+      showToast('Error cargando archivo .md');
+    }
+  }
+
+  async function saveMdContent() {
+    const content = document.getElementById('mdEditor').value;
+    try {
+      const res = await fetch('/api/blocked-words/import', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content })
+      });
+      const data = await res.json();
+      blockedWords = data.words || [];
+      renderTags();
+      showToast('Archivo .md guardado y palabras actualizadas');
+    } catch (e) {
+      showToast('Error guardando archivo .md');
+    }
+  }
+
+  function uploadMdFile() {
+    const input = document.getElementById('mdFileInput');
+    const file = input.files[0];
+    if (!file) { showToast('Selecciona un archivo .md'); return; }
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const res = await fetch('/api/blocked-words/import', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: e.target.result })
+        });
+        const data = await res.json();
+        blockedWords = data.words || [];
+        renderTags();
+        document.getElementById('mdEditor').value = e.target.result;
+        input.value = '';
+        showToast('Archivo .md importado correctamente');
+      } catch (err) {
+        showToast('Error importando archivo .md');
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function downloadMd() {
+    const content = document.getElementById('mdEditor').value || '';
+    const blob = new Blob([content], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'blocked-words.md';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function escHtml(s) {
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  // ─── LogStorage ──────────────────────────────────────────────────────
+  class LogStorage {
+    constructor(maxEntries = 100) {
+      this.key = 'tiktok_tts_logs';
+      this.maxEntries = maxEntries;
+    }
+
+    addLog(level, source, message, data = null) {
+      try {
+        const logs = this.getLogs();
+        logs.push({
+          timestamp: new Date().toISOString(),
+          level,
+          source,
+          message,
+          data
+        });
+        if (logs.length > this.maxEntries) logs.shift();
+        localStorage.setItem(this.key, JSON.stringify(logs));
+      } catch (e) {
+        console.error('LogStorage.addLog error:', e);
+      }
+    }
+
+    getLogs() {
+      try {
+        return JSON.parse(localStorage.getItem(this.key) || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+
+    clearLogs() {
+      try {
+        localStorage.removeItem(this.key);
+      } catch (e) {
+        console.error('LogStorage.clearLogs error:', e);
+      }
+    }
+
+    exportLogs(format = 'json') {
+      const logs = this.getLogs();
+      if (format === 'csv') {
+        return 'timestamp,level,source,message\n' +
+          logs.map(l => `${l.timestamp},${l.level},${l.source},"${(l.message || '').replace(/"/g, '""')}"`).join('\n');
+      }
+      return JSON.stringify(logs, null, 2);
+    }
+  }
+
+  const logStorage = new LogStorage(100);
+
+  // ─── Log refresh & export ────────────────────────────────────────────
+  function refreshLogs() {
+    try {
+      const search = document.getElementById('logSearch').value.toLowerCase();
+      const levelFilter = document.getElementById('logLevelFilter').value;
+      const sourceFilter = document.getElementById('logSourceFilter').value;
+
+      let logs = logStorage.getLogs();
+      logs = logs.filter(log =>
+        (!search || log.message.toLowerCase().includes(search)) &&
+        (!levelFilter || log.level === levelFilter) &&
+        (!sourceFilter || log.source === sourceFilter)
+      );
+
+      const container = document.getElementById('logsContainer');
+      if (logs.length === 0) {
+        container.innerHTML = '<div style="color: var(--muted); text-align: center; padding: 20px;">Sin logs para mostrar</div>';
+        return;
+      }
+
+      const html = logs.reverse().slice(0, 100).map(log => {
+        const icon = { error: '🔴', warn: '🟡', info: '🔵', debug: '⚪' }[log.level] || '⚪';
+        const time = new Date(log.timestamp).toLocaleTimeString();
+        return `<div style="border-bottom: 1px solid var(--border); padding: 8px 0; line-height: 1.4;">
+          <div>${icon} <small style="color: var(--muted);">${time}</small> <code style="color: var(--tiktok-cyan);">[${log.source}]</code></div>
+          <div style="margin-left: 20px; color: var(--text);">${escHtml(log.message)}</div>
+          ${log.data ? `<div style="margin-left: 20px; font-size: 11px; color: var(--muted);"><code>${escHtml(JSON.stringify(log.data))}</code></div>` : ''}
+        </div>`;
+      }).join('');
+
+      container.innerHTML = html;
+    } catch (e) {
+      console.error('refreshLogs error:', e);
+    }
+  }
+
+  function exportLogs() {
+    try {
+      const format = prompt('¿Exportar como (json/csv)?', 'json');
+      if (!format || !['json', 'csv'].includes(format)) return;
+
+      const content = logStorage.exportLogs(format);
+      const blob = new Blob([content], { type: format === 'csv' ? 'text/csv' : 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `tiktok-tts-logs-${new Date().toISOString().split('T')[0]}.${format}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('📥 Logs exportados');
+    } catch (e) {
+      showToast('Error exportando logs');
+    }
+  }
+
+  function clearLogs() {
+    if (confirm('¿Limpiar todos los logs? No se puede deshacer.')) {
+      logStorage.clearLogs();
+      refreshLogs();
+      showToast('🗑️ Logs eliminados');
+    }
+  }
+
+  // Add event listeners for log filtering
+  document.addEventListener('DOMContentLoaded', () => {
+    const logSearch = document.getElementById('logSearch');
+    const logLevelFilter = document.getElementById('logLevelFilter');
+    const logSourceFilter = document.getElementById('logSourceFilter');
+
+    if (logSearch) logSearch.addEventListener('input', refreshLogs);
+    if (logLevelFilter) logLevelFilter.addEventListener('change', refreshLogs);
+    if (logSourceFilter) logSourceFilter.addEventListener('change', refreshLogs);
+  });
+
+  // ─── Status ─────────────────────────────────────────────────────────
+  async function refreshStatus() {
+    try {
+      const res = await fetch('/api/status');
+      const data = await res.json();
+
+      const mins = Math.floor(data.uptime / 60);
+      const hrs = Math.floor(mins / 60);
+      document.getElementById('statUptime').textContent = hrs > 0 ? `${hrs}h ${mins % 60}m` : `${mins}m`;
+      document.getElementById('statClients').textContent = data.wsClients;
+      document.getElementById('statConn').textContent = data.connected ? 'Conectado' : 'Off';
+      document.getElementById('statConn').style.color = data.connected ? 'var(--green)' : 'var(--muted)';
+      document.getElementById('statMem').textContent = data.memoryMB;
+      document.getElementById('statRateMax').textContent = data.config.TTS_RATE_LIMIT_MAX;
+      document.getElementById('statRateEnabled').textContent = data.config.rateLimitEnabled ? 'ON' : 'OFF';
+      document.getElementById('statRateEnabled').style.color = data.config.rateLimitEnabled ? 'var(--green)' : 'var(--muted)';
+
+      document.getElementById('statusRateEnabled').textContent = data.config.rateLimitEnabled ? 'Sí' : 'No';
+      document.getElementById('statusRateEnabled').style.color = data.config.rateLimitEnabled ? 'var(--green)' : 'var(--muted)';
+      document.getElementById('statusRateMax').textContent = data.config.TTS_RATE_LIMIT_MAX;
+      document.getElementById('statusRateWindow').textContent = (data.config.TTS_RATE_WINDOW_MS / 1000) + 's';
+      document.getElementById('statusMaxChars').textContent = data.config.TTS_MAX_CHARS;
+      document.getElementById('statusDebounce').textContent = data.config.LIKE_DEBOUNCE_MS + 'ms';
+    } catch (e) {
+      showToast('⚠️ Servidor no disponible');
+    }
+  }
+
+  // ─── UI helpers ─────────────────────────────────────────────────────
+  function flashSave(btnId) {
+    const btn = document.getElementById(btnId);
+    const original = btn.textContent;
+    btn.textContent = '¡Guardado!';
+    btn.classList.add('saved');
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.classList.remove('saved');
+    }, 2000);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // ─── Init ───────────────────────────────────────────────────────────
+  loadConfig().then(() => toggleRateLimit());
+  loadBlockedWords();
+  loadMdContent();
+  refreshStatus();
+  refreshLogs();
+
+  let statusRefreshId = setInterval(() => {
+    refreshStatus();
+    refreshLogs();
+  }, 5000);
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      clearInterval(statusRefreshId);
+    } else {
+      statusRefreshId = setInterval(() => {
+        refreshStatus();
+        refreshLogs();
+      }, 5000);
+      refreshStatus();
+      refreshLogs();
+    }
+  });
+</script>
+</body>
+</html>

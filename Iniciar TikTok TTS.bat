@@ -26,17 +26,19 @@ for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":3000 " ^| findstr "LISTENIN
 if defined PID (
     echo   Estado: [CORRIENDO] - PID: %PID%
     echo.
-    echo   [1] Abrir en navegador
-    echo   [2] Detener servidor
-    echo   [3] Reiniciar servidor
-    echo   [4] Reinstalar dependencias
-    echo   [5] Salir
+    echo   [1] Abrir Chat Live
+    echo   [2] Abrir Configuracion
+    echo   [3] Detener servidor
+    echo   [4] Reiniciar servidor
+    echo   [5] Reinstalar dependencias
+    echo   [6] Salir
 ) else (
     echo   Estado: [DETENIDO]
     echo.
-    echo   [1] Iniciar servidor
-    echo   [2] Reinstalar dependencias
-    echo   [3] Salir
+    echo   [1] Iniciar servidor (Chat Live)
+    echo   [2] Iniciar servidor (Configuracion)
+    echo   [3] Reinstalar dependencias
+    echo   [4] Salir
 )
 
 echo.
@@ -49,14 +51,16 @@ for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":3000 " ^| findstr "LISTENIN
 
 if defined PID (
     if "%OPCION%"=="1" goto ABRIR_NAVEGADOR
-    if "%OPCION%"=="2" goto DETENER
-    if "%OPCION%"=="3" goto REINICIAR
-    if "%OPCION%"=="4" goto REINSTALAR_DEPS
-    if "%OPCION%"=="5" goto FIN
+    if "%OPCION%"=="2" goto ABRIR_CONFIG
+    if "%OPCION%"=="3" goto DETENER
+    if "%OPCION%"=="4" goto REINICIAR
+    if "%OPCION%"=="5" goto REINSTALAR_DEPS
+    if "%OPCION%"=="6" goto FIN
 ) else (
     if "%OPCION%"=="1" goto INICIAR
-    if "%OPCION%"=="2" goto REINSTALAR_DEPS
-    if "%OPCION%"=="3" goto FIN
+    if "%OPCION%"=="2" goto INICIAR_CONFIG
+    if "%OPCION%"=="3" goto REINSTALAR_DEPS
+    if "%OPCION%"=="4" goto FIN
 )
 
 goto MENU
@@ -178,9 +182,42 @@ for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":3000 " ^| findstr "LISTENIN
 if defined NEWPID (
     echo  [OK] Servidor iniciado - PID: %NEWPID%
     timeout /t 1 /nobreak >nul
-    echo  [INFO] Abriendo navegador...
+    echo  [INFO] Abriendo Chat Live...
     timeout /t 1 /nobreak >nul
     start http://localhost:3000
+) else (
+    color 0C
+    echo  [ERROR] El servidor no pudo iniciarse.
+    echo  Verifica que:
+    echo  - Node.js este instalado (node --version)
+    echo  - npm install haya completado sin errores
+    echo  - El puerto 3000 no este en uso
+    color 0A
+)
+
+set "NEWPID="
+echo.
+pause
+goto MENU
+
+:: -----------------------------------------------
+:INICIAR_CONFIG
+cls
+echo.
+echo  [INFO] Iniciando servidor...
+echo.
+start "TikTok Live TTS Server" /D "%CD%" cmd /k "node server.js"
+timeout /t 3 /nobreak >nul
+
+set "NEWPID="
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":3000 " ^| findstr "LISTENING"') do set "NEWPID=%%a"
+
+if defined NEWPID (
+    echo  [OK] Servidor iniciado - PID: %NEWPID%
+    timeout /t 1 /nobreak >nul
+    echo  [INFO] Abriendo Configuracion...
+    timeout /t 1 /nobreak >nul
+    start http://localhost:3000/advanced.html
 ) else (
     color 0C
     echo  [ERROR] El servidor no pudo iniciarse.
@@ -201,6 +238,14 @@ goto MENU
 echo.
 echo  [INFO] Abriendo http://localhost:3000 ...
 start http://localhost:3000
+timeout /t 1 /nobreak >nul
+goto MENU
+
+:: -----------------------------------------------
+:ABRIR_CONFIG
+echo.
+echo  [INFO] Abriendo http://localhost:3000/advanced.html ...
+start http://localhost:3000/advanced.html
 timeout /t 1 /nobreak >nul
 goto MENU
 

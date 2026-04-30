@@ -1,0 +1,59 @@
+# Palabras Prohibidas — TikTok Live TTS
+
+Edita este archivo directamente o usa la web en `/advanced.html`.
+Las palabras se comparan en minúsculas, sin importar acentos.
+
+- boludo
+- boluda
+- cabron
+- cabrona
+- caca
+- carajo
+- chingada
+- chingar
+- cojon
+- cojones
+- concha
+- coño
+- culero
+- culo
+- desgraciado
+- desgraciada
+- estupido
+- estupida
+- forro
+- forra
+- gilipollas
+- hijoputa
+- hijueputa
+- hostia
+- idiota
+- imbecil
+- joder
+- maldito
+- maldita
+- mamahuevo
+- mamon
+- mamona
+- marica
+- maricon
+- mierda
+- mongol
+- mongolo
+- negro de mierda
+- pedo
+- pelotudo
+- pelotuda
+- pendejo
+- pendeja
+- pinche
+- pito
+- pollas
+- prostituta
+- puta
+- puto
+- retrasado
+- retrasada
+- subnormal
+- verga
+- zorra

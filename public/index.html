@@ -64,8 +64,28 @@
     header {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 16px;
       margin-bottom: 48px;
+    }
+
+    .nav-link {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 1px;
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .nav-link:hover {
+      color: var(--tiktok-cyan);
+      border-color: var(--tiktok-cyan);
+      background: rgba(37,244,238,0.06);
     }
 
     .logo {
@@ -632,6 +652,7 @@
         <div class="subtitle">Chat Reader Pro</div>
       </div>
     </div>
+    <a href="/advanced.html" class="nav-link">⚙ Configuración</a>
   </header>
 
   <!-- CONNECT -->
@@ -753,6 +774,46 @@
   let isSpeaking = false;
   let currentMsgId = null;
 
+  const LIKE_COOLDOWN_MS = 15 * 60 * 1000;
+  const likeCooldownMap = new Map();
+  const CHAT_TTS_MAX_LEN = 200;
+  const MAX_QUEUE_SIZE = 15;
+
+  // ─── LogStorage (shared with advanced.html) ─────────────────────
+  class LogStorage {
+    constructor(maxEntries = 100) {
+      this.key = 'tiktok_tts_logs';
+      this.maxEntries = maxEntries;
+    }
+
+    addLog(level, source, message, data = null) {
+      try {
+        const logs = this.getLogs();
+        logs.push({
+          timestamp: new Date().toISOString(),
+          level,
+          source,
+          message,
+          data
+        });
+        if (logs.length > this.maxEntries) logs.shift();
+        localStorage.setItem(this.key, JSON.stringify(logs));
+      } catch (e) {
+        console.error('LogStorage error:', e);
+      }
+    }
+
+    getLogs() {
+      try {
+        return JSON.parse(localStorage.getItem(this.key) || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+  }
+
+  const logStorage = new LogStorage(100);
+
   const options = {
     readChat: true,
     readGifts: false,
@@ -822,6 +883,12 @@
 
   // ─── Helper: reproducir blob de audio con settings actuales ──
   function playAudioBlob(blob, { onEnd, onError } = {}) {
+    if (!blob || blob.size === 0) {
+      logStorage.addLog('error', 'client', 'Blob de audio vacío o inválido', { blobSize: blob?.size || 0 });
+      onError?.();
+      return;
+    }
+
     const url   = URL.createObjectURL(blob);
     const audio = new Audio(url);
     audio.playbackRate   = ttsRate;
@@ -839,8 +906,23 @@
     };
 
     audio.onended = () => finish(onEnd);
-    audio.onerror = () => finish(onError);
-    audio.play().catch(() => finish(onError));
+    audio.onerror = () => {
+      const errorCode = audio.error?.code || 'unknown';
+      const errorMsg = ['MEDIA_ERR_ABORTED', 'MEDIA_ERR_NETWORK', 'MEDIA_ERR_DECODE', 'MEDIA_ERR_SRC_NOT_SUPPORTED'][errorCode - 1] || 'desconocido';
+      logStorage.addLog('error', 'client', `Error de reproducción: ${errorMsg}`, { blobSize: blob.size, errorCode });
+      finish(onError);
+    };
+
+    const playPromise = audio.play();
+    Promise.race([
+      playPromise,
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000))
+    ]).catch(err => {
+      if (err.message === 'timeout') {
+        logStorage.addLog('error', 'client', 'Timeout en audio.play()', { blobSize: blob.size });
+      }
+      finish(onError);
+    });
   }
 
   // ─── Probar voz ──────────────────────────────────────────────
@@ -905,6 +987,7 @@
 
   // ─── TTS Queue - Edge TTS Backend ──────────────────────────
   function speak(text, msgId) {
+    if (speechQueue.length >= MAX_QUEUE_SIZE) return;
     speechQueue.push({ text, msgId });
     updateQueueBadge();
     if (!isSpeaking) processQueue();
@@ -952,15 +1035,38 @@
         body: JSON.stringify({ text, voice: selectedVoiceValue })
       });
 
-      if (!response.ok) throw new Error('TTS error');
+      const contentType = response.headers.get('content-type') || 'unknown';
 
-      playAudioBlob(await response.blob(), {
+      if (!response.ok) {
+        const errorMsg = `Error TTS (HTTP ${response.status})`;
+        const errorBody = await response.text().catch(() => '');
+        logStorage.addLog('error', 'network', errorMsg, {
+          voice: selectedVoiceValue,
+          status: response.status,
+          contentType,
+          errorBody: errorBody.substring(0, 200)
+        });
+        throw new Error(errorMsg);
+      }
+
+      const blob = await response.blob();
+      logStorage.addLog('info', 'network', 'Audio blob recibido', {
+        voice: selectedVoiceValue,
+        size: blob.size,
+        type: blob.type,
+        contentType
+      });
+
+      playAudioBlob(blob, {
         onEnd:   () => processQueue(),
-        onError: () => processQueue()
+        onError: () => {
+          processQueue();
+        }
       });
 
     } catch (err) {
       console.error('TTS error:', err);
+      logStorage.addLog('error', 'network', `Error TTS: ${err.message}`, { voice: selectedVoiceValue });
       processQueue();
     }
   }
@@ -983,6 +1089,8 @@
 
   // ─── WebSocket ────────────────────────────────────────────
   function connectWS() {
+    if (ws !== null && ws.readyState === WebSocket.OPEN) return;
+
     const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
     ws = new WebSocket(`${proto}//${location.host}`);
 
@@ -992,7 +1100,12 @@
     };
 
     ws.onclose = () => {
+      ws = null;
       setTimeout(connectWS, 2000);
+    };
+
+    ws.onerror = () => {
+      ws.close();
     };
   }
 
@@ -1002,12 +1115,14 @@
         setStatus('online', `🟢 Conectado a @${data.username}`);
         document.getElementById('btnConnect').style.display = 'none';
         document.getElementById('btnDisconnect').style.display = 'block';
+        logStorage.addLog('info', 'server', `Conectado a @${data.username}`);
         break;
 
       case 'disconnected':
         setStatus('', 'Desconectado');
         document.getElementById('btnConnect').style.display = 'block';
         document.getElementById('btnDisconnect').style.display = 'none';
+        logStorage.addLog('info', 'server', 'Desconectado del live');
         break;
 
       case 'chat':
@@ -1017,9 +1132,10 @@
         const chatMsgId = `msg-${msgCount}`;
         addChatMsg(data, chatMsgId);
         if (options.readChat) {
-          const text = options.sayUsername
+          const rawText = options.sayUsername
             ? `${data.user}: ${data.comment}`
             : data.comment;
+          const text = rawText.length > CHAT_TTS_MAX_LEN ? rawText.substring(0, CHAT_TTS_MAX_LEN) : rawText;
           speak(text, chatMsgId);
         }
         break;
@@ -1061,17 +1177,28 @@
 
       case 'like':
         if (options.readLikes) {
-          msgCount++;
-          document.getElementById('msgCount').textContent = msgCount;
-          const likeMsgId = `msg-${msgCount}`;
-          const likeText = `${data.user} dio ${data.likeCount} likes`;
-          addSystemMsg(`👍 ${likeText}`, 'join', likeMsgId);
-          speak(likeText, likeMsgId);
+          const now = Date.now();
+          const lastRead = likeCooldownMap.get(data.user) || 0;
+          if (now - lastRead >= LIKE_COOLDOWN_MS) {
+            likeCooldownMap.set(data.user, now);
+            msgCount++;
+            document.getElementById('msgCount').textContent = msgCount;
+            const likeMsgId = `msg-${msgCount}`;
+            const likeText = `${data.user} dio ${data.likeCount} likes`;
+            addSystemMsg(`👍 ${likeText}`, 'join', likeMsgId);
+            speak(likeText, likeMsgId);
+          }
         }
+        break;
+
+      case 'reconnecting':
+        setStatus('error', `🔄 Reconectando... (intento ${data.attempt})`);
+        logStorage.addLog('warn', 'server', `Intento de reconexión ${data.attempt}`);
         break;
 
       case 'error':
         setStatus('error', `❌ ${data.message}`);
+        logStorage.addLog('error', 'server', data.message);
         break;
     }
   }
@@ -1140,8 +1267,7 @@
     msgCount = 0;
     document.getElementById('msgCount').textContent = '0';
     speechQueue = [];
-    // Cancelar síntesis anterior si está en progreso
-    isSpeaking = false;
+    likeCooldownMap.clear();
     isSpeaking = false;
     hideSpeakingIndicator();
     updateQueueBadge();
@@ -1167,6 +1293,7 @@
     const username = document.getElementById('usernameInput').value.trim();
     if (!username) {
       setStatus('error', '❌ Escribe tu nombre de usuario');
+      logStorage.addLog('error', 'client', 'Intento de conexión sin usuario');
       return;
     }
 
@@ -1174,6 +1301,7 @@
     btn.disabled = true;
     btn.textContent = 'Conectando...';
     setStatus('', `Conectando a @${username.replace('@','')}...`);
+    logStorage.addLog('info', 'client', `Iniciando conexión a @${username.replace('@','')}`);
 
     try {
       const res = await fetch('/api/connect', {
@@ -1186,22 +1314,28 @@
 
       if (!res.ok) {
         setStatus('error', `❌ ${data.error}`);
+        logStorage.addLog('error', 'network', `Conexión fallida: ${data.error}`, { status: res.status });
         btn.disabled = false;
         btn.textContent = 'Conectar';
       }
     } catch (err) {
       setStatus('error', '❌ Error de red');
+      logStorage.addLog('error', 'network', `Error de red: ${err.message}`);
       btn.disabled = false;
       btn.textContent = 'Conectar';
     }
   }
 
   async function disconnect() {
-    await fetch('/api/disconnect', { method: 'POST' });
-    // Cancelar síntesis anterior si está en progreso
+    try {
+      await fetch('/api/disconnect', { method: 'POST' });
+      logStorage.addLog('info', 'client', 'Desconexión iniciada');
+    } catch (err) {
+      logStorage.addLog('error', 'network', `Error en desconexión: ${err.message}`);
+    }
+    if (ws) ws.close();
     isSpeaking = false;
     speechQueue = [];
-    isSpeaking = false;
     hideSpeakingIndicator();
     updateQueueBadge();
   }
