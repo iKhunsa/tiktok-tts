@@ -48,8 +48,8 @@
       "!node_modules/.cache",
       "!node_modules/**/test{s,}/**",
       "!node_modules/**/*.md",
-      "!node_modules/bufferutil/**/*",
-      "!node_modules/utf-8-validate/**/*"
+      "!node_modules/bufferutil/build/Release/*.pdb",
+      "!node_modules/utf-8-validate/build/Release/*.pdb"
     ]
   },
   "dependencies": {

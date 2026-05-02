@@ -1,55 +1,55 @@
-# 🎵 TikTok Live TTS — Tu propio lector de chat
+# TikTok TTS — Live Chat Text-to-Speech
 
-## ¿Qué hace?
-Lee en voz alta los comentarios de tu TikTok Live usando el micrófono del navegador (Web Speech API). Completamente gratis, sin límites.
+App de escritorio para streamers de TikTok Live. Lee en voz alta los comentarios del chat en tiempo real, muestra alertas de regalos y seguidores, y provee overlays para OBS/Streamlabs.
 
-## 📋 Requisitos
-- Node.js instalado (https://nodejs.org) — versión 16 o superior
-- Tu TikTok Live activo mientras usas la app
+## Descarga e instalación
 
-## 🚀 Cómo usarlo
+1. Ve a [Releases](https://github.com/iKhunsa/tiktok-tts/releases/latest)
+2. Descarga `TikTok-TTS-Setup-x.x.x.exe`
+3. Ejecuta el instalador — no requiere Node.js ni admin
+4. La app se instala en `%LOCALAPPDATA%\TikTok TTS\`
+5. Aparece un acceso directo en el escritorio
 
-### 1. Instalar dependencias
-```bash
-cd tiktok-tts
-npm install
-```
+## Cómo usar
 
-### 2. Iniciar el servidor
-```bash
-node server.js
-```
+### Conectar al live
+1. Abre la app desde el escritorio
+2. Escribe tu usuario de TikTok (sin @)
+3. Haz clic en **Conectar**
+4. El chat empieza a leerse automáticamente
 
-### 3. Abrir en el navegador
-```
-http://localhost:3000
-```
+### Overlays para OBS
+Los overlays son URLs que pegas en OBS como **Browser Source**. La app debe estar abierta:
 
-### 4. Conectar
-- Escribe tu usuario de TikTok (sin @)
-- Presiona **Conectar**
-- ¡Empieza tu live y el chat se leerá solo!
+| Overlay | URL |
+|---------|-----|
+| Alertas (regalos, seguidores) | `http://localhost:3000/overlay-alertas.html` |
+| Contador de likes | `http://localhost:3000/overlay-likes.html` |
+| Contador de seguidores | `http://localhost:3000/overlay-seguidores.html` |
 
-## ⚙️ Funciones
-- ✅ Lee comentarios del chat en voz alta
-- ✅ Elige entre todas las voces instaladas en tu PC
-- ✅ Ajusta velocidad, volumen y tono
-- ✅ Cola de mensajes (no se pierde ninguno)
-- ✅ Opción de anunciar regalos y entradas
-- ✅ Historial visual del chat con colores por usuario
+En OBS: `Fuentes → + → Fuente de navegador → pegar URL`
 
-## ⚠️ Notas importantes
-- Debes estar en VIVO en TikTok para que funcione
-- La primera vez puede demorar unos segundos en conectar
-- Funciona mejor en Chrome o Edge (mejor soporte de voces TTS)
-- Mantén la pestaña del navegador abierta y activa
+### Configuración avanzada
+Navega a `Ajustes` dentro de la app para:
+- Cambiar voz e idioma del TTS (13 idiomas disponibles)
+- Ajustar rate limit y cola de mensajes
+- Gestionar palabras bloqueadas
+- Subir imagen de fondo personalizada para overlays
 
-## 🛠️ Estructura del proyecto
-```
-tiktok-tts/
-├── server.js          ← Backend Node.js
-├── package.json       ← Dependencias
-├── public/
-│   └── index.html    ← Interfaz web
-└── README.md
-```
+## Actualizaciones automáticas
+
+La app detecta nuevas versiones al abrirse y te avisa con un diálogo. No necesitas descargar nada manualmente.
+
+## Solución de problemas
+
+**La app no encuentra el live** — verifica que el usuario esté en vivo. Escribe sin @.
+
+**No hay audio** — Google TTS requiere internet. Verifica conexión y volumen del sistema.
+
+**El overlay no carga en OBS** — la app debe estar abierta en segundo plano.
+
+**Al hacer X se cierra** — se minimiza a la bandeja (esquina inferior derecha). Clic derecho → Salir para cerrar.
+
+## Desinstalar
+
+Configuración → Aplicaciones → TikTok TTS → Desinstalar
