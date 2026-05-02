@@ -2,20 +2,24 @@
   "name": "tiktok-live-tts",
   "version": "1.0.0",
   "description": "TikTok Live Chat TTS Reader",
+  "author": "iKhunsa",
   "main": "main.js",
-  "bin": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
     "electron": "electron .",
-    "build": "node build.js",
     "build:electron": "electron-builder --win"
   },
   "build": {
     "appId": "com.tiktok-tts.app",
     "productName": "TikTok TTS",
+    "publish": {
+      "provider": "github",
+      "owner": "iKhunsa",
+      "repo": "tiktok-tts"
+    },
     "directories": {
-      "output": "electron-dist"
+      "output": "release-output"
     },
     "win": {
       "target": "nsis",
@@ -25,70 +29,40 @@
       "oneClick": false,
       "perMachine": false,
       "allowToChangeInstallationDirectory": false,
-      "installerIcon": "tray-icon.ico",
-      "uninstallerIcon": "tray-icon.ico",
       "shortcutName": "TikTok TTS",
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true
     },
     "extraResources": [
-      {
-        "from": "gifts/",
-        "to": "gifts"
-      },
-      {
-        "from": "public/",
-        "to": "public"
-      },
-      {
-        "from": "asset/",
-        "to": "asset"
-      },
-      {
-        "from": "blocked-words.md",
-        "to": "blocked-words.md"
-      },
-      {
-        "from": "tray-icon.ico",
-        "to": "tray-icon.ico"
-      }
+      { "from": "gifts/",           "to": "gifts"           },
+      { "from": "public/",          "to": "public"          },
+      { "from": "asset/",           "to": "asset"           },
+      { "from": "blocked-words.md", "to": "blocked-words.md"},
+      { "from": "tray-icon.ico",    "to": "tray-icon.ico"   }
     ],
+    "npmRebuild": false,
     "files": [
       "main.js",
       "server.js",
-      "tray.js",
       "node_modules/**/*",
       "!node_modules/.cache",
       "!node_modules/**/test{s,}/**",
-      "!node_modules/**/*.md"
+      "!node_modules/**/*.md",
+      "!node_modules/bufferutil/**/*",
+      "!node_modules/utf-8-validate/**/*"
     ]
-  },
-  "pkg": {
-    "scripts": [
-      "server.js",
-      "tray.js"
-    ],
-    "assets": [
-      "node_modules/systray/traybin/**/*",
-      "node_modules/tiktok-live-connector/dist/proto/**/*"
-    ],
-    "targets": [
-      "node18-win-x64"
-    ],
-    "outputPath": "dist"
   },
   "dependencies": {
     "body-parser": "^2.2.2",
+    "electron-updater": "^6.8.3",
     "express": "^4.18.2",
     "google-tts-api": "^2.0.2",
     "multer": "^2.1.1",
-    "systray": "^1.0.5",
     "tiktok-live-connector": "^1.2.3",
     "undici": "^8.0.2",
     "ws": "^8.14.2"
   },
   "devDependencies": {
-    "@yao-pkg/pkg": "^6.19.0",
     "electron": "^41.5.0",
     "electron-builder": "^26.8.1"
   }

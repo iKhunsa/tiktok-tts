@@ -1,5 +1,6 @@
 'use strict';
-const { app, BrowserWindow, Tray, Menu, nativeImage, shell } = require('electron');
+const { app, BrowserWindow, Tray, Menu, nativeImage, dialog } = require('electron');
+const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const http = require('http');
 
@@ -80,8 +81,27 @@ app.whenReady().then(() => {
   waitForServer(() => {
     createWindow();
     createTray();
+    if (app.isPackaged) setupAutoUpdater();
   });
 });
+
+function setupAutoUpdater() {
+  autoUpdater.autoDownload = true;
+  autoUpdater.autoInstallOnAppQuit = true;
+
+  autoUpdater.on('update-downloaded', () => {
+    dialog.showMessageBox({
+      type: 'info',
+      title: 'Actualización lista',
+      message: 'Hay una nueva versión de TikTok TTS. Se instalará al cerrar la app.',
+      buttons: ['Instalar ahora', 'Después'],
+    }).then(({ response }) => {
+      if (response === 0) autoUpdater.quitAndInstall();
+    });
+  });
+
+  autoUpdater.checkForUpdatesAndNotify().catch(() => {});
+}
 
 // Prevent multiple instances
 const gotLock = app.requestSingleInstanceLock();

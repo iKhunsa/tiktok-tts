@@ -4,3 +4,5 @@ node_modules/
 public/uploads/
 dist/
 installer/
+electron-dist/
+release-output/
