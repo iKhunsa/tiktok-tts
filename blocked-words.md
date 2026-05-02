@@ -3,8 +3,8 @@
 Edita este archivo directamente o usa la web en `/advanced.html`.
 Las palabras se comparan en minúsculas, sin importar acentos.
 
-- boludo
 - boluda
+- boludo
 - cabron
 - cabrona
 - caca
@@ -17,12 +17,13 @@ Las palabras se comparan en minúsculas, sin importar acentos.
 - coño
 - culero
 - culo
-- desgraciado
 - desgraciada
-- estupido
+- desgraciado
+- entro al live
 - estupida
-- forro
+- estupido
 - forra
+- forro
 - gilipollas
 - hijoputa
 - hijueputa
@@ -30,8 +31,9 @@ Las palabras se comparan en minúsculas, sin importar acentos.
 - idiota
 - imbecil
 - joder
-- maldito
+- kyc
 - maldita
+- maldito
 - mamahuevo
 - mamon
 - mamona
@@ -42,18 +44,18 @@ Las palabras se comparan en minúsculas, sin importar acentos.
 - mongolo
 - negro de mierda
 - pedo
-- pelotudo
 - pelotuda
-- pendejo
+- pelotudo
 - pendeja
+- pendejo
 - pinche
 - pito
 - pollas
 - prostituta
 - puta
 - puto
-- retrasado
 - retrasada
+- retrasado
 - subnormal
 - verga
 - zorra

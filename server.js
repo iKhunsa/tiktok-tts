@@ -6,12 +6,42 @@ const path = require('path');
 const gTTS = require('google-tts-api');
 const https = require('https');
 const fs = require('fs');
+const multer = require('multer');
 
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
+// Uploads directory for custom overlay backgrounds
+const UPLOADS_DIR = path.join(__dirname, 'public', 'uploads');
+if (!fs.existsSync(UPLOADS_DIR)) {
+  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+}
+
+const uploadStorage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, UPLOADS_DIR),
+  filename: (_req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase() || '.png';
+    const name = `bg_${Date.now()}_${Math.random().toString(36).slice(2, 8)}${ext}`;
+    cb(null, name);
+  }
+});
+
+const upload = multer({
+  storage: uploadStorage,
+  limits: { fileSize: 8 * 1024 * 1024 }, // 8 MB max
+  fileFilter: (_req, file, cb) => {
+    const allowedMime = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/gif'];
+    const allowedExt = ['.png', '.jpg', '.jpeg', '.webp', '.gif'];
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (allowedMime.includes(file.mimetype) || allowedExt.includes(ext)) cb(null, true);
+    else cb(new Error('Solo se permiten imágenes PNG, JPG, WebP o GIF'));
+  }
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/gifts', express.static(path.join(__dirname, 'gifts')));
+app.use('/uploads', express.static(UPLOADS_DIR));
 app.use(express.json());
 
 let tiktokConnection = null;
@@ -32,9 +62,56 @@ const config = {
   MAX_QUEUE_MSG: 15,
 };
 
+const overlayState = {
+  followCount: 0,
+  baseFollowerCount: 0,
+  topLikers: new Map(),
+};
+let followerRefreshTimer = null;
+function resetOverlayState() {
+  overlayState.followCount = 0;
+  overlayState.topLikers.clear();
+  overlayState.baseFollowerCount = 0;
+}
+
 function log(level, ctx, msg, data = null) {
   const fn = level === 'error' ? console.error : console.log;
   fn(JSON.stringify({ ts: new Date().toISOString(), level, ctx, msg, ...(data && { data }) }));
+}
+
+function extractFollowerCount(roomInfo) {
+  try {
+    const owner = roomInfo && roomInfo.owner;
+    const fi = owner && (owner.follow_info || owner.followInfo);
+    const count = fi && (fi.follower_count || fi.followerCount || fi.fan_count || fi.fanCount);
+    if (typeof count === 'number' && count > 0) return count;
+  } catch (e) {}
+  return 0;
+}
+
+function startFollowerRefresh() {
+  stopFollowerRefresh();
+  followerRefreshTimer = setInterval(async () => {
+    if (!tiktokConnection || !currentUsername) return;
+    try {
+      const roomInfo = await tiktokConnection.getRoomInfo();
+      const newCount = extractFollowerCount(roomInfo);
+      if (newCount > 0 && newCount !== overlayState.baseFollowerCount) {
+        overlayState.baseFollowerCount = newCount;
+        broadcast({ type: 'follower-base', count: newCount });
+        log('info', 'followers', 'Base follower count refreshed', { count: newCount });
+      }
+    } catch (err) {
+      log('warn', 'followers', 'Failed to refresh follower count', { error: err.message });
+    }
+  }, 5 * 60 * 1000);
+}
+
+function stopFollowerRefresh() {
+  if (followerRefreshTimer) {
+    clearInterval(followerRefreshTimer);
+    followerRefreshTimer = null;
+  }
 }
 
 function sanitizeForTTS(text) {
@@ -149,6 +226,8 @@ function setupTikTokConnection(cleanUsername) {
       type: 'gift',
       user: data.nickname || data.uniqueId || 'Alguien',
       giftName: data.giftName,
+      giftId: data.giftId,
+      giftPictureUrl: data.giftPictureUrl || null,
       repeatCount: data.repeatCount || 1,
       timestamp: Date.now()
     });
@@ -164,7 +243,7 @@ function setupTikTokConnection(cleanUsername) {
     }
 
     const pending = likePendingTimers.get(userId);
-    pending.count += 1;
+    pending.count += (data.likeCount || 1);
     pending.timer = setTimeout(() => {
       likePendingTimers.delete(userId);
       broadcast({
@@ -173,6 +252,9 @@ function setupTikTokConnection(cleanUsername) {
         likeCount: pending.count,
         timestamp: Date.now()
       });
+      const existing = overlayState.topLikers.get(userId) || { user: userId, totalLikes: 0 };
+      existing.totalLikes += pending.count;
+      overlayState.topLikers.set(userId, existing);
     }, config.LIKE_DEBOUNCE_MS);
   });
 
@@ -190,6 +272,7 @@ function setupTikTokConnection(cleanUsername) {
       user: data.nickname || data.uniqueId || 'Alguien',
       timestamp: Date.now()
     });
+    overlayState.followCount += 1;
   });
 
   tiktokConnection.on('disconnected', () => {
@@ -215,8 +298,16 @@ async function attemptReconnect(username) {
       tiktokConnection = null;
     }
 
+    resetOverlayState();
     setupTikTokConnection(username);
-    await tiktokConnection.connect();
+    const state = await tiktokConnection.connect();
+
+    const baseCount = extractFollowerCount(state && state.roomInfo);
+    if (baseCount > 0) {
+      overlayState.baseFollowerCount = baseCount;
+      broadcast({ type: 'follower-base', count: baseCount });
+    }
+    startFollowerRefresh();
 
     currentUsername = username;
     reconnectAttempts = 0;
@@ -270,9 +361,19 @@ app.post('/api/connect', async (req, res) => {
 
   const cleanUsername = username.replace('@', '').trim();
 
+  resetOverlayState();
+
   try {
     setupTikTokConnection(cleanUsername);
-    await tiktokConnection.connect();
+    const state = await tiktokConnection.connect();
+
+    const baseCount = extractFollowerCount(state && state.roomInfo);
+    if (baseCount > 0) {
+      overlayState.baseFollowerCount = baseCount;
+      broadcast({ type: 'follower-base', count: baseCount });
+      log('info', 'connect', 'Base follower count extracted', { count: baseCount });
+    }
+    startFollowerRefresh();
 
     currentUsername = cleanUsername;
     reconnectAttempts = 0;
@@ -299,6 +400,7 @@ app.post('/api/connect', async (req, res) => {
 app.post('/api/disconnect', (req, res) => {
   currentUsername = null;
   reconnectAttempts = 0;
+  stopFollowerRefresh();
   if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; }
   if (tiktokConnection) {
     tiktokConnection.removeAllListeners();
@@ -387,32 +489,32 @@ app.get('/api/voices', (req, res) => {
   // ── Google TTS ──────────────────────────────────────────────
   const googleVoices = [
     // Español
-    { id: 'es', name: '🇪🇸 Español (España)' },
-    { id: 'es-MX', name: '🇲🇽 Español (México)' },
-    { id: 'es-AR', name: '🇦🇷 Español (Argentina)' },
+    { id: 'es', name: 'Español (España)', flag: 'ES' },
+    { id: 'es-MX', name: 'Español (México)', flag: 'MX' },
+    { id: 'es-AR', name: 'Español (Argentina)', flag: 'AR' },
 
     // Inglés
-    { id: 'en', name: '🇺🇸 English (USA)' },
-    { id: 'en-GB', name: '🇬🇧 English (UK)' },
+    { id: 'en', name: 'English (USA)', flag: 'US' },
+    { id: 'en-GB', name: 'English (UK)', flag: 'GB' },
 
     // Portugués
-    { id: 'pt', name: '🇧🇷 Português (Brasil)' },
-    { id: 'pt-PT', name: '🇵🇹 Português (Portugal)' },
+    { id: 'pt', name: 'Português (Brasil)', flag: 'BR' },
+    { id: 'pt-PT', name: 'Português (Portugal)', flag: 'PT' },
 
     // Francés
-    { id: 'fr', name: '🇫🇷 Français' },
+    { id: 'fr', name: 'Français', flag: 'FR' },
 
     // Alemán
-    { id: 'de', name: '🇩🇪 Deutsch' },
+    { id: 'de', name: 'Deutsch', flag: 'DE' },
 
     // Italiano
-    { id: 'it', name: '🇮🇹 Italiano' },
+    { id: 'it', name: 'Italiano', flag: 'IT' },
 
     // Otros idiomas
-    { id: 'ja', name: '🇯🇵 日本語 (Japonés)' },
-    { id: 'zh-CN', name: '🇨🇳 中文 (Chino)' },
-    { id: 'ru', name: '🇷🇺 Русский (Ruso)' },
-    { id: 'ko', name: '🇰🇷 한국어 (Coreano)' },
+    { id: 'ja', name: '日本語 (Japonés)', flag: 'JP' },
+    { id: 'zh-CN', name: '中文 (Chino)', flag: 'CN' },
+    { id: 'ru', name: 'Русский (Ruso)', flag: 'RU' },
+    { id: 'ko', name: '한국어 (Coreano)', flag: 'KR' },
   ];
 
   voices.push(...googleVoices);
@@ -486,10 +588,108 @@ app.delete('/api/block-word', (req, res) => {
   res.json({ words: [...blockedWords] });
 });
 
+// Overlay stats for initial hydration
+app.get('/api/overlay-stats', (req, res) => {
+  const topLikers = [...overlayState.topLikers.values()]
+    .sort((a, b) => b.totalLikes - a.totalLikes)
+    .slice(0, 10);
+  res.json({ followCount: overlayState.followCount, baseFollowerCount: overlayState.baseFollowerCount, topLikers });
+});
+
+// Gift file list for overlay name→filename mapping
+app.get('/api/gifts-list', (req, res) => {
+  const giftsDir = path.join(__dirname, 'gifts');
+  try {
+    const files = fs.readdirSync(giftsDir).filter(f => f.endsWith('.png'));
+    res.json(files);
+  } catch (e) { res.json([]); }
+});
+
+// Upload custom background image
+app.post('/api/upload-bg', upload.single('image'), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'No se recibió ninguna imagen' });
+  const url = `/uploads/${req.file.filename}`;
+  log('info', 'upload-bg', 'Background uploaded', { url, size: req.file.size });
+  res.json({ url });
+});
+
+app.delete('/api/upload-bg', (req, res) => {
+  const { filename } = req.body;
+  if (!filename || typeof filename !== 'string') {
+    return res.status(400).json({ error: 'Se requiere filename' });
+  }
+  const safeName = path.basename(filename);
+  const filePath = path.join(UPLOADS_DIR, safeName);
+  try {
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+      log('info', 'upload-bg', 'Background deleted', { filename: safeName });
+      res.json({ success: true });
+    } else {
+      res.status(404).json({ error: 'Archivo no encontrado' });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Test endpoints
+app.post('/api/test/gift', (req, res) => {
+  const giftsDir = path.join(__dirname, 'gifts');
+  try {
+    const files = fs.readdirSync(giftsDir).filter(f => f.endsWith('.png'));
+    if (files.length === 0) return res.status(500).json({ error: 'No hay imágenes de regalos' });
+    const file = files[Math.floor(Math.random() * files.length)];
+    const match = file.match(/^\d+_(.+)\.png$/i);
+    const giftName = match ? match[1].replace(/_/g, ' ') : 'Regalo';
+    const testUsers = ['TestUser', 'FanRandom', 'ViewerPro', 'TikToker', 'StreamerFan'];
+    const user = testUsers[Math.floor(Math.random() * testUsers.length)] + Math.floor(Math.random() * 99);
+    broadcast({
+      type: 'gift',
+      user,
+      giftName,
+      repeatCount: 1,
+      timestamp: Date.now(),
+      test: true,
+      duration: 10000,
+    });
+    log('info', 'test', 'Test gift broadcasted', { user, giftName });
+    res.json({ success: true, user, giftName });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.post('/api/test/follow', (req, res) => {
+  const testUsers = ['TestUser', 'FanRandom', 'ViewerPro', 'TikToker', 'StreamerFan'];
+  const user = testUsers[Math.floor(Math.random() * testUsers.length)] + Math.floor(Math.random() * 99);
+  broadcast({ type: 'follow', user, timestamp: Date.now() });
+  overlayState.followCount += 1;
+  log('info', 'test', 'Test follow broadcasted', { user });
+  res.json({ success: true, user });
+});
+
+app.post('/api/test/likes', (req, res) => {
+  const testUsers = ['LikeKing', 'FanTotal', 'TikTokLover', 'SuperViewer', 'HeartGiver', 'StreamFan', 'TopLiker', 'MegaFan'];
+  const count = Math.floor(Math.random() * 6) + 5;
+  for (let i = 0; i < count; i++) {
+    const user = testUsers[i % testUsers.length] + Math.floor(Math.random() * 99);
+    const likeCount = Math.floor(Math.random() * 490) + 10;
+    broadcast({
+      type: 'like',
+      user,
+      likeCount,
+      timestamp: Date.now() + i,
+    });
+  }
+  log('info', 'test', 'Test likes broadcasted', { count });
+  res.json({ success: true, count });
+});
+
 // Cargar palabras bloqueadas al iniciar
 loadBlockedWordsFromFile();
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`\n🎵 TikTok Live TTS corriendo en http://localhost:${PORT}\n`);
+  console.log(`\nTikTok Live TTS corriendo en http://localhost:${PORT}\n`);
 });

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Overlay — Alertas de Regalos</title>
+  <style>
+    :root { --accent: #3ecf8e; --bg-alpha: 0.90; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: transparent;
+      width: 440px;
+      min-height: 120px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+    body.has-bgimg {
+      background-image: var(--bg-img);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    .alert-card {
+      position: relative;
+      background: rgba(8, 8, 8, var(--bg-alpha));
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      animation: slideIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    .alert-card.leaving {
+      animation: slideOut 0.35s ease-in forwards;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-28px) scale(0.93); }
+      to   { opacity: 1; transform: translateY(0)    scale(1);    }
+    }
+    @keyframes slideOut {
+      from { opacity: 1; transform: translateY(0)    scale(1);    }
+      to   { opacity: 0; transform: translateY(-18px) scale(0.96); }
+    }
+    .gift-img {
+      width: 76px;
+      height: 76px;
+      object-fit: contain;
+      flex-shrink: 0;
+      filter: drop-shadow(0 4px 14px rgba(0,0,0,0.55));
+    }
+    .gift-fallback {
+      width: 76px;
+      height: 76px;
+      font-size: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .action-label {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #fff;
+    }
+    .gift-name {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      background: linear-gradient(90deg, #fff 0%, var(--accent) 45%, #fff 90%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 1.8s linear infinite;
+    }
+    @keyframes shimmer {
+      from { background-position: 0% center; }
+      to   { background-position: 200% center; }
+    }
+    .username {
+      font-size: 13px;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .qty-badge {
+      flex-shrink: 0;
+      background: color-mix(in srgb, var(--accent) 12%, transparent);
+      border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    const params   = new URLSearchParams(location.search);
+    const _c = params.get('color'); if (_c) document.documentElement.style.setProperty('--accent', '#' + _c);
+    const _b = params.get('bg');    if (_b) document.documentElement.style.setProperty('--bg-alpha', _b);
+    const _bgimg = params.get('bgimg');
+    if (_bgimg) { document.documentElement.style.setProperty('--bg-img', `url('${_bgimg}')`); document.body.classList.add('has-bgimg'); }
+    const alertDur = parseInt(params.get('dur') || '4000', 10);
+
+    let giftMap    = new Map();
+    let giftDict   = {};
+    let alertQueue = [];
+    let isShowing  = false;
+
+    fetch('/gift-dict.json')
+      .then(r => r.json())
+      .then(dict => { giftDict = dict; })
+      .catch(() => {});
+
+    // ── Gift name → filename normalization ──────────────────
+    function normalizeStr(str) {
+      return str.toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '_')
+        .replace(/^_+|_+$/g, '');
+    }
+
+    function buildGiftMap(files) {
+      const m = new Map();
+      for (const f of files) {
+        const match = f.match(/^\d+_(.+)\.png$/i);
+        if (match) {
+          const slug = normalizeStr(match[1]);
+          m.set(slug, f);
+          // Also index without underscores to handle filenames with _ replacing accented chars
+          const slugNoUnderscore = slug.replace(/_/g, '');
+          if (slugNoUnderscore !== slug) m.set(slugNoUnderscore, f);
+        }
+      }
+      return m;
+    }
+
+    function resolveGiftImage(giftName) {
+      if (!giftName) return null;
+      const normalized = normalizeStr(giftName);
+
+      // 1. Diccionario exacto
+      if (giftDict[normalized]) {
+        return '/gifts/' + giftDict[normalized];
+      }
+
+      // 2. Match directo en giftMap
+      if (giftMap && giftMap.has(normalized)) {
+        return '/gifts/' + giftMap.get(normalized);
+      }
+
+      // 3. Partial match fallback
+      if (giftMap) {
+        for (const [slug, fname] of giftMap) {
+          if (slug.includes(normalized) || normalized.includes(slug)) {
+            return '/gifts/' + fname;
+          }
+        }
+      }
+
+      return null;
+    }
+
+    fetch('/api/gifts-list')
+      .then(r => r.json())
+      .then(files => { giftMap = buildGiftMap(files); })
+      .catch(() => {});
+
+    // ── Alert queue ──────────────────────────────────────────
+    function enqueue(gift) {
+      alertQueue.push(gift);
+      if (!isShowing) processQueue();
+    }
+
+    function processQueue() {
+      if (!alertQueue.length) { isShowing = false; return; }
+      isShowing = true;
+      showAlert(alertQueue.shift());
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function showAlert(gift) {
+      const imgSrc = resolveGiftImage(gift.giftName || '');
+      const card   = document.createElement('div');
+      card.className = 'alert-card';
+
+      // Always show an image: local first, then TikTok official
+      const img = document.createElement('img');
+      img.className = 'gift-img';
+      img.alt = gift.giftName;
+      if (imgSrc) {
+        img.src = imgSrc;
+        img.onerror = () => { img.src = gift.giftPictureUrl || ''; };
+      } else {
+        img.src = gift.giftPictureUrl || '';
+      }
+      card.appendChild(img);
+
+      // info block
+      const info = document.createElement('div');
+      info.className = 'info';
+      info.innerHTML = `
+        <div class="action-label">Regalo recibido</div>
+        <div class="gift-name">${escapeHtml(gift.giftName)}</div>
+        <div class="username">de @${escapeHtml(gift.user)}</div>
+      `;
+      card.appendChild(info);
+
+      // quantity badge (only if > 1)
+      if ((gift.repeatCount || 1) > 1) {
+        const badge = document.createElement('div');
+        badge.className = 'qty-badge';
+        badge.textContent = 'x' + gift.repeatCount;
+        card.appendChild(badge);
+      }
+
+      document.body.appendChild(card);
+
+      // auto-dismiss
+      const dur = gift.duration || alertDur;
+      const timer = setTimeout(() => {
+        card.classList.add('leaving');
+        card.addEventListener('animationend', () => {
+          card.remove();
+          processQueue();
+        }, { once: true });
+      }, dur);
+
+      // safety net: if animationend never fires
+      card.addEventListener('animationend', () => {}, { once: true });
+      setTimeout(() => { if (card.parentNode) { card.remove(); processQueue(); } }, dur + 1500);
+    }
+
+    function makeFallback() {
+      const d = document.createElement('div');
+      d.className = 'gift-fallback';
+      d.style.display = 'none';
+      return d;
+    }
+
+    // ── WebSocket ────────────────────────────────────────────
+    let ws, retryDelay = 2000;
+    function connectWS() {
+      ws = new WebSocket('ws://localhost:3000');
+      ws.onopen  = () => { retryDelay = 2000; };
+      ws.onmessage = (e) => {
+        try {
+          const d = JSON.parse(e.data);
+          if (d.type === 'gift') enqueue(d);
+        } catch(_) {}
+      };
+      ws.onclose = () => {
+        setTimeout(connectWS, retryDelay);
+        retryDelay = Math.min(retryDelay * 2, 30000);
+      };
+      ws.onerror = () => ws.close();
+    }
+    connectWS();
+  </script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Overlay — Top Likers</title>
+  <style>
+    :root { --accent: #3ecf8e; --bg-alpha: 0.80; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: transparent;
+      width: 260px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    body.has-bgimg {
+      background-image: var(--bg-img);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    .card {
+      background: rgba(0, 0, 0, var(--bg-alpha));
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      border-radius: 18px;
+      padding: 16px 14px 14px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .title {
+      font-size: 10px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    #leaderboard {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 8px;
+      border-radius: 10px;
+      background: transparent;
+    }
+    .row.highlight {
+      animation: highlightRow 0.7s ease-out forwards;
+    }
+    @keyframes highlightRow {
+      0%   { background: color-mix(in srgb, var(--accent) 20%, transparent); }
+      100% { background: transparent; }
+    }
+    .rank {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      width: 22px;
+      text-align: center;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .rank-1 { font-size: 16px; }
+    .rank-2 { font-size: 15px; }
+    .rank-3 { font-size: 14px; }
+    .username {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 500;
+      color: #fff;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .likes {
+      font-size: 11px;
+      color: #fff;
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .empty-msg {
+      text-align: center;
+      font-size: 12px;
+      color: #fff;
+      padding: 16px 0 8px;
+    }
+    .icon-inline { width: 1em; height: 1em; vertical-align: -0.15em; display: inline-block; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="title"><img class="icon-inline" src="icons/favorite.svg" alt=""> Top Likers</div>
+    <div id="leaderboard">
+      <div class="empty-msg">Esperando likes...</div>
+    </div>
+  </div>
+
+  <script>
+    const params  = new URLSearchParams(location.search);
+    const _c = params.get('color'); if (_c) document.documentElement.style.setProperty('--accent', '#' + _c);
+    const _b = params.get('bg');    if (_b) document.documentElement.style.setProperty('--bg-alpha', _b);
+    const _bgimg = params.get('bgimg');
+    if (_bgimg) { document.documentElement.style.setProperty('--bg-img', `url('${_bgimg}')`); document.body.classList.add('has-bgimg'); }
+    const maxRows = parseInt(params.get('rows') || '10', 10);
+    const RANK_SYMBOLS = {
+      1: '<img class="icon-inline" src="icons/emoji_events.svg" alt="">',
+      2: '<img class="icon-inline" src="icons/emoji_events.svg" alt="">',
+      3: '<img class="icon-inline" src="icons/emoji_events.svg" alt="">'
+    };
+
+    let likersMap = new Map();
+
+    function getSorted() {
+      return [...likersMap.values()]
+        .sort((a, b) => b.totalLikes - a.totalLikes)
+        .slice(0, maxRows);
+    }
+
+    function renderLeaderboard(animate) {
+      const board = document.getElementById('leaderboard');
+      const sorted = getSorted();
+
+      if (sorted.length === 0) {
+        board.innerHTML = '<div class="empty-msg">Esperando likes...</div>';
+        return;
+      }
+
+      // FLIP: record old positions
+      const oldPos = new Map();
+      if (animate) {
+        board.querySelectorAll('.row[data-user]').forEach(el => {
+          oldPos.set(el.dataset.user, el.getBoundingClientRect().top);
+        });
+      }
+
+      board.innerHTML = '';
+      sorted.forEach((entry, i) => {
+        const rank = i + 1;
+        const row  = document.createElement('div');
+        row.className = 'row';
+        row.dataset.user = entry.user;
+
+        const rankEl = document.createElement('span');
+        rankEl.className = 'rank' + (rank <= 3 ? ' rank-' + rank : '');
+        rankEl.innerHTML = RANK_SYMBOLS[rank] || rank;
+
+        const nameEl = document.createElement('span');
+        nameEl.className = 'username';
+        nameEl.textContent = '@' + entry.user;
+
+        const likeEl = document.createElement('span');
+        likeEl.className = 'likes';
+        likeEl.innerHTML = '<img class="icon-inline" src="icons/favorite.svg" alt=""> ' + entry.totalLikes.toLocaleString('es');
+
+        row.appendChild(rankEl);
+        row.appendChild(nameEl);
+        row.appendChild(likeEl);
+        board.appendChild(row);
+      });
+
+      // FLIP: play
+      if (animate) {
+        board.querySelectorAll('.row[data-user]').forEach(el => {
+          const old = oldPos.get(el.dataset.user);
+          if (old === undefined) return;
+          const delta = old - el.getBoundingClientRect().top;
+          if (Math.abs(delta) > 2) {
+            el.style.transform = `translateY(${delta}px)`;
+            el.style.transition = 'none';
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                el.style.transition = 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1)';
+                el.style.transform  = '';
+              });
+            });
+          }
+        });
+      }
+    }
+
+    fetch('/api/overlay-stats')
+      .then(r => r.json())
+      .then(d => {
+        for (const entry of (d.topLikers || [])) {
+          likersMap.set(entry.user, entry);
+        }
+        renderLeaderboard(false);
+      })
+      .catch(() => {});
+
+    let ws, retryDelay = 2000;
+    function connectWS() {
+      ws = new WebSocket('ws://localhost:3000');
+      ws.onopen = () => { retryDelay = 2000; };
+      ws.onmessage = (e) => {
+        try {
+          const d = JSON.parse(e.data);
+          if (d.type === 'like') {
+            const key      = d.user;
+            const existing = likersMap.get(key) || { user: key, totalLikes: 0 };
+            existing.totalLikes += d.likeCount;
+            likersMap.set(key, existing);
+            renderLeaderboard(true);
+          }
+          if (d.type === 'connected') {
+            likersMap.clear();
+            renderLeaderboard(false);
+          }
+        } catch(_) {}
+      };
+      ws.onclose = () => {
+        setTimeout(connectWS, retryDelay);
+        retryDelay = Math.min(retryDelay * 2, 30000);
+      };
+      ws.onerror = () => ws.close();
+    }
+    connectWS();
+  </script>
+</body>
+</html>

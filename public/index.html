@@ -21,8 +21,6 @@
       --accent-link: #00c573;
       --accent-border: rgba(62, 207, 142, 0.3);
       --glass: rgba(41, 41, 41, 0.84);
-
-      /* Legacy aliases — JS uses these */
       --muted: #898989;
       --green: #3ecf8e;
       --chat-bg: #0f0f0f;
@@ -44,305 +42,279 @@
       font-size: 16px;
       line-height: 1.5;
       min-height: 100vh;
-      overflow-x: hidden;
     }
 
-    .app {
-      position: relative;
-      z-index: 1;
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 32px 20px;
-    }
-
-    /* HEADER */
-    header {
+    /* ── LAYOUT ─────────────────────────────────────────── */
+    .app-layout {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 48px;
+      max-width: 1020px;
+      margin: 0 auto;
+      min-height: 100vh;
     }
 
-    .nav-link {
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      text-decoration: none;
-      padding: 8px 16px;
-      border: 1px solid var(--border);
-      border-radius: 9999px;
-      transition: border-color 0.2s, color 0.2s;
-      white-space: nowrap;
-      cursor: pointer;
-      background: transparent;
-      opacity: 0.8;
-      display: inline-flex;
-      align-items: center;
+    /* ── SIDEBAR ─────────────────────────────────────────── */
+    .sidebar {
+      width: 210px;
+      flex-shrink: 0;
+      background: var(--bg);
+      border-right: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      padding: 20px 10px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
     }
 
-    .nav-link:hover {
-      border-color: var(--border-strong);
-      color: var(--text);
-      opacity: 1;
-    }
-
-    .logo {
+    .sidebar-brand {
       display: flex;
       align-items: center;
       gap: 10px;
+      padding: 4px 10px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 14px;
     }
 
     .logo-icon {
-      width: 36px;
-      height: 36px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
+      width: 34px;
+      height: 34px;
+      display: block;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .brand-text { display: flex; flex-direction: column; gap: 1px; }
+    .brand-name { font-size: 13px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; line-height: 1.2; }
+    .brand-sub  { font-size: 10px; color: var(--text-muted); }
+
+    .sidebar-nav {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .sidebar-item {
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 18px;
-    }
-
-    h1 {
-      font-family: 'Inter', sans-serif;
-      font-size: 22px;
-      font-weight: 400;
-      letter-spacing: -0.5px;
-      line-height: 1.0;
-      color: var(--text);
-    }
-
-    h1 span { color: var(--text); }
-
-    .subtitle {
-      font-family: 'Source Code Pro', monospace;
-      font-size: 11px;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
       color: var(--text-muted);
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      text-align: left;
+      width: 100%;
+      transition: background 0.15s, color 0.15s;
     }
 
-    /* CONNECT PANEL */
+    .sidebar-item:hover { background: var(--surface); color: var(--text-secondary); }
+    .sidebar-item.active { background: rgba(62, 207, 142, 0.10); color: var(--accent); }
+    .sidebar-icon { font-size: 15px; }
+
+    .sidebar-footer {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .sidebar-footer-btn {
+      display: block;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      text-align: left;
+      width: 100%;
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
+    }
+    .sidebar-footer-btn:hover { background: var(--surface); color: var(--text-secondary); }
+
+    /* ── MAIN AREA ───────────────────────────────────────── */
+    .main-area {
+      flex: 1;
+      min-width: 0;
+      padding: 28px 26px 40px;
+    }
+
+    /* ── VIEWS ───────────────────────────────────────────── */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    .view-header { margin-bottom: 22px; }
+    .view-header h2 { font-size: 19px; font-weight: 600; color: var(--text); letter-spacing: -0.4px; margin-bottom: 4px; }
+    .view-header p { font-size: 13px; color: var(--text-muted); }
+
+    /* ── CONNECT PANEL ───────────────────────────────────── */
     .connect-panel {
       background: var(--bg);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 28px;
-      margin-bottom: 24px;
-      position: relative;
+      padding: 22px 26px;
+      margin-bottom: 16px;
     }
 
     .panel-title {
       font-family: 'Source Code Pro', monospace;
-      font-size: 11px;
-      color: var(--text-muted);
-      letter-spacing: 1.2px;
+      font-size: 10px;
       text-transform: uppercase;
-      margin-bottom: 16px;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
     }
 
     .input-row {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       align-items: center;
     }
 
     .input-wrapper {
-      flex: 1;
-      position: relative;
-    }
-
-    .input-wrapper span {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
-      font-weight: 500;
-      font-size: 16px;
-    }
-
-    input[type="text"] {
-      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 4px;
       background: var(--bg-button);
       border: 1px solid var(--border-strong);
-      border-radius: 6px;
-      padding: 13px 14px 13px 36px;
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
-      outline: none;
+      border-radius: 8px;
+      padding: 0 12px;
+      flex: 1;
+      color: var(--text-muted);
+      font-size: 15px;
       transition: border-color 0.2s;
     }
 
-    input[type="text"]:focus {
-      border-color: rgba(62, 207, 142, 0.5);
+    .input-wrapper:focus-within { border-color: rgba(62, 207, 142, 0.4); }
+
+    .input-wrapper input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      padding: 11px 4px;
+      font-size: 15px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
     }
 
-    input[type="text"]::placeholder {
-      color: var(--text-muted);
-    }
+    .input-wrapper input::placeholder { color: var(--text-muted); opacity: 0.6; }
 
     .btn {
-      padding: 8px 32px;
+      padding: 11px 22px;
       border-radius: 9999px;
-      border: 1px solid var(--text);
-      font-family: 'Inter', sans-serif;
+      border: none;
       font-size: 14px;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
+      font-family: 'Inter', sans-serif;
       transition: opacity 0.2s;
       white-space: nowrap;
-      background: var(--bg-button);
-      color: var(--text);
     }
 
-    .btn-connect {
-      background: var(--bg-button);
-      color: var(--text);
-      border: 1px solid var(--text);
-    }
+    .btn-connect    { background: var(--accent); color: #000; }
+    .btn-connect:hover { opacity: 0.85; }
+    .btn-connect:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-disconnect { background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border); }
+    .btn-disconnect:hover { border-color: var(--border-strong); }
 
-    .btn-connect:hover { opacity: 0.8; }
-
-    .btn-connect:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .btn-disconnect {
-      background: transparent;
-      color: var(--text-secondary);
-      border: 1px solid var(--border);
-      opacity: 0.8;
-    }
-
-    .btn-disconnect:hover {
-      border-color: var(--border-strong);
-      color: var(--text);
-      opacity: 1;
-    }
-
-    /* STATUS */
     .status-bar {
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-top: 14px;
-      font-family: 'Source Code Pro', monospace;
-      font-size: 12px;
+      margin-top: 12px;
     }
 
     .status-dot {
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
-      background: var(--text-muted);
+      background: var(--border-strong);
       flex-shrink: 0;
     }
 
     .status-dot.online {
       background: var(--accent);
-      box-shadow: 0 0 8px rgba(62, 207, 142, 0.4);
-      animation: pulse-dot 2s infinite;
+      box-shadow: 0 0 0 3px rgba(62, 207, 142, 0.2);
+      animation: pulse 2s ease-in-out infinite;
     }
 
-    .status-dot.error { background: var(--text-muted); }
+    .status-dot.error { background: #ff4444; }
 
-    @keyframes pulse-dot {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 3px rgba(62, 207, 142, 0.2); }
+      50%       { box-shadow: 0 0 0 6px rgba(62, 207, 142, 0.05); }
     }
 
-    .status-text { color: var(--text-muted); }
+    .status-text { font-size: 13px; color: var(--text-muted); }
     .status-text.online { color: var(--accent); }
-    .status-text.error { color: var(--text-muted); }
+    .status-text.error  { color: #ff6b6b; }
 
-    /* TTS SETTINGS */
+    /* ── SETTINGS PANEL (TTS) ────────────────────────────── */
     .settings-panel {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px;
-      margin-bottom: 24px;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      gap: 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px 26px;
     }
 
-    @media (max-width: 600px) {
-      .settings-panel { grid-template-columns: 1fr; }
-    }
+    .setting-group { display: flex; flex-direction: column; gap: 8px; }
 
     .setting-group label {
-      display: block;
-      font-family: 'Source Code Pro', monospace;
-      font-size: 11px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      letter-spacing: 0.2px;
     }
 
-    select {
-      width: 100%;
+    .setting-group select,
+    .setting-group input[type="text"] {
       background: var(--bg-button);
       border: 1px solid var(--border-strong);
-      border-radius: 6px;
-      padding: 10px 12px;
       color: var(--text);
-      font-family: 'Inter', sans-serif;
+      border-radius: 8px;
+      padding: 9px 12px;
       font-size: 13px;
+      font-family: 'Inter', sans-serif;
       outline: none;
-      cursor: pointer;
+      transition: border-color 0.2s;
     }
 
-    select:focus { border-color: rgba(62, 207, 142, 0.5); }
+    .setting-group select:focus,
+    .setting-group input[type="text"]:focus { border-color: rgba(62, 207, 142, 0.4); }
 
-    input[type="range"] {
+    .setting-group input[type="range"] {
       width: 100%;
-      -webkit-appearance: none;
-      padding: 0;
-      height: 4px;
-      border-radius: 2px;
-      background: var(--border);
-      cursor: pointer;
-      margin-top: 10px;
-      outline: none;
-      border: none;
+      accent-color: var(--accent);
     }
-
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: var(--text);
-      cursor: pointer;
-      border: 2px solid var(--bg);
-      transition: background 0.2s;
-    }
-
-    input[type="range"]::-webkit-slider-thumb:hover { background: var(--accent); }
 
     .range-labels {
       display: flex;
       justify-content: space-between;
-      font-family: 'Source Code Pro', monospace;
       font-size: 10px;
       color: var(--text-muted);
-      margin-top: 4px;
     }
 
-    /* TOGGLES */
+    /* ── TOGGLES ─────────────────────────────────────────── */
     .toggles-row {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
     }
 
     .toggle-chip {
@@ -352,7 +324,7 @@
       background: transparent;
       border: 1px solid var(--border);
       border-radius: 9999px;
-      padding: 7px 16px;
+      padding: 6px 14px;
       cursor: pointer;
       transition: border-color 0.2s, background 0.2s, color 0.2s;
       font-size: 13px;
@@ -363,16 +335,10 @@
     }
 
     .toggle-chip input { display: none; }
-
-    .toggle-chip.active {
-      background: rgba(62, 207, 142, 0.1);
-      border-color: rgba(62, 207, 142, 0.3);
-      color: var(--accent);
-    }
-
+    .toggle-chip.active { background: rgba(62, 207, 142, 0.1); border-color: rgba(62, 207, 142, 0.3); color: var(--accent); }
     .chip-dot { display: none; }
 
-    /* CHAT LOG */
+    /* ── CHAT LOG ────────────────────────────────────────── */
     .chat-section {
       background: var(--bg);
       border: 1px solid var(--border);
@@ -384,7 +350,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 16px 20px;
+      padding: 14px 18px;
       border-bottom: 1px solid var(--border);
     }
 
@@ -400,90 +366,82 @@
     }
 
     .chat-count {
-      background: var(--border);
-      color: var(--text);
-      border-radius: 20px;
-      padding: 2px 8px;
-      font-family: 'Source Code Pro', monospace;
+      background: rgba(62, 207, 142, 0.12);
+      color: var(--accent);
+      border-radius: 9999px;
+      padding: 1px 8px;
       font-size: 10px;
-      font-weight: 400;
+      font-weight: 600;
     }
 
     .btn-clear {
       background: transparent;
-      border: 1px solid transparent;
+      border: 1px solid var(--border);
       color: var(--text-muted);
-      border-radius: 6px;
-      padding: 8px 14px;
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      font-weight: 500;
+      border-radius: 9999px;
+      padding: 5px 14px;
+      font-size: 12px;
       cursor: pointer;
-      transition: color 0.2s, border-color 0.2s;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.2s, color 0.2s;
     }
 
-    .btn-clear:hover {
-      color: var(--text);
-      border-color: var(--border);
-    }
+    .btn-clear:hover { border-color: var(--border-strong); color: var(--text-secondary); }
 
     #chatLog {
-      height: 400px;
+      min-height: 260px;
+      max-height: 420px;
       overflow-y: auto;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+      padding: 10px 0;
+      scroll-behavior: smooth;
     }
 
     #chatLog::-webkit-scrollbar { width: 4px; }
     #chatLog::-webkit-scrollbar-track { background: transparent; }
-    #chatLog::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    #chatLog::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
 
-    /* CHAT MESSAGES */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 48px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-icon { font-size: 36px; opacity: 0.5; }
+    .empty-text { font-size: 13px; text-align: center; line-height: 1.5; }
+
     .chat-msg {
       display: flex;
-      gap: 8px;
-      padding: 8px 10px;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 18px;
       border-radius: 8px;
-      border: 1px solid transparent;
-      transition: border-color 0.15s;
-      animation: slide-in 0.2s ease;
+      transition: background 0.2s;
+      animation: msgSlideIn 0.2s ease-out;
     }
 
-    @keyframes slide-in {
-      from { opacity: 0; transform: translateX(-8px); }
-      to { opacity: 1; transform: translateX(0); }
+    @keyframes msgSlideIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    .chat-msg:hover { border-color: var(--border-strong); }
-
-    .chat-msg.speaking {
-      background: rgba(62, 207, 142, 0.04);
-      border-left: 2px solid var(--accent);
-      border-color: var(--border-subtle);
-    }
-
-    .chat-msg.gift-msg {
-      background: rgba(62, 207, 142, 0.03);
-      border-left: 2px solid rgba(62, 207, 142, 0.3);
-      border-color: var(--border-subtle);
-    }
+    .chat-msg:hover { background: rgba(255,255,255,0.02); }
+    .chat-msg.speaking { background: rgba(62, 207, 142, 0.06); }
 
     .msg-avatar {
-      width: 28px;
-      height: 28px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
-      background: var(--border);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Source Code Pro', monospace;
       font-size: 11px;
-      font-weight: 500;
-      color: var(--text);
+      font-weight: 700;
       flex-shrink: 0;
-      margin-top: 1px;
+      margin-top: 2px;
     }
 
     .msg-body { flex: 1; min-width: 0; }
@@ -491,180 +449,292 @@
     .msg-user {
       font-size: 12px;
       font-weight: 600;
-      font-family: 'Inter', sans-serif;
       margin-bottom: 2px;
     }
 
     .msg-text {
       font-size: 14px;
-      color: var(--text);
-      word-break: break-word;
+      color: var(--text-secondary);
       line-height: 1.4;
-      font-family: 'Inter', sans-serif;
+      word-break: break-word;
     }
 
     .msg-time {
-      font-family: 'Source Code Pro', monospace;
       font-size: 10px;
       color: var(--text-muted);
+      margin-top: 2px;
       flex-shrink: 0;
-      margin-top: 3px;
     }
 
-    .msg-badge {
-      font-family: 'Source Code Pro', monospace;
-      font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-weight: 400;
-      margin-left: 6px;
-    }
-
-    .badge-speaking {
-      background: rgba(62, 207, 142, 0.12);
-      color: var(--accent);
-    }
-
-    /* SPEAKING INDICATOR */
     .speaking-now {
       display: none;
       align-items: center;
       gap: 10px;
-      padding: 12px 20px;
-      background: rgba(62, 207, 142, 0.04);
-      border-top: 1px solid rgba(62, 207, 142, 0.15);
-      font-family: 'Source Code Pro', monospace;
-      font-size: 11px;
+      padding: 10px 18px;
+      background: rgba(62, 207, 142, 0.05);
+      border-top: 1px solid rgba(62, 207, 142, 0.1);
+      font-size: 12px;
       color: var(--accent);
-      letter-spacing: 0.5px;
     }
 
     .speaking-now.visible { display: flex; }
 
-    .wave {
-      display: flex;
-      gap: 2px;
-      align-items: center;
-    }
-
+    .wave { display: flex; align-items: center; gap: 2px; }
     .wave span {
+      display: block;
       width: 3px;
-      border-radius: 2px;
+      border-radius: 3px;
       background: var(--accent);
-      animation: wave 1s ease-in-out infinite;
+      animation: waveBar 0.8s ease-in-out infinite;
     }
-
     .wave span:nth-child(1) { height: 8px; animation-delay: 0s; }
     .wave span:nth-child(2) { height: 14px; animation-delay: 0.1s; }
     .wave span:nth-child(3) { height: 10px; animation-delay: 0.2s; }
-    .wave span:nth-child(4) { height: 16px; animation-delay: 0.15s; }
-    .wave span:nth-child(5) { height: 8px; animation-delay: 0.05s; }
+    .wave span:nth-child(4) { height: 16px; animation-delay: 0.3s; }
+    .wave span:nth-child(5) { height: 8px; animation-delay: 0.4s; }
 
-    @keyframes wave {
-      0%, 100% { transform: scaleY(0.5); }
-      50% { transform: scaleY(1.2); }
+    @keyframes waveBar {
+      0%, 100% { transform: scaleY(0.6); }
+      50% { transform: scaleY(1.0); }
     }
 
-    .empty-state {
+    .queue-badge {
+      padding: 6px 18px;
+      font-size: 11px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    /* ── OVERLAY CONFIGURATOR CARDS ─────────────────────── */
+    .cfg-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px 22px;
+      margin-bottom: 14px;
+    }
+
+    .cfg-header {
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .cfg-icon {
+      width: 38px;
+      height: 38px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex;
       align-items: center;
       justify-content: center;
-      height: 100%;
-      color: var(--text-muted);
-      gap: 10px;
+      font-size: 18px;
+      flex-shrink: 0;
     }
 
-    .empty-icon {
-      font-size: 32px;
-      opacity: 0.25;
-    }
+    .cfg-meta { flex: 1; }
+    .cfg-title { font-size: 14px; font-weight: 600; color: var(--text); }
+    .cfg-subtitle { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
-    .empty-text {
-      font-family: 'Source Code Pro', monospace;
-      font-size: 12px;
-      text-align: center;
-      line-height: 1.6;
-    }
-
-    /* QUEUE BADGE */
-    .queue-badge {
-      font-family: 'Source Code Pro', monospace;
+    .obs-hint {
       font-size: 10px;
       color: var(--text-muted);
-      padding: 8px 20px;
-      border-top: 1px solid var(--border);
+      background: var(--surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-family: 'Source Code Pro', monospace;
+      flex-shrink: 0;
+    }
+
+    .cfg-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .cfg-field { display: flex; flex-direction: column; gap: 6px; }
+    .cfg-field.full { grid-column: span 2; }
+
+    .cfg-field label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      letter-spacing: 0.2px;
+    }
+
+    .cfg-field input[type="text"],
+    .cfg-field input[type="number"] {
+      background: var(--bg-button);
+      border: 1px solid var(--border-strong);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 8px 11px;
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .cfg-field input[type="text"]:focus,
+    .cfg-field input[type="number"]:focus { border-color: rgba(62, 207, 142, 0.4); }
+
+    .cfg-field input[type="color"] {
+      width: 100%;
+      height: 38px;
+      border: 1px solid var(--border-strong);
+      border-radius: 8px;
+      background: var(--bg-button);
+      cursor: pointer;
+      padding: 3px 5px;
+    }
+
+    .cfg-field input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+      margin-top: 2px;
+    }
+
+    .cfg-field .range-hint {
+      font-size: 10px;
+      color: var(--text-muted);
       text-align: right;
     }
 
-    /* GLOW effect when speaking */
-    .app-glow {
-      position: fixed;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 200px;
-      height: 1px;
-      background: var(--accent);
-      box-shadow: 0 0 24px 6px rgba(62, 207, 142, 0.15);
-      opacity: 0;
-      transition: opacity 0.3s;
-      pointer-events: none;
-      z-index: 100;
+    .cfg-url-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      background: var(--bg-button);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
     }
 
+    .cfg-url-text {
+      flex: 1;
+      font-family: 'Source Code Pro', monospace;
+      font-size: 10px;
+      color: var(--accent);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .cfg-btn {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 5px 12px;
+      border-radius: 9999px;
+      border: 1px solid var(--border-strong);
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.2s, color 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .cfg-btn:hover { border-color: var(--accent-border); color: var(--accent); }
+
+    .bg-upload-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .bg-upload-row input[type="file"] {
+      flex: 1;
+      min-width: 0;
+      font-size: 12px;
+      color: var(--text-secondary);
+      background: var(--bg-button);
+      border: 1px solid var(--border-strong);
+      border-radius: 8px;
+      padding: 6px 8px;
+      cursor: pointer;
+    }
+    .bg-preview {
+      width: 48px;
+      height: 36px;
+      border-radius: 6px;
+      object-fit: cover;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-button);
+      display: none;
+    }
+    .bg-preview.visible { display: block; }
+    .cfg-btn.small { padding: 5px 10px; font-size: 11px; }
+    .cfg-btn.danger { border-color: rgba(239, 68, 68, 0.4); color: #ef4444; }
+    .cfg-btn.danger:hover { border-color: rgba(239, 68, 68, 0.7); color: #f87171; }
+
+    /* ── SETTINGS VIEW ───────────────────────────────────── */
+    .settings-section { margin-bottom: 26px; }
+
+    .settings-section-title {
+      font-family: 'Source Code Pro', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    /* ── GLOW ────────────────────────────────────────────── */
+    .app-glow {
+      position: fixed;
+      bottom: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(62, 207, 142, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 1s ease;
+      z-index: 0;
+    }
     .app-glow.active { opacity: 1; }
 
-    /* Navigation buttons */
+    /* ── BUTTONS ─────────────────────────────────────────── */
     .btn-nav {
       padding: 8px 16px;
       border: 1px solid var(--border);
       border-radius: 9999px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
       cursor: pointer;
       transition: border-color 0.2s, opacity 0.2s, color 0.2s;
       background: transparent;
       color: var(--text-secondary);
       font-family: 'Inter', sans-serif;
-      opacity: 0.8;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
     }
 
-    .btn-nav:hover {
-      border-color: var(--border-strong);
-      color: var(--text);
-      opacity: 1;
-    }
+    .btn-nav:hover { border-color: var(--border-strong); color: var(--text); }
 
-    /* Test voice button */
     .btn-test {
       background: transparent;
       border: 1px solid var(--border);
       color: var(--text-secondary);
       border-radius: 6px;
-      padding: 10px 16px;
+      padding: 9px 14px;
       font-family: 'Inter', sans-serif;
       font-weight: 500;
-      font-size: 14px;
+      font-size: 13px;
       cursor: pointer;
       white-space: nowrap;
       transition: border-color 0.2s, color 0.2s;
     }
 
-    .btn-test:hover {
-      border-color: var(--border-strong);
-      color: var(--text);
-    }
+    .btn-test:hover { border-color: var(--border-strong); color: var(--text); }
+    .btn-test:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    .btn-test:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    /* Modal overlay */
+    /* ── MODALS ──────────────────────────────────────────── */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -676,10 +746,7 @@
       backdrop-filter: blur(4px);
     }
 
-    .modal-overlay.show {
-      display: flex;
-      animation: fadeIn 0.2s ease-out;
-    }
+    .modal-overlay.show { display: flex; animation: fadeIn 0.2s ease-out; }
 
     .modal-content {
       background: var(--bg);
@@ -713,24 +780,9 @@
     }
 
     .modal-close:hover { color: var(--text); }
+    .modal-content h2 { margin: 0 0 28px; font-size: 20px; color: var(--text); font-weight: 500; letter-spacing: -0.3px; }
+    .modal-content h3 { margin: 0 0 8px; font-size: 14px; color: var(--text); font-weight: 500; }
 
-    .modal-content h2 {
-      margin: 0 0 28px 0;
-      font-size: 20px;
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      font-weight: 500;
-      letter-spacing: -0.3px;
-    }
-
-    .modal-content h3 {
-      margin: 0 0 8px 0;
-      font-size: 14px;
-      color: var(--text);
-      font-weight: 500;
-    }
-
-    /* QR Card */
     .qr-card {
       background: rgba(62, 207, 142, 0.04);
       border: 1px solid rgba(62, 207, 142, 0.2);
@@ -739,22 +791,8 @@
       margin: 20px 0;
     }
 
-    .qr-code-display {
-      display: inline-block;
-      margin: 16px 0;
-      padding: 10px;
-      background: var(--bg);
-      border-radius: 8px;
-      border: 1px solid var(--border);
-    }
-
     .donation-section { text-align: center; }
-
-    .donation-section p {
-      margin: 6px 0 12px 0;
-      font-size: 13px;
-      color: var(--text-muted);
-    }
+    .donation-section p { margin: 6px 0 12px; font-size: 13px; color: var(--text-muted); }
 
     .donation-input {
       width: 100%;
@@ -789,15 +827,8 @@
     }
 
     .btn-copy:hover { opacity: 0.8; }
-    .btn-copy:active { opacity: 0.6; }
 
-    /* Social grid */
-    .social-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-      gap: 12px;
-      margin-top: 20px;
-    }
+    .social-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; margin-top: 20px; }
 
     .social-card {
       display: flex;
@@ -813,210 +844,472 @@
       text-align: center;
     }
 
-    .social-card:hover {
-      border-color: var(--border-strong);
-      color: var(--text);
-    }
+    .social-card:hover { border-color: var(--border-strong); color: var(--text); }
+    .social-card h3 { margin: 10px 0 4px; font-size: 14px; color: inherit; font-weight: 500; }
+    .social-card p { font-size: 12px; color: var(--text-muted); margin: 0; }
 
-    .social-card h3 {
-      margin: 10px 0 4px 0;
-      font-size: 14px;
-      color: inherit;
-      font-weight: 500;
-    }
-
-    .social-card p {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin: 0;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.97); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
+    @keyframes fadeIn { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
     @keyframes slideUp {
       from { opacity: 0; transform: translateX(-50%) translateY(16px); }
-      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
     }
+    .icon-inline {
+      width: 1em; height: 1em; vertical-align: -0.15em; display: inline-block;
+    }
+
+    /* ── CUSTOM VOICE DROPDOWN ─────────────────────────── */
+    .voice-dropdown {
+      position: relative;
+      user-select: none;
+    }
+    .voice-dropdown-trigger {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-button);
+      border: 1px solid var(--border-strong);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    .voice-dropdown-trigger:hover,
+    .voice-dropdown-trigger.open { border-color: rgba(62, 207, 142, 0.4); }
+    .voice-dropdown-trigger img.flag-icon {
+      width: 20px; height: 14px; object-fit: cover; border-radius: 2px;
+      flex-shrink: 0; display: block;
+    }
+    .voice-dropdown-trigger .arrow {
+      margin-left: auto;
+      font-size: 10px;
+      color: var(--text-muted);
+      transition: transform 0.2s;
+    }
+    .voice-dropdown-trigger.open .arrow { transform: rotate(180deg); }
+    .voice-dropdown-menu {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0; right: 0;
+      background: var(--bg-button);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      max-height: 280px;
+      overflow-y: auto;
+      z-index: 100;
+      display: none;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      padding: 6px 0;
+    }
+    .voice-dropdown-menu.show { display: block; }
+    .voice-dropdown-menu::-webkit-scrollbar { width: 5px; }
+    .voice-dropdown-menu::-webkit-scrollbar-track { background: transparent; }
+    .voice-dropdown-menu::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+    .voice-group-label {
+      padding: 6px 12px 4px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .voice-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .voice-option:hover,
+    .voice-option.active {
+      background: rgba(62, 207, 142, 0.10);
+      color: var(--accent);
+    }
+    .voice-option img.flag-icon {
+      width: 20px; height: 14px; object-fit: cover; border-radius: 2px;
+      flex-shrink: 0; display: block;
+    }
+
   </style>
 </head>
 <body>
 
-<div class="app">
-  <header>
-    <div class="logo">
-      <div class="logo-icon">🎵</div>
-      <div>
-        <h1>TikLive <span>TTS</span></h1>
-        <div class="subtitle">Chat Reader Pro</div>
+<div class="app-layout">
+
+  <!-- ══ SIDEBAR ══════════════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+    <a href="/" class="sidebar-brand" style="text-decoration:none;color:inherit;">
+      <img class="logo-icon" src="logo.png" alt="TikLive TTS">
+      <div class="brand-text">
+        <span class="brand-name">TikLive TTS</span>
+        <span class="brand-sub">Chat Reader Pro</span>
+      </div>
+    </a>
+
+    <nav class="sidebar-nav">
+      <button class="sidebar-item active" data-view="chat" onclick="switchView('chat')">
+        <img class="sidebar-icon icon-inline" src="icons/chat.svg" alt="">
+        Chat
+      </button>
+      <button class="sidebar-item" data-view="overlays" onclick="switchView('overlays')">
+        <img class="sidebar-icon icon-inline" src="icons/tv.svg" alt="">
+        Overlays
+      </button>
+      <button class="sidebar-item" data-view="settings" onclick="switchView('settings')">
+        <img class="sidebar-icon icon-inline" src="icons/settings.svg" alt="">
+        Configuración
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="sidebar-footer-btn" onclick="openDonationsModal()"><img class="icon-inline" src="icons/favorite.svg" alt=""> Donar</button>
+      <button class="sidebar-footer-btn" onclick="openSocialModal()"><img class="icon-inline" src="icons/smartphone.svg" alt=""> Canales</button>
+      <a href="/advanced.html" class="sidebar-footer-btn"><img class="icon-inline" src="icons/build.svg" alt=""> Avanzado</a>
+    </div>
+  </aside>
+
+  <!-- ══ MAIN AREA ═════════════════════════════════════════ -->
+  <main class="main-area">
+
+    <!-- ── VIEW: Chat ──────────────────────────────────── -->
+    <div class="view active" id="view-chat">
+
+      <!-- CONNECT -->
+      <div class="connect-panel">
+        <div class="panel-title"><img class="icon-inline" src="icons/lens.svg" alt=""> Conectar al Live</div>
+        <div class="input-row">
+          <div class="input-wrapper">
+            <span>@</span>
+            <input type="text" id="usernameInput" placeholder="tu_usuario_tiktok" autocomplete="off" />
+          </div>
+          <button class="btn btn-connect" id="btnConnect" onclick="connect()">Conectar</button>
+          <button class="btn btn-disconnect" id="btnDisconnect" onclick="disconnect()" style="display:none">Desconectar</button>
+        </div>
+        <div class="status-bar">
+          <div class="status-dot" id="statusDot"></div>
+          <span class="status-text" id="statusText">Esperando conexión...</span>
+        </div>
+      </div>
+
+      <!-- TOGGLES -->
+      <div class="toggles-row">
+        <label class="toggle-chip" id="chip-chat">
+          <input type="checkbox" onchange="toggleOption('readChat', this)" />
+          <span class="chip-dot"></span>
+          <img class="icon-inline" src="icons/chat.svg" alt=""> Leer comentarios
+        </label>
+        <label class="toggle-chip" id="chip-gifts">
+          <input type="checkbox" onchange="toggleOption('readGifts', this)" />
+          <span class="chip-dot"></span>
+          <img class="icon-inline" src="icons/card_giftcard.svg" alt=""> Anunciar regalos
+        </label>
+        <label class="toggle-chip" id="chip-joins">
+          <input type="checkbox" onchange="toggleOption('readJoins', this)" />
+          <span class="chip-dot"></span>
+          <img class="icon-inline" src="icons/emoji_people.svg" alt=""> Anunciar entradas
+        </label>
+        <label class="toggle-chip" id="chip-follows">
+          <input type="checkbox" onchange="toggleOption('readFollows', this)" />
+          <span class="chip-dot"></span>
+          <img class="icon-inline" src="icons/person_add.svg" alt=""> Anunciar follows
+        </label>
+        <label class="toggle-chip" id="chip-likes">
+          <input type="checkbox" onchange="toggleOption('readLikes', this)" />
+          <span class="chip-dot"></span>
+          <img class="icon-inline" src="icons/thumb_up.svg" alt=""> Anunciar likes
+        </label>
+        <label class="toggle-chip" id="chip-username">
+          <input type="checkbox" onchange="toggleOption('sayUsername', this)" />
+          <span class="chip-dot"></span>
+          <img class="icon-inline" src="icons/label.svg" alt=""> Decir nombre
+        </label>
+      </div>
+
+      <!-- CHAT LOG -->
+      <div class="chat-section">
+        <div class="chat-header">
+          <div class="chat-title">
+            <img class="icon-inline" src="icons/mail_outline.svg" alt=""> Chat en vivo
+            <span class="chat-count" id="msgCount">0</span>
+          </div>
+          <button class="btn-clear" onclick="clearChat()">Limpiar</button>
+        </div>
+        <div id="chatLog">
+          <div class="empty-state" id="emptyState">
+            <div class="empty-icon"><img class="icon-inline" src="icons/mic.svg" alt=""></div>
+            <div class="empty-text">Conecta tu TikTok Live<br>para ver el chat aquí</div>
+          </div>
+        </div>
+        <div class="speaking-now" id="speakingNow">
+          <div class="wave">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <span id="speakingText">Leyendo...</span>
+        </div>
+        <div class="queue-badge" id="queueBadge">Cola: 0 mensajes</div>
       </div>
     </div>
-    <div style="display: flex; gap: 10px;">
-      <button class="btn-nav" onclick="openDonationsModal()">💚 Donar</button>
-      <button class="btn-nav" onclick="openSocialModal()">📱 Canales</button>
-      <a href="/advanced.html" class="btn-nav">⚙ Configuración</a>
-    </div>
-  </header>
 
-  <!-- CONNECT -->
-  <div class="connect-panel">
-    <div class="panel-title">🔴 Conectar al Live</div>
-    <div class="input-row">
-      <div class="input-wrapper">
-        <span>@</span>
-        <input type="text" id="usernameInput" placeholder="tu_usuario_tiktok" autocomplete="off" value="khunsauwu" />
+    <!-- ── VIEW: Overlays ──────────────────────────────── -->
+    <div class="view" id="view-overlays">
+      <div class="view-header">
+        <h2><img class="icon-inline" src="icons/tv.svg" alt=""> Overlays para OBS</h2>
+        <p>Personaliza cada overlay y copia la URL → OBS → Add Source → Browser → Enable transparent background.</p>
       </div>
-      <button class="btn btn-connect" id="btnConnect" onclick="connect()">Conectar</button>
-      <button class="btn btn-disconnect" id="btnDisconnect" onclick="disconnect()" style="display:none">Desconectar</button>
-    </div>
-    <div class="status-bar">
-      <div class="status-dot" id="statusDot"></div>
-      <span class="status-text" id="statusText">Esperando conexión...</span>
-    </div>
-  </div>
 
-  <!-- TTS SETTINGS -->
-  <div class="settings-panel">
-    <div class="setting-group">
-      <label>🎙 Voz</label>
-      <select id="voiceSelect"></select>
-    </div>
-    <div class="setting-group">
-      <label>🔬 Probar voz</label>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <input type="text" id="testVoiceInput" placeholder="Escribe algo para probar..." style="flex:1;" />
-        <button id="btnTestVoice" class="btn-test" onclick="testVoice()">▶ Probar voz</button>
+      <!-- Seguidores -->
+      <div class="cfg-card">
+        <div class="cfg-header">
+          <div class="cfg-icon"><img class="icon-inline" src="icons/people.svg" alt=""></div>
+          <div class="cfg-meta">
+            <div class="cfg-title">Contador de Seguidores</div>
+            <div class="cfg-subtitle">Nuevos seguidores del stream en tiempo real</div>
+          </div>
+          <span class="obs-hint">200 × 180 px</span>
+        </div>
+        <div class="cfg-fields">
+          <div class="cfg-field">
+            <label>Meta de nuevos seguidores</label>
+            <input type="number" id="cfg-seg-goal" placeholder="ej: 1000" min="0"
+                   oninput="onCfgChange('seguidores','goal', this.value)" />
+          </div>
+          <div class="cfg-field">
+            <label>Total seguidores actuales</label>
+            <div id="cfg-seg-auto" style="padding: 8px 11px; font-size: 13px; color: var(--text-muted); background: var(--bg-button); border: 1px solid var(--border-strong); border-radius: 8px; min-height: 36px; display: flex; align-items: center;">
+              Conecta para obtener
+            </div>
+          </div>
+          <div class="cfg-field">
+            <label>Color acento</label>
+            <input type="color" id="cfg-seg-color" value="#3ecf8e"
+                   oninput="onCfgChange('seguidores','color', this.value)" />
+          </div>
+          <div class="cfg-field">
+            <label>Opacidad fondo — <span id="cfg-seg-bg-val">80</span>%</label>
+            <input type="range" id="cfg-seg-bg" min="0.30" max="1.00" step="0.05" value="0.80"
+                   oninput="onCfgChange('seguidores','bg', parseFloat(this.value)); document.getElementById('cfg-seg-bg-val').textContent = Math.round(this.value*100)" />
+          </div>
+          <div class="cfg-field full">
+            <label>Fondo personalizado</label>
+            <div class="bg-upload-row">
+              <input type="file" id="cfg-seg-bgimg" accept="image/*"
+                     onchange="uploadBg('seguidores', this.files[0])" />
+              <img class="bg-preview" id="cfg-seg-bgimg-preview" alt="" />
+              <button class="cfg-btn small danger" id="cfg-seg-bgimg-remove" style="display:none"
+                      onclick="removeBg('seguidores')">Eliminar fondo</button>
+            </div>
+          </div>
+        </div>
+        <div class="cfg-url-row">
+          <span class="cfg-url-text" id="cfg-url-seguidores">http://localhost:3000/overlay-seguidores.html</span>
+          <button class="cfg-btn" onclick="copyCfgUrl('seguidores')">Copiar</button>
+          <a class="cfg-btn" id="cfg-open-seguidores" href="http://localhost:3000/overlay-seguidores.html" target="_blank">Abrir</a>
+          <button class="cfg-btn" onclick="downloadTemplate('seguidores')">Plantilla</button>
+        </div>
+      </div>
+
+      <!-- Top Likers -->
+      <div class="cfg-card">
+        <div class="cfg-header">
+          <div class="cfg-icon"><img class="icon-inline" src="icons/favorite.svg" alt=""></div>
+          <div class="cfg-meta">
+            <div class="cfg-title">Top Likers</div>
+            <div class="cfg-subtitle">Ranking de usuarios con más likes del stream</div>
+          </div>
+          <span class="obs-hint">260 × 380 px</span>
+        </div>
+        <div class="cfg-fields">
+          <div class="cfg-field">
+            <label>Máximo de filas</label>
+            <input type="number" id="cfg-likes-rows" placeholder="10" min="3" max="20"
+                   oninput="onCfgChange('likes','rows', parseInt(this.value)||10)" />
+          </div>
+          <div class="cfg-field">
+            <label>Color acento</label>
+            <input type="color" id="cfg-likes-color" value="#3ecf8e"
+                   oninput="onCfgChange('likes','color', this.value)" />
+          </div>
+          <div class="cfg-field full">
+            <label>Opacidad fondo — <span id="cfg-likes-bg-val">80</span>%</label>
+            <input type="range" id="cfg-likes-bg" min="0.30" max="1.00" step="0.05" value="0.80"
+                   oninput="onCfgChange('likes','bg', parseFloat(this.value)); document.getElementById('cfg-likes-bg-val').textContent = Math.round(this.value*100)" />
+          </div>
+          <div class="cfg-field full">
+            <label>Fondo personalizado</label>
+            <div class="bg-upload-row">
+              <input type="file" id="cfg-likes-bgimg" accept="image/*"
+                     onchange="uploadBg('likes', this.files[0])" />
+              <img class="bg-preview" id="cfg-likes-bgimg-preview" alt="" />
+              <button class="cfg-btn small danger" id="cfg-likes-bgimg-remove" style="display:none"
+                      onclick="removeBg('likes')">Eliminar fondo</button>
+            </div>
+          </div>
+        </div>
+        <div class="cfg-url-row">
+          <span class="cfg-url-text" id="cfg-url-likes">http://localhost:3000/overlay-likes.html</span>
+          <button class="cfg-btn" onclick="testTopLikers()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Test</button>
+          <button class="cfg-btn" onclick="copyCfgUrl('likes')">Copiar</button>
+          <a class="cfg-btn" id="cfg-open-likes" href="http://localhost:3000/overlay-likes.html" target="_blank">Abrir</a>
+          <button class="cfg-btn" onclick="downloadTemplate('likes')">Plantilla</button>
+        </div>
+      </div>
+
+      <!-- Alertas de Regalos -->
+      <div class="cfg-card">
+        <div class="cfg-header">
+          <div class="cfg-icon"><img class="icon-inline" src="icons/card_giftcard.svg" alt=""></div>
+          <div class="cfg-meta">
+            <div class="cfg-title">Alertas de Regalos</div>
+            <div class="cfg-subtitle">Tarjeta animada con imagen al recibir un regalo</div>
+          </div>
+          <span class="obs-hint">440 × 130 px</span>
+        </div>
+        <div class="cfg-fields">
+          <div class="cfg-field">
+            <label>Duración por alerta (ms)</label>
+            <input type="number" id="cfg-alertas-dur" placeholder="4000" min="1000" max="12000" step="500"
+                   oninput="onCfgChange('alertas','dur', parseInt(this.value)||4000)" />
+          </div>
+          <div class="cfg-field">
+            <label>Color acento</label>
+            <input type="color" id="cfg-alertas-color" value="#3ecf8e"
+                   oninput="onCfgChange('alertas','color', this.value)" />
+          </div>
+          <div class="cfg-field">
+            <label>Opacidad fondo — <span id="cfg-alertas-bg-val">90</span>%</label>
+            <input type="range" id="cfg-alertas-bg" min="0.30" max="1.00" step="0.05" value="0.90"
+                   oninput="onCfgChange('alertas','bg', parseFloat(this.value)); document.getElementById('cfg-alertas-bg-val').textContent = Math.round(this.value*100)" />
+          </div>
+          <div class="cfg-field full">
+            <label>Fondo personalizado</label>
+            <div class="bg-upload-row">
+              <input type="file" id="cfg-alertas-bgimg" accept="image/*"
+                     onchange="uploadBg('alertas', this.files[0])" />
+              <img class="bg-preview" id="cfg-alertas-bgimg-preview" alt="" />
+              <button class="cfg-btn small danger" id="cfg-alertas-bgimg-remove" style="display:none"
+                      onclick="removeBg('alertas')">Eliminar fondo</button>
+            </div>
+          </div>
+        </div>
+        <div class="cfg-url-row">
+          <span class="cfg-url-text" id="cfg-url-alertas">http://localhost:3000/overlay-alertas.html</span>
+          <button class="cfg-btn" onclick="testGiftAlert()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Test</button>
+          <button class="cfg-btn" onclick="copyCfgUrl('alertas')">Copiar</button>
+          <a class="cfg-btn" id="cfg-open-alertas" href="http://localhost:3000/overlay-alertas.html" target="_blank">Abrir</a>
+          <button class="cfg-btn" onclick="downloadTemplate('alertas')">Plantilla</button>
+        </div>
       </div>
     </div>
-    <div class="setting-group">
-      <label>⚡ Velocidad — <span id="rateVal">1.0</span>x</label>
-      <input type="range" id="rateRange" min="0.5" max="2" step="0.1" value="1" oninput="updateRate(this.value)" />
-      <div class="range-labels"><span>Lento</span><span>Rápido</span></div>
-    </div>
-    <div class="setting-group">
-      <label>🔊 Volumen — <span id="volVal">100</span>%</label>
-      <input type="range" id="volRange" min="0" max="1" step="0.05" value="1" oninput="updateVol(this.value)" />
-      <div class="range-labels"><span>Mute</span><span>Máx</span></div>
-    </div>
-    <div class="setting-group">
-      <label>🎵 Tono — <span id="pitchVal">1.0</span></label>
-      <input type="range" id="pitchRange" min="0.5" max="2" step="0.1" value="1" oninput="updatePitch(this.value)" />
-      <div class="range-labels"><span>Grave</span><span>Agudo</span></div>
-    </div>
-  </div>
 
-  <!-- TOGGLES -->
-  <div class="toggles-row">
-    <label class="toggle-chip active" id="chip-chat">
-      <input type="checkbox" checked onchange="toggleOption('readChat', this)" />
-      <span class="chip-dot"></span>
-      💬 Leer comentarios
-    </label>
-    <label class="toggle-chip" id="chip-gifts">
-      <input type="checkbox" onchange="toggleOption('readGifts', this)" />
-      <span class="chip-dot"></span>
-      🎁 Anunciar regalos
-    </label>
-    <label class="toggle-chip" id="chip-joins">
-      <input type="checkbox" onchange="toggleOption('readJoins', this)" />
-      <span class="chip-dot"></span>
-      👋 Anunciar entradas
-    </label>
-    <label class="toggle-chip" id="chip-follows">
-      <input type="checkbox" onchange="toggleOption('readFollows', this)" />
-      <span class="chip-dot"></span>
-      ❤️‍🔥 Anunciar follows
-    </label>
-    <label class="toggle-chip" id="chip-likes">
-      <input type="checkbox" onchange="toggleOption('readLikes', this)" />
-      <span class="chip-dot"></span>
-      👍 Anunciar likes
-    </label>
-    <label class="toggle-chip active" id="chip-username">
-      <input type="checkbox" checked onchange="toggleOption('sayUsername', this)" />
-      <span class="chip-dot"></span>
-      🏷 Decir nombre
-    </label>
-  </div>
-
-  <!-- CHAT LOG -->
-  <div class="chat-section">
-    <div class="chat-header">
-      <div class="chat-title">
-        📨 Chat en vivo
-        <span class="chat-count" id="msgCount">0</span>
+    <!-- ── VIEW: Settings ──────────────────────────────── -->
+    <div class="view" id="view-settings">
+      <div class="view-header">
+        <h2><img class="icon-inline" src="icons/settings.svg" alt=""> Configuración TTS</h2>
+        <p>Ajusta la voz, velocidad y comportamientos. Todo se guarda automáticamente.</p>
       </div>
-      <button class="btn-clear" onclick="clearChat()">Limpiar</button>
-    </div>
 
-    <div id="chatLog">
-      <div class="empty-state" id="emptyState">
-        <div class="empty-icon">🎤</div>
-        <div class="empty-text">Conecta tu TikTok Live<br>para ver el chat aquí</div>
+      <div class="settings-section">
+        <div class="settings-section-title">Voz y audio</div>
+        <div class="settings-panel">
+          <div class="setting-group">
+            <label><img class="icon-inline" src="icons/mic.svg" alt=""> Voz</label>
+            <div class="voice-dropdown" id="voiceDropdown">
+              <div class="voice-dropdown-trigger" id="voiceDropdownTrigger" onclick="toggleVoiceDropdown()">
+                <img class="flag-icon" id="voiceDropdownFlag" src="flags/ES.svg" alt="">
+                <span id="voiceDropdownText">Español (España)</span>
+                <span class="arrow">▼</span>
+              </div>
+              <div class="voice-dropdown-menu" id="voiceDropdownMenu"></div>
+            </div>
+            <input type="hidden" id="voiceSelect" />
+          </div>
+          <div class="setting-group">
+            <label><img class="icon-inline" src="icons/science.svg" alt=""> Probar voz</label>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <input type="text" id="testVoiceInput" placeholder="Escribe algo para probar..." style="flex:1;" />
+              <button id="btnTestVoice" class="btn-test" onclick="testVoice()">▶ Probar</button>
+            </div>
+          </div>
+          <div class="setting-group">
+            <label><img class="icon-inline" src="icons/flash_on.svg" alt=""> Velocidad — <span id="rateVal">1.0</span>x</label>
+            <input type="range" id="rateRange" min="0.5" max="2" step="0.1" value="1" oninput="updateRate(this.value)" />
+            <div class="range-labels"><span>Lento</span><span>Rápido</span></div>
+          </div>
+          <div class="setting-group">
+            <label><img class="icon-inline" src="icons/volume_up.svg" alt=""> Volumen — <span id="volVal">100</span>%</label>
+            <input type="range" id="volRange" min="0" max="1" step="0.05" value="1" oninput="updateVol(this.value)" />
+            <div class="range-labels"><span>Mute</span><span>Máx</span></div>
+          </div>
+          <div class="setting-group">
+            <label><img class="icon-inline" src="icons/music_note.svg" alt=""> Tono — <span id="pitchVal">1.0</span></label>
+            <input type="range" id="pitchRange" min="0.5" max="2" step="0.1" value="1" oninput="updatePitch(this.value)" />
+            <div class="range-labels"><span>Grave</span><span>Agudo</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">Configuración avanzada</div>
+        <a href="/advanced.html" class="btn-nav"><img class="icon-inline" src="icons/build.svg" alt=""> Abrir panel avanzado (filtros, rate limit, logs) →</a>
       </div>
     </div>
 
-    <div class="speaking-now" id="speakingNow">
-      <div class="wave">
-        <span></span><span></span><span></span><span></span><span></span>
-      </div>
-      <span id="speakingText">Leyendo...</span>
-    </div>
-
-    <div class="queue-badge" id="queueBadge">Cola: 0 mensajes</div>
-  </div>
+  </main>
 </div>
 
 <div class="app-glow" id="appGlow"></div>
 
-<!-- Donations Modal -->
+<!-- ══ MODAL: Donaciones ════════════════════════════════ -->
 <div id="donationsModal" class="modal-overlay" onclick="closeDonationsModal(event)">
   <div class="modal-content" onclick="event.stopPropagation()">
-    <button class="modal-close" onclick="closeDonationsModal()">✕</button>
-    <h2>💚 Apoya mi contenido</h2>
+    <button class="modal-close" onclick="closeDonationsModal()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <h2><img class="icon-inline" src="icons/favorite.svg" alt=""> Apoya mi contenido</h2>
 
     <div class="qr-card">
       <h3>Lightning Network (Instant)</h3>
       <p>Khunsa@coinos.io</p>
       <input type="text" value="Khunsa@coinos.io" readonly class="donation-input" onclick="this.select()">
-      <button class="btn-copy" onclick="copyToClipboard('Khunsa@coinos.io')">📋 Copiar dirección</button>
+      <button class="btn-copy" onclick="copyToClipboard('Khunsa@coinos.io')"><img class="icon-inline" src="icons/content_copy.svg" alt=""> Copiar dirección</button>
     </div>
 
     <div class="qr-card">
       <h3>Bitcoin Nativo</h3>
       <p>bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk</p>
       <input type="text" value="bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk" readonly class="donation-input" onclick="this.select()">
-      <button class="btn-copy" onclick="copyToClipboard('bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk')">📋 Copiar dirección</button>
+      <button class="btn-copy" onclick="copyToClipboard('bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk')"><img class="icon-inline" src="icons/content_copy.svg" alt=""> Copiar dirección</button>
     </div>
   </div>
 </div>
 
-<!-- Social Modal -->
+<!-- ══ MODAL: Social ════════════════════════════════════ -->
 <div id="socialModal" class="modal-overlay" onclick="closeSocialModal(event)">
   <div class="modal-content" onclick="event.stopPropagation()">
-    <button class="modal-close" onclick="closeSocialModal()">✕</button>
-    <h2>📱 Sigue mi contenido</h2>
-
+    <button class="modal-close" onclick="closeSocialModal()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <h2><img class="icon-inline" src="icons/smartphone.svg" alt=""> Sigue mi contenido</h2>
     <div class="social-grid">
       <a href="https://www.youtube.com/@SpeedMucho" target="_blank" class="social-card">
-        <span style="font-size: 32px;">📺</span>
+        <img style="width:32px;height:32px;" src="icons/tv.svg" alt="">
         <h3>YouTube</h3>
         <p>@SpeedMucho</p>
       </a>
       <a href="https://www.tiktok.com/@khunsauwu" target="_blank" class="social-card">
-        <span style="font-size: 32px;">🎵</span>
+        <img style="width:32px;height:32px;" src="icons/music_note.svg" alt="">
         <h3>TikTok</h3>
         <p>@khunsauwu</p>
       </a>
       <a href="https://www.twitch.tv/speedmucho" target="_blank" class="social-card">
-        <span style="font-size: 32px;">🎮</span>
+        <img style="width:32px;height:32px;" src="icons/sports_esports.svg" alt="">
         <h3>Twitch</h3>
         <p>speedmucho</p>
       </a>
       <a href="https://kick.com/speedmucho" target="_blank" class="social-card">
-        <span style="font-size: 32px;">⚡</span>
+        <img style="width:32px;height:32px;" src="icons/flash_on.svg" alt="">
         <h3>Kick</h3>
         <p>speedmucho</p>
       </a>
@@ -1025,7 +1318,350 @@
 </div>
 
 <script>
-  // ─── State ───────────────────────────────────────────────
+  // ─── PERSISTENCIA ─────────────────────────────────────────────
+  const SETTINGS_KEY = 'tikliveTTS_v1';
+
+  const DEFAULT_SETTINGS = {
+    voice: 'es',
+    rate: 1.0,
+    vol: 1.0,
+    pitch: 1.0,
+    readChat: true,
+    readGifts: false,
+    readJoins: false,
+    readFollows: false,
+    readLikes: false,
+    sayUsername: true,
+    lastUsername: '',
+    overlays: {
+      seguidores: { goal: '', color: '#3ecf8e', bg: 0.80, bgimg: '' },
+      likes:      { rows: 10, color: '#3ecf8e', bg: 0.80, bgimg: '' },
+      alertas:    { dur: 4000, color: '#3ecf8e', bg: 0.90, bgimg: '' }
+    }
+  };
+
+  let appSettings = {};
+
+  function deepMerge(defaults, saved) {
+    const out = JSON.parse(JSON.stringify(defaults));
+    for (const k of Object.keys(saved)) {
+      if (k in out && typeof out[k] === 'object' && out[k] !== null && !Array.isArray(out[k])) {
+        out[k] = deepMerge(out[k], saved[k]);
+      } else if (k in out) {
+        out[k] = saved[k];
+      }
+    }
+    return out;
+  }
+
+  function loadSettings() {
+    try {
+      const raw = localStorage.getItem(SETTINGS_KEY);
+      appSettings = raw ? deepMerge(DEFAULT_SETTINGS, JSON.parse(raw)) : JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+    } catch (e) {
+      appSettings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+    }
+  }
+
+  function saveSettings() {
+    try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings)); } catch(e) {}
+  }
+
+  function applySettings() {
+    // TTS sliders
+    ttsRate = appSettings.rate;
+    ttsVol  = appSettings.vol;
+    ttsPitch = appSettings.pitch;
+    const rr = document.getElementById('rateRange');
+    const vr = document.getElementById('volRange');
+    const pr = document.getElementById('pitchRange');
+    if (rr) { rr.value = ttsRate; document.getElementById('rateVal').textContent = ttsRate.toFixed(1); }
+    if (vr) { vr.value = ttsVol;  document.getElementById('volVal').textContent = Math.round(ttsVol * 100); }
+    if (pr) { pr.value = ttsPitch; document.getElementById('pitchVal').textContent = ttsPitch.toFixed(1); }
+
+    // Toggles
+    const chipMap = {
+      readChat: 'chip-chat', readGifts: 'chip-gifts', readJoins: 'chip-joins',
+      readFollows: 'chip-follows', readLikes: 'chip-likes', sayUsername: 'chip-username'
+    };
+    for (const [key, chipId] of Object.entries(chipMap)) {
+      const val  = appSettings[key];
+      options[key] = val;
+      const chip = document.getElementById(chipId);
+      if (!chip) continue;
+      const cb = chip.querySelector('input[type=checkbox]');
+      if (cb) cb.checked = val;
+      chip.classList.toggle('active', val);
+    }
+
+    // Last username
+    if (appSettings.lastUsername) {
+      const inp = document.getElementById('usernameInput');
+      if (inp) inp.value = appSettings.lastUsername;
+    }
+
+    // Overlay config fields
+    const { seguidores, likes, alertas } = appSettings.overlays;
+
+    setFieldVal('cfg-seg-goal',   seguidores.goal);
+    setFieldVal('cfg-seg-color',  seguidores.color);
+    setFieldVal('cfg-seg-bg',     seguidores.bg);
+    const bgValEl = document.getElementById('cfg-seg-bg-val');
+    if (bgValEl) bgValEl.textContent = Math.round(seguidores.bg * 100);
+
+    setFieldVal('cfg-likes-rows',  likes.rows);
+    setFieldVal('cfg-likes-color', likes.color);
+    setFieldVal('cfg-likes-bg',    likes.bg);
+    const lbValEl = document.getElementById('cfg-likes-bg-val');
+    if (lbValEl) lbValEl.textContent = Math.round(likes.bg * 100);
+
+    setFieldVal('cfg-alertas-dur',   alertas.dur);
+    setFieldVal('cfg-alertas-color', alertas.color);
+    setFieldVal('cfg-alertas-bg',    alertas.bg);
+    const abValEl = document.getElementById('cfg-alertas-bg-val');
+    if (abValEl) abValEl.textContent = Math.round(alertas.bg * 100);
+
+    // Background image previews
+    updateBgPreview('seguidores', seguidores.bgimg);
+    updateBgPreview('likes',      likes.bgimg);
+    updateBgPreview('alertas',    alertas.bgimg);
+
+    // Rebuild overlay URLs
+    updateOverlayUrl('seguidores');
+    updateOverlayUrl('likes');
+    updateOverlayUrl('alertas');
+  }
+
+  function setFieldVal(id, val) {
+    const el = document.getElementById(id);
+    if (el && val !== '' && val !== undefined) el.value = val;
+  }
+
+  // ─── BACKGROUND IMAGE UPLOAD ──────────────────────────────────
+  async function uploadBg(type, file) {
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('image', file);
+    try {
+      const res = await fetch('/api/upload-bg', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.url) {
+        appSettings.overlays[type].bgimg = data.url;
+        updateBgPreview(type, data.url);
+        updateOverlayUrl(type);
+        saveSettings();
+        showToast('Fondo subido correctamente');
+      } else {
+        showToast(data.error || 'Error al subir fondo');
+      }
+    } catch (e) {
+      showToast('Error de red al subir fondo');
+    }
+  }
+
+  async function removeBg(type) {
+    const url = appSettings.overlays[type].bgimg;
+    if (url) {
+      const filename = url.split('/').pop();
+      try {
+        await fetch('/api/upload-bg', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filename })
+        });
+      } catch (e) { /* ignore cleanup errors */ }
+    }
+    appSettings.overlays[type].bgimg = '';
+    const input = document.getElementById('cfg-' + type + '-bgimg');
+    if (input) input.value = '';
+    updateBgPreview(type, '');
+    updateOverlayUrl(type);
+    saveSettings();
+  }
+
+  function updateBgPreview(type, url) {
+    const preview = document.getElementById('cfg-' + type + '-bgimg-preview');
+    const removeBtn = document.getElementById('cfg-' + type + '-bgimg-remove');
+    if (preview) {
+      preview.src = url || '';
+      preview.classList.toggle('visible', !!url);
+    }
+    if (removeBtn) removeBtn.style.display = url ? '' : 'none';
+  }
+
+  // ─── TEMPLATE DOWNLOAD ────────────────────────────────────────
+  function downloadTemplate(type) {
+    const specs = {
+      seguidores: { w: 200, h: 180, name: 'Seguidores', safeAreas: [
+        { x: 10, y: 10, w: 180, h: 160, label: 'SAFE AREA GENERAL' }
+      ]},
+      likes:      { w: 260, h: 380, name: 'Top Likers', safeAreas: [
+        { x: 10, y: 10, w: 240, h: 30, label: 'HEADER' },
+        { x: 10, y: 45, w: 240, h: 325, label: 'LISTA ROWS' }
+      ]},
+      alertas:    { w: 440, h: 130, name: 'Alertas', safeAreas: [
+        { x: 10, y: 10, w: 80, h: 110, label: 'IMAGEN REGALO' },
+        { x: 100, y: 10, w: 260, h: 110, label: 'TEXTO' },
+        { x: 370, y: 10, w: 60, h: 40, label: 'BADGE' }
+      ]}
+    };
+    const s = specs[type];
+    if (!s) return;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = s.w * 2; // @2x for crispness
+    canvas.height = s.h * 2;
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width;
+    const h = canvas.height;
+    const scale = 2;
+
+    // Checkerboard background (transparency indicator)
+    const cs = 10 * scale;
+    for (let y = 0; y < h; y += cs) {
+      for (let x = 0; x < w; x += cs) {
+        ctx.fillStyle = ((x/cs + y/cs) % 2 === 0) ? '#ffffff' : '#cccccc';
+        ctx.fillRect(x, y, cs, cs);
+      }
+    }
+
+    // Grid
+    ctx.strokeStyle = 'rgba(0,0,0,0.08)';
+    ctx.lineWidth = 1;
+    for (let x = 0; x <= w; x += 10 * scale) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke(); }
+    for (let y = 0; y <= h; y += 10 * scale) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
+
+    // Rulers
+    ctx.fillStyle = '#333';
+    ctx.font = `${10 * scale}px 'Source Code Pro', monospace`;
+    ctx.textAlign = 'center';
+    for (let x = 0; x <= w; x += 20 * scale) {
+      ctx.fillRect(x, 0, 1, 6 * scale);
+      if (x % (50 * scale) === 0) ctx.fillText(String(x/scale), x, 12 * scale);
+    }
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (let y = 0; y <= h; y += 20 * scale) {
+      ctx.fillRect(0, y, 6 * scale, 1);
+      if (y % (50 * scale) === 0) ctx.fillText(String(y/scale), 12 * scale, y);
+    }
+
+    // Safe areas
+    ctx.lineWidth = 2 * scale;
+    ctx.setLineDash([6 * scale, 4 * scale]);
+    for (const area of s.safeAreas) {
+      ctx.strokeStyle = 'rgba(255, 0, 0, 0.6)';
+      ctx.strokeRect(area.x * scale, area.y * scale, area.w * scale, area.h * scale);
+      ctx.fillStyle = 'rgba(255, 0, 0, 0.7)';
+      ctx.font = `bold ${9 * scale}px 'Source Code Pro', monospace`;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.fillText(area.label, (area.x + 2) * scale, (area.y + 2) * scale);
+    }
+    ctx.setLineDash([]);
+
+    // Title + dimensions
+    ctx.fillStyle = '#111';
+    ctx.fillRect(8 * scale, (s.h - 22) * scale, 220 * scale, 18 * scale);
+    ctx.fillStyle = '#fff';
+    ctx.font = `bold ${10 * scale}px 'Source Code Pro', monospace`;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(`${s.name} — ${s.w}×${s.h}px`, 12 * scale, (s.h - 13) * scale);
+
+    canvas.toBlob(blob => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `plantilla_${type}_${s.w}x${s.h}.png`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }, 'image/png');
+  }
+
+  // ─── VISTAS ───────────────────────────────────────────────────
+  function switchView(name) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+    const view = document.getElementById('view-' + name);
+    if (view) view.classList.add('active');
+    const btn = document.querySelector(`.sidebar-item[data-view="${name}"]`);
+    if (btn) btn.classList.add('active');
+  }
+
+  // ─── OVERLAY CONFIGURADOR ─────────────────────────────────────
+  function buildOverlayUrl(type) {
+    const base = `http://localhost:3000/overlay-${type}.html`;
+    const cfg  = appSettings.overlays[type];
+    const p    = new URLSearchParams();
+
+    if (type === 'seguidores') {
+      if (cfg.goal)   p.set('goal',   cfg.goal);
+      if (cfg.color && cfg.color !== '#3ecf8e') p.set('color', cfg.color.replace('#', ''));
+      if (cfg.bg !== 0.80) p.set('bg', cfg.bg);
+    } else if (type === 'likes') {
+      if (cfg.rows && cfg.rows !== 10) p.set('rows', cfg.rows);
+      if (cfg.color && cfg.color !== '#3ecf8e') p.set('color', cfg.color.replace('#', ''));
+      if (cfg.bg !== 0.80) p.set('bg', cfg.bg);
+    } else if (type === 'alertas') {
+      if (cfg.dur && cfg.dur !== 4000) p.set('dur', cfg.dur);
+      if (cfg.color && cfg.color !== '#3ecf8e') p.set('color', cfg.color.replace('#', ''));
+      if (cfg.bg !== 0.90) p.set('bg', cfg.bg);
+    }
+
+    if (cfg.bgimg) p.set('bgimg', cfg.bgimg);
+
+    const qs = p.toString();
+    return qs ? `${base}?${qs}` : base;
+  }
+
+  function updateOverlayUrl(type) {
+    const url    = buildOverlayUrl(type);
+    const urlEl  = document.getElementById('cfg-url-' + type);
+    const openEl = document.getElementById('cfg-open-' + type);
+    if (urlEl)  urlEl.textContent = url;
+    if (openEl) openEl.href = url;
+  }
+
+  function onCfgChange(type, field, value) {
+    appSettings.overlays[type][field] = value;
+    updateOverlayUrl(type);
+    saveSettings();
+  }
+
+  function copyCfgUrl(type) {
+    navigator.clipboard.writeText(buildOverlayUrl(type))
+      .then(() => showToast('URL copiada — pégala en OBS Browser Source'))
+      .catch(() => showToast('Error al copiar'));
+  }
+
+  function updateFollowerDisplay(count) {
+    const el = document.getElementById('cfg-seg-auto');
+    if (el) el.textContent = count ? Number(count).toLocaleString('es') : 'Conecta para obtener';
+  }
+
+  async function testGiftAlert() {
+    try {
+      const res = await fetch('/api/test/gift', { method: 'POST' });
+      const data = await res.json();
+      if (data.success) showToast('<img class="icon-inline" src="icons/card_giftcard.svg" alt=""> Test alerta enviada: ' + data.giftName);
+      else showToast('Error al enviar test');
+    } catch (e) {
+      showToast('Error al enviar test');
+    }
+  }
+
+  async function testTopLikers() {
+    try {
+      const res = await fetch('/api/test/likes', { method: 'POST' });
+      const data = await res.json();
+      if (data.success) showToast('<img class="icon-inline" src="icons/favorite.svg" alt=""> Test likes enviados (' + data.count + ' usuarios)');
+      else showToast('Error al enviar test');
+    } catch (e) {
+      showToast('Error al enviar test');
+    }
+  }
+
+  // ─── STATE ────────────────────────────────────────────────────
   let ws = null;
   let msgCount = 0;
   let speechQueue = [];
@@ -1037,115 +1673,139 @@
   const CHAT_TTS_MAX_LEN = 200;
   const MAX_QUEUE_SIZE = 15;
 
-  // ─── LogStorage (shared with advanced.html) ─────────────────────
+  // ─── LOG STORAGE ──────────────────────────────────────────────
   class LogStorage {
     constructor(maxEntries = 100) {
       this.key = 'tiktok_tts_logs';
       this.maxEntries = maxEntries;
     }
-
     addLog(level, source, message, data = null) {
       try {
         const logs = this.getLogs();
-        logs.push({
-          timestamp: new Date().toISOString(),
-          level,
-          source,
-          message,
-          data
-        });
+        logs.push({ timestamp: new Date().toISOString(), level, source, message, data });
         if (logs.length > this.maxEntries) logs.shift();
         localStorage.setItem(this.key, JSON.stringify(logs));
-      } catch (e) {
-        console.error('LogStorage error:', e);
-      }
+      } catch(e) {}
     }
-
     getLogs() {
-      try {
-        return JSON.parse(localStorage.getItem(this.key) || '[]');
-      } catch (e) {
-        return [];
-      }
+      try { return JSON.parse(localStorage.getItem(this.key) || '[]'); } catch(e) { return []; }
     }
   }
 
   const logStorage = new LogStorage(100);
 
   const options = {
-    readChat: true,
-    readGifts: false,
-    readJoins: false,
-    readFollows: false,
-    readLikes: false,
-    sayUsername: true
+    readChat: true, readGifts: false, readJoins: false,
+    readFollows: false, readLikes: false, sayUsername: true
   };
 
   let ttsRate = 1.0;
-  let ttsVol = 1.0;
+  let ttsVol  = 1.0;
   let ttsPitch = 1.0;
   let selectedVoice = null;
 
-  // ─── Voice Setup - Google TTS (Natural, Gratis) ─────────────
+  // ─── VOICES ───────────────────────────────────────────────────
   const voiceSelect = document.getElementById('voiceSelect');
+  const voiceDropdownTrigger = document.getElementById('voiceDropdownTrigger');
+  const voiceDropdownMenu = document.getElementById('voiceDropdownMenu');
+  const voiceDropdownFlag = document.getElementById('voiceDropdownFlag');
+  const voiceDropdownText = document.getElementById('voiceDropdownText');
   let availableVoices = [];
+
+  function updateVoiceDisplay(voiceObj) {
+    if (!voiceObj) return;
+    voiceSelect.value = voiceObj.id;
+    voiceDropdownFlag.src = 'flags/' + voiceObj.flag + '.svg';
+    voiceDropdownFlag.alt = voiceObj.name;
+    voiceDropdownText.textContent = voiceObj.name;
+  }
+
+  function toggleVoiceDropdown() {
+    const isOpen = voiceDropdownMenu.classList.contains('show');
+    if (isOpen) {
+      voiceDropdownMenu.classList.remove('show');
+      voiceDropdownTrigger.classList.remove('open');
+    } else {
+      voiceDropdownMenu.classList.add('show');
+      voiceDropdownTrigger.classList.add('open');
+    }
+  }
+
+  function closeVoiceDropdown() {
+    voiceDropdownMenu.classList.remove('show');
+    voiceDropdownTrigger.classList.remove('open');
+  }
+
+  function selectVoice(id) {
+    const voiceObj = availableVoices.find(v => v.id === id);
+    if (!voiceObj) return;
+    selectedVoice = id;
+    appSettings.voice = id;
+    updateVoiceDisplay(voiceObj);
+    saveSettings();
+    closeVoiceDropdown();
+    // highlight active option
+    document.querySelectorAll('.voice-option').forEach(el => {
+      el.classList.toggle('active', el.dataset.voiceId === id);
+    });
+  }
 
   async function loadVoices() {
     try {
       const response = await fetch('/api/voices');
       availableVoices = await response.json();
-      voiceSelect.innerHTML = '';
+      voiceDropdownMenu.innerHTML = '';
 
       const addGroup = (label, voices) => {
         if (!voices.length) return;
-        const grp = document.createElement('optgroup');
-        grp.label = label;
+        const grpLabel = document.createElement('div');
+        grpLabel.className = 'voice-group-label';
+        grpLabel.textContent = label;
+        voiceDropdownMenu.appendChild(grpLabel);
         voices.forEach(v => {
-          const opt = document.createElement('option');
-          opt.value = v.id;
-          opt.textContent = v.name;
-          grp.appendChild(opt);
+          const opt = document.createElement('div');
+          opt.className = 'voice-option';
+          opt.dataset.voiceId = v.id;
+          opt.innerHTML = '<img class="flag-icon" src="flags/' + v.flag + '.svg" alt=""> <span>' + v.name + '</span>';
+          opt.onclick = () => selectVoice(v.id);
+          voiceDropdownMenu.appendChild(opt);
         });
-        voiceSelect.appendChild(grp);
       };
 
-      // Google: español
-      addGroup('🌎 Google — Español',
-        availableVoices.filter(v => v.id.startsWith('es')));
+      addGroup('Google — Español', availableVoices.filter(v => v.id.startsWith('es')));
+      addGroup('Google — Otros idiomas', availableVoices.filter(v => !v.id.startsWith('es')));
 
-      // Google: otros
-      addGroup('🌐 Google — Otros idiomas',
-        availableVoices.filter(v => !v.id.startsWith('es')));
-
-      // Auto-seleccionar primer español
-      const firstEs = availableVoices.find(v => v.id.startsWith('es'));
-      if (firstEs) {
-        voiceSelect.value = firstEs.id;
-        selectedVoice = firstEs.id;
+      // Apply saved voice or default to first Spanish
+      const savedVoice = appSettings.voice;
+      const found = savedVoice && availableVoices.find(v => v.id === savedVoice);
+      if (found) {
+        updateVoiceDisplay(found);
+        selectedVoice = savedVoice;
+      } else {
+        const firstEs = availableVoices.find(v => v.id.startsWith('es'));
+        if (firstEs) { updateVoiceDisplay(firstEs); selectedVoice = firstEs.id; }
       }
 
+      // highlight active
+      document.querySelectorAll('.voice-option').forEach(el => {
+        el.classList.toggle('active', el.dataset.voiceId === selectedVoice);
+      });
     } catch (err) {
       console.error('Error loading voices:', err);
     }
   }
 
-  loadVoices();
-
-  voiceSelect.addEventListener('change', (e) => {
-    selectedVoice = e.target.value;
-    console.log('[VOICE] Voz seleccionada:', selectedVoice);
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    const dd = document.getElementById('voiceDropdown');
+    if (dd && !dd.contains(e.target)) closeVoiceDropdown();
   });
 
-  // ─── Referencia al audio actualmente en reproducción ─────────
+  // ─── AUDIO ────────────────────────────────────────────────────
   let activeAudio = null;
 
-  // ─── Helper: reproducir blob de audio con settings actuales ──
   function playAudioBlob(blob, { onEnd, onError } = {}) {
-    if (!blob || blob.size === 0) {
-      logStorage.addLog('error', 'client', 'Blob de audio vacío o inválido', { blobSize: blob?.size || 0 });
-      onError?.();
-      return;
-    }
+    if (!blob || blob.size === 0) { onError?.(); return; }
 
     const url   = URL.createObjectURL(blob);
     const audio = new Audio(url);
@@ -1165,85 +1825,78 @@
 
     audio.onended = () => finish(onEnd);
     audio.onerror = () => {
-      const errorCode = audio.error?.code || 'unknown';
-      const errorMsg = ['MEDIA_ERR_ABORTED', 'MEDIA_ERR_NETWORK', 'MEDIA_ERR_DECODE', 'MEDIA_ERR_SRC_NOT_SUPPORTED'][errorCode - 1] || 'desconocido';
-      logStorage.addLog('error', 'client', `Error de reproducción: ${errorMsg}`, { blobSize: blob.size, errorCode });
+      logStorage.addLog('error', 'client', 'Error de reproducción', { blobSize: blob.size });
       finish(onError);
     };
 
-    const playPromise = audio.play();
     Promise.race([
-      playPromise,
-      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000))
+      audio.play(),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 5000))
     ]).catch(err => {
-      if (err.message === 'timeout') {
-        logStorage.addLog('error', 'client', 'Timeout en audio.play()', { blobSize: blob.size });
-      }
+      if (err.message === 'timeout') logStorage.addLog('error', 'client', 'Timeout en audio.play()');
       finish(onError);
     });
   }
 
-  // ─── Probar voz ──────────────────────────────────────────────
   async function testVoice() {
     const input = document.getElementById('testVoiceInput');
     const btn   = document.getElementById('btnTestVoice');
     const text  = input.value.trim() || 'Hola, esta es la voz seleccionada';
-    const selectedVoiceValue = voiceSelect.value || 'es';
-
-    console.log('[TEST VOICE] Intentando con voz:', selectedVoiceValue);
+    const voice = voiceSelect.value || 'es';
 
     btn.disabled = true;
-    btn.textContent = '🔊 Reproduciendo...';
-
-    const done = () => { btn.disabled = false; btn.textContent = '▶ Probar voz'; };
+    btn.innerHTML = '<img class="icon-inline" src="icons/volume_up.svg" alt=""> Reproduciendo...';
+    const done = () => { btn.disabled = false; btn.textContent = '▶ Probar'; };
 
     try {
-      const response = await fetch('/api/tts', {
+      const res = await fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, voice: selectedVoiceValue })
+        body: JSON.stringify({ text, voice })
       });
-
-      if (!response.ok) throw new Error('TTS error');
-
-      playAudioBlob(await response.blob(), { onEnd: done, onError: done });
+      if (!res.ok) throw new Error('TTS error');
+      playAudioBlob(await res.blob(), { onEnd: done, onError: done });
     } catch (err) {
       console.error('Test voice error:', err);
       done();
     }
   }
 
-  // ─── TTS Controls (aplican en tiempo real al audio activo) ───
   function updateRate(v) {
     ttsRate = parseFloat(v);
     document.getElementById('rateVal').textContent = ttsRate.toFixed(1);
     if (activeAudio) activeAudio.playbackRate = ttsRate;
+    appSettings.rate = ttsRate;
+    saveSettings();
   }
 
   function updateVol(v) {
     ttsVol = parseFloat(v);
     document.getElementById('volVal').textContent = Math.round(ttsVol * 100);
     if (activeAudio) activeAudio.volume = ttsVol;
+    appSettings.vol = ttsVol;
+    saveSettings();
   }
 
   function updatePitch(v) {
     ttsPitch = parseFloat(v);
     document.getElementById('pitchVal').textContent = ttsPitch.toFixed(1);
-    // pitch no aplica en tiempo real (requeriría WebAudio API),
-    // toma efecto en el siguiente mensaje
+    appSettings.pitch = ttsPitch;
+    saveSettings();
   }
 
   function toggleOption(key, checkbox) {
     options[key] = checkbox.checked;
     const chipId = {
-      readChat: 'chip-chat', readGifts: 'chip-gifts',
-      readJoins: 'chip-joins', readFollows: 'chip-follows',
-      readLikes: 'chip-likes', sayUsername: 'chip-username'
+      readChat: 'chip-chat', readGifts: 'chip-gifts', readJoins: 'chip-joins',
+      readFollows: 'chip-follows', readLikes: 'chip-likes', sayUsername: 'chip-username'
     }[key];
     document.getElementById(chipId).classList.toggle('active', checkbox.checked);
+    appSettings[key] = checkbox.checked;
+    saveSettings();
   }
 
-  // ─── TTS Queue - Edge TTS Backend ──────────────────────────
+  // ─── SPEECH QUEUE ─────────────────────────────────────────────
   function speak(text, msgId) {
     if (speechQueue.length >= MAX_QUEUE_SIZE) return;
     speechQueue.push({ text, msgId });
@@ -1268,63 +1921,33 @@
     const { text, msgId } = speechQueue.shift();
     updateQueueBadge();
 
-    // Highlight speaking message
     if (currentMsgId) {
       const prev = document.getElementById(currentMsgId);
       if (prev) prev.classList.remove('speaking');
     }
     currentMsgId = msgId;
     const msgEl = document.getElementById(msgId);
-    if (msgEl) {
-      msgEl.classList.add('speaking');
-      msgEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
+    if (msgEl) { msgEl.classList.add('speaking'); msgEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
 
     showSpeakingIndicator(text);
     document.getElementById('appGlow').classList.add('active');
 
-    const selectedVoiceValue = voiceSelect.value || 'es';
-    console.log('[SPEAK] Usando voz:', selectedVoiceValue, 'para:', text.substring(0, 50));
+    const voice = voiceSelect.value || 'es';
 
     try {
-      const response = await fetch('/api/tts', {
+      const res = await fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, voice: selectedVoiceValue })
+        body: JSON.stringify({ text, voice })
       });
 
-      const contentType = response.headers.get('content-type') || 'unknown';
+      if (!res.ok) { logStorage.addLog('error', 'network', `Error TTS HTTP ${res.status}`); throw new Error('TTS error'); }
 
-      if (!response.ok) {
-        const errorMsg = `Error TTS (HTTP ${response.status})`;
-        const errorBody = await response.text().catch(() => '');
-        logStorage.addLog('error', 'network', errorMsg, {
-          voice: selectedVoiceValue,
-          status: response.status,
-          contentType,
-          errorBody: errorBody.substring(0, 200)
-        });
-        throw new Error(errorMsg);
-      }
-
-      const blob = await response.blob();
-      logStorage.addLog('info', 'network', 'Audio blob recibido', {
-        voice: selectedVoiceValue,
-        size: blob.size,
-        type: blob.type,
-        contentType
-      });
-
-      playAudioBlob(blob, {
-        onEnd:   () => processQueue(),
-        onError: () => {
-          processQueue();
-        }
-      });
-
+      const blob = await res.blob();
+      logStorage.addLog('info', 'network', 'Audio recibido', { size: blob.size });
+      playAudioBlob(blob, { onEnd: () => processQueue(), onError: () => processQueue() });
     } catch (err) {
-      console.error('TTS error:', err);
-      logStorage.addLog('error', 'network', `Error TTS: ${err.message}`, { voice: selectedVoiceValue });
+      logStorage.addLog('error', 'network', `Error TTS: ${err.message}`);
       processQueue();
     }
   }
@@ -1332,8 +1955,7 @@
   function showSpeakingIndicator(text) {
     const el = document.getElementById('speakingNow');
     el.classList.add('visible');
-    document.getElementById('speakingText').textContent =
-      text.length > 60 ? text.substring(0, 60) + '…' : text;
+    document.getElementById('speakingText').textContent = text.length > 60 ? text.substring(0, 60) + '…' : text;
   }
 
   function hideSpeakingIndicator() {
@@ -1345,32 +1967,20 @@
       `Cola: ${speechQueue.length} mensaje${speechQueue.length !== 1 ? 's' : ''}`;
   }
 
-  // ─── WebSocket ────────────────────────────────────────────
+  // ─── WEBSOCKET ────────────────────────────────────────────────
   function connectWS() {
     if (ws !== null && ws.readyState === WebSocket.OPEN) return;
-
     const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
     ws = new WebSocket(`${proto}//${location.host}`);
-
-    ws.onmessage = (e) => {
-      const data = JSON.parse(e.data);
-      handleMessage(data);
-    };
-
-    ws.onclose = () => {
-      ws = null;
-      setTimeout(connectWS, 2000);
-    };
-
-    ws.onerror = () => {
-      ws.close();
-    };
+    ws.onmessage = (e) => { const d = JSON.parse(e.data); handleMessage(d); };
+    ws.onclose   = () => { ws = null; setTimeout(connectWS, 2000); };
+    ws.onerror   = () => ws.close();
   }
 
   function handleMessage(data) {
     switch (data.type) {
       case 'connected':
-        setStatus('online', `🟢 Conectado a @${data.username}`);
+        setStatus('online', '<img class="icon-inline" src="icons/check_circle.svg" alt=""> Conectado a @' + data.username);
         document.getElementById('btnConnect').style.display = 'none';
         document.getElementById('btnDisconnect').style.display = 'block';
         logStorage.addLog('info', 'server', `Conectado a @${data.username}`);
@@ -1380,45 +1990,40 @@
         setStatus('', 'Desconectado');
         document.getElementById('btnConnect').style.display = 'block';
         document.getElementById('btnDisconnect').style.display = 'none';
-        logStorage.addLog('info', 'server', 'Desconectado del live');
+        logStorage.addLog('info', 'server', 'Desconectado');
         break;
 
       case 'chat':
-        // Incrementar msgCount ANTES de usarlo
         msgCount++;
         document.getElementById('msgCount').textContent = msgCount;
-        const chatMsgId = `msg-${msgCount}`;
-        addChatMsg(data, chatMsgId);
+        const chatId = `msg-${msgCount}`;
+        addChatMsg(data, chatId);
         if (options.readChat) {
-          const rawText = options.sayUsername
-            ? `${data.user}: ${data.comment}`
-            : data.comment;
-          const text = rawText.length > CHAT_TTS_MAX_LEN ? rawText.substring(0, CHAT_TTS_MAX_LEN) : rawText;
-          speak(text, chatMsgId);
+          const raw  = options.sayUsername ? `${data.user}: ${data.comment}` : data.comment;
+          const text = raw.length > CHAT_TTS_MAX_LEN ? raw.substring(0, CHAT_TTS_MAX_LEN) : raw;
+          speak(text, chatId);
         }
         break;
 
       case 'gift':
         if (options.readGifts) {
-          // Incrementar msgCount ANTES de usarlo
           msgCount++;
           document.getElementById('msgCount').textContent = msgCount;
-          const giftMsgId = `msg-${msgCount}`;
-          const text = `${data.user} envió ${data.repeatCount} ${data.giftName}`;
-          addSystemMsg(`🎁 ${text}`, 'gift', giftMsgId);
-          speak(text, giftMsgId);
+          const giftId   = `msg-${msgCount}`;
+          const giftText = `${data.user} envió ${data.repeatCount} ${data.giftName}`;
+          addSystemMsg('<img class="icon-inline" src="icons/card_giftcard.svg" alt=""> ' + giftText, 'gift', giftId);
+          speak(giftText, giftId);
         }
         break;
 
       case 'join':
         if (options.readJoins) {
-          // Incrementar msgCount ANTES de usarlo
           msgCount++;
           document.getElementById('msgCount').textContent = msgCount;
-          const joinMsgId = `msg-${msgCount}`;
-          const text = `${data.user} entró al live`;
-          addSystemMsg(`👋 ${text}`, 'join', joinMsgId);
-          speak(text, joinMsgId);
+          const joinId   = `msg-${msgCount}`;
+          const joinText = `${data.user} entró al live`;
+          addSystemMsg('<img class="icon-inline" src="icons/emoji_people.svg" alt=""> ' + joinText, 'join', joinId);
+          speak(joinText, joinId);
         }
         break;
 
@@ -1426,49 +2031,51 @@
         if (options.readFollows) {
           msgCount++;
           document.getElementById('msgCount').textContent = msgCount;
-          const followMsgId = `msg-${msgCount}`;
+          const followId   = `msg-${msgCount}`;
           const followText = `${data.user} te acaba de seguir`;
-          addSystemMsg(`❤️‍🔥 ${followText}`, 'join', followMsgId);
-          speak(followText, followMsgId);
+          addSystemMsg('<img class="icon-inline" src="icons/person_add.svg" alt=""> ' + followText, 'join', followId);
+          speak(followText, followId);
         }
         break;
 
       case 'like':
         if (options.readLikes) {
           const now = Date.now();
-          const lastRead = likeCooldownMap.get(data.user) || 0;
-          if (now - lastRead >= LIKE_COOLDOWN_MS) {
+          const last = likeCooldownMap.get(data.user) || 0;
+          if (now - last >= LIKE_COOLDOWN_MS) {
             likeCooldownMap.set(data.user, now);
             msgCount++;
             document.getElementById('msgCount').textContent = msgCount;
-            const likeMsgId = `msg-${msgCount}`;
+            const likeId   = `msg-${msgCount}`;
             const likeText = `${data.user} dio ${data.likeCount} likes`;
-            addSystemMsg(`👍 ${likeText}`, 'join', likeMsgId);
-            speak(likeText, likeMsgId);
+            addSystemMsg('<img class="icon-inline" src="icons/thumb_up.svg" alt=""> ' + likeText, 'join', likeId);
+            speak(likeText, likeId);
           }
         }
         break;
 
       case 'reconnecting':
-        setStatus('error', `🔄 Reconectando... (intento ${data.attempt})`);
-        logStorage.addLog('warn', 'server', `Intento de reconexión ${data.attempt}`);
+        setStatus('error', '<img class="icon-inline" src="icons/refresh.svg" alt=""> Reconectando... (intento ' + data.attempt + ')');
+        logStorage.addLog('warn', 'server', `Reconexión intento ${data.attempt}`);
+        break;
+
+      case 'follower-base':
+        updateFollowerDisplay(data.count);
         break;
 
       case 'error':
-        setStatus('error', `❌ ${data.message}`);
+        setStatus('error', '<img class="icon-inline" src="icons/error.svg" alt=""> ' + data.message);
         logStorage.addLog('error', 'server', data.message);
         break;
     }
   }
 
-  // ─── Chat UI ──────────────────────────────────────────────
+  // ─── CHAT UI ──────────────────────────────────────────────────
   const COLORS = ['#fe2c55','#25f4ee','#ff6b6b','#ffd93d','#6bcb77','#4d96ff','#ff922b'];
   const colorMap = {};
 
   function getUserColor(user) {
-    if (!colorMap[user]) {
-      colorMap[user] = COLORS[Object.keys(colorMap).length % COLORS.length];
-    }
+    if (!colorMap[user]) colorMap[user] = COLORS[Object.keys(colorMap).length % COLORS.length];
     return colorMap[user];
   }
 
@@ -1476,8 +2083,8 @@
     const empty = document.getElementById('emptyState');
     if (empty) empty.remove();
 
-    const color = getUserColor(data.user);
-    const time = new Date(data.timestamp).toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
+    const color    = getUserColor(data.user);
+    const time     = new Date(data.timestamp).toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
     const initials = data.user.substring(0, 2).toUpperCase();
 
     const div = document.createElement('div');
@@ -1502,14 +2109,10 @@
     if (empty) empty.remove();
 
     const div = document.createElement('div');
-    div.className = `chat-msg ${type === 'gift' ? 'gift-msg' : ''}`;
+    div.className = `chat-msg${type === 'gift' ? ' gift-msg' : ''}`;
     div.id = msgId;
     div.style.opacity = '0.7';
-    div.innerHTML = `
-      <div class="msg-body">
-        <div class="msg-text" style="font-size:13px">${escapeHtml(text)}</div>
-      </div>
-    `;
+    div.innerHTML = `<div class="msg-body"><div class="msg-text" style="font-size:13px">${text}</div></div>`;
 
     const log = document.getElementById('chatLog');
     log.appendChild(div);
@@ -1517,11 +2120,11 @@
   }
 
   function clearChat() {
-    const log = document.getElementById('chatLog');
-    log.innerHTML = `<div class="empty-state" id="emptyState">
-      <div class="empty-icon">🎤</div>
-      <div class="empty-text">Chat limpiado</div>
-    </div>`;
+    document.getElementById('chatLog').innerHTML = `
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon"><img class="icon-inline" src="icons/mic.svg" alt=""></div>
+        <div class="empty-text">Chat limpiado</div>
+      </div>`;
     msgCount = 0;
     document.getElementById('msgCount').textContent = '0';
     speechQueue = [];
@@ -1537,47 +2140,45 @@
     return d.innerHTML;
   }
 
-  // ─── Status ───────────────────────────────────────────────
+  // ─── STATUS ───────────────────────────────────────────────────
   function setStatus(type, text) {
-    const dot = document.getElementById('statusDot');
+    const dot   = document.getElementById('statusDot');
     const label = document.getElementById('statusText');
-    dot.className = 'status-dot' + (type ? ` ${type}` : '');
+    dot.className   = 'status-dot'  + (type ? ` ${type}` : '');
     label.className = 'status-text' + (type ? ` ${type}` : '');
-    label.textContent = text;
+    label.innerHTML = text;
   }
 
-  // ─── Connect/Disconnect ───────────────────────────────────
+  // ─── CONNECT ──────────────────────────────────────────────────
   async function connect() {
     const username = document.getElementById('usernameInput').value.trim();
-    if (!username) {
-      setStatus('error', '❌ Escribe tu nombre de usuario');
-      logStorage.addLog('error', 'client', 'Intento de conexión sin usuario');
-      return;
-    }
+    if (!username) { setStatus('error', '<img class="icon-inline" src="icons/error.svg" alt=""> Escribe tu nombre de usuario'); return; }
 
     const btn = document.getElementById('btnConnect');
     btn.disabled = true;
     btn.textContent = 'Conectando...';
-    setStatus('', `Conectando a @${username.replace('@','')}...`);
-    logStorage.addLog('info', 'client', `Iniciando conexión a @${username.replace('@','')}`);
+    setStatus('', `Conectando a @${username.replace('@', '')}...`);
+    logStorage.addLog('info', 'client', `Conectando a @${username.replace('@', '')}`);
+
+    // Guardar último usuario
+    appSettings.lastUsername = username.replace('@', '');
+    saveSettings();
 
     try {
-      const res = await fetch('/api/connect', {
+      const res  = await fetch('/api/connect', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username })
       });
-
       const data = await res.json();
-
       if (!res.ok) {
-        setStatus('error', `❌ ${data.error}`);
-        logStorage.addLog('error', 'network', `Conexión fallida: ${data.error}`, { status: res.status });
+        setStatus('error', '<img class="icon-inline" src="icons/error.svg" alt=""> ' + data.error);
+        logStorage.addLog('error', 'network', `Conexión fallida: ${data.error}`);
         btn.disabled = false;
         btn.textContent = 'Conectar';
       }
     } catch (err) {
-      setStatus('error', '❌ Error de red');
+      setStatus('error', '<img class="icon-inline" src="icons/error.svg" alt=""> Error de red');
       logStorage.addLog('error', 'network', `Error de red: ${err.message}`);
       btn.disabled = false;
       btn.textContent = 'Conectar';
@@ -1585,12 +2186,7 @@
   }
 
   async function disconnect() {
-    try {
-      await fetch('/api/disconnect', { method: 'POST' });
-      logStorage.addLog('info', 'client', 'Desconexión iniciada');
-    } catch (err) {
-      logStorage.addLog('error', 'network', `Error en desconexión: ${err.message}`);
-    }
+    try { await fetch('/api/disconnect', { method: 'POST' }); } catch(e) {}
     if (ws) ws.close();
     isSpeaking = false;
     speechQueue = [];
@@ -1598,51 +2194,18 @@
     updateQueueBadge();
   }
 
-  // Enter key to connect
   document.getElementById('usernameInput').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') connect();
   });
 
-  // ─── Init ─────────────────────────────────────────────────
-  connectWS();
-  updateQueueBadge();
-
-  // ─── Donations & Social Modals ───────────────────────
-  function openDonationsModal() {
-    document.getElementById('donationsModal').classList.add('show');
-    generateQRCodes();
-  }
-
+  // ─── MODALS ───────────────────────────────────────────────────
+  function openDonationsModal() { document.getElementById('donationsModal').classList.add('show'); }
   function closeDonationsModal(e) {
     if (e && e.target.id !== 'donationsModal') return;
     document.getElementById('donationsModal').classList.remove('show');
   }
 
-  function generateQRCodes() {
-    document.getElementById('qrLightning').innerHTML = '';
-    document.getElementById('qrBTC').innerHTML = '';
-
-    new QRCode(document.getElementById('qrLightning'), {
-      text: 'lightning:Khunsa@coinos.io',
-      width: 200,
-      height: 200,
-      colorDark: '#e8e8f0',
-      colorLight: '#111118',
-    });
-
-    new QRCode(document.getElementById('qrBTC'), {
-      text: 'bitcoin:bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk',
-      width: 200,
-      height: 200,
-      colorDark: '#e8e8f0',
-      colorLight: '#111118',
-    });
-  }
-
-  function openSocialModal() {
-    document.getElementById('socialModal').classList.add('show');
-  }
-
+  function openSocialModal()  { document.getElementById('socialModal').classList.add('show'); }
   function closeSocialModal(e) {
     if (e && e.target.id !== 'socialModal') return;
     document.getElementById('socialModal').classList.remove('show');
@@ -1655,36 +2218,39 @@
     }
   });
 
+  // ─── UTILS ────────────────────────────────────────────────────
   function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => {
-      showToast('Copiado al portapapeles');
-    }).catch(() => {
-      showToast('Error al copiar');
-    });
+    navigator.clipboard.writeText(text)
+      .then(() => showToast('Copiado al portapapeles'))
+      .catch(() => showToast('Error al copiar'));
   }
 
   function showToast(message) {
     const toast = document.createElement('div');
     toast.style.cssText = `
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--tiktok-red);
-      color: white;
-      padding: 14px 24px;
-      border-radius: var(--btn-radius);
-      font-size: 14px;
-      z-index: 3000;
-      animation: slideUp 0.3s ease-out;
-      font-weight: 500;
-      letter-spacing: 0.3px;
-      box-shadow: 0 8px 24px rgba(254, 44, 85, 0.3);
+      position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+      background:var(--tiktok-red); color:white; padding:14px 24px;
+      border-radius:var(--btn-radius); font-size:14px; z-index:3000;
+      animation:slideUp 0.3s ease-out; font-weight:500; letter-spacing:0.3px;
+      box-shadow:0 8px 24px rgba(0,0,0,0.3);
     `;
-    toast.textContent = message;
+    toast.innerHTML = message;
     document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2000);
+    setTimeout(() => toast.remove(), 2200);
   }
+
+  // ─── INIT ─────────────────────────────────────────────────────
+  loadSettings();
+  applySettings();
+  loadVoices();
+  connectWS();
+  updateQueueBadge();
+
+  // Fetch current base follower count if already connected
+  fetch('/api/overlay-stats')
+    .then(r => r.json())
+    .then(d => { if (d.baseFollowerCount) updateFollowerDisplay(d.baseFollowerCount); })
+    .catch(() => {});
 </script>
 </body>
 </html>

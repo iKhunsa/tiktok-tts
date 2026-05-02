@@ -4,20 +4,31 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TikLive TTS — Configuración</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #0a0a0f;
-      --surface: #111118;
-      --border: #1e1e2e;
-      --tiktok-red: #fe2c55;
-      --tiktok-cyan: #25f4ee;
-      --text: #e8e8f0;
-      --muted: #5a5a7a;
-      --chat-bg: #0d0d15;
-      --green: #00ff88;
-      --yellow: #ffd93d;
-      --orange: #ff922b;
+      --bg: #171717;
+      --bg-button: #0f0f0f;
+      --surface: #1a1a1a;
+      --border-subtle: #242424;
+      --border: #2e2e2e;
+      --border-strong: #363636;
+      --text: #fafafa;
+      --text-secondary: #b4b4b4;
+      --text-muted: #898989;
+      --accent: #3ecf8e;
+      --accent-link: #00c573;
+      --accent-border: rgba(62, 207, 142, 0.3);
+      --glass: rgba(41, 41, 41, 0.84);
+
+      /* Legacy aliases — JS uses these */
+      --muted: #898989;
+      --green: #3ecf8e;
+      --chat-bg: #0f0f0f;
+      --tiktok-red: #2e2e2e;
+      --tiktok-cyan: #3ecf8e;
+      --orange: #898989;
+      --yellow: #b4b4b4;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -25,31 +36,11 @@
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Syne', sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
       min-height: 100vh;
       overflow-x: hidden;
-    }
-
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 9999;
-      opacity: 0.4;
-    }
-
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(37,244,238,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(37,244,238,0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-      z-index: 0;
     }
 
     .app {
@@ -77,148 +68,128 @@
     }
 
     .logo-icon {
-      width: 44px;
-      height: 44px;
-      background: var(--tiktok-red);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .logo-icon::before {
-      content: '';
-      position: absolute;
-      top: -4px; left: -4px;
-      width: 20px; height: 20px;
-      background: var(--tiktok-cyan);
-      border-radius: 50%;
-      opacity: 0.6;
+      width: 36px;
+      height: 36px;
+      display: block;
+      object-fit: contain;
     }
 
     h1 {
-      font-size: 26px;
-      font-weight: 800;
+      font-family: 'Inter', sans-serif;
+      font-size: 22px;
+      font-weight: 400;
       letter-spacing: -0.5px;
+      color: var(--text);
     }
 
-    h1 span { color: var(--tiktok-red); }
+    h1 span { color: var(--text); }
 
     .subtitle {
-      font-family: 'Space Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 2px;
+      color: var(--text-muted);
+      letter-spacing: 1.2px;
       text-transform: uppercase;
     }
 
     .nav {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
     .nav-link {
-      font-family: 'Space Mono', monospace;
-      font-size: 12px;
-      color: var(--muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
       text-decoration: none;
-      letter-spacing: 1px;
-      padding: 8px 16px;
+      letter-spacing: 0;
+      padding: 7px 14px;
       border: 1px solid var(--border);
-      border-radius: 8px;
-      transition: all 0.2s;
+      border-radius: 9999px;
+      transition: border-color 0.2s, color 0.2s;
       white-space: nowrap;
+      opacity: 0.8;
     }
 
     .nav-link:hover, .nav-link.active {
-      color: var(--tiktok-cyan);
-      border-color: var(--tiktok-cyan);
-      background: rgba(37,244,238,0.06);
+      color: var(--text);
+      border-color: var(--border-strong);
+      background: transparent;
+      opacity: 1;
     }
 
     /* PAGE TITLE */
-    .page-title {
-      margin-bottom: 32px;
-    }
+    .page-title { margin-bottom: 32px; }
 
     .page-title h2 {
-      font-size: 22px;
-      font-weight: 800;
+      font-family: 'Inter', sans-serif;
+      font-size: 20px;
+      font-weight: 400;
       letter-spacing: -0.3px;
       margin-bottom: 8px;
+      color: var(--text);
     }
 
     .page-title p {
-      font-family: 'Space Mono', monospace;
-      font-size: 12px;
-      color: var(--muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: var(--text-muted);
       line-height: 1.6;
     }
 
     /* PANELS */
     .panel {
-      background: var(--surface);
+      background: var(--bg);
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-left: 2px solid var(--border);
+      border-radius: 12px;
       padding: 28px;
       margin-bottom: 24px;
       position: relative;
-      overflow: hidden;
     }
-
-    .panel::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-    }
-
-    .panel-rate::before { background: linear-gradient(90deg, var(--tiktok-red), var(--orange)); }
-    .panel-filter::before { background: linear-gradient(90deg, var(--tiktok-cyan), var(--green)); }
-    .panel-status::before { background: linear-gradient(90deg, #4d96ff, var(--tiktok-cyan)); }
 
     .panel-title {
-      font-family: 'Space Mono', monospace;
-      font-size: 12px;
-      color: var(--muted);
-      letter-spacing: 2px;
+      font-family: 'Source Code Pro', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 1.2px;
       text-transform: uppercase;
       margin-bottom: 6px;
     }
 
     .panel-desc {
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
       color: var(--text);
-      font-weight: 700;
+      font-weight: 500;
       margin-bottom: 20px;
     }
 
     /* EXPLAINER */
     .explainer {
-      background: var(--chat-bg);
+      background: var(--bg-button);
       border: 1px solid var(--border);
-      border-left: 3px solid var(--orange);
-      border-radius: 10px;
+      border-left: 2px solid var(--border-strong);
+      border-radius: 8px;
       padding: 16px 18px;
       margin-bottom: 24px;
     }
 
     .explainer-title {
-      font-family: 'Space Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 11px;
-      color: var(--orange);
-      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      letter-spacing: 1.2px;
       text-transform: uppercase;
       margin-bottom: 10px;
     }
 
     .explainer p {
+      font-family: 'Inter', sans-serif;
       font-size: 13px;
-      color: #a0a0c0;
+      color: var(--text-secondary);
       line-height: 1.7;
       margin-bottom: 8px;
     }
@@ -228,21 +199,21 @@
 
     .explainer .highlight {
       display: inline-block;
-      background: rgba(255,146,43,0.12);
-      color: var(--orange);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-secondary);
       border-radius: 4px;
       padding: 1px 6px;
-      font-family: 'Space Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 11px;
     }
 
     .explainer .code {
       display: inline-block;
-      background: rgba(37,244,238,0.1);
-      color: var(--tiktok-cyan);
+      background: rgba(62, 207, 142, 0.08);
+      color: var(--accent);
       border-radius: 4px;
       padding: 1px 6px;
-      font-family: 'Space Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 11px;
     }
 
@@ -261,48 +232,49 @@
 
     .control-group label {
       display: block;
-      font-family: 'Space Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 11px;
-      color: var(--muted);
+      color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 1.2px;
       margin-bottom: 8px;
     }
 
     .control-group .val-display {
-      color: var(--tiktok-cyan);
-      font-weight: 700;
+      color: var(--text);
+      font-weight: 500;
     }
 
     input[type="range"] {
       width: 100%;
       -webkit-appearance: none;
-      height: 6px;
-      border-radius: 3px;
+      height: 4px;
+      border-radius: 2px;
       background: var(--border);
       cursor: pointer;
       outline: none;
+      border: none;
     }
 
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 18px; height: 18px;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
-      background: var(--tiktok-cyan);
+      background: var(--text);
       cursor: pointer;
-      transition: box-shadow 0.2s;
+      border: 2px solid var(--bg);
+      transition: background 0.2s;
     }
 
-    input[type="range"]::-webkit-slider-thumb:hover {
-      box-shadow: 0 0 10px rgba(37,244,238,0.5);
-    }
+    input[type="range"]::-webkit-slider-thumb:hover { background: var(--accent); }
 
     .range-labels {
       display: flex;
       justify-content: space-between;
-      font-family: 'Space Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 10px;
-      color: var(--muted);
+      color: var(--text-muted);
       margin-top: 5px;
     }
 
@@ -320,15 +292,17 @@
     .toggle-info { flex: 1; padding-right: 20px; }
 
     .toggle-name {
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 500;
       margin-bottom: 3px;
+      color: var(--text);
     }
 
     .toggle-hint {
-      font-family: 'Space Mono', monospace;
-      font-size: 11px;
-      color: var(--muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--text-muted);
       line-height: 1.5;
     }
 
@@ -347,27 +321,29 @@
       background: var(--border);
       border-radius: 12px;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: background 0.2s, border-color 0.2s;
     }
 
     .switch-track::after {
       content: '';
       position: absolute;
-      top: 3px; left: 3px;
-      width: 18px; height: 18px;
-      background: var(--muted);
+      top: 3px;
+      left: 3px;
+      width: 18px;
+      height: 18px;
+      background: var(--text-muted);
       border-radius: 50%;
       transition: transform 0.2s, background 0.2s;
     }
 
     .switch input:checked + .switch-track {
-      background: rgba(37,244,238,0.2);
-      border: 1px solid var(--tiktok-cyan);
+      background: rgba(62, 207, 142, 0.15);
+      border: 1px solid rgba(62, 207, 142, 0.4);
     }
 
     .switch input:checked + .switch-track::after {
       transform: translateX(20px);
-      background: var(--tiktok-cyan);
+      background: var(--accent);
     }
 
     /* TAGS */
@@ -379,41 +355,43 @@
 
     .tag-input-row input[type="text"] {
       flex: 1;
-      background: var(--chat-bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
+      background: var(--bg-button);
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
       padding: 10px 14px;
       color: var(--text);
-      font-family: 'Space Mono', monospace;
+      font-family: 'Inter', sans-serif;
       font-size: 13px;
       outline: none;
       transition: border-color 0.2s;
     }
 
     .tag-input-row input[type="text"]:focus {
-      border-color: var(--tiktok-cyan);
+      border-color: rgba(62, 207, 142, 0.5);
     }
 
     .tag-input-row input[type="text"]::placeholder {
-      color: var(--muted);
+      color: var(--text-muted);
     }
 
     .btn-add {
-      background: rgba(37,244,238,0.1);
-      border: 1px solid var(--tiktok-cyan);
-      color: var(--tiktok-cyan);
-      border-radius: 8px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: 6px;
       padding: 10px 18px;
-      font-family: 'Space Mono', monospace;
-      font-size: 12px;
-      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: border-color 0.2s, color 0.2s;
       white-space: nowrap;
     }
 
     .btn-add:hover {
-      background: rgba(37,244,238,0.2);
+      border-color: var(--border-strong);
+      color: var(--text);
+      background: transparent;
     }
 
     .tags-container {
@@ -427,36 +405,107 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      background: rgba(37,244,238,0.08);
-      border: 1px solid rgba(37,244,238,0.2);
-      border-radius: 20px;
-      padding: 5px 12px;
-      font-family: 'Space Mono', monospace;
+      background: rgba(62, 207, 142, 0.06);
+      border: 1px solid rgba(62, 207, 142, 0.2);
+      border-radius: 9999px;
+      padding: 4px 12px;
+      font-family: 'Source Code Pro', monospace;
       font-size: 12px;
-      color: var(--tiktok-cyan);
+      color: var(--accent);
       animation: pop-in 0.15s ease;
     }
 
     @keyframes pop-in {
-      from { opacity: 0; transform: scale(0.8); }
+      from { opacity: 0; transform: scale(0.85); }
       to { opacity: 1; transform: scale(1); }
     }
 
     .tag-remove {
       cursor: pointer;
-      color: var(--muted);
+      color: var(--text-muted);
       transition: color 0.15s;
       font-size: 14px;
       line-height: 1;
     }
 
-    .tag-remove:hover { color: var(--tiktok-red); }
+    .tag-remove:hover { color: var(--text); }
 
     .tags-empty {
-      font-family: 'Space Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 11px;
-      color: var(--muted);
+      color: var(--text-muted);
       padding: 8px 0;
+    }
+
+    /* TEXTAREA */
+    textarea {
+      background: var(--bg-button);
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      padding: 14px;
+      color: var(--text);
+      font-family: 'Source Code Pro', monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    textarea:focus { border-color: rgba(62, 207, 142, 0.5); }
+
+    /* FILE INPUT */
+    input[type="file"] {
+      background: var(--bg-button);
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+    }
+
+    /* GENERAL INPUTS (for log search etc) */
+    input[type="text"] {
+      background: var(--bg-button);
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+
+    input[type="text"]:focus { border-color: rgba(62, 207, 142, 0.5); }
+    input[type="text"]::placeholder { color: var(--text-muted); }
+
+    select {
+      background: var(--bg-button);
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      outline: none;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    select:focus { border-color: rgba(62, 207, 142, 0.5); }
+
+    /* LOGS CONTAINER */
+    #logsContainer {
+      background: var(--bg-button);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      font-family: 'Source Code Pro', monospace;
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.5;
     }
 
     /* STATUS */
@@ -472,7 +521,7 @@
     }
 
     .stat-card {
-      background: var(--chat-bg);
+      background: var(--bg);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 16px;
@@ -480,31 +529,25 @@
     }
 
     .stat-value {
-      font-family: 'Space Mono', monospace;
-      font-size: 24px;
-      font-weight: 700;
+      font-family: 'Source Code Pro', monospace;
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--text);
       margin-bottom: 4px;
     }
 
     .stat-label {
-      font-family: 'Space Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 10px;
-      color: var(--muted);
+      color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 1.2px;
     }
 
-    .stat-card.green .stat-value { color: var(--green); }
-    .stat-card.cyan .stat-value { color: var(--tiktok-cyan); }
-    .stat-card.red .stat-value { color: var(--tiktok-red); }
-    .stat-card.yellow .stat-value { color: var(--yellow); }
-    .stat-card.orange .stat-value { color: var(--orange); }
-    .stat-card.blue .stat-value { color: #4d96ff; }
-
     .conn-info {
-      background: var(--chat-bg);
+      background: var(--bg-button);
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 8px;
       padding: 16px 18px;
     }
 
@@ -520,37 +563,39 @@
     .conn-row:last-child { border-bottom: none; }
 
     .conn-key {
-      font-family: 'Space Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 11px;
-      color: var(--muted);
+      color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 1px;
     }
 
     .conn-val {
-      font-family: 'Space Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 500;
+      color: var(--text);
     }
 
-    .conn-val.online { color: var(--green); }
-    .conn-val.offline { color: var(--muted); }
+    .conn-val.online { color: var(--accent); }
+    .conn-val.offline { color: var(--text-muted); }
 
     .dot {
       display: inline-block;
-      width: 8px; height: 8px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       margin-right: 6px;
     }
 
     .dot.green {
-      background: var(--green);
-      box-shadow: 0 0 6px var(--green);
+      background: var(--accent);
+      box-shadow: 0 0 4px rgba(62, 207, 142, 0.4);
       animation: pulse-dot 2s infinite;
     }
 
-    .dot.red { background: var(--tiktok-red); }
-    .dot.muted { background: var(--muted); }
+    .dot.red { background: var(--text-muted); }
+    .dot.muted { background: var(--border-strong); }
 
     @keyframes pulse-dot {
       0%, 100% { opacity: 1; }
@@ -565,43 +610,41 @@
     }
 
     .btn-save {
-      background: var(--tiktok-red);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      padding: 12px 28px;
-      font-family: 'Syne', sans-serif;
+      background: var(--bg-button);
+      color: var(--text);
+      border: 1px solid var(--text);
+      border-radius: 9999px;
+      padding: 8px 28px;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 500;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: opacity 0.2s;
     }
 
-    .btn-save:hover {
-      background: #ff4d6d;
-      transform: translateY(-1px);
-    }
+    .btn-save:hover { opacity: 0.8; }
 
     .btn-save.saved {
-      background: var(--green);
-      color: #0a0a0f;
+      background: rgba(62, 207, 142, 0.1);
+      border-color: rgba(62, 207, 142, 0.4);
+      color: var(--accent);
     }
 
     .btn-refresh {
       background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      border-radius: 8px;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      border-radius: 6px;
       padding: 7px 14px;
-      font-family: 'Space Mono', monospace;
-      font-size: 11px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: color 0.2s, border-color 0.2s;
     }
 
     .btn-refresh:hover {
-      border-color: var(--tiktok-cyan);
-      color: var(--tiktok-cyan);
+      border-color: var(--border);
+      color: var(--text);
     }
 
     .status-header {
@@ -612,11 +655,11 @@
     }
 
     .section-label {
-      font-family: 'Space Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 10px;
-      color: var(--muted);
+      color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 1.2px;
       margin: 20px 0 12px;
       display: flex;
       align-items: center;
@@ -637,12 +680,12 @@
       left: 50%;
       transform: translateX(-50%) translateY(20px);
       background: var(--surface);
-      border: 1px solid var(--tiktok-cyan);
-      color: var(--tiktok-cyan);
-      border-radius: 10px;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: 8px;
       padding: 12px 24px;
-      font-family: 'Space Mono', monospace;
-      font-size: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
       opacity: 0;
       transition: all 0.3s;
       z-index: 1000;
@@ -656,7 +699,7 @@
 
     .badge {
       display: inline-block;
-      font-family: 'Space Mono', monospace;
+      font-family: 'Source Code Pro', monospace;
       font-size: 10px;
       padding: 2px 8px;
       border-radius: 4px;
@@ -664,14 +707,19 @@
     }
 
     .badge-off {
-      background: rgba(90,90,122,0.2);
-      color: var(--muted);
+      background: var(--border);
+      color: var(--text-muted);
     }
 
     .badge-on {
-      background: rgba(0,255,136,0.15);
-      color: var(--green);
+      background: rgba(62, 207, 142, 0.12);
+      color: var(--accent);
     }
+
+    .icon-inline {
+      width: 1em; height: 1em; vertical-align: -0.15em; display: inline-block;
+    }
+
   </style>
 </head>
 <body>
@@ -679,16 +727,16 @@
 <div class="app">
   <!-- HEADER -->
   <header>
-    <div class="logo">
-      <div class="logo-icon">🎵</div>
+    <a href="/" class="logo" style="text-decoration:none;color:inherit;">
+      <img class="logo-icon" src="logo.png" alt="TikLive TTS">
       <div>
         <h1>TikLive <span>TTS</span></h1>
         <div class="subtitle">Configuración del Servidor</div>
       </div>
-    </div>
+    </a>
     <nav class="nav">
       <a href="/" class="nav-link">← Chat Live</a>
-      <a href="/advanced.html" class="nav-link active">⚙ Configuración</a>
+      <a href="/advanced.html" class="nav-link active"><img class="icon-inline" src="icons/settings.svg" alt=""> Configuración</a>
     </nav>
   </header>
 
@@ -700,7 +748,7 @@
 
   <!-- ═══ PANEL 1: RATE LIMITING ═══ -->
   <div class="panel panel-rate">
-    <div class="panel-title">⚡ Rate Limiting de TTS</div>
+    <div class="panel-title"><img class="icon-inline" src="icons/flash_on.svg" alt=""> Rate Limiting de TTS</div>
     <div class="panel-desc">Control de velocidad del servidor<span class="badge badge-off" id="rlBadge">OFF</span></div>
 
     <div class="explainer">
@@ -765,7 +813,7 @@
 
   <!-- ═══ PANEL 2: CONFIGURACIÓN GENERAL ═══ -->
   <div class="panel panel-rate">
-    <div class="panel-title">🔧 Configuración General</div>
+    <div class="panel-title"><img class="icon-inline" src="icons/settings_applications.svg" alt=""> Configuración General</div>
     <div class="panel-desc">Otros parámetros del servidor TTS</div>
 
     <div class="grid-2">
@@ -791,7 +839,7 @@
 
   <!-- ═══ PANEL 3: FILTROS DE MENSAJES ═══ -->
   <div class="panel panel-filter">
-    <div class="panel-title">🔍 Filtros de Mensajes</div>
+    <div class="panel-title"><img class="icon-inline" src="icons/search.svg" alt=""> Filtros de Mensajes</div>
     <div class="panel-desc">Palabras prohibidas en el servidor</div>
 
     <div class="explainer">
@@ -824,19 +872,19 @@
       Puedes editar el archivo <code>blocked-words.md</code> directamente aquí o subir uno nuevo. El formato es una palabra por línea empezando con <code>- </code>.
     </p>
 
-    <textarea id="mdEditor" style="width:100%;min-height:160px;background:var(--chat-bg);border:1px solid var(--border);border-radius:10px;padding:14px;color:var(--text);font-family:'Space Mono',monospace;font-size:12px;line-height:1.6;outline:none;resize:vertical;" placeholder="- palabra1
+    <textarea id="mdEditor" style="width:100%;min-height:160px;resize:vertical;" placeholder="- palabra1
 - palabra2"></textarea>
 
     <div class="save-row" style="margin-top:12px;gap:10px;display:flex;justify-content:flex-end;flex-wrap:wrap;">
-      <button class="btn-refresh" onclick="loadMdContent()">↻ Recargar desde archivo</button>
-      <button class="btn-add" onclick="downloadMd()">⬇ Descargar .md</button>
-      <button class="btn-save" onclick="saveMdContent()">💾 Guardar cambios al archivo</button>
+      <button class="btn-refresh" onclick="loadMdContent()"><img class="icon-inline" src="icons/refresh.svg" alt=""> Recargar desde archivo</button>
+      <button class="btn-add" onclick="downloadMd()"><img class="icon-inline" src="icons/download.svg" alt=""> Descargar .md</button>
+      <button class="btn-save" onclick="saveMdContent()"><img class="icon-inline" src="icons/save.svg" alt=""> Guardar cambios al archivo</button>
     </div>
 
     <div class="section-label">Subir archivo .md</div>
     <div class="tag-input-row">
-      <input type="file" id="mdFileInput" accept=".md" style="flex:1;background:var(--chat-bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'Space Mono',monospace;font-size:13px;cursor:pointer;" />
-      <button class="btn-add" onclick="uploadMdFile()">📤 Subir y reemplazar</button>
+      <input type="file" id="mdFileInput" accept=".md" style="flex:1;cursor:pointer;" />
+      <button class="btn-add" onclick="uploadMdFile()"><img class="icon-inline" src="icons/upload.svg" alt=""> Subir y reemplazar</button>
     </div>
   </div>
 
@@ -844,34 +892,34 @@
   <div class="panel panel-status">
     <div class="status-header">
       <div>
-        <div class="panel-title">📊 Estado del Servidor</div>
+        <div class="panel-title"><img class="icon-inline" src="icons/assessment.svg" alt=""> Estado del Servidor</div>
         <div class="panel-desc">Monitoreo en tiempo real</div>
       </div>
       <button class="btn-refresh" onclick="refreshStatus()">↻ Actualizar</button>
     </div>
 
     <div class="status-grid">
-      <div class="stat-card green">
+      <div class="stat-card">
         <div class="stat-value" id="statUptime">0m</div>
         <div class="stat-label">Tiempo activo</div>
       </div>
-      <div class="stat-card cyan">
+      <div class="stat-card">
         <div class="stat-value" id="statClients">0</div>
         <div class="stat-label">Clientes WS</div>
       </div>
-      <div class="stat-card blue">
+      <div class="stat-card">
         <div class="stat-value" id="statConn">—</div>
         <div class="stat-label">TikTok</div>
       </div>
-      <div class="stat-card yellow">
+      <div class="stat-card">
         <div class="stat-value" id="statMem">0</div>
         <div class="stat-label">Memoria MB</div>
       </div>
-      <div class="stat-card orange">
+      <div class="stat-card">
         <div class="stat-value" id="statRateMax">10</div>
         <div class="stat-label">Rate max</div>
       </div>
-      <div class="stat-card red">
+      <div class="stat-card">
         <div class="stat-value" id="statRateEnabled">OFF</div>
         <div class="stat-label">Rate limit</div>
       </div>
@@ -906,7 +954,7 @@
   <div class="panel panel-status">
     <div class="status-header">
       <div>
-        <div class="panel-title">📋 Logs</div>
+        <div class="panel-title"><img class="icon-inline" src="icons/description.svg" alt=""> Logs</div>
         <div class="panel-desc">Historial de eventos y errores</div>
       </div>
       <button class="btn-refresh" onclick="refreshLogs()">↻ Actualizar</button>
@@ -914,27 +962,27 @@
 
     <div style="margin-bottom: 20px;">
       <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; margin-bottom: 12px;">
-        <input type="text" id="logSearch" placeholder="Buscar logs..." style="background: var(--chat-bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 13px; outline: none;">
-        <select id="logLevelFilter" style="background: var(--chat-bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 13px; outline: none; cursor: pointer;">
-          <option value="">🔹 Todos los niveles</option>
-          <option value="error">🔴 Error</option>
-          <option value="warn">🟡 Warn</option>
-          <option value="info">🔵 Info</option>
+        <input type="text" id="logSearch" placeholder="Buscar logs..." style="outline:none;" />
+        <select id="logLevelFilter" style="cursor:pointer;">
+          <option value="">Todos los niveles</option>
+          <option value="error">Error</option>
+          <option value="warn">Warn</option>
+          <option value="info">Info</option>
         </select>
-        <select id="logSourceFilter" style="background: var(--chat-bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 13px; outline: none; cursor: pointer;">
-          <option value="">🔹 Todas las fuentes</option>
-          <option value="server">🖥️ Servidor</option>
-          <option value="client">💻 Cliente</option>
-          <option value="network">🌐 Red</option>
+        <select id="logSourceFilter" style="cursor:pointer;">
+          <option value="">Todas las fuentes</option>
+          <option value="server">Servidor</option>
+          <option value="client">Cliente</option>
+          <option value="network">Red</option>
         </select>
         <div style="display: flex; gap: 5px;">
-          <button class="btn-add" onclick="exportLogs()" title="Exportar logs">📥</button>
-          <button class="btn-refresh" onclick="clearLogs()" title="Limpiar logs">🗑️</button>
+          <button class="btn-add" onclick="exportLogs()" title="Exportar logs"><img class="icon-inline" src="icons/download.svg" alt=""></button>
+          <button class="btn-refresh" onclick="clearLogs()" title="Limpiar logs"><img class="icon-inline" src="icons/delete.svg" alt=""></button>
         </div>
       </div>
     </div>
 
-    <div id="logsContainer" style="max-height: 350px; overflow-y: auto; background: var(--chat-bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-size: 12px; font-family: 'Space Mono', monospace; color: var(--text); line-height: 1.5;">
+    <div id="logsContainer" style="max-height:350px;overflow-y:auto;">
       <div style="color: var(--muted); text-align: center; padding: 20px;">Sin logs aún</div>
     </div>
   </div>
@@ -1261,7 +1309,7 @@
       }
 
       const html = logs.reverse().slice(0, 100).map(log => {
-        const icon = { error: '🔴', warn: '🟡', info: '🔵', debug: '⚪' }[log.level] || '⚪';
+        const icon = { error: '<img class="icon-inline" src="icons/lens.svg" alt="">', warn: '<img class="icon-inline" src="icons/warning.svg" alt="">', info: '<img class="icon-inline" src="icons/info.svg" alt="">', debug: '<img class="icon-inline" src="icons/help_outline.svg" alt="">' }[log.level] || '<img class="icon-inline" src="icons/help_outline.svg" alt="">';
         const time = new Date(log.timestamp).toLocaleTimeString();
         return `<div style="border-bottom: 1px solid var(--border); padding: 8px 0; line-height: 1.4;">
           <div>${icon} <small style="color: var(--muted);">${time}</small> <code style="color: var(--tiktok-cyan);">[${log.source}]</code></div>
@@ -1291,7 +1339,7 @@
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      showToast('📥 Logs exportados');
+      showToast('<img class="icon-inline" src="icons/download.svg" alt=""> Logs exportados');
     } catch (e) {
       showToast('Error exportando logs');
     }
@@ -1301,7 +1349,7 @@
     if (confirm('¿Limpiar todos los logs? No se puede deshacer.')) {
       logStorage.clearLogs();
       refreshLogs();
-      showToast('🗑️ Logs eliminados');
+      showToast('<img class="icon-inline" src="icons/delete.svg" alt=""> Logs eliminados');
     }
   }
 
@@ -1340,7 +1388,7 @@
       document.getElementById('statusMaxChars').textContent = data.config.TTS_MAX_CHARS;
       document.getElementById('statusDebounce').textContent = data.config.LIKE_DEBOUNCE_MS + 'ms';
     } catch (e) {
-      showToast('⚠️ Servidor no disponible');
+      showToast('<img class="icon-inline" src="icons/warning.svg" alt=""> Servidor no disponible');
     }
   }
 
@@ -1358,7 +1406,7 @@
 
   function showToast(msg) {
     const t = document.getElementById('toast');
-    t.textContent = msg;
+    t.innerHTML = msg;
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2500);
   }
