@@ -8,12 +8,15 @@ const https = require('https');
 const fs = require('fs');
 const multer = require('multer');
 
+const IS_PKG = typeof process.pkg !== 'undefined';
+const REAL_BASE = IS_PKG ? path.dirname(process.execPath) : __dirname;
+
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 // Uploads directory for custom overlay backgrounds
-const UPLOADS_DIR = path.join(__dirname, 'public', 'uploads');
+const UPLOADS_DIR = path.join(REAL_BASE, 'public', 'uploads');
 if (!fs.existsSync(UPLOADS_DIR)) {
   fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 }
@@ -39,8 +42,8 @@ const upload = multer({
   }
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/gifts', express.static(path.join(__dirname, 'gifts')));
+app.use(express.static(path.join(REAL_BASE, 'public')));
+app.use('/gifts', express.static(path.join(REAL_BASE, 'gifts')));
 app.use('/uploads', express.static(UPLOADS_DIR));
 app.use(express.json());
 
@@ -124,7 +127,7 @@ function sanitizeForTTS(text) {
     .trim();
 }
 
-const BLOCKED_WORDS_FILE = path.join(__dirname, 'blocked-words.md');
+const BLOCKED_WORDS_FILE = path.join(REAL_BASE, 'blocked-words.md');
 const blockedWords = new Set();
 
 function loadBlockedWordsFromFile() {
@@ -598,7 +601,7 @@ app.get('/api/overlay-stats', (req, res) => {
 
 // Gift file list for overlay name→filename mapping
 app.get('/api/gifts-list', (req, res) => {
-  const giftsDir = path.join(__dirname, 'gifts');
+  const giftsDir = path.join(REAL_BASE, 'gifts');
   try {
     const files = fs.readdirSync(giftsDir).filter(f => f.endsWith('.png'));
     res.json(files);
@@ -635,7 +638,7 @@ app.delete('/api/upload-bg', (req, res) => {
 
 // Test endpoints
 app.post('/api/test/gift', (req, res) => {
-  const giftsDir = path.join(__dirname, 'gifts');
+  const giftsDir = path.join(REAL_BASE, 'gifts');
   try {
     const files = fs.readdirSync(giftsDir).filter(f => f.endsWith('.png'));
     if (files.length === 0) return res.status(500).json({ error: 'No hay imágenes de regalos' });
@@ -690,6 +693,19 @@ app.post('/api/test/likes', (req, res) => {
 loadBlockedWordsFromFile();
 
 const PORT = process.env.PORT || 3000;
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    require('child_process').exec(`start http://localhost:${PORT}`);
+    process.exit(0);
+  }
+});
+
 server.listen(PORT, () => {
   console.log(`\nTikTok Live TTS corriendo en http://localhost:${PORT}\n`);
+  if (IS_PKG) {
+    require('child_process').exec(`start http://localhost:${PORT}`);
+    const { initTray } = require('./tray');
+    initTray(PORT);
+  }
 });
