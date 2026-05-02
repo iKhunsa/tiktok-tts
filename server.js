@@ -9,7 +9,9 @@ const fs = require('fs');
 const multer = require('multer');
 
 const IS_PKG = typeof process.pkg !== 'undefined';
-const REAL_BASE = IS_PKG ? path.dirname(process.execPath) : __dirname;
+const REAL_BASE = IS_PKG
+  ? path.dirname(process.execPath)
+  : process.env.TIKTOK_RESOURCES_PATH || __dirname;
 
 const app = express();
 const server = http.createServer(app);
@@ -708,4 +710,5 @@ server.listen(PORT, () => {
     const { initTray } = require('./tray');
     initTray(PORT);
   }
+  // In Electron mode, main.js opens the BrowserWindow after detecting this port is up
 });
