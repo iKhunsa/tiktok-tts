@@ -936,6 +936,125 @@
       flex-shrink: 0; display: block;
     }
 
+    /* ── CLIPS VIEW ─────────────────────────────────────── */
+    .stream-timer-display {
+      font-family: 'Source Code Pro', monospace;
+      font-size: 36px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 3px;
+      line-height: 1;
+    }
+    .clips-day-accordion {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    .clips-day-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      user-select: none;
+    }
+    .clips-day-header:hover { background: var(--surface); }
+    .clips-day-body { padding: 4px 16px 12px; display: none; }
+    .clips-day-body.open { display: block; }
+    .clip-entry {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 13px;
+    }
+    .clip-entry:last-child { border-bottom: none; }
+    .clip-elapsed { font-family: 'Source Code Pro', monospace; color: var(--accent); min-width: 75px; font-size: 13px; }
+    .clip-abstime { color: var(--text-muted); min-width: 58px; font-size: 11px; }
+    .clip-label { flex: 1; }
+    .clip-label input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      font-size: 12px;
+      font-family: 'Inter', sans-serif;
+      width: 100%;
+      padding: 2px 4px;
+      outline: none;
+    }
+    .clip-label input:focus { border-bottom-color: var(--accent); }
+    .clip-delete {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 14px;
+      padding: 4px 6px;
+      border-radius: 6px;
+      line-height: 1;
+      transition: color 0.15s, background 0.15s;
+    }
+    .clip-delete:hover { color: #fe2c55; background: rgba(254,44,85,0.1); }
+    .obs-status-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      margin-right: 6px;
+    }
+    .obs-status-dot.connected { background: var(--accent); }
+
+    /* ── PLATFORM CARDS ─────────────────────────────────── */
+    .platform-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    .platform-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+    }
+    .platform-card-name { flex: 1; }
+    .platform-badge {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 9px;
+      border-radius: 9999px;
+      background: var(--surface);
+      color: var(--text-muted);
+    }
+    .platform-badge.connected { background: rgba(62,207,142,0.15); color: var(--accent); }
+    .platform-input-row { display: flex; gap: 8px; align-items: center; }
+    .platform-input-row .input-wrapper { flex: 1; }
+
+    .chat-platform-badge {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-left: 5px;
+      vertical-align: middle;
+    }
+    .badge-tiktok  { background: rgba(254,44,85,0.15);  color: #fe2c55; }
+    .badge-twitch  { background: rgba(145,70,255,0.15); color: #9146ff; }
+    .badge-youtube { background: rgba(255,0,0,0.15);    color: #ff4444; }
+
   </style>
 </head>
 <body>
@@ -964,6 +1083,10 @@
       <button class="sidebar-item" data-view="settings" onclick="switchView('settings')">
         <img class="sidebar-icon icon-inline" src="icons/settings.svg" alt="">
         Configuración
+      </button>
+      <button class="sidebar-item" data-view="clips" onclick="switchView('clips')">
+        <img class="sidebar-icon icon-inline" src="icons/play_arrow.svg" alt="">
+        Clips
       </button>
     </nav>
 
@@ -1023,6 +1146,11 @@
           <input type="checkbox" onchange="toggleOption('readLikes', this)" />
           <span class="chip-dot"></span>
           <img class="icon-inline" src="icons/thumb_up.svg" alt=""> Anunciar likes
+        </label>
+        <label class="toggle-chip" id="chip-shares">
+          <input type="checkbox" onchange="toggleOption('readShares', this)" />
+          <span class="chip-dot"></span>
+          <img class="icon-inline" src="icons/public.svg" alt=""> Anunciar compartidos
         </label>
         <label class="toggle-chip" id="chip-username">
           <input type="checkbox" onchange="toggleOption('sayUsername', this)" />
@@ -1205,6 +1333,76 @@
           <button class="cfg-btn" onclick="downloadTemplate('alertas')">Plantilla</button>
         </div>
       </div>
+
+      <!-- Créditos Star Wars -->
+      <div class="cfg-card">
+        <div class="cfg-header">
+          <div class="cfg-icon"><img class="icon-inline" src="icons/emoji_events.svg" alt=""></div>
+          <div class="cfg-meta">
+            <div class="cfg-title">Créditos del Stream</div>
+            <div class="cfg-subtitle">Scroll automático con donadores, seguidores y compartidos</div>
+          </div>
+          <span class="obs-hint">380 × 500 px</span>
+        </div>
+        <div class="cfg-fields">
+          <div class="cfg-field">
+            <label>Velocidad scroll (s/pantalla) — <span id="cfg-creditos-speed-val">40</span>s</label>
+            <input type="range" id="cfg-creditos-speed" min="15" max="90" step="5" value="40"
+                   oninput="onCfgChange('creditos','speed', parseInt(this.value)); document.getElementById('cfg-creditos-speed-val').textContent = this.value" />
+          </div>
+          <div class="cfg-field">
+            <label>Color acento</label>
+            <input type="color" id="cfg-creditos-color" value="#3ecf8e"
+                   oninput="onCfgChange('creditos','color', this.value)" />
+          </div>
+          <div class="cfg-field">
+            <label>Opacidad fondo — <span id="cfg-creditos-bg-val">85</span>%</label>
+            <input type="range" id="cfg-creditos-bg" min="0.30" max="1.00" step="0.05" value="0.85"
+                   oninput="onCfgChange('creditos','bg', parseFloat(this.value)); document.getElementById('cfg-creditos-bg-val').textContent = Math.round(this.value*100)" />
+          </div>
+        </div>
+        <div class="cfg-url-row">
+          <span class="cfg-url-text" id="cfg-url-creditos">http://localhost:3000/overlay-creditos.html</span>
+          <button class="cfg-btn" onclick="copyCfgUrl('creditos')">Copiar</button>
+          <a class="cfg-btn" id="cfg-open-creditos" href="http://localhost:3000/overlay-creditos.html" target="_blank">Abrir</a>
+        </div>
+      </div>
+
+      <!-- Social: Seguidores + Compartidos -->
+      <div class="cfg-card">
+        <div class="cfg-header">
+          <div class="cfg-icon"><img class="icon-inline" src="icons/public.svg" alt=""></div>
+          <div class="cfg-meta">
+            <div class="cfg-title">Seguidores &amp; Compartidos</div>
+            <div class="cfg-subtitle">Lista en tiempo real de nuevos seguidores y compartidos</div>
+          </div>
+          <span class="obs-hint">480 × 300 px</span>
+        </div>
+        <div class="cfg-fields">
+          <div class="cfg-field">
+            <label>Layout</label>
+            <select id="cfg-social-layout" onchange="onCfgChange('social','layout', this.value)">
+              <option value="cols">Dos columnas</option>
+              <option value="rows">Apilado vertical</option>
+            </select>
+          </div>
+          <div class="cfg-field">
+            <label>Color acento</label>
+            <input type="color" id="cfg-social-color" value="#3ecf8e"
+                   oninput="onCfgChange('social','color', this.value)" />
+          </div>
+          <div class="cfg-field">
+            <label>Opacidad fondo — <span id="cfg-social-bg-val">80</span>%</label>
+            <input type="range" id="cfg-social-bg" min="0.30" max="1.00" step="0.05" value="0.80"
+                   oninput="onCfgChange('social','bg', parseFloat(this.value)); document.getElementById('cfg-social-bg-val').textContent = Math.round(this.value*100)" />
+          </div>
+        </div>
+        <div class="cfg-url-row">
+          <span class="cfg-url-text" id="cfg-url-social">http://localhost:3000/overlay-social.html</span>
+          <button class="cfg-btn" onclick="copyCfgUrl('social')">Copiar</button>
+          <a class="cfg-btn" id="cfg-open-social" href="http://localhost:3000/overlay-social.html" target="_blank">Abrir</a>
+        </div>
+      </div>
     </div>
 
     <!-- ── VIEW: Settings ──────────────────────────────── -->
@@ -1255,8 +1453,103 @@
       </div>
 
       <div class="settings-section">
+        <div class="settings-section-title">Plataformas de chat</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+
+          <div class="platform-card" id="platform-card-twitch">
+            <div class="platform-card-header">
+              <img style="width:18px;height:18px;" src="icons/sports_esports.svg" alt="">
+              <span class="platform-card-name">Twitch</span>
+              <span class="platform-badge" id="badge-twitch">Desconectado</span>
+            </div>
+            <div class="platform-input-row">
+              <div class="input-wrapper" style="flex:1;">
+                <input type="text" id="twitch-channel" placeholder="nombre_del_canal" autocomplete="off" />
+              </div>
+              <button class="btn btn-connect" id="btn-twitch-connect" onclick="platformConnect('twitch')" style="font-size:12px;padding:9px 14px;border-radius:9999px;">Conectar</button>
+              <button class="btn btn-disconnect" id="btn-twitch-disconnect" onclick="platformDisconnect('twitch')" style="display:none;font-size:12px;padding:9px 14px;border-radius:9999px;">Desconectar</button>
+            </div>
+          </div>
+
+          <div class="platform-card" id="platform-card-youtube">
+            <div class="platform-card-header">
+              <img style="width:18px;height:18px;" src="icons/tv.svg" alt="">
+              <span class="platform-card-name">YouTube</span>
+              <span class="platform-badge" id="badge-youtube">Desconectado</span>
+            </div>
+            <div class="platform-input-row">
+              <div class="input-wrapper" style="flex:1;">
+                <input type="text" id="youtube-channel" placeholder="@canal o ID de video" autocomplete="off" />
+              </div>
+              <button class="btn btn-connect" id="btn-youtube-connect" onclick="platformConnect('youtube')" style="font-size:12px;padding:9px 14px;border-radius:9999px;">Conectar</button>
+              <button class="btn btn-disconnect" id="btn-youtube-disconnect" onclick="platformDisconnect('youtube')" style="display:none;font-size:12px;padding:9px 14px;border-radius:9999px;">Desconectar</button>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+
+      <div class="settings-section">
         <div class="settings-section-title">Configuración avanzada</div>
         <a href="/advanced.html" class="btn-nav"><img class="icon-inline" src="icons/build.svg" alt=""> Abrir panel avanzado (filtros, rate limit, logs) →</a>
+      </div>
+    </div>
+
+    <!-- ── VIEW: Clips ─────────────────────────────────── -->
+    <div class="view" id="view-clips">
+      <div class="view-header">
+        <h2><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Marcadores de Clip</h2>
+        <p>Marca momentos del stream para sacar clips después.</p>
+      </div>
+
+      <div class="connect-panel">
+        <div class="panel-title"><img class="icon-inline" src="icons/lens.svg" alt=""> Temporizador del Stream</div>
+        <div style="display:flex;align-items:center;gap:20px;margin:16px 0 14px;">
+          <div class="stream-timer-display" id="streamTimer">00:00:00</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <button class="btn btn-connect" id="btnStartStream" onclick="startStreamManual()" style="font-size:13px;">
+              <img class="icon-inline" src="icons/play_arrow.svg" alt=""> Iniciar stream
+            </button>
+            <button class="btn btn-disconnect" id="btnStopStream" onclick="stopStream()" style="display:none;font-size:13px;">
+              Detener
+            </button>
+          </div>
+        </div>
+        <button class="btn btn-connect" id="btnMarkClip" onclick="markClip()" disabled
+          style="width:100%;margin-bottom:10px;background:var(--surface);color:var(--text-muted);border:1px solid var(--border);cursor:not-allowed;">
+          <img class="icon-inline" src="icons/play_arrow.svg" alt=""> Marcar Clip &nbsp;<kbd style="font-size:10px;opacity:0.6;background:var(--border);padding:2px 5px;border-radius:4px;">Ctrl+Shift+M</kbd>
+        </button>
+        <div style="font-size:11px;color:var(--text-muted);">El atajo global funciona aunque la app esté minimizada.</div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">
+          <span class="obs-status-dot" id="obsStatusDot"></span>Conexión OBS WebSocket <span style="font-weight:400;color:var(--text-muted)">(opcional)</span>
+        </div>
+        <div class="settings-panel" style="grid-template-columns:1fr 1fr;">
+          <div class="setting-group">
+            <label>Puerto OBS WS</label>
+            <input type="number" id="obsPort" value="4455" min="1" max="65535" />
+          </div>
+          <div class="setting-group">
+            <label>Contraseña (si aplica)</label>
+            <input type="password" id="obsPassword" placeholder="dejar vacío si no hay" autocomplete="off" />
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+          <button class="btn btn-connect" id="btnConnectOBS" onclick="connectOBSFromUI()" style="font-size:13px;">Conectar OBS</button>
+          <span id="obsStatusText" style="font-size:12px;color:var(--text-muted);">Desconectado</span>
+        </div>
+        <p style="font-size:11px;color:var(--text-muted);margin-top:8px;">OBS > Herramientas > Servidor WebSocket → habilitar en puerto 4455.</p>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title" style="display:flex;justify-content:space-between;align-items:center;">
+          <span>Historial de marcadores</span>
+          <button onclick="clearAllClips()" style="background:none;border:none;cursor:pointer;font-size:11px;color:var(--text-muted);padding:2px 6px;border-radius:6px;font-family:'Inter',sans-serif;" onmouseover="this.style.color='#fe2c55'" onmouseout="this.style.color='var(--text-muted)'">Borrar todo</button>
+        </div>
+        <div id="clipsHistory"></div>
       </div>
     </div>
 
@@ -1331,12 +1624,15 @@
     readJoins: false,
     readFollows: false,
     readLikes: false,
+    readShares: false,
     sayUsername: true,
     lastUsername: '',
     overlays: {
       seguidores: { goal: '', color: '#3ecf8e', bg: 0.80, bgimg: '' },
       likes:      { rows: 10, color: '#3ecf8e', bg: 0.80, bgimg: '' },
-      alertas:    { dur: 4000, color: '#3ecf8e', bg: 0.90, bgimg: '' }
+      alertas:    { dur: 4000, color: '#3ecf8e', bg: 0.90, bgimg: '' },
+      creditos:   { speed: 40, color: '#3ecf8e', bg: 0.85, bgimg: '' },
+      social:     { layout: 'cols', color: '#3ecf8e', bg: 0.80, bgimg: '' }
     }
   };
 
@@ -1382,7 +1678,7 @@
     // Toggles
     const chipMap = {
       readChat: 'chip-chat', readGifts: 'chip-gifts', readJoins: 'chip-joins',
-      readFollows: 'chip-follows', readLikes: 'chip-likes', sayUsername: 'chip-username'
+      readFollows: 'chip-follows', readLikes: 'chip-likes', readShares: 'chip-shares', sayUsername: 'chip-username'
     };
     for (const [key, chipId] of Object.entries(chipMap)) {
       const val  = appSettings[key];
@@ -1401,7 +1697,7 @@
     }
 
     // Overlay config fields
-    const { seguidores, likes, alertas } = appSettings.overlays;
+    const { seguidores, likes, alertas, creditos, social } = appSettings.overlays;
 
     setFieldVal('cfg-seg-goal',   seguidores.goal);
     setFieldVal('cfg-seg-color',  seguidores.color);
@@ -1421,6 +1717,24 @@
     const abValEl = document.getElementById('cfg-alertas-bg-val');
     if (abValEl) abValEl.textContent = Math.round(alertas.bg * 100);
 
+    if (creditos) {
+      setFieldVal('cfg-creditos-speed', creditos.speed);
+      setFieldVal('cfg-creditos-color', creditos.color);
+      setFieldVal('cfg-creditos-bg',    creditos.bg);
+      const csValEl = document.getElementById('cfg-creditos-speed-val');
+      if (csValEl) csValEl.textContent = creditos.speed;
+      const cbValEl = document.getElementById('cfg-creditos-bg-val');
+      if (cbValEl) cbValEl.textContent = Math.round(creditos.bg * 100);
+    }
+
+    if (social) {
+      setFieldVal('cfg-social-layout', social.layout);
+      setFieldVal('cfg-social-color',  social.color);
+      setFieldVal('cfg-social-bg',     social.bg);
+      const sbValEl = document.getElementById('cfg-social-bg-val');
+      if (sbValEl) sbValEl.textContent = Math.round(social.bg * 100);
+    }
+
     // Background image previews
     updateBgPreview('seguidores', seguidores.bgimg);
     updateBgPreview('likes',      likes.bgimg);
@@ -1430,6 +1744,8 @@
     updateOverlayUrl('seguidores');
     updateOverlayUrl('likes');
     updateOverlayUrl('alertas');
+    updateOverlayUrl('creditos');
+    updateOverlayUrl('social');
   }
 
   function setFieldVal(id, val) {
@@ -1606,9 +1922,17 @@
       if (cfg.dur && cfg.dur !== 4000) p.set('dur', cfg.dur);
       if (cfg.color && cfg.color !== '#3ecf8e') p.set('color', cfg.color.replace('#', ''));
       if (cfg.bg !== 0.90) p.set('bg', cfg.bg);
+    } else if (type === 'creditos') {
+      if (cfg.speed && cfg.speed !== 40) p.set('speed', cfg.speed);
+      if (cfg.color && cfg.color !== '#3ecf8e') p.set('color', cfg.color.replace('#', ''));
+      if (cfg.bg !== 0.85) p.set('bg', cfg.bg);
+    } else if (type === 'social') {
+      if (cfg.layout && cfg.layout !== 'cols') p.set('layout', cfg.layout);
+      if (cfg.color && cfg.color !== '#3ecf8e') p.set('color', cfg.color.replace('#', ''));
+      if (cfg.bg !== 0.80) p.set('bg', cfg.bg);
     }
 
-    if (cfg.bgimg) p.set('bgimg', cfg.bgimg);
+    if (cfg && cfg.bgimg) p.set('bgimg', cfg.bgimg);
 
     const qs = p.toString();
     return qs ? `${base}?${qs}` : base;
@@ -1696,7 +2020,7 @@
 
   const options = {
     readChat: true, readGifts: false, readJoins: false,
-    readFollows: false, readLikes: false, sayUsername: true
+    readFollows: false, readLikes: false, readShares: false, sayUsername: true
   };
 
   let ttsRate = 1.0;
@@ -1897,9 +2221,11 @@
   }
 
   // ─── SPEECH QUEUE ─────────────────────────────────────────────
-  function speak(text, msgId) {
+  function speak(text, msgId, timestamp) {
     if (speechQueue.length >= MAX_QUEUE_SIZE) return;
-    speechQueue.push({ text, msgId });
+    speechQueue.push({ text, msgId, timestamp: timestamp || Date.now() });
+    // Keep queue in chronological order so multi-platform messages play in arrival time order
+    speechQueue.sort((a, b) => a.timestamp - b.timestamp);
     updateQueueBadge();
     if (!isSpeaking) processQueue();
   }
@@ -2001,7 +2327,7 @@
         if (options.readChat) {
           const raw  = options.sayUsername ? `${data.user}: ${data.comment}` : data.comment;
           const text = raw.length > CHAT_TTS_MAX_LEN ? raw.substring(0, CHAT_TTS_MAX_LEN) : raw;
-          speak(text, chatId);
+          speak(text, chatId, data.timestamp);
         }
         break;
 
@@ -2054,6 +2380,21 @@
         }
         break;
 
+      case 'share':
+        if (options.readShares) {
+          msgCount++;
+          document.getElementById('msgCount').textContent = msgCount;
+          const shareId   = `msg-${msgCount}`;
+          const shareText = `${data.user} está compartiendo el live`;
+          addSystemMsg('<img class="icon-inline" src="icons/public.svg" alt=""> ' + shareText, 'join', shareId);
+          speak(shareText, shareId);
+        } else {
+          const shareId2 = `msg-${++msgCount}`;
+          document.getElementById('msgCount').textContent = msgCount;
+          addSystemMsg('<img class="icon-inline" src="icons/public.svg" alt=""> ' + data.user + ' compartió el live', 'join', shareId2);
+        }
+        break;
+
       case 'reconnecting':
         setStatus('error', '<img class="icon-inline" src="icons/refresh.svg" alt=""> Reconectando... (intento ' + data.attempt + ')');
         logStorage.addLog('warn', 'server', `Reconexión intento ${data.attempt}`);
@@ -2066,6 +2407,19 @@
       case 'error':
         setStatus('error', '<img class="icon-inline" src="icons/error.svg" alt=""> ' + data.message);
         logStorage.addLog('error', 'server', data.message);
+        break;
+
+      case 'twitch-auth-ready':
+        showToast('Twitch autenticado' + (data.login ? ' como ' + data.login : ''));
+        break;
+
+      case 'platform-connected':
+        updatePlatformBadge(data.platform, true);
+        showToast(data.platform.charAt(0).toUpperCase() + data.platform.slice(1) + ' conectado');
+        break;
+
+      case 'platform-disconnected':
+        updatePlatformBadge(data.platform, false);
         break;
     }
   }
@@ -2090,10 +2444,13 @@
     const div = document.createElement('div');
     div.className = 'chat-msg';
     div.id = msgId;
+    const platformBadge = data.platform
+      ? `<span class="chat-platform-badge badge-${data.platform}">${data.platform}</span>`
+      : '';
     div.innerHTML = `
       <div class="msg-avatar" style="background:${color}22;color:${color}">${initials}</div>
       <div class="msg-body">
-        <div class="msg-user" style="color:${color}">@${data.user}</div>
+        <div class="msg-user" style="color:${color}">@${data.user}${platformBadge}</div>
         <div class="msg-text">${escapeHtml(data.comment)}</div>
       </div>
       <div class="msg-time">${time}</div>
@@ -2239,12 +2596,258 @@
     setTimeout(() => toast.remove(), 2200);
   }
 
+  // ─── CLIPS ────────────────────────────────────────────────────
+  const CLIPS_KEY = 'tikliveTTS_clips_v1';
+  let streamStartTime = null;
+  let streamTimerInterval = null;
+
+  function getClipsData() {
+    try { return JSON.parse(localStorage.getItem(CLIPS_KEY) || '{}'); } catch (e) { return {}; }
+  }
+  function saveClipsData(data) {
+    try { localStorage.setItem(CLIPS_KEY, JSON.stringify(data)); } catch (e) {}
+  }
+  function getLocalDateStr() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  function formatElapsed(ms) {
+    const secs = Math.floor(ms / 1000);
+    const h = Math.floor(secs / 3600);
+    const m = Math.floor((secs % 3600) / 60);
+    const s = secs % 60;
+    if (h > 0) return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }
+  function startStreamManual() {
+    if (streamStartTime) return;
+    streamStartTime = Date.now();
+    const btnStart = document.getElementById('btnStartStream');
+    const btnStop  = document.getElementById('btnStopStream');
+    const btnMark  = document.getElementById('btnMarkClip');
+    if (btnStart) btnStart.style.display = 'none';
+    if (btnStop)  btnStop.style.display  = 'block';
+    if (btnMark)  { btnMark.disabled = false; btnMark.style.cursor = 'pointer'; btnMark.style.color = 'var(--text)'; btnMark.style.background = 'var(--surface)'; }
+    startTimerUI();
+  }
+  function stopStream() {
+    streamStartTime = null;
+    clearInterval(streamTimerInterval);
+    streamTimerInterval = null;
+    const el = document.getElementById('streamTimer');
+    if (el) el.textContent = '00:00:00';
+    const btnStart = document.getElementById('btnStartStream');
+    const btnStop  = document.getElementById('btnStopStream');
+    const btnMark  = document.getElementById('btnMarkClip');
+    if (btnStart) btnStart.style.display = 'block';
+    if (btnStop)  btnStop.style.display  = 'none';
+    if (btnMark)  { btnMark.disabled = true; btnMark.style.cursor = 'not-allowed'; btnMark.style.color = 'var(--text-muted)'; }
+  }
+  function startTimerUI() {
+    clearInterval(streamTimerInterval);
+    streamTimerInterval = setInterval(() => {
+      if (!streamStartTime) return;
+      const elapsed = Date.now() - streamStartTime;
+      const secs = Math.floor(elapsed / 1000);
+      const h = Math.floor(secs / 3600);
+      const m = Math.floor((secs % 3600) / 60);
+      const s = secs % 60;
+      const el = document.getElementById('streamTimer');
+      if (el) el.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }, 1000);
+  }
+  function markClip() {
+    if (!streamStartTime) return;
+    const now = new Date();
+    const elapsed = Date.now() - streamStartTime;
+    const entry = {
+      id: String(Date.now()),
+      elapsed: formatElapsed(elapsed),
+      absoluteTime: now.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+      label: '',
+      createdAt: now.toISOString(),
+    };
+    const dateStr = getLocalDateStr();
+    const data = getClipsData();
+    if (!data[dateStr]) data[dateStr] = [];
+    data[dateStr].unshift(entry);
+    saveClipsData(data);
+    renderClipsHistory();
+    showToast('Clip marcado: ' + entry.elapsed);
+  }
+  function deleteClip(dateStr, id) {
+    const data = getClipsData();
+    if (data[dateStr]) {
+      data[dateStr] = data[dateStr].filter(e => e.id !== id);
+      if (data[dateStr].length === 0) delete data[dateStr];
+    }
+    saveClipsData(data);
+    renderClipsHistory();
+  }
+  function updateClipLabel(dateStr, id, label) {
+    const data = getClipsData();
+    if (data[dateStr]) {
+      const entry = data[dateStr].find(e => e.id === id);
+      if (entry) entry.label = label;
+    }
+    saveClipsData(data);
+  }
+  function clearAllClips() {
+    if (!confirm('¿Borrar todos los marcadores de clip? Esta acción no se puede deshacer.')) return;
+    localStorage.removeItem(CLIPS_KEY);
+    renderClipsHistory();
+  }
+  function renderClipsHistory() {
+    const container = document.getElementById('clipsHistory');
+    if (!container) return;
+    const data = getClipsData();
+    const dates = Object.keys(data).sort().reverse();
+    if (dates.length === 0) {
+      container.innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:14px 0;">Sin marcadores aún. Inicia el stream y presiona Ctrl+Shift+M para marcar.</div>';
+      return;
+    }
+    container.innerHTML = '';
+    dates.forEach((dateStr, idx) => {
+      const entries = data[dateStr];
+      const acc = document.createElement('div');
+      acc.className = 'clips-day-accordion';
+      const header = document.createElement('div');
+      header.className = 'clips-day-header';
+      const count = entries.length;
+      header.innerHTML = `<span>${dateStr}</span><span style="color:var(--text-muted);font-size:11px;font-weight:400;">${count} marca${count !== 1 ? 's' : ''} &nbsp;▾</span>`;
+      const body = document.createElement('div');
+      body.className = 'clips-day-body' + (idx === 0 ? ' open' : '');
+      header.onclick = () => body.classList.toggle('open');
+      entries.forEach(e => {
+        const row = document.createElement('div');
+        row.className = 'clip-entry';
+        row.innerHTML = `
+          <span class="clip-elapsed">${e.elapsed}</span>
+          <span class="clip-abstime">${e.absoluteTime}</span>
+          <span class="clip-label"><input type="text" placeholder="Etiqueta..." value="${escapeHtml(e.label || '')}" /></span>
+          <button class="clip-delete" title="Borrar marcador">✕</button>
+        `;
+        row.querySelector('.clip-delete').onclick = () => deleteClip(dateStr, e.id);
+        row.querySelector('input').onchange = (ev) => updateClipLabel(dateStr, e.id, ev.target.value);
+        body.appendChild(row);
+      });
+      const dayFooter = document.createElement('div');
+      dayFooter.style.cssText = 'padding:4px 0 6px;text-align:right;';
+      const delDayBtn = document.createElement('button');
+      delDayBtn.textContent = 'Borrar día';
+      delDayBtn.style.cssText = 'background:none;border:none;cursor:pointer;font-size:11px;color:var(--text-muted);padding:2px 6px;border-radius:4px;font-family:"Inter",sans-serif;';
+      delDayBtn.onmouseover = () => { delDayBtn.style.color = '#fe2c55'; };
+      delDayBtn.onmouseout  = () => { delDayBtn.style.color = 'var(--text-muted)'; };
+      delDayBtn.onclick = () => {
+        if (!confirm(`¿Borrar todos los marcadores del ${dateStr}?`)) return;
+        const d = getClipsData(); delete d[dateStr]; saveClipsData(d); renderClipsHistory();
+      };
+      dayFooter.appendChild(delDayBtn);
+      body.appendChild(dayFooter);
+      acc.appendChild(header);
+      acc.appendChild(body);
+      container.appendChild(acc);
+    });
+  }
+  function updateOBSStatus(connected) {
+    const dot  = document.getElementById('obsStatusDot');
+    const text = document.getElementById('obsStatusText');
+    if (dot)  dot.className  = 'obs-status-dot' + (connected ? ' connected' : '');
+    if (text) { text.textContent = connected ? 'OBS conectado' : 'Desconectado'; text.style.color = connected ? 'var(--accent)' : 'var(--text-muted)'; }
+  }
+  async function connectOBSFromUI() {
+    const port     = parseInt(document.getElementById('obsPort')?.value) || 4455;
+    const password = document.getElementById('obsPassword')?.value || '';
+    const btn = document.getElementById('btnConnectOBS');
+    if (btn) { btn.disabled = true; btn.textContent = 'Conectando...'; }
+    try {
+      const res = await fetch('/api/obs/connect', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ port, password }) });
+      const d = await res.json();
+      if (!d.success) showToast('Error OBS: ' + d.error);
+    } catch (e) {
+      showToast('No se pudo conectar a OBS');
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = 'Conectar OBS'; }
+    }
+  }
+  if (window.electronAPI) {
+    window.electronAPI.onMarkClip(() => markClip());
+  }
+
+  // ─── PLATFORMS ────────────────────────────────────────────────
+  const PLATFORM_CHANNELS_KEY = 'tikliveTTS_platforms_v1';
+
+  function loadPlatformChannels() {
+    try { return JSON.parse(localStorage.getItem(PLATFORM_CHANNELS_KEY) || '{}'); } catch (e) { return {}; }
+  }
+
+  function savePlatformChannels(data) {
+    try { localStorage.setItem(PLATFORM_CHANNELS_KEY, JSON.stringify(data)); } catch (e) {}
+  }
+
+  function initPlatformUI() {
+    const saved = loadPlatformChannels();
+    ['twitch', 'youtube'].forEach(p => {
+      const el = document.getElementById(`${p}-channel`);
+      if (el && saved[p]) el.value = saved[p];
+    });
+  }
+
+  function updatePlatformBadge(platform, connected) {
+    const badge         = document.getElementById(`badge-${platform}`);
+    const connectBtn    = document.getElementById(`btn-${platform}-connect`);
+    const disconnectBtn = document.getElementById(`btn-${platform}-disconnect`);
+    if (badge) { badge.textContent = connected ? 'Conectado' : 'Desconectado'; badge.className = 'platform-badge' + (connected ? ' connected' : ''); }
+    if (connectBtn)    { connectBtn.style.display = connected ? 'none' : 'block'; connectBtn.disabled = false; connectBtn.textContent = 'Conectar'; }
+    if (disconnectBtn) { disconnectBtn.style.display = connected ? 'block' : 'none'; }
+  }
+
+  async function platformConnect(platform) {
+    const input = document.getElementById(`${platform}-channel`);
+    const channel = (input?.value || '').trim();
+    if (!channel) { showToast('Escribe el nombre del canal'); return; }
+
+    const saved = loadPlatformChannels();
+    saved[platform] = channel;
+    savePlatformChannels(saved);
+
+    const connectBtn = document.getElementById(`btn-${platform}-connect`);
+    if (connectBtn) { connectBtn.disabled = true; connectBtn.textContent = 'Conectando...'; }
+
+    try {
+      const res = await fetch('/api/platforms/connect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ platform, channel }),
+      });
+      const d = await res.json();
+      if (!res.ok) {
+        showToast('Error: ' + d.error);
+        if (connectBtn) { connectBtn.disabled = false; connectBtn.textContent = 'Conectar'; }
+      }
+    } catch (e) {
+      showToast('Error de red al conectar ' + platform);
+      if (connectBtn) { connectBtn.disabled = false; connectBtn.textContent = 'Conectar'; }
+    }
+  }
+
+  async function platformDisconnect(platform) {
+    try {
+      await fetch('/api/platforms/disconnect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ platform }),
+      });
+    } catch (e) {}
+  }
+
   // ─── INIT ─────────────────────────────────────────────────────
   loadSettings();
   applySettings();
   loadVoices();
   connectWS();
   updateQueueBadge();
+  initPlatformUI();
 
   // Fetch current base follower count if already connected
   fetch('/api/overlay-stats')

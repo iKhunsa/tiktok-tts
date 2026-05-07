@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Overlay — Social</title>
+  <style>
+    :root { --accent: #3ecf8e; --bg-alpha: 0.80; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: transparent;
+      width: 480px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    body.layout-rows { width: 260px; }
+    body.has-bgimg {
+      background-image: var(--bg-img);
+      background-size: cover;
+      background-position: center;
+    }
+    .container {
+      display: flex;
+      gap: 10px;
+    }
+    body.layout-rows .container { flex-direction: column; }
+
+    .panel {
+      flex: 1;
+      background: rgba(0,0,0,var(--bg-alpha));
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 16px;
+      padding: 12px 14px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      min-width: 0;
+    }
+    .panel-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+      padding-bottom: 7px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .panel-icon { font-size: 14px; }
+    .panel-title {
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .panel-count {
+      margin-left: auto;
+      font-size: 10px;
+      color: rgba(255,255,255,0.4);
+    }
+    .entry-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-height: 240px;
+      overflow: hidden;
+    }
+    .entry {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: slide-in 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes slide-in {
+      from { opacity: 0; transform: translateX(-12px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .entry-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .entry-name {
+      font-size: 12px;
+      color: #fff;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .empty {
+      font-size: 11px;
+      color: rgba(255,255,255,0.25);
+      text-align: center;
+      padding: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="panel" id="panel-follows">
+      <div class="panel-header">
+        <span class="panel-icon">💜</span>
+        <span class="panel-title">Seguidores</span>
+        <span class="panel-count" id="count-follows">0</span>
+      </div>
+      <div class="entry-list" id="list-follows">
+        <div class="empty">Sin seguidores aún</div>
+      </div>
+    </div>
+    <div class="panel" id="panel-shares">
+      <div class="panel-header">
+        <span class="panel-icon">🔗</span>
+        <span class="panel-title">Compartidos</span>
+        <span class="panel-count" id="count-shares">0</span>
+      </div>
+      <div class="entry-list" id="list-shares">
+        <div class="empty">Sin compartidos aún</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const MAX_ENTRIES = 10;
+    const params = new URLSearchParams(location.search);
+    const _c = params.get('color'); if (_c) document.documentElement.style.setProperty('--accent', '#' + _c);
+    const _b = params.get('bg');    if (_b) document.documentElement.style.setProperty('--bg-alpha', _b);
+    const _bgimg = params.get('bgimg');
+    if (_bgimg) { document.documentElement.style.setProperty('--bg-img', `url('${_bgimg}')`); document.body.classList.add('has-bgimg'); }
+    if (params.get('layout') === 'rows') document.body.classList.add('layout-rows');
+
+    const listFollows = document.getElementById('list-follows');
+    const listShares  = document.getElementById('list-shares');
+    const countFollows = document.getElementById('count-follows');
+    const countShares  = document.getElementById('count-shares');
+
+    let totals = { follows: 0, shares: 0 };
+
+    function escHtml(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function addEntry(listEl, user, prepend = true) {
+      const empty = listEl.querySelector('.empty');
+      if (empty) empty.remove();
+
+      const initials = user.substring(0, 2).toUpperCase();
+      const div = document.createElement('div');
+      div.className = 'entry';
+      div.innerHTML = `
+        <div class="entry-avatar">${escHtml(initials)}</div>
+        <span class="entry-name">@${escHtml(user)}</span>
+      `;
+
+      if (prepend) {
+        listEl.insertBefore(div, listEl.firstChild);
+      } else {
+        listEl.appendChild(div);
+      }
+
+      // Keep max entries
+      while (listEl.children.length > MAX_ENTRIES) {
+        listEl.removeChild(listEl.lastChild);
+      }
+    }
+
+    fetch('/api/overlay-stats')
+      .then(r => r.json())
+      .then(d => {
+        const c = d.credits || {};
+        const follows = (c.followers || []).slice(-MAX_ENTRIES);
+        const shares  = (c.sharers  || []).slice(-MAX_ENTRIES);
+        totals.follows = follows.length;
+        totals.shares  = shares.length;
+        // Add oldest first so newest ends up on top
+        follows.forEach(f => addEntry(listFollows, f.user, false));
+        shares.forEach(s  => addEntry(listShares,  s.user, false));
+        // Now reverse so newest is on top
+        reverseList(listFollows);
+        reverseList(listShares);
+        countFollows.textContent = totals.follows;
+        countShares.textContent  = totals.shares;
+      })
+      .catch(() => {});
+
+    function reverseList(el) {
+      const children = Array.from(el.children).filter(c => !c.classList.contains('empty'));
+      children.reverse().forEach(c => el.appendChild(c));
+    }
+
+    let ws, retryDelay = 2000;
+    function connectWS() {
+      const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      ws = new WebSocket(`${proto}//${location.host}`);
+      ws.onopen = () => { retryDelay = 2000; };
+      ws.onmessage = (e) => {
+        try {
+          const d = JSON.parse(e.data);
+          if (d.type === 'follow') {
+            totals.follows++;
+            countFollows.textContent = totals.follows;
+            addEntry(listFollows, d.user);
+          } else if (d.type === 'share') {
+            totals.shares++;
+            countShares.textContent = totals.shares;
+            addEntry(listShares, d.user);
+          } else if (d.type === 'connected') {
+            totals = { follows: 0, shares: 0 };
+            countFollows.textContent = 0;
+            countShares.textContent  = 0;
+            listFollows.innerHTML = '<div class="empty">Sin seguidores aún</div>';
+            listShares.innerHTML  = '<div class="empty">Sin compartidos aún</div>';
+          }
+        } catch(_) {}
+      };
+      ws.onclose = () => { setTimeout(connectWS, retryDelay); retryDelay = Math.min(retryDelay * 2, 30000); };
+      ws.onerror = () => ws.close();
+    }
+    connectWS();
+  </script>
+</body>
+</html>

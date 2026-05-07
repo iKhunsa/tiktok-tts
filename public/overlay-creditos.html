@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Overlay — Créditos</title>
+  <style>
+    :root { --accent: #3ecf8e; --bg-alpha: 0.85; --speed: 40s; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: transparent;
+      width: 380px;
+      height: 500px;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    body.has-bgimg {
+      background-image: var(--bg-img);
+      background-size: cover;
+      background-position: center;
+    }
+    .card {
+      background: rgba(0,0,0,var(--bg-alpha));
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 18px;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .header {
+      padding: 14px 18px 10px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      flex-shrink: 0;
+    }
+    .header h1 {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .scroll-window {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+    .scroll-track {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      animation: scroll-up var(--speed) linear infinite;
+    }
+    .scroll-track.paused { animation-play-state: paused; }
+    @keyframes scroll-up {
+      0%   { transform: translateY(0); }
+      100% { transform: translateY(-50%); }
+    }
+    .section-header {
+      padding: 12px 18px 4px;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      font-weight: 600;
+    }
+    .credit-row {
+      padding: 6px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .credit-icon {
+      font-size: 14px;
+      width: 20px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .credit-name {
+      font-size: 13px;
+      color: #fff;
+      font-weight: 500;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .credit-badge {
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .divider-section {
+      height: 1px;
+      background: rgba(255,255,255,0.06);
+      margin: 8px 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header"><h1>&#11088; Gracias &#11088;</h1></div>
+    <div class="scroll-window">
+      <div class="scroll-track" id="track"></div>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    const _c = params.get('color'); if (_c) document.documentElement.style.setProperty('--accent', '#' + _c);
+    const _b = params.get('bg');    if (_b) document.documentElement.style.setProperty('--bg-alpha', _b);
+    const _s = params.get('speed'); if (_s) document.documentElement.style.setProperty('--speed', _s + 's');
+    const _bgimg = params.get('bgimg');
+    if (_bgimg) { document.documentElement.style.setProperty('--bg-img', `url('${_bgimg}')`); document.body.classList.add('has-bgimg'); }
+
+    const track = document.getElementById('track');
+
+    let credits = { donors: [], followers: [], sharers: [] };
+
+    function buildRows(list) {
+      return list.map(item => {
+        const row = document.createElement('div');
+        row.className = 'credit-row';
+        row.innerHTML = `
+          <span class="credit-icon">${item.icon}</span>
+          <span class="credit-name">${escHtml(item.name)}</span>
+          ${item.badge ? `<span class="credit-badge">${escHtml(item.badge)}</span>` : ''}
+        `;
+        return row;
+      });
+    }
+
+    function escHtml(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function renderTrack() {
+      track.innerHTML = '';
+      const sections = [];
+
+      if (credits.donors.length) {
+        sections.push({ label: '🎁 Donaciones', items: credits.donors.map(d => ({
+          icon: '🎁', name: d.user, badge: `x${d.count} ${d.giftName}`
+        }))});
+      }
+      if (credits.followers.length) {
+        sections.push({ label: '💜 Nuevos seguidores', items: credits.followers.map(f => ({
+          icon: '💜', name: f.user, badge: ''
+        }))});
+      }
+      if (credits.sharers.length) {
+        sections.push({ label: '🔗 Compartieron', items: credits.sharers.map(s => ({
+          icon: '🔗', name: s.user, badge: ''
+        }))});
+      }
+
+      if (!sections.length) {
+        const ph = document.createElement('div');
+        ph.className = 'credit-row';
+        ph.innerHTML = '<span class="credit-name" style="color:rgba(255,255,255,0.3);text-align:center;width:100%">Esperando eventos del stream...</span>';
+        track.appendChild(ph);
+        return;
+      }
+
+      // Render twice for seamless loop
+      for (let pass = 0; pass < 2; pass++) {
+        for (const sec of sections) {
+          const hdr = document.createElement('div');
+          hdr.className = 'section-header';
+          hdr.textContent = sec.label;
+          track.appendChild(hdr);
+          for (const row of buildRows(sec.items)) track.appendChild(row);
+          const div = document.createElement('div');
+          div.className = 'divider-section';
+          track.appendChild(div);
+        }
+      }
+    }
+
+    fetch('/api/overlay-stats')
+      .then(r => r.json())
+      .then(d => {
+        if (d.credits) credits = d.credits;
+        renderTrack();
+      })
+      .catch(() => renderTrack());
+
+    let ws, retryDelay = 2000;
+    function connectWS() {
+      const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      ws = new WebSocket(`${proto}//${location.host}`);
+      ws.onopen = () => { retryDelay = 2000; };
+      ws.onmessage = (e) => {
+        try {
+          const d = JSON.parse(e.data);
+          if (d.type === 'gift') {
+            credits.donors.push({ user: d.user, giftName: d.giftName, count: d.repeatCount || 1 });
+            renderTrack();
+          } else if (d.type === 'follow') {
+            credits.followers.push({ user: d.user });
+            renderTrack();
+          } else if (d.type === 'share') {
+            credits.sharers.push({ user: d.user });
+            renderTrack();
+          } else if (d.type === 'connected') {
+            credits = { donors: [], followers: [], sharers: [] };
+            renderTrack();
+          }
+        } catch(_) {}
+      };
+      ws.onclose = () => { setTimeout(connectWS, retryDelay); retryDelay = Math.min(retryDelay * 2, 30000); };
+      ws.onerror = () => ws.close();
+    }
+    connectWS();
+  </script>
+</body>
+</html>

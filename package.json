@@ -1,6 +1,6 @@
 {
   "name": "tiktok-live-tts",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "TikTok Live Chat TTS Reader",
   "author": "iKhunsa",
   "main": "main.js",
@@ -34,11 +34,26 @@
       "createStartMenuShortcut": true
     },
     "extraResources": [
-      { "from": "gifts/",           "to": "gifts"           },
-      { "from": "public/",          "to": "public"          },
-      { "from": "asset/",           "to": "asset"           },
-      { "from": "blocked-words.md", "to": "blocked-words.md"},
-      { "from": "tray-icon.ico",    "to": "tray-icon.ico"   }
+      {
+        "from": "gifts/",
+        "to": "gifts"
+      },
+      {
+        "from": "public/",
+        "to": "public"
+      },
+      {
+        "from": "asset/",
+        "to": "asset"
+      },
+      {
+        "from": "blocked-words.md",
+        "to": "blocked-words.md"
+      },
+      {
+        "from": "tray-icon.ico",
+        "to": "tray-icon.ico"
+      }
     ],
     "npmRebuild": false,
     "files": [
@@ -59,8 +74,10 @@
     "google-tts-api": "^2.0.2",
     "multer": "^2.1.1",
     "tiktok-live-connector": "^1.2.3",
+    "tmi.js": "^1.8.5",
     "undici": "^8.0.2",
-    "ws": "^8.14.2"
+    "ws": "^8.14.2",
+    "youtube-chat": "^2.2.0"
   },
   "devDependencies": {
     "electron": "^41.5.0",

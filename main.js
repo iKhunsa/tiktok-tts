@@ -1,5 +1,5 @@
 'use strict';
-const { app, BrowserWindow, Tray, Menu, nativeImage, dialog } = require('electron');
+const { app, BrowserWindow, Tray, Menu, nativeImage, dialog, shell, globalShortcut, ipcMain } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const http = require('http');
@@ -41,11 +41,24 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
+      preload: path.join(__dirname, 'preload.js'),
     },
   });
 
   mainWindow.loadURL(`http://localhost:${PORT}`);
   mainWindow.removeMenu();
+
+  // Open external links in system browser, not in-app
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (!url.startsWith(`http://localhost:${PORT}`)) shell.openExternal(url);
+    return { action: 'deny' };
+  });
+  mainWindow.webContents.on('will-navigate', (event, url) => {
+    if (!url.startsWith(`http://localhost:${PORT}`) && !url.startsWith(`http://localhost:${PORT}/`)) {
+      event.preventDefault();
+      shell.openExternal(url);
+    }
+  });
 
   mainWindow.once('ready-to-show', () => mainWindow.show());
 
@@ -77,12 +90,74 @@ function createTray() {
   tray.on('double-click', () => { mainWindow.show(); mainWindow.focus(); });
 }
 
+ipcMain.handle('open-oauth-window', (_event, { url, callbackPattern }) => {
+  return new Promise((resolve, reject) => {
+    const win = new BrowserWindow({
+      width: 520,
+      height: 720,
+      title: 'Autenticación',
+      webPreferences: { nodeIntegration: false, contextIsolation: true },
+    });
+    let finished = false;
+    const OAUTH_TIMEOUT_MS = 5 * 60 * 1000;
+
+    function cleanup() {
+      if (win && !win.isDestroyed()) {
+        win.webContents.removeListener('will-redirect', onWillRedirect);
+        win.webContents.removeListener('did-navigate', onDidNavigate);
+        win.removeListener('closed', onClosed);
+      }
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+      }
+    }
+
+    function finish(fn, arg) {
+      if (finished) return;
+      finished = true;
+      cleanup();
+      if (win && !win.isDestroyed()) win.close();
+      fn(arg);
+    }
+
+    function onWillRedirect(_e, redirectUrl) {
+      if (redirectUrl.includes(callbackPattern)) finish(resolve, redirectUrl);
+    }
+
+    function onDidNavigate(_e, navUrl) {
+      if (navUrl.includes(callbackPattern)) finish(resolve, navUrl);
+    }
+
+    function onClosed() {
+      finish(reject, new Error('OAuth cancelado por el usuario'));
+    }
+
+    win.webContents.on('will-redirect', onWillRedirect);
+    win.webContents.on('did-navigate', onDidNavigate);
+    win.on('closed', onClosed);
+    win.loadURL(url);
+
+    const timeoutId = setTimeout(() => {
+      finish(reject, new Error('OAuth expirado después de 5 minutos'));
+    }, OAUTH_TIMEOUT_MS);
+  });
+});
+
 app.whenReady().then(() => {
   waitForServer(() => {
     createWindow();
     createTray();
     if (app.isPackaged) setupAutoUpdater();
+
+    globalShortcut.register('CommandOrControl+Shift+M', () => {
+      if (mainWindow) mainWindow.webContents.send('mark-clip');
+    });
   });
+});
+
+app.on('will-quit', () => {
+  globalShortcut.unregisterAll();
 });
 
 function setupAutoUpdater() {
