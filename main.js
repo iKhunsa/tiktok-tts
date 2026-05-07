@@ -34,6 +34,7 @@ const ICON_PATH = app.isPackaged
 
 let mainWindow = null;
 let tray = null;
+let pendingUpdateVersion = null;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -75,24 +76,36 @@ function createWindow() {
   });
 }
 
-function createTray() {
-  const icon = nativeImage.createFromPath(ICON_PATH);
-  tray = new Tray(icon);
-
-  const menu = Menu.buildFromTemplate([
+// Build tray context menu — rebuilds with an install item when an update is ready
+function buildTrayMenu(updateVersion = null) {
+  const items = [
     {
       label: 'Abrir TikTok TTS',
       click: () => { mainWindow.show(); mainWindow.focus(); },
     },
     { type: 'separator' },
-    {
-      label: 'Salir',
-      click: () => { app.exit(0); },
-    },
-  ]);
+  ];
+
+  if (updateVersion) {
+    items.push({
+      label: `⬆️ Instalar v${updateVersion} ahora`,
+      click: () => autoUpdater.quitAndInstall(false, true),
+    });
+    items.push({ type: 'separator' });
+  }
+
+  // app.quit() fires before-quit so autoInstallOnAppQuit works
+  items.push({ label: 'Salir', click: () => app.quit() });
+
+  return Menu.buildFromTemplate(items);
+}
+
+function createTray() {
+  const icon = nativeImage.createFromPath(ICON_PATH);
+  tray = new Tray(icon);
 
   tray.setToolTip('TikTok TTS');
-  tray.setContextMenu(menu);
+  tray.setContextMenu(buildTrayMenu());
   tray.on('double-click', () => { mainWindow.show(); mainWindow.focus(); });
 }
 
@@ -220,8 +233,28 @@ function setupAutoUpdater() {
       bytesPerSecond: p.bytesPerSecond,
     }));
 
-  autoUpdater.on('update-downloaded', (info) =>
-    sendUpdate({ type: 'ready', version: info.version }));
+  autoUpdater.on('update-downloaded', (info) => {
+    pendingUpdateVersion = info.version;
+
+    // Rebuild tray menu with install shortcut — works even if preload/banner is unavailable
+    if (tray) tray.setContextMenu(buildTrayMenu(info.version));
+
+    // Send to in-app banner (requires preload to be working)
+    sendUpdate({ type: 'ready', version: info.version });
+
+    // Native dialog fallback — guaranteed to work regardless of preload/banner state
+    dialog.showMessageBox({
+      type: 'info',
+      title: 'TikTok TTS — Actualización lista',
+      message: `v${info.version} descargada y lista para instalar.`,
+      detail: 'La app se reiniciará sola (no requiere reiniciar el PC).\n¿Instalar ahora?',
+      buttons: ['Instalar ahora', 'Después'],
+      defaultId: 0,
+      cancelId: 1,
+    }).then(({ response }) => {
+      if (response === 0) autoUpdater.quitAndInstall(false, true);
+    });
+  });
 
   autoUpdater.on('error', (err) =>
     sendUpdate({ type: 'error', message: err.message }));
