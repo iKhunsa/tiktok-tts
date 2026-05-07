@@ -55,9 +55,10 @@ function createWindow() {
   mainWindow.loadURL(`http://localhost:${PORT}`);
   mainWindow.removeMenu();
 
-  // Open external links in system browser, not in-app
+  // Localhost overlay URLs open in a new Electron window; external URLs go to system browser
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    if (!url.startsWith(`http://localhost:${PORT}`)) shell.openExternal(url);
+    if (url.startsWith(`http://localhost:${PORT}`)) return { action: 'allow' };
+    shell.openExternal(url);
     return { action: 'deny' };
   });
   mainWindow.webContents.on('will-navigate', (event, url) => {

@@ -7,6 +7,7 @@ const gTTS = require('google-tts-api');
 const https = require('https');
 const fs = require('fs');
 const multer = require('multer');
+const crypto = require('crypto');
 
 const IS_PKG = typeof process.pkg !== 'undefined';
 const REAL_BASE = IS_PKG
@@ -765,6 +766,7 @@ const platformConfig = { twitchClientId: '' };
 
 // ── MULTI-PLATFORM CHAT ───────────────────────────────────────────────────────
 const platformConnections = { twitch: null, youtube: null };
+let obsWs = null;
 
 async function connectTwitch(channel, token = null) {
   const tmi = require('tmi.js');
@@ -879,6 +881,97 @@ app.post('/api/platforms/disconnect', async (req, res) => {
       platformConnections.youtube = null;
       broadcast({ type: 'platform-disconnected', platform: 'youtube' });
     }
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── OBS WEBSOCKET ─────────────────────────────────────────────────────────────
+app.post('/api/obs/connect', (req, res) => {
+  const { port = 4455, password = '' } = req.body || {};
+
+  if (obsWs) {
+    try { obsWs.close(); } catch (_) {}
+    obsWs = null;
+  }
+
+  let settled = false;
+  const settle = (fn) => { if (!settled) { settled = true; fn(); } };
+  let ws;
+
+  try {
+    ws = new WebSocket(`ws://127.0.0.1:${port}`);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+
+  const timeoutId = setTimeout(() => {
+    settle(() => {
+      try { ws.close(); } catch (_) {}
+      res.status(500).json({ error: 'Timeout al conectar OBS (5s)' });
+    });
+  }, 5000);
+
+  ws.on('message', (raw) => {
+    try {
+      const msg = JSON.parse(raw.toString());
+      if (msg.op === 0) {
+        // Hello — send Identify (op 1)
+        const d = { rpcVersion: 1 };
+        const authChallenge = msg.d && msg.d.authentication;
+        if (authChallenge && password) {
+          const secret = crypto.createHash('sha256')
+            .update(password + authChallenge.salt).digest('base64');
+          d.authentication = crypto.createHash('sha256')
+            .update(secret + authChallenge.challenge).digest('base64');
+        }
+        ws.send(JSON.stringify({ op: 1, d }));
+      } else if (msg.op === 2) {
+        // Identified — connection established
+        clearTimeout(timeoutId);
+        obsWs = ws;
+        broadcast({ type: 'obs-connected' });
+        settle(() => res.json({ success: true }));
+      } else if (msg.op === 5) {
+        // Event — ignore for now
+      }
+    } catch (_) {}
+  });
+
+  ws.on('error', (err) => {
+    clearTimeout(timeoutId);
+    settle(() => res.status(500).json({ error: err.message }));
+  });
+
+  ws.on('close', () => {
+    clearTimeout(timeoutId);
+    if (obsWs === ws) {
+      obsWs = null;
+      broadcast({ type: 'obs-disconnected' });
+    }
+    settle(() => res.status(500).json({ error: 'OBS cerró la conexión' }));
+  });
+});
+
+app.post('/api/obs/disconnect', (_req, res) => {
+  if (obsWs) {
+    try { obsWs.close(); } catch (_) {}
+    obsWs = null;
+    broadcast({ type: 'obs-disconnected' });
+  }
+  res.json({ success: true });
+});
+
+app.post('/api/obs/save-replay', (_req, res) => {
+  if (!obsWs || obsWs.readyState !== WebSocket.OPEN) {
+    return res.status(400).json({ error: 'OBS no conectado' });
+  }
+  try {
+    obsWs.send(JSON.stringify({
+      op: 6,
+      d: { requestType: 'SaveReplayBuffer', requestId: `replay-${Date.now()}` }
+    }));
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });

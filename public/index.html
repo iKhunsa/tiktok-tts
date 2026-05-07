@@ -1205,6 +1205,15 @@
         </label>
       </div>
 
+      <!-- GLOBAL TTS TOGGLE -->
+      <div style="display:flex;align-items:center;gap:10px;margin:8px 0 4px;">
+        <button id="btnTTSToggle" onclick="toggleGlobalTTS()"
+          style="padding:6px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--accent);background:rgba(62,207,142,0.12);color:var(--accent);transition:all .2s;">
+          🔊 TTS Encendido
+        </button>
+        <span style="font-size:11px;color:var(--text-muted);">Silencia todo el TTS con un click</span>
+      </div>
+
       <!-- CHAT LOG -->
       <div class="chat-section">
         <div class="chat-header">
@@ -1270,21 +1279,14 @@
                    oninput="onCfgChange('seguidores','bg', parseFloat(this.value)); document.getElementById('cfg-seg-bg-val').textContent = Math.round(this.value*100)" />
           </div>
           <div class="cfg-field full">
-            <label>Fondo personalizado</label>
-            <div class="bg-upload-row">
-              <input type="file" id="cfg-seg-bgimg" accept="image/*"
-                     onchange="uploadBg('seguidores', this.files[0])" />
-              <img class="bg-preview" id="cfg-seg-bgimg-preview" alt="" />
-              <button class="cfg-btn small danger" id="cfg-seg-bgimg-remove" style="display:none"
-                      onclick="removeBg('seguidores')">Eliminar fondo</button>
-            </div>
+            <label>Fondo personalizado <span style="font-size:10px;padding:2px 7px;border-radius:99px;background:rgba(124,58,237,0.18);color:#a78bfa;font-weight:600;margin-left:6px;">Próximamente</span></label>
           </div>
         </div>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-seguidores">http://localhost:3000/overlay-seguidores.html</span>
           <button class="cfg-btn" onclick="copyCfgUrl('seguidores')">Copiar</button>
           <a class="cfg-btn" id="cfg-open-seguidores" href="http://localhost:3000/overlay-seguidores.html" target="_blank">Abrir</a>
-          <button class="cfg-btn" onclick="downloadTemplate('seguidores')">Plantilla</button>
+          <button class="cfg-btn" disabled style="opacity:0.45;cursor:not-allowed;" title="Próximamente">Plantilla</button>
         </div>
       </div>
 
@@ -1315,14 +1317,7 @@
                    oninput="onCfgChange('likes','bg', parseFloat(this.value)); document.getElementById('cfg-likes-bg-val').textContent = Math.round(this.value*100)" />
           </div>
           <div class="cfg-field full">
-            <label>Fondo personalizado</label>
-            <div class="bg-upload-row">
-              <input type="file" id="cfg-likes-bgimg" accept="image/*"
-                     onchange="uploadBg('likes', this.files[0])" />
-              <img class="bg-preview" id="cfg-likes-bgimg-preview" alt="" />
-              <button class="cfg-btn small danger" id="cfg-likes-bgimg-remove" style="display:none"
-                      onclick="removeBg('likes')">Eliminar fondo</button>
-            </div>
+            <label>Fondo personalizado <span style="font-size:10px;padding:2px 7px;border-radius:99px;background:rgba(124,58,237,0.18);color:#a78bfa;font-weight:600;margin-left:6px;">Próximamente</span></label>
           </div>
         </div>
         <div class="cfg-url-row">
@@ -1330,7 +1325,7 @@
           <button class="cfg-btn" onclick="testTopLikers()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Test</button>
           <button class="cfg-btn" onclick="copyCfgUrl('likes')">Copiar</button>
           <a class="cfg-btn" id="cfg-open-likes" href="http://localhost:3000/overlay-likes.html" target="_blank">Abrir</a>
-          <button class="cfg-btn" onclick="downloadTemplate('likes')">Plantilla</button>
+          <button class="cfg-btn" disabled style="opacity:0.45;cursor:not-allowed;" title="Próximamente">Plantilla</button>
         </div>
       </div>
 
@@ -1361,14 +1356,7 @@
                    oninput="onCfgChange('alertas','bg', parseFloat(this.value)); document.getElementById('cfg-alertas-bg-val').textContent = Math.round(this.value*100)" />
           </div>
           <div class="cfg-field full">
-            <label>Fondo personalizado</label>
-            <div class="bg-upload-row">
-              <input type="file" id="cfg-alertas-bgimg" accept="image/*"
-                     onchange="uploadBg('alertas', this.files[0])" />
-              <img class="bg-preview" id="cfg-alertas-bgimg-preview" alt="" />
-              <button class="cfg-btn small danger" id="cfg-alertas-bgimg-remove" style="display:none"
-                      onclick="removeBg('alertas')">Eliminar fondo</button>
-            </div>
+            <label>Fondo personalizado <span style="font-size:10px;padding:2px 7px;border-radius:99px;background:rgba(124,58,237,0.18);color:#a78bfa;font-weight:600;margin-left:6px;">Próximamente</span></label>
           </div>
         </div>
         <div class="cfg-url-row">
@@ -1376,7 +1364,7 @@
           <button class="cfg-btn" onclick="testGiftAlert()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Test</button>
           <button class="cfg-btn" onclick="copyCfgUrl('alertas')">Copiar</button>
           <a class="cfg-btn" id="cfg-open-alertas" href="http://localhost:3000/overlay-alertas.html" target="_blank">Abrir</a>
-          <button class="cfg-btn" onclick="downloadTemplate('alertas')">Plantilla</button>
+          <button class="cfg-btn" disabled style="opacity:0.45;cursor:not-allowed;" title="Próximamente">Plantilla</button>
         </div>
       </div>
 
@@ -1585,6 +1573,7 @@
         </div>
         <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
           <button class="btn btn-connect" id="btnConnectOBS" onclick="connectOBSFromUI()" style="font-size:13px;">Conectar OBS</button>
+          <button class="btn btn-disconnect" id="btnDisconnectOBS" onclick="disconnectOBSFromUI()" style="font-size:13px;display:none;">Desconectar OBS</button>
           <span id="obsStatusText" style="font-size:12px;color:var(--text-muted);">Desconectado</span>
         </div>
         <p style="font-size:11px;color:var(--text-muted);margin-top:8px;">OBS > Herramientas > Servidor WebSocket → habilitar en puerto 4455.</p>
@@ -2037,6 +2026,26 @@
   let speechQueue = [];
   let isSpeaking = false;
   let currentMsgId = null;
+  let ttsGlobalEnabled = true;
+
+  function toggleGlobalTTS() {
+    ttsGlobalEnabled = !ttsGlobalEnabled;
+    const btn = document.getElementById('btnTTSToggle');
+    if (btn) {
+      btn.textContent = ttsGlobalEnabled ? '🔊 TTS Encendido' : '🔇 TTS Apagado';
+      btn.style.borderColor   = ttsGlobalEnabled ? 'var(--accent)' : 'var(--text-muted)';
+      btn.style.background    = ttsGlobalEnabled ? 'rgba(62,207,142,0.12)' : 'rgba(255,255,255,0.04)';
+      btn.style.color         = ttsGlobalEnabled ? 'var(--accent)' : 'var(--text-muted)';
+    }
+    if (!ttsGlobalEnabled && isSpeaking) {
+      // Stop current audio and clear queue
+      if (activeAudio) { activeAudio.pause(); activeAudio = null; }
+      speechQueue = [];
+      isSpeaking = false;
+      hideSpeakingIndicator();
+      updateQueueBadge();
+    }
+  }
 
   const LIKE_COOLDOWN_MS = 15 * 60 * 1000;
   const likeCooldownMap = new Map();
@@ -2259,15 +2268,16 @@
     options[key] = checkbox.checked;
     const chipId = {
       readChat: 'chip-chat', readGifts: 'chip-gifts', readJoins: 'chip-joins',
-      readFollows: 'chip-follows', readLikes: 'chip-likes', sayUsername: 'chip-username'
+      readFollows: 'chip-follows', readLikes: 'chip-likes', readShares: 'chip-shares', sayUsername: 'chip-username'
     }[key];
-    document.getElementById(chipId).classList.toggle('active', checkbox.checked);
+    if (chipId) document.getElementById(chipId)?.classList.toggle('active', checkbox.checked);
     appSettings[key] = checkbox.checked;
     saveSettings();
   }
 
   // ─── SPEECH QUEUE ─────────────────────────────────────────────
   function speak(text, msgId, timestamp) {
+    if (!ttsGlobalEnabled) return;
     if (speechQueue.length >= MAX_QUEUE_SIZE) return;
     speechQueue.push({ text, msgId, timestamp: timestamp || Date.now() });
     // Keep queue in chronological order so multi-platform messages play in arrival time order
@@ -2466,6 +2476,18 @@
 
       case 'platform-disconnected':
         updatePlatformBadge(data.platform, false);
+        break;
+
+      case 'obs-connected':
+        updateOBSStatus(true);
+        { const btn = document.getElementById('btnConnectOBS'); const btnDis = document.getElementById('btnDisconnectOBS');
+          if (btn) btn.style.display = 'none'; if (btnDis) btnDis.style.display = 'inline-block'; }
+        break;
+
+      case 'obs-disconnected':
+        updateOBSStatus(false);
+        { const btn = document.getElementById('btnConnectOBS'); const btnDis = document.getElementById('btnDisconnectOBS');
+          if (btn) btn.style.display = 'inline-block'; if (btnDis) btnDis.style.display = 'none'; }
         break;
     }
   }
@@ -2703,7 +2725,9 @@
     }, 1000);
   }
   function markClip() {
-    if (!streamStartTime) return;
+    if (!streamStartTime) { showToast('Iniciá el stream primero para marcar clips'); return; }
+    // If OBS is connected, also trigger replay buffer save
+    if (obsConnected) fetch('/api/obs/save-replay', { method: 'POST' }).catch(() => {});
     const now = new Date();
     const elapsed = Date.now() - streamStartTime;
     const entry = {
@@ -2796,25 +2820,42 @@
     });
   }
   function updateOBSStatus(connected) {
+    obsConnected = connected;
     const dot  = document.getElementById('obsStatusDot');
     const text = document.getElementById('obsStatusText');
     if (dot)  dot.className  = 'obs-status-dot' + (connected ? ' connected' : '');
     if (text) { text.textContent = connected ? 'OBS conectado' : 'Desconectado'; text.style.color = connected ? 'var(--accent)' : 'var(--text-muted)'; }
   }
+  let obsConnected = false;
   async function connectOBSFromUI() {
     const port     = parseInt(document.getElementById('obsPort')?.value) || 4455;
     const password = document.getElementById('obsPassword')?.value || '';
-    const btn = document.getElementById('btnConnectOBS');
+    const btn    = document.getElementById('btnConnectOBS');
+    const btnDis = document.getElementById('btnDisconnectOBS');
     if (btn) { btn.disabled = true; btn.textContent = 'Conectando...'; }
     try {
       const res = await fetch('/api/obs/connect', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ port, password }) });
       const d = await res.json();
-      if (!d.success) showToast('Error OBS: ' + d.error);
+      if (d.success) {
+        updateOBSStatus(true);
+        if (btn)    { btn.style.display = 'none'; btn.disabled = false; btn.textContent = 'Conectar OBS'; }
+        if (btnDis) btnDis.style.display = 'inline-block';
+      } else {
+        showToast('Error OBS: ' + (d.error || 'desconocido'));
+        if (btn) { btn.disabled = false; btn.textContent = 'Conectar OBS'; }
+      }
     } catch (e) {
       showToast('No se pudo conectar a OBS');
-    } finally {
       if (btn) { btn.disabled = false; btn.textContent = 'Conectar OBS'; }
     }
+  }
+  async function disconnectOBSFromUI() {
+    await fetch('/api/obs/disconnect', { method: 'POST' }).catch(() => {});
+    updateOBSStatus(false);
+    const btn    = document.getElementById('btnConnectOBS');
+    const btnDis = document.getElementById('btnDisconnectOBS');
+    if (btn)    { btn.style.display = 'inline-block'; }
+    if (btnDis) { btnDis.style.display = 'none'; }
   }
   if (window.electronAPI) {
     window.electronAPI.onMarkClip(() => markClip());
