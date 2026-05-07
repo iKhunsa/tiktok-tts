@@ -859,7 +859,7 @@ app.post('/api/platforms/connect', async (req, res) => {
       else if (ytShortMatch) ytInput = ytShortMatch[1];
       else if (ytHandleMatch) ytInput = '@' + ytHandleMatch[1];
       await connectYoutube(ytInput);
-    else return res.status(400).json({ error: 'Plataforma no soportada' });
+    } else return res.status(400).json({ error: 'Plataforma no soportada' });
     res.json({ success: true });
   } catch (err) {
     log('error', platform, 'Error al conectar', { error: err.message });
