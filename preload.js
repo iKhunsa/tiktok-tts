@@ -1,6 +1,5 @@
 'use strict';
 const { contextBridge, ipcRenderer } = require('electron');
-
 contextBridge.exposeInMainWorld('electronAPI', {
   onMarkClip: (cb) => ipcRenderer.on('mark-clip', () => cb()),
   openOAuthWindow: (url, callbackPattern) =>

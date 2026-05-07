@@ -9,97 +9,77 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       background: transparent;
-      width: 320px;
+      width: 380px;
+      height: 500px;
+      overflow: hidden;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       -webkit-font-smoothing: antialiased;
-      overflow: hidden;
     }
     body.has-bgimg {
       background-image: var(--bg-img);
       background-size: cover;
       background-position: center;
-      background-repeat: no-repeat;
     }
     .card {
-      background: rgba(0, 0, 0, var(--bg-alpha));
-      border: 1px solid rgba(255, 255, 255, 0.10);
+      background: rgba(0,0,0,var(--bg-alpha));
+      border: 1px solid rgba(255,255,255,0.10);
       border-radius: 18px;
-      padding: 0;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      overflow: hidden;
-      height: 420px;
+      width: 100%;
+      height: 100%;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
-    .card-header {
+    .header {
+      padding: 14px 18px 10px;
       text-align: center;
-      padding: 16px 20px 12px;
       border-bottom: 1px solid rgba(255,255,255,0.07);
       flex-shrink: 0;
     }
-    .card-title {
-      font-size: 11px;
+    .header h1 {
+      font-size: 13px;
+      font-weight: 700;
       letter-spacing: 3px;
       text-transform: uppercase;
       color: var(--accent);
-      font-weight: 600;
     }
-    .card-subtitle {
-      font-size: 9px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.35);
-      margin-top: 2px;
-    }
-    .scroll-viewport {
+    .scroll-window {
       flex: 1;
       overflow: hidden;
       position: relative;
-      mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
     }
     .scroll-track {
       display: flex;
       flex-direction: column;
       gap: 0;
-      animation: scrollUp var(--speed) linear infinite;
-      will-change: transform;
+      animation: scroll-up var(--speed) linear infinite;
     }
-    .scroll-track:empty::after {
-      content: 'Esperando eventos...';
-      display: block;
-      text-align: center;
-      color: rgba(255,255,255,0.2);
-      font-size: 11px;
-      padding: 30px 20px;
-      letter-spacing: 1px;
-    }
-    @keyframes scrollUp {
+    .scroll-track.paused { animation-play-state: paused; }
+    @keyframes scroll-up {
       0%   { transform: translateY(0); }
       100% { transform: translateY(-50%); }
     }
-    .section-label {
+    .section-header {
+      padding: 12px 18px 4px;
       font-size: 9px;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.3);
-      text-align: center;
-      padding: 14px 0 6px;
+      color: rgba(255,255,255,0.45);
+      font-weight: 600;
     }
     .credit-row {
+      padding: 6px 18px;
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 7px 18px;
-      transition: background 0.2s;
     }
-    .credit-row:hover { background: rgba(255,255,255,0.03); }
     .credit-icon {
       font-size: 14px;
-      flex-shrink: 0;
       width: 20px;
       text-align: center;
+      flex-shrink: 0;
     }
     .credit-name {
       font-size: 13px;
@@ -110,142 +90,106 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .credit-detail {
-      font-size: 10px;
+    .credit-badge {
+      font-size: 11px;
       color: var(--accent);
-      white-space: nowrap;
       font-weight: 600;
+      flex-shrink: 0;
     }
-    .divider-row {
+    .divider-section {
       height: 1px;
-      background: rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.06);
       margin: 8px 18px;
-    }
-    .new-entry {
-      animation: fadeSlide 0.5s ease;
-    }
-    @keyframes fadeSlide {
-      from { opacity: 0; transform: translateX(12px); }
-      to   { opacity: 1; transform: translateX(0); }
     }
   </style>
 </head>
 <body>
   <div class="card">
-    <div class="card-header">
-      <div class="card-title">✦ Gracias ✦</div>
-      <div class="card-subtitle">Seguidores · Donaciones · Compartidos</div>
-    </div>
-    <div class="scroll-viewport">
+    <div class="header"><h1>&#11088; Gracias &#11088;</h1></div>
+    <div class="scroll-window">
       <div class="scroll-track" id="track"></div>
     </div>
   </div>
 
   <script>
     const params = new URLSearchParams(location.search);
-    const _c = params.get('color');
-    if (_c) {
-      const colorVal = _c.startsWith('#') || _c.startsWith('rgb') ? _c : '#' + _c;
-      document.documentElement.style.setProperty('--accent', colorVal);
-    }
-    const _b = params.get('bg');
-    if (_b) document.documentElement.style.setProperty('--bg-alpha', _b);
+    const _c = params.get('color'); if (_c) document.documentElement.style.setProperty('--accent', '#' + _c);
+    const _b = params.get('bg');    if (_b) document.documentElement.style.setProperty('--bg-alpha', _b);
+    const _s = params.get('speed'); if (_s) document.documentElement.style.setProperty('--speed', _s + 's');
     const _bgimg = params.get('bgimg');
-    if (_bgimg) {
-      const safeUrl = _bgimg.replace(/'/g, "%27");
-      document.documentElement.style.setProperty('--bg-img', `url('${safeUrl}')`);
-      document.body.classList.add('has-bgimg');
-    }
-    const speedRaw = params.get('speed');
-    const speedNum = speedRaw ? parseFloat(speedRaw) : 40;
-    document.documentElement.style.setProperty('--speed', (isNaN(speedNum) ? 40 : speedNum) + 's');
+    if (_bgimg) { document.documentElement.style.setProperty('--bg-img', `url('${_bgimg}')`); document.body.classList.add('has-bgimg'); }
 
     const track = document.getElementById('track');
 
-    function makeRow(icon, name, detail = '') {
-      const row = document.createElement('div');
-      row.className = 'credit-row new-entry';
-      row.innerHTML = `
-        <span class="credit-icon">${icon}</span>
-        <span class="credit-name">${esc(name)}</span>
-        ${detail ? `<span class="credit-detail">${esc(detail)}</span>` : ''}
-      `;
-      return row;
+    let credits = { donors: [], followers: [], sharers: [] };
+
+    function buildRows(list) {
+      return list.map(item => {
+        const row = document.createElement('div');
+        row.className = 'credit-row';
+        row.innerHTML = `
+          <span class="credit-icon">${item.icon}</span>
+          <span class="credit-name">${escHtml(item.name)}</span>
+          ${item.badge ? `<span class="credit-badge">${escHtml(item.badge)}</span>` : ''}
+        `;
+        return row;
+      });
     }
 
-    function makeSection(label) {
-      const s = document.createElement('div');
-      s.className = 'section-label';
-      s.textContent = label;
-      return s;
+    function escHtml(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 
-    function makeDivider() {
-      const d = document.createElement('div');
-      d.className = 'divider-row';
-      return d;
-    }
-
-    function esc(str) {
-      const d = document.createElement('div');
-      d.textContent = str;
-      return d.innerHTML;
-    }
-
-    const localCredits = { donors: [], followers: [], sharers: [] };
-    const MAX_CREDITS = 50;
-
-    function buildList(credits) {
-      if (credits) {
-        localCredits.donors = (credits.donors || []).slice(-MAX_CREDITS);
-        localCredits.followers = (credits.followers || []).slice(-MAX_CREDITS);
-        localCredits.sharers = (credits.sharers || []).slice(-MAX_CREDITS);
-      }
+    function renderTrack() {
       track.innerHTML = '';
-      const hasAny = localCredits.donors.length || localCredits.followers.length || localCredits.sharers.length;
-      if (!hasAny) return;
+      const sections = [];
 
-      const addSection = (label, items, buildRow) => {
-        if (!items.length) return;
-        track.appendChild(makeSection(label));
-        items.forEach(it => track.appendChild(buildRow(it)));
-        track.appendChild(makeDivider());
-      };
-
-      addSection('🎁  Donaciones',  localCredits.donors,    it => makeRow('🎁', it.user, `×${it.count} ${it.giftName}`));
-      addSection('💜  Seguidores',  localCredits.followers, it => makeRow('💜', it.user));
-      addSection('🔗  Compartieron', localCredits.sharers,   it => makeRow('🔗', it.user));
-
-      // Duplicate for seamless infinite loop
-      track.appendChild(track.cloneNode(true));
-      resetAnimation();
-    }
-
-    function resetAnimation() {
-      track.style.animation = 'none';
-      void track.offsetHeight;
-      track.style.animation = '';
-    }
-
-    function appendEntry(type, data) {
-      if (type === 'gift') {
-        localCredits.donors.push({ user: data.user, giftName: data.giftName || '', count: data.repeatCount || 1, ts: Date.now() });
-        if (localCredits.donors.length > MAX_CREDITS) localCredits.donors.shift();
-      } else if (type === 'follow') {
-        localCredits.followers.push({ user: data.user, ts: Date.now() });
-        if (localCredits.followers.length > MAX_CREDITS) localCredits.followers.shift();
-      } else if (type === 'share') {
-        localCredits.sharers.push({ user: data.user, ts: Date.now() });
-        if (localCredits.sharers.length > MAX_CREDITS) localCredits.sharers.shift();
+      if (credits.donors.length) {
+        sections.push({ label: '🎁 Donaciones', items: credits.donors.map(d => ({
+          icon: '🎁', name: d.user, badge: `x${d.count} ${d.giftName}`
+        }))});
       }
-      // Rebuild entirely to keep both halves perfectly identical
-      buildList(null);
+      if (credits.followers.length) {
+        sections.push({ label: '💜 Nuevos seguidores', items: credits.followers.map(f => ({
+          icon: '💜', name: f.user, badge: ''
+        }))});
+      }
+      if (credits.sharers.length) {
+        sections.push({ label: '🔗 Compartieron', items: credits.sharers.map(s => ({
+          icon: '🔗', name: s.user, badge: ''
+        }))});
+      }
+
+      if (!sections.length) {
+        const ph = document.createElement('div');
+        ph.className = 'credit-row';
+        ph.innerHTML = '<span class="credit-name" style="color:rgba(255,255,255,0.3);text-align:center;width:100%">Esperando eventos del stream...</span>';
+        track.appendChild(ph);
+        return;
+      }
+
+      // Render twice for seamless loop
+      for (let pass = 0; pass < 2; pass++) {
+        for (const sec of sections) {
+          const hdr = document.createElement('div');
+          hdr.className = 'section-header';
+          hdr.textContent = sec.label;
+          track.appendChild(hdr);
+          for (const row of buildRows(sec.items)) track.appendChild(row);
+          const div = document.createElement('div');
+          div.className = 'divider-section';
+          track.appendChild(div);
+        }
+      }
     }
 
     fetch('/api/overlay-stats')
       .then(r => r.json())
-      .then(d => buildList(d.credits || { donors: [], followers: [], sharers: [] }))
-      .catch(() => {});
+      .then(d => {
+        if (d.credits) credits = d.credits;
+        renderTrack();
+      })
+      .catch(() => renderTrack());
 
     let ws, retryDelay = 2000;
     function connectWS() {
@@ -255,12 +199,18 @@
       ws.onmessage = (e) => {
         try {
           const d = JSON.parse(e.data);
-          if (d.type === 'gift')   appendEntry('gift',   d);
-          if (d.type === 'follow') appendEntry('follow', d);
-          if (d.type === 'share')  appendEntry('share',  d);
-          if (d.type === 'connected') {
-            fetch('/api/overlay-stats').then(r => r.json())
-              .then(s => buildList(s.credits || { donors: [], followers: [], sharers: [] })).catch(() => {});
+          if (d.type === 'gift') {
+            credits.donors.push({ user: d.user, giftName: d.giftName, count: d.repeatCount || 1 });
+            renderTrack();
+          } else if (d.type === 'follow') {
+            credits.followers.push({ user: d.user });
+            renderTrack();
+          } else if (d.type === 'share') {
+            credits.sharers.push({ user: d.user });
+            renderTrack();
+          } else if (d.type === 'connected') {
+            credits = { donors: [], followers: [], sharers: [] };
+            renderTrack();
           }
         } catch(_) {}
       };

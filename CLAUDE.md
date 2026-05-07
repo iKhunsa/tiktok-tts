@@ -2,7 +2,7 @@
 
 ## Qué es
 
-App de escritorio Electron que lee en voz alta el chat de TikTok Live en tiempo real. Está diseñada para streamers que quieren TTS integrado sin depender de herramientas externas. La UI corre dentro de la app (no en navegador externo). Los overlays (alertas, likes, seguidores) se pegan en OBS como Browser Source via `http://localhost:3000/overlay-*.html`.
+App de escritorio Electron que lee en voz alta el chat de TikTok Live, Twitch y YouTube en tiempo real. Diseñada para streamers que quieren TTS integrado sin depender de herramientas externas. La UI corre dentro de la app (no en navegador externo). Los overlays (alertas, likes, seguidores) se pegan en OBS como Browser Source via `http://localhost:3000/overlay-*.html`.
 
 ## Stack técnico
 
@@ -11,6 +11,8 @@ App de escritorio Electron que lee en voz alta el chat de TikTok Live en tiempo 
 | Desktop shell | Electron 41 |
 | Backend | Express + WebSocket (ws) en el mismo proceso Electron |
 | TikTok connection | tiktok-live-connector (WebSocket scraping) |
+| Twitch connection | tmi.js (IRC anónimo o autenticado) |
+| YouTube connection | youtube-chat (scraping, requiere stream activo) |
 | TTS | Google Translate TTS API (google-tts-api, online) |
 | Auto-update | electron-updater → GitHub Releases |
 | Build/CI | electron-builder + GitHub Actions (windows-latest) |
@@ -26,15 +28,18 @@ main.js (Electron main process)
   └── autoUpdater             ← chequea GitHub Releases al init
 
 server.js (Express en puerto 3000)
-  ├── GET  /                  ← index.html (UI principal)
-  ├── GET  /advanced.html     ← configuración avanzada
-  ├── GET  /overlay-*.html    ← overlays para OBS
-  ├── POST /api/connect       ← conecta a TikTok Live
-  ├── POST /api/tts           ← Google TTS → stream MP3
-  ├── WS   /                  ← broadcast eventos al browser
-  ├── GET  /api/gifts-list    ← lista PNGs de regalos
-  ├── POST /api/upload-bg     ← sube imagen fondo overlay
-  └── PATCH /api/config       ← ajusta config en runtime
+  ├── GET  /                       ← index.html (UI principal)
+  ├── GET  /advanced.html          ← configuración avanzada
+  ├── GET  /overlay-*.html         ← overlays para OBS
+  ├── POST /api/connect            ← conecta a TikTok Live
+  ├── POST /api/tts                ← Google TTS → stream MP3
+  ├── WS   /                       ← broadcast eventos al browser
+  ├── GET  /api/gifts-list         ← lista PNGs de regalos
+  ├── POST /api/upload-bg          ← sube imagen fondo overlay
+  ├── PATCH /api/config            ← ajusta config en runtime
+  ├── GET  /api/platforms/status   ← estado twitch/youtube
+  ├── POST /api/platforms/connect  ← conecta twitch o youtube
+  └── POST /api/platforms/disconnect
 ```
 
 ## Variables de entorno clave
@@ -89,6 +94,10 @@ git push origin main --tags
 ## Funcionalidades actuales
 
 - TTS en 13 idiomas via Google Translate (es, es-MX, es-AR, en, en-GB, pt, pt-PT, fr, de, it, ja, zh-CN, ru, ko)
+- Chat multi-plataforma: TikTok Live + Twitch (tmi.js) + YouTube (youtube-chat, requiere stream activo)
+- Badge de plataforma en cada mensaje del chat (tiktok / twitch / youtube)
+- Cola TTS ordenada por timestamp: mensajes de 3 plataformas simultáneas se leen en orden cronológico real
+- Un solo narrador (1 Audio activo a la vez, cola serializada con `isSpeaking` flag)
 - Filtro de spam (mensajes repetidos, muy largos, palabras bloqueadas)
 - Rate limiting configurable en runtime
 - Debounce de likes (agrupa likes del mismo usuario en ventana de 1.5s)
@@ -99,10 +108,11 @@ git push origin main --tags
 - Refresco de follower count cada 5 minutos
 - Palabras bloqueadas persistidas en `blocked-words.md`
 - Single-instance lock (doble clic → bring to front)
+- Atajo global Ctrl+Shift+M → marca clip en OBS
 
 ## Roadmap / Pendiente
 
-- [ ] Firma de código del installer (elimina warning de Windows Defender)
+- [ ] Firma de código del installer (elimina warning de Windows Defender, ~$300-500/año)
 - [ ] Modo sin conexión parcial (TTS cacheado para frases comunes)
 - [ ] Soporte multi-cuenta / multi-stream simultáneo
 - [ ] Personalización de voces TTS (pitch, velocidad)
@@ -123,7 +133,11 @@ git push origin main --tags
 
 **Por qué extraResources y no asar:** `gifts/` tiene 188 MB de PNGs. Meterlos en el asar los haría parte del bundle comprimido pero el asar tiene límites prácticos de tamaño y acceso. `extraResources` los deja en el sistema de archivos real, accesibles via `process.resourcesPath`.
 
+**Por qué se descartó Kick:** Kick.com usa Cloudflare que bloquea cualquier request HTTP/WS desde Node.js (403). Requeriría mantener un BrowserWindow de Electron abierto permanentemente (~200MB RAM), y su infraestructura WS cambió de Pusher a `websockets.kick.com` con tokens dinámicos. Complejidad vs beneficio no justificada actualmente.
+
 **bufferutil/utf-8-validate:** Dependencias opcionales de `ws`. Se incluyen en el build con sus binarios precompilados para Node.js (NAPI, compatibles con Electron sin rebuilding). Se excluyen solo los `.pdb` (debug symbols, innecesarios en producción).
+
+**Cola TTS timestamp-ordered:** `speechQueue` en el cliente almacena `{ text, msgId, timestamp }`. Al agregar cada mensaje, el array se re-ordena por `timestamp` ascendente. Esto garantiza que si Twitch, YouTube y TikTok envían mensajes casi simultáneos, se lean en el orden real en que los usuarios los escribieron (según el timestamp del servidor que recibió cada evento).
 
 ## Repositorio
 

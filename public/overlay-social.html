@@ -5,47 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Overlay — Social</title>
   <style>
-    :root { --accent: #3ecf8e; --bg-alpha: 0.85; }
+    :root { --accent: #3ecf8e; --bg-alpha: 0.80; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       background: transparent;
+      width: 480px;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       -webkit-font-smoothing: antialiased;
-      width: 320px;
     }
+    body.layout-rows { width: 260px; }
     body.has-bgimg {
       background-image: var(--bg-img);
       background-size: cover;
       background-position: center;
-      background-repeat: no-repeat;
     }
-    body.layout-cols { width: 480px; }
-
     .container {
       display: flex;
-      flex-direction: column;
       gap: 10px;
     }
-    body.layout-cols .container {
-      flex-direction: row;
-      align-items: flex-start;
-    }
+    body.layout-rows .container { flex-direction: column; }
 
     .panel {
-      background: rgba(0, 0, 0, var(--bg-alpha));
+      flex: 1;
+      background: rgba(0,0,0,var(--bg-alpha));
       border: 1px solid rgba(255,255,255,0.10);
       border-radius: 16px;
+      padding: 12px 14px;
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      overflow: hidden;
-      flex: 1;
       min-width: 0;
     }
     .panel-header {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 12px 14px 10px;
+      gap: 6px;
+      margin-bottom: 8px;
+      padding-bottom: 7px;
       border-bottom: 1px solid rgba(255,255,255,0.07);
     }
     .panel-icon { font-size: 14px; }
@@ -53,67 +48,57 @@
       font-size: 9px;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.5);
-      font-weight: 600;
-      flex: 1;
+      color: var(--accent);
+      font-weight: 700;
     }
     .panel-count {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--accent);
-      font-variant-numeric: tabular-nums;
+      margin-left: auto;
+      font-size: 10px;
+      color: rgba(255,255,255,0.4);
     }
-    .panel-list {
-      list-style: none;
-      max-height: 220px;
+    .entry-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-height: 240px;
       overflow: hidden;
     }
     .entry {
       display: flex;
       align-items: center;
-      gap: 9px;
-      padding: 7px 14px;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-      animation: slideIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      gap: 8px;
+      animation: slide-in 0.35s cubic-bezier(0.34,1.56,0.64,1);
     }
-    .entry:last-child { border-bottom: none; }
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(14px); }
+    @keyframes slide-in {
+      from { opacity: 0; transform: translateX(-12px); }
       to   { opacity: 1; transform: translateX(0); }
     }
     .entry-avatar {
-      width: 26px;
-      height: 26px;
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
+      background: rgba(255,255,255,0.12);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 10px;
       font-weight: 700;
+      color: var(--accent);
       flex-shrink: 0;
-      color: #000;
     }
     .entry-name {
       font-size: 12px;
       color: #fff;
       font-weight: 500;
-      flex: 1;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .entry-time {
-      font-size: 9px;
-      color: rgba(255,255,255,0.3);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    .empty-msg {
-      padding: 18px 14px;
+    .empty {
       font-size: 11px;
-      color: rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.25);
       text-align: center;
-      letter-spacing: 0.5px;
+      padding: 10px 0;
     }
   </style>
 </head>
@@ -122,117 +107,92 @@
     <div class="panel" id="panel-follows">
       <div class="panel-header">
         <span class="panel-icon">💜</span>
-        <span class="panel-title">Nuevos seguidores</span>
+        <span class="panel-title">Seguidores</span>
         <span class="panel-count" id="count-follows">0</span>
       </div>
-      <ul class="panel-list" id="list-follows">
-        <li class="empty-msg">Sin seguidores aún</li>
-      </ul>
+      <div class="entry-list" id="list-follows">
+        <div class="empty">Sin seguidores aún</div>
+      </div>
     </div>
-
     <div class="panel" id="panel-shares">
       <div class="panel-header">
         <span class="panel-icon">🔗</span>
-        <span class="panel-title">Compartieron</span>
+        <span class="panel-title">Compartidos</span>
         <span class="panel-count" id="count-shares">0</span>
       </div>
-      <ul class="panel-list" id="list-shares">
-        <li class="empty-msg">Sin compartidos aún</li>
-      </ul>
+      <div class="entry-list" id="list-shares">
+        <div class="empty">Sin compartidos aún</div>
+      </div>
     </div>
   </div>
 
   <script>
-    const params = new URLSearchParams(location.search);
-    const _c = params.get('color');
-    if (_c) {
-      const colorVal = _c.startsWith('#') || _c.startsWith('rgb') ? _c : '#' + _c;
-      document.documentElement.style.setProperty('--accent', colorVal);
-    }
-    const _b = params.get('bg');
-    if (_b) document.documentElement.style.setProperty('--bg-alpha', _b);
-    const _bgimg = params.get('bgimg');
-    if (_bgimg) {
-      const safeUrl = _bgimg.replace(/'/g, "%27");
-      document.documentElement.style.setProperty('--bg-img', `url('${safeUrl}')`);
-      document.body.classList.add('has-bgimg');
-    }
-    if (params.get('layout') === 'cols') document.body.classList.add('layout-cols');
-
     const MAX_ENTRIES = 10;
-    const COLORS = ['#fe2c55','#25f4ee','#ff6b6b','#ffd93d','#6bcb77','#4d96ff','#ff922b','#3ecf8e'];
-    let colorIdx = 0;
-    const colorMap = {};
-    function getColor(user) {
-      if (!colorMap[user]) { colorMap[user] = COLORS[colorIdx++ % COLORS.length]; }
-      return colorMap[user];
+    const params = new URLSearchParams(location.search);
+    const _c = params.get('color'); if (_c) document.documentElement.style.setProperty('--accent', '#' + _c);
+    const _b = params.get('bg');    if (_b) document.documentElement.style.setProperty('--bg-alpha', _b);
+    const _bgimg = params.get('bgimg');
+    if (_bgimg) { document.documentElement.style.setProperty('--bg-img', `url('${_bgimg}')`); document.body.classList.add('has-bgimg'); }
+    if (params.get('layout') === 'rows') document.body.classList.add('layout-rows');
+
+    const listFollows = document.getElementById('list-follows');
+    const listShares  = document.getElementById('list-shares');
+    const countFollows = document.getElementById('count-follows');
+    const countShares  = document.getElementById('count-shares');
+
+    let totals = { follows: 0, shares: 0 };
+
+    function escHtml(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 
-    function esc(str) {
-      const d = document.createElement('div');
-      d.textContent = String(str);
-      return d.innerHTML;
-    }
-
-    function fmtTime(ts) {
-      try {
-        return new Date(ts || Date.now()).toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
-      } catch (e) {
-        return '--:--';
-      }
-    }
-
-    function purgeColorMap() {
-      const visibleUsers = new Set();
-      document.querySelectorAll('.entry-name').forEach(el => visibleUsers.add(el.textContent));
-      for (const key of Object.keys(colorMap)) {
-        if (!visibleUsers.has(key)) delete colorMap[key];
-      }
-    }
-
-    function addEntry(listId, countId, user, ts) {
-      const list = document.getElementById(listId);
-      const countEl = document.getElementById(countId);
-
-      // Remove empty placeholder
-      const empty = list.querySelector('.empty-msg');
+    function addEntry(listEl, user, prepend = true) {
+      const empty = listEl.querySelector('.empty');
       if (empty) empty.remove();
 
-      const color = getColor(user);
       const initials = user.substring(0, 2).toUpperCase();
-
-      const li = document.createElement('li');
-      li.className = 'entry';
-      li.innerHTML = `
-        <div class="entry-avatar" style="background:${color}33;color:${color}">${esc(initials)}</div>
-        <span class="entry-name">${esc(user)}</span>
-        <span class="entry-time">${fmtTime(ts || Date.now())}</span>
+      const div = document.createElement('div');
+      div.className = 'entry';
+      div.innerHTML = `
+        <div class="entry-avatar">${escHtml(initials)}</div>
+        <span class="entry-name">@${escHtml(user)}</span>
       `;
 
-      // Newest first
-      list.insertBefore(li, list.firstChild);
-
-      // Trim to max
-      while (list.children.length > MAX_ENTRIES) {
-        list.removeChild(list.lastChild);
+      if (prepend) {
+        listEl.insertBefore(div, listEl.firstChild);
+      } else {
+        listEl.appendChild(div);
       }
 
-      purgeColorMap();
-      countEl.textContent = parseInt(countEl.textContent || '0', 10) + 1;
-    }
-
-    function hydrate(credits) {
-      if (!credits) return;
-      const follows = (credits.followers || []).slice(-MAX_ENTRIES).reverse();
-      const shares  = (credits.sharers  || []).slice(-MAX_ENTRIES).reverse();
-      follows.forEach(it => addEntry('list-follows', 'count-follows', it.user, it.ts));
-      shares.forEach(it  => addEntry('list-shares',  'count-shares',  it.user, it.ts));
+      // Keep max entries
+      while (listEl.children.length > MAX_ENTRIES) {
+        listEl.removeChild(listEl.lastChild);
+      }
     }
 
     fetch('/api/overlay-stats')
       .then(r => r.json())
-      .then(d => hydrate(d.credits))
+      .then(d => {
+        const c = d.credits || {};
+        const follows = (c.followers || []).slice(-MAX_ENTRIES);
+        const shares  = (c.sharers  || []).slice(-MAX_ENTRIES);
+        totals.follows = follows.length;
+        totals.shares  = shares.length;
+        // Add oldest first so newest ends up on top
+        follows.forEach(f => addEntry(listFollows, f.user, false));
+        shares.forEach(s  => addEntry(listShares,  s.user, false));
+        // Now reverse so newest is on top
+        reverseList(listFollows);
+        reverseList(listShares);
+        countFollows.textContent = totals.follows;
+        countShares.textContent  = totals.shares;
+      })
       .catch(() => {});
+
+    function reverseList(el) {
+      const children = Array.from(el.children).filter(c => !c.classList.contains('empty'));
+      children.reverse().forEach(c => el.appendChild(c));
+    }
 
     let ws, retryDelay = 2000;
     function connectWS() {
@@ -242,13 +202,20 @@
       ws.onmessage = (e) => {
         try {
           const d = JSON.parse(e.data);
-          if (d.type === 'follow') addEntry('list-follows', 'count-follows', d.user, d.timestamp);
-          if (d.type === 'share')  addEntry('list-shares',  'count-shares',  d.user, d.timestamp);
-          if (d.type === 'connected') {
-            document.getElementById('list-follows').innerHTML = '<li class="empty-msg">Sin seguidores aún</li>';
-            document.getElementById('list-shares').innerHTML  = '<li class="empty-msg">Sin compartidos aún</li>';
-            document.getElementById('count-follows').textContent = '0';
-            document.getElementById('count-shares').textContent  = '0';
+          if (d.type === 'follow') {
+            totals.follows++;
+            countFollows.textContent = totals.follows;
+            addEntry(listFollows, d.user);
+          } else if (d.type === 'share') {
+            totals.shares++;
+            countShares.textContent = totals.shares;
+            addEntry(listShares, d.user);
+          } else if (d.type === 'connected') {
+            totals = { follows: 0, shares: 0 };
+            countFollows.textContent = 0;
+            countShares.textContent  = 0;
+            listFollows.innerHTML = '<div class="empty">Sin seguidores aún</div>';
+            listShares.innerHTML  = '<div class="empty">Sin compartidos aún</div>';
           }
         } catch(_) {}
       };
