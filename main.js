@@ -11,8 +11,14 @@ if (app.isPackaged) {
   process.env.TIKTOK_RESOURCES_PATH = process.resourcesPath;
 }
 
-// Start Express server inside this process
-require('./server');
+// Start Express server — wrapped so a crash here shows a recoverable dialog
+// instead of an unhandled exception that blocks the auto-updater from running.
+let serverLoadError = null;
+try {
+  require('./server');
+} catch (e) {
+  serverLoadError = e;
+}
 
 // Poll until server is accepting connections
 function waitForServer(cb, attempts = 0) {
@@ -145,6 +151,32 @@ ipcMain.handle('open-oauth-window', (_event, { url, callbackPattern }) => {
 });
 
 app.whenReady().then(() => {
+  // If server failed to load, show error dialog + trigger auto-update so user
+  // gets the fix automatically without needing to reinstall manually.
+  if (serverLoadError) {
+    if (app.isPackaged) {
+      // Try to update first — if a fix is available it will download + install
+      try {
+        autoUpdater.autoDownload = true;
+        autoUpdater.autoInstallOnAppQuit = false;
+        autoUpdater.on('update-downloaded', () => autoUpdater.quitAndInstall(false, true));
+        autoUpdater.checkForUpdates().catch(() => {});
+      } catch (_) {}
+    }
+    dialog.showMessageBox({
+      type: 'error',
+      title: 'TikTok TTS — Error de inicio',
+      message: 'Hubo un error al iniciar la aplicación.',
+      detail: `${serverLoadError.message}\n\nSi el problema persiste, descarga la última versión desde GitHub.`,
+      buttons: ['Descargar última versión', 'Cerrar'],
+      defaultId: 0,
+    }).then(({ response }) => {
+      if (response === 0) shell.openExternal('https://github.com/iKhunsa/tiktok-tts/releases/latest');
+      setTimeout(() => app.exit(1), 500);
+    });
+    return;
+  }
+
   waitForServer(() => {
     createWindow();
     createTray();
