@@ -1051,6 +1051,39 @@
       margin-left: 5px;
       vertical-align: middle;
     }
+    /* ── Update banner ─────────────────────────── */
+    #update-banner {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+      background: #1a1a2e; border-bottom: 2px solid #7c3aed;
+      padding: 10px 20px; display: none; align-items: center; gap: 12px;
+      font-size: 13px; color: #e2e8f0; box-shadow: 0 2px 16px rgba(0,0,0,0.5);
+    }
+    #update-banner.visible { display: flex; }
+    #update-banner .upd-icon { font-size: 18px; flex-shrink: 0; }
+    #update-banner .upd-text { flex: 1; line-height: 1.4; }
+    #update-banner .upd-text strong { color: #a78bfa; }
+    #update-bar-wrap {
+      flex: 1; background: rgba(255,255,255,0.08); border-radius: 99px;
+      height: 6px; overflow: hidden; min-width: 120px; max-width: 220px;
+    }
+    #update-bar-fill {
+      height: 100%; background: linear-gradient(90deg, #7c3aed, #a78bfa);
+      border-radius: 99px; transition: width 0.4s ease; width: 0%;
+    }
+    #update-percent { font-weight: 700; color: #a78bfa; min-width: 38px; }
+    #update-speed   { color: #94a3b8; font-size: 11px; min-width: 70px; }
+    #update-btn-install {
+      background: #7c3aed; color: #fff; border: none; border-radius: 8px;
+      padding: 6px 16px; cursor: pointer; font-size: 12px; font-weight: 600;
+      flex-shrink: 0; transition: background .2s;
+    }
+    #update-btn-install:hover { background: #6d28d9; }
+    #update-btn-later {
+      background: transparent; color: #94a3b8; border: none;
+      cursor: pointer; font-size: 12px; padding: 6px 8px; flex-shrink: 0;
+    }
+    #update-btn-later:hover { color: #e2e8f0; }
+
     .badge-tiktok  { background: rgba(254,44,85,0.15);  color: #fe2c55; }
     .badge-twitch  { background: rgba(145,70,255,0.15); color: #9146ff; }
     .badge-youtube { background: rgba(255,0,0,0.15);    color: #ff4444; }
@@ -1058,6 +1091,19 @@
   </style>
 </head>
 <body>
+
+<!-- ── Update progress banner ────────────────────────────────── -->
+<div id="update-banner">
+  <span class="upd-icon">⬆️</span>
+  <span class="upd-text" id="update-text">Buscando actualizaciones...</span>
+  <div id="update-bar-wrap" style="display:none">
+    <div id="update-bar-fill"></div>
+  </div>
+  <span id="update-percent" style="display:none"></span>
+  <span id="update-speed"   style="display:none"></span>
+  <button id="update-btn-install" style="display:none" onclick="doInstallUpdate()">Instalar ahora</button>
+  <button id="update-btn-later"   style="display:none" onclick="document.getElementById('update-banner').classList.remove('visible')">Después</button>
+</div>
 
 <div class="app-layout">
 
@@ -2839,6 +2885,64 @@
         body: JSON.stringify({ platform }),
       });
     } catch (e) {}
+  }
+
+  // ─── AUTO-UPDATE UI ───────────────────────────────────────────
+  function fmtBytes(b) {
+    if (b > 1048576) return (b / 1048576).toFixed(1) + ' MB';
+    if (b > 1024)    return (b / 1024).toFixed(0) + ' KB';
+    return b + ' B';
+  }
+
+  function doInstallUpdate() {
+    const btn = document.getElementById('update-btn-install');
+    if (btn) { btn.disabled = true; btn.textContent = 'Instalando...'; }
+    if (window.electronAPI?.installUpdate) window.electronAPI.installUpdate();
+  }
+
+  if (window.electronAPI?.onUpdateEvent) {
+    window.electronAPI.onUpdateEvent((ev) => {
+      const banner  = document.getElementById('update-banner');
+      const text    = document.getElementById('update-text');
+      const barWrap = document.getElementById('update-bar-wrap');
+      const barFill = document.getElementById('update-bar-fill');
+      const pct     = document.getElementById('update-percent');
+      const spd     = document.getElementById('update-speed');
+      const btnInst = document.getElementById('update-btn-install');
+      const btnLater= document.getElementById('update-btn-later');
+
+      if (ev.type === 'available') {
+        banner.classList.add('visible');
+        text.innerHTML = `Nueva versión <strong>v${ev.version}</strong> detectada — descargando...`;
+        barWrap.style.display = 'block';
+        pct.style.display = 'inline';
+        spd.style.display = 'inline';
+        barFill.style.width = '0%';
+        pct.textContent = '0%';
+        spd.textContent = '';
+        btnInst.style.display = 'none';
+        btnLater.style.display = 'none';
+      } else if (ev.type === 'progress') {
+        banner.classList.add('visible');
+        barFill.style.width = ev.percent + '%';
+        pct.textContent = ev.percent + '%';
+        spd.textContent = fmtBytes(ev.bytesPerSecond) + '/s';
+      } else if (ev.type === 'ready') {
+        banner.classList.add('visible');
+        text.innerHTML = `<strong>v${ev.version}</strong> lista — la app se reiniciará sola (no requiere reiniciar el PC)`;
+        barWrap.style.display = 'none';
+        pct.style.display = 'none';
+        spd.style.display = 'none';
+        barFill.style.width = '100%';
+        btnInst.style.display = 'inline-block';
+        btnLater.style.display = 'inline-block';
+      } else if (ev.type === 'error') {
+        // Silent — don't distract streamer with update errors
+        banner.classList.remove('visible');
+      } else if (ev.type === 'not-available') {
+        banner.classList.remove('visible');
+      }
+    });
   }
 
   // ─── INIT ─────────────────────────────────────────────────────

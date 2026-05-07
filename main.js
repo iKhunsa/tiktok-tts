@@ -160,23 +160,48 @@ app.on('will-quit', () => {
   globalShortcut.unregisterAll();
 });
 
+function sendUpdate(data) {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('update-event', data);
+  }
+}
+
 function setupAutoUpdater() {
   autoUpdater.autoDownload = true;
   autoUpdater.autoInstallOnAppQuit = true;
 
-  autoUpdater.on('update-downloaded', () => {
-    dialog.showMessageBox({
-      type: 'info',
-      title: 'Actualización lista',
-      message: 'Hay una nueva versión de TikTok TTS. Se instalará al cerrar la app.',
-      buttons: ['Instalar ahora', 'Después'],
-    }).then(({ response }) => {
-      if (response === 0) autoUpdater.quitAndInstall();
-    });
-  });
+  autoUpdater.on('checking-for-update', () =>
+    sendUpdate({ type: 'checking' }));
+
+  autoUpdater.on('update-available', (info) =>
+    sendUpdate({ type: 'available', version: info.version }));
+
+  autoUpdater.on('update-not-available', () =>
+    sendUpdate({ type: 'not-available' }));
+
+  autoUpdater.on('download-progress', (p) =>
+    sendUpdate({
+      type: 'progress',
+      percent: Math.round(p.percent),
+      transferred: p.transferred,
+      total: p.total,
+      bytesPerSecond: p.bytesPerSecond,
+    }));
+
+  autoUpdater.on('update-downloaded', (info) =>
+    sendUpdate({ type: 'ready', version: info.version }));
+
+  autoUpdater.on('error', (err) =>
+    sendUpdate({ type: 'error', message: err.message }));
 
   autoUpdater.checkForUpdatesAndNotify().catch(() => {});
 }
+
+ipcMain.on('install-update', () => {
+  // false = not silent (show nothing extra), true = relaunch after install
+  // No PC restart required — only app restarts
+  autoUpdater.quitAndInstall(false, true);
+});
 
 // Prevent multiple instances
 const gotLock = app.requestSingleInstanceLock();
