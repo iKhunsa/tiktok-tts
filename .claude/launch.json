@@ -5,7 +5,8 @@
       "name": "TikTok TTS (Start)",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["start"],
-      "port": 3000
+      "port": 3000,
+      "autoPort": false
     },
     {
       "name": "TikTok TTS (Dev - with nodemon)",

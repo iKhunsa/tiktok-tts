@@ -1,20 +1,37 @@
-#define AppSource "C:\Users\liber\AppData\Local\TikTokTTS-build\win-unpacked"
+; TikTok TTS — Inno Setup Installer Script
+; Requiere Inno Setup: https://jrsoftware.org/isdl.php
+;
+; Uso:
+;   1. Compila la app: npm run build:electron
+;   2. Genera el installer: iscc installer-electron.iss
+;
+; Nota: electron-builder ya genera un installer NSIS automáticamente
+; en release-output/. Este script es una alternativa con Inno Setup.
+
+#define AppSource "release-output\win-unpacked"
+#define AppName "TikTok TTS"
+#define AppVersion "1.0.1"
+#define AppPublisher "TikTok TTS"
+#define AppExeName "TikTok TTS.exe"
+#define AppIcon "tray-icon.ico"
 
 [Setup]
-AppName=TikTok TTS
-AppVersion=1.0.0
-AppPublisher=TikTok TTS
+AppId={{com.tiktok-tts.app}}
+AppName={#AppName}
+AppVersion={#AppVersion}
+AppPublisher={#AppPublisher}
 DefaultDirName={localappdata}\TikTokTTS
-DefaultGroupName=TikTok TTS
-UninstallDisplayIcon={app}\TikTok TTS.exe
-OutputDir=C:\Users\liber\AppData\Local\TikTokTTS-build\installer
-OutputBaseFilename=TikTokTTS-Setup
+DefaultGroupName={#AppName}
+UninstallDisplayIcon={app}\{#AppExeName}
+OutputDir=release-output
+OutputBaseFilename=TikTokTTS-Setup-v{#AppVersion}
 Compression=lzma2/ultra64
 SolidCompression=yes
-SetupIconFile={#AppSource}\resources\tray-icon.ico
+SetupIconFile={#AppSource}\resources\{#AppIcon}
 PrivilegesRequired=lowest
 DisableProgramGroupPage=yes
 ShowLanguageDialog=no
+WizardStyle=modern
 
 [Languages]
 Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
@@ -24,9 +41,12 @@ Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
 Source: "{#AppSource}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{autodesktop}\TikTok TTS"; Filename: "{app}\TikTok TTS.exe"; IconFilename: "{app}\resources\tray-icon.ico"; Comment: "TikTok Live Text-to-Speech"
-Name: "{autoprograms}\TikTok TTS\TikTok TTS"; Filename: "{app}\TikTok TTS.exe"; IconFilename: "{app}\resources\tray-icon.ico"
-Name: "{autoprograms}\TikTok TTS\Desinstalar TikTok TTS"; Filename: "{uninstallexe}"
+Name: "{autodesktop}\{#AppName}"; Filename: "{app}\{#AppExeName}"; IconFilename: "{app}\resources\{#AppIcon}"; Comment: "TikTok Live Text-to-Speech"
+Name: "{autoprograms}\{#AppName}\{#AppName}"; Filename: "{app}\{#AppExeName}"; IconFilename: "{app}\resources\{#AppIcon}"
+Name: "{autoprograms}\{#AppName}\Desinstalar {#AppName}"; Filename: "{uninstallexe}"
 
 [Run]
-Filename: "{app}\TikTok TTS.exe"; Description: "Iniciar TikTok TTS ahora"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\{#AppExeName}"; Description: "Iniciar {#AppName} ahora"; Flags: nowait postinstall skipifsilent
+
+[UninstallDelete]
+Type: filesandordirs; Name: "{app}\*"
