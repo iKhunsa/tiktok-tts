@@ -837,58 +837,9 @@ app.post('/api/translate', async (req, res) => {
   }
 });
 
-// Edge TTS endpoint (Microsoft Neural voices)
-app.post('/api/tts/edge', async (req, res) => {
-  const { text, voice = 'es-ES-AlvaroNeural' } = req.body;
-  if (!text) return res.status(400).json({ error: 'Texto requerido' });
-  if (isTTSRateLimited()) {
-    return res.status(429).json({ error: 'Rate limit activo', retryAfter: config.TTS_RATE_WINDOW_MS });
-  }
-  const limitedText = sanitizeForTTS(text.substring(0, config.TTS_MAX_CHARS));
-  log('info', 'tts', 'edge request', { voice, len: limitedText.length });
-
-  try {
-    const tts = new MsEdgeTTS();
-    await tts.setMetadata(voice, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
-    const readable = tts.toStream(limitedText);
-
-    let bytesSent = 0;
-    const timeout = setTimeout(() => {
-      if (!res.headersSent) {
-        res.status(504).json({ error: 'Edge TTS timeout — sin respuesta de Microsoft' });
-      }
-      try { readable.destroy(); } catch (_) {}
-    }, 10000);
-
-    res.setHeader('Content-Type', 'audio/mpeg');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.flushHeaders();
-
-    readable.on('data', (chunk) => { bytesSent += chunk.length; });
-    readable.on('end', () => clearTimeout(timeout));
-    readable.on('error', (err) => {
-      clearTimeout(timeout);
-      log('error', 'tts', 'Edge TTS stream error', { error: err.message });
-      res.end();
-    });
-    readable.pipe(res);
-  } catch (err) {
-    log('error', 'tts', 'Edge TTS failed', { error: err.message });
-    if (!res.headersSent) res.status(500).json({ error: err.message });
-  }
-});
-
 // Available voices endpoint
 app.get('/api/voices', (req, res) => {
   const voices = [];
-
-  // ── Edge TTS (Microsoft Neural) — Español ──────────────────
-  const edgeVoicesEs = [
-    { id: 'edge-es-ES-AlvaroNeural',  name: 'Álvaro — Edge TTS (España)',  flag: 'ES', engine: 'edge' },
-    { id: 'edge-es-MX-JorgeNeural',   name: 'Jorge — Edge TTS (México)',   flag: 'MX', engine: 'edge' },
-    { id: 'edge-es-MX-DaliaNeural',   name: 'Dalia — Edge TTS (México)',   flag: 'MX', engine: 'edge' },
-    { id: 'edge-es-AR-ElenaNeural',   name: 'Elena — Edge TTS (Argentina)', flag: 'AR', engine: 'edge' },
-  ];
 
   // ── Google TTS ──────────────────────────────────────────────
   const googleVoices = [
@@ -919,7 +870,7 @@ app.get('/api/voices', (req, res) => {
     { id: 'ko', name: '한국어 (Coreano)', flag: 'KR' },
   ];
 
-  voices.push(...edgeVoicesEs, ...googleVoices);
+  voices.push(...googleVoices);
   res.json(voices);
 });
 
@@ -1051,13 +1002,12 @@ app.post('/api/test/gift', (req, res) => {
   try {
     const files = fs.readdirSync(giftsDir).filter(f => f.endsWith('.png'));
     if (files.length === 0) return res.status(500).json({ error: 'No hay imágenes de regalos' });
-    const file = files[Math.floor(Math.random() * files.length)];
-    const match = file.match(/^\d+_(.+)\.png$/i);
-    const giftName = match ? match[1].replace(/_/g, ' ') : 'Regalo';
+    const imgFile = files[Math.floor(Math.random() * files.length)];
+    const giftKeys = Object.keys(TIKTOK_GIFT_COINS);
+    const giftName = giftKeys[Math.floor(Math.random() * giftKeys.length)];
     const testUsers = ['TestUser', 'FanRandom', 'ViewerPro', 'TikToker', 'StreamerFan'];
     const user = testUsers[Math.floor(Math.random() * testUsers.length)] + Math.floor(Math.random() * 99);
-    const lookedUpCoins = TIKTOK_GIFT_COINS[giftName];
-    const perGiftCoins  = lookedUpCoins != null ? lookedUpCoins : 10;
+    const perGiftCoins  = TIKTOK_GIFT_COINS[giftName];
     const usdRaw        = perGiftCoins * TIKTOK_COINS_USD;
     const usdValue      = usdRaw > 0 ? usdRaw.toFixed(2) : null;
     broadcast({

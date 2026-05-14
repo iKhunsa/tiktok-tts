@@ -2244,6 +2244,7 @@
   function onTranslateToggle(enabled) {
     appSettings.translateEnabled = enabled;
     saveSettings();
+    showToast(enabled ? 'Traducción activada' : 'Traducción desactivada');
   }
 
   function onTranslateTargetChange(lang) {
@@ -2264,7 +2265,11 @@
       // Skip if already in target language
       if (!detectedLang || detectedLang === 'und' || detectedLang === (appSettings.translateTarget || 'es')) return null;
       return { translated, detectedLang: detectedLang.toLowerCase() };
-    } catch (e) { return null; }
+    } catch (e) {
+      console.error('[translate]', e);
+      showToast('Error al traducir — revisa tu conexión');
+      return null;
+    }
   }
 
   // ─── PAUSE TTS ────────────────────────────────────────────────
@@ -2522,9 +2527,8 @@
     const btn     = document.getElementById('btnTestVoice');
     const text    = input.value.trim() || 'Hola, esta es la voz seleccionada';
     const voiceId = voiceSelect.value || 'es';
-    const isEdge  = voiceId.startsWith('edge-');
-    const endpoint = isEdge ? '/api/tts/edge' : '/api/tts';
-    const voice    = isEdge ? voiceId.replace('edge-', '') : voiceId;
+    const endpoint = '/api/tts';
+    const voice    = voiceId;
 
     btn.disabled = true;
     btn.innerHTML = '<img class="icon-inline" src="icons/volume_up.svg" alt=""> Reproduciendo...';
@@ -2630,9 +2634,8 @@
     document.getElementById('appGlow').classList.add('active');
 
     const voiceId = voiceSelect.value || 'es';
-    const isEdge  = voiceId.startsWith('edge-');
-    const ttsEndpoint = isEdge ? '/api/tts/edge' : '/api/tts';
-    const voice   = isEdge ? voiceId.replace('edge-', '') : voiceId;
+    const ttsEndpoint = '/api/tts';
+    const voice   = voiceId;
 
     try {
       const res = await fetch(ttsEndpoint, {
