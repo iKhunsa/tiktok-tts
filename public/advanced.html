@@ -950,6 +950,25 @@
     </div>
   </div>
 
+  <!-- ═══ PANEL: TASAS DE CONVERSIÓN ═══ -->
+  <div class="panel">
+    <div class="panel-title"><img class="icon-inline" src="icons/attach_money.svg" alt="" onerror="this.style.display='none'"> 💰 Tasas de conversión de regalos</div>
+    <div class="panel-desc">Valor en USD por moneda virtual de cada plataforma. Se usa en el TTS y overlay de regalos.</div>
+    <div class="section-label" style="margin-top:14px;">TikTok</div>
+    <div class="conn-info">
+      <div class="conn-row" style="align-items:center;gap:12px;">
+        <span class="conn-key">USD por coin</span>
+        <input type="number" id="inputTiktokCoinRate" min="0" step="0.0001"
+          style="width:110px;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;"
+          value="0.0134" oninput="updateGiftRate(this.value)" />
+        <span style="font-size:11px;color:var(--muted);">≈ 100 coins = <span id="coinUsdPreview">$1.34</span></span>
+      </div>
+    </div>
+    <div style="margin-top:10px;font-size:11px;color:var(--muted);">
+      Tasa de referencia: 1 coin TikTok ≈ $0.0105 USD (puede variar según región y promociones)
+    </div>
+  </div>
+
   <!-- ═══ PANEL 5: LOGS ═══ -->
   <div class="panel panel-status">
     <div class="status-header">
@@ -1088,6 +1107,33 @@
       showToast('Error guardando configuración');
     }
   }
+
+  // ─── Gift Conversion Rates ──────────────────────────────────────────
+  async function updateGiftRate(value) {
+    const rate = parseFloat(value);
+    if (isNaN(rate) || rate < 0) return;
+    const preview = document.getElementById('coinUsdPreview');
+    if (preview) preview.textContent = '$' + (100 * rate).toFixed(2);
+    try {
+      await fetch('/api/config', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ giftConversionRates: { tiktokUsdPerCoin: rate } })
+      });
+    } catch (e) {}
+  }
+
+  // Populate rate field from live config on load
+  document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      const cfg = await (await fetch('/api/config')).json();
+      const rate = cfg.giftConversionRates?.tiktokUsdPerCoin ?? 0.0134;
+      const inp = document.getElementById('inputTiktokCoinRate');
+      if (inp) inp.value = rate;
+      const preview = document.getElementById('coinUsdPreview');
+      if (preview) preview.textContent = '$' + (100 * rate).toFixed(2);
+    } catch (e) {}
+  });
 
   // ─── Blocked Words ──────────────────────────────────────────────────
   let blockedWords = [];
