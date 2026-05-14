@@ -58,6 +58,26 @@ let reconnectTimer = null;
 let isConnecting = false;
 const MAX_RECONNECT_ATTEMPTS = 5;
 
+// TikTok gift prices in coins (what the viewer pays). $1 ≈ 100 coins (~$0.0134/coin).
+const TIKTOK_GIFT_COINS = {
+  'Rose': 1, 'Rosa': 1, 'TikTok': 1, 'Heart Me': 1, 'Thumbs Up': 1,
+  'Finger Heart': 5,
+  'GG': 10, 'Like': 10,
+  'Perfume': 20,
+  'Love Bang': 25, 'Hand Hearts': 25,
+  'Sun Cream': 99,
+  'Rainbow Puke': 100, 'Mic': 100, 'Confetti': 100,
+  'Paper Crane': 199,
+  'Sending Stars': 299,
+  'Concert': 500,
+  'I Love You': 1000, 'Galaxy': 1000,
+  'Drama Queen': 5000,
+  'Interstellar': 6999,
+  'Lion': 29999,
+  'Universe': 34999,
+  'Tiffany': 44999,
+};
+
 const clients = new Set();
 const likePendingTimers = new Map();
 const config = {
@@ -67,7 +87,7 @@ const config = {
   TTS_RATE_LIMIT_MAX: 10,
   TTS_RATE_WINDOW_MS: 5000,
   MAX_QUEUE_MSG: 15,
-  giftConversionRates: { tiktokUsdPerCoin: 0.0105 },
+  giftConversionRates: { tiktokUsdPerCoin: 0.0134 },
 };
 
 const overlayState = {
@@ -268,9 +288,11 @@ function setupTikTokConnection(cleanUsername) {
     if (data.giftType === 1 && !data.repeatEnd) return;
     const user = resolveDisplayName(data.nickname, data.uniqueId);
     const repeatCount = data.repeatCount || 1;
-    const coins = (data.diamondCount || 0) * repeatCount;
-    const usdRaw = coins * config.giftConversionRates.tiktokUsdPerCoin;
-    const usdValue = usdRaw > 0 ? usdRaw.toFixed(2) : null;
+    const lookedUpCoins = TIKTOK_GIFT_COINS[data.giftName];
+    const perGiftCoins  = lookedUpCoins != null ? lookedUpCoins : (data.diamondCount ? data.diamondCount * 2 : 0);
+    const totalCoins    = perGiftCoins * repeatCount;
+    const usdRaw        = totalCoins * config.giftConversionRates.tiktokUsdPerCoin;
+    const usdValue      = usdRaw > 0 ? usdRaw.toFixed(2) : null;
     overlayState.credits.donors.push({ user, giftName: data.giftName, count: repeatCount, ts: Date.now() });
     broadcast({
       type: 'gift',
@@ -570,12 +592,25 @@ app.post('/api/tts/edge', async (req, res) => {
     const tts = new MsEdgeTTS();
     await tts.setMetadata(voice, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
     const readable = tts.toStream(limitedText);
+
+    let bytesSent = 0;
+    const timeout = setTimeout(() => {
+      if (!res.headersSent) {
+        res.status(504).json({ error: 'Edge TTS timeout — sin respuesta de Microsoft' });
+      }
+      try { readable.destroy(); } catch (_) {}
+    }, 10000);
+
     res.setHeader('Content-Type', 'audio/mpeg');
     res.setHeader('Cache-Control', 'no-cache');
+    res.flushHeaders();
+
+    readable.on('data', (chunk) => { bytesSent += chunk.length; });
+    readable.on('end', () => clearTimeout(timeout));
     readable.on('error', (err) => {
+      clearTimeout(timeout);
       log('error', 'tts', 'Edge TTS stream error', { error: err.message });
-      if (!res.headersSent) res.status(500).json({ error: err.message });
-      else res.end();
+      res.end();
     });
     readable.pipe(res);
   } catch (err) {
@@ -599,9 +634,7 @@ app.get('/api/voices', (req, res) => {
   // ── Google TTS ──────────────────────────────────────────────
   const googleVoices = [
     // Español
-    { id: 'es', name: 'Español (España) — Google', flag: 'ES' },
-    { id: 'es-MX', name: 'Español (México) — Google', flag: 'MX' },
-    { id: 'es-AR', name: 'Español (Argentina) — Google', flag: 'AR' },
+    { id: 'es', name: 'Español — Google', flag: 'ES' },
 
     // Inglés
     { id: 'en', name: 'English (USA)', flag: 'US' },

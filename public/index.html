@@ -1353,8 +1353,8 @@
         <div class="cfg-header">
           <div class="cfg-icon"><img class="icon-inline" src="icons/card_giftcard.svg" alt=""></div>
           <div class="cfg-meta">
-            <div class="cfg-title">Alertas de Regalos</div>
-            <div class="cfg-subtitle">Tarjeta animada con imagen al recibir un regalo</div>
+            <div class="cfg-title">Alerta de Regalo</div>
+            <div class="cfg-subtitle">Aparece en OBS unos segundos cuando alguien envía un regalo</div>
           </div>
           <span class="obs-hint">440 × 130 px</span>
         </div>
@@ -1392,10 +1392,10 @@
         <div class="cfg-header">
           <div class="cfg-icon">💜</div>
           <div class="cfg-meta">
-            <div class="cfg-title">Alertas Seguidor / Compartir</div>
-            <div class="cfg-subtitle">Tarjeta animada al recibir seguidor o compartido</div>
+            <div class="cfg-title">Alerta de Follow / Share</div>
+            <div class="cfg-subtitle">Aparece en OBS unos segundos cuando alguien te sigue o comparte</div>
           </div>
-          <span class="obs-hint">440 px ancho</span>
+          <span class="obs-hint">440 × 130 px</span>
         </div>
         <div class="cfg-fields">
           <div class="cfg-field full">
@@ -1410,11 +1410,11 @@
           </div>
         </div>
         <div class="cfg-url-row">
-          <span class="cfg-url-text" id="cfg-url-social">http://localhost:3000/overlay-alertas-social.html</span>
+          <span class="cfg-url-text" id="cfg-url-social-alert">http://localhost:3000/overlay-alertas-social.html</span>
           <button class="cfg-btn" onclick="testSocialAlert('follow')">💜 Test Follow</button>
           <button class="cfg-btn" onclick="testSocialAlert('share')">🔗 Test Share</button>
           <button class="cfg-btn" onclick="copySocialAlertUrl()">Copiar</button>
-          <a class="cfg-btn" id="cfg-open-social" href="http://localhost:3000/overlay-alertas-social.html" target="_blank">Abrir</a>
+          <a class="cfg-btn" id="cfg-open-social-alert" href="http://localhost:3000/overlay-alertas-social.html" target="_blank">Abrir</a>
         </div>
       </div>
 
@@ -1457,8 +1457,8 @@
         <div class="cfg-header">
           <div class="cfg-icon"><img class="icon-inline" src="icons/public.svg" alt=""></div>
           <div class="cfg-meta">
-            <div class="cfg-title">Seguidores &amp; Compartidos</div>
-            <div class="cfg-subtitle">Lista en tiempo real de nuevos seguidores y compartidos</div>
+            <div class="cfg-title">Lista de Seguidores &amp; Compartidos</div>
+            <div class="cfg-subtitle">Panel acumulado visible durante todo el stream en OBS</div>
           </div>
           <span class="obs-hint">480 × 300 px</span>
         </div>
@@ -1540,7 +1540,11 @@
       <div class="settings-section">
         <div class="settings-section-title">Pausar TTS</div>
         <div class="settings-panel">
-          <div class="setting-group" style="gap:10px;">
+          <div class="setting-group" style="gap:8px;">
+            <label style="margin-bottom:2px;display:flex;align-items:center;gap:6px;">
+              <img class="icon-inline" src="icons/volume_off.svg" alt="" onerror="this.style.display='none'">
+              Control de reproducción
+            </label>
             <button id="btnPauseTTS" onclick="togglePauseTts()"
               style="width:100%;padding:10px 16px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:2px solid var(--accent);background:rgba(62,207,142,0.12);color:var(--accent);transition:all .2s;letter-spacing:.3px;">
               ⏸ Pausar TTS
@@ -2152,14 +2156,14 @@
     if (shareImg)  p.set('shareImg',  shareImg);
     const qs  = p.toString();
     const url = 'http://localhost:3000/overlay-alertas-social.html' + (qs ? '?' + qs : '');
-    const urlEl  = document.getElementById('cfg-url-social');
-    const openEl = document.getElementById('cfg-open-social');
+    const urlEl  = document.getElementById('cfg-url-social-alert');
+    const openEl = document.getElementById('cfg-open-social-alert');
     if (urlEl)  urlEl.textContent = url;
     if (openEl) openEl.href = url;
   }
 
   function copySocialAlertUrl() {
-    const url = document.getElementById('cfg-url-social')?.textContent || 'http://localhost:3000/overlay-alertas-social.html';
+    const url = document.getElementById('cfg-url-social-alert')?.textContent || 'http://localhost:3000/overlay-alertas-social.html';
     navigator.clipboard.writeText(url)
       .then(() => showToast('URL copiada — pégala en OBS Browser Source'))
       .catch(() => showToast('Error al copiar'));
@@ -2232,7 +2236,7 @@
       if (!res.ok) return null;
       const { translated, detectedLang } = await res.json();
       // Skip if already in target language
-      if (!detectedLang || detectedLang === (appSettings.translateTarget || 'es')) return null;
+      if (!detectedLang || detectedLang === 'und' || detectedLang === (appSettings.translateTarget || 'es')) return null;
       return { translated, detectedLang: detectedLang.toLowerCase() };
     } catch (e) { return null; }
   }
@@ -2506,10 +2510,21 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text, voice })
       });
-      if (!res.ok) throw new Error('TTS error');
-      playAudioBlob(await res.blob(), { onEnd: done, onError: done });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        const msg = errData.error || `Error ${res.status}`;
+        showToast(`Edge TTS: ${msg}`);
+        done(); return;
+      }
+      const blob = await res.blob();
+      if (isEdge && blob.size < 100) {
+        showToast('Edge TTS no respondió — verifica tu conexión a internet');
+        done(); return;
+      }
+      playAudioBlob(blob, { onEnd: done, onError: done });
     } catch (err) {
       console.error('Test voice error:', err);
+      if (isEdge) showToast('Edge TTS falló — verifica tu conexión a internet');
       done();
     }
   }
@@ -2847,7 +2862,7 @@
       <div class="msg-avatar" style="background:${color}22;color:${color}">${initials}</div>
       <div class="msg-body">
         <div class="msg-user" style="color:${color}">@${data.user}${platformBadge}</div>
-        <div class="msg-text">${data.originalLang ? `<span class="lang-badge">[${data.originalLang.toUpperCase()}]</span>` : ''}${renderTextWithEmotes(data.comment, data.emotes)}</div>
+        <div class="msg-text">${data.originalLang ? `<span class="lang-badge">[${LANG_NAMES_ES[data.originalLang] || data.originalLang}]</span>` : ''}${renderTextWithEmotes(data.comment, data.emotes)}</div>
       </div>
       <div class="msg-time">${time}</div>
     `;
