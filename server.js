@@ -828,7 +828,7 @@ app.post('/api/translate', async (req, res) => {
   try {
     const { translate } = require('@vitalets/google-translate-api');
     const result = await translate(text.substring(0, 500), { to: targetLang });
-    res.json({ translated: result.text, detectedLang: result.src || 'und' });
+    res.json({ translated: result.text, detectedLang: result.raw?.[2] || 'und' });
   } catch (err) {
     log('error', 'translate', 'Translation failed', { error: err.message });
     res.status(500).json({ error: err.message });
@@ -1054,11 +1054,16 @@ app.post('/api/test/gift', (req, res) => {
     const giftName = match ? match[1].replace(/_/g, ' ') : 'Regalo';
     const testUsers = ['TestUser', 'FanRandom', 'ViewerPro', 'TikToker', 'StreamerFan'];
     const user = testUsers[Math.floor(Math.random() * testUsers.length)] + Math.floor(Math.random() * 99);
+    const lookedUpCoins = TIKTOK_GIFT_COINS[giftName];
+    const perGiftCoins  = lookedUpCoins != null ? lookedUpCoins : 10;
+    const usdRaw        = perGiftCoins * config.giftConversionRates.tiktokUsdPerCoin;
+    const usdValue      = usdRaw > 0 ? usdRaw.toFixed(2) : null;
     broadcast({
       type: 'gift',
       user,
       giftName,
       repeatCount: 1,
+      usdValue,
       timestamp: Date.now(),
       test: true,
       duration: 10000,

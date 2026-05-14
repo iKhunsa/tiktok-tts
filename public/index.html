@@ -1408,6 +1408,16 @@
             <input type="text" id="cfg-social-share-img" placeholder="https://... o dejar vacío para emoji 🔗"
                    oninput="updateSocialOverlayUrl()" style="font-size:12px;" />
           </div>
+          <div class="cfg-field">
+            <label>Color acento</label>
+            <input type="color" id="cfg-alertas-social-color" value="#3ecf8e"
+                   oninput="updateSocialOverlayUrl()" />
+          </div>
+          <div class="cfg-field">
+            <label>Opacidad fondo — <span id="cfg-alertas-social-bg-val">90</span>%</label>
+            <input type="range" id="cfg-alertas-social-bg" min="0.30" max="1.00" step="0.05" value="0.90"
+                   oninput="updateSocialOverlayUrl(); document.getElementById('cfg-alertas-social-bg-val').textContent = Math.round(this.value*100)" />
+          </div>
         </div>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-social-alert">http://localhost:3000/overlay-alertas-social.html</span>
@@ -1788,7 +1798,8 @@
       likes:      { rows: 10, color: '#3ecf8e', bg: 0.80, bgimg: '' },
       alertas:    { dur: 4000, color: '#3ecf8e', bg: 0.90, bgimg: '' },
       creditos:   { speed: 40, color: '#3ecf8e', bg: 0.85, bgimg: '' },
-      social:     { layout: 'cols', color: '#3ecf8e', bg: 0.80, bgimg: '' }
+      social:     { layout: 'cols', color: '#3ecf8e', bg: 0.80, bgimg: '' },
+      'alertas-social': { color: '#3ecf8e', bg: 0.90, bgimg: '' }
     }
   };
 
@@ -1889,6 +1900,14 @@
       setFieldVal('cfg-social-bg',     social.bg);
       const sbValEl = document.getElementById('cfg-social-bg-val');
       if (sbValEl) sbValEl.textContent = Math.round(social.bg * 100);
+    }
+
+    const alertasSocial = appSettings.overlays['alertas-social'];
+    if (alertasSocial) {
+      setFieldVal('cfg-alertas-social-color', alertasSocial.color);
+      setFieldVal('cfg-alertas-social-bg',    alertasSocial.bg);
+      const asbValEl = document.getElementById('cfg-alertas-social-bg-val');
+      if (asbValEl) asbValEl.textContent = Math.round(alertasSocial.bg * 100);
     }
 
     // Background image previews
@@ -2151,9 +2170,16 @@
   function updateSocialOverlayUrl() {
     const followImg = (document.getElementById('cfg-social-follow-img')?.value || '').trim();
     const shareImg  = (document.getElementById('cfg-social-share-img')?.value  || '').trim();
+    const color     = document.getElementById('cfg-alertas-social-color')?.value || '#3ecf8e';
+    const bg        = parseFloat(document.getElementById('cfg-alertas-social-bg')?.value || '0.90');
     const p = new URLSearchParams();
     if (followImg) p.set('followImg', followImg);
     if (shareImg)  p.set('shareImg',  shareImg);
+    if (color !== '#3ecf8e') p.set('color', color.replace('#', ''));
+    if (bg !== 0.90) p.set('bg', bg);
+    appSettings.overlays['alertas-social'].color = color;
+    appSettings.overlays['alertas-social'].bg    = bg;
+    saveSettings();
     const qs  = p.toString();
     const url = 'http://localhost:3000/overlay-alertas-social.html' + (qs ? '?' + qs : '');
     const urlEl  = document.getElementById('cfg-url-social-alert');
