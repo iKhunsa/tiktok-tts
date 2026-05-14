@@ -335,6 +335,8 @@ const TIKTOK_GIFT_COINS = {
   'TikTok Universe': 44999,
 };
 
+const TIKTOK_COINS_USD = 0.0103; // 100 coins = $1.03 USD
+
 const clients = new Set();
 const likePendingTimers = new Map();
 const config = {
@@ -344,7 +346,6 @@ const config = {
   TTS_RATE_LIMIT_MAX: 10,
   TTS_RATE_WINDOW_MS: 5000,
   MAX_QUEUE_MSG: 15,
-  giftConversionRates: { tiktokUsdPerCoin: 0.0134 },
 };
 
 const overlayState = {
@@ -536,7 +537,8 @@ function setupTikTokConnection(cleanUsername) {
       type: 'chat',
       platform: 'tiktok',
       user: resolveDisplayName(data.nickname, data.uniqueId),
-      comment: sanitizeForTTS(data.comment.trim()),
+      comment: data.comment.trim(),
+      ttsComment: sanitizeForTTS(data.comment.trim()),
       timestamp: Date.now()
     });
   });
@@ -548,7 +550,7 @@ function setupTikTokConnection(cleanUsername) {
     const lookedUpCoins = TIKTOK_GIFT_COINS[data.giftName];
     const perGiftCoins  = lookedUpCoins != null ? lookedUpCoins : (data.diamondCount ? data.diamondCount * 2 : 0);
     const totalCoins    = perGiftCoins * repeatCount;
-    const usdRaw        = totalCoins * config.giftConversionRates.tiktokUsdPerCoin;
+    const usdRaw        = totalCoins * TIKTOK_COINS_USD;
     const usdValue      = usdRaw > 0 ? usdRaw.toFixed(2) : null;
     overlayState.credits.donors.push({ user, giftName: data.giftName, count: repeatCount, ts: Date.now() });
     broadcast({
@@ -828,7 +830,7 @@ app.post('/api/translate', async (req, res) => {
   try {
     const { translate } = require('@vitalets/google-translate-api');
     const result = await translate(text.substring(0, 500), { to: targetLang });
-    res.json({ translated: result.text, detectedLang: result.raw?.[2] || 'und' });
+    res.json({ translated: result.text, detectedLang: result.raw?.src || 'und' });
   } catch (err) {
     log('error', 'translate', 'Translation failed', { error: err.message });
     res.status(500).json({ error: err.message });
@@ -1056,7 +1058,7 @@ app.post('/api/test/gift', (req, res) => {
     const user = testUsers[Math.floor(Math.random() * testUsers.length)] + Math.floor(Math.random() * 99);
     const lookedUpCoins = TIKTOK_GIFT_COINS[giftName];
     const perGiftCoins  = lookedUpCoins != null ? lookedUpCoins : 10;
-    const usdRaw        = perGiftCoins * config.giftConversionRates.tiktokUsdPerCoin;
+    const usdRaw        = perGiftCoins * TIKTOK_COINS_USD;
     const usdValue      = usdRaw > 0 ? usdRaw.toFixed(2) : null;
     broadcast({
       type: 'gift',
