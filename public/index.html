@@ -466,6 +466,25 @@
       flex-shrink: 0;
     }
 
+    .chat-emote {
+      height: 20px;
+      width: auto;
+      vertical-align: middle;
+      display: inline-block;
+      margin: 0 1px;
+      image-rendering: auto;
+    }
+
+    .lang-badge {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--accent);
+      opacity: 0.85;
+      margin-right: 4px;
+      letter-spacing: 0.5px;
+      vertical-align: middle;
+    }
+
     .speaking-now {
       display: none;
       align-items: center;
@@ -1368,6 +1387,37 @@
         </div>
       </div>
 
+      <!-- Alertas Seguidor / Compartir -->
+      <div class="cfg-card">
+        <div class="cfg-header">
+          <div class="cfg-icon">💜</div>
+          <div class="cfg-meta">
+            <div class="cfg-title">Alertas Seguidor / Compartir</div>
+            <div class="cfg-subtitle">Tarjeta animada al recibir seguidor o compartido</div>
+          </div>
+          <span class="obs-hint">440 px ancho</span>
+        </div>
+        <div class="cfg-fields">
+          <div class="cfg-field full">
+            <label>Imagen para Follow <span style="font-size:10px;color:var(--text-muted);">(URL)</span></label>
+            <input type="text" id="cfg-social-follow-img" placeholder="https://... o dejar vacío para emoji 💜"
+                   oninput="updateSocialOverlayUrl()" style="font-size:12px;" />
+          </div>
+          <div class="cfg-field full">
+            <label>Imagen para Share <span style="font-size:10px;color:var(--text-muted);">(URL)</span></label>
+            <input type="text" id="cfg-social-share-img" placeholder="https://... o dejar vacío para emoji 🔗"
+                   oninput="updateSocialOverlayUrl()" style="font-size:12px;" />
+          </div>
+        </div>
+        <div class="cfg-url-row">
+          <span class="cfg-url-text" id="cfg-url-social">http://localhost:3000/overlay-alertas-social.html</span>
+          <button class="cfg-btn" onclick="testSocialAlert('follow')">💜 Test Follow</button>
+          <button class="cfg-btn" onclick="testSocialAlert('share')">🔗 Test Share</button>
+          <button class="cfg-btn" onclick="copySocialAlertUrl()">Copiar</button>
+          <a class="cfg-btn" id="cfg-open-social" href="http://localhost:3000/overlay-alertas-social.html" target="_blank">Abrir</a>
+        </div>
+      </div>
+
       <!-- Créditos Star Wars -->
       <div class="cfg-card">
         <div class="cfg-header">
@@ -1482,6 +1532,70 @@
             <label><img class="icon-inline" src="icons/music_note.svg" alt=""> Tono — <span id="pitchVal">1.0</span></label>
             <input type="range" id="pitchRange" min="0.5" max="2" step="0.1" value="1" oninput="updatePitch(this.value)" />
             <div class="range-labels"><span>Grave</span><span>Agudo</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAUSE TTS SECTION -->
+      <div class="settings-section">
+        <div class="settings-section-title">Pausar TTS</div>
+        <div class="settings-panel">
+          <div class="setting-group" style="gap:10px;">
+            <button id="btnPauseTTS" onclick="togglePauseTts()"
+              style="width:100%;padding:10px 16px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:2px solid var(--accent);background:rgba(62,207,142,0.12);color:var(--accent);transition:all .2s;letter-spacing:.3px;">
+              ⏸ Pausar TTS
+            </button>
+          </div>
+          <div class="setting-group">
+            <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
+              <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
+              Atajo de teclado global
+            </label>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <input id="pauseShortcutInput" readonly placeholder="Clic aquí y presiona teclas..."
+                onclick="startCapturingShortcut()"
+                style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
+              <button onclick="clearPauseShortcut()"
+                style="padding:8px 12px;border-radius:8px;font-size:12px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--text-muted);cursor:pointer;">
+                ✕ Limpiar
+              </button>
+            </div>
+            <div id="pauseShortcutHint" style="font-size:11px;color:var(--text-muted);margin-top:4px;">
+              Atajo activo: <span id="activeShortcutLabel" style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRADUCCIÓN DE MENSAJES -->
+      <div class="settings-section">
+        <div class="settings-section-title">Traducir mensajes</div>
+        <div class="settings-panel">
+          <div class="setting-group">
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+              <input type="checkbox" id="translateToggle" onchange="onTranslateToggle(this.checked)"
+                style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer;" />
+              <span>Traducir automáticamente al idioma de destino</span>
+            </label>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">
+              Detecta el idioma de cada mensaje y lo traduce. El TTS anunciará el idioma original.
+            </div>
+          </div>
+          <div class="setting-group" id="translateTargetGroup">
+            <label>Idioma de destino</label>
+            <select id="translateTarget" onchange="onTranslateTargetChange(this.value)"
+              style="padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;width:100%;">
+              <option value="es">Español</option>
+              <option value="en">Inglés</option>
+              <option value="pt">Portugués</option>
+              <option value="fr">Francés</option>
+              <option value="de">Alemán</option>
+              <option value="it">Italiano</option>
+              <option value="ja">Japonés</option>
+              <option value="zh-CN">Chino</option>
+              <option value="ru">Ruso</option>
+              <option value="ko">Coreano</option>
+            </select>
           </div>
         </div>
       </div>
@@ -1662,6 +1776,9 @@
     readShares: false,
     sayUsername: true,
     lastUsername: '',
+    pauseShortcut: null,
+    translateEnabled: false,
+    translateTarget: 'es',
     overlays: {
       seguidores: { goal: '', color: '#3ecf8e', bg: 0.80, bgimg: '' },
       likes:      { rows: 10, color: '#3ecf8e', bg: 0.80, bgimg: '' },
@@ -1781,6 +1898,12 @@
     updateOverlayUrl('alertas');
     updateOverlayUrl('creditos');
     updateOverlayUrl('social');
+
+    // Translation settings
+    const transToggle = document.getElementById('translateToggle');
+    const transTarget = document.getElementById('translateTarget');
+    if (transToggle) transToggle.checked = !!appSettings.translateEnabled;
+    if (transTarget) transTarget.value = appSettings.translateTarget || 'es';
   }
 
   function setFieldVal(id, val) {
@@ -2009,6 +2132,39 @@
     }
   }
 
+  async function testSocialAlert(eventType) {
+    try {
+      const endpoint = eventType === 'follow' ? '/api/test/follow' : '/api/test/share';
+      const res  = await fetch(endpoint, { method: 'POST' });
+      const data = await res.json();
+      if (data.success) showToast((eventType === 'follow' ? '💜' : '🔗') + ' Test ' + eventType + ' enviado: ' + data.user);
+      else showToast('Error al enviar test');
+    } catch (e) {
+      showToast('Error al enviar test');
+    }
+  }
+
+  function updateSocialOverlayUrl() {
+    const followImg = (document.getElementById('cfg-social-follow-img')?.value || '').trim();
+    const shareImg  = (document.getElementById('cfg-social-share-img')?.value  || '').trim();
+    const p = new URLSearchParams();
+    if (followImg) p.set('followImg', followImg);
+    if (shareImg)  p.set('shareImg',  shareImg);
+    const qs  = p.toString();
+    const url = 'http://localhost:3000/overlay-alertas-social.html' + (qs ? '?' + qs : '');
+    const urlEl  = document.getElementById('cfg-url-social');
+    const openEl = document.getElementById('cfg-open-social');
+    if (urlEl)  urlEl.textContent = url;
+    if (openEl) openEl.href = url;
+  }
+
+  function copySocialAlertUrl() {
+    const url = document.getElementById('cfg-url-social')?.textContent || 'http://localhost:3000/overlay-alertas-social.html';
+    navigator.clipboard.writeText(url)
+      .then(() => showToast('URL copiada — pégala en OBS Browser Source'))
+      .catch(() => showToast('Error al copiar'));
+  }
+
   async function testTopLikers() {
     try {
       const res = await fetch('/api/test/likes', { method: 'POST' });
@@ -2046,6 +2202,120 @@
       updateQueueBadge();
     }
   }
+
+  // ─── TRANSLATION ──────────────────────────────────────────────
+  const LANG_NAMES_ES = {
+    en:'inglés', ja:'japonés', pt:'portugués', fr:'francés', de:'alemán',
+    it:'italiano', zh:'chino', ru:'ruso', ko:'coreano', ar:'árabe',
+    tr:'turco', hi:'hindi', nl:'neerlandés', pl:'polaco', sv:'sueco',
+    da:'danés', fi:'finlandés', cs:'checo', ro:'rumano', uk:'ucraniano'
+  };
+
+  function onTranslateToggle(enabled) {
+    appSettings.translateEnabled = enabled;
+    saveSettings();
+  }
+
+  function onTranslateTargetChange(lang) {
+    appSettings.translateTarget = lang;
+    saveSettings();
+  }
+
+  async function maybeTranslate(text) {
+    if (!appSettings.translateEnabled || !text) return null;
+    try {
+      const res = await fetch('/api/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, targetLang: appSettings.translateTarget || 'es' })
+      });
+      if (!res.ok) return null;
+      const { translated, detectedLang } = await res.json();
+      // Skip if already in target language
+      if (!detectedLang || detectedLang === (appSettings.translateTarget || 'es')) return null;
+      return { translated, detectedLang: detectedLang.toLowerCase() };
+    } catch (e) { return null; }
+  }
+
+  // ─── PAUSE TTS ────────────────────────────────────────────────
+  let ttsPaused = false;
+  let capturingShortcut = false;
+
+  function togglePauseTts() {
+    ttsPaused = !ttsPaused;
+    const btn = document.getElementById('btnPauseTTS');
+    if (btn) {
+      btn.textContent = ttsPaused ? '▶ Reanudar TTS' : '⏸ Pausar TTS';
+      btn.style.borderColor  = ttsPaused ? '#ff6b6b' : 'var(--accent)';
+      btn.style.background   = ttsPaused ? 'rgba(255,107,107,0.12)' : 'rgba(62,207,142,0.12)';
+      btn.style.color        = ttsPaused ? '#ff6b6b' : 'var(--accent)';
+    }
+    if (ttsPaused && activeAudio) {
+      activeAudio.pause();
+    } else if (!ttsPaused) {
+      if (activeAudio) activeAudio.play();
+      else if (!isSpeaking) processQueue();
+    }
+  }
+
+  function startCapturingShortcut() {
+    capturingShortcut = true;
+    const inp = document.getElementById('pauseShortcutInput');
+    if (inp) { inp.value = '⌨ Presiona teclas...'; inp.style.borderColor = 'var(--accent)'; }
+  }
+
+  function clearPauseShortcut() {
+    appSettings.pauseShortcut = null;
+    saveSettings();
+    capturingShortcut = false;
+    renderShortcutDisplay();
+    if (window.electronAPI && window.electronAPI.registerPauseShortcut)
+      window.electronAPI.registerPauseShortcut('');
+  }
+
+  function renderShortcutDisplay() {
+    const shortcut = appSettings.pauseShortcut || null;
+    const inp = document.getElementById('pauseShortcutInput');
+    const lbl = document.getElementById('activeShortcutLabel');
+    if (inp) { inp.value = shortcut || ''; inp.style.borderColor = shortcut ? 'var(--accent)' : 'var(--border)'; }
+    if (lbl) lbl.textContent = shortcut || '—';
+  }
+
+  function matchShortcut(e, shortcut) {
+    if (!shortcut) return false;
+    const parts = shortcut.split('+');
+    const key = parts[parts.length - 1];
+    const needCtrl  = parts.includes('Ctrl');
+    const needShift = parts.includes('Shift');
+    const needAlt   = parts.includes('Alt');
+    return e.ctrlKey === needCtrl && e.shiftKey === needShift && e.altKey === needAlt
+      && e.key.toUpperCase() === key.toUpperCase();
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (capturingShortcut) {
+      // Ignore pure modifier keys
+      if (['Control','Shift','Alt','Meta'].includes(e.key)) return;
+      e.preventDefault();
+      const parts = [];
+      if (e.ctrlKey)  parts.push('Ctrl');
+      if (e.shiftKey) parts.push('Shift');
+      if (e.altKey)   parts.push('Alt');
+      parts.push(e.key.length === 1 ? e.key.toUpperCase() : e.key);
+      const shortcut = parts.join('+');
+      appSettings.pauseShortcut = shortcut;
+      saveSettings();
+      capturingShortcut = false;
+      renderShortcutDisplay();
+      if (window.electronAPI && window.electronAPI.registerPauseShortcut)
+        window.electronAPI.registerPauseShortcut(shortcut);
+      return;
+    }
+    if (appSettings.pauseShortcut && matchShortcut(e, appSettings.pauseShortcut)) {
+      e.preventDefault();
+      togglePauseTts();
+    }
+  });
 
   const LIKE_COOLDOWN_MS = 15 * 60 * 1000;
   const likeCooldownMap = new Map();
@@ -2218,17 +2488,20 @@
   }
 
   async function testVoice() {
-    const input = document.getElementById('testVoiceInput');
-    const btn   = document.getElementById('btnTestVoice');
-    const text  = input.value.trim() || 'Hola, esta es la voz seleccionada';
-    const voice = voiceSelect.value || 'es';
+    const input   = document.getElementById('testVoiceInput');
+    const btn     = document.getElementById('btnTestVoice');
+    const text    = input.value.trim() || 'Hola, esta es la voz seleccionada';
+    const voiceId = voiceSelect.value || 'es';
+    const isEdge  = voiceId.startsWith('edge-');
+    const endpoint = isEdge ? '/api/tts/edge' : '/api/tts';
+    const voice    = isEdge ? voiceId.replace('edge-', '') : voiceId;
 
     btn.disabled = true;
     btn.innerHTML = '<img class="icon-inline" src="icons/volume_up.svg" alt=""> Reproduciendo...';
     const done = () => { btn.disabled = false; btn.textContent = '▶ Probar'; };
 
     try {
-      const res = await fetch('/api/tts', {
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text, voice })
@@ -2287,6 +2560,7 @@
   }
 
   async function processQueue() {
+    if (ttsPaused) return; // TTS pausado — esperar reanudación
     if (speechQueue.length === 0) {
       isSpeaking = false;
       hideSpeakingIndicator();
@@ -2314,10 +2588,13 @@
     showSpeakingIndicator(text);
     document.getElementById('appGlow').classList.add('active');
 
-    const voice = voiceSelect.value || 'es';
+    const voiceId = voiceSelect.value || 'es';
+    const isEdge  = voiceId.startsWith('edge-');
+    const ttsEndpoint = isEdge ? '/api/tts/edge' : '/api/tts';
+    const voice   = isEdge ? voiceId.replace('edge-', '') : voiceId;
 
     try {
-      const res = await fetch('/api/tts', {
+      const res = await fetch(ttsEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text, voice })
@@ -2379,12 +2656,7 @@
         msgCount++;
         document.getElementById('msgCount').textContent = msgCount;
         const chatId = `msg-${msgCount}`;
-        addChatMsg(data, chatId);
-        if (options.readChat) {
-          const raw  = options.sayUsername ? `${data.user}: ${data.comment}` : data.comment;
-          const text = raw.length > CHAT_TTS_MAX_LEN ? raw.substring(0, CHAT_TTS_MAX_LEN) : raw;
-          speak(text, chatId, data.timestamp);
-        }
+        handleChatData(data, chatId);
         break;
 
       case 'gift':
@@ -2392,8 +2664,10 @@
           msgCount++;
           document.getElementById('msgCount').textContent = msgCount;
           const giftId   = `msg-${msgCount}`;
-          const giftText = `${data.user} envió ${data.repeatCount} ${data.giftName}`;
-          addSystemMsg('<img class="icon-inline" src="icons/card_giftcard.svg" alt=""> ' + giftText, 'gift', giftId);
+          const usdSuffix = data.usdValue ? `, equivale a $${data.usdValue} dólares` : '';
+          const giftText = `${data.user} envió ${data.repeatCount} ${data.giftName}${usdSuffix}`;
+          const giftDisplay = `${data.user} envió ${data.repeatCount} ${data.giftName}${data.usdValue ? ` <span style="color:var(--accent);font-size:11px;">≈ $${data.usdValue} USD</span>` : ''}`;
+          addSystemMsg('<img class="icon-inline" src="icons/card_giftcard.svg" alt=""> ' + giftDisplay, 'gift', giftId);
           speak(giftText, giftId);
         }
         break;
@@ -2489,10 +2763,64 @@
         { const btn = document.getElementById('btnConnectOBS'); const btnDis = document.getElementById('btnDisconnectOBS');
           if (btn) btn.style.display = 'inline-block'; if (btnDis) btnDis.style.display = 'none'; }
         break;
+
+      case 'obs-stream-started':
+        // Auto-start stream timer when OBS begins streaming
+        if (!streamStartTime) startStreamManual();
+        showToast('🔴 OBS: stream iniciado');
+        break;
+
+      case 'obs-stream-stopped':
+        showToast('⏹ OBS: stream detenido');
+        break;
+    }
+  }
+
+  // ─── CHAT HANDLER (async — handles translation) ───────────────
+  async function handleChatData(data, chatId) {
+    const translated = await maybeTranslate(data.ttsComment || data.comment);
+    if (translated) {
+      data = Object.assign({}, data, {
+        comment: translated.translated,
+        originalLang: translated.detectedLang,
+      });
+    }
+    addChatMsg(data, chatId);
+    if (options.readChat) {
+      const ttsBase = data.comment;
+      let raw;
+      if (translated) {
+        const langName = LANG_NAMES_ES[translated.detectedLang] || translated.detectedLang;
+        const prefix = options.sayUsername
+          ? `${data.user} dice en ${langName}: `
+          : `En ${langName}: `;
+        raw = prefix + ttsBase;
+      } else {
+        raw = options.sayUsername ? `${data.user}: ${ttsBase}` : ttsBase;
+      }
+      const text = raw.length > CHAT_TTS_MAX_LEN ? raw.substring(0, CHAT_TTS_MAX_LEN) : raw;
+      speak(text, chatId, data.timestamp);
     }
   }
 
   // ─── CHAT UI ──────────────────────────────────────────────────
+  function renderTextWithEmotes(text, emotes) {
+    if (!emotes || Object.keys(emotes).length === 0) return escapeHtml(text);
+    // Split on emote tokens (:name:) and render as images
+    const parts = text.split(/(:[a-zA-Z0-9_\-]+:)/g);
+    return parts.map(part => {
+      const m = part.match(/^:([\w\-]+):$/);
+      if (m && emotes[m[1]]?.url) {
+        return `<img src="${escapeHtml(emotes[m[1]].url)}" alt="${escapeHtml(m[1])}" title="${escapeHtml(m[1])}" class="chat-emote" loading="lazy">`;
+      }
+      // For Twitch, check direct name match (no colons)
+      if (emotes[part]?.url) {
+        return `<img src="${escapeHtml(emotes[part].url)}" alt="${escapeHtml(part)}" title="${escapeHtml(part)}" class="chat-emote" loading="lazy">`;
+      }
+      return escapeHtml(part);
+    }).join('');
+  }
+
   const COLORS = ['#fe2c55','#25f4ee','#ff6b6b','#ffd93d','#6bcb77','#4d96ff','#ff922b'];
   const colorMap = {};
 
@@ -2519,7 +2847,7 @@
       <div class="msg-avatar" style="background:${color}22;color:${color}">${initials}</div>
       <div class="msg-body">
         <div class="msg-user" style="color:${color}">@${data.user}${platformBadge}</div>
-        <div class="msg-text">${escapeHtml(data.comment)}</div>
+        <div class="msg-text">${data.originalLang ? `<span class="lang-badge">[${data.originalLang.toUpperCase()}]</span>` : ''}${renderTextWithEmotes(data.comment, data.emotes)}</div>
       </div>
       <div class="msg-time">${time}</div>
     `;
@@ -2859,6 +3187,8 @@
   }
   if (window.electronAPI) {
     window.electronAPI.onMarkClip(() => markClip());
+    if (window.electronAPI.onPauseTts)
+      window.electronAPI.onPauseTts(() => togglePauseTts());
   }
 
   // ─── PLATFORMS ────────────────────────────────────────────────
@@ -2989,6 +3319,10 @@
   // ─── INIT ─────────────────────────────────────────────────────
   loadSettings();
   applySettings();
+  renderShortcutDisplay();
+  // Re-register global pause shortcut after reload
+  if (appSettings.pauseShortcut && window.electronAPI?.registerPauseShortcut)
+    window.electronAPI.registerPauseShortcut(appSettings.pauseShortcut);
   loadVoices();
   connectWS();
   updateQueueBadge();

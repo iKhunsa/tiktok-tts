@@ -269,6 +269,25 @@ ipcMain.on('install-update', () => {
   autoUpdater.quitAndInstall(false, true);
 });
 
+let registeredPauseShortcut = null;
+ipcMain.on('register-pause-shortcut', (_event, shortcut) => {
+  if (registeredPauseShortcut) {
+    try { globalShortcut.unregister(registeredPauseShortcut); } catch (_) {}
+    registeredPauseShortcut = null;
+  }
+  if (shortcut && shortcut.length > 0) {
+    try {
+      globalShortcut.register(shortcut, () => {
+        if (mainWindow && !mainWindow.isDestroyed())
+          mainWindow.webContents.send('pause-tts');
+      });
+      registeredPauseShortcut = shortcut;
+    } catch (err) {
+      console.error('Failed to register pause shortcut:', err.message);
+    }
+  }
+});
+
 // Prevent multiple instances
 const gotLock = app.requestSingleInstanceLock();
 if (!gotLock) {

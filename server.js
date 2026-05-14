@@ -8,6 +8,7 @@ const https = require('https');
 const fs = require('fs');
 const multer = require('multer');
 const crypto = require('crypto');
+const { MsEdgeTTS, OUTPUT_FORMAT } = require('msedge-tts');
 
 const IS_PKG = typeof process.pkg !== 'undefined';
 const REAL_BASE = IS_PKG
@@ -66,6 +67,7 @@ const config = {
   TTS_RATE_LIMIT_MAX: 10,
   TTS_RATE_WINDOW_MS: 5000,
   MAX_QUEUE_MSG: 15,
+  giftConversionRates: { tiktokUsdPerCoin: 0.0105 },
 };
 
 const overlayState = {
@@ -265,14 +267,19 @@ function setupTikTokConnection(cleanUsername) {
   tiktokConnection.on('gift', (data) => {
     if (data.giftType === 1 && !data.repeatEnd) return;
     const user = resolveDisplayName(data.nickname, data.uniqueId);
-    overlayState.credits.donors.push({ user, giftName: data.giftName, count: data.repeatCount || 1, ts: Date.now() });
+    const repeatCount = data.repeatCount || 1;
+    const coins = (data.diamondCount || 0) * repeatCount;
+    const usdRaw = coins * config.giftConversionRates.tiktokUsdPerCoin;
+    const usdValue = usdRaw > 0 ? usdRaw.toFixed(2) : null;
+    overlayState.credits.donors.push({ user, giftName: data.giftName, count: repeatCount, ts: Date.now() });
     broadcast({
       type: 'gift',
       user,
       giftName: data.giftName,
       giftId: data.giftId,
       giftPictureUrl: data.giftPictureUrl || null,
-      repeatCount: data.repeatCount || 1,
+      repeatCount,
+      usdValue,
       timestamp: Date.now()
     });
   });
@@ -535,16 +542,66 @@ app.post('/api/tts', async (req, res) => {
   }
 });
 
+// Translation endpoint
+app.post('/api/translate', async (req, res) => {
+  const { text, targetLang = 'es' } = req.body;
+  if (!text) return res.status(400).json({ error: 'text required' });
+  try {
+    const { translate } = require('@vitalets/google-translate-api');
+    const result = await translate(text.substring(0, 500), { to: targetLang });
+    res.json({ translated: result.text, detectedLang: result.src || 'und' });
+  } catch (err) {
+    log('error', 'translate', 'Translation failed', { error: err.message });
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Edge TTS endpoint (Microsoft Neural voices)
+app.post('/api/tts/edge', async (req, res) => {
+  const { text, voice = 'es-ES-AlvaroNeural' } = req.body;
+  if (!text) return res.status(400).json({ error: 'Texto requerido' });
+  if (isTTSRateLimited()) {
+    return res.status(429).json({ error: 'Rate limit activo', retryAfter: config.TTS_RATE_WINDOW_MS });
+  }
+  const limitedText = sanitizeForTTS(text.substring(0, config.TTS_MAX_CHARS));
+  log('info', 'tts', 'edge request', { voice, len: limitedText.length });
+
+  try {
+    const tts = new MsEdgeTTS();
+    await tts.setMetadata(voice, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
+    const readable = tts.toStream(limitedText);
+    res.setHeader('Content-Type', 'audio/mpeg');
+    res.setHeader('Cache-Control', 'no-cache');
+    readable.on('error', (err) => {
+      log('error', 'tts', 'Edge TTS stream error', { error: err.message });
+      if (!res.headersSent) res.status(500).json({ error: err.message });
+      else res.end();
+    });
+    readable.pipe(res);
+  } catch (err) {
+    log('error', 'tts', 'Edge TTS failed', { error: err.message });
+    if (!res.headersSent) res.status(500).json({ error: err.message });
+  }
+});
+
 // Available voices endpoint
 app.get('/api/voices', (req, res) => {
   const voices = [];
 
+  // ── Edge TTS (Microsoft Neural) — Español ──────────────────
+  const edgeVoicesEs = [
+    { id: 'edge-es-ES-AlvaroNeural',  name: 'Álvaro — Edge TTS (España)',  flag: 'ES', engine: 'edge' },
+    { id: 'edge-es-MX-JorgeNeural',   name: 'Jorge — Edge TTS (México)',   flag: 'MX', engine: 'edge' },
+    { id: 'edge-es-MX-DaliaNeural',   name: 'Dalia — Edge TTS (México)',   flag: 'MX', engine: 'edge' },
+    { id: 'edge-es-AR-ElenaNeural',   name: 'Elena — Edge TTS (Argentina)', flag: 'AR', engine: 'edge' },
+  ];
+
   // ── Google TTS ──────────────────────────────────────────────
   const googleVoices = [
     // Español
-    { id: 'es', name: 'Español (España)', flag: 'ES' },
-    { id: 'es-MX', name: 'Español (México)', flag: 'MX' },
-    { id: 'es-AR', name: 'Español (Argentina)', flag: 'AR' },
+    { id: 'es', name: 'Español (España) — Google', flag: 'ES' },
+    { id: 'es-MX', name: 'Español (México) — Google', flag: 'MX' },
+    { id: 'es-AR', name: 'Español (Argentina) — Google', flag: 'AR' },
 
     // Inglés
     { id: 'en', name: 'English (USA)', flag: 'US' },
@@ -570,7 +627,7 @@ app.get('/api/voices', (req, res) => {
     { id: 'ko', name: '한국어 (Coreano)', flag: 'KR' },
   ];
 
-  voices.push(...googleVoices);
+  voices.push(...edgeVoicesEs, ...googleVoices);
   res.json(voices);
 });
 
@@ -783,11 +840,22 @@ async function connectTwitch(channel, token = null) {
   client.on('message', (_ch, tags, message, self) => {
     if (self || !message.trim()) return;
     if (isSpam(message.trim())) return;
+    // Parse Twitch emotes for visual rendering
+    const emotes = {};
+    if (tags.emotes) {
+      for (const [emoteId, positions] of Object.entries(tags.emotes)) {
+        const range = Array.isArray(positions) ? positions[0] : positions.split('/')[0];
+        const [start, end] = range.split('-').map(Number);
+        const name = message.substring(start, end + 1);
+        if (name) emotes[name] = { url: `https://static-cdn.jtvnw.net/emoticons/v2/${emoteId}/default/dark/1.0` };
+      }
+    }
     broadcast({
       type: 'chat',
       platform: 'twitch',
       user: cleanName(tags['display-name'] || tags.username || 'Anónimo'),
       comment: sanitizeForTTS(message.trim()),
+      emotes: Object.keys(emotes).length > 0 ? emotes : undefined,
       timestamp: Date.now(),
     });
   });
@@ -810,13 +878,31 @@ async function connectYoutube(channelOrId) {
   const liveChat = new LiveChat(opts);
 
   liveChat.on('chat', (item) => {
-    const comment = (item.message || []).map(m => m.text || '').join('').trim();
-    if (!comment || isSpam(comment)) return;
+    // Parse YouTube emoji/sticker runs for visual rendering
+    const emotes = {};
+    const displayParts = [];
+    for (const part of (item.message || [])) {
+      if (part.text) {
+        displayParts.push(part.text);
+      } else if (part.emoji) {
+        const rawName = part.emoji.emojiId || part.emoji.shortcuts?.[0] || '';
+        const safeName = rawName.replace(/[^a-zA-Z0-9_\-]/g, '_') || 'emoji';
+        const thumbs = part.emoji.image?.thumbnails || [];
+        const url = thumbs[thumbs.length - 1]?.url || '';
+        displayParts.push(`:${safeName}:`);
+        if (url) emotes[safeName] = { url };
+      }
+    }
+    const displayText = displayParts.join('').trim();
+    const ttsText = displayText.replace(/:[\w\-]+:/g, '').trim();
+    if (!displayText || isSpam(ttsText || displayText)) return;
     broadcast({
       type: 'chat',
       platform: 'youtube',
       user: cleanName(item.author?.name || 'Anónimo'),
-      comment: sanitizeForTTS(comment),
+      comment: sanitizeForTTS(displayText),
+      ttsComment: ttsText ? sanitizeForTTS(ttsText) : undefined,
+      emotes: Object.keys(emotes).length > 0 ? emotes : undefined,
       timestamp: Date.now(),
     });
   });
@@ -926,6 +1012,7 @@ app.post('/api/obs/connect', (req, res) => {
           d.authentication = crypto.createHash('sha256')
             .update(secret + authChallenge.challenge).digest('base64');
         }
+        d.eventSubscriptions = 64; // OutputEvents bitmask — includes StreamStateChanged
         ws.send(JSON.stringify({ op: 1, d }));
       } else if (msg.op === 2) {
         // Identified — connection established
@@ -934,7 +1021,15 @@ app.post('/api/obs/connect', (req, res) => {
         broadcast({ type: 'obs-connected' });
         settle(() => res.json({ success: true }));
       } else if (msg.op === 5) {
-        // Event — ignore for now
+        // Event — handle StreamStateChanged to auto-start/stop stream timer
+        const { eventType, eventData } = msg.d || {};
+        if (eventType === 'StreamStateChanged') {
+          if (eventData && eventData.outputState === 'OBS_WEBSOCKET_OUTPUT_STARTED') {
+            broadcast({ type: 'obs-stream-started' });
+          } else if (eventData && eventData.outputState === 'OBS_WEBSOCKET_OUTPUT_STOPPED') {
+            broadcast({ type: 'obs-stream-stopped' });
+          }
+        }
       }
     } catch (_) {}
   });

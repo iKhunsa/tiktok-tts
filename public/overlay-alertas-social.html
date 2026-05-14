@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Overlay — Alertas de Regalos</title>
+  <title>Overlay — Alertas Seguidor / Compartir</title>
   <style>
     :root { --accent: #3ecf8e; --bg-alpha: 0.90; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -33,6 +33,7 @@
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       animation: slideIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      margin-bottom: 8px;
     }
     .alert-card.leaving {
       animation: slideOut 0.35s ease-in forwards;
@@ -45,14 +46,15 @@
       from { opacity: 1; transform: translateY(0)    scale(1);    }
       to   { opacity: 0; transform: translateY(-18px) scale(0.96); }
     }
-    .gift-img {
+    .event-img {
       width: 76px;
       height: 76px;
       object-fit: contain;
       flex-shrink: 0;
       filter: drop-shadow(0 4px 14px rgba(0,0,0,0.55));
+      border-radius: 50%;
     }
-    .gift-fallback {
+    .event-emoji {
       width: 76px;
       height: 76px;
       font-size: 52px;
@@ -73,8 +75,9 @@
       letter-spacing: 1.5px;
       text-transform: uppercase;
       color: #fff;
+      opacity: 0.7;
     }
-    .gift-name {
+    .event-name {
       font-size: 20px;
       font-weight: 800;
       color: #fff;
@@ -98,24 +101,17 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      opacity: 0.85;
     }
-    .qty-badge {
+    .type-badge {
       flex-shrink: 0;
       background: color-mix(in srgb, var(--accent) 12%, transparent);
       border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
       color: var(--accent);
-      font-size: 14px;
-      font-weight: 700;
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-variant-numeric: tabular-nums;
-    }
-    .usd-value {
       font-size: 12px;
-      color: #3ecf8e;
-      font-weight: 600;
-      margin-top: 3px;
-      opacity: 0.9;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 999px;
     }
   </style>
 </head>
@@ -126,76 +122,15 @@
     const _b = params.get('bg');    if (_b) document.documentElement.style.setProperty('--bg-alpha', _b);
     const _bgimg = params.get('bgimg');
     if (_bgimg) { document.documentElement.style.setProperty('--bg-img', `url('${_bgimg}')`); document.body.classList.add('has-bgimg'); }
-    const alertDur = parseInt(params.get('dur') || '4000', 10);
+    const alertDur   = parseInt(params.get('dur') || '4000', 10);
+    const followImg  = params.get('followImg')  || '';
+    const shareImg   = params.get('shareImg')   || '';
 
-    let giftMap    = new Map();
-    let giftDict   = {};
     let alertQueue = [];
     let isShowing  = false;
 
-    fetch('/gift-dict.json')
-      .then(r => r.json())
-      .then(dict => { giftDict = dict; })
-      .catch(() => {});
-
-    // ── Gift name → filename normalization ──────────────────
-    function normalizeStr(str) {
-      return str.toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-z0-9]+/g, '_')
-        .replace(/^_+|_+$/g, '');
-    }
-
-    function buildGiftMap(files) {
-      const m = new Map();
-      for (const f of files) {
-        const match = f.match(/^\d+_(.+)\.png$/i);
-        if (match) {
-          const slug = normalizeStr(match[1]);
-          m.set(slug, f);
-          // Also index without underscores to handle filenames with _ replacing accented chars
-          const slugNoUnderscore = slug.replace(/_/g, '');
-          if (slugNoUnderscore !== slug) m.set(slugNoUnderscore, f);
-        }
-      }
-      return m;
-    }
-
-    function resolveGiftImage(giftName) {
-      if (!giftName) return null;
-      const normalized = normalizeStr(giftName);
-
-      // 1. Diccionario exacto
-      if (giftDict[normalized]) {
-        return '/gifts/' + giftDict[normalized];
-      }
-
-      // 2. Match directo en giftMap
-      if (giftMap && giftMap.has(normalized)) {
-        return '/gifts/' + giftMap.get(normalized);
-      }
-
-      // 3. Partial match fallback
-      if (giftMap) {
-        for (const [slug, fname] of giftMap) {
-          if (slug.includes(normalized) || normalized.includes(slug)) {
-            return '/gifts/' + fname;
-          }
-        }
-      }
-
-      return null;
-    }
-
-    fetch('/api/gifts-list')
-      .then(r => r.json())
-      .then(files => { giftMap = buildGiftMap(files); })
-      .catch(() => {});
-
-    // ── Alert queue ──────────────────────────────────────────
-    function enqueue(gift) {
-      alertQueue.push(gift);
+    function enqueue(event) {
+      alertQueue.push(event);
       if (!isShowing) processQueue();
     }
 
@@ -213,63 +148,55 @@
         .replace(/"/g, '&quot;');
     }
 
-    function showAlert(gift) {
-      const imgSrc = resolveGiftImage(gift.giftName || '');
-      const card   = document.createElement('div');
+    function showAlert(event) {
+      const isFollow = event.type === 'follow';
+      const card = document.createElement('div');
       card.className = 'alert-card';
 
-      // Always show an image: local first, then TikTok official
-      const img = document.createElement('img');
-      img.className = 'gift-img';
-      img.alt = gift.giftName;
-      if (imgSrc) {
-        img.src = imgSrc;
-        img.onerror = () => { img.src = gift.giftPictureUrl || ''; };
+      // icon/image
+      const customImg = isFollow ? followImg : shareImg;
+      if (customImg) {
+        const img = document.createElement('img');
+        img.className = 'event-img';
+        img.src = customImg;
+        img.alt = isFollow ? 'follow' : 'share';
+        img.onerror = () => { img.replaceWith(makeDefaultIcon(isFollow)); };
+        card.appendChild(img);
       } else {
-        img.src = gift.giftPictureUrl || '';
+        card.appendChild(makeDefaultIcon(isFollow));
       }
-      card.appendChild(img);
 
       // info block
       const info = document.createElement('div');
       info.className = 'info';
       info.innerHTML = `
-        <div class="action-label">Regalo recibido</div>
-        <div class="gift-name">${escapeHtml(gift.giftName)}</div>
-        <div class="username">de @${escapeHtml(gift.user)}</div>
-        ${gift.usdValue ? `<div class="usd-value">≈ $${escapeHtml(String(gift.usdValue))} USD</div>` : ''}
+        <div class="action-label">${isFollow ? 'Nuevo seguidor' : 'Compartido'}</div>
+        <div class="event-name">${escapeHtml(event.username || event.user || 'Alguien')}</div>
+        <div class="username">${isFollow ? 'te siguió' : 'compartió tu canal'}</div>
       `;
       card.appendChild(info);
 
-      // quantity badge (only if > 1)
-      if ((gift.repeatCount || 1) > 1) {
-        const badge = document.createElement('div');
-        badge.className = 'qty-badge';
-        badge.textContent = 'x' + gift.repeatCount;
-        card.appendChild(badge);
-      }
+      // type badge
+      const badge = document.createElement('div');
+      badge.className = 'type-badge';
+      badge.textContent = isFollow ? '💜 Follow' : '🔗 Share';
+      card.appendChild(badge);
 
       document.body.appendChild(card);
 
-      // auto-dismiss
-      const dur = gift.duration || alertDur;
-      const timer = setTimeout(() => {
+      const dur = event.duration || alertDur;
+      setTimeout(() => {
         card.classList.add('leaving');
-        card.addEventListener('animationend', () => {
-          card.remove();
-          processQueue();
-        }, { once: true });
+        card.addEventListener('animationend', () => { card.remove(); processQueue(); }, { once: true });
       }, dur);
-
-      // safety net: if animationend never fires
-      card.addEventListener('animationend', () => {}, { once: true });
+      // safety net
       setTimeout(() => { if (card.parentNode) { card.remove(); processQueue(); } }, dur + 1500);
     }
 
-    function makeFallback() {
+    function makeDefaultIcon(isFollow) {
       const d = document.createElement('div');
-      d.className = 'gift-fallback';
-      d.style.display = 'none';
+      d.className = 'event-emoji';
+      d.textContent = isFollow ? '💜' : '🔗';
       return d;
     }
 
@@ -281,7 +208,7 @@
       ws.onmessage = (e) => {
         try {
           const d = JSON.parse(e.data);
-          if (d.type === 'gift') enqueue(d);
+          if (d.type === 'follow' || d.type === 'share') enqueue(d);
         } catch(_) {}
       };
       ws.onclose = () => {
