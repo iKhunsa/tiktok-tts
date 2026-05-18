@@ -663,7 +663,7 @@ async function reconnectTiktok(username) {
     }
     refreshed.attempts = 0;
     if (refreshed.timer) { clearTimeout(refreshed.timer); refreshed.timer = null; }
-    broadcast({ type: 'connected', username });
+    broadcast({ type: 'connected', username, isFirst: false });
     log('info', 'reconnect', 'Reconexion exitosa', { username });
   } catch (err) {
     const e2 = tiktokChannels.get(username);
@@ -712,7 +712,8 @@ app.post('/api/connect', async (req, res) => {
     tiktokChannels.delete(cleanUsername);
   }
 
-  if (tiktokChannels.size === 0) resetOverlayState();
+  const isFirstConnection = tiktokChannels.size === 0;
+  if (isFirstConnection) resetOverlayState();
 
   try {
     setupTikTokConnection(cleanUsername);
@@ -728,7 +729,7 @@ app.post('/api/connect', async (req, res) => {
     startFollowerRefresh();
     entry.attempts = 0;
 
-    broadcast({ type: 'connected', username: cleanUsername });
+    broadcast({ type: 'connected', username: cleanUsername, isFirst: isFirstConnection });
     broadcastChannels();
     res.json({ success: true, username: cleanUsername });
   } catch (err) {
@@ -1093,7 +1094,7 @@ const twitchChannels = new Map(); // channel → tmi.Client
 const youtubeChannels = new Map(); // channelOrId → LiveChat
 let obsWs = null;
 
-async function connectTwitch(channel, token = null) {
+async function connectTwitch(channel, token = null, attempt = 0) {
   const tmi = require('tmi.js');
   // Disconnect same channel if already connected (re-connect)
   if (twitchChannels.has(channel)) {
@@ -1105,6 +1106,7 @@ async function connectTwitch(channel, token = null) {
     clientOpts.identity = { username: authTokens.twitchLogin, password: `oauth:${token}` };
   }
   const client = new tmi.Client(clientOpts);
+  client._intentionalDisconnect = false;
 
   client.on('message', (_ch, tags, message, self) => {
     if (self || !message.trim()) return;
@@ -1133,6 +1135,11 @@ async function connectTwitch(channel, token = null) {
     broadcast({ type: 'channel-disconnected', platform: 'twitch', channel });
     twitchChannels.delete(channel);
     broadcastChannels();
+    if (!client._intentionalDisconnect && attempt < MAX_RECONNECT_ATTEMPTS) {
+      const delay = Math.min(1000 * Math.pow(2, attempt), 30000);
+      log('warn', 'twitch', 'Reconectando...', { attempt: attempt + 1, delay });
+      setTimeout(() => connectTwitch(channel, token, attempt + 1).catch(() => {}), delay);
+    }
   });
 
   await client.connect();
@@ -1142,7 +1149,7 @@ async function connectTwitch(channel, token = null) {
   log('info', 'twitch', 'Twitch conectado', { channel });
 }
 
-async function connectYoutube(channelOrId) {
+async function connectYoutube(channelOrId, attempt = 0) {
   const { LiveChat } = require('youtube-chat');
   // Disconnect same channel if already connected
   if (youtubeChannels.has(channelOrId)) {
@@ -1187,6 +1194,12 @@ async function connectYoutube(channelOrId) {
     broadcast({ type: 'channel-disconnected', platform: 'youtube', channel: channelOrId });
     youtubeChannels.delete(channelOrId);
     broadcastChannels();
+    // Auto-reconnect with backoff (max 5 attempts)
+    if (attempt < MAX_RECONNECT_ATTEMPTS) {
+      const delay = Math.min(1000 * Math.pow(2, attempt), 30000);
+      log('warn', 'youtube', 'Reconectando...', { attempt: attempt + 1, delay });
+      setTimeout(() => connectYoutube(channelOrId, attempt + 1).catch(() => {}), delay);
+    }
   });
 
   const ok = await liveChat.start();
@@ -1212,10 +1225,43 @@ app.post('/api/platforms/connect', async (req, res) => {
   if (!platform || !channel) return res.status(400).json({ error: 'Se requiere platform y channel' });
 
   try {
-    if (platform === 'twitch') {
+    if (platform === 'tiktok') {
+      const cleanUsername = channel.replace('@', '').trim();
+      if (connectingTiktok.has(cleanUsername)) {
+        return res.status(409).json({ error: 'Conexión ya en progreso para este canal' });
+      }
+      connectingTiktok.add(cleanUsername);
+      const prev = tiktokChannels.get(cleanUsername);
+      if (prev) {
+        if (prev.timer) clearTimeout(prev.timer);
+        prev.conn.removeAllListeners();
+        try { prev.conn.disconnect(); } catch (e) {}
+        tiktokChannels.delete(cleanUsername);
+      }
+      const isFirstConnection = tiktokChannels.size === 0;
+      if (isFirstConnection) resetOverlayState();
+      try {
+        setupTikTokConnection(cleanUsername);
+        const entry = tiktokChannels.get(cleanUsername);
+        const state = await entry.conn.connect();
+        const baseCount = extractFollowerCount(state && state.roomInfo);
+        if (baseCount > 0) { overlayState.baseFollowerCount = baseCount; broadcast({ type: 'follower-base', count: baseCount }); }
+        startFollowerRefresh();
+        entry.attempts = 0;
+        broadcast({ type: 'connected', username: cleanUsername, isFirst: isFirstConnection });
+        broadcastChannels();
+        res.json({ success: true, channel: cleanUsername });
+      } catch (err) {
+        tiktokChannels.delete(cleanUsername);
+        res.status(500).json({ error: err.message.includes('LIVE') ? `@${cleanUsername} no está en vivo` : err.message });
+      } finally {
+        connectingTiktok.delete(cleanUsername);
+      }
+    } else if (platform === 'twitch') {
       // Accept full URLs: https://www.twitch.tv/channel → channel
       const twitchChannel = channel.replace(/^https?:\/\/(www\.)?twitch\.tv\//i, '').replace('#', '').trim();
       await connectTwitch(twitchChannel, token || null);
+      res.json({ success: true, channel: twitchChannel });
     } else if (platform === 'youtube') {
       // Accept full URLs: https://www.youtube.com/@handle → @handle
       // https://www.youtube.com/watch?v=ID or youtu.be/ID → ID
@@ -1227,8 +1273,8 @@ app.post('/api/platforms/connect', async (req, res) => {
       else if (ytShortMatch) ytInput = ytShortMatch[1];
       else if (ytHandleMatch) ytInput = '@' + ytHandleMatch[1];
       await connectYoutube(ytInput);
+      res.json({ success: true, channel: ytInput });
     } else return res.status(400).json({ error: 'Plataforma no soportada' });
-    res.json({ success: true });
   } catch (err) {
     log('error', platform, 'Error al conectar', { error: err.message });
     res.status(500).json({ error: err.message });
@@ -1239,12 +1285,34 @@ app.post('/api/platforms/connect', async (req, res) => {
 app.post('/api/platforms/disconnect', async (req, res) => {
   const { platform, channel } = req.body;
   try {
-    if (platform === 'twitch') {
+    if (platform === 'tiktok') {
+      if (channel) {
+        const cleanUsername = channel.replace('@', '').trim();
+        const entry = tiktokChannels.get(cleanUsername);
+        if (entry) {
+          if (entry.timer) clearTimeout(entry.timer);
+          entry.conn.removeAllListeners();
+          try { entry.conn.disconnect(); } catch (e) {}
+          tiktokChannels.delete(cleanUsername);
+        }
+        if (tiktokChannels.size === 0) { stopFollowerRefresh(); broadcast({ type: 'disconnected' }); }
+        else broadcast({ type: 'channel-disconnected', platform: 'tiktok', channel: cleanUsername });
+      } else {
+        for (const entry of tiktokChannels.values()) {
+          if (entry.timer) clearTimeout(entry.timer);
+          entry.conn.removeAllListeners();
+          try { entry.conn.disconnect(); } catch (e) {}
+        }
+        tiktokChannels.clear();
+        stopFollowerRefresh();
+        broadcast({ type: 'disconnected' });
+      }
+    } else if (platform === 'twitch') {
       if (channel) {
         const c = twitchChannels.get(channel);
-        if (c) { try { await c.disconnect(); } catch (e) {} twitchChannels.delete(channel); }
+        if (c) { c._intentionalDisconnect = true; try { await c.disconnect(); } catch (e) {} twitchChannels.delete(channel); }
       } else {
-        for (const c of twitchChannels.values()) { try { await c.disconnect(); } catch (e) {} }
+        for (const c of twitchChannels.values()) { c._intentionalDisconnect = true; try { await c.disconnect(); } catch (e) {} }
         twitchChannels.clear();
       }
       broadcast({ type: 'platform-disconnected', platform: 'twitch', channel: channel || null });
@@ -1291,7 +1359,8 @@ app.post('/api/channels/add', async (req, res) => {
         try { prev.conn.disconnect(); } catch (e) {}
         tiktokChannels.delete(cleanUsername);
       }
-      if (tiktokChannels.size === 0) resetOverlayState();
+      const isFirstConnection = tiktokChannels.size === 0;
+      if (isFirstConnection) resetOverlayState();
       try {
         setupTikTokConnection(cleanUsername);
         const entry = tiktokChannels.get(cleanUsername);
@@ -1300,7 +1369,7 @@ app.post('/api/channels/add', async (req, res) => {
         if (baseCount > 0) { overlayState.baseFollowerCount = baseCount; broadcast({ type: 'follower-base', count: baseCount }); }
         startFollowerRefresh();
         entry.attempts = 0;
-        broadcast({ type: 'connected', username: cleanUsername });
+        broadcast({ type: 'connected', username: cleanUsername, isFirst: isFirstConnection });
         broadcastChannels();
         res.json({ success: true, channel: cleanUsername });
       } catch (err) {
@@ -1553,6 +1622,7 @@ module.exports.shutdown = function shutdownServer() {
   tiktokChannels.clear();
 
   for (const client of twitchChannels.values()) {
+    client._intentionalDisconnect = true;
     try { client.disconnect(); } catch (_) {}
   }
   twitchChannels.clear();

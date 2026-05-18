@@ -207,7 +207,7 @@
             likersMap.set(key, existing);
             renderLeaderboard(true);
           }
-          if (d.type === 'connected') {
+          if (d.type === 'connected' && d.isFirst) {
             likersMap.clear();
             renderLeaderboard(false);
           }

@@ -1251,6 +1251,35 @@
         <p>Personaliza cada overlay y copia la URL → OBS → Add Source → Browser → Enable transparent background.</p>
       </div>
 
+      <!-- Chat Unificado -->
+      <div class="cfg-card">
+        <div class="cfg-header">
+          <div class="cfg-icon"><img class="icon-inline" src="icons/chat.svg" alt=""></div>
+          <div class="cfg-meta">
+            <div class="cfg-title">Chat Unificado</div>
+            <div class="cfg-subtitle">Todos los mensajes de TikTok, Twitch y YouTube en un solo overlay</div>
+          </div>
+          <span class="obs-hint">420 × 720 px</span>
+        </div>
+        <div class="cfg-fields">
+          <div class="cfg-field">
+            <label>Color acento</label>
+            <input type="color" id="cfg-chat-color" value="#3ecf8e"
+                   oninput="onCfgChange('chat','color', this.value)" />
+          </div>
+          <div class="cfg-field">
+            <label>Opacidad fondo — <span id="cfg-chat-bg-val">82</span>%</label>
+            <input type="range" id="cfg-chat-bg" min="0.30" max="1.00" step="0.05" value="0.82"
+                   oninput="onCfgChange('chat','bg', parseFloat(this.value)); document.getElementById('cfg-chat-bg-val').textContent = Math.round(this.value*100)" />
+          </div>
+        </div>
+        <div class="cfg-url-row">
+          <span class="cfg-url-text" id="cfg-url-chat">http://localhost:3000/overlay-chat.html</span>
+          <button class="cfg-btn" onclick="copyCfgUrl('chat')">Copiar</button>
+          <a class="cfg-btn" id="cfg-open-chat" href="http://localhost:3000/overlay-chat.html" target="_blank">Abrir</a>
+        </div>
+      </div>
+
       <!-- Seguidores -->
       <div class="cfg-card">
         <div class="cfg-header">
@@ -1767,7 +1796,8 @@
       alertas:    { dur: 4000, color: '#3ecf8e', bg: 0.90, bgimg: '' },
       creditos:   { speed: 40, color: '#3ecf8e', bg: 0.85, bgimg: '' },
       social:     { layout: 'cols', color: '#3ecf8e', bg: 0.80, bgimg: '' },
-      'alertas-social': { color: '#3ecf8e', bg: 0.90, bgimg: '' }
+      'alertas-social': { color: '#3ecf8e', bg: 0.90, bgimg: '' },
+      chat:       { color: '#3ecf8e', bg: 0.82, bgimg: '' }
     }
   };
 
@@ -1833,13 +1863,20 @@
     }
 
     // Overlay config fields
-    const { seguidores, likes, alertas, creditos, social } = appSettings.overlays || {};
+    const { seguidores, likes, alertas, creditos, social, chat } = appSettings.overlays || {};
 
     setFieldVal('cfg-seg-goal',   seguidores.goal);
     setFieldVal('cfg-seg-color',  seguidores.color);
     setFieldVal('cfg-seg-bg',     seguidores.bg);
     const bgValEl = document.getElementById('cfg-seg-bg-val');
     if (bgValEl) bgValEl.textContent = Math.round(seguidores.bg * 100);
+
+    if (chat) {
+      setFieldVal('cfg-chat-color', chat.color);
+      setFieldVal('cfg-chat-bg',    chat.bg);
+      const cbValEl = document.getElementById('cfg-chat-bg-val');
+      if (cbValEl) cbValEl.textContent = Math.round(chat.bg * 100);
+    }
 
     setFieldVal('cfg-likes-rows',  likes.rows);
     setFieldVal('cfg-likes-color', likes.color);
@@ -1883,10 +1920,12 @@
     updateBgPreview('seguidores', seguidores.bgimg);
     updateBgPreview('likes',      likes.bgimg);
     updateBgPreview('alertas',    alertas.bgimg);
+    updateBgPreview('chat',       chat.bgimg);
 
     // Rebuild overlay URLs
     updateOverlayUrl('seguidores');
     updateOverlayUrl('likes');
+    updateOverlayUrl('chat');
     updateOverlayUrl('alertas');
     updateOverlayUrl('creditos');
     updateOverlayUrl('social');
@@ -1989,6 +2028,9 @@
       if (cfg.layout && cfg.layout !== 'cols') p.set('layout', cfg.layout);
       if (cfg.color && cfg.color !== '#3ecf8e') p.set('color', cfg.color.replace('#', ''));
       if (cfg.bg !== 0.80) p.set('bg', cfg.bg);
+    } else if (type === 'chat') {
+      if (cfg.color && cfg.color !== '#3ecf8e') p.set('color', cfg.color.replace('#', ''));
+      if (cfg.bg !== 0.82) p.set('bg', cfg.bg);
     }
 
     if (cfg && cfg.bgimg) p.set('bgimg', cfg.bgimg);
@@ -2790,7 +2832,7 @@
     const txt = document.createElement('div');
     txt.className = 'msg-text';
     txt.style.fontSize = '13px';
-    txt.textContent = text;
+    txt.innerHTML = text;
     body.appendChild(txt);
     div.appendChild(body);
 
@@ -3246,7 +3288,7 @@
       await fetch('/api/platforms/disconnect', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ platform }),
+        body: JSON.stringify({ platform, channel }),
       });
       const saved = loadPlatformChannels();
       delete saved[platform];
@@ -3258,16 +3300,23 @@
     }
   }
 
-  function renderSettingsChannels() {
+  async function renderSettingsChannels() {
     const el = document.getElementById('settings-channels-list');
     if (!el) return;
     el.innerHTML = '';
     const icons = { tiktok: 'icons/tiktok.svg', twitch: 'icons/sports_esports.svg', youtube: 'icons/tv.svg' };
-    const saved = loadPlatformChannels();
+
+    let channels = { tiktok: [], twitch: [], youtube: [] };
+    try {
+      const res = await fetch('/api/channels');
+      if (res.ok) channels = await res.json();
+    } catch (e) {}
+
     const all = [];
-    if (saved.tiktok) all.push({ platform: 'tiktok', ch: saved.tiktok });
-    if (saved.twitch) all.push({ platform: 'twitch', ch: saved.twitch });
-    if (saved.youtube) all.push({ platform: 'youtube', ch: saved.youtube });
+    channels.tiktok.forEach(ch => all.push({ platform: 'tiktok', ch }));
+    channels.twitch.forEach(ch => all.push({ platform: 'twitch', ch }));
+    channels.youtube.forEach(ch => all.push({ platform: 'youtube', ch }));
+
     if (all.length === 0) {
       el.innerHTML = '<div style="font-size:12px;color:var(--text-muted);">Sin canales adicionales conectados.</div>';
       return;

@@ -208,7 +208,7 @@
           } else if (d.type === 'share') {
             credits.sharers.push({ user: d.user });
             renderTrack();
-          } else if (d.type === 'connected') {
+          } else if (d.type === 'connected' && d.isFirst) {
             credits = { donors: [], followers: [], sharers: [] };
             renderTrack();
           }

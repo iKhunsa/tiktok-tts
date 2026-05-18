@@ -210,7 +210,7 @@
             totals.shares++;
             countShares.textContent = totals.shares;
             addEntry(listShares, d.user);
-          } else if (d.type === 'connected') {
+          } else if (d.type === 'connected' && d.isFirst) {
             totals = { follows: 0, shares: 0 };
             countFollows.textContent = 0;
             countShares.textContent  = 0;

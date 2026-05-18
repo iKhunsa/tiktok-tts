@@ -166,7 +166,7 @@
         try {
           const d = JSON.parse(e.data);
           if (d.type === 'follow') { sessionFollows++; render(); }
-          if (d.type === 'connected') { sessionFollows = 0; render(); }
+          if (d.type === 'connected' && d.isFirst) { sessionFollows = 0; render(); }
           if (d.type === 'follower-base') {
             baseFollowerCount = d.count || 0;
             updateGoalTarget();
