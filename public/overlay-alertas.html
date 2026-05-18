@@ -26,6 +26,7 @@
     }
     .alert-card {
       position: relative;
+      width: 100%;
       background: rgba(8, 8, 8, var(--bg-alpha));
       border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 20px;
@@ -138,7 +139,11 @@
 
     fetch('/gift-dict.json')
       .then(r => r.json())
-      .then(dict => { giftDict = dict; })
+      .then(dict => {
+        const normalized = {};
+        for (const [k, v] of Object.entries(dict)) normalized[normalizeStr(k)] = v;
+        giftDict = normalized;
+      })
       .catch(() => {});
 
     // ── Gift name → filename normalization ──────────────────
@@ -216,20 +221,34 @@
         .replace(/"/g, '&quot;');
     }
 
-    function showAlert(gift) {
-      const imgSrc = resolveGiftImage(gift.giftName || '');
-      const card   = document.createElement('div');
-      card.className = 'alert-card';
+    function useEmojiFor(el) {
+      const span = document.createElement('span');
+      span.className = 'gift-fallback';
+      span.textContent = '🎁';
+      el.replaceWith(span);
+    }
 
-      // Always show an image: local first, then TikTok official
+    function showAlert(gift) {
+      const imgSrc     = resolveGiftImage(gift.giftName || '');
+      const cdnSrc     = gift.giftPictureUrl || '';
+      const card       = document.createElement('div');
+      card.className   = 'alert-card';
+
+      // Image: local PNG → TikTok CDN → emoji fallback
       const img = document.createElement('img');
       img.className = 'gift-img';
       img.alt = gift.giftName;
       if (imgSrc) {
         img.src = imgSrc;
-        img.onerror = () => { img.src = gift.giftPictureUrl || ''; };
+        img.onerror = () => {
+          if (cdnSrc) { img.src = cdnSrc; img.onerror = () => useEmojiFor(img); }
+          else useEmojiFor(img);
+        };
+      } else if (cdnSrc) {
+        img.src = cdnSrc;
+        img.onerror = () => useEmojiFor(img);
       } else {
-        img.src = gift.giftPictureUrl || '';
+        useEmojiFor(img);
       }
       card.appendChild(img);
 
