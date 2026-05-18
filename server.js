@@ -1549,8 +1549,10 @@ const PORT = process.env.PORT || 3000;
 
 server.on('error', (err) => {
   if (err.code === 'EADDRINUSE') {
-    require('child_process').exec(`start http://localhost:${PORT}`);
-    process.exit(0);
+    // Throw so main.js catches it via serverLoadError and shows a dialog.
+    // Never process.exit() here — that kills the Electron main process.
+    console.error(`[server] Port ${PORT} already in use. Is another instance running?`);
+    throw err;
   }
 });
 
@@ -1563,3 +1565,26 @@ server.listen(PORT, () => {
   }
   // In Electron mode, main.js opens the BrowserWindow after detecting this port is up
 });
+
+module.exports.shutdown = function shutdownServer() {
+  for (const entry of tiktokChannels.values()) {
+    if (entry.timer) clearTimeout(entry.timer);
+    entry.conn.removeAllListeners();
+    try { entry.conn.disconnect(); } catch (_) {}
+  }
+  tiktokChannels.clear();
+
+  for (const client of twitchChannels.values()) {
+    try { client.disconnect(); } catch (_) {}
+  }
+  twitchChannels.clear();
+
+  for (const chat of youtubeChannels.values()) {
+    try { chat.stop(); } catch (_) {}
+  }
+  youtubeChannels.clear();
+
+  stopFollowerRefresh();
+  try { wss.close(); } catch (_) {}
+  try { server.close(); } catch (_) {}
+};

@@ -14,8 +14,9 @@ if (app.isPackaged) {
 // Start Express server — wrapped so a crash here shows a recoverable dialog
 // instead of an unhandled exception that blocks the auto-updater from running.
 let serverLoadError = null;
+let serverShutdown = null;
 try {
-  require('./server');
+  serverShutdown = require('./server').shutdown;
 } catch (e) {
   serverLoadError = e;
 }
@@ -200,6 +201,15 @@ app.whenReady().then(() => {
       if (mainWindow) mainWindow.webContents.send('mark-clip');
     });
   });
+});
+
+app.on('before-quit', () => {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.removeAllListeners('close');
+  }
+  if (serverShutdown) {
+    try { serverShutdown(); } catch (_) {}
+  }
 });
 
 app.on('will-quit', () => {

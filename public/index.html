@@ -1703,25 +1703,43 @@
       </div>
 
       <div class="settings-section">
-        <div class="settings-section-title">Canales adicionales</div>
-        <div class="settings-panel">
-          <div class="setting-group">
-            <label>Agregar canales extra de cualquier plataforma</label>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-              <select id="add-channel-platform"
-                style="padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;min-width:110px;cursor:pointer;">
-                <option value="tiktok">TikTok</option>
-                <option value="twitch">Twitch</option>
-                <option value="youtube">YouTube</option>
-              </select>
-              <div class="input-wrapper" style="flex:1;min-width:140px;">
-                <input type="text" id="add-channel-input" placeholder="usuario o canal"
-                  autocomplete="off" onkeydown="if(event.key==='Enter')addChannelFromSettings()" />
+        <div class="settings-section-title" style="display:flex;justify-content:space-between;align-items:center;">
+          Canales adicionales
+          <button class="btn btn-connect" id="btn-toggle-add-channel" onclick="toggleAddChannelForm()"
+            style="font-size:12px;padding:8px 14px;border-radius:9999px;">＋ Agregar</button>
+        </div>
+        <div id="settings-channels-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:20px;margin-bottom:4px;"></div>
+        <div id="add-channel-form" style="display:none;flex-direction:column;gap:10px;margin-top:6px;">
+          <div style="display:flex;gap:8px;">
+            <div class="platform-card" id="pick-tiktok" onclick="selectAddPlatform('tiktok')" style="cursor:pointer;flex:1;padding:10px 14px;">
+              <div class="platform-card-header">
+                <img style="width:16px;height:16px;" src="icons/tiktok.svg" alt="">
+                <span class="platform-card-name">TikTok</span>
               </div>
-              <button class="btn btn-connect" id="btn-add-channel" onclick="addChannelFromSettings()" style="font-size:12px;padding:9px 14px;border-radius:9999px;white-space:nowrap;">＋ Agregar</button>
+            </div>
+            <div class="platform-card" id="pick-twitch" onclick="selectAddPlatform('twitch')" style="cursor:pointer;flex:1;padding:10px 14px;">
+              <div class="platform-card-header">
+                <img style="width:16px;height:16px;" src="icons/sports_esports.svg" alt="">
+                <span class="platform-card-name">Twitch</span>
+              </div>
+            </div>
+            <div class="platform-card" id="pick-youtube" onclick="selectAddPlatform('youtube')" style="cursor:pointer;flex:1;padding:10px 14px;">
+              <div class="platform-card-header">
+                <img style="width:16px;height:16px;" src="icons/tv.svg" alt="">
+                <span class="platform-card-name">YouTube</span>
+              </div>
             </div>
           </div>
-          <div id="settings-channels-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:20px;"></div>
+          <div class="platform-input-row">
+            <div class="input-wrapper" style="flex:1;">
+              <input type="text" id="add-channel-input" placeholder="@usuario o link"
+                autocomplete="off" onkeydown="if(event.key==='Enter')addChannelFromSettings()" />
+            </div>
+            <button class="btn btn-connect" id="btn-add-channel" onclick="addChannelFromSettings()"
+              style="font-size:12px;padding:9px 14px;border-radius:9999px;">Conectar</button>
+            <button class="btn btn-disconnect" onclick="toggleAddChannelForm()"
+              style="font-size:12px;padding:9px 14px;border-radius:9999px;">Cancelar</button>
+          </div>
         </div>
       </div>
 
@@ -3373,10 +3391,31 @@
     });
   }
 
+  let selectedAddPlatform = 'tiktok';
+
+  function toggleAddChannelForm() {
+    const form = document.getElementById('add-channel-form');
+    const btn  = document.getElementById('btn-toggle-add-channel');
+    const open = form.style.display === 'none' || !form.style.display;
+    form.style.display = open ? 'flex' : 'none';
+    btn.textContent = open ? '✕ Cerrar' : '＋ Agregar';
+    if (open) selectAddPlatform(selectedAddPlatform);
+  }
+
+  function selectAddPlatform(platform) {
+    selectedAddPlatform = platform;
+    ['tiktok','twitch','youtube'].forEach(p => {
+      const el = document.getElementById(`pick-${p}`);
+      if (el) el.style.outline = p === platform ? '2px solid var(--accent)' : '';
+    });
+    const placeholders = { tiktok: '@usuario', twitch: 'nombre_del_canal', youtube: '@canal o link' };
+    const input = document.getElementById('add-channel-input');
+    if (input) { input.placeholder = placeholders[platform] || '@usuario'; input.focus(); }
+  }
+
   async function addChannelFromSettings() {
-    const platform = document.getElementById('add-channel-platform')?.value || 'tiktok';
-    const input    = document.getElementById('add-channel-input');
-    const channel  = (input?.value || '').trim();
+    const input   = document.getElementById('add-channel-input');
+    const channel = (input?.value || '').trim();
     if (!channel) { showToast('Escribe el nombre del canal'); return; }
     const btn = document.getElementById('btn-add-channel');
     if (btn) { btn.disabled = true; btn.textContent = 'Conectando...'; }
@@ -3384,15 +3423,20 @@
       const res = await fetch('/api/channels/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ platform, channel }),
+        body: JSON.stringify({ platform: selectedAddPlatform, channel }),
       });
       const d = await res.json();
-      if (!res.ok) showToast('Error: ' + d.error);
-      else if (input) input.value = '';
+      if (!res.ok) {
+        showToast('Error: ' + d.error);
+      } else {
+        if (input) input.value = '';
+        showToast((selectedAddPlatform.charAt(0).toUpperCase() + selectedAddPlatform.slice(1)) + ' conectado');
+        toggleAddChannelForm();
+      }
     } catch (e) {
       showToast('Error de red al conectar');
     } finally {
-      if (btn) { btn.disabled = false; btn.textContent = '＋ Agregar'; }
+      if (btn) { btn.disabled = false; btn.textContent = 'Conectar'; }
     }
   }
 
