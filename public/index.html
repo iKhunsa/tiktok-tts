@@ -336,7 +336,7 @@
 
     .toggle-chip input { display: none; }
     .toggle-chip.active { background: rgba(62, 207, 142, 0.1); border-color: rgba(62, 207, 142, 0.3); color: var(--accent); }
-    .chip-dot { display: none; }
+    /* chip-dot removido — usado por toggle chips antiguos */
 
     /* ── CHAT LOG ────────────────────────────────────────── */
     .chat-section {
@@ -473,16 +473,6 @@
       display: inline-block;
       margin: 0 1px;
       image-rendering: auto;
-    }
-
-    .lang-badge {
-      font-size: 9px;
-      font-weight: 700;
-      color: var(--accent);
-      opacity: 0.85;
-      margin-right: 4px;
-      letter-spacing: 0.5px;
-      vertical-align: middle;
     }
 
     .speaking-now {
@@ -663,28 +653,7 @@
 
     .cfg-btn:hover { border-color: var(--accent-border); color: var(--accent); }
 
-    .bg-upload-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .bg-upload-row input[type="file"] {
-      flex: 1;
-      min-width: 0;
-      font-size: 12px;
-      color: var(--text-secondary);
-      background: var(--bg-button);
-      border: 1px solid var(--border-strong);
-      border-radius: 8px;
-      padding: 6px 8px;
-      cursor: pointer;
-    }
-    .bg-preview {
-      width: 48px;
-      height: 36px;
-      border-radius: 6px;
-      object-fit: cover;
-      border: 1px solid var(--border-strong);
-      background: var(--bg-button);
-      display: none;
-    }
-    .bg-preview.visible { display: block; }
+    /* bg-upload-row y bg-preview removidos — feature no usada en UI actual */
     .cfg-btn.small { padding: 5px 10px; font-size: 11px; }
     .cfg-btn.danger { border-color: rgba(239, 68, 68, 0.4); color: #ef4444; }
     .cfg-btn.danger:hover { border-color: rgba(239, 68, 68, 0.7); color: #f87171; }
@@ -1031,57 +1000,8 @@
     }
     .obs-status-dot.connected { background: var(--accent); }
 
-    /* ── PLATFORM CARDS ─────────────────────────────────── */
-    .platform-card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px 16px;
-    }
-    .platform-card-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      margin-bottom: 10px;
-    }
-    .platform-card-name { flex: 1; }
-    .platform-badge {
-      font-size: 11px;
-      font-weight: 500;
-      padding: 3px 9px;
-      border-radius: 9999px;
-      background: var(--surface);
-      color: var(--text-muted);
-    }
-    .platform-badge.connected { background: rgba(62,207,142,0.15); color: var(--accent); }
-    .platform-input-row { display: flex; gap: 8px; align-items: center; }
-    .platform-input-row .input-wrapper { flex: 1; }
-    .channel-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 4px 10px 4px 12px;
-      background: rgba(62,207,142,0.08);
-      border: 1px solid rgba(62,207,142,0.22);
-      border-radius: 9999px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--accent);
-    }
-    .channel-tag button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--text-muted);
-      font-size: 14px;
-      line-height: 1;
-      padding: 0 0 0 2px;
-      transition: color .15s;
-    }
-    .channel-tag button:hover { color: #ff6b6b; }
+    /* ── PLATFORM CARDS (legacy, removidos de UI) ─────── */
+    /* .platform-card, .platform-input-row eliminados tras redesign */
 
     .chat-platform-badge {
       font-size: 9px;
@@ -1129,6 +1049,73 @@
     .badge-tiktok  { background: rgba(254,44,85,0.15);  color: #fe2c55; }
     .badge-twitch  { background: rgba(145,70,255,0.15); color: #9146ff; }
     .badge-youtube { background: rgba(255,0,0,0.15);    color: #ff4444; }
+
+    /* Supabase-style primary button */
+    .btn-supabase-primary {
+      background: #3ecf8e;
+      color: #0a0a0a;
+      border: none;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 14px;
+      cursor: pointer;
+      transition: background .15s, opacity .15s;
+    }
+    .btn-supabase-primary:hover { background: #2fbf7e; }
+    .btn-supabase-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Segmented platform selector */
+    .seg-control {
+      display: inline-flex;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--bg);
+    }
+    .seg-btn {
+      background: none;
+      border: none;
+      border-right: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 7px 14px;
+      cursor: pointer;
+      transition: background .12s, color .12s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+    .seg-btn:last-child { border-right: none; }
+    .seg-btn:hover { background: rgba(255,255,255,0.06); color: var(--text); }
+    .seg-btn.active { background: rgba(62,207,142,0.12); color: #3ecf8e; }
+
+    /* Channel chip (replaces old channel-tag in canales list) */
+    .channel-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 8px 4px 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .channel-chip button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1;
+      padding: 0 0 0 3px;
+      transition: color .15s;
+    }
+    .channel-chip button:hover { color: #ff6b6b; }
 
   </style>
 </head>
@@ -1191,59 +1178,34 @@
     <!-- ── VIEW: Chat ──────────────────────────────────── -->
     <div class="view active" id="view-chat">
 
-      <!-- CONNECT -->
-      <div class="connect-panel">
-        <div class="panel-title"><img class="icon-inline" src="icons/lens.svg" alt=""> TikTok Live</div>
-        <div class="input-row">
-          <div class="input-wrapper">
-            <span>@</span>
-            <input type="text" id="usernameInput" placeholder="usuario_tiktok" autocomplete="off"
-              onkeydown="if(event.key==='Enter')connect()" />
-          </div>
-          <button class="btn btn-connect" id="btnConnect" onclick="connect()">Conectar</button>
-          <button class="btn btn-disconnect" id="btnDisconnect" onclick="disconnect()" style="display:none">Desconectar</button>
-        </div>
-        <div class="status-bar">
-          <div class="status-dot" id="statusDot"></div>
-          <span class="status-text" id="statusText">Esperando conexión...</span>
-        </div>
-      </div>
-
       <!-- TOGGLES -->
       <div class="toggles-row">
         <label class="toggle-chip" id="chip-chat">
           <input type="checkbox" onchange="toggleOption('readChat', this)" />
-          <span class="chip-dot"></span>
           <img class="icon-inline" src="icons/chat.svg" alt=""> Leer comentarios
         </label>
         <label class="toggle-chip" id="chip-gifts">
           <input type="checkbox" onchange="toggleOption('readGifts', this)" />
-          <span class="chip-dot"></span>
           <img class="icon-inline" src="icons/card_giftcard.svg" alt=""> Anunciar regalos
         </label>
         <label class="toggle-chip" id="chip-joins">
           <input type="checkbox" onchange="toggleOption('readJoins', this)" />
-          <span class="chip-dot"></span>
           <img class="icon-inline" src="icons/emoji_people.svg" alt=""> Anunciar entradas
         </label>
         <label class="toggle-chip" id="chip-follows">
           <input type="checkbox" onchange="toggleOption('readFollows', this)" />
-          <span class="chip-dot"></span>
           <img class="icon-inline" src="icons/person_add.svg" alt=""> Anunciar follows
         </label>
         <label class="toggle-chip" id="chip-likes">
           <input type="checkbox" onchange="toggleOption('readLikes', this)" />
-          <span class="chip-dot"></span>
           <img class="icon-inline" src="icons/thumb_up.svg" alt=""> Anunciar likes
         </label>
         <label class="toggle-chip" id="chip-shares">
           <input type="checkbox" onchange="toggleOption('readShares', this)" />
-          <span class="chip-dot"></span>
           <img class="icon-inline" src="icons/public.svg" alt=""> Anunciar compartidos
         </label>
         <label class="toggle-chip" id="chip-username">
           <input type="checkbox" onchange="toggleOption('sayUsername', this)" />
-          <span class="chip-dot"></span>
           <img class="icon-inline" src="icons/label.svg" alt=""> Decir nombre
         </label>
       </div>
@@ -1452,30 +1414,6 @@
         </div>
       </div>
 
-      <!-- Chat Unificado -->
-      <div class="cfg-card">
-        <div class="cfg-header">
-          <div class="cfg-icon"><img class="icon-inline" src="icons/chat.svg" alt=""></div>
-          <div class="cfg-meta">
-            <div class="cfg-title">Chat Unificado</div>
-            <div class="cfg-subtitle">Todos los mensajes de TikTok, Twitch y YouTube en un solo overlay</div>
-          </div>
-        </div>
-        <div class="cfg-url-row">
-          <span class="cfg-url-text" id="cfg-url-chat">http://localhost:3000/overlay-chat.html</span>
-          <button class="cfg-btn" onclick="copyCfgUrl('chat')">Copiar</button>
-          <a class="cfg-btn" id="cfg-open-chat" href="http://localhost:3000/overlay-chat.html" target="_blank">Abrir</a>
-        </div>
-        <div style="font-size:11px;color:var(--text-muted);margin-top:8px;line-height:1.5;">
-          Parámetros opcionales:
-          <code style="background:var(--surface);padding:1px 5px;border-radius:4px;">?maxmsgs=30</code>
-          <code style="background:var(--surface);padding:1px 5px;border-radius:4px;">?size=15</code>
-          <code style="background:var(--surface);padding:1px 5px;border-radius:4px;">?platforms=tiktok,twitch</code>
-          <code style="background:var(--surface);padding:1px 5px;border-radius:4px;">?bg=0.85</code>
-          <code style="background:var(--surface);padding:1px 5px;border-radius:4px;">?usernames=0</code>
-        </div>
-      </div>
-
       <!-- Créditos Star Wars -->
       <div class="cfg-card">
         <div class="cfg-header">
@@ -1629,114 +1567,55 @@
         </div>
       </div>
 
-      <!-- TRADUCCIÓN DE MENSAJES -->
+      <!-- CONEXIÓN PRINCIPAL -->
       <div class="settings-section">
-        <div class="settings-section-title">Traducir mensajes</div>
-        <div class="settings-panel">
-          <div class="setting-group">
-            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
-              <input type="checkbox" id="translateToggle" onchange="onTranslateToggle(this.checked)"
-                style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer;" />
-              <span>Traducir automáticamente al idioma de destino</span>
-            </label>
-            <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">
-              Detecta el idioma de cada mensaje y lo traduce. El TTS anunciará el idioma original.
-            </div>
+        <div class="settings-section-title">Conexión principal</div>
+        <div class="connect-panel" style="margin-bottom:0;">
+          <div class="panel-title">
+            <img class="icon-inline" src="icons/lens.svg" alt=""> TikTok Live
           </div>
-          <div class="setting-group" id="translateTargetGroup">
-            <label>Idioma de destino</label>
-            <select id="translateTarget" onchange="onTranslateTargetChange(this.value)"
-              style="padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;width:100%;">
-              <option value="es">Español</option>
-              <option value="en">Inglés</option>
-              <option value="pt">Portugués</option>
-              <option value="fr">Francés</option>
-              <option value="de">Alemán</option>
-              <option value="it">Italiano</option>
-              <option value="ja">Japonés</option>
-              <option value="zh-CN">Chino</option>
-              <option value="ru">Ruso</option>
-              <option value="ko">Coreano</option>
-            </select>
+          <div class="input-row">
+            <div class="input-wrapper">
+              <span>@</span>
+              <input type="text" id="usernameInput" placeholder="usuario_tiktok" autocomplete="off" />
+            </div>
+            <button class="btn btn-connect" id="btnConnect" onclick="connect()">Conectar</button>
+            <button class="btn btn-disconnect" id="btnDisconnect" onclick="disconnect()" style="display:none">Desconectar</button>
+          </div>
+          <div class="status-bar">
+            <div class="status-dot" id="statusDot"></div>
+            <span class="status-text" id="statusText">Esperando conexión...</span>
           </div>
         </div>
       </div>
 
-      <div class="settings-section">
-        <div class="settings-section-title">Plataformas de chat</div>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-
-          <div class="platform-card" id="platform-card-twitch">
-            <div class="platform-card-header">
-              <img style="width:18px;height:18px;" src="icons/sports_esports.svg" alt="">
-              <span class="platform-card-name">Twitch</span>
-              <span class="platform-badge" id="badge-twitch">Desconectado</span>
-            </div>
-            <div class="platform-input-row">
-              <div class="input-wrapper" style="flex:1;">
-                <input type="text" id="twitch-channel" placeholder="nombre_del_canal" autocomplete="off"
-                  onkeydown="if(event.key==='Enter')platformConnect('twitch')" />
-              </div>
-              <button class="btn btn-connect" id="btn-twitch-connect" onclick="platformConnect('twitch')" style="font-size:12px;padding:9px 14px;border-radius:9999px;">Conectar</button>
-              <button class="btn btn-disconnect" id="btn-twitch-disconnect" onclick="platformDisconnect('twitch')" style="display:none;font-size:12px;padding:9px 14px;border-radius:9999px;">Desconectar</button>
-            </div>
-          </div>
-
-          <div class="platform-card" id="platform-card-youtube">
-            <div class="platform-card-header">
-              <img style="width:18px;height:18px;" src="icons/tv.svg" alt="">
-              <span class="platform-card-name">YouTube</span>
-              <span class="platform-badge" id="badge-youtube">Desconectado</span>
-            </div>
-            <div class="platform-input-row">
-              <div class="input-wrapper" style="flex:1;">
-                <input type="text" id="youtube-channel" placeholder="@canal o ID de video" autocomplete="off"
-                  onkeydown="if(event.key==='Enter')platformConnect('youtube')" />
-              </div>
-              <button class="btn btn-connect" id="btn-youtube-connect" onclick="platformConnect('youtube')" style="font-size:12px;padding:9px 14px;border-radius:9999px;">Conectar</button>
-              <button class="btn btn-disconnect" id="btn-youtube-disconnect" onclick="platformDisconnect('youtube')" style="display:none;font-size:12px;padding:9px 14px;border-radius:9999px;">Desconectar</button>
-            </div>
-          </div>
-
-
-        </div>
-      </div>
-
+      <!-- CANALES ADICIONALES -->
       <div class="settings-section">
         <div class="settings-section-title" style="display:flex;justify-content:space-between;align-items:center;">
           Canales adicionales
-          <button class="btn btn-connect" id="btn-toggle-add-channel" onclick="toggleAddChannelForm()"
-            style="font-size:12px;padding:8px 14px;border-radius:9999px;">＋ Agregar</button>
+          <button class="btn-supabase-primary" id="btn-toggle-add-channel" onclick="toggleAddChannelForm()">
+            ＋ Agregar canal
+          </button>
         </div>
         <div id="settings-channels-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:20px;margin-bottom:4px;"></div>
-        <div id="add-channel-form" style="display:none;flex-direction:column;gap:10px;margin-top:6px;">
-          <div style="display:flex;gap:8px;">
-            <div class="platform-card" id="pick-tiktok" onclick="selectAddPlatform('tiktok')" style="cursor:pointer;flex:1;padding:10px 14px;">
-              <div class="platform-card-header">
-                <img style="width:16px;height:16px;" src="icons/tiktok.svg" alt="">
-                <span class="platform-card-name">TikTok</span>
-              </div>
-            </div>
-            <div class="platform-card" id="pick-twitch" onclick="selectAddPlatform('twitch')" style="cursor:pointer;flex:1;padding:10px 14px;">
-              <div class="platform-card-header">
-                <img style="width:16px;height:16px;" src="icons/sports_esports.svg" alt="">
-                <span class="platform-card-name">Twitch</span>
-              </div>
-            </div>
-            <div class="platform-card" id="pick-youtube" onclick="selectAddPlatform('youtube')" style="cursor:pointer;flex:1;padding:10px 14px;">
-              <div class="platform-card-header">
-                <img style="width:16px;height:16px;" src="icons/tv.svg" alt="">
-                <span class="platform-card-name">YouTube</span>
-              </div>
-            </div>
+        <div id="add-channel-form" style="display:none;flex-direction:column;gap:10px;margin-top:10px;">
+          <div class="seg-control" id="platform-seg">
+            <button class="seg-btn active" id="seg-tiktok" onclick="selectAddPlatform('tiktok')">
+              <img style="width:13px;height:13px;vertical-align:middle;" src="icons/tiktok.svg" alt=""> TikTok
+            </button>
+            <button class="seg-btn" id="seg-twitch" onclick="selectAddPlatform('twitch')">
+              <img style="width:13px;height:13px;vertical-align:middle;" src="icons/sports_esports.svg" alt=""> Twitch
+            </button>
+            <button class="seg-btn" id="seg-youtube" onclick="selectAddPlatform('youtube')">
+              <img style="width:13px;height:13px;vertical-align:middle;" src="icons/tv.svg" alt=""> YouTube
+            </button>
           </div>
-          <div class="platform-input-row">
+          <div style="display:flex;gap:8px;align-items:center;">
             <div class="input-wrapper" style="flex:1;">
-              <input type="text" id="add-channel-input" placeholder="@usuario o link"
+              <input type="text" id="add-channel-input" placeholder="@usuario"
                 autocomplete="off" onkeydown="if(event.key==='Enter')addChannelFromSettings()" />
             </div>
-            <button class="btn btn-connect" id="btn-add-channel" onclick="addChannelFromSettings()"
-              style="font-size:12px;padding:9px 14px;border-radius:9999px;">Conectar</button>
+            <button class="btn-supabase-primary" id="btn-add-channel" onclick="addChannelFromSettings()">Conectar</button>
             <button class="btn btn-disconnect" onclick="toggleAddChannelForm()"
               style="font-size:12px;padding:9px 14px;border-radius:9999px;">Cancelar</button>
           </div>
@@ -1882,8 +1761,6 @@
     sayUsername: true,
     lastUsername: '',
     pauseShortcut: null,
-    translateEnabled: false,
-    translateTarget: 'es',
     overlays: {
       seguidores: { goal: '', color: '#3ecf8e', bg: 0.80, bgimg: '' },
       likes:      { rows: 10, color: '#3ecf8e', bg: 0.80, bgimg: '' },
@@ -1913,6 +1790,7 @@
       const raw = localStorage.getItem(SETTINGS_KEY);
       appSettings = raw ? deepMerge(DEFAULT_SETTINGS, JSON.parse(raw)) : JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
     } catch (e) {
+      console.warn('[settings] localStorage corrupto, usando valores por defecto', e);
       appSettings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
     }
   }
@@ -1955,7 +1833,7 @@
     }
 
     // Overlay config fields
-    const { seguidores, likes, alertas, creditos, social } = appSettings.overlays;
+    const { seguidores, likes, alertas, creditos, social } = appSettings.overlays || {};
 
     setFieldVal('cfg-seg-goal',   seguidores.goal);
     setFieldVal('cfg-seg-color',  seguidores.color);
@@ -2013,16 +1891,11 @@
     updateOverlayUrl('creditos');
     updateOverlayUrl('social');
 
-    // Translation settings
-    const transToggle = document.getElementById('translateToggle');
-    const transTarget = document.getElementById('translateTarget');
-    if (transToggle) transToggle.checked = !!appSettings.translateEnabled;
-    if (transTarget) transTarget.value = appSettings.translateTarget || 'es';
   }
 
   function setFieldVal(id, val) {
     const el = document.getElementById(id);
-    if (el && val !== '' && val !== undefined) el.value = val;
+    if (el && val != null) el.value = val;
   }
 
   // ─── BACKGROUND IMAGE UPLOAD ──────────────────────────────────
@@ -2078,93 +1951,7 @@
   }
 
   // ─── TEMPLATE DOWNLOAD ────────────────────────────────────────
-  function downloadTemplate(type) {
-    const specs = {
-      seguidores: { w: 200, h: 180, name: 'Seguidores', safeAreas: [
-        { x: 10, y: 10, w: 180, h: 160, label: 'SAFE AREA GENERAL' }
-      ]},
-      likes:      { w: 260, h: 380, name: 'Top Likers', safeAreas: [
-        { x: 10, y: 10, w: 240, h: 30, label: 'HEADER' },
-        { x: 10, y: 45, w: 240, h: 325, label: 'LISTA ROWS' }
-      ]},
-      alertas:    { w: 440, h: 130, name: 'Alertas', safeAreas: [
-        { x: 10, y: 10, w: 80, h: 110, label: 'IMAGEN REGALO' },
-        { x: 100, y: 10, w: 260, h: 110, label: 'TEXTO' },
-        { x: 370, y: 10, w: 60, h: 40, label: 'BADGE' }
-      ]}
-    };
-    const s = specs[type];
-    if (!s) return;
-
-    const canvas = document.createElement('canvas');
-    canvas.width = s.w * 2; // @2x for crispness
-    canvas.height = s.h * 2;
-    const ctx = canvas.getContext('2d');
-    const w = canvas.width;
-    const h = canvas.height;
-    const scale = 2;
-
-    // Checkerboard background (transparency indicator)
-    const cs = 10 * scale;
-    for (let y = 0; y < h; y += cs) {
-      for (let x = 0; x < w; x += cs) {
-        ctx.fillStyle = ((x/cs + y/cs) % 2 === 0) ? '#ffffff' : '#cccccc';
-        ctx.fillRect(x, y, cs, cs);
-      }
-    }
-
-    // Grid
-    ctx.strokeStyle = 'rgba(0,0,0,0.08)';
-    ctx.lineWidth = 1;
-    for (let x = 0; x <= w; x += 10 * scale) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke(); }
-    for (let y = 0; y <= h; y += 10 * scale) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
-
-    // Rulers
-    ctx.fillStyle = '#333';
-    ctx.font = `${10 * scale}px 'Source Code Pro', monospace`;
-    ctx.textAlign = 'center';
-    for (let x = 0; x <= w; x += 20 * scale) {
-      ctx.fillRect(x, 0, 1, 6 * scale);
-      if (x % (50 * scale) === 0) ctx.fillText(String(x/scale), x, 12 * scale);
-    }
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'middle';
-    for (let y = 0; y <= h; y += 20 * scale) {
-      ctx.fillRect(0, y, 6 * scale, 1);
-      if (y % (50 * scale) === 0) ctx.fillText(String(y/scale), 12 * scale, y);
-    }
-
-    // Safe areas
-    ctx.lineWidth = 2 * scale;
-    ctx.setLineDash([6 * scale, 4 * scale]);
-    for (const area of s.safeAreas) {
-      ctx.strokeStyle = 'rgba(255, 0, 0, 0.6)';
-      ctx.strokeRect(area.x * scale, area.y * scale, area.w * scale, area.h * scale);
-      ctx.fillStyle = 'rgba(255, 0, 0, 0.7)';
-      ctx.font = `bold ${9 * scale}px 'Source Code Pro', monospace`;
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'top';
-      ctx.fillText(area.label, (area.x + 2) * scale, (area.y + 2) * scale);
-    }
-    ctx.setLineDash([]);
-
-    // Title + dimensions
-    ctx.fillStyle = '#111';
-    ctx.fillRect(8 * scale, (s.h - 22) * scale, 220 * scale, 18 * scale);
-    ctx.fillStyle = '#fff';
-    ctx.font = `bold ${10 * scale}px 'Source Code Pro', monospace`;
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(`${s.name} — ${s.w}×${s.h}px`, 12 * scale, (s.h - 13) * scale);
-
-    canvas.toBlob(blob => {
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `plantilla_${type}_${s.w}x${s.h}.png`;
-      a.click();
-      URL.revokeObjectURL(a.href);
-    }, 'image/png');
-  }
+  // downloadTemplate() eliminada — feature "Próximamente" nunca habilitada
 
   // ─── VISTAS ───────────────────────────────────────────────────
   function switchView(name) {
@@ -2178,7 +1965,7 @@
 
   // ─── OVERLAY CONFIGURADOR ─────────────────────────────────────
   function buildOverlayUrl(type) {
-    const base = `http://localhost:3000/overlay-${type}.html`;
+    const base = `${location.origin}/overlay-${type}.html`;
     const cfg  = appSettings.overlays[type];
     const p    = new URLSearchParams();
 
@@ -2324,58 +2111,6 @@
     }
   }
 
-  // ─── TRANSLATION ──────────────────────────────────────────────
-  const LANG_NAMES_ES = {
-    en:'inglés', ja:'japonés', pt:'portugués', fr:'francés', de:'alemán',
-    it:'italiano', zh:'chino', ru:'ruso', ko:'coreano', ar:'árabe',
-    tr:'turco', hi:'hindi', nl:'neerlandés', pl:'polaco', sv:'sueco',
-    da:'danés', fi:'finlandés', cs:'checo', ro:'rumano', uk:'ucraniano'
-  };
-
-  function onTranslateToggle(enabled) {
-    appSettings.translateEnabled = enabled;
-    saveSettings();
-    showToast(enabled ? 'Traducción activada' : 'Traducción desactivada');
-  }
-
-  function onTranslateTargetChange(lang) {
-    appSettings.translateTarget = lang;
-    saveSettings();
-  }
-
-  async function maybeTranslate(text) {
-    if (!appSettings.translateEnabled || !text) return null;
-    const target = appSettings.translateTarget || 'es';
-    // Step 1: detect language first — skip translate call if already target
-    try {
-      const dr = await fetch('/api/detect-lang', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text })
-      });
-      if (dr.ok) {
-        const { lang } = await dr.json();
-        if (lang && lang !== 'und' && lang === target) return null;
-      }
-    } catch (e) { /* detection fail — still try translate */ }
-    // Step 2: translate
-    try {
-      const res = await fetch('/api/translate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, targetLang: target })
-      });
-      if (!res.ok) return null;
-      const { translated, detectedLang } = await res.json();
-      if (!translated || translated === text) return null;
-      return { translated, detectedLang: (detectedLang || 'und').toLowerCase() };
-    } catch (e) {
-      console.error('[translate]', e);
-      showToast('Error al traducir — revisa tu conexión');
-      return null;
-    }
-  }
-
   // ─── PAUSE TTS ────────────────────────────────────────────────
   let ttsPaused = false;
   let capturingShortcut = false;
@@ -2460,6 +2195,19 @@
   const likeCooldownMap = new Map();
   const CHAT_TTS_MAX_LEN = 200;
   const MAX_QUEUE_SIZE = 15;
+  const isEdge = false; // TODO: detectar Microsoft Edge si se usa msedge-tts en renderer
+
+  // Limpieza periódica de memoria
+  setInterval(() => {
+    const now = Date.now();
+    for (const [user, ts] of likeCooldownMap) {
+      if (now - ts > LIKE_COOLDOWN_MS) likeCooldownMap.delete(user);
+    }
+    const colorKeys = Object.keys(colorMap);
+    if (colorKeys.length > 500) {
+      colorKeys.slice(0, colorKeys.length - 500).forEach(k => delete colorMap[k]);
+    }
+  }, 5 * 60 * 1000);
 
   // ─── LOG STORAGE ──────────────────────────────────────────────
   class LogStorage {
@@ -2617,10 +2365,13 @@
       finish(onError);
     };
 
+    let playTimer = null;
     Promise.race([
       audio.play(),
-      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 5000))
-    ]).catch(err => {
+      new Promise((_, rej) => { playTimer = setTimeout(() => rej(new Error('timeout')), 5000); })
+    ]).finally(() => {
+      if (playTimer) { clearTimeout(playTimer); playTimer = null; }
+    }).catch(err => {
       if (err.message === 'timeout') logStorage.addLog('error', 'client', 'Timeout en audio.play()');
       finish(onError);
     });
@@ -2708,12 +2459,16 @@
     if (!isSpeaking) processQueue();
   }
 
+  let ttsErrorCount = 0;
+  const TTS_MAX_ERRORS = 5;
+
   async function processQueue() {
     if (ttsPaused) return; // TTS pausado — esperar reanudación
     if (speechQueue.length === 0) {
       isSpeaking = false;
       hideSpeakingIndicator();
-      document.getElementById('appGlow').classList.remove('active');
+      const glow = document.getElementById('appGlow');
+      if (glow) glow.classList.remove('active');
       if (currentMsgId) {
         const el = document.getElementById(currentMsgId);
         if (el) el.classList.remove('speaking');
@@ -2725,6 +2480,7 @@
     isSpeaking = true;
     const { text, msgId } = speechQueue.shift();
     updateQueueBadge();
+    ttsErrorCount = 0; // reset al procesar item nuevo
 
     if (currentMsgId) {
       const prev = document.getElementById(currentMsgId);
@@ -2735,17 +2491,20 @@
     if (msgEl) { msgEl.classList.add('speaking'); msgEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
 
     showSpeakingIndicator(text);
-    document.getElementById('appGlow').classList.add('active');
+    const glow = document.getElementById('appGlow');
+    if (glow) glow.classList.add('active');
 
     const voiceId = voiceSelect.value || 'es';
     const ttsEndpoint = '/api/tts';
     const voice   = voiceId;
 
+    ttsAbortController = new AbortController();
     try {
       const res = await fetch(ttsEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, voice })
+        body: JSON.stringify({ text, voice }),
+        signal: ttsAbortController.signal,
       });
 
       if (!res.ok) { logStorage.addLog('error', 'network', `Error TTS HTTP ${res.status}`); throw new Error('TTS error'); }
@@ -2754,46 +2513,82 @@
       logStorage.addLog('info', 'network', 'Audio recibido', { size: blob.size });
       playAudioBlob(blob, { onEnd: () => processQueue(), onError: () => processQueue() });
     } catch (err) {
+      if (err.name === 'AbortError') {
+        isSpeaking = false;
+        hideSpeakingIndicator();
+        const glow2 = document.getElementById('appGlow');
+        if (glow2) glow2.classList.remove('active');
+        return;
+      }
       logStorage.addLog('error', 'network', `Error TTS: ${err.message}`);
-      processQueue();
+      ttsErrorCount++;
+      if (ttsErrorCount >= TTS_MAX_ERRORS) {
+        showToast('TTS pausado tras múltiples errores');
+        isSpeaking = false;
+        hideSpeakingIndicator();
+        const glow2 = document.getElementById('appGlow');
+        if (glow2) glow2.classList.remove('active');
+        return;
+      }
+      setTimeout(() => processQueue(), 300);
+    } finally {
+      ttsAbortController = null;
     }
   }
 
   function showSpeakingIndicator(text) {
     const el = document.getElementById('speakingNow');
-    el.classList.add('visible');
-    document.getElementById('speakingText').textContent = text.length > 60 ? text.substring(0, 60) + '…' : text;
+    if (el) el.classList.add('visible');
+    const txt = document.getElementById('speakingText');
+    if (txt) txt.textContent = text.length > 60 ? text.substring(0, 60) + '…' : text;
   }
 
   function hideSpeakingIndicator() {
-    document.getElementById('speakingNow').classList.remove('visible');
+    const el = document.getElementById('speakingNow');
+    if (el) el.classList.remove('visible');
   }
 
   function updateQueueBadge() {
-    document.getElementById('queueBadge').textContent =
-      `Cola: ${speechQueue.length} mensaje${speechQueue.length !== 1 ? 's' : ''}`;
+    const el = document.getElementById('queueBadge');
+    if (el) el.textContent = `Cola: ${speechQueue.length} mensaje${speechQueue.length !== 1 ? 's' : ''}`;
   }
 
   // ─── WEBSOCKET ────────────────────────────────────────────────
+  let wsReconnectAttempts = 0;
+  const MAX_WS_RECONNECT = 20;
+
   function connectWS() {
     if (ws !== null && ws.readyState === WebSocket.OPEN) return;
     const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
     ws = new WebSocket(`${proto}//${location.host}`);
     ws.onmessage = (e) => { const d = JSON.parse(e.data); handleMessage(d); };
-    ws.onclose   = () => { ws = null; setTimeout(connectWS, 2000); };
+    ws.onopen    = () => { wsReconnectAttempts = 0; };
+    ws.onclose   = () => {
+      ws = null;
+      wsReconnectAttempts++;
+      if (wsReconnectAttempts >= MAX_WS_RECONNECT) {
+        setStatus('error', 'Conexión perdida. Recarga la app.');
+        return;
+      }
+      const delay = Math.min(2000 * Math.pow(2, wsReconnectAttempts), 30000);
+      setTimeout(connectWS, delay);
+    };
     ws.onerror   = () => ws.close();
   }
 
   function handleMessage(data) {
     switch (data.type) {
       case 'connected':
-        setStatus('online', '<img class="icon-inline" src="icons/check_circle.svg" alt=""> Conectado a @' + data.username);
+        setStatus('online', 'Conectado a @' + data.username);
+        { const btnC = document.getElementById('btnConnect'); const btnD = document.getElementById('btnDisconnect');
+          if (btnC) btnC.style.display = 'none'; if (btnD) btnD.style.display = 'block'; }
         logStorage.addLog('info', 'server', `Conectado a @${data.username}`);
         break;
 
       case 'disconnected':
         setStatus('', 'Desconectado');
-        renderTiktokChannelList([]);
+        { const btnC = document.getElementById('btnConnect'); const btnD = document.getElementById('btnDisconnect');
+          if (btnC) btnC.style.display = 'block'; if (btnD) btnD.style.display = 'none'; }
         logStorage.addLog('info', 'server', 'Desconectado');
         break;
 
@@ -2863,15 +2658,11 @@
           const shareText = `${data.user} está compartiendo el live`;
           addSystemMsg('<img class="icon-inline" src="icons/public.svg" alt=""> ' + shareText, 'join', shareId);
           speak(shareText, shareId);
-        } else {
-          const shareId2 = `msg-${++msgCount}`;
-          document.getElementById('msgCount').textContent = msgCount;
-          addSystemMsg('<img class="icon-inline" src="icons/public.svg" alt=""> ' + data.user + ' compartió el live', 'join', shareId2);
         }
         break;
 
       case 'reconnecting':
-        setStatus('error', '<img class="icon-inline" src="icons/refresh.svg" alt=""> Reconectando... (intento ' + data.attempt + ')');
+        setStatus('error', 'Reconectando... (intento ' + data.attempt + ')');
         logStorage.addLog('warn', 'server', `Reconexión intento ${data.attempt}`);
         break;
 
@@ -2880,7 +2671,7 @@
         break;
 
       case 'error':
-        setStatus('error', '<img class="icon-inline" src="icons/error.svg" alt=""> ' + data.message);
+        setStatus('error', data.message);
         logStorage.addLog('error', 'server', data.message);
         break;
 
@@ -2889,17 +2680,12 @@
         break;
 
       case 'platform-connected':
-        showToast((data.platform.charAt(0).toUpperCase() + data.platform.slice(1)) + (data.channel ? ` — @${data.channel}` : '') + ' conectado');
+        renderSettingsChannels();
+        showToast(data.platform.charAt(0).toUpperCase() + data.platform.slice(1) + ' conectado');
         break;
 
       case 'platform-disconnected':
-        break;
-
-      case 'channels-updated':
-        handleChannelsUpdated(data);
-        break;
-
-      case 'channel-disconnected':
+        renderSettingsChannels();
         break;
 
       case 'obs-connected':
@@ -2926,28 +2712,12 @@
     }
   }
 
-  // ─── CHAT HANDLER (async — handles translation) ───────────────
-  async function handleChatData(data, chatId) {
-    const translated = await maybeTranslate(data.ttsComment || data.comment);
-    if (translated) {
-      data = Object.assign({}, data, {
-        comment: translated.translated,
-        originalLang: translated.detectedLang,
-      });
-    }
+  // ─── CHAT HANDLER ─────────────────────────────────────────────
+  function handleChatData(data, chatId) {
     addChatMsg(data, chatId);
     if (options.readChat) {
       const ttsBase = data.comment;
-      let raw;
-      if (translated) {
-        const langName = LANG_NAMES_ES[translated.detectedLang] || translated.detectedLang;
-        const prefix = options.sayUsername
-          ? `${data.user} dice en ${langName}: `
-          : `En ${langName}: `;
-        raw = prefix + ttsBase;
-      } else {
-        raw = options.sayUsername ? `${data.user}: ${ttsBase}` : ttsBase;
-      }
+      const raw = options.sayUsername ? `${data.user}: ${ttsBase}` : ttsBase;
       const text = raw.length > CHAT_TTS_MAX_LEN ? raw.substring(0, CHAT_TTS_MAX_LEN) : raw;
       speak(text, chatId, data.timestamp);
     }
@@ -2997,7 +2767,7 @@
       <div class="msg-avatar" style="background:${color}22;color:${color}">${initials}</div>
       <div class="msg-body">
         <div class="msg-user" style="color:${color}">@${data.user}${platformBadge}</div>
-        <div class="msg-text">${data.originalLang ? `<span class="lang-badge">[${LANG_NAMES_ES[data.originalLang] || data.originalLang}]</span>` : ''}${renderTextWithEmotes(data.comment, data.emotes)}</div>
+        <div class="msg-text">${renderTextWithEmotes(data.comment, data.emotes)}</div>
       </div>
       <div class="msg-time">${time}</div>
     `;
@@ -3015,14 +2785,27 @@
     div.className = `chat-msg${type === 'gift' ? ' gift-msg' : ''}`;
     div.id = msgId;
     div.style.opacity = '0.7';
-    div.innerHTML = `<div class="msg-body"><div class="msg-text" style="font-size:13px">${text}</div></div>`;
+    const body = document.createElement('div');
+    body.className = 'msg-body';
+    const txt = document.createElement('div');
+    txt.className = 'msg-text';
+    txt.style.fontSize = '13px';
+    txt.textContent = text;
+    body.appendChild(txt);
+    div.appendChild(body);
 
     const log = document.getElementById('chatLog');
     log.appendChild(div);
     log.scrollTop = log.scrollHeight;
   }
 
+  let ttsAbortController = null;
+
   function clearChat() {
+    if (ttsAbortController) {
+      ttsAbortController.abort();
+      ttsAbortController = null;
+    }
     document.getElementById('chatLog').innerHTML = `
       <div class="empty-state" id="emptyState">
         <div class="empty-icon"><img class="icon-inline" src="icons/mic.svg" alt=""></div>
@@ -3047,19 +2830,19 @@
   function setStatus(type, text) {
     const dot   = document.getElementById('statusDot');
     const label = document.getElementById('statusText');
+    if (!dot || !label) return;
     dot.className   = 'status-dot'  + (type ? ` ${type}` : '');
     label.className = 'status-text' + (type ? ` ${type}` : '');
-    label.innerHTML = text;
+    label.textContent = text;
   }
 
   // ─── CONNECT ──────────────────────────────────────────────────
   async function connect() {
     const username = document.getElementById('usernameInput').value.trim();
-    if (!username) { setStatus('error', '<img class="icon-inline" src="icons/error.svg" alt=""> Escribe tu nombre de usuario'); return; }
+    if (!username) { setStatus('error', 'Escribe tu nombre de usuario'); return; }
 
     const btn = document.getElementById('btnConnect');
-    btn.disabled = true;
-    btn.textContent = 'Conectando...';
+    if (btn) { btn.disabled = true; btn.textContent = 'Conectando...'; }
     setStatus('', `Conectando a @${username.replace('@', '')}...`);
     logStorage.addLog('info', 'client', `Conectando a @${username.replace('@', '')}`);
 
@@ -3075,16 +2858,14 @@
       });
       const data = await res.json();
       if (!res.ok) {
-        setStatus('error', '<img class="icon-inline" src="icons/error.svg" alt=""> ' + data.error);
+        setStatus('error', data.error);
         logStorage.addLog('error', 'network', `Conexión fallida: ${data.error}`);
-        btn.disabled = false;
-        btn.textContent = 'Conectar';
+        if (btn) { btn.disabled = false; btn.textContent = 'Conectar'; }
       }
     } catch (err) {
-      setStatus('error', '<img class="icon-inline" src="icons/error.svg" alt=""> Error de red');
+      setStatus('error', 'Error de red');
       logStorage.addLog('error', 'network', `Error de red: ${err.message}`);
-      btn.disabled = false;
-      btn.textContent = 'Conectar';
+      if (btn) { btn.disabled = false; btn.textContent = 'Conectar'; }
     }
   }
 
@@ -3137,7 +2918,7 @@
       animation:slideUp 0.3s ease-out; font-weight:500; letter-spacing:0.3px;
       box-shadow:0 8px 24px rgba(0,0,0,0.3);
     `;
-    toast.innerHTML = message;
+    toast.textContent = message;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 2200);
   }
@@ -3335,92 +3116,111 @@
     if (btn)    { btn.style.display = 'inline-block'; }
     if (btnDis) { btnDis.style.display = 'none'; }
   }
+  const electronCleanups = [];
   if (window.electronAPI) {
-    window.electronAPI.onMarkClip(() => markClip());
+    if (window.electronAPI.onMarkClip)
+      electronCleanups.push(window.electronAPI.onMarkClip(() => markClip()));
     if (window.electronAPI.onPauseTts)
-      window.electronAPI.onPauseTts(() => togglePauseTts());
-  }
-
-  // ─── MULTI-CHANNEL PLATFORMS ─────────────────────────────────
-  function renderChannelList(platform, channels) {
-    const badge   = document.getElementById(`badge-${platform}`);
-    const btnConn = document.getElementById(`btn-${platform}-connect`);
-    const btnDisc = document.getElementById(`btn-${platform}-disconnect`);
-    if (channels.length === 0) {
-      if (badge)   { badge.textContent = 'Desconectado'; badge.className = 'platform-badge'; }
-      if (btnConn) btnConn.style.display = 'inline-block';
-      if (btnDisc) btnDisc.style.display = 'none';
-    } else {
-      if (badge)   { badge.textContent = channels.length === 1 ? 'Conectado' : `${channels.length} canales`; badge.className = 'platform-badge connected'; }
-      if (btnConn) btnConn.style.display = 'none';
-      if (btnDisc) btnDisc.style.display = 'inline-block';
-    }
-  }
-
-  function renderTiktokChannelList(channels) {
-    const btnDisc = document.getElementById('btnDisconnect');
-    const btnConn = document.getElementById('btnConnect');
-    if (channels.length === 0) {
-      if (btnDisc) btnDisc.style.display = 'none';
-      if (btnConn) btnConn.style.display = 'inline-block';
-    } else {
-      if (btnDisc) btnDisc.style.display = 'inline-block';
-      if (btnConn) btnConn.style.display = 'none';
-    }
-  }
-
-  function renderSettingsChannels(data) {
-    const el = document.getElementById('settings-channels-list');
-    if (!el) return;
-    el.innerHTML = '';
-    const colors = { tiktok: '#fe2c55', twitch: '#9146ff', youtube: '#ff0000' };
-    const all = [
-      ...(data.tiktok  || []).map(ch => ({ platform: 'tiktok',  ch })),
-      ...(data.twitch  || []).map(ch => ({ platform: 'twitch',  ch })),
-      ...(data.youtube || []).map(ch => ({ platform: 'youtube', ch })),
-    ];
-    if (all.length === 0) {
-      el.innerHTML = '<div style="font-size:12px;color:var(--text-muted);">Sin canales adicionales conectados.</div>';
-      return;
-    }
-    all.forEach(({ platform, ch }) => {
-      const tag = document.createElement('span');
-      tag.className = 'channel-tag';
-      tag.innerHTML = `<span style="width:7px;height:7px;border-radius:50%;background:${colors[platform]};display:inline-block;margin-right:4px;flex-shrink:0;"></span>@${escapeHtml(ch)}<button onclick="removeChannel('${platform}','${escapeHtml(ch)}')" title="Desconectar">✕</button>`;
-      el.appendChild(tag);
+      electronCleanups.push(window.electronAPI.onPauseTts(() => togglePauseTts()));
+    if (window.electronAPI.onUpdateEvent)
+      electronCleanups.push(window.electronAPI.onUpdateEvent((ev) => {
+        const banner  = document.getElementById('update-banner');
+        const text    = document.getElementById('update-text');
+        const barWrap = document.getElementById('update-bar-wrap');
+        const barFill = document.getElementById('update-bar-fill');
+        const pct     = document.getElementById('update-percent');
+        const spd     = document.getElementById('update-speed');
+        const btnInst = document.getElementById('update-btn-install');
+        const btnLater= document.getElementById('update-btn-later');
+        if (!banner) return;
+        switch (ev.type) {
+          case 'checking':
+            banner.classList.add('visible');
+            if (text) text.textContent = 'Buscando actualizaciones...';
+            break;
+          case 'available':
+            if (text) text.textContent = `Nueva versión disponible: v${ev.version}`;
+            break;
+          case 'not-available':
+            banner.classList.remove('visible');
+            break;
+          case 'progress':
+            banner.classList.add('visible');
+            if (text) text.textContent = `Descargando v${ev.version || 'nueva'}...`;
+            if (barWrap) barWrap.style.display = 'block';
+            if (barFill) barFill.style.width = ev.percent + '%';
+            if (pct) { pct.style.display = 'inline'; pct.textContent = ev.percent + '%'; }
+            if (spd) { spd.style.display = 'inline'; spd.textContent = fmtBytes(ev.bytesPerSecond) + '/s'; }
+            break;
+          case 'ready':
+            banner.classList.add('visible');
+            if (text) text.textContent = `v${ev.version} lista para instalar.`;
+            if (barWrap) barWrap.style.display = 'none';
+            if (pct) pct.style.display = 'none';
+            if (spd) spd.style.display = 'none';
+            if (btnInst) { btnInst.style.display = 'inline-block'; btnLater.style.display = 'inline-block'; }
+            break;
+          case 'error':
+            banner.classList.remove('visible');
+            console.error('[updater]', ev.message);
+            break;
+        }
+      }));
+    window.addEventListener('beforeunload', () => {
+      electronCleanups.forEach(fn => { if (typeof fn === 'function') fn(); });
     });
+  }
+
+  // ─── PLATFORMS ────────────────────────────────────────────────
+  const PLATFORM_CHANNELS_KEY = 'tikliveTTS_platforms_v1';
+
+  function loadPlatformChannels() {
+    try { return JSON.parse(localStorage.getItem(PLATFORM_CHANNELS_KEY) || '{}'); } catch (e) { return {}; }
+  }
+
+  function savePlatformChannels(data) {
+    try { localStorage.setItem(PLATFORM_CHANNELS_KEY, JSON.stringify(data)); } catch (e) {}
   }
 
   let selectedAddPlatform = 'tiktok';
 
   function toggleAddChannelForm() {
     const form = document.getElementById('add-channel-form');
-    const btn  = document.getElementById('btn-toggle-add-channel');
-    const open = form.style.display === 'none' || !form.style.display;
-    form.style.display = open ? 'flex' : 'none';
-    btn.textContent = open ? '✕ Cerrar' : '＋ Agregar';
-    if (open) selectAddPlatform(selectedAddPlatform);
+    if (form) {
+      const showing = form.style.display === 'flex';
+      form.style.display = showing ? 'none' : 'flex';
+      if (!showing) {
+        const input = document.getElementById('add-channel-input');
+        if (input) setTimeout(() => input.focus(), 50);
+      }
+    }
   }
 
   function selectAddPlatform(platform) {
     selectedAddPlatform = platform;
-    ['tiktok','twitch','youtube'].forEach(p => {
-      const el = document.getElementById(`pick-${p}`);
-      if (el) el.style.outline = p === platform ? '2px solid var(--accent)' : '';
+    ['tiktok', 'twitch', 'youtube'].forEach(p => {
+      const btn = document.getElementById(`seg-${p}`);
+      if (btn) btn.classList.toggle('active', p === platform);
     });
-    const placeholders = { tiktok: '@usuario', twitch: 'nombre_del_canal', youtube: '@canal o link' };
+    const placeholders = { tiktok: '@usuario', twitch: 'nombre_del_canal', youtube: '@canal o ID' };
     const input = document.getElementById('add-channel-input');
     if (input) { input.placeholder = placeholders[platform] || '@usuario'; input.focus(); }
   }
 
   async function addChannelFromSettings() {
-    const input   = document.getElementById('add-channel-input');
+    const input = document.getElementById('add-channel-input');
     const channel = (input?.value || '').trim();
     if (!channel) { showToast('Escribe el nombre del canal'); return; }
+
+    const saved = loadPlatformChannels();
+    saved[selectedAddPlatform] = channel;
+    savePlatformChannels(saved);
+
     const btn = document.getElementById('btn-add-channel');
     if (btn) { btn.disabled = true; btn.textContent = 'Conectando...'; }
+
     try {
-      const res = await fetch('/api/channels/add', {
+      const res = await fetch('/api/platforms/connect', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ platform: selectedAddPlatform, channel }),
@@ -3429,71 +3229,55 @@
       if (!res.ok) {
         showToast('Error: ' + d.error);
       } else {
-        if (input) input.value = '';
-        showToast((selectedAddPlatform.charAt(0).toUpperCase() + selectedAddPlatform.slice(1)) + ' conectado');
+        showToast(selectedAddPlatform.charAt(0).toUpperCase() + selectedAddPlatform.slice(1) + ' conectado');
+        input.value = '';
         toggleAddChannelForm();
       }
     } catch (e) {
-      showToast('Error de red al conectar');
+      showToast('Error de red al conectar ' + selectedAddPlatform);
     } finally {
       if (btn) { btn.disabled = false; btn.textContent = 'Conectar'; }
     }
+    renderSettingsChannels();
   }
 
   async function removeChannel(platform, channel) {
     try {
-      await fetch('/api/channels/remove', {
+      await fetch('/api/platforms/disconnect', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ platform, channel }),
+        body: JSON.stringify({ platform }),
       });
-    } catch (e) { showToast('Error al desconectar canal'); }
+      const saved = loadPlatformChannels();
+      delete saved[platform];
+      savePlatformChannels(saved);
+      renderSettingsChannels();
+      showToast(platform.charAt(0).toUpperCase() + platform.slice(1) + ' desconectado');
+    } catch (e) {
+      showToast('Error al desconectar ' + platform);
+    }
   }
 
-  function handleChannelsUpdated(data) {
-    renderTiktokChannelList(data.tiktok || []);
-    renderChannelList('twitch', data.twitch || []);
-    renderChannelList('youtube', data.youtube || []);
-    renderSettingsChannels(data);
-  }
-
-  async function initPlatformUI() {
-    try {
-      const res = await fetch('/api/channels');
-      if (res.ok) {
-        const data = await res.json();
-        handleChannelsUpdated(data);
-      }
-    } catch (e) {}
-  }
-
-  function platformConnect(platform) {
-    const input   = document.getElementById(`${platform}-channel`);
-    const channel = (input?.value || '').trim();
-    if (!channel) { showToast('Escribe el nombre del canal'); return; }
-    const btn = document.getElementById(`btn-${platform}-connect`);
-    if (btn) { btn.disabled = true; btn.textContent = 'Conectando...'; }
-    fetch('/api/channels/add', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ platform, channel }),
-    }).then(r => r.json()).then(d => {
-      if (d.error) showToast('Error: ' + d.error);
-      else if (input) input.value = '';
-    }).catch(() => showToast('Error de red al conectar ' + platform))
-    .finally(() => { if (btn) { btn.disabled = false; btn.textContent = 'Conectar'; } });
-  }
-
-  function platformDisconnect(platform) {
-    fetch('/api/platforms/disconnect', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ platform }),
-    }).catch(() => {});
-  }
-
-  function updatePlatformBadge(platform, connected) {
-    // handled by handleChannelsUpdated via channels-updated event
+  function renderSettingsChannels() {
+    const el = document.getElementById('settings-channels-list');
+    if (!el) return;
+    el.innerHTML = '';
+    const icons = { tiktok: 'icons/tiktok.svg', twitch: 'icons/sports_esports.svg', youtube: 'icons/tv.svg' };
+    const saved = loadPlatformChannels();
+    const all = [];
+    if (saved.tiktok) all.push({ platform: 'tiktok', ch: saved.tiktok });
+    if (saved.twitch) all.push({ platform: 'twitch', ch: saved.twitch });
+    if (saved.youtube) all.push({ platform: 'youtube', ch: saved.youtube });
+    if (all.length === 0) {
+      el.innerHTML = '<div style="font-size:12px;color:var(--text-muted);">Sin canales adicionales conectados.</div>';
+      return;
+    }
+    all.forEach(({ platform, ch }) => {
+      const tag = document.createElement('span');
+      tag.className = 'channel-chip';
+      tag.innerHTML = `<img src="${icons[platform]}" style="width:12px;height:12px;opacity:0.7;" alt=""><span style="font-family:monospace;font-size:12px;">@${escapeHtml(ch)}</span><button onclick="removeChannel('${platform}','${escapeHtml(ch)}')" title="Desconectar">✕</button>`;
+      el.appendChild(tag);
+    });
   }
 
   // ─── AUTO-UPDATE UI ───────────────────────────────────────────
@@ -3509,51 +3293,6 @@
     if (window.electronAPI?.installUpdate) window.electronAPI.installUpdate();
   }
 
-  if (window.electronAPI?.onUpdateEvent) {
-    window.electronAPI.onUpdateEvent((ev) => {
-      const banner  = document.getElementById('update-banner');
-      const text    = document.getElementById('update-text');
-      const barWrap = document.getElementById('update-bar-wrap');
-      const barFill = document.getElementById('update-bar-fill');
-      const pct     = document.getElementById('update-percent');
-      const spd     = document.getElementById('update-speed');
-      const btnInst = document.getElementById('update-btn-install');
-      const btnLater= document.getElementById('update-btn-later');
-
-      if (ev.type === 'available') {
-        banner.classList.add('visible');
-        text.innerHTML = `Nueva versión <strong>v${ev.version}</strong> detectada — descargando...`;
-        barWrap.style.display = 'block';
-        pct.style.display = 'inline';
-        spd.style.display = 'inline';
-        barFill.style.width = '0%';
-        pct.textContent = '0%';
-        spd.textContent = '';
-        btnInst.style.display = 'none';
-        btnLater.style.display = 'none';
-      } else if (ev.type === 'progress') {
-        banner.classList.add('visible');
-        barFill.style.width = ev.percent + '%';
-        pct.textContent = ev.percent + '%';
-        spd.textContent = fmtBytes(ev.bytesPerSecond) + '/s';
-      } else if (ev.type === 'ready') {
-        banner.classList.add('visible');
-        text.innerHTML = `<strong>v${ev.version}</strong> lista — la app se reiniciará sola (no requiere reiniciar el PC)`;
-        barWrap.style.display = 'none';
-        pct.style.display = 'none';
-        spd.style.display = 'none';
-        barFill.style.width = '100%';
-        btnInst.style.display = 'inline-block';
-        btnLater.style.display = 'inline-block';
-      } else if (ev.type === 'error') {
-        // Silent — don't distract streamer with update errors
-        banner.classList.remove('visible');
-      } else if (ev.type === 'not-available') {
-        banner.classList.remove('visible');
-      }
-    });
-  }
-
   // ─── INIT ─────────────────────────────────────────────────────
   loadSettings();
   applySettings();
@@ -3564,7 +3303,7 @@
   loadVoices();
   connectWS();
   updateQueueBadge();
-  initPlatformUI();
+  renderSettingsChannels();
 
   // Fetch current base follower count if already connected
   fetch('/api/overlay-stats')

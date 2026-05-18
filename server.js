@@ -851,34 +851,8 @@ app.post('/api/tts', async (req, res) => {
   }
 });
 
-// Language detection endpoint (uses translate internally — no separate detect in v9)
-app.post('/api/detect-lang', async (req, res) => {
-  const { text } = req.body;
-  if (!text) return res.json({ lang: 'und' });
-  try {
-    const { translate } = require('@vitalets/google-translate-api');
-    const result = await translate(text.substring(0, 50), { to: 'en' });
-    const lang = result.from?.language?.iso || 'und';
-    res.json({ lang });
-  } catch (err) {
-    res.json({ lang: 'und' });
-  }
-});
+// Translation endpoints removed in v1.2.8 (feature eliminated for security/stability)
 
-// Translation endpoint
-app.post('/api/translate', async (req, res) => {
-  const { text, targetLang = 'es' } = req.body;
-  if (!text) return res.status(400).json({ error: 'text required' });
-  try {
-    const { translate } = require('@vitalets/google-translate-api');
-    const result = await translate(text.substring(0, 500), { to: targetLang });
-    const detectedLang = result.from?.language?.iso || result.raw?.src || 'und';
-    res.json({ translated: result.text, detectedLang });
-  } catch (err) {
-    log('error', 'translate', 'Translation failed', { error: err.message });
-    res.status(500).json({ error: err.message });
-  }
-});
 
 // Available voices endpoint
 app.get('/api/voices', (req, res) => {
@@ -1025,7 +999,10 @@ app.delete('/api/upload-bg', (req, res) => {
     return res.status(400).json({ error: 'Se requiere filename' });
   }
   const safeName = path.basename(filename);
-  const filePath = path.join(UPLOADS_DIR, safeName);
+  const filePath = path.resolve(UPLOADS_DIR, safeName);
+  if (!filePath.startsWith(path.resolve(UPLOADS_DIR))) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
   try {
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
@@ -1559,7 +1536,8 @@ server.on('error', (err) => {
 server.listen(PORT, () => {
   console.log(`\nTikTok Live TTS corriendo en http://localhost:${PORT}\n`);
   if (IS_PKG) {
-    require('child_process').exec(`start http://localhost:${PORT}`);
+    const { spawn } = require('child_process');
+    spawn('start', [`http://localhost:${PORT}`], { shell: true, detached: true });
     const { initTray } = require('./tray');
     initTray(PORT);
   }

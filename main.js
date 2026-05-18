@@ -21,6 +21,13 @@ try {
   serverLoadError = e;
 }
 
+process.on('uncaughtException', (err) => {
+  console.error('[main] uncaughtException:', err);
+});
+process.on('unhandledRejection', (reason) => {
+  console.error('[main] unhandledRejection:', reason);
+});
+
 // Poll until server is accepting connections
 function waitForServer(cb, attempts = 0) {
   http.get(`http://localhost:${PORT}/api/status`, () => cb())
@@ -49,6 +56,8 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
+      sandbox: true,
+      webSecurity: true,
       preload: path.join(__dirname, 'preload.js'),
     },
   });
@@ -79,11 +88,18 @@ function createWindow() {
 }
 
 // Build tray context menu — rebuilds with an install item when an update is ready
+function showMainWindow() {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.show();
+    mainWindow.focus();
+  }
+}
+
 function buildTrayMenu(updateVersion = null) {
   const items = [
     {
       label: 'Abrir TikTok TTS',
-      click: () => { mainWindow.show(); mainWindow.focus(); },
+      click: showMainWindow,
     },
     { type: 'separator' },
   ];
@@ -108,7 +124,7 @@ function createTray() {
 
   tray.setToolTip('TikTok TTS');
   tray.setContextMenu(buildTrayMenu());
-  tray.on('double-click', () => { mainWindow.show(); mainWindow.focus(); });
+  tray.on('double-click', showMainWindow);
 }
 
 ipcMain.handle('open-oauth-window', (_event, { url, callbackPattern }) => {
@@ -175,7 +191,7 @@ app.whenReady().then(() => {
         autoUpdater.autoDownload = true;
         autoUpdater.autoInstallOnAppQuit = false;
         autoUpdater.on('update-downloaded', () => autoUpdater.quitAndInstall(false, true));
-        autoUpdater.checkForUpdates().catch(() => {});
+        autoUpdater.checkForUpdates().catch((err) => console.error('[updater] check error:', err.message));
       } catch (_) {}
     }
     dialog.showMessageBox({
@@ -270,7 +286,7 @@ function setupAutoUpdater() {
   autoUpdater.on('error', (err) =>
     sendUpdate({ type: 'error', message: err.message }));
 
-  autoUpdater.checkForUpdatesAndNotify().catch(() => {});
+  autoUpdater.checkForUpdatesAndNotify().catch((err) => console.error('[updater] notify error:', err.message));
 }
 
 ipcMain.on('install-update', () => {
@@ -279,22 +295,33 @@ ipcMain.on('install-update', () => {
   autoUpdater.quitAndInstall(false, true);
 });
 
+const FORBIDDEN_SHORTCUTS = ['Alt+F4', 'Ctrl+C', 'Cmd+C', 'Ctrl+V', 'Cmd+V', 'Ctrl+Alt+Del', 'Ctrl+Shift+Esc', 'Cmd+Shift+Esc'];
+function isValidShortcut(shortcut) {
+  if (!shortcut || typeof shortcut !== 'string' || shortcut.length > 50) return false;
+  const normalized = shortcut.replace(/\s/g, '');
+  if (FORBIDDEN_SHORTCUTS.includes(normalized)) return false;
+  // Permitir solo combinaciones con letras/números/F-keys después de al menos un modificador
+  return /^(Ctrl|Cmd|Alt|Shift|Super)\+([A-Z0-9]|F\d{1,2})(\+([A-Z0-9]|F\d{1,2}))*$/i.test(normalized);
+}
+
 let registeredPauseShortcut = null;
 ipcMain.on('register-pause-shortcut', (_event, shortcut) => {
+  if (!isValidShortcut(shortcut)) {
+    console.error('Invalid or forbidden shortcut rejected:', shortcut);
+    return;
+  }
   if (registeredPauseShortcut) {
     try { globalShortcut.unregister(registeredPauseShortcut); } catch (_) {}
     registeredPauseShortcut = null;
   }
-  if (shortcut && shortcut.length > 0) {
-    try {
-      globalShortcut.register(shortcut, () => {
-        if (mainWindow && !mainWindow.isDestroyed())
-          mainWindow.webContents.send('pause-tts');
-      });
-      registeredPauseShortcut = shortcut;
-    } catch (err) {
-      console.error('Failed to register pause shortcut:', err.message);
-    }
+  try {
+    globalShortcut.register(shortcut, () => {
+      if (mainWindow && !mainWindow.isDestroyed())
+        mainWindow.webContents.send('pause-tts');
+    });
+    registeredPauseShortcut = shortcut;
+  } catch (err) {
+    console.error('Failed to register pause shortcut:', err.message);
   }
 });
 
@@ -303,9 +330,7 @@ const gotLock = app.requestSingleInstanceLock();
 if (!gotLock) {
   app.quit();
 } else {
-  app.on('second-instance', () => {
-    if (mainWindow) { mainWindow.show(); mainWindow.focus(); }
-  });
+  app.on('second-instance', showMainWindow);
 }
 
 app.on('window-all-closed', (e) => e.preventDefault());

@@ -1,6 +1,6 @@
 {
   "name": "tiktok-live-tts",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "description": "TikTok Live Chat TTS Reader",
   "author": "iKhunsa",
   "main": "main.js",
@@ -23,7 +23,9 @@
     },
     "win": {
       "target": "nsis",
-      "icon": "tray-icon.ico"
+      "icon": "tray-icon.ico",
+      "verifyUpdateCodeSignature": true,
+      "publisherName": ["iKhunsa"]
     },
     "nsis": {
       "oneClick": false,
