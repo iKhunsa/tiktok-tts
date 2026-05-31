@@ -3686,6 +3686,7 @@
   }
 
   let selectedAddPlatform = 'tiktok';
+  let settingsChannelsRenderSeq = 0;
 
   function toggleAddChannelForm() {
     const form = document.getElementById('add-channel-form');
@@ -3826,32 +3827,44 @@
   }
 
   async function renderSettingsChannels() {
+    const renderSeq = ++settingsChannelsRenderSeq;
     const el = document.getElementById('settings-channels-list');
     if (!el) return;
-    el.innerHTML = '';
 
     let channels = { tiktok: [], twitch: [], youtube: [] };
     try {
       const res = await fetch('/api/channels');
       if (res.ok) channels = await res.json();
     } catch (e) {}
+    if (renderSeq !== settingsChannelsRenderSeq) return;
 
     const saved = loadPlatformChannels();
-    const all = [];
+    const byKey = new Map();
+    const stateRank = { connected: 3, saved: 2, manual: 1, error: 0 };
+    const addChannelChip = (platform, ch, state) => {
+      const normalized = normalizeChannelEntry(platform, ch)?.channel;
+      if (!normalized) return;
+      const key = `${platform}:${normalized}`;
+      const existing = byKey.get(key);
+      if (!existing || stateRank[state] > stateRank[existing.state]) {
+        byKey.set(key, { platform, ch: normalized, state });
+      }
+    };
+
     PLATFORMS.forEach(platform => {
       const active = new Set((channels[platform] || [])
         .map(ch => normalizeChannelEntry(platform, ch)?.channel)
         .filter(Boolean));
 
-      active.forEach(ch => all.push({ platform, ch, state: 'connected' }));
+      active.forEach(ch => addChannelChip(platform, ch, 'connected'));
       (saved[platform] || []).forEach(entry => {
         const savedChannel = normalizeChannelEntry(platform, entry.channel)?.channel;
-        if (savedChannel && !active.has(savedChannel)) {
-          all.push({ platform, ch: savedChannel, state: entry.autoConnect ? 'saved' : 'manual' });
-        }
+        if (savedChannel && !active.has(savedChannel)) addChannelChip(platform, savedChannel, entry.autoConnect ? 'saved' : 'manual');
       });
     });
 
+    const all = Array.from(byKey.values());
+    el.innerHTML = '';
     if (all.length === 0) {
       el.innerHTML = '<div style="font-size:12px;color:var(--text-muted);">Sin canales guardados. Agrega TikTok/Twitch/YouTube y luego usa Conectar todo.</div>';
       return;
