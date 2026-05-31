@@ -819,16 +819,16 @@
     <div class="grid-2">
       <div class="control-group">
         <label>Máx. caracteres TTS — <span class="val-display" id="cfgCharsVal">500</span></label>
-        <input type="range" id="cfgChars" min="50" max="500" step="10" value="500"
+        <input type="range" id="cfgChars" min="20" max="1000" step="10" value="500"
           oninput="document.getElementById('cfgCharsVal').textContent = this.value" />
-        <div class="range-labels"><span>50</span><span>500</span></div>
+        <div class="range-labels"><span>20</span><span>1000</span></div>
       </div>
 
       <div class="control-group">
         <label>Debounce de likes — <span class="val-display" id="cfgDebounceVal">1500</span> ms</label>
-        <input type="range" id="cfgDebounce" min="0" max="5000" step="100" value="1500"
+        <input type="range" id="cfgDebounce" min="250" max="5000" step="100" value="1500"
           oninput="document.getElementById('cfgDebounceVal').textContent = this.value" />
-        <div class="range-labels"><span>0ms</span><span>5s</span></div>
+        <div class="range-labels"><span>250ms</span><span>5s</span></div>
       </div>
     </div>
 
@@ -1057,16 +1057,18 @@
       MAX_QUEUE_MSG: parseInt(document.getElementById('rlQueue').value),
     };
     try {
-      await fetch('/api/config', {
+      const res = await fetch('/api/config', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Config rechazada');
       flashSave('btnSaveRL');
       showToast('Rate limit actualizado');
       refreshStatus();
     } catch (e) {
-      showToast('Error guardando rate limit');
+      showToast(e.message || 'Error guardando rate limit');
     }
   }
 
@@ -1077,16 +1079,18 @@
       LIKE_DEBOUNCE_MS: parseInt(document.getElementById('cfgDebounce').value),
     };
     try {
-      await fetch('/api/config', {
+      const res = await fetch('/api/config', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Config rechazada');
       flashSave('btnSaveGeneral');
       showToast('Configuración general actualizada');
       refreshStatus();
     } catch (e) {
-      showToast('Error guardando configuración');
+      showToast(e.message || 'Error guardando configuración');
     }
   }
 
@@ -1123,7 +1127,13 @@
     blockedWords.forEach(word => {
       const tag = document.createElement('span');
       tag.className = 'tag';
-      tag.innerHTML = `${escHtml(word)} <span class="tag-remove" onclick="removeBlockedWord('${escHtml(word)}')" title="Eliminar">×</span>`;
+      tag.appendChild(document.createTextNode(word + ' '));
+      const remove = document.createElement('span');
+      remove.className = 'tag-remove';
+      remove.title = 'Eliminar';
+      remove.textContent = 'x';
+      remove.onclick = () => removeBlockedWord(word);
+      tag.appendChild(remove);
       container.appendChild(tag);
     });
   }
@@ -1290,17 +1300,36 @@
   const logStorage = new LogStorage(100);
 
   // ─── Log refresh & export ────────────────────────────────────────────
-  function refreshLogs() {
+  async function getCombinedLogs() {
+    const localLogs = logStorage.getLogs().map((log) => ({ ...log, source: log.source || 'client' }));
+    try {
+      const res = await fetch('/api/logs?limit=150');
+      if (!res.ok) return localLogs;
+      const data = await res.json();
+      const serverLogs = (data.logs || []).map((log) => ({
+        timestamp: log.ts || log.timestamp,
+        level: log.level || 'info',
+        source: log.ctx ? `server:${log.ctx}` : 'server',
+        message: log.msg || log.message || '',
+        data: log.data || null,
+      }));
+      return [...localLogs, ...serverLogs].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    } catch (_) {
+      return localLogs;
+    }
+  }
+
+  async function refreshLogs() {
     try {
       const search = document.getElementById('logSearch').value.toLowerCase();
       const levelFilter = document.getElementById('logLevelFilter').value;
       const sourceFilter = document.getElementById('logSourceFilter').value;
 
-      let logs = logStorage.getLogs();
+      let logs = await getCombinedLogs();
       logs = logs.filter(log =>
-        (!search || log.message.toLowerCase().includes(search)) &&
+        (!search || String(log.message || '').toLowerCase().includes(search)) &&
         (!levelFilter || log.level === levelFilter) &&
-        (!sourceFilter || log.source === sourceFilter)
+        (!sourceFilter || String(log.source || '').startsWith(sourceFilter))
       );
 
       const container = document.getElementById('logsContainer');
@@ -1325,12 +1354,15 @@
     }
   }
 
-  function exportLogs() {
+  async function exportLogs() {
     try {
       const format = prompt('¿Exportar como (json/csv)?', 'json');
       if (!format || !['json', 'csv'].includes(format)) return;
 
-      const content = logStorage.exportLogs(format);
+      const logs = await getCombinedLogs();
+      const content = format === 'csv'
+        ? 'timestamp,level,source,message\n' + logs.map(l => `${l.timestamp},${l.level},${l.source},"${(l.message || '').replace(/"/g, '""')}"`).join('\n')
+        : JSON.stringify(logs, null, 2);
       const blob = new Blob([content], { type: format === 'csv' ? 'text/csv' : 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -1340,7 +1372,7 @@
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      showToast('<img class="icon-inline" src="icons/download.svg" alt=""> Logs exportados');
+      showToast('Logs exportados');
     } catch (e) {
       showToast('Error exportando logs');
     }
@@ -1350,7 +1382,7 @@
     if (confirm('¿Limpiar todos los logs? No se puede deshacer.')) {
       logStorage.clearLogs();
       refreshLogs();
-      showToast('<img class="icon-inline" src="icons/delete.svg" alt=""> Logs eliminados');
+      showToast('Logs locales eliminados');
     }
   }
 
@@ -1389,7 +1421,7 @@
       document.getElementById('statusMaxChars').textContent = data.config.TTS_MAX_CHARS;
       document.getElementById('statusDebounce').textContent = data.config.LIKE_DEBOUNCE_MS + 'ms';
     } catch (e) {
-      showToast('<img class="icon-inline" src="icons/warning.svg" alt=""> Servidor no disponible');
+      showToast('Servidor no disponible');
     }
   }
 
@@ -1407,7 +1439,7 @@
 
   function showToast(msg) {
     const t = document.getElementById('toast');
-    t.innerHTML = msg;
+    t.textContent = msg;
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2500);
   }

@@ -225,7 +225,8 @@
       const span = document.createElement('span');
       span.className = 'gift-fallback';
       span.textContent = '🎁';
-      el.replaceWith(span);
+      if (el.isConnected) el.replaceWith(span);
+      return span;
     }
 
     function showAlert(gift) {
@@ -247,10 +248,8 @@
       } else if (cdnSrc) {
         img.src = cdnSrc;
         img.onerror = () => useEmojiFor(img);
-      } else {
-        useEmojiFor(img);
       }
-      card.appendChild(img);
+      card.appendChild(imgSrc || cdnSrc ? img : useEmojiFor(img));
 
       // info block
       const info = document.createElement('div');
@@ -298,7 +297,8 @@
     // ── WebSocket ────────────────────────────────────────────
     let ws, retryDelay = 2000;
     function connectWS() {
-      ws = new WebSocket('ws://localhost:3000');
+      const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      ws = new WebSocket(`${proto}//${location.host}`);
       ws.onopen  = () => { retryDelay = 2000; };
       ws.onmessage = (e) => {
         try {

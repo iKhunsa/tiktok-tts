@@ -36,7 +36,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onUpdateEvent: (cb) => on('update-event', (_e, data) => cb(data)),
   offUpdateEvent: (cb) => off('update-event', cb),
   installUpdate: () => ipcRenderer.send('install-update'),
-  registerPauseShortcut: (shortcut) => ipcRenderer.send('register-pause-shortcut', shortcut),
+  registerPauseShortcut: (shortcut) => ipcRenderer.invoke('register-pause-shortcut', shortcut),
   onPauseTts: (cb) => on('pause-tts', () => cb()),
   offPauseTts: (cb) => off('pause-tts', cb),
 });
