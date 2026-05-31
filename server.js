@@ -569,7 +569,8 @@ function cleanTiktokUsername(value = '') {
 function cleanTwitchChannel(value = '') {
   return String(value)
     .replace(/^https?:\/\/(www\.)?twitch\.tv\//i, '')
-    .replace('#', '')
+    .replace(/^[@#]+/, '')
+    .split(/[/?#]/)[0]
     .trim()
     .toLowerCase();
 }

@@ -3620,7 +3620,7 @@
     if (platform === 'twitch') {
       const channel = raw
         .replace(/^https?:\/\/(www\.)?twitch\.tv\//i, '')
-        .replace(/^#/, '')
+        .replace(/^[@#]+/, '')
         .split(/[/?#]/)[0]
         .trim()
         .toLowerCase();
@@ -3845,8 +3845,9 @@
 
       active.forEach(ch => all.push({ platform, ch, state: 'connected' }));
       (saved[platform] || []).forEach(entry => {
-        if (!active.has(entry.channel)) {
-          all.push({ platform, ch: entry.channel, state: entry.autoConnect ? 'saved' : 'manual' });
+        const savedChannel = normalizeChannelEntry(platform, entry.channel)?.channel;
+        if (savedChannel && !active.has(savedChannel)) {
+          all.push({ platform, ch: savedChannel, state: entry.autoConnect ? 'saved' : 'manual' });
         }
       });
     });
