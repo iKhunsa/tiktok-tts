@@ -1116,8 +1116,8 @@
     .channel-chip {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      padding: 4px 8px 4px 10px;
+      gap: 7px;
+      padding: 5px 8px 5px 10px;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 6px;
@@ -1125,6 +1125,33 @@
       color: var(--text-secondary);
       font-weight: 500;
     }
+    .channel-chip.tiktok {
+      border-color: rgba(254, 44, 85, 0.42);
+      background: rgba(254, 44, 85, 0.08);
+    }
+    .channel-chip.twitch {
+      border-color: rgba(145, 70, 255, 0.52);
+      background: rgba(145, 70, 255, 0.12);
+    }
+    .channel-chip.youtube {
+      border-color: rgba(255, 0, 0, 0.42);
+      background: rgba(255, 0, 0, 0.09);
+    }
+    .channel-platform-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--text);
+    }
+    .channel-state {
+      font-size: 10px;
+      color: var(--text-muted);
+      border-left: 1px solid var(--border);
+      padding-left: 7px;
+    }
+    .channel-state.connected { color: var(--accent); }
+    .channel-state.manual { color: #f59e0b; }
+    .channel-chip.needs-action { opacity: 0.82; }
     .channel-chip button {
       background: none;
       border: none;
@@ -1736,9 +1763,12 @@
       <div class="settings-section">
         <div class="settings-section-title" style="display:flex;justify-content:space-between;align-items:center;">
           Canales adicionales
-          <button class="btn-supabase-primary" id="btn-toggle-add-channel" onclick="toggleAddChannelForm()">
-            ＋ Agregar canal
-          </button>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
+            <button class="btn-supabase-primary" id="btn-connect-saved" onclick="connectSavedChannels()">Conectar todo</button>
+            <button class="btn-supabase-primary" id="btn-toggle-add-channel" onclick="toggleAddChannelForm()">
+              ＋ Agregar canal
+            </button>
+          </div>
         </div>
         <div id="settings-channels-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:20px;margin-bottom:4px;"></div>
         <div id="add-channel-form" style="display:none;flex-direction:column;gap:10px;margin-top:10px;">
@@ -1761,6 +1791,9 @@
             <button class="btn-supabase-primary" id="btn-add-channel" onclick="addChannelFromSettings()">Conectar</button>
             <button class="btn btn-disconnect" onclick="toggleAddChannelForm()"
               style="font-size:12px;padding:9px 14px;border-radius:9999px;">Cancelar</button>
+          </div>
+          <div id="youtube-channel-hint" style="display:none;font-size:11px;color:var(--text-muted);line-height:1.5;">
+            Usa @canal o Channel ID para reconectar sin pegar link nuevo. Links watch/youtu.be se guardan como live temporal manual.
           </div>
         </div>
       </div>
@@ -3538,13 +3571,118 @@
 
   // ─── PLATFORMS ────────────────────────────────────────────────
   const PLATFORM_CHANNELS_KEY = 'tikliveTTS_platforms_v1';
+  const PLATFORMS = ['tiktok', 'twitch', 'youtube'];
+  const PLATFORM_LABELS = { tiktok: 'TikTok', twitch: 'Twitch', youtube: 'YouTube' };
+  const PLATFORM_ICONS = { tiktok: 'icons/tiktok.svg', twitch: 'icons/sports_esports.svg', youtube: 'icons/tv.svg' };
 
   function loadPlatformChannels() {
-    try { return JSON.parse(localStorage.getItem(PLATFORM_CHANNELS_KEY) || '{}'); } catch (e) { return {}; }
+    try {
+      const raw = JSON.parse(localStorage.getItem(PLATFORM_CHANNELS_KEY) || '{}');
+      const normalized = normalizeSavedChannels(raw);
+      if (JSON.stringify(raw) !== JSON.stringify(normalized)) savePlatformChannels(normalized);
+      return normalized;
+    } catch (e) {
+      return normalizeSavedChannels({});
+    }
   }
 
   function savePlatformChannels(data) {
-    try { localStorage.setItem(PLATFORM_CHANNELS_KEY, JSON.stringify(data)); } catch (e) {}
+    try { localStorage.setItem(PLATFORM_CHANNELS_KEY, JSON.stringify(normalizeSavedChannels(data))); } catch (e) {}
+  }
+
+  function normalizeSavedChannels(data = {}) {
+    const output = { tiktok: [], twitch: [], youtube: [] };
+    PLATFORMS.forEach(platform => {
+      const value = data?.[platform];
+      const items = Array.isArray(value) ? value : (value ? [{ channel: value }] : []);
+      items.forEach(item => {
+        const entry = normalizeChannelEntry(platform, item?.channel ?? item);
+        if (!entry) return;
+        entry.autoConnect = item?.autoConnect ?? entry.autoConnect;
+        entry.mode = item?.mode || entry.mode;
+        if (!output[platform].some(existing => existing.channel === entry.channel)) {
+          output[platform].push(entry);
+        }
+      });
+    });
+    return output;
+  }
+
+  function normalizeChannelEntry(platform, value) {
+    const raw = String(value || '').trim();
+    if (!raw || !PLATFORMS.includes(platform)) return null;
+
+    if (platform === 'tiktok') {
+      const channel = raw.replace(/^@+/, '').split(/[/?#]/)[0].trim();
+      return channel ? { channel, autoConnect: true, mode: 'savedTarget' } : null;
+    }
+
+    if (platform === 'twitch') {
+      const channel = raw
+        .replace(/^https?:\/\/(www\.)?twitch\.tv\//i, '')
+        .replace(/^#/, '')
+        .split(/[/?#]/)[0]
+        .trim()
+        .toLowerCase();
+      return channel ? { channel, autoConnect: true, mode: 'savedTarget' } : null;
+    }
+
+    return normalizeYoutubeEntry(raw);
+  }
+
+  function normalizeYoutubeEntry(raw) {
+    const videoEntry = channel => channel ? { channel, autoConnect: false, mode: 'temporaryLive' } : null;
+    const savedEntry = channel => channel ? { channel, autoConnect: true, mode: 'savedTarget' } : null;
+
+    try {
+      const candidate = /^https?:\/\//i.test(raw)
+        ? raw
+        : (/youtube\.com|youtu\.be/i.test(raw) ? 'https://' + raw : raw);
+      const url = new URL(candidate);
+      const host = url.hostname.replace(/^www\./, '').toLowerCase();
+      if (host === 'youtu.be') return videoEntry(url.pathname.split('/').filter(Boolean)[0]);
+      if (host.endsWith('youtube.com')) {
+        const parts = url.pathname.split('/').filter(Boolean);
+        if (url.pathname === '/watch') return videoEntry(url.searchParams.get('v'));
+        if (parts[0] === 'live') return videoEntry(parts[1]);
+        if (parts[0] === 'channel') return savedEntry(parts[1]);
+        if (parts[0]?.startsWith('@')) return savedEntry(parts[0]);
+        if (parts[0] === 'c' || parts[0] === 'user') return savedEntry(parts[1] ? '@' + parts[1].replace(/^@+/, '') : '');
+      }
+    } catch (e) {}
+
+    if (/^UC[\w-]{20,}$/i.test(raw)) return savedEntry(raw);
+    if (/^@[\w.-]+$/i.test(raw)) return savedEntry(raw);
+    if (/^[\w-]{11}$/.test(raw)) return videoEntry(raw);
+    return savedEntry('@' + raw.replace(/^@+/, '').split(/[/?#]/)[0]);
+  }
+
+  function upsertSavedChannel(platform, entry) {
+    if (!entry) return;
+    const saved = loadPlatformChannels();
+    saved[platform] = saved[platform].filter(item => item.channel !== entry.channel);
+    saved[platform].push(entry);
+    savePlatformChannels(saved);
+  }
+
+  function removeSavedChannel(platform, channel) {
+    const saved = loadPlatformChannels();
+    const normalized = normalizeChannelEntry(platform, channel);
+    const target = normalized?.channel || channel;
+    saved[platform] = saved[platform].filter(item => item.channel !== target);
+    savePlatformChannels(saved);
+  }
+
+  function formatChannelDisplay(platform, channel) {
+    if (platform === 'youtube' && /^[\w-]{11}$/.test(channel)) return channel;
+    return '@' + String(channel || '').replace(/^@+/, '');
+  }
+
+  function stateLabel(state) {
+    if (state === 'connected') return 'Conectado';
+    if (state === 'manual') return 'Manual';
+    if (state === 'error') return 'Error';
+    return 'Guardado';
   }
 
   let selectedAddPlatform = 'tiktok';
@@ -3563,13 +3701,15 @@
 
   function selectAddPlatform(platform) {
     selectedAddPlatform = platform;
-    ['tiktok', 'twitch', 'youtube'].forEach(p => {
+    PLATFORMS.forEach(p => {
       const btn = document.getElementById(`seg-${p}`);
       if (btn) btn.classList.toggle('active', p === platform);
     });
-    const placeholders = { tiktok: '@usuario', twitch: 'nombre_del_canal', youtube: '@canal o ID' };
+    const placeholders = { tiktok: '@usuario', twitch: 'nombre_del_canal', youtube: '@canal, Channel ID o link live' };
     const input = document.getElementById('add-channel-input');
     if (input) { input.placeholder = placeholders[platform] || '@usuario'; input.focus(); }
+    const hint = document.getElementById('youtube-channel-hint');
+    if (hint) hint.style.display = platform === 'youtube' ? 'block' : 'none';
   }
 
   async function addChannelFromSettings() {
@@ -3577,9 +3717,8 @@
     const channel = (input?.value || '').trim();
     if (!channel) { showToast('Escribe el nombre del canal'); return; }
 
-    const saved = loadPlatformChannels();
-    saved[selectedAddPlatform] = channel;
-    savePlatformChannels(saved);
+    const plannedEntry = normalizeChannelEntry(selectedAddPlatform, channel);
+    if (!plannedEntry) { showToast('Canal invalido'); return; }
 
     const btn = document.getElementById('btn-add-channel');
     if (btn) { btn.disabled = true; btn.textContent = 'Conectando...'; }
@@ -3592,9 +3731,22 @@
       });
       const d = await res.json();
       if (!res.ok) {
-        showToast('Error: ' + d.error);
+        if (selectedAddPlatform === 'youtube') {
+          upsertSavedChannel(selectedAddPlatform, plannedEntry);
+          showToast(plannedEntry.autoConnect
+            ? 'YouTube guardado; se conectara cuando haya live'
+            : 'YouTube temporal guardado como manual');
+          input.value = '';
+          toggleAddChannelForm();
+        } else {
+          showToast('Error: ' + (d.error || 'no se pudo conectar'));
+        }
       } else {
-        showToast(selectedAddPlatform.charAt(0).toUpperCase() + selectedAddPlatform.slice(1) + ' conectado');
+        const connectedEntry = normalizeChannelEntry(selectedAddPlatform, d.channel || plannedEntry.channel) || plannedEntry;
+        connectedEntry.autoConnect = plannedEntry.autoConnect;
+        connectedEntry.mode = plannedEntry.mode;
+        upsertSavedChannel(selectedAddPlatform, connectedEntry);
+        showToast(PLATFORM_LABELS[selectedAddPlatform] + ' conectado');
         input.value = '';
         toggleAddChannelForm();
       }
@@ -3613,21 +3765,70 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ platform, channel }),
       });
-      const saved = loadPlatformChannels();
-      delete saved[platform];
-      savePlatformChannels(saved);
+      removeSavedChannel(platform, channel);
       renderSettingsChannels();
-      showToast(platform.charAt(0).toUpperCase() + platform.slice(1) + ' desconectado');
+      showToast(PLATFORM_LABELS[platform] + ' desconectado');
     } catch (e) {
       showToast('Error al desconectar ' + platform);
     }
+  }
+
+  async function connectSavedChannels() {
+    const saved = loadPlatformChannels();
+    const targets = [];
+    let manualCount = 0;
+
+    PLATFORMS.forEach(platform => {
+      saved[platform].forEach(entry => {
+        if (entry.autoConnect) targets.push({ platform, entry });
+        else manualCount++;
+      });
+    });
+
+    if (targets.length === 0) {
+      showToast(manualCount ? 'Solo hay canales manuales guardados' : 'No hay canales guardados');
+      return;
+    }
+
+    const btn = document.getElementById('btn-connect-saved');
+    if (btn) { btn.disabled = true; btn.textContent = 'Conectando...'; }
+
+    let connected = 0;
+    let failed = 0;
+    for (const { platform, entry } of targets) {
+      try {
+        const res = await fetch('/api/platforms/connect', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ platform, channel: entry.channel }),
+        });
+        const d = await res.json().catch(() => ({}));
+        if (res.ok) {
+          const connectedEntry = normalizeChannelEntry(platform, d.channel || entry.channel) || entry;
+          connectedEntry.autoConnect = entry.autoConnect;
+          connectedEntry.mode = entry.mode;
+          upsertSavedChannel(platform, connectedEntry);
+          connected++;
+        } else {
+          failed++;
+        }
+      } catch (e) {
+        failed++;
+      }
+    }
+
+    if (btn) { btn.disabled = false; btn.textContent = 'Conectar todo'; }
+    renderSettingsChannels();
+    const parts = [`${connected} conectados`];
+    if (failed) parts.push(`${failed} fallidos`);
+    if (manualCount) parts.push(`${manualCount} manual`);
+    showToast('Conectar todo: ' + parts.join(', '));
   }
 
   async function renderSettingsChannels() {
     const el = document.getElementById('settings-channels-list');
     if (!el) return;
     el.innerHTML = '';
-    const icons = { tiktok: 'icons/tiktok.svg', twitch: 'icons/sports_esports.svg', youtube: 'icons/tv.svg' };
 
     let channels = { tiktok: [], twitch: [], youtube: [] };
     try {
@@ -3635,31 +3836,47 @@
       if (res.ok) channels = await res.json();
     } catch (e) {}
 
+    const saved = loadPlatformChannels();
     const all = [];
-    channels.tiktok.forEach(ch => all.push({ platform: 'tiktok', ch }));
-    channels.twitch.forEach(ch => all.push({ platform: 'twitch', ch }));
-    channels.youtube.forEach(ch => all.push({ platform: 'youtube', ch }));
+    PLATFORMS.forEach(platform => {
+      const active = new Set((channels[platform] || [])
+        .map(ch => normalizeChannelEntry(platform, ch)?.channel)
+        .filter(Boolean));
+
+      active.forEach(ch => all.push({ platform, ch, state: 'connected' }));
+      (saved[platform] || []).forEach(entry => {
+        if (!active.has(entry.channel)) {
+          all.push({ platform, ch: entry.channel, state: entry.autoConnect ? 'saved' : 'manual' });
+        }
+      });
+    });
 
     if (all.length === 0) {
-      el.innerHTML = '<div style="font-size:12px;color:var(--text-muted);">Sin canales adicionales conectados.</div>';
+      el.innerHTML = '<div style="font-size:12px;color:var(--text-muted);">Sin canales guardados. Agrega TikTok/Twitch/YouTube y luego usa Conectar todo.</div>';
       return;
     }
-    all.forEach(({ platform, ch }) => {
+    all.forEach(({ platform, ch, state }) => {
       const tag = document.createElement('span');
-      tag.className = 'channel-chip';
+      tag.className = `channel-chip ${platform}${state === 'manual' ? ' needs-action' : ''}`;
       const icon = document.createElement('img');
-      icon.src = icons[platform];
+      icon.src = PLATFORM_ICONS[platform];
       icon.alt = '';
       icon.style.cssText = 'width:12px;height:12px;opacity:0.7;';
+      const platformLabel = document.createElement('span');
+      platformLabel.className = 'channel-platform-label';
+      platformLabel.textContent = PLATFORM_LABELS[platform] + ' ·';
       const label = document.createElement('span');
       label.style.cssText = 'font-family:monospace;font-size:12px;';
-      label.textContent = '@' + ch;
+      label.textContent = formatChannelDisplay(platform, ch);
+      const status = document.createElement('span');
+      status.className = `channel-state ${state === 'connected' ? 'connected' : state === 'manual' ? 'manual' : ''}`;
+      status.textContent = stateLabel(state);
       const removeBtn = document.createElement('button');
       removeBtn.type = 'button';
-      removeBtn.title = 'Desconectar';
+      removeBtn.title = `Eliminar ${PLATFORM_LABELS[platform]} ${formatChannelDisplay(platform, ch)}`;
       removeBtn.textContent = 'x';
       removeBtn.onclick = () => removeChannel(platform, ch);
-      tag.append(icon, label, removeBtn);
+      tag.append(icon, platformLabel, label, status, removeBtn);
       el.appendChild(tag);
     });
   }
