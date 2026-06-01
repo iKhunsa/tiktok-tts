@@ -26,6 +26,8 @@ try {
   serverShutdown = require('./server').shutdown;
 } catch (e) {
   serverLoadError = e;
+  // In development, surface the real error immediately instead of hiding it
+  if (!app.isPackaged) throw e;
 }
 
 process.on('uncaughtException', (err) => {
@@ -184,7 +186,7 @@ ipcMain.handle('open-oauth-window', (_event, { url, callbackPattern }) => {
       width: 520,
       height: 720,
       title: 'Autenticación',
-      webPreferences: { nodeIntegration: false, contextIsolation: true },
+      webPreferences: { nodeIntegration: false, contextIsolation: true, sandbox: true },
     });
     let finished = false;
     const OAUTH_TIMEOUT_MS = 5 * 60 * 1000;

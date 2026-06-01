@@ -691,6 +691,19 @@ function isSpam(comment) {
 
 const ttsRequestTimes = [];
 
+// Simple in-memory rate limiter for connect endpoints (max N calls per window)
+const connectRequestTimes = [];
+function isConnectRateLimited() {
+  const now = Date.now();
+  const CONNECT_WINDOW_MS = 10000; // 10 s
+  const CONNECT_MAX = 10;
+  while (connectRequestTimes.length && connectRequestTimes[0] < now - CONNECT_WINDOW_MS)
+    connectRequestTimes.shift();
+  if (connectRequestTimes.length >= CONNECT_MAX) return true;
+  connectRequestTimes.push(now);
+  return false;
+}
+
 function isTTSRateLimited() {
   if (!config.rateLimitEnabled) return false;
   const now = Date.now();
@@ -834,7 +847,8 @@ function setupTikTokConnection(cleanUsername) {
   });
 
   conn.on('error', (err) => {
-    broadcast({ type: 'error', message: err.message || 'Error de conexión', channel: cleanUsername });
+    const safeMsg = String(err.message || 'Error de conexión').substring(0, 200);
+    broadcast({ type: 'error', message: safeMsg, channel: cleanUsername });
   });
 }
 
@@ -1533,6 +1547,13 @@ async function connectTiktokChannel(channel) {
     throw err;
   }
   connectingTiktok.add(cleanUsername);
+  // Safety: always clear the connecting flag after 30s even if connect() hangs
+  const connectingTimeout = setTimeout(() => {
+    if (connectingTiktok.has(cleanUsername)) {
+      connectingTiktok.delete(cleanUsername);
+      log('warn', 'tiktok', 'connectingTiktok flag timeout cleared for', { channel: cleanUsername });
+    }
+  }, 30000);
   const prev = tiktokChannels.get(cleanUsername);
   if (prev) {
     if (prev.timer) clearTimeout(prev.timer);
@@ -1560,11 +1581,13 @@ async function connectTiktokChannel(channel) {
     tiktokChannels.delete(cleanUsername);
     throw err;
   } finally {
+    clearTimeout(connectingTimeout);
     connectingTiktok.delete(cleanUsername);
   }
 }
 
 app.post('/api/channels/add', async (req, res) => {
+  if (isConnectRateLimited()) return res.status(429).json({ error: 'Demasiados intentos de conexión. Espera unos segundos.' });
   const { platform, channel, token } = req.body || {};
   if (!platform || !channel) return res.status(400).json({ error: 'Se requiere platform y channel' });
   try {
@@ -1681,7 +1704,9 @@ app.post('/api/obs/connect', (req, res) => {
           }
         }
       }
-    } catch (_) {}
+    } catch (parseErr) {
+      console.warn('[obs-ws] parse error on message:', parseErr.message);
+    }
   });
 
   ws.on('error', (err) => {
@@ -1759,6 +1784,8 @@ app.post('/auth/twitch/token', async (req, res) => {
     return res.status(400).json({ error: 'Cliente ID de Twitch no configurado. Ve a Configuración > Plataformas.' });
   }
   authTokens.twitch = token;
+  // TODO: persist token to config file + add expiry/refresh logic so it survives restarts
+  log('info', 'twitch-oauth', 'Token stored in memory (not persisted — lost on restart)');
   try {
     const { fetch: nodeFetch } = require('undici');
     const r = await nodeFetch('https://api.twitch.tv/helix/users', {
