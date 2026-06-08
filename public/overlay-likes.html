@@ -195,7 +195,8 @@
 
     let ws, retryDelay = 2000;
     function connectWS() {
-      ws = new WebSocket('ws://localhost:3000');
+      const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      ws = new WebSocket(`${proto}//${location.host}`);
       ws.onopen = () => { retryDelay = 2000; };
       ws.onmessage = (e) => {
         try {

@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TikTok Live TTS</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode.js/1.5.3/qrcode.min.js"></script>
   <style>
     :root {
       --bg: #171717;
@@ -653,7 +652,28 @@
 
     .cfg-btn:hover { border-color: var(--accent-border); color: var(--accent); }
 
-    /* bg-upload-row y bg-preview removidos — feature no usada en UI actual */
+    .bg-upload-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .bg-upload-row input[type="file"] {
+      display: none;
+    }
+
+    .bg-preview {
+      display: none;
+      width: 54px;
+      height: 32px;
+      object-fit: cover;
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      background: var(--bg-button);
+    }
+
+    .bg-preview.visible { display: block; }
     .cfg-btn.small { padding: 5px 10px; font-size: 11px; }
     .cfg-btn.danger { border-color: rgba(239, 68, 68, 0.4); color: #ef4444; }
     .cfg-btn.danger:hover { border-color: rgba(239, 68, 68, 0.7); color: #f87171; }
@@ -1096,8 +1116,8 @@
     .channel-chip {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      padding: 4px 8px 4px 10px;
+      gap: 7px;
+      padding: 5px 8px 5px 10px;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 6px;
@@ -1105,6 +1125,33 @@
       color: var(--text-secondary);
       font-weight: 500;
     }
+    .channel-chip.tiktok {
+      border-color: rgba(254, 44, 85, 0.42);
+      background: rgba(254, 44, 85, 0.08);
+    }
+    .channel-chip.twitch {
+      border-color: rgba(145, 70, 255, 0.52);
+      background: rgba(145, 70, 255, 0.12);
+    }
+    .channel-chip.youtube {
+      border-color: rgba(255, 0, 0, 0.42);
+      background: rgba(255, 0, 0, 0.09);
+    }
+    .channel-platform-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--text);
+    }
+    .channel-state {
+      font-size: 10px;
+      color: var(--text-muted);
+      border-left: 1px solid var(--border);
+      padding-left: 7px;
+    }
+    .channel-state.connected { color: var(--accent); }
+    .channel-state.manual { color: #f59e0b; }
+    .channel-chip.needs-action { opacity: 0.82; }
     .channel-chip button {
       background: none;
       border: none;
@@ -1216,7 +1263,13 @@
           style="padding:6px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--accent);background:rgba(62,207,142,0.12);color:var(--accent);transition:all .2s;">
           🔊 TTS Encendido
         </button>
-        <span style="font-size:11px;color:var(--text-muted);">Silencia todo el TTS con un click</span>
+        <span style="font-size:11px;color:var(--text-muted);">Apagar TTS detiene la voz y vacía la cola.</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0 4px;">
+        <button class="cfg-btn" onclick="skipCurrentTTS()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Saltar actual</button>
+        <button class="cfg-btn danger" onclick="clearTTSQueue()"><img class="icon-inline" src="icons/delete.svg" alt=""> Vaciar cola</button>
+        <button class="cfg-btn" onclick="enableEmergencyTTSMode()"><img class="icon-inline" src="icons/warning.svg" alt=""> Modo emergencia</button>
+        <span style="font-size:11px;color:var(--text-muted);">Emergencia deja activos regalos y follows, y silencia chat/likes/entradas/compartidos.</span>
       </div>
 
       <!-- CHAT LOG -->
@@ -1272,6 +1325,41 @@
             <input type="range" id="cfg-chat-bg" min="0.30" max="1.00" step="0.05" value="0.82"
                    oninput="onCfgChange('chat','bg', parseFloat(this.value)); document.getElementById('cfg-chat-bg-val').textContent = Math.round(this.value*100)" />
           </div>
+          <div class="cfg-field">
+            <label>Mensajes visibles</label>
+            <input type="number" id="cfg-chat-maxmsgs" min="5" max="80" value="30"
+                   oninput="onCfgChange('chat','maxmsgs', parseInt(this.value)||30)" />
+          </div>
+          <div class="cfg-field">
+            <label>Tamaño texto — <span id="cfg-chat-size-val">14</span>px</label>
+            <input type="range" id="cfg-chat-size" min="10" max="24" step="1" value="14"
+                   oninput="onCfgChange('chat','size', parseInt(this.value)||14); document.getElementById('cfg-chat-size-val').textContent = this.value" />
+          </div>
+          <div class="cfg-field">
+            <label>Mostrar nombres</label>
+            <label class="toggle-chip" style="width:max-content;margin-top:2px;">
+              <input type="checkbox" id="cfg-chat-usernames" checked onchange="onCfgChange('chat','usernames', this.checked)" />
+              Usuarios
+            </label>
+          </div>
+          <div class="cfg-field">
+            <label>Plataformas visibles</label>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <label class="toggle-chip" style="padding:6px 9px;"><input type="checkbox" id="cfg-chat-platform-tiktok" checked onchange="onChatPlatformChange('tiktok', this.checked)" /> TikTok</label>
+              <label class="toggle-chip" style="padding:6px 9px;"><input type="checkbox" id="cfg-chat-platform-twitch" checked onchange="onChatPlatformChange('twitch', this.checked)" /> Twitch</label>
+              <label class="toggle-chip" style="padding:6px 9px;"><input type="checkbox" id="cfg-chat-platform-youtube" checked onchange="onChatPlatformChange('youtube', this.checked)" /> YouTube</label>
+            </div>
+          </div>
+          <div class="cfg-field full">
+            <label>Fondo personalizado</label>
+            <div class="bg-upload-row">
+              <input type="file" id="cfg-chat-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
+                     onchange="uploadBg('chat', this.files[0])" />
+              <label class="cfg-btn" for="cfg-chat-bgimg">Subir imagen</label>
+              <button type="button" class="cfg-btn danger small" id="cfg-chat-bgimg-remove" onclick="removeBg('chat')" style="display:none;">Quitar</button>
+              <img class="bg-preview" id="cfg-chat-bgimg-preview" alt="">
+            </div>
+          </div>
         </div>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-chat">http://localhost:3000/overlay-chat.html</span>
@@ -1313,14 +1401,20 @@
                    oninput="onCfgChange('seguidores','bg', parseFloat(this.value)); document.getElementById('cfg-seg-bg-val').textContent = Math.round(this.value*100)" />
           </div>
           <div class="cfg-field full">
-            <label>Fondo personalizado <span style="font-size:10px;padding:2px 7px;border-radius:99px;background:rgba(124,58,237,0.18);color:#a78bfa;font-weight:600;margin-left:6px;">Próximamente</span></label>
+            <label>Fondo personalizado</label>
+            <div class="bg-upload-row">
+              <input type="file" id="cfg-seguidores-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
+                     onchange="uploadBg('seguidores', this.files[0])" />
+              <label class="cfg-btn" for="cfg-seguidores-bgimg">Subir imagen</label>
+              <button type="button" class="cfg-btn danger small" id="cfg-seguidores-bgimg-remove" onclick="removeBg('seguidores')" style="display:none;">Quitar</button>
+              <img class="bg-preview" id="cfg-seguidores-bgimg-preview" alt="">
+            </div>
           </div>
         </div>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-seguidores">http://localhost:3000/overlay-seguidores.html</span>
           <button class="cfg-btn" onclick="copyCfgUrl('seguidores')">Copiar</button>
           <a class="cfg-btn" id="cfg-open-seguidores" href="http://localhost:3000/overlay-seguidores.html" target="_blank">Abrir</a>
-          <button class="cfg-btn" disabled style="opacity:0.45;cursor:not-allowed;" title="Próximamente">Plantilla</button>
         </div>
       </div>
 
@@ -1351,7 +1445,14 @@
                    oninput="onCfgChange('likes','bg', parseFloat(this.value)); document.getElementById('cfg-likes-bg-val').textContent = Math.round(this.value*100)" />
           </div>
           <div class="cfg-field full">
-            <label>Fondo personalizado <span style="font-size:10px;padding:2px 7px;border-radius:99px;background:rgba(124,58,237,0.18);color:#a78bfa;font-weight:600;margin-left:6px;">Próximamente</span></label>
+            <label>Fondo personalizado</label>
+            <div class="bg-upload-row">
+              <input type="file" id="cfg-likes-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
+                     onchange="uploadBg('likes', this.files[0])" />
+              <label class="cfg-btn" for="cfg-likes-bgimg">Subir imagen</label>
+              <button type="button" class="cfg-btn danger small" id="cfg-likes-bgimg-remove" onclick="removeBg('likes')" style="display:none;">Quitar</button>
+              <img class="bg-preview" id="cfg-likes-bgimg-preview" alt="">
+            </div>
           </div>
         </div>
         <div class="cfg-url-row">
@@ -1359,7 +1460,6 @@
           <button class="cfg-btn" onclick="testTopLikers()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Test</button>
           <button class="cfg-btn" onclick="copyCfgUrl('likes')">Copiar</button>
           <a class="cfg-btn" id="cfg-open-likes" href="http://localhost:3000/overlay-likes.html" target="_blank">Abrir</a>
-          <button class="cfg-btn" disabled style="opacity:0.45;cursor:not-allowed;" title="Próximamente">Plantilla</button>
         </div>
       </div>
 
@@ -1390,7 +1490,14 @@
                    oninput="onCfgChange('alertas','bg', parseFloat(this.value)); document.getElementById('cfg-alertas-bg-val').textContent = Math.round(this.value*100)" />
           </div>
           <div class="cfg-field full">
-            <label>Fondo personalizado <span style="font-size:10px;padding:2px 7px;border-radius:99px;background:rgba(124,58,237,0.18);color:#a78bfa;font-weight:600;margin-left:6px;">Próximamente</span></label>
+            <label>Fondo personalizado</label>
+            <div class="bg-upload-row">
+              <input type="file" id="cfg-alertas-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
+                     onchange="uploadBg('alertas', this.files[0])" />
+              <label class="cfg-btn" for="cfg-alertas-bgimg">Subir imagen</label>
+              <button type="button" class="cfg-btn danger small" id="cfg-alertas-bgimg-remove" onclick="removeBg('alertas')" style="display:none;">Quitar</button>
+              <img class="bg-preview" id="cfg-alertas-bgimg-preview" alt="">
+            </div>
           </div>
         </div>
         <div class="cfg-url-row">
@@ -1398,7 +1505,6 @@
           <button class="cfg-btn" onclick="testGiftAlert()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Test</button>
           <button class="cfg-btn" onclick="copyCfgUrl('alertas')">Copiar</button>
           <a class="cfg-btn" id="cfg-open-alertas" href="http://localhost:3000/overlay-alertas.html" target="_blank">Abrir</a>
-          <button class="cfg-btn" disabled style="opacity:0.45;cursor:not-allowed;" title="Próximamente">Plantilla</button>
         </div>
       </div>
 
@@ -1432,6 +1538,16 @@
             <label>Opacidad fondo — <span id="cfg-alertas-social-bg-val">90</span>%</label>
             <input type="range" id="cfg-alertas-social-bg" min="0.30" max="1.00" step="0.05" value="0.90"
                    oninput="updateSocialOverlayUrl(); document.getElementById('cfg-alertas-social-bg-val').textContent = Math.round(this.value*100)" />
+          </div>
+          <div class="cfg-field full">
+            <label>Fondo personalizado</label>
+            <div class="bg-upload-row">
+              <input type="file" id="cfg-alertas-social-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
+                     onchange="uploadBg('alertas-social', this.files[0])" />
+              <label class="cfg-btn" for="cfg-alertas-social-bgimg">Subir imagen</label>
+              <button type="button" class="cfg-btn danger small" id="cfg-alertas-social-bgimg-remove" onclick="removeBg('alertas-social')" style="display:none;">Quitar</button>
+              <img class="bg-preview" id="cfg-alertas-social-bgimg-preview" alt="">
+            </div>
           </div>
         </div>
         <div class="cfg-url-row">
@@ -1469,6 +1585,16 @@
             <input type="range" id="cfg-creditos-bg" min="0.30" max="1.00" step="0.05" value="0.85"
                    oninput="onCfgChange('creditos','bg', parseFloat(this.value)); document.getElementById('cfg-creditos-bg-val').textContent = Math.round(this.value*100)" />
           </div>
+          <div class="cfg-field full">
+            <label>Fondo personalizado</label>
+            <div class="bg-upload-row">
+              <input type="file" id="cfg-creditos-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
+                     onchange="uploadBg('creditos', this.files[0])" />
+              <label class="cfg-btn" for="cfg-creditos-bgimg">Subir imagen</label>
+              <button type="button" class="cfg-btn danger small" id="cfg-creditos-bgimg-remove" onclick="removeBg('creditos')" style="display:none;">Quitar</button>
+              <img class="bg-preview" id="cfg-creditos-bgimg-preview" alt="">
+            </div>
+          </div>
         </div>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-creditos">http://localhost:3000/overlay-creditos.html</span>
@@ -1504,6 +1630,16 @@
             <label>Opacidad fondo — <span id="cfg-social-bg-val">80</span>%</label>
             <input type="range" id="cfg-social-bg" min="0.30" max="1.00" step="0.05" value="0.80"
                    oninput="onCfgChange('social','bg', parseFloat(this.value)); document.getElementById('cfg-social-bg-val').textContent = Math.round(this.value*100)" />
+          </div>
+          <div class="cfg-field full">
+            <label>Fondo personalizado</label>
+            <div class="bg-upload-row">
+              <input type="file" id="cfg-social-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
+                     onchange="uploadBg('social', this.files[0])" />
+              <label class="cfg-btn" for="cfg-social-bgimg">Subir imagen</label>
+              <button type="button" class="cfg-btn danger small" id="cfg-social-bgimg-remove" onclick="removeBg('social')" style="display:none;">Quitar</button>
+              <img class="bg-preview" id="cfg-social-bgimg-preview" alt="">
+            </div>
           </div>
         </div>
         <div class="cfg-url-row">
@@ -1553,11 +1689,6 @@
             <input type="range" id="volRange" min="0" max="1" step="0.05" value="1" oninput="updateVol(this.value)" />
             <div class="range-labels"><span>Mute</span><span>Máx</span></div>
           </div>
-          <div class="setting-group">
-            <label><img class="icon-inline" src="icons/music_note.svg" alt=""> Tono — <span id="pitchVal">1.0</span></label>
-            <input type="range" id="pitchRange" min="0.5" max="2" step="0.1" value="1" oninput="updatePitch(this.value)" />
-            <div class="range-labels"><span>Grave</span><span>Agudo</span></div>
-          </div>
         </div>
       </div>
 
@@ -1587,6 +1718,16 @@
               <button onclick="clearPauseShortcut()"
                 style="padding:8px 12px;border-radius:8px;font-size:12px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--text-muted);cursor:pointer;">
                 ✕ Limpiar
+              </button>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+              <button onclick="applyPauseShortcutPreset('F8')"
+                style="padding:6px 10px;border-radius:8px;font-size:11px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--text-secondary);cursor:pointer;">
+                Usar F8
+              </button>
+              <button onclick="applyPauseShortcutPreset('MediaPlayPause')"
+                style="padding:6px 10px;border-radius:8px;font-size:11px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--text-secondary);cursor:pointer;">
+                Usar tecla Play/Pausa
               </button>
             </div>
             <div id="pauseShortcutHint" style="font-size:11px;color:var(--text-muted);margin-top:4px;">
@@ -1622,9 +1763,12 @@
       <div class="settings-section">
         <div class="settings-section-title" style="display:flex;justify-content:space-between;align-items:center;">
           Canales adicionales
-          <button class="btn-supabase-primary" id="btn-toggle-add-channel" onclick="toggleAddChannelForm()">
-            ＋ Agregar canal
-          </button>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
+            <button class="btn-supabase-primary" id="btn-connect-saved" onclick="connectSavedChannels()">Conectar todo</button>
+            <button class="btn-supabase-primary" id="btn-toggle-add-channel" onclick="toggleAddChannelForm()">
+              ＋ Agregar canal
+            </button>
+          </div>
         </div>
         <div id="settings-channels-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:20px;margin-bottom:4px;"></div>
         <div id="add-channel-form" style="display:none;flex-direction:column;gap:10px;margin-top:10px;">
@@ -1647,6 +1791,9 @@
             <button class="btn-supabase-primary" id="btn-add-channel" onclick="addChannelFromSettings()">Conectar</button>
             <button class="btn btn-disconnect" onclick="toggleAddChannelForm()"
               style="font-size:12px;padding:9px 14px;border-radius:9999px;">Cancelar</button>
+          </div>
+          <div id="youtube-channel-hint" style="display:none;font-size:11px;color:var(--text-muted);line-height:1.5;">
+            Usa @canal o Channel ID para reconectar sin pegar link nuevo. Links watch/youtu.be se guardan como live temporal manual.
           </div>
         </div>
       </div>
@@ -1780,7 +1927,6 @@
     voice: 'es',
     rate: 1.0,
     vol: 1.0,
-    pitch: 1.0,
     readChat: true,
     readGifts: false,
     readJoins: false,
@@ -1797,7 +1943,15 @@
       creditos:   { speed: 40, color: '#3ecf8e', bg: 0.85, bgimg: '' },
       social:     { layout: 'cols', color: '#3ecf8e', bg: 0.80, bgimg: '' },
       'alertas-social': { color: '#3ecf8e', bg: 0.90, bgimg: '' },
-      chat:       { color: '#3ecf8e', bg: 0.82, bgimg: '' }
+      chat:       {
+        color: '#3ecf8e',
+        bg: 0.82,
+        bgimg: '',
+        maxmsgs: 30,
+        size: 14,
+        usernames: true,
+        platforms: { tiktok: true, twitch: true, youtube: true }
+      }
     }
   };
 
@@ -1833,13 +1987,10 @@
     // TTS sliders
     ttsRate = appSettings.rate;
     ttsVol  = appSettings.vol;
-    ttsPitch = appSettings.pitch;
     const rr = document.getElementById('rateRange');
     const vr = document.getElementById('volRange');
-    const pr = document.getElementById('pitchRange');
     if (rr) { rr.value = ttsRate; document.getElementById('rateVal').textContent = ttsRate.toFixed(1); }
     if (vr) { vr.value = ttsVol;  document.getElementById('volVal').textContent = Math.round(ttsVol * 100); }
-    if (pr) { pr.value = ttsPitch; document.getElementById('pitchVal').textContent = ttsPitch.toFixed(1); }
 
     // Toggles
     const chipMap = {
@@ -1874,8 +2025,16 @@
     if (chat) {
       setFieldVal('cfg-chat-color', chat.color);
       setFieldVal('cfg-chat-bg',    chat.bg);
+      setFieldVal('cfg-chat-maxmsgs', chat.maxmsgs);
+      setFieldVal('cfg-chat-size', chat.size);
+      setChecked('cfg-chat-usernames', chat.usernames !== false);
+      setChecked('cfg-chat-platform-tiktok', chat.platforms?.tiktok !== false);
+      setChecked('cfg-chat-platform-twitch', chat.platforms?.twitch !== false);
+      setChecked('cfg-chat-platform-youtube', chat.platforms?.youtube !== false);
       const cbValEl = document.getElementById('cfg-chat-bg-val');
       if (cbValEl) cbValEl.textContent = Math.round(chat.bg * 100);
+      const sizeValEl = document.getElementById('cfg-chat-size-val');
+      if (sizeValEl) sizeValEl.textContent = chat.size || 14;
     }
 
     setFieldVal('cfg-likes-rows',  likes.rows);
@@ -1921,6 +2080,9 @@
     updateBgPreview('likes',      likes.bgimg);
     updateBgPreview('alertas',    alertas.bgimg);
     updateBgPreview('chat',       chat.bgimg);
+    updateBgPreview('creditos',   creditos.bgimg);
+    updateBgPreview('social',     social.bgimg);
+    updateBgPreview('alertas-social', alertasSocial?.bgimg);
 
     // Rebuild overlay URLs
     updateOverlayUrl('seguidores');
@@ -1929,12 +2091,18 @@
     updateOverlayUrl('alertas');
     updateOverlayUrl('creditos');
     updateOverlayUrl('social');
+    updateSocialOverlayUrl();
 
   }
 
   function setFieldVal(id, val) {
     const el = document.getElementById(id);
     if (el && val != null) el.value = val;
+  }
+
+  function setChecked(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.checked = !!val;
   }
 
   // ─── BACKGROUND IMAGE UPLOAD ──────────────────────────────────
@@ -1948,7 +2116,8 @@
       if (data.url) {
         appSettings.overlays[type].bgimg = data.url;
         updateBgPreview(type, data.url);
-        updateOverlayUrl(type);
+        if (type === 'alertas-social') updateSocialOverlayUrl();
+        else updateOverlayUrl(type);
         saveSettings();
         showToast('Fondo subido correctamente');
       } else {
@@ -1975,7 +2144,8 @@
     const input = document.getElementById('cfg-' + type + '-bgimg');
     if (input) input.value = '';
     updateBgPreview(type, '');
-    updateOverlayUrl(type);
+    if (type === 'alertas-social') updateSocialOverlayUrl();
+    else updateOverlayUrl(type);
     saveSettings();
   }
 
@@ -1990,7 +2160,6 @@
   }
 
   // ─── TEMPLATE DOWNLOAD ────────────────────────────────────────
-  // downloadTemplate() eliminada — feature "Próximamente" nunca habilitada
 
   // ─── VISTAS ───────────────────────────────────────────────────
   function switchView(name) {
@@ -2031,6 +2200,15 @@
     } else if (type === 'chat') {
       if (cfg.color && cfg.color !== '#3ecf8e') p.set('color', cfg.color.replace('#', ''));
       if (cfg.bg !== 0.82) p.set('bg', cfg.bg);
+      if (cfg.maxmsgs && cfg.maxmsgs !== 30) p.set('maxmsgs', cfg.maxmsgs);
+      if (cfg.size && cfg.size !== 14) p.set('size', cfg.size);
+      if (cfg.usernames === false) p.set('usernames', '0');
+      const platforms = cfg.platforms || {};
+      const visible = ['tiktok', 'twitch', 'youtube'].filter((name) => platforms[name] !== false);
+      if (visible.length > 0 && visible.length < 3) p.set('platforms', visible.join(','));
+    } else if (type === 'alertas-social') {
+      if (cfg.color && cfg.color !== '#3ecf8e') p.set('color', cfg.color.replace('#', ''));
+      if (cfg.bg !== 0.90) p.set('bg', cfg.bg);
     }
 
     if (cfg && cfg.bgimg) p.set('bgimg', cfg.bgimg);
@@ -2053,6 +2231,19 @@
     saveSettings();
   }
 
+  function onChatPlatformChange(platform, checked) {
+    const chatCfg = appSettings.overlays.chat;
+    chatCfg.platforms = chatCfg.platforms || { tiktok: true, twitch: true, youtube: true };
+    chatCfg.platforms[platform] = checked;
+    if (!Object.values(chatCfg.platforms).some(Boolean)) {
+      chatCfg.platforms[platform] = true;
+      setChecked('cfg-chat-platform-' + platform, true);
+      showToast('Deja al menos una plataforma visible');
+    }
+    updateOverlayUrl('chat');
+    saveSettings();
+  }
+
   function copyCfgUrl(type) {
     navigator.clipboard.writeText(buildOverlayUrl(type))
       .then(() => showToast('URL copiada — pégala en OBS Browser Source'))
@@ -2068,7 +2259,7 @@
     try {
       const res = await fetch('/api/test/gift', { method: 'POST' });
       const data = await res.json();
-      if (data.success) showToast('<img class="icon-inline" src="icons/card_giftcard.svg" alt=""> Test alerta enviada: ' + data.giftName);
+      if (data.success) showToast('Test alerta enviada: ' + data.giftName);
       else showToast('Error al enviar test');
     } catch (e) {
       showToast('Error al enviar test');
@@ -2080,7 +2271,7 @@
       const endpoint = eventType === 'follow' ? '/api/test/follow' : '/api/test/share';
       const res  = await fetch(endpoint, { method: 'POST' });
       const data = await res.json();
-      if (data.success) showToast((eventType === 'follow' ? '💜' : '🔗') + ' Test ' + eventType + ' enviado: ' + data.user);
+      if (data.success) showToast('Test ' + eventType + ' enviado: ' + data.user);
       else showToast('Error al enviar test');
     } catch (e) {
       showToast('Error al enviar test');
@@ -2092,16 +2283,18 @@
     const shareImg  = (document.getElementById('cfg-social-share-img')?.value  || '').trim();
     const color     = document.getElementById('cfg-alertas-social-color')?.value || '#3ecf8e';
     const bg        = parseFloat(document.getElementById('cfg-alertas-social-bg')?.value || '0.90');
+    const cfg        = appSettings.overlays['alertas-social'];
     const p = new URLSearchParams();
     if (followImg) p.set('followImg', followImg);
     if (shareImg)  p.set('shareImg',  shareImg);
     if (color !== '#3ecf8e') p.set('color', color.replace('#', ''));
     if (bg !== 0.90) p.set('bg', bg);
-    appSettings.overlays['alertas-social'].color = color;
-    appSettings.overlays['alertas-social'].bg    = bg;
+    if (cfg?.bgimg) p.set('bgimg', cfg.bgimg);
+    cfg.color = color;
+    cfg.bg    = bg;
     saveSettings();
     const qs  = p.toString();
-    const url = 'http://localhost:3000/overlay-alertas-social.html' + (qs ? '?' + qs : '');
+    const url = `${location.origin}/overlay-alertas-social.html` + (qs ? '?' + qs : '');
     const urlEl  = document.getElementById('cfg-url-social-alert');
     const openEl = document.getElementById('cfg-open-social-alert');
     if (urlEl)  urlEl.textContent = url;
@@ -2119,7 +2312,7 @@
     try {
       const res = await fetch('/api/test/likes', { method: 'POST' });
       const data = await res.json();
-      if (data.success) showToast('<img class="icon-inline" src="icons/favorite.svg" alt=""> Test likes enviados (' + data.count + ' usuarios)');
+      if (data.success) showToast('Test likes enviados (' + data.count + ' usuarios)');
       else showToast('Error al enviar test');
     } catch (e) {
       showToast('Error al enviar test');
@@ -2144,18 +2337,14 @@
       btn.style.color         = ttsGlobalEnabled ? 'var(--accent)' : 'var(--text-muted)';
     }
     if (!ttsGlobalEnabled && isSpeaking) {
-      // Stop current audio and clear queue
-      if (activeAudio) { activeAudio.pause(); activeAudio = null; }
-      speechQueue = [];
-      isSpeaking = false;
-      hideSpeakingIndicator();
-      updateQueueBadge();
+      stopCurrentTTS({ clearQueue: true });
     }
   }
 
   // ─── PAUSE TTS ────────────────────────────────────────────────
   let ttsPaused = false;
   let capturingShortcut = false;
+  let pauseShortcutGlobalActive = false;
 
   function togglePauseTts() {
     ttsPaused = !ttsPaused;
@@ -2166,11 +2355,10 @@
       btn.style.background   = ttsPaused ? 'rgba(255,107,107,0.12)' : 'rgba(62,207,142,0.12)';
       btn.style.color        = ttsPaused ? '#ff6b6b' : 'var(--accent)';
     }
-    if (ttsPaused && activeAudio) {
-      activeAudio.pause();
+    if (ttsPaused) {
+      stopCurrentTTS({ clearQueue: false });
     } else if (!ttsPaused) {
-      if (activeAudio) activeAudio.play();
-      else if (!isSpeaking) processQueue();
+      if (!isSpeaking) processQueue();
     }
   }
 
@@ -2180,21 +2368,61 @@
     if (inp) { inp.value = '⌨ Presiona teclas...'; inp.style.borderColor = 'var(--accent)'; }
   }
 
-  function clearPauseShortcut() {
+  async function clearPauseShortcut() {
     appSettings.pauseShortcut = null;
+    pauseShortcutGlobalActive = false;
     saveSettings();
     capturingShortcut = false;
     renderShortcutDisplay();
-    if (window.electronAPI && window.electronAPI.registerPauseShortcut)
-      window.electronAPI.registerPauseShortcut('');
+    if (window.electronAPI?.registerPauseShortcut) {
+      await window.electronAPI.registerPauseShortcut('');
+    }
   }
 
-  function renderShortcutDisplay() {
+  function renderShortcutDisplay(status = null) {
     const shortcut = appSettings.pauseShortcut || null;
     const inp = document.getElementById('pauseShortcutInput');
     const lbl = document.getElementById('activeShortcutLabel');
+    const hint = document.getElementById('pauseShortcutHint');
     if (inp) { inp.value = shortcut || ''; inp.style.borderColor = shortcut ? 'var(--accent)' : 'var(--border)'; }
     if (lbl) lbl.textContent = shortcut || '—';
+    if (hint) {
+      if (status && status.ok === false) {
+        hint.style.color = '#ff6b6b';
+        hint.innerHTML = `Atajo no registrado: <span style="font-family:monospace;font-weight:600;">${escapeHtml(status.shortcut || shortcut || '')}</span>. ${escapeHtml(status.error || 'Prueba otro atajo.')}`;
+      } else if (shortcut) {
+        hint.style.color = 'var(--text-muted)';
+        hint.innerHTML = `Atajo activo: <span id="activeShortcutLabel" style="color:var(--accent);font-family:monospace;font-weight:600;">${escapeHtml(shortcut)}</span>`;
+      } else {
+        hint.style.color = 'var(--text-muted)';
+        hint.innerHTML = 'Atajo activo: <span id="activeShortcutLabel" style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>';
+      }
+    }
+  }
+
+  async function registerPauseShortcut(shortcut, { silent = false } = {}) {
+    if (!window.electronAPI?.registerPauseShortcut) {
+      renderShortcutDisplay({ ok: false, shortcut, error: 'Los atajos globales solo funcionan dentro de Electron.' });
+      return false;
+    }
+    const status = await window.electronAPI.registerPauseShortcut(shortcut);
+    if (status?.ok) {
+      pauseShortcutGlobalActive = true;
+      appSettings.pauseShortcut = status.shortcut;
+      saveSettings();
+      renderShortcutDisplay(status);
+      if (!silent) showToast('Atajo global registrado: ' + status.shortcut);
+      return true;
+    }
+    pauseShortcutGlobalActive = false;
+    renderShortcutDisplay(status || { ok: false, shortcut, error: 'No se pudo registrar el atajo.' });
+    if (!silent) showToast((status && status.error) || 'No se pudo registrar el atajo');
+    return false;
+  }
+
+  async function applyPauseShortcutPreset(shortcut) {
+    capturingShortcut = false;
+    await registerPauseShortcut(shortcut);
   }
 
   function matchShortcut(e, shortcut) {
@@ -2208,7 +2436,7 @@
       && e.key.toUpperCase() === key.toUpperCase();
   }
 
-  document.addEventListener('keydown', (e) => {
+  document.addEventListener('keydown', async (e) => {
     if (capturingShortcut) {
       // Ignore pure modifier keys
       if (['Control','Shift','Alt','Meta'].includes(e.key)) return;
@@ -2219,15 +2447,13 @@
       if (e.altKey)   parts.push('Alt');
       parts.push(e.key.length === 1 ? e.key.toUpperCase() : e.key);
       const shortcut = parts.join('+');
-      appSettings.pauseShortcut = shortcut;
-      saveSettings();
       capturingShortcut = false;
+      appSettings.pauseShortcut = shortcut;
       renderShortcutDisplay();
-      if (window.electronAPI && window.electronAPI.registerPauseShortcut)
-        window.electronAPI.registerPauseShortcut(shortcut);
+      await registerPauseShortcut(shortcut);
       return;
     }
-    if (appSettings.pauseShortcut && matchShortcut(e, appSettings.pauseShortcut)) {
+    if (appSettings.pauseShortcut && !pauseShortcutGlobalActive && matchShortcut(e, appSettings.pauseShortcut)) {
       e.preventDefault();
       togglePauseTts();
     }
@@ -2235,9 +2461,18 @@
 
   const LIKE_COOLDOWN_MS = 15 * 60 * 1000;
   const likeCooldownMap = new Map();
-  const CHAT_TTS_MAX_LEN = 200;
-  const MAX_QUEUE_SIZE = 15;
-  const isEdge = false; // TODO: detectar Microsoft Edge si se usa msedge-tts en renderer
+  let CHAT_TTS_MAX_LEN = 200;
+  let MAX_QUEUE_SIZE = 15;
+
+  async function loadRuntimeConfig() {
+    try {
+      const res = await fetch('/api/config');
+      if (!res.ok) return;
+      const cfg = await res.json();
+      if (Number.isInteger(cfg.TTS_MAX_CHARS) && cfg.TTS_MAX_CHARS > 0) CHAT_TTS_MAX_LEN = cfg.TTS_MAX_CHARS;
+      if (Number.isInteger(cfg.MAX_QUEUE_MSG) && cfg.MAX_QUEUE_MSG > 0) MAX_QUEUE_SIZE = cfg.MAX_QUEUE_MSG;
+    } catch (e) {}
+  }
 
   // Limpieza periódica de memoria
   setInterval(() => {
@@ -2279,7 +2514,6 @@
 
   let ttsRate = 1.0;
   let ttsVol  = 1.0;
-  let ttsPitch = 1.0;
   let selectedVoice = null;
 
   // ─── VOICES ───────────────────────────────────────────────────
@@ -2381,6 +2615,67 @@
 
   // ─── AUDIO ────────────────────────────────────────────────────
   let activeAudio = null;
+  let ttsDroppedCount = 0;
+  let ttsErrorCount = 0;
+  const TTS_MAX_ERRORS = 5;
+
+  function resetSpeakingState() {
+    if (currentMsgId) {
+      const el = document.getElementById(currentMsgId);
+      if (el) el.classList.remove('speaking');
+      currentMsgId = null;
+    }
+    isSpeaking = false;
+    hideSpeakingIndicator();
+    const glow = document.getElementById('appGlow');
+    if (glow) glow.classList.remove('active');
+    updateQueueBadge();
+  }
+
+  function stopCurrentTTS({ clearQueue = false } = {}) {
+    if (ttsAbortController) {
+      ttsAbortController.abort();
+      ttsAbortController = null;
+    }
+    if (activeAudio) {
+      activeAudio.pause();
+      activeAudio.src = '';
+      activeAudio = null;
+    }
+    if (clearQueue) speechQueue = [];
+    resetSpeakingState();
+  }
+
+  function skipCurrentTTS() {
+    const hadPending = activeAudio || ttsAbortController || isSpeaking;
+    stopCurrentTTS({ clearQueue: false });
+    showToast(hadPending ? 'Mensaje TTS saltado' : 'No hay TTS activo');
+    if (!ttsPaused && ttsGlobalEnabled && speechQueue.length > 0) setTimeout(() => processQueue(), 50);
+  }
+
+  function clearTTSQueue() {
+    const cleared = speechQueue.length + (isSpeaking ? 1 : 0);
+    stopCurrentTTS({ clearQueue: true });
+    ttsDroppedCount = 0;
+    ttsErrorCount = 0;
+    updateQueueBadge();
+    showToast(cleared ? 'Cola TTS vaciada' : 'La cola ya estaba vacia');
+  }
+
+  function enableEmergencyTTSMode() {
+    Object.assign(appSettings, {
+      readChat: false,
+      readGifts: true,
+      readJoins: false,
+      readFollows: true,
+      readLikes: false,
+      readShares: false,
+    });
+    applySettings();
+    saveSettings();
+    clearTTSQueue();
+    showToast('Modo emergencia activo: solo regalos y follows');
+  }
 
   function playAudioBlob(blob, { onEnd, onError } = {}) {
     if (!blob || blob.size === 0) { onError?.(); return; }
@@ -2440,18 +2735,18 @@
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
         const msg = errData.error || `Error ${res.status}`;
-        showToast(`Edge TTS: ${msg}`);
+        showToast(`TTS: ${msg}`);
         done(); return;
       }
       const blob = await res.blob();
-      if (isEdge && blob.size < 100) {
-        showToast('Edge TTS no respondió — verifica tu conexión a internet');
+      if (blob.size < 100) {
+        showToast('TTS no respondio correctamente; verifica tu conexion a internet');
         done(); return;
       }
       playAudioBlob(blob, { onEnd: done, onError: done });
     } catch (err) {
       console.error('Test voice error:', err);
-      if (isEdge) showToast('Edge TTS falló — verifica tu conexión a internet');
+      showToast('TTS fallo; verifica tu conexion a internet');
       done();
     }
   }
@@ -2472,13 +2767,6 @@
     saveSettings();
   }
 
-  function updatePitch(v) {
-    ttsPitch = parseFloat(v);
-    document.getElementById('pitchVal').textContent = ttsPitch.toFixed(1);
-    appSettings.pitch = ttsPitch;
-    saveSettings();
-  }
-
   function toggleOption(key, checkbox) {
     options[key] = checkbox.checked;
     const chipId = {
@@ -2493,16 +2781,17 @@
   // ─── SPEECH QUEUE ─────────────────────────────────────────────
   function speak(text, msgId, timestamp) {
     if (!ttsGlobalEnabled) return;
-    if (speechQueue.length >= MAX_QUEUE_SIZE) return;
+    if (speechQueue.length >= MAX_QUEUE_SIZE) {
+      ttsDroppedCount++;
+      updateQueueBadge();
+      return;
+    }
     speechQueue.push({ text, msgId, timestamp: timestamp || Date.now() });
     // Keep queue in chronological order so multi-platform messages play in arrival time order
     speechQueue.sort((a, b) => a.timestamp - b.timestamp);
     updateQueueBadge();
     if (!isSpeaking) processQueue();
   }
-
-  let ttsErrorCount = 0;
-  const TTS_MAX_ERRORS = 5;
 
   async function processQueue() {
     if (ttsPaused) return; // TTS pausado — esperar reanudación
@@ -2522,7 +2811,6 @@
     isSpeaking = true;
     const { text, msgId } = speechQueue.shift();
     updateQueueBadge();
-    ttsErrorCount = 0; // reset al procesar item nuevo
 
     if (currentMsgId) {
       const prev = document.getElementById(currentMsgId);
@@ -2552,7 +2840,13 @@
       if (!res.ok) { logStorage.addLog('error', 'network', `Error TTS HTTP ${res.status}`); throw new Error('TTS error'); }
 
       const blob = await res.blob();
+      if (ttsPaused || !ttsGlobalEnabled) {
+        resetSpeakingState();
+        return;
+      }
       logStorage.addLog('info', 'network', 'Audio recibido', { size: blob.size });
+      ttsErrorCount = 0;
+      updateQueueBadge();
       playAudioBlob(blob, { onEnd: () => processQueue(), onError: () => processQueue() });
     } catch (err) {
       if (err.name === 'AbortError') {
@@ -2564,6 +2858,7 @@
       }
       logStorage.addLog('error', 'network', `Error TTS: ${err.message}`);
       ttsErrorCount++;
+      updateQueueBadge();
       if (ttsErrorCount >= TTS_MAX_ERRORS) {
         showToast('TTS pausado tras múltiples errores');
         isSpeaking = false;
@@ -2592,7 +2887,11 @@
 
   function updateQueueBadge() {
     const el = document.getElementById('queueBadge');
-    if (el) el.textContent = `Cola: ${speechQueue.length} mensaje${speechQueue.length !== 1 ? 's' : ''}`;
+    if (!el) return;
+    const parts = [`Cola: ${speechQueue.length} mensaje${speechQueue.length !== 1 ? 's' : ''}`];
+    if (ttsDroppedCount > 0) parts.push(`descartados: ${ttsDroppedCount}`);
+    if (ttsErrorCount > 0) parts.push(`errores TTS: ${ttsErrorCount}/${TTS_MAX_ERRORS}`);
+    el.textContent = parts.join(' · ');
   }
 
   // ─── WEBSOCKET ────────────────────────────────────────────────
@@ -2648,9 +2947,11 @@
           const giftId   = `msg-${msgCount}`;
           const usdSuffix = data.usdValue ? `, equivale a $${data.usdValue} dólares` : '';
           const giftText = `${data.user} envió ${data.repeatCount} ${data.giftName}${usdSuffix}`;
-          const giftDisplay = `${data.user} envió ${data.repeatCount} ${data.giftName}${data.usdValue ? ` <span style="color:var(--accent);font-size:11px;">≈ $${data.usdValue} USD</span>` : ''}`;
-          addSystemMsg('<img class="icon-inline" src="icons/card_giftcard.svg" alt=""> ' + giftDisplay, 'gift', giftId);
-          speak(giftText, giftId);
+          addSystemMsg(`${data.user} envió ${data.repeatCount} ${data.giftName}`, 'gift', giftId, {
+            iconSrc: 'icons/card_giftcard.svg',
+            accentText: data.usdValue ? `≈ $${data.usdValue} USD` : ''
+          });
+          speak(giftText, giftId, data.timestamp);
         }
         break;
 
@@ -2660,8 +2961,8 @@
           document.getElementById('msgCount').textContent = msgCount;
           const joinId   = `msg-${msgCount}`;
           const joinText = `${data.user} entró al live`;
-          addSystemMsg('<img class="icon-inline" src="icons/emoji_people.svg" alt=""> ' + joinText, 'join', joinId);
-          speak(joinText, joinId);
+          addSystemMsg(joinText, 'join', joinId, { iconSrc: 'icons/emoji_people.svg' });
+          speak(joinText, joinId, data.timestamp);
         }
         break;
 
@@ -2671,8 +2972,8 @@
           document.getElementById('msgCount').textContent = msgCount;
           const followId   = `msg-${msgCount}`;
           const followText = `${data.user} te acaba de seguir`;
-          addSystemMsg('<img class="icon-inline" src="icons/person_add.svg" alt=""> ' + followText, 'join', followId);
-          speak(followText, followId);
+          addSystemMsg(followText, 'join', followId, { iconSrc: 'icons/person_add.svg' });
+          speak(followText, followId, data.timestamp);
         }
         break;
 
@@ -2686,8 +2987,8 @@
             document.getElementById('msgCount').textContent = msgCount;
             const likeId   = `msg-${msgCount}`;
             const likeText = `${data.user} dio ${data.likeCount} likes`;
-            addSystemMsg('<img class="icon-inline" src="icons/thumb_up.svg" alt=""> ' + likeText, 'join', likeId);
-            speak(likeText, likeId);
+            addSystemMsg(likeText, 'join', likeId, { iconSrc: 'icons/thumb_up.svg' });
+            speak(likeText, likeId, data.timestamp);
           }
         }
         break;
@@ -2698,8 +2999,8 @@
           document.getElementById('msgCount').textContent = msgCount;
           const shareId   = `msg-${msgCount}`;
           const shareText = `${data.user} está compartiendo el live`;
-          addSystemMsg('<img class="icon-inline" src="icons/public.svg" alt=""> ' + shareText, 'join', shareId);
-          speak(shareText, shareId);
+          addSystemMsg(shareText, 'join', shareId, { iconSrc: 'icons/public.svg' });
+          speak(shareText, shareId, data.timestamp);
         }
         break;
 
@@ -2758,7 +3059,7 @@
   function handleChatData(data, chatId) {
     addChatMsg(data, chatId);
     if (options.readChat) {
-      const ttsBase = data.comment;
+      const ttsBase = data.ttsComment || data.comment;
       const raw = options.sayUsername ? `${data.user}: ${ttsBase}` : ttsBase;
       const text = raw.length > CHAT_TTS_MAX_LEN ? raw.substring(0, CHAT_TTS_MAX_LEN) : raw;
       speak(text, chatId, data.timestamp);
@@ -2795,31 +3096,58 @@
     const empty = document.getElementById('emptyState');
     if (empty) empty.remove();
 
-    const color    = getUserColor(data.user);
+    const user     = String(data.user || 'Usuario');
+    const platform = ['tiktok', 'twitch', 'youtube'].includes(String(data.platform || '').toLowerCase())
+      ? String(data.platform).toLowerCase()
+      : '';
+    const color    = getUserColor(user);
     const time     = new Date(data.timestamp).toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
-    const initials = data.user.substring(0, 2).toUpperCase();
+    const initials = user.substring(0, 2).toUpperCase();
 
     const div = document.createElement('div');
     div.className = 'chat-msg';
     div.id = msgId;
-    const platformBadge = data.platform
-      ? `<span class="chat-platform-badge badge-${data.platform}">${data.platform}</span>`
-      : '';
-    div.innerHTML = `
-      <div class="msg-avatar" style="background:${color}22;color:${color}">${initials}</div>
-      <div class="msg-body">
-        <div class="msg-user" style="color:${color}">@${data.user}${platformBadge}</div>
-        <div class="msg-text">${renderTextWithEmotes(data.comment, data.emotes)}</div>
-      </div>
-      <div class="msg-time">${time}</div>
-    `;
+
+    const avatar = document.createElement('div');
+    avatar.className = 'msg-avatar';
+    avatar.style.background = `${color}22`;
+    avatar.style.color = color;
+    avatar.textContent = initials;
+
+    const body = document.createElement('div');
+    body.className = 'msg-body';
+
+    const userEl = document.createElement('div');
+    userEl.className = 'msg-user';
+    userEl.style.color = color;
+    userEl.append(document.createTextNode(`@${user}`));
+    if (platform) {
+      const badge = document.createElement('span');
+      badge.className = `chat-platform-badge badge-${platform}`;
+      badge.textContent = platform;
+      userEl.appendChild(badge);
+    }
+
+    const textEl = document.createElement('div');
+    textEl.className = 'msg-text';
+    textEl.innerHTML = renderTextWithEmotes(data.comment || '', data.emotes);
+
+    const timeEl = document.createElement('div');
+    timeEl.className = 'msg-time';
+    timeEl.textContent = time;
+
+    body.appendChild(userEl);
+    body.appendChild(textEl);
+    div.appendChild(avatar);
+    div.appendChild(body);
+    div.appendChild(timeEl);
 
     const log = document.getElementById('chatLog');
     log.appendChild(div);
     log.scrollTop = log.scrollHeight;
   }
 
-  function addSystemMsg(text, type, msgId) {
+  function addSystemMsg(text, type, msgId, { iconSrc = '', accentText = '' } = {}) {
     const empty = document.getElementById('emptyState');
     if (empty) empty.remove();
 
@@ -2832,7 +3160,23 @@
     const txt = document.createElement('div');
     txt.className = 'msg-text';
     txt.style.fontSize = '13px';
-    txt.innerHTML = text;
+    if (iconSrc) {
+      const icon = document.createElement('img');
+      icon.className = 'icon-inline';
+      icon.src = iconSrc;
+      icon.alt = '';
+      txt.appendChild(icon);
+      txt.appendChild(document.createTextNode(' '));
+    }
+    txt.appendChild(document.createTextNode(String(text || '')));
+    if (accentText) {
+      txt.appendChild(document.createTextNode(' '));
+      const accent = document.createElement('span');
+      accent.style.color = 'var(--accent)';
+      accent.style.fontSize = '11px';
+      accent.textContent = accentText;
+      txt.appendChild(accent);
+    }
     body.appendChild(txt);
     div.appendChild(body);
 
@@ -2844,10 +3188,9 @@
   let ttsAbortController = null;
 
   function clearChat() {
-    if (ttsAbortController) {
-      ttsAbortController.abort();
-      ttsAbortController = null;
-    }
+    stopCurrentTTS({ clearQueue: true });
+    ttsDroppedCount = 0;
+    ttsErrorCount = 0;
     document.getElementById('chatLog').innerHTML = `
       <div class="empty-state" id="emptyState">
         <div class="empty-icon"><img class="icon-inline" src="icons/mic.svg" alt=""></div>
@@ -2855,10 +3198,7 @@
       </div>`;
     msgCount = 0;
     document.getElementById('msgCount').textContent = '0';
-    speechQueue = [];
     likeCooldownMap.clear();
-    isSpeaking = false;
-    hideSpeakingIndicator();
     updateQueueBadge();
   }
 
@@ -2914,10 +3254,7 @@
   async function disconnect() {
     try { await fetch('/api/disconnect', { method: 'POST' }); } catch(e) {}
     if (ws) ws.close();
-    isSpeaking = false;
-    speechQueue = [];
-    hideSpeakingIndicator();
-    updateQueueBadge();
+    stopCurrentTTS({ clearQueue: true });
   }
 
   document.getElementById('usernameInput').addEventListener('keydown', (e) => {
@@ -3085,21 +3422,40 @@
       const header = document.createElement('div');
       header.className = 'clips-day-header';
       const count = entries.length;
-      header.innerHTML = `<span>${dateStr}</span><span style="color:var(--text-muted);font-size:11px;font-weight:400;">${count} marca${count !== 1 ? 's' : ''} &nbsp;▾</span>`;
+      const dateLabel = document.createElement('span');
+      dateLabel.textContent = dateStr;
+      const countLabel = document.createElement('span');
+      countLabel.style.color = 'var(--text-muted)';
+      countLabel.style.fontSize = '11px';
+      countLabel.style.fontWeight = '400';
+      countLabel.textContent = `${count} marca${count !== 1 ? 's' : ''} ▾`;
+      header.append(dateLabel, countLabel);
       const body = document.createElement('div');
       body.className = 'clips-day-body' + (idx === 0 ? ' open' : '');
       header.onclick = () => body.classList.toggle('open');
       entries.forEach(e => {
         const row = document.createElement('div');
         row.className = 'clip-entry';
-        row.innerHTML = `
-          <span class="clip-elapsed">${e.elapsed}</span>
-          <span class="clip-abstime">${e.absoluteTime}</span>
-          <span class="clip-label"><input type="text" placeholder="Etiqueta..." value="${escapeHtml(e.label || '')}" /></span>
-          <button class="clip-delete" title="Borrar marcador">✕</button>
-        `;
-        row.querySelector('.clip-delete').onclick = () => deleteClip(dateStr, e.id);
-        row.querySelector('input').onchange = (ev) => updateClipLabel(dateStr, e.id, ev.target.value);
+        const elapsed = document.createElement('span');
+        elapsed.className = 'clip-elapsed';
+        elapsed.textContent = e.elapsed || '';
+        const absolute = document.createElement('span');
+        absolute.className = 'clip-abstime';
+        absolute.textContent = e.absoluteTime || '';
+        const labelWrap = document.createElement('span');
+        labelWrap.className = 'clip-label';
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = 'Etiqueta...';
+        input.value = e.label || '';
+        input.onchange = (ev) => updateClipLabel(dateStr, e.id, ev.target.value);
+        labelWrap.appendChild(input);
+        const del = document.createElement('button');
+        del.className = 'clip-delete';
+        del.title = 'Borrar marcador';
+        del.textContent = '✕';
+        del.onclick = () => deleteClip(dateStr, e.id);
+        row.append(elapsed, absolute, labelWrap, del);
         body.appendChild(row);
       });
       const dayFooter = document.createElement('div');
@@ -3215,16 +3571,122 @@
 
   // ─── PLATFORMS ────────────────────────────────────────────────
   const PLATFORM_CHANNELS_KEY = 'tikliveTTS_platforms_v1';
+  const PLATFORMS = ['tiktok', 'twitch', 'youtube'];
+  const PLATFORM_LABELS = { tiktok: 'TikTok', twitch: 'Twitch', youtube: 'YouTube' };
+  const PLATFORM_ICONS = { tiktok: 'icons/tiktok.svg', twitch: 'icons/sports_esports.svg', youtube: 'icons/tv.svg' };
 
   function loadPlatformChannels() {
-    try { return JSON.parse(localStorage.getItem(PLATFORM_CHANNELS_KEY) || '{}'); } catch (e) { return {}; }
+    try {
+      const raw = JSON.parse(localStorage.getItem(PLATFORM_CHANNELS_KEY) || '{}');
+      const normalized = normalizeSavedChannels(raw);
+      if (JSON.stringify(raw) !== JSON.stringify(normalized)) savePlatformChannels(normalized);
+      return normalized;
+    } catch (e) {
+      return normalizeSavedChannels({});
+    }
   }
 
   function savePlatformChannels(data) {
-    try { localStorage.setItem(PLATFORM_CHANNELS_KEY, JSON.stringify(data)); } catch (e) {}
+    try { localStorage.setItem(PLATFORM_CHANNELS_KEY, JSON.stringify(normalizeSavedChannels(data))); } catch (e) {}
+  }
+
+  function normalizeSavedChannels(data = {}) {
+    const output = { tiktok: [], twitch: [], youtube: [] };
+    PLATFORMS.forEach(platform => {
+      const value = data?.[platform];
+      const items = Array.isArray(value) ? value : (value ? [{ channel: value }] : []);
+      items.forEach(item => {
+        const entry = normalizeChannelEntry(platform, item?.channel ?? item);
+        if (!entry) return;
+        entry.autoConnect = item?.autoConnect ?? entry.autoConnect;
+        entry.mode = item?.mode || entry.mode;
+        if (!output[platform].some(existing => existing.channel === entry.channel)) {
+          output[platform].push(entry);
+        }
+      });
+    });
+    return output;
+  }
+
+  function normalizeChannelEntry(platform, value) {
+    const raw = String(value || '').trim();
+    if (!raw || !PLATFORMS.includes(platform)) return null;
+
+    if (platform === 'tiktok') {
+      const channel = raw.replace(/^@+/, '').split(/[/?#]/)[0].trim();
+      return channel ? { channel, autoConnect: true, mode: 'savedTarget' } : null;
+    }
+
+    if (platform === 'twitch') {
+      const channel = raw
+        .replace(/^https?:\/\/(www\.)?twitch\.tv\//i, '')
+        .replace(/^[@#]+/, '')
+        .split(/[/?#]/)[0]
+        .trim()
+        .toLowerCase();
+      return channel ? { channel, autoConnect: true, mode: 'savedTarget' } : null;
+    }
+
+    return normalizeYoutubeEntry(raw);
+  }
+
+  function normalizeYoutubeEntry(raw) {
+    const videoEntry = channel => channel ? { channel, autoConnect: false, mode: 'temporaryLive' } : null;
+    const savedEntry = channel => channel ? { channel, autoConnect: true, mode: 'savedTarget' } : null;
+
+    try {
+      const candidate = /^https?:\/\//i.test(raw)
+        ? raw
+        : (/youtube\.com|youtu\.be/i.test(raw) ? 'https://' + raw : raw);
+      const url = new URL(candidate);
+      const host = url.hostname.replace(/^www\./, '').toLowerCase();
+      if (host === 'youtu.be') return videoEntry(url.pathname.split('/').filter(Boolean)[0]);
+      if (host.endsWith('youtube.com')) {
+        const parts = url.pathname.split('/').filter(Boolean);
+        if (url.pathname === '/watch') return videoEntry(url.searchParams.get('v'));
+        if (parts[0] === 'live') return videoEntry(parts[1]);
+        if (parts[0] === 'channel') return savedEntry(parts[1]);
+        if (parts[0]?.startsWith('@')) return savedEntry(parts[0]);
+        if (parts[0] === 'c' || parts[0] === 'user') return savedEntry(parts[1] ? '@' + parts[1].replace(/^@+/, '') : '');
+      }
+    } catch (e) {}
+
+    if (/^UC[\w-]{20,}$/i.test(raw)) return savedEntry(raw);
+    if (/^@[\w.-]+$/i.test(raw)) return savedEntry(raw);
+    if (/^[\w-]{11}$/.test(raw)) return videoEntry(raw);
+    return savedEntry('@' + raw.replace(/^@+/, '').split(/[/?#]/)[0]);
+  }
+
+  function upsertSavedChannel(platform, entry) {
+    if (!entry) return;
+    const saved = loadPlatformChannels();
+    saved[platform] = saved[platform].filter(item => item.channel !== entry.channel);
+    saved[platform].push(entry);
+    savePlatformChannels(saved);
+  }
+
+  function removeSavedChannel(platform, channel) {
+    const saved = loadPlatformChannels();
+    const normalized = normalizeChannelEntry(platform, channel);
+    const target = normalized?.channel || channel;
+    saved[platform] = saved[platform].filter(item => item.channel !== target);
+    savePlatformChannels(saved);
+  }
+
+  function formatChannelDisplay(platform, channel) {
+    if (platform === 'youtube' && /^[\w-]{11}$/.test(channel)) return channel;
+    return '@' + String(channel || '').replace(/^@+/, '');
+  }
+
+  function stateLabel(state) {
+    if (state === 'connected') return 'Conectado';
+    if (state === 'manual') return 'Manual';
+    if (state === 'error') return 'Error';
+    return 'Guardado';
   }
 
   let selectedAddPlatform = 'tiktok';
+  let settingsChannelsRenderSeq = 0;
 
   function toggleAddChannelForm() {
     const form = document.getElementById('add-channel-form');
@@ -3240,13 +3702,15 @@
 
   function selectAddPlatform(platform) {
     selectedAddPlatform = platform;
-    ['tiktok', 'twitch', 'youtube'].forEach(p => {
+    PLATFORMS.forEach(p => {
       const btn = document.getElementById(`seg-${p}`);
       if (btn) btn.classList.toggle('active', p === platform);
     });
-    const placeholders = { tiktok: '@usuario', twitch: 'nombre_del_canal', youtube: '@canal o ID' };
+    const placeholders = { tiktok: '@usuario', twitch: 'nombre_del_canal', youtube: '@canal, Channel ID o link live' };
     const input = document.getElementById('add-channel-input');
     if (input) { input.placeholder = placeholders[platform] || '@usuario'; input.focus(); }
+    const hint = document.getElementById('youtube-channel-hint');
+    if (hint) hint.style.display = platform === 'youtube' ? 'block' : 'none';
   }
 
   async function addChannelFromSettings() {
@@ -3254,9 +3718,8 @@
     const channel = (input?.value || '').trim();
     if (!channel) { showToast('Escribe el nombre del canal'); return; }
 
-    const saved = loadPlatformChannels();
-    saved[selectedAddPlatform] = channel;
-    savePlatformChannels(saved);
+    const plannedEntry = normalizeChannelEntry(selectedAddPlatform, channel);
+    if (!plannedEntry) { showToast('Canal invalido'); return; }
 
     const btn = document.getElementById('btn-add-channel');
     if (btn) { btn.disabled = true; btn.textContent = 'Conectando...'; }
@@ -3269,9 +3732,22 @@
       });
       const d = await res.json();
       if (!res.ok) {
-        showToast('Error: ' + d.error);
+        if (selectedAddPlatform === 'youtube') {
+          upsertSavedChannel(selectedAddPlatform, plannedEntry);
+          showToast(plannedEntry.autoConnect
+            ? 'YouTube guardado; se conectara cuando haya live'
+            : 'YouTube temporal guardado como manual');
+          input.value = '';
+          toggleAddChannelForm();
+        } else {
+          showToast('Error: ' + (d.error || 'no se pudo conectar'));
+        }
       } else {
-        showToast(selectedAddPlatform.charAt(0).toUpperCase() + selectedAddPlatform.slice(1) + ' conectado');
+        const connectedEntry = normalizeChannelEntry(selectedAddPlatform, d.channel || plannedEntry.channel) || plannedEntry;
+        connectedEntry.autoConnect = plannedEntry.autoConnect;
+        connectedEntry.mode = plannedEntry.mode;
+        upsertSavedChannel(selectedAddPlatform, connectedEntry);
+        showToast(PLATFORM_LABELS[selectedAddPlatform] + ' conectado');
         input.value = '';
         toggleAddChannelForm();
       }
@@ -3290,41 +3766,131 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ platform, channel }),
       });
-      const saved = loadPlatformChannels();
-      delete saved[platform];
-      savePlatformChannels(saved);
+      removeSavedChannel(platform, channel);
       renderSettingsChannels();
-      showToast(platform.charAt(0).toUpperCase() + platform.slice(1) + ' desconectado');
+      showToast(PLATFORM_LABELS[platform] + ' desconectado');
     } catch (e) {
       showToast('Error al desconectar ' + platform);
     }
   }
 
+  async function connectSavedChannels() {
+    const saved = loadPlatformChannels();
+    const targets = [];
+    let manualCount = 0;
+
+    PLATFORMS.forEach(platform => {
+      saved[platform].forEach(entry => {
+        if (entry.autoConnect) targets.push({ platform, entry });
+        else manualCount++;
+      });
+    });
+
+    if (targets.length === 0) {
+      showToast(manualCount ? 'Solo hay canales manuales guardados' : 'No hay canales guardados');
+      return;
+    }
+
+    const btn = document.getElementById('btn-connect-saved');
+    if (btn) { btn.disabled = true; btn.textContent = 'Conectando...'; }
+
+    let connected = 0;
+    let failed = 0;
+    for (const { platform, entry } of targets) {
+      try {
+        const res = await fetch('/api/platforms/connect', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ platform, channel: entry.channel }),
+        });
+        const d = await res.json().catch(() => ({}));
+        if (res.ok) {
+          const connectedEntry = normalizeChannelEntry(platform, d.channel || entry.channel) || entry;
+          connectedEntry.autoConnect = entry.autoConnect;
+          connectedEntry.mode = entry.mode;
+          upsertSavedChannel(platform, connectedEntry);
+          connected++;
+        } else {
+          failed++;
+        }
+      } catch (e) {
+        failed++;
+      }
+    }
+
+    if (btn) { btn.disabled = false; btn.textContent = 'Conectar todo'; }
+    renderSettingsChannels();
+    const parts = [`${connected} conectados`];
+    if (failed) parts.push(`${failed} fallidos`);
+    if (manualCount) parts.push(`${manualCount} manual`);
+    showToast('Conectar todo: ' + parts.join(', '));
+  }
+
   async function renderSettingsChannels() {
+    const renderSeq = ++settingsChannelsRenderSeq;
     const el = document.getElementById('settings-channels-list');
     if (!el) return;
-    el.innerHTML = '';
-    const icons = { tiktok: 'icons/tiktok.svg', twitch: 'icons/sports_esports.svg', youtube: 'icons/tv.svg' };
 
     let channels = { tiktok: [], twitch: [], youtube: [] };
     try {
       const res = await fetch('/api/channels');
       if (res.ok) channels = await res.json();
     } catch (e) {}
+    if (renderSeq !== settingsChannelsRenderSeq) return;
 
-    const all = [];
-    channels.tiktok.forEach(ch => all.push({ platform: 'tiktok', ch }));
-    channels.twitch.forEach(ch => all.push({ platform: 'twitch', ch }));
-    channels.youtube.forEach(ch => all.push({ platform: 'youtube', ch }));
+    const saved = loadPlatformChannels();
+    const byKey = new Map();
+    const stateRank = { connected: 3, saved: 2, manual: 1, error: 0 };
+    const addChannelChip = (platform, ch, state) => {
+      const normalized = normalizeChannelEntry(platform, ch)?.channel;
+      if (!normalized) return;
+      const key = `${platform}:${normalized}`;
+      const existing = byKey.get(key);
+      if (!existing || stateRank[state] > stateRank[existing.state]) {
+        byKey.set(key, { platform, ch: normalized, state });
+      }
+    };
 
+    PLATFORMS.forEach(platform => {
+      const active = new Set((channels[platform] || [])
+        .map(ch => normalizeChannelEntry(platform, ch)?.channel)
+        .filter(Boolean));
+
+      active.forEach(ch => addChannelChip(platform, ch, 'connected'));
+      (saved[platform] || []).forEach(entry => {
+        const savedChannel = normalizeChannelEntry(platform, entry.channel)?.channel;
+        if (savedChannel && !active.has(savedChannel)) addChannelChip(platform, savedChannel, entry.autoConnect ? 'saved' : 'manual');
+      });
+    });
+
+    const all = Array.from(byKey.values());
+    el.innerHTML = '';
     if (all.length === 0) {
-      el.innerHTML = '<div style="font-size:12px;color:var(--text-muted);">Sin canales adicionales conectados.</div>';
+      el.innerHTML = '<div style="font-size:12px;color:var(--text-muted);">Sin canales guardados. Agrega TikTok/Twitch/YouTube y luego usa Conectar todo.</div>';
       return;
     }
-    all.forEach(({ platform, ch }) => {
+    all.forEach(({ platform, ch, state }) => {
       const tag = document.createElement('span');
-      tag.className = 'channel-chip';
-      tag.innerHTML = `<img src="${icons[platform]}" style="width:12px;height:12px;opacity:0.7;" alt=""><span style="font-family:monospace;font-size:12px;">@${escapeHtml(ch)}</span><button onclick="removeChannel('${platform}','${escapeHtml(ch)}')" title="Desconectar">✕</button>`;
+      tag.className = `channel-chip ${platform}${state === 'manual' ? ' needs-action' : ''}`;
+      const icon = document.createElement('img');
+      icon.src = PLATFORM_ICONS[platform];
+      icon.alt = '';
+      icon.style.cssText = 'width:12px;height:12px;opacity:0.7;';
+      const platformLabel = document.createElement('span');
+      platformLabel.className = 'channel-platform-label';
+      platformLabel.textContent = PLATFORM_LABELS[platform] + ' ·';
+      const label = document.createElement('span');
+      label.style.cssText = 'font-family:monospace;font-size:12px;';
+      label.textContent = formatChannelDisplay(platform, ch);
+      const status = document.createElement('span');
+      status.className = `channel-state ${state === 'connected' ? 'connected' : state === 'manual' ? 'manual' : ''}`;
+      status.textContent = stateLabel(state);
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.title = `Eliminar ${PLATFORM_LABELS[platform]} ${formatChannelDisplay(platform, ch)}`;
+      removeBtn.textContent = 'x';
+      removeBtn.onclick = () => removeChannel(platform, ch);
+      tag.append(icon, platformLabel, label, status, removeBtn);
       el.appendChild(tag);
     });
   }
@@ -3345,10 +3911,11 @@
   // ─── INIT ─────────────────────────────────────────────────────
   loadSettings();
   applySettings();
+  loadRuntimeConfig();
   renderShortcutDisplay();
   // Re-register global pause shortcut after reload
   if (appSettings.pauseShortcut && window.electronAPI?.registerPauseShortcut)
-    window.electronAPI.registerPauseShortcut(appSettings.pauseShortcut);
+    registerPauseShortcut(appSettings.pauseShortcut, { silent: true });
   loadVoices();
   connectWS();
   updateQueueBadge();
