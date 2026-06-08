@@ -507,7 +507,7 @@ function startFollowerRefresh() {
     const fe = firstTiktokEntry();
     if (!fe) return;
     try {
-      const roomInfo = await fe.conn.getRoomInfo();
+      const roomInfo = await fe.conn.fetchRoomInfo();
       const newCount = extractFollowerCount(roomInfo);
       if (newCount > 0 && newCount !== overlayState.baseFollowerCount) {
         overlayState.baseFollowerCount = newCount;
