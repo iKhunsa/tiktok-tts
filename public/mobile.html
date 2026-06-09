@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0f0f0f">
+<title>TTS Remote</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0f0f0f;
+  --surface:   #1a1a1a;
+  --surface2:  #252525;
+  --border:    #2e2e2e;
+  --accent:    #3ecf8e;
+  --accent-bg: rgba(62,207,142,.13);
+  --danger:    #fe2c55;
+  --warn:      #ff922b;
+  --text:      #e8e8e8;
+  --muted:     #666;
+  --radius:    13px;
+  --tab-h:     60px;
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── APP SHELL ── */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+}
+
+/* ── HEADER ── */
+header {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.status-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--muted);
+  flex-shrink: 0;
+  transition: background .3s;
+}
+.status-dot.online { background: var(--accent); box-shadow: 0 0 7px var(--accent); animation: pulse 2s infinite; }
+.status-dot.error  { background: var(--danger); }
+
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.45} }
+
+.header-title { font-size: 15px; font-weight: 700; letter-spacing: -.2px; }
+.header-sub   { font-size: 11px; color: var(--muted); margin-left: auto; }
+
+/* ── TAB CONTENT ── */
+#tabContent {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.tab-panel {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: none;
+}
+.tab-panel.active { display: flex; flex-direction: column; }
+
+/* ── BOTTOM TAB BAR ── */
+nav {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  height: var(--tab-h);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.tab-btn {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 3px; cursor: pointer; background: none; border: none;
+  color: var(--muted); font-size: 11px; font-weight: 600;
+  transition: color .15s;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.tab-btn .tab-icon { font-size: 20px; line-height: 1; }
+.tab-btn.active { color: var(--accent); }
+.tab-btn.active::before {
+  content: '';
+  position: absolute; top: 0; left: 25%; right: 25%;
+  height: 2px; background: var(--accent); border-radius: 0 0 3px 3px;
+}
+
+/* badge (clips count) */
+.tab-badge {
+  position: absolute; top: 6px; right: calc(50% - 18px);
+  background: var(--danger); color: #fff;
+  font-size: 9px; font-weight: 800;
+  min-width: 16px; height: 16px;
+  border-radius: 8px; padding: 0 4px;
+  display: none; align-items: center; justify-content: center;
+}
+.tab-badge.show { display: flex; }
+
+/* ════════════════════════════════════════
+   TAB 1 — CHAT
+════════════════════════════════════════ */
+#tabChat {
+  padding: 8px 10px;
+  gap: 5px;
+}
+
+.chat-empty {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  color: var(--muted); font-size: 13px; text-align: center; padding: 24px;
+}
+
+.chat-msg {
+  display: flex; align-items: flex-start; gap: 7px;
+  padding: 7px 9px; border-radius: 10px;
+  background: var(--surface);
+  animation: fadeIn .18s ease;
+  flex-shrink: 0;
+}
+@keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1} }
+
+.plat-badge {
+  font-size: 9px; font-weight: 800; padding: 2px 5px;
+  border-radius: 4px; flex-shrink: 0; margin-top: 2px;
+  text-transform: uppercase; letter-spacing: .4px;
+}
+.plat-tiktok  { background: rgba(254,44,85,.18);  color: #fe2c55; }
+.plat-twitch  { background: rgba(145,70,255,.18); color: #9146ff; }
+.plat-youtube { background: rgba(255,0,0,.18);    color: #ff4444; }
+
+.msg-body { flex: 1; min-width: 0; word-break: break-word; line-height: 1.4; }
+.msg-user { font-weight: 700; font-size: 12px; color: var(--accent); }
+.msg-text { font-size: 13px; color: var(--text); }
+
+/* ════════════════════════════════════════
+   TAB 2 — CONTROL (Steam Deck)
+════════════════════════════════════════ */
+#tabControl {
+  padding: 14px 14px 20px;
+  gap: 10px;
+}
+
+/* Master TTS */
+#btnGlobalTTS {
+  width: 100%; padding: 16px; border-radius: var(--radius); border: none; cursor: pointer;
+  font-size: 16px; font-weight: 800; letter-spacing: .1px;
+  background: var(--accent-bg); color: var(--accent);
+  border: 2px solid var(--accent);
+  transition: all .2s;
+  -webkit-tap-highlight-color: transparent;
+}
+#btnGlobalTTS.off {
+  background: var(--surface); color: var(--muted);
+  border-color: var(--border);
+}
+#btnGlobalTTS:active { opacity: .75; }
+
+/* 2-col action grid */
+.action-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+}
+
+.act-btn {
+  padding: 14px 8px; border-radius: var(--radius);
+  border: 1px solid var(--border); background: var(--surface2);
+  color: var(--text); font-size: 13px; font-weight: 700;
+  cursor: pointer; display: flex; flex-direction: column;
+  align-items: center; gap: 5px;
+  transition: background .15s;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 70px; justify-content: center;
+}
+.act-btn .act-icon { font-size: 22px; line-height: 1; }
+.act-btn:active { background: var(--border); }
+
+.act-btn.pause-active {
+  border-color: var(--warn); color: var(--warn);
+  background: rgba(255,146,43,.08);
+}
+.act-btn.danger {
+  border-color: rgba(254,44,85,.35); color: var(--danger);
+  background: rgba(254,44,85,.06);
+}
+
+/* Section label */
+.ctrl-label {
+  font-size: 10px; font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .8px;
+  padding-bottom: 2px;
+}
+
+/* Toggle chip grid */
+.chips-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 7px;
+}
+
+.m-chip {
+  padding: 11px 10px; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--surface2);
+  color: var(--muted); font-size: 12px; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; gap: 7px;
+  transition: all .18s;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.m-chip.active {
+  border-color: var(--accent); background: var(--accent-bg); color: var(--accent);
+}
+.m-chip:active { opacity: .7; }
+.chip-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--border); flex-shrink: 0; transition: background .15s;
+}
+.m-chip.active .chip-dot { background: var(--accent); }
+
+/* Full-width action buttons */
+.full-btn {
+  width: 100%; padding: 13px; border-radius: var(--radius);
+  border: none; cursor: pointer; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  transition: opacity .15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.full-btn:active { opacity: .7; }
+
+#btnSoloChat {
+  background: rgba(62,207,142,.08);
+  border: 1px solid rgba(62,207,142,.3);
+  color: var(--accent);
+}
+
+#btnMarkClip {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+#btnMarkClip.timer-on {
+  background: rgba(62,207,142,.08);
+  border-color: rgba(62,207,142,.3);
+  color: var(--accent);
+}
+#btnMarkClip:disabled {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--muted); cursor: not-allowed;
+}
+
+/* ════════════════════════════════════════
+   TAB 3 — CLIPS
+════════════════════════════════════════ */
+#tabClips {
+  padding: 14px 14px 20px;
+  gap: 8px;
+}
+
+.clips-day-header {
+  font-size: 11px; font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .5px;
+  padding-bottom: 6px;
+}
+
+.clip-item {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--surface); border-radius: 10px; padding: 11px 13px;
+  gap: 10px;
+}
+.clip-left   { display: flex; align-items: center; gap: 9px; }
+.clip-icon   { font-size: 18px; flex-shrink: 0; }
+.clip-num    { font-weight: 700; font-size: 13px; }
+.clip-times  { display: flex; flex-direction: column; gap: 1px; }
+.clip-elapsed { font-size: 13px; font-weight: 700; color: var(--text); font-family: monospace; }
+.clip-abs     { font-size: 11px; color: var(--muted); }
+
+.clip-del {
+  background: none; border: none; cursor: pointer;
+  color: var(--muted); font-size: 20px; padding: 4px 8px;
+  border-radius: 8px; line-height: 1; flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+  transition: color .15s;
+}
+.clip-del:active { color: var(--danger); }
+
+.clips-empty {
+  color: var(--muted); font-size: 13px; text-align: center;
+  padding: 32px 20px;
+}
+
+/* ── TOAST ── */
+#toast {
+  position: fixed; bottom: calc(var(--tab-h) + 12px); left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface2); color: var(--text);
+  padding: 9px 18px; border-radius: 20px;
+  font-size: 13px; font-weight: 600;
+  box-shadow: 0 4px 20px rgba(0,0,0,.6);
+  opacity: 0; transition: opacity .2s; white-space: nowrap;
+  pointer-events: none; z-index: 50;
+}
+#toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HEADER -->
+  <header>
+    <div class="status-dot" id="statusDot"></div>
+    <span class="header-title">TTS Remote</span>
+    <span style="font-size:9px;font-weight:800;background:rgba(255,146,43,.18);color:#ff922b;border:1px solid rgba(255,146,43,.4);padding:2px 6px;border-radius:5px;letter-spacing:.4px;flex-shrink:0;">BETA</span>
+    <span class="header-sub" id="statusText">Conectando…</span>
+  </header>
+
+  <!-- TAB CONTENT -->
+  <div id="tabContent">
+
+    <!-- TAB 1: CHAT -->
+    <div class="tab-panel active" id="tabChat">
+      <div class="chat-empty" id="chatEmpty">Esperando mensajes del chat…</div>
+    </div>
+
+    <!-- TAB 2: CONTROL -->
+    <div class="tab-panel" id="tabControl">
+
+      <!-- Master TTS -->
+      <button id="btnGlobalTTS" onclick="toggleGlobal()">🔊 TTS Encendido</button>
+
+      <!-- Pause / Skip -->
+      <div class="action-grid">
+        <button class="act-btn" id="btnPause" onclick="togglePause()">
+          <span class="act-icon">⏸</span>Pausar
+        </button>
+        <button class="act-btn" onclick="cmd('skip')">
+          <span class="act-icon">⏭</span>Saltar
+        </button>
+      </div>
+
+      <!-- Clear / Emergency -->
+      <div class="action-grid">
+        <button class="act-btn" onclick="cmd('clear')">
+          <span class="act-icon">🗑</span>Vaciar cola
+        </button>
+        <button class="act-btn danger" onclick="cmd('emergency')">
+          <span class="act-icon">⚡</span>Emergencia
+        </button>
+      </div>
+
+      <!-- Toggle chips -->
+      <div class="ctrl-label">Qué se lee</div>
+      <div class="chips-grid">
+        <div class="m-chip" id="chip-readChat"    onclick="toggleChip('readChat')">   <span class="chip-dot"></span>Chat</div>
+        <div class="m-chip" id="chip-readGifts"   onclick="toggleChip('readGifts')">  <span class="chip-dot"></span>Regalos</div>
+        <div class="m-chip" id="chip-readJoins"   onclick="toggleChip('readJoins')">  <span class="chip-dot"></span>Entradas</div>
+        <div class="m-chip" id="chip-readFollows" onclick="toggleChip('readFollows')"><span class="chip-dot"></span>Follows</div>
+        <div class="m-chip" id="chip-readLikes"   onclick="toggleChip('readLikes')">  <span class="chip-dot"></span>Likes</div>
+        <div class="m-chip" id="chip-readShares"  onclick="toggleChip('readShares')"> <span class="chip-dot"></span>Compartidos</div>
+        <div class="m-chip" id="chip-sayUsername" onclick="toggleChip('sayUsername')"><span class="chip-dot"></span>Decir usuario</div>
+      </div>
+
+      <!-- Presets -->
+      <button id="btnSoloChat" class="full-btn" onclick="cmd('soloChat')">⭐ Solo Chat</button>
+
+      <!-- Mark clip -->
+      <button id="btnMarkClip" class="full-btn" onclick="cmd('markClip')" disabled>
+        🎬 Marcar Clip
+      </button>
+
+      <!-- Discord -->
+      <a href="https://discord.gg/mwY859tcQK" target="_blank"
+        style="display:flex;align-items:center;justify-content:center;gap:7px;padding:11px;border-radius:var(--radius);background:rgba(88,101,242,.1);border:1px solid rgba(88,101,242,.3);color:#7289da;font-size:12px;font-weight:700;text-decoration:none;margin-top:4px;">
+        <svg width="16" height="16" viewBox="0 0 71 55" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M60.1 4.9A58.6 58.6 0 0 0 45.6.4a40.8 40.8 0 0 0-1.8 3.7 54.2 54.2 0 0 0-16.3 0A38.6 38.6 0 0 0 25.7.4 58.5 58.5 0 0 0 11.1 5C1.6 19.4-1 33.4.3 47.3a59 59 0 0 0 18 9.1 43.3 43.3 0 0 0 3.7-6.1 38.4 38.4 0 0 1-5.8-2.8l1.4-1.1a42 42 0 0 0 36.2 0l1.4 1.1a38.4 38.4 0 0 1-5.8 2.8 43.3 43.3 0 0 0 3.7 6.1 58.8 58.8 0 0 0 18-9c1.6-16.3-2.8-30.2-11.7-42.4ZM23.7 38.7c-3.5 0-6.4-3.2-6.4-7.2s2.8-7.2 6.4-7.2 6.5 3.2 6.4 7.2c0 4-2.8 7.2-6.4 7.2Zm23.6 0c-3.5 0-6.4-3.2-6.4-7.2s2.8-7.2 6.4-7.2 6.5 3.2 6.4 7.2c0 4-2.8 7.2-6.4 7.2Z"/></svg>
+        Soporte y comunidad — Discord
+      </a>
+
+    </div>
+
+    <!-- TAB 3: CLIPS -->
+    <div class="tab-panel" id="tabClips">
+      <div class="clips-empty" id="clipsEmpty">Sin marcas de clip aún.<br>Iniciá el stream en el desktop y marcá clips desde la pestaña Control.</div>
+      <div id="clipList"></div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM TAB BAR -->
+  <nav>
+    <button class="tab-btn active" id="navChat"    onclick="switchTab('Chat')">
+      <span class="tab-icon">💬</span>Chat
+    </button>
+    <button class="tab-btn"        id="navControl" onclick="switchTab('Control')">
+      <span class="tab-icon">🎛</span>Control
+    </button>
+    <button class="tab-btn"        id="navClips"   onclick="switchTab('Clips')">
+      <span class="tab-icon">🎬</span>Clips
+      <span class="tab-badge" id="clipsBadge"></span>
+    </button>
+  </nav>
+
+</div>
+<div id="toast"></div>
+
+<script>
+'use strict';
+
+// ── STATE ─────────────────────────────────────────────────────────────────
+let state = {
+  ttsGlobalEnabled: true,
+  ttsPaused: false,
+  streamTimerRunning: false,
+  options: { readChat:true, readGifts:true, readJoins:true, readFollows:true, readLikes:true, readShares:true, sayUsername:true },
+  clips: [],
+};
+
+let activeTab = 'Chat';
+let chatCount = 0;
+let userScrolled = false;
+let prevClipCount = 0;
+
+// ── WEBSOCKET ─────────────────────────────────────────────────────────────
+let ws = null;
+let wsRetry = 0;
+
+function connectWS() {
+  if (ws && ws.readyState === WebSocket.OPEN) return;
+  const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+  ws = new WebSocket(`${proto}//${location.host}`);
+
+  ws.onopen = () => {
+    wsRetry = 0;
+    setStatus('online', 'Conectado');
+    fetchState();
+  };
+  ws.onmessage = (e) => {
+    try { dispatch(JSON.parse(e.data)); } catch (_) {}
+  };
+  ws.onclose = () => {
+    ws = null;
+    setStatus('error', 'Desconectado');
+    wsRetry++;
+    setTimeout(connectWS, Math.min(500 * Math.pow(1.5, wsRetry), 15000));
+  };
+  ws.onerror = () => ws.close();
+}
+
+function dispatch(d) {
+  switch (d.type) {
+    case 'chat':
+      addChat(d);
+      break;
+    case 'state-sync':
+      if (d.state) applyState(d.state);
+      break;
+  }
+}
+
+// ── STATE ─────────────────────────────────────────────────────────────────
+function fetchState() {
+  fetch('/api/mobile/state').then(r => r.json()).then(applyState).catch(() => {});
+}
+
+function applyState(s) {
+  if (typeof s.ttsGlobalEnabled === 'boolean') state.ttsGlobalEnabled = s.ttsGlobalEnabled;
+  if (typeof s.ttsPaused === 'boolean')        state.ttsPaused        = s.ttsPaused;
+  if (typeof s.streamTimerRunning === 'boolean') state.streamTimerRunning = s.streamTimerRunning;
+  if (s.options && typeof s.options === 'object') state.options = { ...state.options, ...s.options };
+  if (Array.isArray(s.clips)) state.clips = s.clips;
+  renderControl();
+  renderClips();
+}
+
+// ── RENDER: CONTROL TAB ───────────────────────────────────────────────────
+function renderControl() {
+  // Global TTS
+  const gb = document.getElementById('btnGlobalTTS');
+  if (state.ttsGlobalEnabled) {
+    gb.textContent = '🔊 TTS Encendido';
+    gb.classList.remove('off');
+  } else {
+    gb.textContent = '🔇 TTS Apagado';
+    gb.classList.add('off');
+  }
+
+  // Pause
+  const pb = document.getElementById('btnPause');
+  if (state.ttsPaused) {
+    pb.classList.add('pause-active');
+    pb.innerHTML = '<span class="act-icon">▶️</span>Reanudar';
+  } else {
+    pb.classList.remove('pause-active');
+    pb.innerHTML = '<span class="act-icon">⏸</span>Pausar';
+  }
+
+  // Chips
+  const MAP = { readChat:'chip-readChat', readGifts:'chip-readGifts', readJoins:'chip-readJoins',
+    readFollows:'chip-readFollows', readLikes:'chip-readLikes', readShares:'chip-readShares', sayUsername:'chip-sayUsername' };
+  for (const [k, id] of Object.entries(MAP)) {
+    document.getElementById(id)?.classList.toggle('active', !!state.options[k]);
+  }
+
+  // Mark clip button
+  const mc = document.getElementById('btnMarkClip');
+  mc.disabled = !state.streamTimerRunning;
+  mc.classList.toggle('timer-on', state.streamTimerRunning);
+}
+
+// ── RENDER: CLIPS TAB ─────────────────────────────────────────────────────
+function renderClips() {
+  const list  = document.getElementById('clipList');
+  const empty = document.getElementById('clipsEmpty');
+  const badge = document.getElementById('clipsBadge');
+
+  const clips = state.clips;
+  empty.style.display = clips.length ? 'none' : 'block';
+
+  list.innerHTML = clips.length
+    ? `<div class="clips-day-header">Hoy — ${clips.length} marca${clips.length !== 1 ? 's' : ''}</div>` +
+      clips.map((c, i) => `
+        <div class="clip-item">
+          <div class="clip-left">
+            <span class="clip-icon">🎬</span>
+            <div class="clip-times">
+              <span class="clip-elapsed">${esc(c.elapsed || '--:--')}</span>
+              ${c.absoluteTime ? `<span class="clip-abs">${esc(c.absoluteTime)}</span>` : ''}
+            </div>
+          </div>
+          <button class="clip-del" onclick="deleteClip(${i})" aria-label="Borrar">×</button>
+        </div>
+      `).join('')
+    : '';
+
+  // Badge on Clips tab
+  if (clips.length > prevClipCount && activeTab !== 'Clips') {
+    badge.textContent = clips.length;
+    badge.classList.add('show');
+  }
+  prevClipCount = clips.length;
+}
+
+// ── CHAT ──────────────────────────────────────────────────────────────────
+function addChat(d) {
+  const area = document.getElementById('tabChat');
+  const empty = document.getElementById('chatEmpty');
+  if (empty) empty.remove();
+
+  chatCount++;
+  if (chatCount > 100) {
+    const first = area.querySelector('.chat-msg');
+    if (first) first.remove();
+  }
+
+  const platClass = d.platform === 'twitch' ? 'plat-twitch' : d.platform === 'youtube' ? 'plat-youtube' : 'plat-tiktok';
+  const platLabel = d.platform === 'twitch' ? 'TW' : d.platform === 'youtube' ? 'YT' : 'TK';
+
+  const el = document.createElement('div');
+  el.className = 'chat-msg';
+  el.innerHTML = `<span class="plat-badge ${platClass}">${platLabel}</span><div class="msg-body"><span class="msg-user">${esc(d.user)}</span> <span class="msg-text">${esc(d.comment || '')}</span></div>`;
+  area.appendChild(el);
+
+  if (!userScrolled) area.scrollTop = area.scrollHeight;
+}
+
+// ── COMMANDS ──────────────────────────────────────────────────────────────
+function cmd(action, extra = {}) {
+  fetch('/api/mobile/command', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action, ...extra }),
+  })
+  .then(r => r.json())
+  .then(() => {
+    const toasts = { skip:'Mensaje saltado', clear:'Cola vaciada', markClip:'Clip marcado', emergency:'Modo emergencia', soloChat:'Solo chat activado' };
+    if (toasts[action]) showToast(toasts[action]);
+    fetchState();
+  })
+  .catch(() => showToast('Error de conexión'));
+}
+
+function toggleGlobal()       { cmd('globalTTS', { value: !state.ttsGlobalEnabled }); }
+function togglePause()        { cmd('pause', { value: !state.ttsPaused }); }
+function toggleChip(key)      { cmd('toggle', { key, value: !state.options[key] }); }
+function deleteClip(index)    { cmd('deleteClip', { index }); }
+
+// ── TABS ──────────────────────────────────────────────────────────────────
+function switchTab(name) {
+  activeTab = name;
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab' + name).classList.add('active');
+  document.getElementById('nav' + name).classList.add('active');
+
+  if (name === 'Clips') {
+    document.getElementById('clipsBadge').classList.remove('show');
+  }
+}
+
+// ── STATUS ────────────────────────────────────────────────────────────────
+function setStatus(type, text) {
+  document.getElementById('statusDot').className = 'status-dot ' + type;
+  document.getElementById('statusText').textContent = text;
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── SCROLL GUARD ──────────────────────────────────────────────────────────
+document.getElementById('tabChat').addEventListener('scroll', () => {
+  const a = document.getElementById('tabChat');
+  userScrolled = a.scrollTop + a.clientHeight < a.scrollHeight - 60;
+});
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+connectWS();
+</script>
+</body>
+</html>

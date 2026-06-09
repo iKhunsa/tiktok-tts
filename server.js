@@ -8,6 +8,8 @@ const https = require('https');
 const fs = require('fs');
 const multer = require('multer');
 const crypto = require('crypto');
+const os = require('os');
+const QRCode = require('qrcode');
 
 const RESOURCE_BASE = process.env.TIKTOK_RESOURCES_PATH || __dirname;
 const DATA_BASE = process.env.TIKTOK_USER_DATA_PATH || RESOURCE_BASE;
@@ -26,13 +28,57 @@ function isLocalHostname(hostname) {
   return ['localhost', '127.0.0.1', '::1'].includes(String(hostname || '').toLowerCase());
 }
 
+function getLocalIP() {
+  const VIRTUAL_SKIP = /virtual|vbox|vmnet|vmware|hyper.?v|vethernet|docker|loopback/i;
+  // 192.168.56.x and 192.168.99.x are VirtualBox/Docker defaults
+  const VIRTUAL_IP = /^192\.168\.(56|99)\./;
+  const nets = os.networkInterfaces();
+  const candidates = [];
+  for (const [name, ifaces] of Object.entries(nets)) {
+    if (VIRTUAL_SKIP.test(name)) continue;
+    for (const iface of ifaces) {
+      if (iface.family !== 'IPv4' || iface.internal) continue;
+      if (VIRTUAL_IP.test(iface.address)) continue;
+      candidates.push(iface.address);
+    }
+  }
+  return candidates[0] || '127.0.0.1';
+}
+
+function isPrivateIP(ip) {
+  if (!ip) return false;
+  const s = String(ip);
+  return (
+    s === '127.0.0.1' ||
+    s === '::1' ||
+    /^10\./.test(s) ||
+    /^192\.168\./.test(s) ||
+    /^172\.(1[6-9]|2\d|3[01])\./.test(s)
+  );
+}
+
+// Server-side state mirror so mobile clients can sync
+let mobileState = {
+  ttsGlobalEnabled: true,
+  ttsPaused: false,
+  streamTimerRunning: false,
+  options: {
+    readChat: true, readGifts: true, readJoins: true,
+    readFollows: true, readLikes: true, readShares: true, sayUsername: true,
+  },
+  clips: [],
+};
+
 function isAllowedWsClient(info) {
   const host = getRequestHostname(info.req.headers.host);
-  if (!isLocalHostname(host)) return false;
+  const clientIp = info.req.socket?.remoteAddress?.replace(/^::ffff:/, '');
+  // Allow localhost or private network clients (mobile on same WiFi)
+  if (!isLocalHostname(host) && !isPrivateIP(clientIp)) return false;
   const origin = info.origin || info.req.headers.origin;
   if (!origin) return true;
   try {
-    return isLocalHostname(new URL(origin).hostname);
+    const oh = new URL(origin).hostname;
+    return isLocalHostname(oh) || isPrivateIP(oh);
   } catch (_) {
     return false;
   }
@@ -68,6 +114,9 @@ const upload = multer({
 });
 
 function validateLocalMutation(req, res, next) {
+  // Mobile routes are allowed from private network IPs
+  if (req.path.startsWith('/api/mobile') || req.path === '/mobile') return next();
+
   if (!['POST', 'PATCH', 'DELETE', 'PUT'].includes(req.method)) return next();
 
   const host = getRequestHostname(req.headers.host);
@@ -86,6 +135,14 @@ function validateLocalMutation(req, res, next) {
     }
   }
 
+  return next();
+}
+
+function validateMobileRequest(req, res, next) {
+  const clientIp = req.socket?.remoteAddress?.replace(/^::ffff:/, '');
+  if (!isPrivateIP(clientIp) && !isLocalHostname(clientIp)) {
+    return res.status(403).json({ error: 'Solo acceso desde red local' });
+  }
   return next();
 }
 
@@ -885,10 +942,25 @@ async function reconnectTiktok(username) {
   }
 }
 
-// WebSocket connections from browser
+// WebSocket connections from browser and mobile
 wss.on('connection', (ws) => {
   clients.add(ws);
   log('info', 'ws', 'Browser client connected', { total: clients.size });
+
+  ws.on('message', (raw) => {
+    try {
+      const msg = JSON.parse(raw);
+      if (msg.type === 'state-sync' && msg.state && typeof msg.state === 'object') {
+        if (typeof msg.state.ttsGlobalEnabled === 'boolean') mobileState.ttsGlobalEnabled = msg.state.ttsGlobalEnabled;
+        if (typeof msg.state.ttsPaused === 'boolean') mobileState.ttsPaused = msg.state.ttsPaused;
+        if (typeof msg.state.streamTimerRunning === 'boolean') mobileState.streamTimerRunning = msg.state.streamTimerRunning;
+        if (msg.state.options && typeof msg.state.options === 'object') mobileState.options = { ...mobileState.options, ...msg.state.options };
+        if (Array.isArray(msg.state.clips)) mobileState.clips = msg.state.clips;
+        // Relay updated state to all clients (mobile picks this up)
+        broadcast({ type: 'state-sync', state: { ...mobileState } });
+      }
+    } catch (_) {}
+  });
 
   ws.on('close', () => {
     clients.delete(ws);
@@ -1806,6 +1878,60 @@ app.post('/auth/twitch/token', async (req, res) => {
   res.json({ success: true, login: authTokens.twitchLogin });
 });
 
+// ─── MOBILE REMOTE ROUTES ────────────────────────────────────────────────────
+
+app.get('/mobile', validateMobileRequest, (_req, res) => {
+  res.sendFile(path.join(RESOURCE_BASE, 'public', 'mobile.html'));
+});
+
+app.get('/api/local-ip', (_req, res) => {
+  const ip = getLocalIP();
+  res.json({ ip, port: PORT || 3000 });
+});
+
+app.get('/api/mobile/qr', async (_req, res) => {
+  const ip = getLocalIP();
+  const url = `http://${ip}:${PORT || 3000}/mobile`;
+  try {
+    const png = await QRCode.toBuffer(url, { width: 280, margin: 2, color: { dark: '#000000', light: '#ffffff' } });
+    res.set('Content-Type', 'image/png');
+    res.set('Cache-Control', 'no-store');
+    res.send(png);
+  } catch (e) {
+    res.status(500).json({ error: 'QR generation failed' });
+  }
+});
+
+app.get('/api/mobile/state', validateMobileRequest, (_req, res) => {
+  res.json(mobileState);
+});
+
+const MOBILE_ALLOWED_ACTIONS = new Set([
+  'toggle', 'globalTTS', 'pause', 'skip', 'clear', 'emergency', 'markClip', 'deleteClip', 'soloChat',
+]);
+
+app.post('/api/mobile/command', validateMobileRequest, (req, res) => {
+  const { action, key, value, index } = req.body || {};
+  if (!action || !MOBILE_ALLOWED_ACTIONS.has(action)) {
+    return res.status(400).json({ error: 'Acción no válida' });
+  }
+
+  // Update mobileState optimistically for actions that map to state
+  if (action === 'toggle' && key && typeof value === 'boolean') {
+    mobileState.options[key] = value;
+  } else if (action === 'globalTTS' && typeof value === 'boolean') {
+    mobileState.ttsGlobalEnabled = value;
+  } else if (action === 'pause' && typeof value === 'boolean') {
+    mobileState.ttsPaused = value;
+  } else if (action === 'soloChat') {
+    Object.keys(mobileState.options).forEach(k => mobileState.options[k] = false);
+    mobileState.options.readChat = true;
+  }
+
+  broadcast({ type: 'remote-cmd', action, key, value, index });
+  res.json({ ok: true });
+});
+
 // Cargar palabras bloqueadas al iniciar
 loadBlockedWordsFromFile();
 
@@ -1819,8 +1945,10 @@ server.on('error', (err) => {
   }
 });
 
-server.listen(PORT, '127.0.0.1', () => {
-  console.log(`\nTikTok Live TTS corriendo en http://127.0.0.1:${PORT}\n`);
+server.listen(PORT, '0.0.0.0', () => {
+  const localIP = getLocalIP();
+  console.log(`\nTikTok Live TTS corriendo en http://127.0.0.1:${PORT}`);
+  console.log(`Control mobile: http://${localIP}:${PORT}/mobile\n`);
   // Electron opens the BrowserWindow after detecting this port is up.
 });
 

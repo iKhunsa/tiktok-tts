@@ -1210,6 +1210,10 @@
         <img class="sidebar-icon icon-inline" src="icons/play_arrow.svg" alt="">
         Clips
       </button>
+      <button class="sidebar-item" data-view="mobile" onclick="switchView('mobile')">
+        <img class="sidebar-icon icon-inline" src="icons/label.svg" alt="">
+        Móvil
+      </button>
     </nav>
 
     <div class="sidebar-footer">
@@ -1862,6 +1866,40 @@
       </div>
     </div>
 
+    <!-- ── VIEW: Móvil ─────────────────────────────────── -->
+    <div class="view" id="view-mobile">
+      <div class="view-header">
+        <h2>📱 Control Móvil</h2>
+        <p>Controla el TTS desde tu celular en la misma red WiFi.</p>
+      </div>
+
+      <div class="connect-panel" style="max-width:560px;">
+        <div class="panel-title">Acceso desde celular</div>
+        <p style="font-size:12px;color:var(--text-muted);margin:10px 0 16px;">Escaneá el código QR con la cámara de tu teléfono. El celular debe estar en la misma red WiFi que esta PC.</p>
+        <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;">
+          <div style="flex-shrink:0;">
+            <img id="mobileQR" src="/api/mobile/qr" alt="QR Code" width="180" height="180"
+              style="border-radius:12px;border:2px solid var(--border);background:#fff;display:block;"
+              onerror="this.style.display='none';document.getElementById('mobileQRError').style.display='flex'">
+            <div id="mobileQRError" style="display:none;width:180px;height:180px;border-radius:12px;border:2px dashed var(--border);align-items:center;justify-content:center;font-size:11px;color:var(--text-muted);text-align:center;padding:12px;">Error al generar QR</div>
+          </div>
+          <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:12px;">
+            <div>
+              <div style="font-size:11px;color:var(--text-muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;font-weight:600;">URL de acceso</div>
+              <div id="mobileURL" style="font-size:13px;color:var(--accent);word-break:break-all;font-family:monospace;padding:8px 10px;background:var(--surface);border-radius:8px;border:1px solid var(--border);">Cargando...</div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="cfg-btn" onclick="copyMobileURL()">Copiar enlace</button>
+              <button class="cfg-btn" onclick="refreshMobileQR()">Actualizar QR</button>
+            </div>
+            <div style="font-size:11px;color:var(--text-muted);line-height:1.5;">
+              La app móvil incluye chat en vivo, controles TTS (pausa, skip, toggles) y marcadores de clip.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </main>
 </div>
 
@@ -2329,6 +2367,7 @@
 
   function toggleGlobalTTS() {
     ttsGlobalEnabled = !ttsGlobalEnabled;
+    sendStateSync();
     const btn = document.getElementById('btnTTSToggle');
     if (btn) {
       btn.textContent = ttsGlobalEnabled ? '🔊 TTS Encendido' : '🔇 TTS Apagado';
@@ -2348,6 +2387,7 @@
 
   function togglePauseTts() {
     ttsPaused = !ttsPaused;
+    sendStateSync();
     const btn = document.getElementById('btnPauseTTS');
     if (btn) {
       btn.textContent = ttsPaused ? '▶ Reanudar TTS' : '⏸ Pausar TTS';
@@ -2674,6 +2714,7 @@
     applySettings();
     saveSettings();
     clearTTSQueue();
+    sendStateSync();
     showToast('Modo emergencia activo: solo regalos y follows');
   }
 
@@ -2776,6 +2817,45 @@
     if (chipId) document.getElementById(chipId)?.classList.toggle('active', checkbox.checked);
     appSettings[key] = checkbox.checked;
     saveSettings();
+    sendStateSync();
+  }
+
+  function setSoloChatMode() {
+    const keys = ['readChat','readGifts','readJoins','readFollows','readLikes','readShares','sayUsername'];
+    keys.forEach(k => {
+      options[k] = k === 'readChat';
+      appSettings[k] = k === 'readChat';
+      const chipId = {
+        readChat:'chip-chat',readGifts:'chip-gifts',readJoins:'chip-joins',
+        readFollows:'chip-follows',readLikes:'chip-likes',readShares:'chip-shares',sayUsername:'chip-username'
+      }[k];
+      const chip = document.getElementById(chipId);
+      if (chip) {
+        const cb = chip.querySelector('input[type=checkbox]');
+        if (cb) cb.checked = k === 'readChat';
+        chip.classList.toggle('active', k === 'readChat');
+      }
+    });
+    saveSettings();
+    sendStateSync();
+    showToast('Modo solo chat activado');
+  }
+
+  function sendStateSync() {
+    if (!ws || ws.readyState !== WebSocket.OPEN) return;
+    const clipsData = getClipsData();
+    const today = getLocalDateStr();
+    const todayClips = (clipsData[today] || []).map(e => ({ id: e.id, elapsed: e.elapsed, absoluteTime: e.absoluteTime, label: e.label }));
+    ws.send(JSON.stringify({
+      type: 'state-sync',
+      state: {
+        ttsGlobalEnabled,
+        ttsPaused,
+        streamTimerRunning: !!streamStartTime,
+        options: { ...options },
+        clips: todayClips,
+      },
+    }));
   }
 
   // ─── SPEECH QUEUE ─────────────────────────────────────────────
@@ -2903,7 +2983,7 @@
     const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
     ws = new WebSocket(`${proto}//${location.host}`);
     ws.onmessage = (e) => { const d = JSON.parse(e.data); handleMessage(d); };
-    ws.onopen    = () => { wsReconnectAttempts = 0; };
+    ws.onopen    = () => { wsReconnectAttempts = 0; setTimeout(sendStateSync, 200); };
     ws.onclose   = () => {
       ws = null;
       wsReconnectAttempts++;
@@ -3051,6 +3131,42 @@
 
       case 'obs-stream-stopped':
         showToast('⏹ OBS: stream detenido');
+        break;
+
+      case 'remote-cmd':
+        if (data.action === 'toggle' && data.key) {
+          options[data.key] = !!data.value;
+          appSettings[data.key] = !!data.value;
+          const chipId = {readChat:'chip-chat',readGifts:'chip-gifts',readJoins:'chip-joins',readFollows:'chip-follows',readLikes:'chip-likes',readShares:'chip-shares',sayUsername:'chip-username'}[data.key];
+          if (chipId) {
+            const chip = document.getElementById(chipId);
+            if (chip) { const cb = chip.querySelector('input[type=checkbox]'); if (cb) cb.checked = !!data.value; chip.classList.toggle('active', !!data.value); }
+          }
+          saveSettings();
+        } else if (data.action === 'globalTTS') {
+          ttsGlobalEnabled = !!data.value;
+          const btn = document.getElementById('btnTTSToggle');
+          if (btn) btn.textContent = ttsGlobalEnabled ? '🔊 TTS Encendido' : '🔇 TTS Apagado';
+        } else if (data.action === 'pause') {
+          if (ttsPaused !== !!data.value) togglePauseTts();
+        } else if (data.action === 'skip') {
+          skipCurrentTTS();
+        } else if (data.action === 'clear') {
+          clearTTSQueue();
+        } else if (data.action === 'emergency') {
+          enableEmergencyTTSMode();
+        } else if (data.action === 'markClip') {
+          markClip();
+        } else if (data.action === 'deleteClip' && data.index != null) {
+          const clipsData = getClipsData();
+          const today = getLocalDateStr();
+          const dayClips = clipsData[today] || [];
+          const entry = dayClips[data.index];
+          if (entry) deleteClip(today, entry.id);
+        } else if (data.action === 'soloChat') {
+          setSoloChatMode();
+        }
+        sendStateSync();
         break;
     }
   }
@@ -3281,6 +3397,22 @@
     }
   });
 
+  // ─── MOBILE REMOTE HELPERS ────────────────────────────────────
+  let _mobileURL = '';
+  function loadMobileURL() {
+    fetch('/api/local-ip').then(r => r.json()).then(({ ip, port }) => {
+      _mobileURL = `http://${ip}:${port}/mobile`;
+      const el = document.getElementById('mobileURL');
+      if (el) el.textContent = _mobileURL;
+    }).catch(() => {});
+  }
+  function copyMobileURL() { if (_mobileURL) copyToClipboard(_mobileURL); }
+  function refreshMobileQR() {
+    loadMobileURL();
+    const img = document.getElementById('mobileQR');
+    if (img) img.src = '/api/mobile/qr?t=' + Date.now();
+  }
+
   // ─── UTILS ────────────────────────────────────────────────────
   function copyToClipboard(text) {
     navigator.clipboard.writeText(text)
@@ -3335,6 +3467,7 @@
     if (btnStop)  btnStop.style.display  = 'block';
     if (btnMark)  { btnMark.disabled = false; btnMark.style.cursor = 'pointer'; btnMark.style.color = 'var(--text)'; btnMark.style.background = 'var(--surface)'; }
     startTimerUI();
+    sendStateSync();
   }
   function stopStream() {
     streamStartTime = null;
@@ -3348,6 +3481,7 @@
     if (btnStart) btnStart.style.display = 'block';
     if (btnStop)  btnStop.style.display  = 'none';
     if (btnMark)  { btnMark.disabled = true; btnMark.style.cursor = 'not-allowed'; btnMark.style.color = 'var(--text-muted)'; }
+    sendStateSync();
   }
   function startTimerUI() {
     clearInterval(streamTimerInterval);
@@ -3381,6 +3515,7 @@
     data[dateStr].unshift(entry);
     saveClipsData(data);
     renderClipsHistory();
+    sendStateSync();
     showToast('Clip marcado: ' + entry.elapsed);
   }
   function deleteClip(dateStr, id) {
@@ -3391,6 +3526,7 @@
     }
     saveClipsData(data);
     renderClipsHistory();
+    sendStateSync();
   }
   function updateClipLabel(dateStr, id, label) {
     const data = getClipsData();
@@ -3920,6 +4056,7 @@
   connectWS();
   updateQueueBadge();
   renderSettingsChannels();
+  loadMobileURL();
 
   // Fetch current base follower count if already connected
   fetch('/api/overlay-stats')
