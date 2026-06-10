@@ -72,6 +72,8 @@ const ICON_PATH = app.isPackaged
 
 let mainWindow = null;
 let tray = null;
+// True once app.quit() is in progress — lets the window 'close' handler allow a real close
+let isQuitting = false;
 let pendingUpdateVersion = null;
 
 function isAppUrl(url) {
@@ -119,8 +121,11 @@ function createWindow() {
 
   mainWindow.once('ready-to-show', () => mainWindow.show());
 
-  // Close → minimize to tray instead of quitting
+  // Close → minimize to tray instead of quitting.
+  // If the app is quitting, or the tray failed to create (no way to reopen
+  // a hidden window), allow the close to proceed normally.
   mainWindow.on('close', (e) => {
+    if (isQuitting || !tray) return;
     e.preventDefault();
     mainWindow.hide();
   });
@@ -158,12 +163,20 @@ function buildTrayMenu(updateVersion = null) {
 }
 
 function createTray() {
-  const icon = nativeImage.createFromPath(ICON_PATH);
-  tray = new Tray(icon);
+  // Resilient: if the tray cannot be created, leave `tray` null so the window
+  // close handler and 'window-all-closed' fall back to normal quit behavior
+  // (otherwise the app would keep running with no visible way to reach it).
+  try {
+    const icon = nativeImage.createFromPath(ICON_PATH);
+    tray = new Tray(icon);
 
-  tray.setToolTip('TikTok TTS');
-  tray.setContextMenu(buildTrayMenu());
-  tray.on('double-click', showMainWindow);
+    tray.setToolTip('TikTok TTS');
+    tray.setContextMenu(buildTrayMenu());
+    tray.on('double-click', showMainWindow);
+  } catch (err) {
+    console.error('[main] createTray failed, disabling minimize-to-tray:', err);
+    tray = null;
+  }
 }
 
 function showStartupError(error) {
@@ -265,6 +278,7 @@ app.whenReady().then(() => {
 });
 
 app.on('before-quit', () => {
+  isQuitting = true;
   if (mainWindow && !mainWindow.isDestroyed()) {
     mainWindow.removeAllListeners('close');
   }
@@ -412,4 +426,13 @@ ipcMain.handle('register-pause-shortcut', (_event, shortcut) => {
 
 app.on('second-instance', showMainWindow);
 
-app.on('window-all-closed', (e) => e.preventDefault());
+// Keep the app alive in the tray only when the tray actually exists and we
+// are not quitting; otherwise let Electron quit normally so no orphan process
+// is left running with no visible window.
+app.on('window-all-closed', (e) => {
+  if (tray && !isQuitting) {
+    e.preventDefault();
+  } else {
+    app.quit();
+  }
+});
