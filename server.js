@@ -1306,9 +1306,7 @@ app.post('/api/test/gift', (req, res) => {
     const giftName = giftKeys[Math.floor(Math.random() * giftKeys.length)];
     const testUsers = ['TestUser', 'FanRandom', 'ViewerPro', 'TikToker', 'StreamerFan'];
     const user = testUsers[Math.floor(Math.random() * testUsers.length)] + Math.floor(Math.random() * 99);
-    const perGiftCoins  = TIKTOK_GIFT_COINS[giftName];
-    const usdRaw        = perGiftCoins * TIKTOK_COINS_USD;
-    const usdValue      = usdRaw > 0 ? usdRaw.toFixed(2) : null;
+    const { usdValue } = computeGiftUsd({ giftName, repeatCount: 1 });
     broadcast({
       type: 'gift',
       user,
