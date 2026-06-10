@@ -115,7 +115,7 @@
     const params = new URLSearchParams(location.search);
     const _c = params.get('color'); if (_c) document.documentElement.style.setProperty('--accent', '#' + _c);
     const _b = params.get('bg');    if (_b) document.documentElement.style.setProperty('--bg-alpha', _b);
-    const _s = params.get('speed'); if (_s) document.documentElement.style.setProperty('--speed', _s + 's');
+    const _s = parseFloat(params.get('speed')); if (Number.isFinite(_s) && _s > 0) document.documentElement.style.setProperty('--speed', _s + 's');
     const _bgimg = params.get('bgimg');
     if (_bgimg) { document.documentElement.style.setProperty('--bg-img', `url('${_bgimg}')`); document.body.classList.add('has-bgimg'); }
 

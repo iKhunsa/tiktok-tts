@@ -125,7 +125,8 @@
     const _b = params.get('bg');    if (_b) document.documentElement.style.setProperty('--bg-alpha', _b);
     const _bgimg = params.get('bgimg');
     if (_bgimg) { document.documentElement.style.setProperty('--bg-img', `url('${_bgimg}')`); document.body.classList.add('has-bgimg'); }
-    const alertDur   = parseInt(params.get('dur') || '4000', 10);
+    function intParam(name, def) { const n = parseInt(params.get(name), 10); return Number.isFinite(n) && n > 0 ? n : def; }
+    const alertDur   = intParam('dur', 4000);
     const followImg  = params.get('followImg')  || '';
     const shareImg   = params.get('shareImg')   || '';
 

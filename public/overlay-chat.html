@@ -97,10 +97,11 @@
     const params    = new URLSearchParams(location.search);
     const _c = params.get('color');   if (_c) document.documentElement.style.setProperty('--accent', '#' + _c);
     const _b = params.get('bg');      if (_b) document.documentElement.style.setProperty('--bg-alpha', _b);
-    const _s = params.get('size');    if (_s) document.documentElement.style.setProperty('--font-size', _s + 'px');
+    const _s = parseFloat(params.get('size')); if (Number.isFinite(_s) && _s > 0) document.documentElement.style.setProperty('--font-size', _s + 'px');
     const _bgimg = params.get('bgimg');
     if (_bgimg) { document.documentElement.style.setProperty('--bg-img', `url('${_bgimg}')`); document.body.classList.add('has-bgimg'); }
-    const maxMsgs   = parseInt(params.get('maxmsgs') || '30', 10);
+    function intParam(name, def) { const n = parseInt(params.get(name), 10); return Number.isFinite(n) && n > 0 ? n : def; }
+    const maxMsgs   = intParam('maxmsgs', 30);
     const showUsers = params.get('usernames') !== '0';
     const filterRaw = params.get('platforms') || 'tiktok,twitch,youtube';
     const allowedPlatforms = new Set(filterRaw.split(',').map(s => s.trim().toLowerCase()));

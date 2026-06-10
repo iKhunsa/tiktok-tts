@@ -106,7 +106,8 @@
     const _b = params.get('bg');    if (_b) document.documentElement.style.setProperty('--bg-alpha', _b);
     const _bgimg = params.get('bgimg');
     if (_bgimg) { document.documentElement.style.setProperty('--bg-img', `url('${_bgimg}')`); document.body.classList.add('has-bgimg'); }
-    const maxRows = parseInt(params.get('rows') || '10', 10);
+    function intParam(name, def) { const n = parseInt(params.get(name), 10); return Number.isFinite(n) && n > 0 ? n : def; }
+    const maxRows = intParam('rows', 10);
     const RANK_SYMBOLS = {
       1: '<img class="icon-inline" src="icons/emoji_events.svg" alt="">',
       2: '<img class="icon-inline" src="icons/emoji_events.svg" alt="">',

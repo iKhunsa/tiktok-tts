@@ -119,7 +119,8 @@
     const _bgimg = params.get('bgimg');
     if (_bgimg) { document.documentElement.style.setProperty('--bg-img', `url('${_bgimg}')`); document.body.classList.add('has-bgimg'); }
 
-    const goal   = parseInt(params.get('goal')   || '0', 10);
+    function intParam(name, def) { const n = parseInt(params.get(name), 10); return Number.isFinite(n) && n > 0 ? n : def; }
+    const goal   = intParam('goal', 0);
 
     let sessionFollows = 0;
     let baseFollowerCount = 0;
