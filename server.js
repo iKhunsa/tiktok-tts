@@ -757,6 +757,14 @@ function saveBlockedWordsToFile() {
   }
 }
 
+// Normalización previa a moderación: minúsculas + colapso de espacios.
+// Decisión: las 3 plataformas (TikTok/Twitch/YouTube) pasan el texto por
+// normalizeForModeration ANTES de isSpam, para que una palabra bloqueada
+// se filtre de forma idéntica sin importar la plataforma ni el saneo posterior.
+function normalizeForModeration(text) {
+  return String(text || '').toLowerCase().replace(/\s+/g, ' ').trim();
+}
+
 function isSpam(comment) {
   if (comment.length > 300) return true;
   if (/^(.)\1+$/.test(comment.trim())) return true;
@@ -826,7 +834,7 @@ function setupTikTokConnection(cleanUsername) {
   conn.on('chat', (data) => {
     log('debug', 'chat', 'raw', { preview: JSON.stringify(data).substring(0, 100) });
     if (!data.comment || !data.comment.trim()) return;
-    if (isSpam(data.comment.trim())) return;
+    if (isSpam(normalizeForModeration(data.comment))) return;
     broadcast({
       type: 'chat',
       platform: 'tiktok',
@@ -1406,7 +1414,7 @@ async function connectTwitch(channel, token = null, attempt = 0) {
 
   client.on('message', (_ch, tags, message, self) => {
     if (self || !message.trim()) return;
-    if (isSpam(message.trim())) return;
+    if (isSpam(normalizeForModeration(message))) return;
     const emotes = {};
     if (tags.emotes) {
       for (const [emoteId, positions] of Object.entries(tags.emotes)) {
@@ -1481,7 +1489,7 @@ async function connectYoutube(channelOrId, attempt = 0) {
     }
     const displayText = displayParts.join('').trim();
     const ttsText = displayText.replace(/:[\w\-]+:/g, '').trim();
-    if (!displayText || isSpam(ttsText || displayText)) return;
+    if (!displayText || isSpam(normalizeForModeration(ttsText || displayText))) return;
     broadcast({
       type: 'chat',
       platform: 'youtube',
