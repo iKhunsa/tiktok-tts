@@ -879,15 +879,18 @@ function setupTikTokConnection(cleanUsername) {
     const pending = likePendingTimers.get(userId);
     pending.count += (data.likeCount || 1);
     pending.timer = setTimeout(() => {
+      // Capturar el count ANTES de borrar la entrada: likes que entren durante
+      // la ventana de disparo crean una entrada nueva y no se pierden/duplican.
+      const likeCount = pending.count;
       likePendingTimers.delete(userId);
       broadcast({
         type: 'like',
         user: userId,
-        likeCount: pending.count,
+        likeCount,
         timestamp: Date.now()
       });
       const existing2 = overlayState.topLikers.get(userId) || { user: userId, totalLikes: 0 };
-      existing2.totalLikes += pending.count;
+      existing2.totalLikes += likeCount;
       overlayState.topLikers.set(userId, existing2);
     }, config.LIKE_DEBOUNCE_MS);
   });
