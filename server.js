@@ -168,7 +168,7 @@ function firstTiktokEntry() {
 }
 function anyTiktokConnected() { return tiktokChannels.size > 0; }
 
-// TikTok gift prices in coins (what the viewer pays). $1 ≈ 100 coins (~$0.0134/coin).
+// TikTok gift prices in coins (what the viewer pays). 100 coins ≈ $1.03 (ver TIKTOK_COINS_USD = 0.0103/coin).
 // Source: official gift list (810 images, 550 with known prices).
 const TIKTOK_GIFT_COINS = {
   // 1 coin
@@ -445,7 +445,7 @@ const TIKTOK_GIFT_COINS = {
   'TikTok Universe': 44999,
 };
 
-const TIKTOK_COINS_USD = 0.0103; // 100 coins = $1.03 USD
+const TIKTOK_COINS_USD = 0.0103; // 100 coins = $1.03 USD. Estimación; el precio real por coin varía por región/paquete.
 const GOOGLE_TTS_LANGS = new Set(['es', 'es-MX', 'es-AR', 'en', 'en-GB', 'pt', 'pt-PT', 'fr', 'de', 'it', 'ja', 'zh-CN', 'ru', 'ko']);
 
 const clients = new Set();
