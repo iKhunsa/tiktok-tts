@@ -3169,12 +3169,19 @@
           enableEmergencyTTSMode();
         } else if (data.action === 'markClip') {
           markClip();
-        } else if (data.action === 'deleteClip' && data.index != null) {
+        } else if (data.action === 'deleteClip' && (data.clipId != null || data.index != null)) {
           const clipsData = getClipsData();
           const today = getLocalDateStr();
           const dayClips = clipsData[today] || [];
-          const entry = dayClips[data.index];
-          if (entry) deleteClip(today, entry.id);
+          if (data.clipId != null) {
+            // Borrado por id: inmune a desplazamientos de índice por unshift
+            const entry = dayClips.find(e => String(e.id) === String(data.clipId));
+            if (entry) deleteClip(today, entry.id);
+          } else {
+            // Fallback para clientes viejos que aún envían índice
+            const entry = dayClips[data.index];
+            if (entry) deleteClip(today, entry.id);
+          }
         } else if (data.action === 'soloChat') {
           setSoloChatMode();
         }

@@ -1021,6 +1021,10 @@ wss.on('connection', (ws) => {
     try {
       const msg = JSON.parse(raw);
       if (msg.type === 'state-sync' && msg.state && typeof msg.state === 'object') {
+        // Solo el desktop emite state-sync: marca este socket como desktop.
+        // mobileState es un ESPEJO del estado real del desktop; solo se
+        // actualiza aquí (nunca optimistamente desde /api/mobile/command).
+        ws.isDesktop = true;
         if (typeof msg.state.ttsGlobalEnabled === 'boolean') mobileState.ttsGlobalEnabled = msg.state.ttsGlobalEnabled;
         if (typeof msg.state.ttsPaused === 'boolean') mobileState.ttsPaused = msg.state.ttsPaused;
         if (typeof msg.state.streamTimerRunning === 'boolean') mobileState.streamTimerRunning = msg.state.streamTimerRunning;
@@ -2001,25 +2005,28 @@ const MOBILE_ALLOWED_ACTIONS = new Set([
   'toggle', 'globalTTS', 'pause', 'skip', 'clear', 'emergency', 'markClip', 'deleteClip', 'soloChat',
 ]);
 
+function hasDesktopClient() {
+  for (const c of clients) {
+    if (c.isDesktop && c.readyState === 1) return true;
+  }
+  return false;
+}
+
 app.post('/api/mobile/command', validateMobileRequest, (req, res) => {
-  const { action, key, value, index } = req.body || {};
+  const { action, key, value, index, clipId } = req.body || {};
   if (!action || !MOBILE_ALLOWED_ACTIONS.has(action)) {
     return res.status(400).json({ error: 'Acción no válida' });
   }
 
-  // Update mobileState optimistically for actions that map to state
-  if (action === 'toggle' && key && typeof value === 'boolean') {
-    mobileState.options[key] = value;
-  } else if (action === 'globalTTS' && typeof value === 'boolean') {
-    mobileState.ttsGlobalEnabled = value;
-  } else if (action === 'pause' && typeof value === 'boolean') {
-    mobileState.ttsPaused = value;
-  } else if (action === 'soloChat') {
-    Object.keys(mobileState.options).forEach(k => mobileState.options[k] = false);
-    mobileState.options.readChat = true;
+  // El desktop es la única fuente de verdad del estado TTS: este endpoint
+  // solo reenvía el comando. mobileState se actualiza cuando el desktop
+  // confirma vía state-sync. Sin desktop conectado no hay nada que ejecute
+  // el comando: avisar al móvil en vez de fingir éxito.
+  if (!hasDesktopClient()) {
+    return res.json({ ok: false, reason: 'desktop-offline' });
   }
 
-  broadcast({ type: 'remote-cmd', action, key, value, index });
+  broadcast({ type: 'remote-cmd', action, key, value, index, clipId });
   res.json({ ok: true });
 });
 

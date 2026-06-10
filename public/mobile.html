@@ -156,6 +156,11 @@ nav {
 .msg-user { font-weight: 700; font-size: 12px; color: var(--accent); }
 .msg-text { font-size: 13px; color: var(--text); }
 
+/* Eventos (gift/follow/like/share/join) — mensajes de sistema */
+.chat-msg.event { background: var(--surface2); border-left: 2px solid var(--accent); }
+.evt-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+.evt-text { color: var(--muted); font-style: italic; }
+
 /* ════════════════════════════════════════
    TAB 2 — CONTROL (Steam Deck)
 ════════════════════════════════════════ */
@@ -470,6 +475,21 @@ function dispatch(d) {
     case 'chat':
       addChat(d);
       break;
+    case 'gift':
+      addEvent(d, '🎁', `envió ${d.giftName || 'un regalo'}${d.repeatCount > 1 ? ' ×' + d.repeatCount : ''}`);
+      break;
+    case 'follow':
+      addEvent(d, '❤️', 'te siguió');
+      break;
+    case 'like':
+      addEvent(d, '👍', `dio ${d.likeCount || 1} like${d.likeCount > 1 ? 's' : ''}`);
+      break;
+    case 'share':
+      addEvent(d, '🔁', 'compartió el stream');
+      break;
+    case 'join':
+      addEvent(d, '👋', 'se unió');
+      break;
     case 'state-sync':
       if (d.state) applyState(d.state);
       break;
@@ -546,7 +566,7 @@ function renderClips() {
               ${c.absoluteTime ? `<span class="clip-abs">${esc(c.absoluteTime)}</span>` : ''}
             </div>
           </div>
-          <button class="clip-del" onclick="deleteClip(${i})" aria-label="Borrar">×</button>
+          <button class="clip-del" data-clip-id="${esc(String(c.id))}" onclick="deleteClip(this.dataset.clipId)" aria-label="Borrar">×</button>
         </div>
       `).join('')
     : '';
@@ -582,6 +602,27 @@ function addChat(d) {
   if (!userScrolled) area.scrollTop = area.scrollHeight;
 }
 
+// Eventos (gift/follow/like/share/join): solo visualización, mismo feed.
+// Nombres siempre escapados con esc() — sin riesgo de inyección.
+function addEvent(d, icon, text) {
+  const area = document.getElementById('tabChat');
+  const empty = document.getElementById('chatEmpty');
+  if (empty) empty.remove();
+
+  chatCount++;
+  if (chatCount > 100) {
+    const first = area.querySelector('.chat-msg');
+    if (first) first.remove();
+  }
+
+  const el = document.createElement('div');
+  el.className = 'chat-msg event';
+  el.innerHTML = `<span class="evt-icon">${icon}</span><div class="msg-body"><span class="msg-user">${esc(d.user)}</span> <span class="msg-text evt-text">${esc(text)}</span></div>`;
+  area.appendChild(el);
+
+  if (!userScrolled) area.scrollTop = area.scrollHeight;
+}
+
 // ── COMMANDS ──────────────────────────────────────────────────────────────
 function cmd(action, extra = {}) {
   fetch('/api/mobile/command', {
@@ -590,7 +631,19 @@ function cmd(action, extra = {}) {
     body: JSON.stringify({ action, ...extra }),
   })
   .then(r => r.json())
-  .then(() => {
+  .then((resp) => {
+    // El desktop es la fuente de verdad: éxito solo si el servidor confirma
+    // que hay un desktop conectado que ejecutará el comando. El estado
+    // mostrado se actualiza vía state-sync de vuelta, no optimistamente.
+    if (!resp || resp.ok !== true) {
+      if (resp && resp.reason === 'desktop-offline') {
+        showToast('Abrí la app de escritorio para usar este control');
+      } else {
+        showToast('No se pudo enviar el comando');
+      }
+      fetchState();
+      return;
+    }
     const toasts = { skip:'Mensaje saltado', clear:'Cola vaciada', markClip:'Clip marcado', emergency:'Modo emergencia', soloChat:'Solo chat activado' };
     if (toasts[action]) showToast(toasts[action]);
     fetchState();
@@ -601,7 +654,9 @@ function cmd(action, extra = {}) {
 function toggleGlobal()       { cmd('globalTTS', { value: !state.ttsGlobalEnabled }); }
 function togglePause()        { cmd('pause', { value: !state.ttsPaused }); }
 function toggleChip(key)      { cmd('toggle', { key, value: !state.options[key] }); }
-function deleteClip(index)    { cmd('deleteClip', { index }); }
+// Borrado por id (no por índice): inmune a desplazamientos cuando el
+// desktop inserta un clip nuevo (unshift) entre el render y el comando.
+function deleteClip(clipId)   { cmd('deleteClip', { clipId: String(clipId) }); }
 
 // ── TABS ──────────────────────────────────────────────────────────────────
 function switchTab(name) {
