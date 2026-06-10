@@ -151,11 +151,6 @@ app.use(express.static(path.join(RESOURCE_BASE, 'public')));
 app.use('/gifts', express.static(path.join(RESOURCE_BASE, 'gifts')));
 app.use('/uploads', express.static(UPLOADS_DIR));
 app.use(express.json());
-app.use((err, _req, res, next) => {
-  if (!err) return next();
-  if (err.type === 'entity.parse.failed') return res.status(400).json({ error: 'JSON invalido' });
-  return res.status(400).json({ error: err.message || 'Solicitud invalida' });
-});
 
 // Multi-channel state: username → { conn, attempts, timer }
 const tiktokChannels = new Map();
@@ -1965,6 +1960,16 @@ app.post('/api/mobile/command', validateMobileRequest, (req, res) => {
 
 // Cargar palabras bloqueadas al iniciar
 loadBlockedWordsFromFile();
+
+// Error-handler de Express (4 args): debe ir al FINAL, después de todas las
+// rutas, para capturar tanto errores de body-parser (JSON inválido) como
+// errores lanzados dentro de las rutas (responde JSON, no stack HTML).
+app.use((err, _req, res, next) => {
+  if (!err) return next();
+  if (res.headersSent) return next(err);
+  if (err.type === 'entity.parse.failed') return res.status(400).json({ error: 'JSON invalido' });
+  return res.status(400).json({ error: err.message || 'Solicitud invalida' });
+});
 
 const PORT = process.env.PORT || 3000;
 
