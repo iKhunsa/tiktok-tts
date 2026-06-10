@@ -1140,38 +1140,23 @@
 
   async function saveBlockedWords() {
     try {
-      // Fetch current server list
-      const currentRes = await fetch('/api/blocked-words');
-      const currentData = await currentRes.json();
-      const serverWords = currentData.words || [];
+      // Una sola petición bulk: el servidor reemplaza la lista completa
+      const content = blockedWords.map(w => `- ${w}`).join('\n');
+      const res = await fetch('/api/blocked-words/import', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Error del servidor');
 
-      // Remove words not in local list
-      for (const w of serverWords) {
-        if (!blockedWords.includes(w)) {
-          await fetch('/api/block-word', {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ word: w })
-          });
-        }
-      }
-
-      // Add words not on server
-      for (const w of blockedWords) {
-        if (!serverWords.includes(w)) {
-          await fetch('/api/block-word', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ word: w })
-          });
-        }
-      }
-
+      blockedWords = data.words || [];
+      renderTags();
       flashSave('btnSaveFilters');
       showToast('Palabras sincronizadas con el servidor');
       loadMdContent();
     } catch (e) {
-      showToast('Error sincronizando palabras');
+      showToast(e.message || 'Error sincronizando palabras');
     }
   }
 
