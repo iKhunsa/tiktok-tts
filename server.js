@@ -166,10 +166,7 @@ const tiktokChannels = new Map();
 const connectingTiktok = new Set();
 const MAX_RECONNECT_ATTEMPTS = 5;
 
-// ── BACKWARD-COMPAT helpers (used by follower refresh + status) ────────────
-function firstTiktokEntry() {
-  return tiktokChannels.size > 0 ? tiktokChannels.values().next().value : null;
-}
+// ── BACKWARD-COMPAT helpers (used by status) ────────────────────────────────
 function anyTiktokConnected() { return tiktokChannels.size > 0; }
 
 // TikTok gift prices in coins (what the viewer pays). 100 coins ≈ $1.03 (ver TIKTOK_COINS_USD = 0.0103/coin).
@@ -543,7 +540,11 @@ loadConfig();
 
 const overlayState = {
   followCount: 0,
+  // Suma de las bases de followers de TODOS los canales TikTok conectados.
+  // Se recomputa desde followerBaseByChannel; nunca se sobrescribe con el
+  // valor de un solo canal (multi-canal: estrategia agregada).
   baseFollowerCount: 0,
+  followerBaseByChannel: new Map(), // username → base follower count
   topLikers: new Map(),
   sharers: [],
   credits: {
@@ -557,10 +558,31 @@ function resetOverlayState() {
   overlayState.followCount = 0;
   overlayState.topLikers.clear();
   overlayState.baseFollowerCount = 0;
+  overlayState.followerBaseByChannel.clear();
   overlayState.sharers = [];
   overlayState.credits.donors = [];
   overlayState.credits.followers = [];
   overlayState.credits.sharers = [];
+}
+
+// Recalcula la suma de bases por canal (eliminando residuos de canales ya
+// desconectados) y la difunde si cambió.
+function recomputeFollowerBase() {
+  for (const ch of overlayState.followerBaseByChannel.keys()) {
+    if (!tiktokChannels.has(ch)) overlayState.followerBaseByChannel.delete(ch);
+  }
+  let sum = 0;
+  for (const count of overlayState.followerBaseByChannel.values()) sum += count;
+  if (sum !== overlayState.baseFollowerCount) {
+    overlayState.baseFollowerCount = sum;
+    broadcast({ type: 'follower-base', count: sum });
+  }
+}
+
+function setFollowerBaseForChannel(channel, count) {
+  if (!(typeof count === 'number' && count > 0)) return;
+  overlayState.followerBaseByChannel.set(channel, count);
+  recomputeFollowerBase();
 }
 
 function log(level, ctx, msg, data = null) {
@@ -584,18 +606,18 @@ function extractFollowerCount(roomInfo) {
 function startFollowerRefresh() {
   stopFollowerRefresh();
   followerRefreshTimer = setInterval(async () => {
-    const fe = firstTiktokEntry();
-    if (!fe) return;
-    try {
-      const roomInfo = await fe.conn.fetchRoomInfo();
-      const newCount = extractFollowerCount(roomInfo);
-      if (newCount > 0 && newCount !== overlayState.baseFollowerCount) {
-        overlayState.baseFollowerCount = newCount;
-        broadcast({ type: 'follower-base', count: newCount });
-        log('info', 'followers', 'Base follower count refreshed', { count: newCount });
+    // Actualiza la base de cada canal y recomputa la suma agregada
+    for (const [username, entry] of tiktokChannels) {
+      try {
+        const roomInfo = await entry.conn.fetchRoomInfo();
+        const newCount = extractFollowerCount(roomInfo);
+        if (newCount > 0 && newCount !== overlayState.followerBaseByChannel.get(username)) {
+          setFollowerBaseForChannel(username, newCount);
+          log('info', 'followers', 'Base follower count refreshed', { channel: username, count: newCount });
+        }
+      } catch (err) {
+        log('warn', 'followers', 'Failed to refresh follower count', { channel: username, error: err.message });
       }
-    } catch (err) {
-      log('warn', 'followers', 'Failed to refresh follower count', { error: err.message });
     }
   }, 5 * 60 * 1000);
 }
@@ -948,6 +970,7 @@ function setupTikTokConnection(cleanUsername) {
       entry.timer = setTimeout(() => reconnectTiktok(cleanUsername), delay);
     } else {
       tiktokChannels.delete(cleanUsername);
+      recomputeFollowerBase();
       broadcastChannels();
       cleanupAfterLastTikTokChannel();
     }
@@ -966,11 +989,7 @@ async function reconnectTiktok(username) {
     setupTikTokConnection(username);
     const refreshed = tiktokChannels.get(username);
     const state = await refreshed.conn.connect();
-    const baseCount = extractFollowerCount(state && state.roomInfo);
-    if (baseCount > 0) {
-      overlayState.baseFollowerCount = baseCount;
-      broadcast({ type: 'follower-base', count: baseCount });
-    }
+    setFollowerBaseForChannel(username, extractFollowerCount(state && state.roomInfo));
     refreshed.attempts = 0;
     if (refreshed.timer) { clearTimeout(refreshed.timer); refreshed.timer = null; }
     broadcast({ type: 'connected', username, isFirst: false });
@@ -986,6 +1005,7 @@ async function reconnectTiktok(username) {
       e2.timer = setTimeout(() => reconnectTiktok(username), delay);
     } else {
       tiktokChannels.delete(username);
+      recomputeFollowerBase();
       broadcastChannels();
       cleanupAfterLastTikTokChannel();
     }
@@ -1051,6 +1071,7 @@ app.post('/api/disconnect', (req, res) => {
       try { entry.conn.disconnect(); } catch (e) {}
       tiktokChannels.delete(cleanUsername);
     }
+    recomputeFollowerBase();
     broadcastChannels();
     if (tiktokChannels.size === 0) {
       stopFollowerRefresh();
@@ -1067,6 +1088,7 @@ app.post('/api/disconnect', (req, res) => {
       try { entry.conn.disconnect(); } catch (e) {}
     }
     tiktokChannels.clear();
+    recomputeFollowerBase();
     clearLikePendingTimers();
     broadcast({ type: 'disconnected' });
     broadcastChannels();
@@ -1606,6 +1628,7 @@ app.post('/api/platforms/disconnect', async (req, res) => {
           try { entry.conn.disconnect(); } catch (e) {}
           tiktokChannels.delete(cleanUsername);
         }
+        recomputeFollowerBase();
         if (tiktokChannels.size === 0) cleanupAfterLastTikTokChannel();
         else broadcast({ type: 'channel-disconnected', platform: 'tiktok', channel: cleanUsername });
       } else {
@@ -1615,6 +1638,7 @@ app.post('/api/platforms/disconnect', async (req, res) => {
           try { entry.conn.disconnect(); } catch (e) {}
         }
         tiktokChannels.clear();
+        recomputeFollowerBase();
         cleanupAfterLastTikTokChannel();
       }
     } else if (platform === 'twitch') {
@@ -1681,6 +1705,7 @@ async function connectTiktokChannel(channel) {
       stale.conn.removeAllListeners();
       try { stale.conn.disconnect(); } catch (_) {}
       tiktokChannels.delete(cleanUsername);
+      recomputeFollowerBase();
     }
     connectingTiktok.delete(cleanUsername);
   }, 30000);
@@ -1697,11 +1722,7 @@ async function connectTiktokChannel(channel) {
     setupTikTokConnection(cleanUsername);
     const entry = tiktokChannels.get(cleanUsername);
     const state = await entry.conn.connect();
-    const baseCount = extractFollowerCount(state && state.roomInfo);
-    if (baseCount > 0) {
-      overlayState.baseFollowerCount = baseCount;
-      broadcast({ type: 'follower-base', count: baseCount });
-    }
+    setFollowerBaseForChannel(cleanUsername, extractFollowerCount(state && state.roomInfo));
     startFollowerRefresh();
     entry.attempts = 0;
     broadcast({ type: 'connected', username: cleanUsername, isFirst: isFirstConnection });
@@ -1709,6 +1730,7 @@ async function connectTiktokChannel(channel) {
     return cleanUsername;
   } catch (err) {
     tiktokChannels.delete(cleanUsername);
+    recomputeFollowerBase();
     throw err;
   } finally {
     clearTimeout(connectingTimeout);
@@ -1753,6 +1775,7 @@ app.post('/api/channels/remove', async (req, res) => {
         try { entry.conn.disconnect(); } catch (e) {}
         tiktokChannels.delete(cleanUsername);
       }
+      recomputeFollowerBase();
       if (tiktokChannels.size === 0) cleanupAfterLastTikTokChannel();
       else broadcast({ type: 'channel-disconnected', platform: 'tiktok', channel: cleanUsername });
     } else if (platform === 'twitch') {
