@@ -1812,84 +1812,141 @@ app.post('/api/channels/remove', async (req, res) => {
 });
 
 // ── OBS WEBSOCKET ─────────────────────────────────────────────────────────────
-app.post('/api/obs/connect', (req, res) => {
+// Reconexión automática con backoff exponencial (mismo patrón que las
+// plataformas de chat): tras una caída no intencional se reintenta con los
+// últimos parámetros de conexión exitosa. Un disconnect manual no reintenta.
+let obsLastParams = null;        // { port, password } de la última conexión exitosa
+let obsReconnectTimer = null;
+let obsReconnectAttempts = 0;
+let obsIntentionalClose = false;
+
+function clearObsReconnect() {
+  if (obsReconnectTimer) { clearTimeout(obsReconnectTimer); obsReconnectTimer = null; }
+  obsReconnectAttempts = 0;
+}
+
+function connectObs(port, password) {
+  return new Promise((resolve, reject) => {
+    let settled = false;
+    const settle = (fn) => { if (!settled) { settled = true; fn(); } };
+    let ws;
+
+    try {
+      ws = new WebSocket(`ws://127.0.0.1:${port}`);
+    } catch (err) {
+      return reject(err);
+    }
+
+    const timeoutId = setTimeout(() => {
+      settle(() => {
+        try { ws.close(); } catch (_) {}
+        reject(new Error('Timeout al conectar OBS (5s)'));
+      });
+    }, 5000);
+
+    ws.on('message', (raw) => {
+      try {
+        const msg = JSON.parse(raw.toString());
+        if (msg.op === 0) {
+          // Hello — send Identify (op 1)
+          const d = { rpcVersion: 1 };
+          const authChallenge = msg.d && msg.d.authentication;
+          if (authChallenge && password) {
+            const secret = crypto.createHash('sha256')
+              .update(password + authChallenge.salt).digest('base64');
+            d.authentication = crypto.createHash('sha256')
+              .update(secret + authChallenge.challenge).digest('base64');
+          }
+          d.eventSubscriptions = 64; // OutputEvents bitmask — includes StreamStateChanged
+          ws.send(JSON.stringify({ op: 1, d }));
+        } else if (msg.op === 2) {
+          // Identified — connection established
+          clearTimeout(timeoutId);
+          obsWs = ws;
+          obsLastParams = { port, password };
+          clearObsReconnect();
+          broadcast({ type: 'obs-connected' });
+          settle(() => resolve());
+        } else if (msg.op === 5) {
+          // Event — handle StreamStateChanged to auto-start/stop stream timer
+          const { eventType, eventData } = msg.d || {};
+          if (eventType === 'StreamStateChanged') {
+            if (eventData && eventData.outputState === 'OBS_WEBSOCKET_OUTPUT_STARTED') {
+              broadcast({ type: 'obs-stream-started' });
+            } else if (eventData && eventData.outputState === 'OBS_WEBSOCKET_OUTPUT_STOPPED') {
+              broadcast({ type: 'obs-stream-stopped' });
+            }
+          }
+        }
+      } catch (parseErr) {
+        console.warn('[obs-ws] parse error on message:', parseErr.message);
+      }
+    });
+
+    ws.on('error', (err) => {
+      clearTimeout(timeoutId);
+      settle(() => reject(err));
+    });
+
+    ws.on('close', () => {
+      clearTimeout(timeoutId);
+      if (obsWs === ws) {
+        obsWs = null;
+        broadcast({ type: 'obs-disconnected' });
+        if (!obsIntentionalClose) scheduleObsReconnect();
+      }
+      settle(() => reject(new Error('OBS cerró la conexión')));
+    });
+  });
+}
+
+function scheduleObsReconnect() {
+  if (!obsLastParams || obsReconnectTimer) return;
+  if (obsReconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
+    log('warn', 'obs', 'Reconexion OBS agotada', { attempts: obsReconnectAttempts });
+    clearObsReconnect();
+    return;
+  }
+  const delay = Math.min(1000 * Math.pow(2, obsReconnectAttempts), 30000);
+  obsReconnectAttempts++;
+  broadcast({ type: 'obs-reconnecting', attempt: obsReconnectAttempts, delayMs: delay });
+  obsReconnectTimer = setTimeout(async () => {
+    obsReconnectTimer = null;
+    if (obsIntentionalClose || obsWs) return;
+    try {
+      await connectObs(obsLastParams.port, obsLastParams.password);
+      log('info', 'obs', 'Reconexion OBS exitosa', { attempt: obsReconnectAttempts });
+    } catch (err) {
+      log('warn', 'obs', 'Fallo reconexion OBS', { attempt: obsReconnectAttempts, error: err.message });
+      // El handler de 'close' ya programó el siguiente intento si corresponde;
+      // si falló antes de abrir (error de socket), programarlo aquí.
+      if (!obsReconnectTimer) scheduleObsReconnect();
+    }
+  }, delay);
+}
+
+app.post('/api/obs/connect', async (req, res) => {
   const { port = 4455, password = '' } = req.body || {};
 
+  obsIntentionalClose = true; // cierre del socket previo (si hay) no debe reintentar
+  clearObsReconnect();
   if (obsWs) {
     try { obsWs.close(); } catch (_) {}
     obsWs = null;
   }
-
-  let settled = false;
-  const settle = (fn) => { if (!settled) { settled = true; fn(); } };
-  let ws;
+  obsIntentionalClose = false;
 
   try {
-    ws = new WebSocket(`ws://127.0.0.1:${port}`);
+    await connectObs(port, password);
+    res.json({ success: true });
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
-
-  const timeoutId = setTimeout(() => {
-    settle(() => {
-      try { ws.close(); } catch (_) {}
-      res.status(500).json({ error: 'Timeout al conectar OBS (5s)' });
-    });
-  }, 5000);
-
-  ws.on('message', (raw) => {
-    try {
-      const msg = JSON.parse(raw.toString());
-      if (msg.op === 0) {
-        // Hello — send Identify (op 1)
-        const d = { rpcVersion: 1 };
-        const authChallenge = msg.d && msg.d.authentication;
-        if (authChallenge && password) {
-          const secret = crypto.createHash('sha256')
-            .update(password + authChallenge.salt).digest('base64');
-          d.authentication = crypto.createHash('sha256')
-            .update(secret + authChallenge.challenge).digest('base64');
-        }
-        d.eventSubscriptions = 64; // OutputEvents bitmask — includes StreamStateChanged
-        ws.send(JSON.stringify({ op: 1, d }));
-      } else if (msg.op === 2) {
-        // Identified — connection established
-        clearTimeout(timeoutId);
-        obsWs = ws;
-        broadcast({ type: 'obs-connected' });
-        settle(() => res.json({ success: true }));
-      } else if (msg.op === 5) {
-        // Event — handle StreamStateChanged to auto-start/stop stream timer
-        const { eventType, eventData } = msg.d || {};
-        if (eventType === 'StreamStateChanged') {
-          if (eventData && eventData.outputState === 'OBS_WEBSOCKET_OUTPUT_STARTED') {
-            broadcast({ type: 'obs-stream-started' });
-          } else if (eventData && eventData.outputState === 'OBS_WEBSOCKET_OUTPUT_STOPPED') {
-            broadcast({ type: 'obs-stream-stopped' });
-          }
-        }
-      }
-    } catch (parseErr) {
-      console.warn('[obs-ws] parse error on message:', parseErr.message);
-    }
-  });
-
-  ws.on('error', (err) => {
-    clearTimeout(timeoutId);
-    settle(() => res.status(500).json({ error: err.message }));
-  });
-
-  ws.on('close', () => {
-    clearTimeout(timeoutId);
-    if (obsWs === ws) {
-      obsWs = null;
-      broadcast({ type: 'obs-disconnected' });
-    }
-    settle(() => res.status(500).json({ error: 'OBS cerró la conexión' }));
-  });
 });
 
 app.post('/api/obs/disconnect', (_req, res) => {
+  obsIntentionalClose = true;
+  clearObsReconnect();
   if (obsWs) {
     try { obsWs.close(); } catch (_) {}
     obsWs = null;
@@ -2080,6 +2137,13 @@ module.exports.shutdown = function shutdownServer() {
   }
   youtubeChannels.clear();
   for (const ch of youtubeReconnectTimers.keys()) clearReconnectTimer(youtubeReconnectTimers, ch);
+
+  obsIntentionalClose = true;
+  clearObsReconnect();
+  if (obsWs) {
+    try { obsWs.close(); } catch (_) {}
+    obsWs = null;
+  }
 
   stopFollowerRefresh();
   try { wss.close(); } catch (_) {}

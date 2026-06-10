@@ -3135,6 +3135,10 @@
           if (btn) btn.style.display = 'inline-block'; if (btnDis) btnDis.style.display = 'none'; }
         break;
 
+      case 'obs-reconnecting':
+        showToast(`Reconectando OBS… (intento ${data.attempt})`);
+        break;
+
       case 'obs-stream-started':
         // Auto-start stream timer when OBS begins streaming
         if (!streamStartTime) startStreamManual();
