@@ -1645,12 +1645,22 @@ async function connectTiktokChannel(channel) {
     throw err;
   }
   connectingTiktok.add(cleanUsername);
-  // Safety: always clear the connecting flag after 30s even if connect() hangs
+  // Salvaguarda anti-cuelgue: si connect() no resuelve en 30s, ABORTAR la
+  // conexión (disconnect + removeAllListeners + borrar entrada) antes de
+  // liberar el flag. Liberar solo el flag dejaría la conexión colgada viva
+  // y una segunda petición duplicaría la conexión.
+  // El flag connectingTiktok se borra normalmente SOLO en el finally.
   const connectingTimeout = setTimeout(() => {
-    if (connectingTiktok.has(cleanUsername)) {
-      connectingTiktok.delete(cleanUsername);
-      log('warn', 'tiktok', 'connectingTiktok flag timeout cleared for', { channel: cleanUsername });
+    if (!connectingTiktok.has(cleanUsername)) return;
+    log('warn', 'tiktok', 'connect timeout (30s) — abortando conexión colgada', { channel: cleanUsername });
+    const stale = tiktokChannels.get(cleanUsername);
+    if (stale) {
+      if (stale.timer) clearTimeout(stale.timer);
+      stale.conn.removeAllListeners();
+      try { stale.conn.disconnect(); } catch (_) {}
+      tiktokChannels.delete(cleanUsername);
     }
+    connectingTiktok.delete(cleanUsername);
   }, 30000);
   const prev = tiktokChannels.get(cleanUsername);
   if (prev) {
