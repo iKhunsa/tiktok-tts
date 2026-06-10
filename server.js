@@ -1464,7 +1464,16 @@ async function connectTwitch(channel, token = null, attempt = 0) {
     if (tags.emotes) {
       for (const [emoteId, positions] of Object.entries(tags.emotes)) {
         const range = Array.isArray(positions) ? positions[0] : positions.split('/')[0];
-        const [start, end] = range.split('-').map(Number);
+        const [start, end] = String(range || '').split('-').map(Number);
+        // Validar rango: índices enteros, acotados al mensaje; saltar emote malformado
+        if (!Number.isInteger(start) || !Number.isInteger(end)) {
+          log('debug', 'twitch', 'emote range invalido (no numerico)', { emoteId, range });
+          continue;
+        }
+        if (start < 0 || end < start || end >= message.length) {
+          log('debug', 'twitch', 'emote range fuera de limites', { emoteId, range, len: message.length });
+          continue;
+        }
         const name = message.substring(start, end + 1);
         if (name) emotes[name] = { url: `https://static-cdn.jtvnw.net/emoticons/v2/${emoteId}/default/dark/1.0` };
       }
