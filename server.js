@@ -28,7 +28,10 @@ function isLocalHostname(hostname) {
   return ['localhost', '127.0.0.1', '::1'].includes(String(hostname || '').toLowerCase());
 }
 
-function getLocalIP() {
+// Heurística best-effort: no hay forma fiable de saber cuál interfaz es "la"
+// LAN del usuario; se filtran virtuales y se priorizan los rangos domésticos
+// típicos (192.168.x, luego 10.x) sobre el resto.
+function getLocalIPCandidates() {
   const VIRTUAL_SKIP = /virtual|vbox|vmnet|vmware|hyper.?v|vethernet|docker|loopback/i;
   // 192.168.56.x and 192.168.99.x are VirtualBox/Docker defaults
   const VIRTUAL_IP = /^192\.168\.(56|99)\./;
@@ -42,7 +45,13 @@ function getLocalIP() {
       candidates.push(iface.address);
     }
   }
-  return candidates[0] || '127.0.0.1';
+  const rank = (ip) => (/^192\.168\./.test(ip) ? 0 : /^10\./.test(ip) ? 1 : 2);
+  candidates.sort((a, b) => rank(a) - rank(b));
+  return candidates;
+}
+
+function getLocalIP() {
+  return getLocalIPCandidates()[0] || '127.0.0.1';
 }
 
 function isPrivateIP(ip) {
@@ -1924,8 +1933,10 @@ app.get('/mobile', validateMobileRequest, (_req, res) => {
 });
 
 app.get('/api/local-ip', (_req, res) => {
-  const ip = getLocalIP();
-  res.json({ ip, port: PORT || 3000 });
+  const ips = getLocalIPCandidates();
+  // `ip` se mantiene por compatibilidad (el frontend lo consume); `ips` lista
+  // todas las candidatas para entornos multi-interfaz.
+  res.json({ ip: ips[0] || '127.0.0.1', ips, port: PORT || 3000 });
 });
 
 app.get('/api/mobile/qr', async (_req, res) => {
