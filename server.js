@@ -446,6 +446,25 @@ const TIKTOK_GIFT_COINS = {
 };
 
 const TIKTOK_COINS_USD = 0.0103; // 100 coins = $1.03 USD. Estimación; el precio real por coin varía por región/paquete.
+// Modelo de unidades: coins = lo que paga el viewer; diamonds = lo que recibe el creador.
+// En TikTok 1 coin ≈ 2 diamonds → coins = diamonds / DIAMONDS_PER_COIN.
+const DIAMONDS_PER_COIN = 2;
+
+// Única fuente de verdad para valorar regalos en USD (usada por el handler real y los endpoints de test).
+function computeGiftUsd({ giftName, repeatCount = 1, diamondCount = 0 } = {}) {
+  const lookedUpCoins = TIKTOK_GIFT_COINS[giftName];
+  let perGiftCoins = null;
+  if (lookedUpCoins != null) {
+    perGiftCoins = lookedUpCoins;
+  } else if (diamondCount > 0) {
+    perGiftCoins = diamondCount / DIAMONDS_PER_COIN;
+  }
+  // Sin datos: no inventar un valor
+  if (perGiftCoins == null || perGiftCoins <= 0) return { totalCoins: 0, usdValue: null };
+  const totalCoins = perGiftCoins * repeatCount;
+  const usdRaw = totalCoins * TIKTOK_COINS_USD;
+  return { totalCoins, usdValue: usdRaw > 0 ? usdRaw.toFixed(2) : null };
+}
 const GOOGLE_TTS_LANGS = new Set(['es', 'es-MX', 'es-AR', 'en', 'en-GB', 'pt', 'pt-PT', 'fr', 'de', 'it', 'ja', 'zh-CN', 'ru', 'ko']);
 
 const clients = new Set();
@@ -823,11 +842,11 @@ function setupTikTokConnection(cleanUsername) {
     if (data.giftType === 1 && !data.repeatEnd) return;
     const user = resolveDisplayName(data.nickname, data.uniqueId);
     const repeatCount = data.repeatCount || 1;
-    const lookedUpCoins = TIKTOK_GIFT_COINS[data.giftName];
-    const perGiftCoins  = lookedUpCoins != null ? lookedUpCoins : (data.diamondCount ? data.diamondCount * 2 : 0);
-    const totalCoins    = perGiftCoins * repeatCount;
-    const usdRaw        = totalCoins * TIKTOK_COINS_USD;
-    const usdValue      = usdRaw > 0 ? usdRaw.toFixed(2) : null;
+    const { usdValue } = computeGiftUsd({
+      giftName: data.giftName,
+      repeatCount,
+      diamondCount: data.diamondCount || 0,
+    });
     overlayState.credits.donors.push({ user, giftName: data.giftName, count: repeatCount, ts: Date.now() });
     broadcast({
       type: 'gift',
