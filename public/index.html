@@ -2866,9 +2866,8 @@
       updateQueueBadge();
       return;
     }
+    // FIFO puro: el orden de llegada al cliente es el orden natural percibido
     speechQueue.push({ text, msgId, timestamp: timestamp || Date.now() });
-    // Keep queue in chronological order so multi-platform messages play in arrival time order
-    speechQueue.sort((a, b) => a.timestamp - b.timestamp);
     updateQueueBadge();
     if (!isSpeaking) processQueue();
   }
@@ -2982,7 +2981,20 @@
     if (ws !== null && ws.readyState === WebSocket.OPEN) return;
     const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
     ws = new WebSocket(`${proto}//${location.host}`);
-    ws.onmessage = (e) => { const d = JSON.parse(e.data); handleMessage(d); };
+    ws.onmessage = (e) => {
+      let d;
+      try {
+        d = JSON.parse(e.data);
+      } catch (err) {
+        logStorage.addLog('warn', 'ws', 'mensaje WS no parseable');
+        return;
+      }
+      try {
+        handleMessage(d);
+      } catch (err) {
+        logStorage.addLog('warn', 'ws', `error procesando mensaje WS: ${err.message}`);
+      }
+    };
     ws.onopen    = () => { wsReconnectAttempts = 0; setTimeout(sendStateSync, 200); };
     ws.onclose   = () => {
       ws = null;
@@ -3204,7 +3216,12 @@
   const colorMap = {};
 
   function getUserColor(user) {
-    if (!colorMap[user]) colorMap[user] = COLORS[Object.keys(colorMap).length % COLORS.length];
+    if (!colorMap[user]) {
+      // djb2: hash determinista del nombre → mismo usuario, mismo color siempre
+      let hash = 5381;
+      for (let i = 0; i < user.length; i++) hash = ((hash << 5) + hash + user.charCodeAt(i)) | 0;
+      colorMap[user] = COLORS[Math.abs(hash) % COLORS.length];
+    }
     return colorMap[user];
   }
 
