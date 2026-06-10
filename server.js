@@ -798,6 +798,16 @@ function isConnectRateLimited() {
   return false;
 }
 
+// Middleware compartido por los 3 endpoints de conexión
+// (/api/connect, /api/platforms/connect, /api/channels/add).
+// connectRequestTimes es de módulo → el límite es global entre los 3.
+function connectRateLimiter(_req, res, next) {
+  if (isConnectRateLimited()) {
+    return res.status(429).json({ error: 'Demasiados intentos de conexión. Espera unos segundos.' });
+  }
+  next();
+}
+
 function isTTSRateLimited() {
   if (!config.rateLimitEnabled) return false;
   const now = Date.now();
@@ -1009,7 +1019,7 @@ wss.on('connection', (ws) => {
 });
 
 // Connect to TikTok Live (adds channel, does not replace others)
-app.post('/api/connect', async (req, res) => {
+app.post('/api/connect', connectRateLimiter, async (req, res) => {
   const { username } = req.body || {};
   if (!username) return res.status(400).json({ error: 'Se requiere el nombre de usuario' });
 
@@ -1556,7 +1566,7 @@ app.get('/api/platforms/status', (_req, res) => {
   });
 });
 
-app.post('/api/platforms/connect', async (req, res) => {
+app.post('/api/platforms/connect', connectRateLimiter, async (req, res) => {
   const { platform, channel, token } = req.body || {};
   if (!platform || !channel) return res.status(400).json({ error: 'Se requiere platform y channel' });
 
@@ -1706,8 +1716,7 @@ async function connectTiktokChannel(channel) {
   }
 }
 
-app.post('/api/channels/add', async (req, res) => {
-  if (isConnectRateLimited()) return res.status(429).json({ error: 'Demasiados intentos de conexión. Espera unos segundos.' });
+app.post('/api/channels/add', connectRateLimiter, async (req, res) => {
   const { platform, channel, token } = req.body || {};
   if (!platform || !channel) return res.status(400).json({ error: 'Se requiere platform y channel' });
   try {
