@@ -1049,12 +1049,32 @@
     badge.className = 'badge ' + (enabled ? 'badge-on' : 'badge-off');
   }
 
+  function readIntField(id, label) {
+    const el = document.getElementById(id);
+    const value = parseInt(el.value, 10);
+    if (!Number.isInteger(value)) {
+      el.style.borderColor = '#e74c3c';
+      el.focus();
+      showToast(`Valor inválido en ${label}`);
+      return null;
+    }
+    el.style.borderColor = '';
+    return value;
+  }
+
   async function saveRateLimit() {
+    const rlMax = readIntField('rlMax', 'Máx. mensajes');
+    if (rlMax === null) return;
+    const rlWindowSec = readIntField('rlWindow', 'Ventana (segundos)');
+    if (rlWindowSec === null) return;
+    const rlQueue = readIntField('rlQueue', 'Tamaño de cola');
+    if (rlQueue === null) return;
+
     const payload = {
       rateLimitEnabled: document.getElementById('rlEnabled').checked,
-      TTS_RATE_LIMIT_MAX: parseInt(document.getElementById('rlMax').value),
-      TTS_RATE_WINDOW_MS: parseInt(document.getElementById('rlWindow').value) * 1000,
-      MAX_QUEUE_MSG: parseInt(document.getElementById('rlQueue').value),
+      TTS_RATE_LIMIT_MAX: rlMax,
+      TTS_RATE_WINDOW_MS: rlWindowSec * 1000,
+      MAX_QUEUE_MSG: rlQueue,
     };
     try {
       const res = await fetch('/api/config', {
@@ -1074,9 +1094,14 @@
 
   // ─── General Config ─────────────────────────────────────────────────
   async function saveGeneral() {
+    const maxChars = readIntField('cfgChars', 'Máx. caracteres');
+    if (maxChars === null) return;
+    const debounce = readIntField('cfgDebounce', 'Debounce de likes');
+    if (debounce === null) return;
+
     const payload = {
-      TTS_MAX_CHARS: parseInt(document.getElementById('cfgChars').value),
-      LIKE_DEBOUNCE_MS: parseInt(document.getElementById('cfgDebounce').value),
+      TTS_MAX_CHARS: maxChars,
+      LIKE_DEBOUNCE_MS: debounce,
     };
     try {
       const res = await fetch('/api/config', {
