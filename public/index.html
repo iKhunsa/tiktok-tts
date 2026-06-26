@@ -59,7 +59,7 @@
       border-right: 1px solid var(--border-subtle);
       display: flex;
       flex-direction: column;
-      padding: 20px 10px;
+      padding: 20px 8px;
       position: sticky;
       top: 0;
       height: 100vh;
@@ -97,9 +97,9 @@
     .sidebar-item {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 9px 12px;
-      border-radius: 10px;
+      gap: 9px;
+      padding: 9px 10px;
+      border-radius: 8px;
       border: none;
       background: transparent;
       color: var(--text-muted);
@@ -110,6 +110,7 @@
       text-align: left;
       width: 100%;
       transition: background 0.15s, color 0.15s;
+      justify-content: flex-start;
     }
 
     .sidebar-item:hover { background: var(--surface); color: var(--text-secondary); }
@@ -141,6 +142,180 @@
       transition: background 0.15s, color 0.15s;
     }
     .sidebar-footer-btn:hover { background: var(--surface); color: var(--text-secondary); }
+
+    .community-banner {
+      display: block;
+      margin: 8px 12px 4px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: rgba(62, 207, 142, 0.08);
+      border: 1px solid rgba(62, 207, 142, 0.25);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 500;
+      text-decoration: none;
+      text-align: left;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .community-banner:hover { background: rgba(62, 207, 142, 0.16); border-color: rgba(62, 207, 142, 0.5); }
+    .community-banner .community-desc {
+      display: block;
+      font-size: 10px;
+      font-weight: 400;
+      color: var(--text-muted);
+      margin-top: 3px;
+      line-height: 1.3;
+    }
+
+    .lang-selector-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      margin-top: 2px;
+    }
+    .lang-selector-row select {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--text-secondary);
+      font-size: 12px;
+      padding: 5px 8px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+    .lang-selector-row select:hover { border-color: var(--accent); color: var(--text); }
+
+    /* ── SOUND PAD ───────────────────────────────────────── */
+    .soundpad-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .soundpad-count { font-size: 12px; color: var(--text-muted); }
+    .soundpad-deck {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px;
+    }
+    .soundpad-empty {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .sp-card {
+      border-radius: 14px;
+      padding: 14px 12px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+      transition: filter 0.12s, transform 0.1s, box-shadow 0.12s;
+      min-height: 130px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+    .sp-card:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.35); }
+    .sp-card:active { transform: scale(0.96); }
+    .sp-play-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      gap: 6px;
+    }
+    .sp-play-btn {
+      font-size: 30px;
+      line-height: 1;
+      background: rgba(255,255,255,0.15);
+      border: none;
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: rgba(255,255,255,0.95);
+      transition: background 0.1s;
+      flex-shrink: 0;
+    }
+    .sp-card:hover .sp-play-btn { background: rgba(255,255,255,0.25); }
+    .sp-play-btn.playing { animation: sp-pulse 0.4s ease; }
+    @keyframes sp-pulse { 0%{transform:scale(1)} 50%{transform:scale(1.2)} 100%{transform:scale(1)} }
+    .sp-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.95);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+      cursor: text;
+      background: none;
+      border: none;
+      width: 100%;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    .sp-name:focus {
+      outline: none;
+      background: rgba(0,0,0,0.2);
+    }
+    .sp-shortcut {
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.75);
+      text-align: center;
+      cursor: pointer;
+      background: rgba(0,0,0,0.2);
+      border-radius: 5px;
+      padding: 3px 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      border: 1px solid rgba(255,255,255,0.15);
+      transition: background 0.1s;
+      letter-spacing: 0.3px;
+    }
+    .sp-shortcut:hover { background: rgba(0,0,0,0.35); border-color: rgba(255,255,255,0.3); }
+    .sp-shortcut.capturing { border-color: rgba(255,255,255,0.7); background: rgba(0,0,0,0.4); color: #fff; animation: blink-border 0.8s infinite; }
+    @keyframes blink-border { 0%,100%{border-color:rgba(255,255,255,0.7)} 50%{border-color:rgba(255,255,255,0.2)} }
+    .sp-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+    }
+    .sp-color-btn {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.5);
+      cursor: pointer;
+      flex-shrink: 0;
+      padding: 0;
+      background: transparent;
+    }
+    .sp-delete-btn {
+      font-size: 14px;
+      background: rgba(0,0,0,0.15);
+      border: none;
+      cursor: pointer;
+      color: rgba(255,255,255,0.5);
+      padding: 2px 5px;
+      border-radius: 5px;
+      line-height: 1.4;
+      flex-shrink: 0;
+      transition: background 0.1s, color 0.1s;
+    }
+    .sp-delete-btn:hover { color: rgba(255,80,80,0.9); background: rgba(200,30,30,0.15); }
 
     /* ── MAIN AREA ───────────────────────────────────────── */
     .main-area {
@@ -1196,30 +1371,60 @@
     <nav class="sidebar-nav">
       <button class="sidebar-item active" data-view="chat" onclick="switchView('chat')">
         <img class="sidebar-icon icon-inline" src="icons/chat.svg" alt="">
-        Chat
+        <span data-i18n="nav.chat">Chat</span>
       </button>
       <button class="sidebar-item" data-view="overlays" onclick="switchView('overlays')">
         <img class="sidebar-icon icon-inline" src="icons/tv.svg" alt="">
-        Overlays
-      </button>
-      <button class="sidebar-item" data-view="settings" onclick="switchView('settings')">
-        <img class="sidebar-icon icon-inline" src="icons/settings.svg" alt="">
-        Configuración
+        <span data-i18n="nav.overlays">Overlays</span>
       </button>
       <button class="sidebar-item" data-view="clips" onclick="switchView('clips')">
         <img class="sidebar-icon icon-inline" src="icons/play_arrow.svg" alt="">
-        Clips
+        <span data-i18n="nav.clips">Clips</span>
+      </button>
+      <!-- FEATURE: soundpad — disabled, remove this comment to re-enable -->
+      <button class="sidebar-item" data-view="soundpad" onclick="switchView('soundpad')" style="display:none">
+        <img class="sidebar-icon icon-inline" src="icons/volume_up.svg" alt="">
+        <span data-i18n="nav.soundpad">Sonidos</span>
       </button>
       <button class="sidebar-item" data-view="mobile" onclick="switchView('mobile')">
         <img class="sidebar-icon icon-inline" src="icons/label.svg" alt="">
-        Móvil
+        <span data-i18n="nav.mobile">Móvil</span>
+      </button>
+      <!-- FEATURE: music bot — disabled, remove this comment to re-enable -->
+      <button class="sidebar-item" data-view="bot" onclick="switchView('bot')" style="display:none">
+        <img class="sidebar-icon icon-inline" src="icons/music_note.svg" alt="">
+        <span>Bot</span>
+      </button>
+      <button class="sidebar-item" data-view="settings" onclick="switchView('settings')">
+        <img class="sidebar-icon icon-inline" src="icons/settings.svg" alt="">
+        <span data-i18n="nav.settings">Configuración</span>
       </button>
     </nav>
 
+    <a href="https://discord.com/invite/mwY859tcQK" target="_blank" class="community-banner">
+      💬 <span data-i18n="community.label">Comunidad TikLiveTTS</span>
+      <span class="community-desc" data-i18n="community.desc">Discord oficial · feedback y preguntas bienvenidos</span>
+    </a>
+
     <div class="sidebar-footer">
-      <button class="sidebar-footer-btn" onclick="openDonationsModal()"><img class="icon-inline" src="icons/favorite.svg" alt=""> Donar</button>
-      <button class="sidebar-footer-btn" onclick="openSocialModal()"><img class="icon-inline" src="icons/smartphone.svg" alt=""> Canales</button>
-      <a href="/advanced.html" class="sidebar-footer-btn"><img class="icon-inline" src="icons/build.svg" alt=""> Avanzado</a>
+      <button class="sidebar-footer-btn" onclick="openDonationsModal()"><img class="icon-inline" src="icons/favorite.svg" alt=""> <span data-i18n="footer.donate">Donar</span></button>
+      <button class="sidebar-footer-btn" onclick="openSocialModal()"><img class="icon-inline" src="icons/smartphone.svg" alt=""> <span data-i18n="footer.channels">Canales</span></button>
+      <a href="/advanced.html" class="sidebar-footer-btn"><img class="icon-inline" src="icons/build.svg" alt=""> <span data-i18n="footer.advanced">Avanzado</span></a>
+      <div class="lang-selector-row">
+        <img class="icon-inline" src="icons/g_translate.svg" alt="" style="opacity:0.6;flex-shrink:0;">
+        <select id="langSelect" onchange="setLanguage(this.value)" title="UI Language">
+          <option value="es">Español</option>
+          <option value="en">English</option>
+          <option value="it">Italiano</option>
+          <option value="pt">Português</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
+          <option value="zh">中文</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="ru">Русский</option>
+        </select>
+      </div>
     </div>
   </aside>
 
@@ -1233,31 +1438,31 @@
       <div class="toggles-row">
         <label class="toggle-chip" id="chip-chat">
           <input type="checkbox" onchange="toggleOption('readChat', this)" />
-          <img class="icon-inline" src="icons/chat.svg" alt=""> Leer comentarios
+          <img class="icon-inline" src="icons/chat.svg" alt=""> <span data-i18n="toggle.readChat">Leer comentarios</span>
         </label>
         <label class="toggle-chip" id="chip-gifts">
           <input type="checkbox" onchange="toggleOption('readGifts', this)" />
-          <img class="icon-inline" src="icons/card_giftcard.svg" alt=""> Anunciar regalos
+          <img class="icon-inline" src="icons/card_giftcard.svg" alt=""> <span data-i18n="toggle.readGifts">Anunciar regalos</span>
         </label>
         <label class="toggle-chip" id="chip-joins">
           <input type="checkbox" onchange="toggleOption('readJoins', this)" />
-          <img class="icon-inline" src="icons/emoji_people.svg" alt=""> Anunciar entradas
+          <img class="icon-inline" src="icons/emoji_people.svg" alt=""> <span data-i18n="toggle.readJoins">Anunciar entradas</span>
         </label>
         <label class="toggle-chip" id="chip-follows">
           <input type="checkbox" onchange="toggleOption('readFollows', this)" />
-          <img class="icon-inline" src="icons/person_add.svg" alt=""> Anunciar follows
+          <img class="icon-inline" src="icons/person_add.svg" alt=""> <span data-i18n="toggle.readFollows">Anunciar follows</span>
         </label>
         <label class="toggle-chip" id="chip-likes">
           <input type="checkbox" onchange="toggleOption('readLikes', this)" />
-          <img class="icon-inline" src="icons/thumb_up.svg" alt=""> Anunciar likes
+          <img class="icon-inline" src="icons/thumb_up.svg" alt=""> <span data-i18n="toggle.readLikes">Anunciar likes</span>
         </label>
         <label class="toggle-chip" id="chip-shares">
           <input type="checkbox" onchange="toggleOption('readShares', this)" />
-          <img class="icon-inline" src="icons/public.svg" alt=""> Anunciar compartidos
+          <img class="icon-inline" src="icons/public.svg" alt=""> <span data-i18n="toggle.readShares">Anunciar compartidos</span>
         </label>
         <label class="toggle-chip" id="chip-username">
           <input type="checkbox" onchange="toggleOption('sayUsername', this)" />
-          <img class="icon-inline" src="icons/label.svg" alt=""> Decir nombre
+          <img class="icon-inline" src="icons/label.svg" alt=""> <span data-i18n="toggle.sayUsername">Decir nombre</span>
         </label>
       </div>
 
@@ -1265,30 +1470,30 @@
       <div style="display:flex;align-items:center;gap:10px;margin:8px 0 4px;">
         <button id="btnTTSToggle" onclick="toggleGlobalTTS()"
           style="padding:6px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--accent);background:rgba(62,207,142,0.12);color:var(--accent);transition:all .2s;">
-          🔊 TTS Encendido
+          <span id="ttsBtnLabel" data-i18n="tts.on">🔊 TTS Encendido</span>
         </button>
-        <span style="font-size:11px;color:var(--text-muted);">Apagar TTS detiene la voz y vacía la cola.</span>
+        <span style="font-size:11px;color:var(--text-muted);" data-i18n="tts.offHint">Apagar TTS detiene la voz y vacía la cola.</span>
       </div>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0 4px;">
-        <button class="cfg-btn" onclick="skipCurrentTTS()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Saltar actual</button>
-        <button class="cfg-btn danger" onclick="clearTTSQueue()"><img class="icon-inline" src="icons/delete.svg" alt=""> Vaciar cola</button>
-        <button class="cfg-btn" onclick="enableEmergencyTTSMode()"><img class="icon-inline" src="icons/warning.svg" alt=""> Modo emergencia</button>
-        <span style="font-size:11px;color:var(--text-muted);">Emergencia deja activos regalos y follows, y silencia chat/likes/entradas/compartidos.</span>
+        <button class="cfg-btn" onclick="skipCurrentTTS()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> <span data-i18n="btn.skipCurrent">Saltar actual</span></button>
+        <button class="cfg-btn danger" onclick="clearTTSQueue()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="btn.clearQueue">Vaciar cola</span></button>
+        <button class="cfg-btn" onclick="enableEmergencyTTSMode()"><img class="icon-inline" src="icons/warning.svg" alt=""> <span data-i18n="btn.emergency">Modo emergencia</span></button>
+        <span style="font-size:11px;color:var(--text-muted);" data-i18n="emergencyHint">Emergencia deja activos regalos y follows, y silencia chat/likes/entradas/compartidos.</span>
       </div>
 
       <!-- CHAT LOG -->
       <div class="chat-section">
         <div class="chat-header">
           <div class="chat-title">
-            <img class="icon-inline" src="icons/mail_outline.svg" alt=""> Chat en vivo
+            <img class="icon-inline" src="icons/mail_outline.svg" alt=""> <span data-i18n="chat.title">Chat en vivo</span>
             <span class="chat-count" id="msgCount">0</span>
           </div>
-          <button class="btn-clear" onclick="clearChat()">Limpiar</button>
+          <button class="btn-clear" onclick="clearChat()" data-i18n="btn.clearChat">Limpiar</button>
         </div>
         <div id="chatLog">
           <div class="empty-state" id="emptyState">
             <div class="empty-icon"><img class="icon-inline" src="icons/mic.svg" alt=""></div>
-            <div class="empty-text">Conecta tu TikTok Live<br>para ver el chat aquí</div>
+            <div class="empty-text" data-i18n-html="chat.empty">Conecta tu TikTok Live<br>para ver el chat aquí</div>
           </div>
         </div>
         <div class="speaking-now" id="speakingNow">
@@ -1304,8 +1509,8 @@
     <!-- ── VIEW: Overlays ──────────────────────────────── -->
     <div class="view" id="view-overlays">
       <div class="view-header">
-        <h2><img class="icon-inline" src="icons/tv.svg" alt=""> Overlays para OBS</h2>
-        <p>Personaliza cada overlay y copia la URL → OBS → Add Source → Browser → Enable transparent background.</p>
+        <h2><img class="icon-inline" src="icons/tv.svg" alt=""> <span data-i18n="view.overlays.title">Overlays para OBS</span></h2>
+        <p data-i18n="view.overlays.desc">Personaliza cada overlay y copia la URL → OBS → Add Source → Browser → Enable transparent background.</p>
       </div>
 
       <!-- Chat Unificado -->
@@ -1654,15 +1859,124 @@
       </div>
     </div>
 
+    <!-- ── VIEW: Bot ───────────────────────────────────── -->
+    <div class="view" id="view-bot">
+      <div class="view-header">
+        <h2><img class="icon-inline" src="icons/music_note.svg" alt=""> Bot de Música</h2>
+        <p>El chat puede pedir canciones con <strong>!p nombre</strong> o <strong>!p link de YouTube</strong>. Tu playlist suena de fondo cuando no hay peticiones.</p>
+      </div>
+
+      <!-- Now Playing -->
+      <div class="cfg-card" id="music-now-playing-card">
+        <div class="cfg-card-header">
+          <span>▶ Reproduciendo ahora</span>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <label class="toggle-label" style="font-size:12px;">
+              <input type="checkbox" id="musicEnabledToggle" onchange="musicSetEnabled(this.checked)">
+              Activar !p
+            </label>
+            <button class="btn btn-sm" onclick="musicSkip()" title="Saltar canción">⏭ Skip</button>
+          </div>
+        </div>
+        <div id="music-idle-msg" style="color:var(--text-muted);font-size:13px;padding:8px 0;">Sin música reproduciéndose.</div>
+        <div id="music-track-info" style="display:none;gap:12px;align-items:center;">
+          <img id="music-thumb" src="" alt="" style="width:60px;height:60px;object-fit:cover;border-radius:6px;flex-shrink:0;">
+          <div style="flex:1;min-width:0;">
+            <div id="music-title" style="font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+            <div id="music-channel" style="font-size:12px;color:var(--text-muted);"></div>
+            <div id="music-req" style="font-size:11px;color:var(--text-muted);margin-top:2px;"></div>
+            <div style="margin-top:6px;background:var(--bg-secondary);border-radius:4px;height:4px;overflow:hidden;">
+              <div id="music-progress-bar" style="height:100%;background:var(--accent);width:0%;transition:width 1s linear;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Volume -->
+        <div style="margin-top:12px;display:flex;align-items:center;gap:10px;">
+          <img src="icons/volume_up.svg" class="icon-inline" alt="" style="opacity:.7;">
+          <span style="font-size:12px;white-space:nowrap;">Vol. Música</span>
+          <input type="range" id="musicVolRange" min="0" max="1" step="0.05" value="0.5"
+            oninput="musicSetVolume(this.value)" style="flex:1;">
+          <span id="musicVolVal" style="font-size:12px;min-width:32px;text-align:right;">50%</span>
+        </div>
+      </div>
+
+      <!-- Queue -->
+      <div class="cfg-card">
+        <div class="cfg-card-header">
+          <span>📋 Cola de peticiones <span id="music-queue-count" style="font-size:11px;opacity:.6;">(0)</span></span>
+          <button class="btn btn-sm" onclick="musicClearQueue()" title="Limpiar cola">🗑 Limpiar</button>
+        </div>
+        <div id="music-queue-list" style="display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;">
+          <div style="color:var(--text-muted);font-size:13px;">La cola está vacía.</div>
+        </div>
+      </div>
+
+      <!-- Streamer Playlist -->
+      <div class="cfg-card">
+        <div class="cfg-card-header">
+          <span>🎵 Mi Playlist (fondo)</span>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <label class="toggle-label" style="font-size:12px;">
+              <input type="checkbox" id="playlistEnabledToggle" onchange="playlistSetEnabled(this.checked)">
+              Activar
+            </label>
+            <label class="toggle-label" style="font-size:12px;">
+              <input type="checkbox" id="playlistShuffleToggle" onchange="playlistSetShuffle(this.checked)">
+              Aleatorio
+            </label>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--text-muted);margin:0 0 8px;">Una canción por línea: nombre o URL de YouTube. Suena cuando no hay peticiones del chat.</p>
+        <div id="music-playlist-active" style="display:none;font-size:12px;color:var(--accent);margin-bottom:6px;">▶ Sonando de playlist: <span id="playlist-now-title"></span></div>
+        <textarea id="playlistTextarea" rows="6" style="width:100%;box-sizing:border-box;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;padding:8px;color:var(--text);font-size:13px;resize:vertical;"
+          placeholder="Bohemian Rhapsody Queen&#10;https://www.youtube.com/watch?v=fJ9rUzIMcZQ&#10;Lose Yourself Eminem"></textarea>
+        <div style="margin-top:8px;display:flex;justify-content:flex-end;">
+          <button class="btn btn-primary btn-sm" onclick="playlistSave()">💾 Guardar playlist</button>
+        </div>
+      </div>
+
+      <!-- Bot Settings -->
+      <div class="cfg-card">
+        <div class="cfg-card-header"><span>⚙ Configuración del bot</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <label style="font-size:13px;">
+            Cooldown por usuario (seg)
+            <input type="number" id="musicCooldownInput" min="0" max="3600" value="60"
+              style="width:100%;margin-top:4px;padding:6px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:4px;color:var(--text);"
+              onchange="musicSaveCooldown(this.value)">
+          </label>
+          <label style="font-size:13px;">
+            Máx canciones en cola
+            <input type="number" id="musicMaxQueueInput" min="1" max="50" value="10"
+              style="width:100%;margin-top:4px;padding:6px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:4px;color:var(--text);"
+              onchange="musicSaveMaxQueue(this.value)">
+          </label>
+        </div>
+
+        <!-- Banned users -->
+        <div style="margin-top:12px;">
+          <div style="font-size:13px;margin-bottom:6px;font-weight:600;">Usuarios baneados del !p</div>
+          <div style="display:flex;gap:6px;">
+            <input type="text" id="musicBanInput" placeholder="@usuario o ID"
+              style="flex:1;padding:6px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:13px;"
+              onkeydown="if(event.key==='Enter')musicBanUser()">
+            <button class="btn btn-sm" onclick="musicBanUser()">Banear</button>
+          </div>
+          <div id="music-banned-list" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- ── VIEW: Settings ──────────────────────────────── -->
     <div class="view" id="view-settings">
       <div class="view-header">
-        <h2><img class="icon-inline" src="icons/settings.svg" alt=""> Configuración TTS</h2>
-        <p>Ajusta la voz, velocidad y comportamientos. Todo se guarda automáticamente.</p>
+        <h2><img class="icon-inline" src="icons/settings.svg" alt=""> <span data-i18n="view.settings.title">Configuración TTS</span></h2>
+        <p data-i18n="view.settings.desc">Ajusta la voz, velocidad y comportamientos. Todo se guarda automáticamente.</p>
       </div>
 
       <div class="settings-section">
-        <div class="settings-section-title">Voz y audio</div>
+        <div class="settings-section-title" data-i18n="settings.voice">Voz y audio</div>
         <div class="settings-panel">
           <div class="setting-group">
             <label><img class="icon-inline" src="icons/mic.svg" alt=""> Voz</label>
@@ -1753,8 +2067,8 @@
               <span>@</span>
               <input type="text" id="usernameInput" placeholder="usuario_tiktok" autocomplete="off" />
             </div>
-            <button class="btn btn-connect" id="btnConnect" onclick="connect()">Conectar</button>
-            <button class="btn btn-disconnect" id="btnDisconnect" onclick="disconnect()" style="display:none">Desconectar</button>
+            <button class="btn btn-connect" id="btnConnect" onclick="connect()" data-i18n="btn.connect">Conectar</button>
+            <button class="btn btn-disconnect" id="btnDisconnect" onclick="disconnect()" style="display:none" data-i18n="btn.disconnect">Desconectar</button>
           </div>
           <div class="status-bar">
             <div class="status-dot" id="statusDot"></div>
@@ -1866,6 +2180,28 @@
       </div>
     </div>
 
+    <!-- ── VIEW: Sound Pad ─────────────────────────────── -->
+    <div class="view" id="view-soundpad">
+      <div class="view-header">
+        <h2>🎵 <span data-i18n="nav.soundpad">Pad de Sonidos</span></h2>
+        <p data-i18n="soundpad.desc">Sube sonidos y reprodúcelos con un clic o atajo de teclado (funciona en pantalla completa).</p>
+      </div>
+      <div class="soundpad-toolbar">
+        <button class="btn-primary" onclick="spUploadTrigger()" id="spUploadBtn">
+          ⬆ <span data-i18n="soundpad.upload">Subir sonido</span>
+        </button>
+        <button class="btn-secondary" onclick="spPlayTestSound()" title="Reproducir sonido de prueba">
+          🔊 Test
+        </button>
+        <span class="soundpad-count" id="spCount"></span>
+        <input type="file" id="spFileInput" accept=".mp3,.wav,.ogg,.webm,.m4a" style="display:none" onchange="spHandleUpload(this)">
+      </div>
+      <div id="spDeck" class="soundpad-deck"></div>
+      <div id="spEmpty" class="soundpad-empty" style="display:none">
+        🎵 <span data-i18n="soundpad.empty">Sube tu primer sonido para empezar</span>
+      </div>
+    </div>
+
     <!-- ── VIEW: Móvil ─────────────────────────────────── -->
     <div class="view" id="view-mobile">
       <div class="view-header">
@@ -1889,8 +2225,7 @@
               <div id="mobileURL" style="font-size:13px;color:var(--accent);word-break:break-all;font-family:monospace;padding:8px 10px;background:var(--surface);border-radius:8px;border:1px solid var(--border);">Cargando...</div>
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
-              <button class="cfg-btn" onclick="copyMobileURL()">Copiar enlace</button>
-              <button class="cfg-btn" onclick="refreshMobileQR()">Actualizar QR</button>
+              <button class="cfg-btn" onclick="copyMobileURL()" data-i18n="btn.copyLink">Copiar enlace</button>
             </div>
             <div style="font-size:11px;color:var(--text-muted);line-height:1.5;">
               La app móvil incluye chat en vivo, controles TTS (pausa, skip, toggles) y marcadores de clip.
@@ -1958,11 +2293,66 @@
 </div>
 
 <script>
+  // ─── I18N ─────────────────────────────────────────────────────
+  const I18N_KEY = 'tikliveTTS_lang';
+  let _locale = {};
+
+  function _get(obj, path) {
+    return path.split('.').reduce((o, k) => (o && o[k] !== undefined ? o[k] : null), obj);
+  }
+
+  function t(key, vars) {
+    const val = _get(_locale, key);
+    if (val === null) return key;
+    if (!vars) return val;
+    return val.replace(/\{(\w+)\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : `{${k}}`));
+  }
+
+  function applyTranslations() {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const val = t(el.dataset.i18n);
+      if (val !== el.dataset.i18n) el.textContent = val;
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      const val = t(el.dataset.i18nHtml);
+      if (val !== el.dataset.i18nHtml) el.innerHTML = val;
+    });
+  }
+
+  async function loadLanguage(lang) {
+    try {
+      const res = await fetch(`/locales/${lang}.json`);
+      if (!res.ok) throw new Error('not found');
+      _locale = await res.json();
+    } catch (_) {
+      if (lang !== 'es') {
+        const fallback = await fetch('/locales/es.json');
+        _locale = await fallback.json();
+      }
+    }
+    applyTranslations();
+    const sel = document.getElementById('langSelect');
+    if (sel) sel.value = lang;
+    document.documentElement.lang = lang;
+  }
+
+  function setLanguage(lang) {
+    localStorage.setItem(I18N_KEY, lang);
+    loadLanguage(lang);
+  }
+
+  (function initI18n() {
+    const saved = localStorage.getItem(I18N_KEY) || 'es';
+    loadLanguage(saved);
+  })();
+</script>
+
+<script>
   // ─── PERSISTENCIA ─────────────────────────────────────────────
   const SETTINGS_KEY = 'tikliveTTS_v1';
 
   const DEFAULT_SETTINGS = {
-    voice: 'es',
+    voice: 'es-MX',
     rate: 1.0,
     vol: 1.0,
     readChat: true,
@@ -3188,8 +3578,41 @@
           }
         } else if (data.action === 'soloChat') {
           setSoloChatMode();
+        } else if (data.action === 'soundpadPlay' && data.soundId) {
+          spPlaySound(data.soundId);
         }
         sendStateSync();
+        break;
+
+      case 'music-now-playing':
+        if (Array.isArray(data.queue)) { musicQueue = data.queue; musicRenderQueue(); }
+        musicOnNowPlaying(data.track);
+        break;
+      case 'music-queued':
+        if (Array.isArray(data.queue)) { musicQueue = data.queue; musicRenderQueue(); }
+        break;
+      case 'music-skip':
+        musicStop();
+        fetch('/api/music/next', { method: 'POST' }).catch(() => {});
+        break;
+      case 'music-idle':
+        musicOnIdle();
+        break;
+      case 'music-state':
+        musicOnStateSync(data);
+        break;
+      case 'music-volume':
+        if (typeof data.volume === 'number') {
+          musicVol = data.volume;
+          const vr = document.getElementById('musicVolRange');
+          const vv = document.getElementById('musicVolVal');
+          if (vr) vr.value = musicVol;
+          if (vv) vv.textContent = Math.round(musicVol * 100) + '%';
+          if (musicAudio) musicAudio.volume = musicVol;
+        }
+        break;
+      case 'music-playlist-update':
+        musicOnPlaylistUpdate(data);
         break;
     }
   }
@@ -3684,6 +4107,8 @@
       electronCleanups.push(window.electronAPI.onMarkClip(() => markClip()));
     if (window.electronAPI.onPauseTts)
       electronCleanups.push(window.electronAPI.onPauseTts(() => togglePauseTts()));
+    if (window.electronAPI.onPlaySoundpad)
+      electronCleanups.push(window.electronAPI.onPlaySoundpad((d) => spPlaySound(d.soundId)));
     if (window.electronAPI.onUpdateEvent)
       electronCleanups.push(window.electronAPI.onUpdateEvent((ev) => {
         const banner  = document.getElementById('update-banner');
@@ -3730,6 +4155,194 @@
       }));
     window.addEventListener('beforeunload', () => {
       electronCleanups.forEach(fn => { if (typeof fn === 'function') fn(); });
+    });
+  }
+
+  // ─── SOUND PAD ────────────────────────────────────────────────
+  let _spSounds = [];
+  let _spCapturing = null; // soundId currently capturing a shortcut
+
+  async function spLoad() {
+    try {
+      const r = await fetch('/api/soundpad/list');
+      _spSounds = await r.json();
+    } catch (_) { _spSounds = []; }
+    spRender();
+  }
+
+  function spRender() {
+    const deck = document.getElementById('spDeck');
+    const empty = document.getElementById('spEmpty');
+    const count = document.getElementById('spCount');
+    if (!deck) return;
+    if (!_spSounds.length) {
+      deck.innerHTML = '';
+      if (empty) empty.style.display = '';
+      if (count) count.textContent = '';
+      return;
+    }
+    if (empty) empty.style.display = 'none';
+    if (count) count.textContent = `${_spSounds.length}/24`;
+    deck.innerHTML = _spSounds.map(s => {
+      const sc = s.shortcut ? escapeHtml(s.shortcut) : (t('soundpad.noShortcut') || 'Sin atajo');
+      const id = escapeHtml(s.id);
+      return `<div class="sp-card" id="spcard-${id}" style="background:${escapeHtml(s.color)}">
+        <div class="sp-play-area" onclick="spPlaySoundWithAnim('${id}')">
+          <button class="sp-play-btn" id="spplay-${id}" tabindex="-1">▶</button>
+          <input class="sp-name" value="${escapeHtml(s.name)}" maxlength="40"
+            onblur="spSaveName('${id}',this.value)"
+            onkeydown="if(event.key==='Enter')this.blur()"
+            onclick="event.stopPropagation()">
+        </div>
+        <span class="sp-shortcut" id="spsc-${id}"
+          onclick="spCaptureShortcut('${id}')"
+          title="${t('soundpad.clickToAssign')||'Clic para asignar atajo de teclado (requiere modificador: Ctrl/Alt/Shift)'}">${sc}</span>
+        <div class="sp-footer">
+          <input type="color" class="sp-color-btn" value="${escapeHtml(s.color)}"
+            title="Color" onchange="spSaveColor('${id}',this.value)"
+            onclick="event.stopPropagation()">
+          <button class="sp-delete-btn" onclick="event.stopPropagation();spDelete('${id}')" title="Eliminar">🗑</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function spPlaySound(soundId) {
+    const s = _spSounds.find(x => x.id === soundId);
+    if (!s) return;
+    try {
+      const audio = new Audio(`/sounds/${encodeURIComponent(s.filename)}`);
+      audio.play().catch(() => {});
+    } catch (_) {}
+  }
+
+  function spPlaySoundWithAnim(soundId) {
+    spPlaySound(soundId);
+    const btn = document.getElementById(`spplay-${soundId}`);
+    if (btn) { btn.classList.remove('playing'); void btn.offsetWidth; btn.classList.add('playing'); }
+  }
+
+  function spPlayTestSound() {
+    try {
+      const ctx = new AudioContext();
+      const gain = ctx.createGain();
+      gain.connect(ctx.destination);
+      gain.gain.setValueAtTime(0.4, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+      [[440, 0], [660, 0.15]].forEach(([freq, when]) => {
+        const osc = ctx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        osc.connect(gain);
+        osc.start(ctx.currentTime + when);
+        osc.stop(ctx.currentTime + when + 0.4);
+      });
+    } catch (_) { showToast('No se pudo reproducir audio de prueba'); }
+  }
+
+  function spUploadTrigger() {
+    document.getElementById('spFileInput').click();
+  }
+
+  async function spHandleUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    input.value = '';
+    if (_spSounds.length >= 24) { showToast('Máximo 24 sonidos'); return; }
+    const fd = new FormData();
+    fd.append('audio', file);
+    try {
+      const r = await fetch('/api/soundpad/upload', { method: 'POST', body: fd });
+      if (!r.ok) { const e = await r.json(); showToast(e.error || 'Error al subir'); return; }
+      const entry = await r.json();
+      _spSounds.push(entry);
+      spRender();
+    } catch (_) { showToast('Error al subir sonido'); }
+  }
+
+  async function spSaveName(soundId, name) {
+    const s = _spSounds.find(x => x.id === soundId);
+    if (!s || s.name === name.trim()) return;
+    s.name = name.trim() || s.name;
+    spRender();
+    await fetch(`/api/soundpad/${soundId}`, { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name: s.name }) });
+  }
+
+  async function spSaveColor(soundId, color) {
+    const s = _spSounds.find(x => x.id === soundId);
+    if (!s) return;
+    s.color = color;
+    const card = document.getElementById(`spcard-${soundId}`);
+    if (card) card.style.background = color;
+    await fetch(`/api/soundpad/${soundId}`, { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ color }) });
+  }
+
+  async function spDelete(soundId) {
+    if (!confirm('¿Eliminar este sonido?')) return;
+    const idx = _spSounds.findIndex(x => x.id === soundId);
+    if (idx === -1) return;
+    if (window.electronAPI?.unregisterSoundpadShortcut) window.electronAPI.unregisterSoundpadShortcut(soundId);
+    _spSounds.splice(idx, 1);
+    spRender();
+    await fetch(`/api/soundpad/${soundId}`, { method: 'DELETE' });
+  }
+
+  function spCaptureShortcut(soundId) {
+    if (_spCapturing) spCancelCapture();
+    _spCapturing = soundId;
+    const el = document.getElementById(`spsc-${soundId}`);
+    if (el) {
+      el.textContent = t('soundpad.pressKey') || 'Presiona tecla…';
+      el.style.outline = '2px solid rgba(255,255,255,0.8)';
+    }
+    document.addEventListener('keydown', _spKeyCapture, { capture: true });
+  }
+
+  function spCancelCapture() {
+    document.removeEventListener('keydown', _spKeyCapture, { capture: true });
+    const id = _spCapturing;
+    _spCapturing = null;
+    if (id) {
+      const s = _spSounds.find(x => x.id === id);
+      const el = document.getElementById(`spsc-${id}`);
+      if (el && s) { el.textContent = s.shortcut || (t('soundpad.noShortcut') || 'Sin atajo'); el.style.outline = ''; }
+    }
+  }
+
+  async function _spKeyCapture(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.key === 'Escape') { spCancelCapture(); return; }
+    const mods = [];
+    if (e.ctrlKey) mods.push('Ctrl');
+    if (e.shiftKey) mods.push('Shift');
+    if (e.altKey) mods.push('Alt');
+    const key = e.key.toUpperCase();
+    if (['CONTROL','SHIFT','ALT','META'].includes(key)) return; // wait for main key
+    if (!mods.length) {
+      showToast('Requiere modificador: Ctrl, Alt o Shift + tecla');
+      return;
+    }
+    const shortcut = [...mods, key].join('+');
+    document.removeEventListener('keydown', _spKeyCapture, { capture: true });
+    const soundId = _spCapturing;
+    _spCapturing = null;
+    const s = _spSounds.find(x => x.id === soundId);
+    if (!s) return;
+    s.shortcut = shortcut;
+    spRender();
+    await fetch(`/api/soundpad/${soundId}`, { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ shortcut }) });
+    if (window.electronAPI?.registerSoundpadShortcut) {
+      const result = await window.electronAPI.registerSoundpadShortcut(soundId, shortcut);
+      if (!result?.ok) showToast(result?.error || 'Atajo no disponible');
+    }
+  }
+
+  // Re-register all sound shortcuts on startup (after electronAPI is ready)
+  function spRestoreShortcuts() {
+    if (!window.electronAPI?.registerSoundpadShortcut) return;
+    _spSounds.forEach(s => {
+      if (s.shortcut) window.electronAPI.registerSoundpadShortcut(s.id, s.shortcut);
     });
   }
 
@@ -4085,12 +4698,305 @@
   updateQueueBadge();
   renderSettingsChannels();
   loadMobileURL();
+  // Load sound pad and restore shortcuts
+  spLoad().then(() => spRestoreShortcuts());
 
   // Fetch current base follower count if already connected
   fetch('/api/overlay-stats')
     .then(r => r.json())
     .then(d => { if (d.baseFollowerCount) updateFollowerDisplay(d.baseFollowerCount); })
     .catch(() => {});
+
+  // ── MUSIC BOT ──────────────────────────────────────────────────────────────
+  let musicAudio = null;
+  let musicVol = 0.5;
+  let musicCurrentTrack = null;
+  let musicProgressInterval = null;
+  let musicQueue = [];
+
+  function musicPlayTrack(track) {
+    if (musicAudio) { musicAudio.pause(); musicAudio.src = ''; musicAudio = null; }
+    clearInterval(musicProgressInterval);
+    musicCurrentTrack = track;
+    musicAudio = new Audio(`/api/music/stream?videoId=${track.videoId}`);
+    musicAudio.volume = musicVol;
+    musicAudio.play().catch(() => {});
+    musicAudio.onerror = () => {
+      console.error('music stream error', musicAudio?.error?.message);
+      showToast('❌ Error al reproducir canción');
+      fetch('/api/music/next', { method: 'POST' }).catch(() => {});
+    };
+    musicAudio.onended = () => {
+      fetch('/api/music/next', { method: 'POST' }).catch(() => {});
+    };
+    // Progress bar (estimated from duration string "m:ss")
+    const durSecs = parseDurationSecs(track.duration);
+    if (durSecs > 0) {
+      const started = Date.now();
+      musicProgressInterval = setInterval(() => {
+        const elapsed = (Date.now() - started) / 1000;
+        const pct = Math.min(100, (elapsed / durSecs) * 100);
+        const bar = document.getElementById('music-progress-bar');
+        if (bar) bar.style.width = pct + '%';
+        if (pct >= 100) clearInterval(musicProgressInterval);
+      }, 1000);
+    }
+  }
+
+  function parseDurationSecs(dur) {
+    if (!dur) return 0;
+    const parts = String(dur).split(':').map(Number);
+    if (parts.length === 2) return parts[0] * 60 + parts[1];
+    if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+    return 0;
+  }
+
+  function musicStop() {
+    if (musicAudio) { musicAudio.pause(); musicAudio.src = ''; musicAudio = null; }
+    clearInterval(musicProgressInterval);
+    musicCurrentTrack = null;
+    musicRenderNowPlaying(null);
+  }
+
+  function musicRenderNowPlaying(track) {
+    const idle = document.getElementById('music-idle-msg');
+    const info = document.getElementById('music-track-info');
+    const bar = document.getElementById('music-progress-bar');
+    if (!track) {
+      if (idle) idle.style.display = '';
+      if (info) info.style.display = 'none';
+      if (bar) bar.style.width = '0%';
+      const playlistActive = document.getElementById('music-playlist-active');
+      if (playlistActive) playlistActive.style.display = 'none';
+      return;
+    }
+    if (idle) idle.style.display = 'none';
+    if (info) info.style.display = 'flex';
+    const thumb = document.getElementById('music-thumb');
+    const title = document.getElementById('music-title');
+    const channel = document.getElementById('music-channel');
+    const req = document.getElementById('music-req');
+    if (thumb) thumb.src = track.thumbnail || '';
+    if (title) title.textContent = track.title || 'Sin título';
+    if (channel) channel.textContent = track.channelName || '';
+    if (req) {
+      if (track.platform === 'playlist') {
+        req.textContent = '🎵 Playlist del streamer';
+        const pa = document.getElementById('music-playlist-active');
+        const pt = document.getElementById('playlist-now-title');
+        if (pa) pa.style.display = '';
+        if (pt) pt.textContent = track.title || '';
+      } else {
+        req.textContent = track.requestedBy ? `Pedido por ${track.requestedBy}` : '';
+        const pa = document.getElementById('music-playlist-active');
+        if (pa) pa.style.display = 'none';
+      }
+    }
+    if (bar) bar.style.width = '0%';
+  }
+
+  function musicRenderQueue() {
+    const list = document.getElementById('music-queue-list');
+    const count = document.getElementById('music-queue-count');
+    if (!list) return;
+    if (count) count.textContent = `(${musicQueue.length})`;
+    if (musicQueue.length === 0) {
+      list.innerHTML = '<div style="color:var(--text-muted);font-size:13px;">La cola está vacía.</div>';
+      return;
+    }
+    list.innerHTML = musicQueue.map((t, i) => `
+      <div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--border);">
+        <span style="font-size:11px;color:var(--text-muted);min-width:16px;">${i + 1}</span>
+        ${t.thumbnail ? `<img src="${t.thumbnail}" style="width:32px;height:32px;object-fit:cover;border-radius:4px;">` : ''}
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(t.title || '')}</div>
+          <div style="font-size:11px;color:var(--text-muted);">${escHtml(t.requestedBy || '')}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function musicOnNowPlaying(track) {
+    musicPlayTrack(track);
+    musicRenderNowPlaying(track);
+  }
+
+  function musicOnQueued() {
+    fetch('/api/music/queue').then(r => r.json()).then(d => {
+      musicQueue = d.queue || [];
+      musicRenderQueue();
+    }).catch(() => {});
+  }
+
+  function musicOnIdle() {
+    musicStop();
+    musicQueue = [];
+    musicRenderQueue();
+  }
+
+  function musicOnStateSync(data) {
+    if (typeof data.enabled === 'boolean') {
+      const tog = document.getElementById('musicEnabledToggle');
+      if (tog) tog.checked = data.enabled;
+    }
+    if (typeof data.volume === 'number') {
+      musicVol = data.volume;
+      if (musicAudio) musicAudio.volume = musicVol;
+      const vr = document.getElementById('musicVolRange');
+      const vv = document.getElementById('musicVolVal');
+      if (vr) vr.value = musicVol;
+      if (vv) vv.textContent = Math.round(musicVol * 100) + '%';
+    }
+    if (typeof data.playlistEnabled === 'boolean') {
+      const pe = document.getElementById('playlistEnabledToggle');
+      if (pe) pe.checked = data.playlistEnabled;
+    }
+  }
+
+  function musicOnPlaylistUpdate(data) {
+    // Reload textarea if on bot view
+    if (data.raw) {
+      const ta = document.getElementById('playlistTextarea');
+      if (ta && !ta.dataset.dirty) ta.value = data.raw.join('\n');
+    }
+  }
+
+  function musicSkip() {
+    fetch('/api/music/skip', { method: 'POST' }).catch(() => {});
+  }
+
+  function musicSetEnabled(val) {
+    fetch('/api/music/config', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ musicEnabled: val })
+    }).catch(() => {});
+  }
+
+  function musicSetVolume(val) {
+    musicVol = parseFloat(val);
+    const vv = document.getElementById('musicVolVal');
+    if (vv) vv.textContent = Math.round(musicVol * 100) + '%';
+    if (musicAudio) musicAudio.volume = musicVol;
+    fetch('/api/music/config', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ musicVolume: musicVol })
+    }).catch(() => {});
+  }
+
+  function musicSaveCooldown(val) {
+    const secs = Math.max(0, parseInt(val, 10) || 0);
+    fetch('/api/music/config', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ musicUserCooldownMs: secs * 1000 })
+    }).catch(() => {});
+  }
+
+  function musicSaveMaxQueue(val) {
+    const n = Math.max(1, Math.min(50, parseInt(val, 10) || 10));
+    fetch('/api/music/config', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ musicMaxQueue: n })
+    }).catch(() => {});
+  }
+
+  function musicClearQueue() {
+    musicQueue = [];
+    musicRenderQueue();
+    // No server endpoint needed — queue will naturally empty
+  }
+
+  function musicBanUser() {
+    const input = document.getElementById('musicBanInput');
+    if (!input || !input.value.trim()) return;
+    const username = input.value.trim().replace(/^@/, '');
+    fetch('/api/music/ban', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username })
+    }).then(r => r.json()).then(d => {
+      input.value = '';
+      musicRenderBanned(d.banned || []);
+    }).catch(() => {});
+  }
+
+  function musicUnbanUser(username) {
+    fetch('/api/music/unban', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username })
+    }).then(r => r.json()).then(d => musicRenderBanned(d.banned || [])).catch(() => {});
+  }
+
+  function musicRenderBanned(banned) {
+    const list = document.getElementById('music-banned-list');
+    if (!list) return;
+    list.innerHTML = banned.map(u => `
+      <span style="display:inline-flex;align-items:center;gap:4px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:2px 8px;font-size:12px;">
+        ${escHtml(u)}
+        <button onclick="musicUnbanUser('${escHtml(u)}')" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:14px;line-height:1;padding:0;">×</button>
+      </span>`).join('');
+  }
+
+  function playlistSave() {
+    const ta = document.getElementById('playlistTextarea');
+    if (!ta) return;
+    const lines = ta.value.split('\n').map(l => l.trim()).filter(Boolean);
+    ta.dataset.dirty = '';
+    fetch('/api/music/playlist', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lines })
+    }).then(() => { delete ta.dataset.dirty; showToast('✅ Playlist guardada'); }).catch(() => {});
+  }
+
+  function playlistSetEnabled(val) {
+    fetch('/api/music/playlist/toggle', { method: 'POST' }).catch(() => {});
+  }
+
+  function playlistSetShuffle(val) {
+    fetch('/api/music/playlist/shuffle', { method: 'POST' }).catch(() => {});
+  }
+
+  // Init music state from server on load
+  function musicInit() {
+    fetch('/api/music/queue').then(r => r.json()).then(d => {
+      musicQueue = d.queue || [];
+      musicRenderQueue();
+      if (d.current) musicRenderNowPlaying(d.current);
+    }).catch(() => {});
+    fetch('/api/music/config').then(r => r.json()).then(d => {
+      musicVol = d.musicVolume ?? 0.5;
+      const vr = document.getElementById('musicVolRange');
+      const vv = document.getElementById('musicVolVal');
+      if (vr) vr.value = musicVol;
+      if (vv) vv.textContent = Math.round(musicVol * 100) + '%';
+      const et = document.getElementById('musicEnabledToggle');
+      if (et) et.checked = d.musicEnabled !== false;
+      const cd = document.getElementById('musicCooldownInput');
+      if (cd) cd.value = Math.round((d.musicUserCooldownMs || 60000) / 1000);
+      const mq = document.getElementById('musicMaxQueueInput');
+      if (mq) mq.value = d.musicMaxQueue || 10;
+      musicRenderBanned(d.musicBannedUsers || []);
+    }).catch(() => {});
+    fetch('/api/music/playlist').then(r => r.json()).then(d => {
+      const ta = document.getElementById('playlistTextarea');
+      if (ta && d.raw) ta.value = d.raw.join('\n');
+      const pe = document.getElementById('playlistEnabledToggle');
+      if (pe) pe.checked = !!d.enabled;
+      const ps = document.getElementById('playlistShuffleToggle');
+      if (ps) ps.checked = !!d.shuffle;
+    }).catch(() => {});
+  }
+
+  musicInit();
+  // ─────────────────────────────────────────────────────────────────────────────
 </script>
 </body>
 </html>

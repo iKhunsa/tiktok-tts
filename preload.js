@@ -39,4 +39,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   registerPauseShortcut: (shortcut) => ipcRenderer.invoke('register-pause-shortcut', shortcut),
   onPauseTts: (cb) => on('pause-tts', () => cb()),
   offPauseTts: (cb) => off('pause-tts', cb),
+  registerSoundpadShortcut: (soundId, shortcut) => ipcRenderer.invoke('register-soundpad-shortcut', { soundId, shortcut }),
+  unregisterSoundpadShortcut: (soundId) => ipcRenderer.invoke('unregister-soundpad-shortcut', soundId),
+  onPlaySoundpad: (cb) => on('play-soundpad', (_e, d) => cb(d)),
+  offPlaySoundpad: (cb) => off('play-soundpad', cb),
 });

@@ -85,28 +85,35 @@ header {
 
 /* ── BOTTOM TAB BAR ── */
 nav {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
   height: var(--tab-h);
   background: var(--surface);
   border-top: 1px solid var(--border);
   flex-shrink: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
+nav::-webkit-scrollbar { display: none; }
 
 .tab-btn {
+  flex: 1;
+  min-width: 52px;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 3px; cursor: pointer; background: none; border: none;
-  color: var(--muted); font-size: 11px; font-weight: 600;
+  gap: 2px; cursor: pointer; background: none; border: none;
+  color: var(--muted); font-size: 9px; font-weight: 700;
   transition: color .15s;
   -webkit-tap-highlight-color: transparent;
   position: relative;
   padding-bottom: env(safe-area-inset-bottom, 0px);
+  white-space: nowrap;
+  letter-spacing: .2px;
+  text-transform: uppercase;
 }
-.tab-btn .tab-icon { font-size: 20px; line-height: 1; }
+.tab-btn .tab-icon { font-size: 22px; line-height: 1; }
 .tab-btn.active { color: var(--accent); }
 .tab-btn.active::before {
   content: '';
-  position: absolute; top: 0; left: 25%; right: 25%;
+  position: absolute; top: 0; left: 20%; right: 20%;
   height: 2px; background: var(--accent); border-radius: 0 0 3px 3px;
 }
 
@@ -314,6 +321,52 @@ nav {
   padding: 32px 20px;
 }
 
+/* ════════════════════════════════════════
+   TAB 4 — SOUND PAD
+════════════════════════════════════════ */
+#tabPad {
+  padding: 14px 14px 20px;
+}
+
+.pad-empty {
+  color: var(--muted); font-size: 13px; text-align: center;
+  padding: 32px 20px; line-height: 1.6;
+}
+
+.pad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.pad-btn {
+  border: none;
+  border-radius: 12px;
+  padding: 14px 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.95);
+  cursor: pointer;
+  text-align: center;
+  word-break: break-word;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.3;
+  -webkit-tap-highlight-color: transparent;
+  transition: filter .1s, transform .1s;
+}
+.pad-btn:active { filter: brightness(1.2); transform: scale(0.95); }
+
+/* ════════════════════════════════════════
+   TAB 5 — BOT
+════════════════════════════════════════ */
+#tabBot {
+  padding: 14px;
+  gap: 12px;
+}
+
 /* ── TOAST ── */
 #toast {
   position: fixed; bottom: calc(var(--tab-h) + 12px); left: 50%;
@@ -408,6 +461,68 @@ nav {
       <div id="clipList"></div>
     </div>
 
+    <!-- TAB 4: SOUND PAD -->
+    <div class="tab-panel" id="tabPad">
+      <div class="pad-empty" id="padEmpty">🎵 No hay sonidos aún.<br>Subí sonidos desde la app de escritorio.</div>
+      <div id="padGrid" class="pad-grid"></div>
+    </div>
+
+    <!-- TAB 5: BOT MÚSICA -->
+    <div class="tab-panel" id="tabBot">
+
+      <!-- Now Playing -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">Reproduciendo</div>
+        <div id="m-music-idle" style="color:var(--muted);font-size:13px;">Sin música.</div>
+        <div id="m-music-info" style="display:none;gap:10px;align-items:center;">
+          <img id="m-music-thumb" src="" alt="" style="width:52px;height:52px;object-fit:cover;border-radius:8px;flex-shrink:0;">
+          <div style="flex:1;min-width:0;">
+            <div id="m-music-title" style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+            <div id="m-music-channel" style="font-size:11px;color:var(--muted);"></div>
+            <div id="m-music-req" style="font-size:11px;color:var(--accent);margin-top:2px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <button id="m-btnMusicToggle" onclick="mMusicToggle()"
+          style="padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:14px;font-weight:600;cursor:pointer;">
+          🎵 Música ON
+        </button>
+        <button onclick="mMusicSkip()"
+          style="padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:14px;font-weight:600;cursor:pointer;">
+          ⏭ Skip
+        </button>
+      </div>
+
+      <!-- Playlist toggle -->
+      <button id="m-btnPlaylistToggle" onclick="mPlaylistToggle()"
+        style="padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;text-align:left;">
+        📋 Playlist de fondo: <span id="m-playlist-status">OFF</span>
+      </button>
+
+      <!-- Volume -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:13px;">🔊 Volumen Música</span>
+          <span id="m-musicVolVal" style="font-size:13px;color:var(--accent);">50%</span>
+        </div>
+        <input type="range" id="m-musicVolRange" min="0" max="1" step="0.05" value="0.5"
+          oninput="mMusicVolume(this.value)"
+          style="width:100%;accent-color:var(--accent);">
+      </div>
+
+      <!-- Queue preview -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">Cola <span id="m-queue-count">(0)</span></div>
+        <div id="m-queue-list" style="display:flex;flex-direction:column;gap:6px;">
+          <div style="color:var(--muted);font-size:13px;">Vacía.</div>
+        </div>
+      </div>
+
+    </div>
+
   </div>
 
   <!-- BOTTOM TAB BAR -->
@@ -421,6 +536,13 @@ nav {
     <button class="tab-btn"        id="navClips"   onclick="switchTab('Clips')">
       <span class="tab-icon">🎬</span>Clips
       <span class="tab-badge" id="clipsBadge"></span>
+    </button>
+    <!-- FEATURE: soundpad + music bot — disabled, remove style to re-enable -->
+    <button class="tab-btn" id="navPad" onclick="switchTab('Pad')" style="display:none">
+      <span class="tab-icon">🎵</span>Pad
+    </button>
+    <button class="tab-btn" id="navBot" onclick="switchTab('Bot')" style="display:none">
+      <span class="tab-icon">🎶</span>Bot
     </button>
   </nav>
 
@@ -437,6 +559,7 @@ let state = {
   streamTimerRunning: false,
   options: { readChat:true, readGifts:true, readJoins:true, readFollows:true, readLikes:true, readShares:true, sayUsername:true },
   clips: [],
+  soundPads: [],
 };
 
 let activeTab = 'Chat';
@@ -493,6 +616,24 @@ function dispatch(d) {
     case 'state-sync':
       if (d.state) applyState(d.state);
       break;
+    case 'music-now-playing':
+      mRenderNowPlaying(d.track);
+      break;
+    case 'music-idle':
+      mRenderNowPlaying(null);
+      break;
+    case 'music-skip':
+      mRenderNowPlaying(null);
+      break;
+    case 'music-state':
+      mApplyMusicState(d);
+      break;
+    case 'music-queued':
+      mFetchQueue();
+      break;
+    case 'music-volume':
+      if (typeof d.volume === 'number') mSetVolUI(d.volume);
+      break;
   }
 }
 
@@ -507,8 +648,10 @@ function applyState(s) {
   if (typeof s.streamTimerRunning === 'boolean') state.streamTimerRunning = s.streamTimerRunning;
   if (s.options && typeof s.options === 'object') state.options = { ...state.options, ...s.options };
   if (Array.isArray(s.clips)) state.clips = s.clips;
+  if (Array.isArray(s.soundPads)) state.soundPads = s.soundPads;
   renderControl();
   renderClips();
+  renderPad();
 }
 
 // ── RENDER: CONTROL TAB ───────────────────────────────────────────────────
@@ -623,6 +766,31 @@ function addEvent(d, icon, text) {
   if (!userScrolled) area.scrollTop = area.scrollHeight;
 }
 
+// ── RENDER: SOUND PAD TAB ─────────────────────────────────────────────────
+function renderPad() {
+  const grid  = document.getElementById('padGrid');
+  const empty = document.getElementById('padEmpty');
+  if (!grid) return;
+  const pads = state.soundPads || [];
+  if (!pads.length) {
+    grid.innerHTML = '';
+    if (empty) empty.style.display = '';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  grid.innerHTML = pads.map(s =>
+    `<button class="pad-btn" style="background:${escHtml(s.color)}" onclick="padPlay('${escHtml(s.id)}')">${escHtml(s.name)}</button>`
+  ).join('');
+}
+
+function padPlay(soundId) {
+  cmd('soundpadPlay', { soundId });
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
 // ── COMMANDS ──────────────────────────────────────────────────────────────
 function cmd(action, extra = {}) {
   fetch('/api/mobile/command', {
@@ -697,6 +865,112 @@ document.getElementById('tabChat').addEventListener('scroll', () => {
   const a = document.getElementById('tabChat');
   userScrolled = a.scrollTop + a.clientHeight < a.scrollHeight - 60;
 });
+
+// ── MUSIC BOT (mobile) ────────────────────────────────────────────────────
+let mMusicEnabled = true;
+let mPlaylistEnabled = false;
+
+function mRenderNowPlaying(track) {
+  const idle = document.getElementById('m-music-idle');
+  const info = document.getElementById('m-music-info');
+  if (!track) {
+    if (idle) idle.style.display = '';
+    if (info) info.style.display = 'none';
+    return;
+  }
+  if (idle) idle.style.display = 'none';
+  if (info) info.style.display = 'flex';
+  const thumb = document.getElementById('m-music-thumb');
+  const title = document.getElementById('m-music-title');
+  const ch    = document.getElementById('m-music-channel');
+  const req   = document.getElementById('m-music-req');
+  if (thumb) thumb.src = track.thumbnail || '';
+  if (title) title.textContent = track.title || 'Sin título';
+  if (ch)    ch.textContent    = track.channelName || '';
+  if (req)   req.textContent   = track.platform === 'playlist'
+    ? '🎵 Playlist del streamer'
+    : (track.requestedBy ? `Pedido por ${esc(track.requestedBy)}` : '');
+}
+
+function mFetchQueue() {
+  fetch('/api/music/queue').then(r => r.json()).then(d => {
+    const list  = document.getElementById('m-queue-list');
+    const count = document.getElementById('m-queue-count');
+    const q = d.queue || [];
+    if (count) count.textContent = `(${q.length})`;
+    if (!list) return;
+    if (!q.length) { list.innerHTML = '<div style="color:var(--muted);font-size:13px;">Vacía.</div>'; return; }
+    list.innerHTML = q.slice(0, 5).map((t, i) => `
+      <div style="display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);">
+        <span style="font-size:11px;color:var(--muted);min-width:14px;">${i+1}</span>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(t.title||'')}</div>
+          <div style="font-size:11px;color:var(--muted);">${esc(t.requestedBy||'')}</div>
+        </div>
+      </div>`).join('') + (q.length > 5 ? `<div style="font-size:11px;color:var(--muted);padding-top:4px;">+${q.length-5} más…</div>` : '');
+  }).catch(() => {});
+}
+
+function mApplyMusicState(d) {
+  if (typeof d.enabled === 'boolean') {
+    mMusicEnabled = d.enabled;
+    const btn = document.getElementById('m-btnMusicToggle');
+    if (btn) { btn.textContent = mMusicEnabled ? '🎵 Música ON' : '🔇 Música OFF'; btn.style.color = mMusicEnabled ? 'var(--accent)' : 'var(--muted)'; }
+  }
+  if (typeof d.playlistEnabled === 'boolean') {
+    mPlaylistEnabled = d.playlistEnabled;
+    const s = document.getElementById('m-playlist-status');
+    if (s) s.textContent = mPlaylistEnabled ? 'ON' : 'OFF';
+  }
+  if (typeof d.volume === 'number') mSetVolUI(d.volume);
+  if (d.current) mRenderNowPlaying(d.current);
+  if (typeof d.queueLength === 'number') {
+    const count = document.getElementById('m-queue-count');
+    if (count) count.textContent = `(${d.queueLength})`;
+  }
+}
+
+function mSetVolUI(vol) {
+  const vr = document.getElementById('m-musicVolRange');
+  const vv = document.getElementById('m-musicVolVal');
+  if (vr) vr.value = vol;
+  if (vv) vv.textContent = Math.round(vol * 100) + '%';
+}
+
+function mMusicSkip() {
+  fetch('/api/mobile/command', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ action:'musicSkip' }) }).catch(()=>{});
+}
+
+function mMusicToggle() {
+  fetch('/api/mobile/command', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ action:'musicToggle' }) }).catch(()=>{});
+}
+
+function mMusicVolume(val) {
+  const v = parseFloat(val);
+  const vv = document.getElementById('m-musicVolVal');
+  if (vv) vv.textContent = Math.round(v * 100) + '%';
+  fetch('/api/mobile/command', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ action:'musicVolume', value:v }) }).catch(()=>{});
+}
+
+function mPlaylistToggle() {
+  fetch('/api/mobile/command', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ action:'playlistToggle' }) }).catch(()=>{});
+}
+
+// Init music state on load
+fetch('/api/music/queue').then(r=>r.json()).then(d=>{
+  if (d.current) mRenderNowPlaying(d.current);
+  mFetchQueue();
+}).catch(()=>{});
+fetch('/api/music/config').then(r=>r.json()).then(d=>{
+  mMusicEnabled = d.musicEnabled !== false;
+  mPlaylistEnabled = !!d.playlistEnabled;
+  mSetVolUI(d.musicVolume ?? 0.5);
+  const btn = document.getElementById('m-btnMusicToggle');
+  if (btn) { btn.textContent = mMusicEnabled ? '🎵 Música ON' : '🔇 Música OFF'; btn.style.color = mMusicEnabled ? 'var(--accent)' : 'var(--muted)'; }
+  const s = document.getElementById('m-playlist-status');
+  if (s) s.textContent = mPlaylistEnabled ? 'ON' : 'OFF';
+}).catch(()=>{});
+// ─────────────────────────────────────────────────────────────────────────────
 
 // ── INIT ──────────────────────────────────────────────────────────────────
 connectWS();

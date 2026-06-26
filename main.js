@@ -4,6 +4,81 @@ const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const http = require('http');
 
+// ── Low-level keyboard hook (works in exclusive-fullscreen / games) ────────────
+// uiohook-napi uses SetWindowsHookEx(WH_KEYBOARD_LL) instead of RegisterHotKey,
+// so it fires even when a DirectX exclusive-fullscreen game has focus.
+let uiohook = null;
+let uiohookActive = false;
+try { uiohook = require('uiohook-napi'); } catch (_) {}
+
+// Map Electron shortcut key names → uiohook-napi keycodes
+const _UIOHOOK_KEYS = (() => {
+  const map = {};
+  if (!uiohook) return map;
+  const K = uiohook.UiohookKey;
+  // Letters
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(c => { map[c] = K[c]; });
+  // Digits
+  '0123456789'.split('').forEach(d => { map[d] = K[`Num${d}`] ?? K[d]; });
+  // F-keys
+  for (let i = 1; i <= 12; i++) map[`F${i}`] = K[`F${i}`];
+  return map;
+})();
+
+function _makeUiohookCheck(electronShortcut) {
+  const parts = electronShortcut.split('+').map(p => p.trim());
+  const needCtrl  = parts.some(p => ['Ctrl','CommandOrControl','Control','Cmd','Command'].includes(p));
+  const needShift = parts.includes('Shift');
+  const needAlt   = parts.includes('Alt');
+  const keyParts  = parts.filter(p => !['Ctrl','CommandOrControl','Control','Cmd','Command','Shift','Alt','Super','Meta'].includes(p));
+  if (!keyParts.length) return null;
+  const keycode = _UIOHOOK_KEYS[keyParts[0].toUpperCase()];
+  if (keycode == null) return null;
+  return (e) =>
+    e.keycode === keycode &&
+    !!e.ctrlKey  === needCtrl &&
+    !!e.shiftKey === needShift &&
+    !!e.altKey   === needAlt;
+}
+
+// id → { check, callback }
+const _uiohookShortcuts = new Map();
+
+function registerUiohookShortcut(id, electronShortcut, callback) {
+  const check = _makeUiohookCheck(electronShortcut);
+  if (!check) return false;
+  _uiohookShortcuts.set(id, { check, callback });
+  return true;
+}
+
+function unregisterUiohookShortcut(id) {
+  _uiohookShortcuts.delete(id);
+}
+
+function startUiohook() {
+  if (!uiohook || uiohookActive) return;
+  try {
+    uiohook.uIOhook.on('keydown', (e) => {
+      for (const { check, callback } of _uiohookShortcuts.values()) {
+        if (check(e)) callback();
+      }
+    });
+    uiohook.uIOhook.start();
+    uiohookActive = true;
+    console.log('[shortcuts] uiohook-napi active — atajos funcionan en fullscreen');
+  } catch (err) {
+    console.warn('[shortcuts] uiohook-napi fallo, usando globalShortcut:', err.message);
+    uiohookActive = false;
+  }
+}
+
+function stopUiohook() {
+  if (uiohook && uiohookActive) {
+    try { uiohook.uIOhook.stop(); } catch (_) {}
+    uiohookActive = false;
+  }
+}
+
 const PORT = 3000;
 
 const gotLock = app.requestSingleInstanceLock();
@@ -269,9 +344,14 @@ app.whenReady().then(() => {
     createTray();
     if (app.isPackaged) setupAutoUpdater();
 
-    globalShortcut.register('CommandOrControl+Shift+M', () => {
-      if (mainWindow) mainWindow.webContents.send('mark-clip');
-    });
+    startUiohook();
+
+    const clipCallback = () => { if (mainWindow) mainWindow.webContents.send('mark-clip'); };
+    if (uiohookActive) {
+      registerUiohookShortcut('clip', 'CommandOrControl+Shift+M', clipCallback);
+    } else {
+      globalShortcut.register('CommandOrControl+Shift+M', clipCallback);
+    }
   }, () => {
     showStartupError(new Error(`El servidor local no respondio en http://127.0.0.1:${PORT}`));
   });
@@ -289,6 +369,8 @@ app.on('before-quit', () => {
 
 app.on('will-quit', () => {
   globalShortcut.unregisterAll();
+  soundpadShortcuts.clear();
+  stopUiohook();
 });
 
 function sendUpdate(data) {
@@ -392,7 +474,11 @@ let registeredPauseShortcut = null;
 
 function unregisterPauseShortcut() {
   if (registeredPauseShortcut) {
-    try { globalShortcut.unregister(registeredPauseShortcut); } catch (_) {}
+    if (uiohookActive) {
+      unregisterUiohookShortcut('pause');
+    } else {
+      try { globalShortcut.unregister(registeredPauseShortcut); } catch (_) {}
+    }
     registeredPauseShortcut = null;
   }
 }
@@ -408,11 +494,28 @@ ipcMain.handle('register-pause-shortcut', (_event, shortcut) => {
     return { ok: false, shortcut: normalized, error: 'Atajo invalido o reservado por el sistema' };
   }
   unregisterPauseShortcut();
+
+  const pauseCallback = () => {
+    if (mainWindow && !mainWindow.isDestroyed())
+      mainWindow.webContents.send('pause-tts');
+  };
+
+  // MediaPlayPause goes through the Windows multimedia API — works in fullscreen
+  // without uiohook. Use globalShortcut for it; use uiohook for everything else.
+  const isMediaKey = normalized === 'MediaPlayPause';
+
+  if (uiohookActive && !isMediaKey) {
+    const ok = registerUiohookShortcut('pause', normalized, pauseCallback);
+    if (!ok) {
+      return { ok: false, shortcut: normalized, error: 'Atajo no soportado. Prueba F8, Ctrl+F8 o MediaPlayPause.' };
+    }
+    registeredPauseShortcut = normalized;
+    return { ok: true, shortcut: normalized };
+  }
+
+  // Fallback: globalShortcut (used when uiohook unavailable, or for MediaPlayPause)
   try {
-    const registered = globalShortcut.register(normalized, () => {
-      if (mainWindow && !mainWindow.isDestroyed())
-        mainWindow.webContents.send('pause-tts');
-    });
+    const registered = globalShortcut.register(normalized, pauseCallback);
     if (!registered || !globalShortcut.isRegistered(normalized)) {
       return { ok: false, shortcut: normalized, error: 'Windows no permitio registrar este atajo. Prueba F8 o MediaPlayPause.' };
     }
@@ -422,6 +525,62 @@ ipcMain.handle('register-pause-shortcut', (_event, shortcut) => {
     console.error('Failed to register pause shortcut:', err.message);
     return { ok: false, shortcut: normalized, error: err.message };
   }
+});
+
+// ── Sound Pad shortcuts ───────────────────────────────────────────────────────
+const soundpadShortcuts = new Map(); // soundId → normalizedShortcut
+
+ipcMain.handle('register-soundpad-shortcut', (_event, { soundId, shortcut }) => {
+  if (!soundId) return { ok: false, error: 'soundId requerido' };
+
+  // Unregister previous shortcut for this sound
+  const prev = soundpadShortcuts.get(soundId);
+  if (prev) {
+    if (uiohookActive) {
+      unregisterUiohookShortcut(`soundpad:${soundId}`);
+    } else {
+      try { globalShortcut.unregister(prev); } catch (_) {}
+    }
+    soundpadShortcuts.delete(soundId);
+  }
+
+  if (!shortcut) return { ok: true, shortcut: null };
+
+  const normalized = normalizeShortcut(shortcut);
+  if (!normalized) return { ok: false, error: 'Atajo inválido' };
+
+  const playCallback = () => {
+    if (mainWindow && !mainWindow.isDestroyed())
+      mainWindow.webContents.send('play-soundpad', { soundId });
+  };
+
+  if (uiohookActive) {
+    const ok = registerUiohookShortcut(`soundpad:${soundId}`, normalized, playCallback);
+    if (!ok) return { ok: false, error: 'Atajo no soportado por uiohook' };
+  } else {
+    try {
+      const registered = globalShortcut.register(normalized, playCallback);
+      if (!registered) return { ok: false, error: 'Windows no permitió registrar este atajo' };
+    } catch (err) {
+      return { ok: false, error: err.message };
+    }
+  }
+
+  soundpadShortcuts.set(soundId, normalized);
+  return { ok: true, shortcut: normalized };
+});
+
+ipcMain.handle('unregister-soundpad-shortcut', (_event, soundId) => {
+  const prev = soundpadShortcuts.get(soundId);
+  if (prev) {
+    if (uiohookActive) {
+      unregisterUiohookShortcut(`soundpad:${soundId}`);
+    } else {
+      try { globalShortcut.unregister(prev); } catch (_) {}
+    }
+    soundpadShortcuts.delete(soundId);
+  }
+  return { ok: true };
 });
 
 app.on('second-instance', showMainWindow);

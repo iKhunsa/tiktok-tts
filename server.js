@@ -10,6 +10,8 @@ const multer = require('multer');
 const crypto = require('crypto');
 const os = require('os');
 const QRCode = require('qrcode');
+const ytdl = require('@distube/ytdl-core');
+const ytsr = require('ytsr');
 
 const RESOURCE_BASE = process.env.TIKTOK_RESOURCES_PATH || __dirname;
 const DATA_BASE = process.env.TIKTOK_USER_DATA_PATH || RESOURCE_BASE;
@@ -76,6 +78,17 @@ let mobileState = {
     readFollows: true, readLikes: true, readShares: true, sayUsername: true,
   },
   clips: [],
+  soundPads: [],
+  music: {
+    enabled: true,
+    current: null,
+    queueLength: 0,
+    volume: 0.5,
+    playlistEnabled: false,
+    playlistActive: false,
+    playlistIndex: 0,
+    playlistTotal: 0,
+  },
 };
 
 function isAllowedWsClient(info) {
@@ -99,6 +112,23 @@ const wss = new WebSocket.Server({ server, verifyClient: isAllowedWsClient });
 const UPLOADS_DIR = path.join(DATA_BASE, 'uploads');
 if (!fs.existsSync(UPLOADS_DIR)) {
   fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+}
+
+// Sound Pad directory and config
+const SOUNDS_DIR = path.join(DATA_BASE, 'sounds');
+fs.mkdirSync(SOUNDS_DIR, { recursive: true });
+const SOUNDS_CONFIG_PATH = path.join(DATA_BASE, 'sounds-config.json');
+
+function loadSounds() {
+  try {
+    return JSON.parse(fs.readFileSync(SOUNDS_CONFIG_PATH, 'utf8'));
+  } catch (_) {
+    return [];
+  }
+}
+
+function saveSounds(sounds) {
+  fs.writeFileSync(SOUNDS_CONFIG_PATH, JSON.stringify(sounds, null, 2), 'utf8');
 }
 
 const uploadStorage = multer.diskStorage({
@@ -159,6 +189,7 @@ app.use(validateLocalMutation);
 app.use(express.static(path.join(RESOURCE_BASE, 'public')));
 app.use('/gifts', express.static(path.join(RESOURCE_BASE, 'gifts')));
 app.use('/uploads', express.static(UPLOADS_DIR));
+app.use('/sounds', express.static(SOUNDS_DIR));
 app.use(express.json());
 
 // Multi-channel state: username → { conn, attempts, timer }
@@ -466,7 +497,7 @@ function computeGiftUsd({ giftName, repeatCount = 1, diamondCount = 0 } = {}) {
   const usdRaw = totalCoins * TIKTOK_COINS_USD;
   return { totalCoins, usdValue: usdRaw > 0 ? usdRaw.toFixed(2) : null };
 }
-const GOOGLE_TTS_LANGS = new Set(['es', 'es-MX', 'es-AR', 'en', 'en-GB', 'pt', 'pt-PT', 'fr', 'de', 'it', 'ja', 'zh-CN', 'ru', 'ko']);
+const GOOGLE_TTS_LANGS = new Set(['es-MX', 'en', 'en-GB', 'pt', 'pt-PT', 'fr', 'de', 'it', 'ja', 'zh-CN', 'ru', 'ko']);
 
 const clients = new Set();
 const serverLogs = [];
@@ -486,6 +517,14 @@ const DEFAULT_CONFIG = {
   TTS_RATE_LIMIT_MAX: 10,
   TTS_RATE_WINDOW_MS: 5000,
   MAX_QUEUE_MSG: 15,
+  musicEnabled: true,
+  musicUserCooldownMs: 60000,
+  musicMaxQueue: 10,
+  musicBannedUsers: [],
+  musicVolume: 0.5,
+  streamerPlaylist: [],
+  playlistShuffle: false,
+  playlistEnabled: false,
 };
 
 const CONFIG_VALIDATORS = {
@@ -495,6 +534,14 @@ const CONFIG_VALIDATORS = {
   TTS_RATE_LIMIT_MAX: (v) => Number.isInteger(v) && v >= 1 && v <= 120,
   TTS_RATE_WINDOW_MS: (v) => Number.isInteger(v) && v >= 1000 && v <= 60000,
   MAX_QUEUE_MSG: (v) => Number.isInteger(v) && v >= 1 && v <= 100,
+  musicEnabled: (v) => typeof v === 'boolean',
+  musicUserCooldownMs: (v) => Number.isInteger(v) && v >= 0 && v <= 3600000,
+  musicMaxQueue: (v) => Number.isInteger(v) && v >= 1 && v <= 50,
+  musicBannedUsers: (v) => Array.isArray(v),
+  musicVolume: (v) => typeof v === 'number' && v >= 0 && v <= 1,
+  streamerPlaylist: (v) => Array.isArray(v),
+  playlistShuffle: (v) => typeof v === 'boolean',
+  playlistEnabled: (v) => typeof v === 'boolean',
 };
 
 const config = { ...DEFAULT_CONFIG };
@@ -537,6 +584,214 @@ function loadConfig() {
 }
 
 loadConfig();
+
+// ── FEATURE FLAGS — set to true to re-enable ─────────────────────────────────
+const FEATURES = { musicBot: false };
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── MUSIC BOT STATE ──────────────────────────────────────────────────────────
+const YTDL_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36';
+let musicQueue = [];       // [{ videoId, title, channelName, thumbnail, duration, requestedBy, platform }]
+let currentTrack = null;   // currently playing track object (null = idle)
+let userLastRequest = {};  // { userId: timestamp } — cooldown tracking
+let playlistResolved = []; // [{ raw, videoId, title, channelName, thumbnail }] — resolved playlist entries
+let playlistIndex = 0;
+let playlistActive = false;
+
+function extractYoutubeVideoId(str) {
+  const patterns = [
+    /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/,
+    /^([A-Za-z0-9_-]{11})$/,
+  ];
+  for (const re of patterns) {
+    const m = str.match(re);
+    if (m) return m[1];
+  }
+  return null;
+}
+
+function extractSpotifyQuery(url) {
+  const m = url.match(/spotify\.com\/track\/[A-Za-z0-9]+/);
+  if (!m) return null;
+  // Extract track name from URL path segment (best-effort; title extraction needs API)
+  const parts = url.split('/');
+  // The path is /track/<id> – we can't get the title without Spotify API.
+  // Return a marker so caller searches by Spotify URL title if possible.
+  return parts[parts.length - 1] ? null : null; // no API key → skip Spotify
+}
+
+async function resolveYoutubeId(query) {
+  // Direct YouTube URL
+  const ytId = extractYoutubeVideoId(query);
+  if (ytId) return { videoId: ytId };
+
+  // Spotify: strip URL, try to search YouTube by the track name embedded in URL path
+  if (/spotify\.com/.test(query)) {
+    // Can't resolve without Spotify API — skip
+    return null;
+  }
+
+  // Text search via ytsr
+  try {
+    const results = await ytsr(query, { limit: 5 });
+    const video = results.items.find(i => i.type === 'video' && i.id);
+    if (!video) return null;
+    return {
+      videoId: video.id,
+      title: video.title,
+      channelName: video.author?.name || '',
+      thumbnail: video.bestThumbnail?.url || video.thumbnails?.[0]?.url || '',
+      duration: video.duration || '',
+    };
+  } catch (err) {
+    log('warn', 'music', 'ytsr search failed', { query, error: err.message });
+    return null;
+  }
+}
+
+async function resolveFullTrack(query) {
+  const partial = await resolveYoutubeId(query);
+  if (!partial) return null;
+  if (partial.title) return partial; // already have metadata from ytsr
+
+  // Fetch metadata from ytdl if we only have a videoId
+  try {
+    const info = await ytdl.getInfo(`https://www.youtube.com/watch?v=${partial.videoId}`, {
+      requestOptions: { headers: { 'User-Agent': YTDL_UA } }
+    });
+    const d = info.videoDetails;
+    return {
+      videoId: partial.videoId,
+      title: d.title,
+      channelName: d.author?.name || '',
+      thumbnail: d.thumbnails?.[d.thumbnails.length - 1]?.url || '',
+      duration: formatDuration(parseInt(d.lengthSeconds, 10)),
+    };
+  } catch (err) {
+    log('warn', 'music', 'ytdl getInfo failed', { videoId: partial.videoId, error: err.message });
+    return { videoId: partial.videoId, title: query, channelName: '', thumbnail: '', duration: '' };
+  }
+}
+
+function formatDuration(secs) {
+  if (!secs || isNaN(secs)) return '';
+  const m = Math.floor(secs / 60);
+  const s = secs % 60;
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+
+function musicBroadcastState() {
+  mobileState.music = {
+    enabled: config.musicEnabled,
+    current: currentTrack,
+    queueLength: musicQueue.length,
+    volume: config.musicVolume,
+    playlistEnabled: config.playlistEnabled,
+    playlistActive,
+    playlistIndex,
+    playlistTotal: playlistResolved.length,
+  };
+  broadcast({ type: 'music-state', ...mobileState.music });
+}
+
+async function handleMusicRequest(query, user, userId, platform) {
+  log('info', 'music', '!p recibido', { query, user, platform });
+  if (!config.musicEnabled) { log('info', 'music', 'deshabilitado'); return; }
+  const bannedList = config.musicBannedUsers.map(u => u.toLowerCase());
+  if (bannedList.includes(String(userId || '').toLowerCase()) ||
+      bannedList.includes(String(user || '').toLowerCase())) { log('info', 'music', 'usuario baneado', { user }); return; }
+
+  const now = Date.now();
+  if (config.musicUserCooldownMs > 0 && userLastRequest[userId] &&
+      now - userLastRequest[userId] < config.musicUserCooldownMs) { log('info', 'music', 'cooldown activo', { user }); return; }
+
+  if (musicQueue.length >= config.musicMaxQueue) { log('info', 'music', 'cola llena'); return; }
+
+  let track;
+  try {
+    log('info', 'music', 'resolviendo track', { query });
+    track = await resolveFullTrack(query);
+    log('info', 'music', 'track resuelto', { track });
+  } catch (err) {
+    log('warn', 'music', 'resolveFullTrack error', { error: err.message });
+    return;
+  }
+  if (!track) { log('warn', 'music', 'track null para query', { query }); return; }
+
+  track.requestedBy = user;
+  track.platform = platform;
+  userLastRequest[userId] = now;
+
+  const wasEmpty = musicQueue.length === 0 && !currentTrack;
+  musicQueue.push(track);
+  broadcast({ type: 'music-queued', track, queue: [...musicQueue], queueLength: musicQueue.length });
+
+  if (wasEmpty) {
+    // If playlist was playing, it will finish its current song first (advanceMusicQueue handles priority)
+    if (!currentTrack) advanceMusicQueue();
+  }
+  musicBroadcastState();
+}
+
+function advanceMusicQueue() {
+  if (musicQueue.length > 0) {
+    playlistActive = false;
+    currentTrack = musicQueue.shift();
+    broadcast({ type: 'music-now-playing', track: currentTrack, queue: [...musicQueue] });
+  } else if (config.playlistEnabled && playlistResolved.length > 0) {
+    playlistActive = true;
+    if (config.playlistShuffle) {
+      playlistIndex = Math.floor(Math.random() * playlistResolved.length);
+    }
+    const entry = playlistResolved[playlistIndex];
+    if (!entry) { currentTrack = null; broadcast({ type: 'music-idle' }); musicBroadcastState(); return; }
+    // Advance index for next time
+    playlistIndex = (playlistIndex + 1) % playlistResolved.length;
+    if (entry.videoId) {
+      currentTrack = { ...entry, requestedBy: null, platform: 'playlist' };
+      broadcast({ type: 'music-now-playing', track: currentTrack });
+    } else {
+      // Resolve lazily then play
+      resolveFullTrack(entry.raw).then(resolved => {
+        if (!resolved) { advanceMusicQueue(); return; }
+        // Cache resolved entry
+        const idx = playlistResolved.indexOf(entry);
+        if (idx !== -1) Object.assign(playlistResolved[idx], resolved);
+        currentTrack = { ...resolved, requestedBy: null, platform: 'playlist' };
+        broadcast({ type: 'music-now-playing', track: currentTrack });
+        musicBroadcastState();
+      }).catch(() => advanceMusicQueue());
+      return;
+    }
+  } else {
+    currentTrack = null;
+    broadcast({ type: 'music-idle' });
+  }
+  musicBroadcastState();
+}
+
+async function resolveAndSavePlaylist(lines) {
+  config.streamerPlaylist = lines.filter(l => l.trim());
+  saveConfig();
+  // Pre-resolve what we can quickly (videoId from URLs only, skip slow searches)
+  playlistResolved = config.streamerPlaylist.map(raw => {
+    const ytId = extractYoutubeVideoId(raw.trim());
+    return ytId ? { raw, videoId: ytId, title: raw, channelName: '', thumbnail: '', duration: '' } : { raw, videoId: null };
+  });
+  // Reset index
+  playlistIndex = 0;
+  broadcast({ type: 'music-playlist-update', playlist: playlistResolved, index: playlistIndex });
+  musicBroadcastState();
+}
+
+// Initialize playlist from persisted config
+if (config.streamerPlaylist.length > 0) {
+  playlistResolved = config.streamerPlaylist.map(raw => {
+    const ytId = extractYoutubeVideoId(raw.trim());
+    return ytId ? { raw, videoId: ytId, title: raw, channelName: '', thumbnail: '', duration: '' } : { raw, videoId: null };
+  });
+}
+// ─────────────────────────────────────────────────────────────────────────────
 
 const overlayState = {
   followCount: 0,
@@ -876,14 +1131,20 @@ function setupTikTokConnection(cleanUsername) {
   conn.on('chat', (data) => {
     log('debug', 'chat', 'raw', { preview: JSON.stringify(data).substring(0, 100) });
     if (!data.comment || !data.comment.trim()) return;
-    if (isSpam(normalizeForModeration(data.comment))) return;
+    const comment = data.comment.trim();
+    const user = resolveDisplayName(data.nickname, data.uniqueId);
+    if (FEATURES.musicBot && config.musicEnabled && /^!p\s+\S/i.test(comment)) {
+      handleMusicRequest(comment.slice(comment.indexOf(' ') + 1).trim(), user, data.uniqueId || user, 'tiktok');
+      return;
+    }
+    if (isSpam(normalizeForModeration(comment))) return;
     broadcast({
       type: 'chat',
       platform: 'tiktok',
       channel: cleanUsername,
-      user: resolveDisplayName(data.nickname, data.uniqueId),
-      comment: data.comment.trim(),
-      ttsComment: sanitizeForTTS(data.comment.trim()),
+      user,
+      comment,
+      ttsComment: sanitizeForTTS(comment),
       timestamp: Date.now()
     });
   });
@@ -1180,11 +1441,9 @@ app.get('/api/voices', (req, res) => {
   // ── Google TTS ──────────────────────────────────────────────
   const googleVoices = [
     // Español
-    { id: 'es', name: 'Español — Google', flag: 'ES' },
+    { id: 'es-MX', name: 'Español (México)', flag: 'MX' },
 
     // Inglés
-    { id: 'es-MX', name: 'Espanol (Mexico)', flag: 'MX' },
-    { id: 'es-AR', name: 'Espanol (Argentina)', flag: 'AR' },
     { id: 'en', name: 'English (USA)', flag: 'US' },
     { id: 'en-GB', name: 'English (UK)', flag: 'GB' },
 
@@ -1427,6 +1686,7 @@ const twitchChannels = new Map(); // channel → tmi.Client
 const youtubeChannels = new Map(); // channelOrId → LiveChat
 const twitchReconnectTimers = new Map();
 const youtubeReconnectTimers = new Map();
+const youtubeSeenIds = new Map(); // channelKey → Set<msgId> (dedup)
 let obsWs = null;
 
 function clearReconnectTimer(map, channel) {
@@ -1463,6 +1723,12 @@ async function connectTwitch(channel, token = null, attempt = 0) {
 
   client.on('message', (_ch, tags, message, self) => {
     if (self || !message.trim()) return;
+    const twitchUser = cleanName(tags['display-name'] || tags.username || 'Anónimo');
+    const twitchUserId = tags['user-id'] || twitchUser;
+    if (FEATURES.musicBot && config.musicEnabled && /^!p\s+\S/i.test(message.trim())) {
+      handleMusicRequest(message.trim().slice(message.trim().indexOf(' ') + 1).trim(), twitchUser, twitchUserId, 'twitch');
+      return;
+    }
     if (isSpam(normalizeForModeration(message))) return;
     const emotes = {};
     if (tags.emotes) {
@@ -1486,7 +1752,7 @@ async function connectTwitch(channel, token = null, attempt = 0) {
       type: 'chat',
       platform: 'twitch',
       channel,
-      user: cleanName(tags['display-name'] || tags.username || 'Anónimo'),
+      user: twitchUser,
       comment: sanitizeForTTS(message.trim()),
       ttsComment: sanitizeForTTS(message.trim()),
       emotes: Object.keys(emotes).length > 0 ? emotes : undefined,
@@ -1531,7 +1797,21 @@ async function connectYoutube(channelOrId, attempt = 0) {
   }
   const liveChat = new LiveChat(target.opts);
 
+  if (!youtubeSeenIds.has(target.key)) youtubeSeenIds.set(target.key, new Set());
+
   liveChat.on('chat', (item) => {
+    // Dedup by YouTube message ID to prevent replays on reconnect
+    const msgId = item.id;
+    if (msgId) {
+      const seen = youtubeSeenIds.get(target.key);
+      if (seen.has(msgId)) return;
+      seen.add(msgId);
+      if (seen.size > 500) {
+        const oldest = seen.values().next().value;
+        seen.delete(oldest);
+      }
+    }
+
     const emotes = {};
     const displayParts = [];
     for (const part of (item.message || [])) {
@@ -1547,15 +1827,23 @@ async function connectYoutube(channelOrId, attempt = 0) {
     }
     const displayText = displayParts.join('').trim();
     const ttsText = displayText.replace(/:[\w\-]+:/g, '').trim();
-    if (!displayText || isSpam(normalizeForModeration(ttsText || displayText))) return;
+    if (!displayText) return;
+    const ytUser = cleanName(item.author?.name || 'Anónimo');
+    const ytUserId = item.author?.channelId || ytUser;
+    if (FEATURES.musicBot && config.musicEnabled && /^!p\s+\S/i.test(displayText)) {
+      handleMusicRequest(displayText.slice(displayText.indexOf(' ') + 1).trim(), ytUser, ytUserId, 'youtube');
+      return;
+    }
+    if (isSpam(normalizeForModeration(ttsText || displayText))) return;
     broadcast({
       type: 'chat',
       platform: 'youtube',
       channel: target.key,
-      user: cleanName(item.author?.name || 'Anónimo'),
+      user: ytUser,
       comment: sanitizeForTTS(displayText),
       ttsComment: ttsText ? sanitizeForTTS(ttsText) : undefined,
       emotes: Object.keys(emotes).length > 0 ? emotes : undefined,
+      ytMsgId: msgId || undefined,
       timestamp: Date.now(),
     });
   });
@@ -1672,10 +1960,12 @@ app.post('/api/platforms/disconnect', async (req, res) => {
         clearReconnectTimer(youtubeReconnectTimers, ytChannel);
         const c = youtubeChannels.get(ytChannel);
         if (c) { stopYoutubeChat(c, 'disconnect'); youtubeChannels.delete(ytChannel); }
+        youtubeSeenIds.delete(ytChannel);
       } else {
         for (const ch of youtubeReconnectTimers.keys()) clearReconnectTimer(youtubeReconnectTimers, ch);
         for (const c of youtubeChannels.values()) stopYoutubeChat(c, 'disconnect');
         youtubeChannels.clear();
+        youtubeSeenIds.clear();
       }
       broadcast({ type: 'platform-disconnected', platform: 'youtube', channel: channel ? normalizeYoutubeInput(channel) : null });
     }
@@ -1802,6 +2092,7 @@ app.post('/api/channels/remove', async (req, res) => {
       clearReconnectTimer(youtubeReconnectTimers, ytChannel);
       const c = youtubeChannels.get(ytChannel);
       if (c) { stopYoutubeChat(c, 'disconnect'); youtubeChannels.delete(ytChannel); }
+      youtubeSeenIds.delete(ytChannel);
       broadcast({ type: 'channel-disconnected', platform: 'youtube', channel: ytChannel });
     }
     broadcastChannels();
@@ -2058,8 +2349,87 @@ app.get('/api/mobile/state', validateMobileRequest, (_req, res) => {
   res.json(mobileState);
 });
 
+// ── Sound Pad endpoints ────────────────────────────────────────────────────────
+const audioStorage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, SOUNDS_DIR),
+  filename: (_req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase() || '.mp3';
+    const name = crypto.randomBytes(8).toString('hex') + ext;
+    cb(null, name);
+  }
+});
+
+const uploadAudio = multer({
+  storage: audioStorage,
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    const allowedExt = ['.mp3', '.wav', '.ogg', '.webm', '.m4a'];
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (allowedExt.includes(ext)) cb(null, true);
+    else cb(new Error('Solo se permiten archivos MP3, WAV, OGG, WEBM o M4A'));
+  }
+});
+
+function syncSoundPadsToMobileState() {
+  mobileState.soundPads = loadSounds().map(s => ({ id: s.id, name: s.name, color: s.color }));
+  broadcast({ type: 'state-sync', state: { ...mobileState } });
+}
+
+app.get('/api/soundpad/list', (req, res) => {
+  res.json(loadSounds());
+});
+
+app.post('/api/soundpad/upload', validateLocalMutation, uploadAudio.single('audio'), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'No se recibió archivo de audio' });
+  const sounds = loadSounds();
+  if (sounds.length >= 24) {
+    fs.unlink(req.file.path, () => {});
+    return res.status(400).json({ error: 'Máximo 24 sonidos permitidos' });
+  }
+  const id = crypto.randomBytes(8).toString('hex');
+  const baseName = path.basename(req.file.originalname, path.extname(req.file.originalname));
+  const entry = {
+    id,
+    filename: req.file.filename,
+    name: baseName.slice(0, 40),
+    shortcut: null,
+    color: '#3ecf8e',
+    createdAt: Date.now(),
+  };
+  sounds.push(entry);
+  saveSounds(sounds);
+  syncSoundPadsToMobileState();
+  res.json(entry);
+});
+
+app.patch('/api/soundpad/:id', validateLocalMutation, (req, res) => {
+  const sounds = loadSounds();
+  const idx = sounds.findIndex(s => s.id === req.params.id);
+  if (idx === -1) return res.status(404).json({ error: 'Sonido no encontrado' });
+  const { name, color, shortcut } = req.body || {};
+  if (typeof name === 'string') sounds[idx].name = name.slice(0, 40);
+  if (typeof color === 'string') sounds[idx].color = color;
+  if (shortcut !== undefined) sounds[idx].shortcut = shortcut || null;
+  saveSounds(sounds);
+  syncSoundPadsToMobileState();
+  res.json(sounds[idx]);
+});
+
+app.delete('/api/soundpad/:id', validateLocalMutation, (req, res) => {
+  const sounds = loadSounds();
+  const idx = sounds.findIndex(s => s.id === req.params.id);
+  if (idx === -1) return res.status(404).json({ error: 'Sonido no encontrado' });
+  const [removed] = sounds.splice(idx, 1);
+  try { fs.unlinkSync(path.join(SOUNDS_DIR, removed.filename)); } catch (_) {}
+  saveSounds(sounds);
+  syncSoundPadsToMobileState();
+  res.json({ ok: true });
+});
+
 const MOBILE_ALLOWED_ACTIONS = new Set([
   'toggle', 'globalTTS', 'pause', 'skip', 'clear', 'emergency', 'markClip', 'deleteClip', 'soloChat',
+  'soundpadPlay',
+  'musicSkip', 'musicToggle', 'musicVolume', 'playlistToggle',
 ]);
 
 function hasDesktopClient() {
@@ -2070,9 +2440,37 @@ function hasDesktopClient() {
 }
 
 app.post('/api/mobile/command', validateMobileRequest, (req, res) => {
-  const { action, key, value, index, clipId } = req.body || {};
+  const { action, key, value, index, clipId, soundId } = req.body || {};
   if (!action || !MOBILE_ALLOWED_ACTIONS.has(action)) {
     return res.status(400).json({ error: 'Acción no válida' });
+  }
+
+  // Music actions are handled server-side directly — no desktop relay needed
+  if (action === 'musicSkip') {
+    currentTrack = null;
+    broadcast({ type: 'music-skip' });
+    // Client will call /api/music/next after receiving music-skip
+    return res.json({ ok: true });
+  }
+  if (action === 'musicToggle') {
+    config.musicEnabled = !config.musicEnabled;
+    saveConfig();
+    musicBroadcastState();
+    return res.json({ ok: true, musicEnabled: config.musicEnabled });
+  }
+  if (action === 'musicVolume' && typeof value === 'number') {
+    config.musicVolume = Math.max(0, Math.min(1, value));
+    saveConfig();
+    broadcast({ type: 'music-volume', volume: config.musicVolume });
+    musicBroadcastState();
+    return res.json({ ok: true });
+  }
+  if (action === 'playlistToggle') {
+    config.playlistEnabled = !config.playlistEnabled;
+    saveConfig();
+    if (config.playlistEnabled && !currentTrack) advanceMusicQueue();
+    musicBroadcastState();
+    return res.json({ ok: true, playlistEnabled: config.playlistEnabled });
   }
 
   // El desktop es la única fuente de verdad del estado TTS: este endpoint
@@ -2083,12 +2481,144 @@ app.post('/api/mobile/command', validateMobileRequest, (req, res) => {
     return res.json({ ok: false, reason: 'desktop-offline' });
   }
 
-  broadcast({ type: 'remote-cmd', action, key, value, index, clipId });
+  broadcast({ type: 'remote-cmd', action, key, value, index, clipId, soundId });
   res.json({ ok: true });
 });
 
+// ── MUSIC API ROUTES ─────────────────────────────────────────────────────────
+
+app.get('/api/music/stream', (req, res) => {
+  const { videoId } = req.query;
+  if (!videoId || !/^[A-Za-z0-9_-]{11}$/.test(videoId)) {
+    return res.status(400).json({ error: 'videoId inválido' });
+  }
+  const url = `https://www.youtube.com/watch?v=${videoId}`;
+  log('info', 'music', 'stream solicitado', { videoId });
+  res.setHeader('Cache-Control', 'no-store');
+  try {
+    const stream = ytdl(url, {
+      filter: 'audioonly',
+      quality: 'highestaudio',
+      requestOptions: { headers: { 'User-Agent': YTDL_UA } },
+    });
+    stream.once('info', (_info, format) => {
+      const mime = format?.mimeType?.split(';')[0] || 'audio/webm';
+      if (!res.headersSent) res.setHeader('Content-Type', mime);
+    });
+    stream.on('error', (err) => {
+      log('warn', 'music', 'stream error', { videoId, error: err.message });
+      if (!res.headersSent) res.status(500).end();
+      else res.end();
+    });
+    stream.pipe(res);
+    req.on('close', () => { try { stream.destroy(); } catch (_) {} });
+  } catch (err) {
+    log('warn', 'music', 'ytdl init error', { error: err.message });
+    res.status(500).json({ error: 'No se pudo iniciar stream' });
+  }
+});
+
+app.get('/api/music/queue', (_req, res) => {
+  res.json({ current: currentTrack, queue: musicQueue, playlistActive });
+});
+
+app.post('/api/music/skip', (req, res) => {
+  currentTrack = null;
+  broadcast({ type: 'music-skip' });
+  res.json({ ok: true });
+});
+
+app.post('/api/music/next', (_req, res) => {
+  advanceMusicQueue();
+  res.json({ ok: true, current: currentTrack });
+});
+
+app.get('/api/music/config', (_req, res) => {
+  res.json({
+    musicEnabled: config.musicEnabled,
+    musicUserCooldownMs: config.musicUserCooldownMs,
+    musicMaxQueue: config.musicMaxQueue,
+    musicBannedUsers: config.musicBannedUsers,
+    musicVolume: config.musicVolume,
+    playlistEnabled: config.playlistEnabled,
+    playlistShuffle: config.playlistShuffle,
+  });
+});
+
+app.patch('/api/music/config', (req, res) => {
+  const allowed = ['musicEnabled', 'musicUserCooldownMs', 'musicMaxQueue', 'musicBannedUsers',
+    'musicVolume', 'playlistEnabled', 'playlistShuffle'];
+  const patch = {};
+  for (const k of allowed) {
+    if (k in req.body) patch[k] = req.body[k];
+  }
+  const { rejected } = applyConfigPatch(patch);
+  if (rejected.length) return res.status(400).json({ error: 'Valores inválidos', rejected });
+  saveConfig();
+  if ('playlistEnabled' in patch && config.playlistEnabled && !currentTrack) advanceMusicQueue();
+  musicBroadcastState();
+  res.json({ ok: true });
+});
+
+app.post('/api/music/ban', (req, res) => {
+  const { username } = req.body || {};
+  if (!username || typeof username !== 'string') return res.status(400).json({ error: 'username requerido' });
+  const clean = username.trim().toLowerCase();
+  if (!config.musicBannedUsers.includes(clean)) {
+    config.musicBannedUsers.push(clean);
+    saveConfig();
+  }
+  res.json({ ok: true, banned: config.musicBannedUsers });
+});
+
+app.post('/api/music/unban', (req, res) => {
+  const { username } = req.body || {};
+  if (!username || typeof username !== 'string') return res.status(400).json({ error: 'username requerido' });
+  const clean = username.trim().toLowerCase();
+  config.musicBannedUsers = config.musicBannedUsers.filter(u => u !== clean);
+  saveConfig();
+  res.json({ ok: true, banned: config.musicBannedUsers });
+});
+
+app.get('/api/music/playlist', (_req, res) => {
+  res.json({
+    playlist: playlistResolved,
+    raw: config.streamerPlaylist,
+    index: playlistIndex,
+    shuffle: config.playlistShuffle,
+    enabled: config.playlistEnabled,
+  });
+});
+
+app.put('/api/music/playlist', async (req, res) => {
+  const { lines } = req.body || {};
+  if (!Array.isArray(lines)) return res.status(400).json({ error: 'lines debe ser array' });
+  await resolveAndSavePlaylist(lines);
+  res.json({ ok: true, count: playlistResolved.length });
+});
+
+app.post('/api/music/playlist/toggle', (_req, res) => {
+  config.playlistEnabled = !config.playlistEnabled;
+  saveConfig();
+  if (config.playlistEnabled && !currentTrack) advanceMusicQueue();
+  musicBroadcastState();
+  res.json({ ok: true, enabled: config.playlistEnabled });
+});
+
+app.post('/api/music/playlist/shuffle', (_req, res) => {
+  config.playlistShuffle = !config.playlistShuffle;
+  saveConfig();
+  musicBroadcastState();
+  res.json({ ok: true, shuffle: config.playlistShuffle });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 // Cargar palabras bloqueadas al iniciar
 loadBlockedWordsFromFile();
+
+// Inicializar soundPads en mobileState con lo que haya guardado
+mobileState.soundPads = loadSounds().map(s => ({ id: s.id, name: s.name, color: s.color }));
 
 // Error-handler de Express (4 args): debe ir al FINAL, después de todas las
 // rutas, para capturar tanto errores de body-parser (JSON inválido) como
