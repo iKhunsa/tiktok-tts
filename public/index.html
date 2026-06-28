@@ -1346,14 +1346,14 @@
 <!-- ── Update progress banner ────────────────────────────────── -->
 <div id="update-banner">
   <span class="upd-icon">⬆️</span>
-  <span class="upd-text" id="update-text">Buscando actualizaciones...</span>
+  <span class="upd-text" id="update-text" data-i18n="update.checking">Buscando actualizaciones...</span>
   <div id="update-bar-wrap" style="display:none">
     <div id="update-bar-fill"></div>
   </div>
   <span id="update-percent" style="display:none"></span>
   <span id="update-speed"   style="display:none"></span>
-  <button id="update-btn-install" style="display:none" onclick="doInstallUpdate()">Instalar ahora</button>
-  <button id="update-btn-later"   style="display:none" onclick="document.getElementById('update-banner').classList.remove('visible')">Después</button>
+  <button id="update-btn-install" style="display:none" onclick="doInstallUpdate()" data-i18n="update.installNow">Instalar ahora</button>
+  <button id="update-btn-later"   style="display:none" onclick="document.getElementById('update-banner').classList.remove('visible')" data-i18n="update.later">Después</button>
 </div>
 
 <div class="app-layout">
@@ -1381,8 +1381,7 @@
         <img class="sidebar-icon icon-inline" src="icons/play_arrow.svg" alt="">
         <span data-i18n="nav.clips">Clips</span>
       </button>
-      <!-- FEATURE: soundpad — disabled, remove this comment to re-enable -->
-      <button class="sidebar-item" data-view="soundpad" onclick="switchView('soundpad')" style="display:none">
+      <button class="sidebar-item" data-view="soundpad" onclick="switchView('soundpad')">
         <img class="sidebar-icon icon-inline" src="icons/volume_up.svg" alt="">
         <span data-i18n="nav.soundpad">Sonidos</span>
       </button>
@@ -1390,8 +1389,7 @@
         <img class="sidebar-icon icon-inline" src="icons/label.svg" alt="">
         <span data-i18n="nav.mobile">Móvil</span>
       </button>
-      <!-- FEATURE: music bot — disabled, remove this comment to re-enable -->
-      <button class="sidebar-item" data-view="bot" onclick="switchView('bot')" style="display:none">
+      <button class="sidebar-item" data-view="bot" onclick="switchView('bot')">
         <img class="sidebar-icon icon-inline" src="icons/music_note.svg" alt="">
         <span>Bot</span>
       </button>
@@ -1518,8 +1516,8 @@
         <div class="cfg-header">
           <div class="cfg-icon"><img class="icon-inline" src="icons/chat.svg" alt=""></div>
           <div class="cfg-meta">
-            <div class="cfg-title">Chat Unificado</div>
-            <div class="cfg-subtitle">Todos los mensajes de TikTok, Twitch y YouTube en un solo overlay</div>
+            <div class="cfg-title" data-i18n="overlay.chat.title">Chat Unificado</div>
+            <div class="cfg-subtitle" data-i18n="overlay.chat.subtitle">Todos los mensajes de TikTok, Twitch y YouTube en un solo overlay</div>
           </div>
           <span class="obs-hint">420 × 720 px</span>
         </div>
@@ -1572,8 +1570,8 @@
         </div>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-chat">http://localhost:3000/overlay-chat.html</span>
-          <button class="cfg-btn" onclick="copyCfgUrl('chat')">Copiar</button>
-          <a class="cfg-btn" id="cfg-open-chat" href="http://localhost:3000/overlay-chat.html" target="_blank">Abrir</a>
+          <button class="cfg-btn" onclick="copyCfgUrl('chat')" data-i18n="btn.copy">Copiar</button>
+          <a class="cfg-btn" id="cfg-open-chat" href="http://localhost:3000/overlay-chat.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
       </div>
 
@@ -1582,8 +1580,8 @@
         <div class="cfg-header">
           <div class="cfg-icon"><img class="icon-inline" src="icons/people.svg" alt=""></div>
           <div class="cfg-meta">
-            <div class="cfg-title">Contador de Seguidores</div>
-            <div class="cfg-subtitle">Nuevos seguidores del stream en tiempo real</div>
+            <div class="cfg-title" data-i18n="overlay.followers.title">Contador de Seguidores</div>
+            <div class="cfg-subtitle" data-i18n="overlay.followers.subtitle">Nuevos seguidores del stream en tiempo real</div>
           </div>
           <span class="obs-hint">200 × 180 px</span>
         </div>
@@ -1595,7 +1593,7 @@
           </div>
           <div class="cfg-field">
             <label>Total seguidores actuales</label>
-            <div id="cfg-seg-auto" style="padding: 8px 11px; font-size: 13px; color: var(--text-muted); background: var(--bg-button); border: 1px solid var(--border-strong); border-radius: 8px; min-height: 36px; display: flex; align-items: center;">
+            <div id="cfg-seg-auto" style="padding: 8px 11px; font-size: 13px; color: var(--text-muted); background: var(--bg-button); border: 1px solid var(--border-strong); border-radius: 8px; min-height: 36px; display: flex; align-items: center;" data-i18n="label.connectToGet">
               Conecta para obtener
             </div>
           </div>
@@ -1622,8 +1620,8 @@
         </div>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-seguidores">http://localhost:3000/overlay-seguidores.html</span>
-          <button class="cfg-btn" onclick="copyCfgUrl('seguidores')">Copiar</button>
-          <a class="cfg-btn" id="cfg-open-seguidores" href="http://localhost:3000/overlay-seguidores.html" target="_blank">Abrir</a>
+          <button class="cfg-btn" onclick="copyCfgUrl('seguidores')" data-i18n="btn.copy">Copiar</button>
+          <a class="cfg-btn" id="cfg-open-seguidores" href="http://localhost:3000/overlay-seguidores.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
       </div>
 
@@ -1632,8 +1630,8 @@
         <div class="cfg-header">
           <div class="cfg-icon"><img class="icon-inline" src="icons/favorite.svg" alt=""></div>
           <div class="cfg-meta">
-            <div class="cfg-title">Top Likers</div>
-            <div class="cfg-subtitle">Ranking de usuarios con más likes del stream</div>
+            <div class="cfg-title" data-i18n="overlay.topLikers.title">Top Likers</div>
+            <div class="cfg-subtitle" data-i18n="overlay.topLikers.subtitle">Ranking de usuarios con más likes del stream</div>
           </div>
           <span class="obs-hint">260 × 380 px</span>
         </div>
@@ -1667,8 +1665,8 @@
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-likes">http://localhost:3000/overlay-likes.html</span>
           <button class="cfg-btn" onclick="testTopLikers()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Test</button>
-          <button class="cfg-btn" onclick="copyCfgUrl('likes')">Copiar</button>
-          <a class="cfg-btn" id="cfg-open-likes" href="http://localhost:3000/overlay-likes.html" target="_blank">Abrir</a>
+          <button class="cfg-btn" onclick="copyCfgUrl('likes')" data-i18n="btn.copy">Copiar</button>
+          <a class="cfg-btn" id="cfg-open-likes" href="http://localhost:3000/overlay-likes.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
       </div>
 
@@ -1677,8 +1675,8 @@
         <div class="cfg-header">
           <div class="cfg-icon"><img class="icon-inline" src="icons/card_giftcard.svg" alt=""></div>
           <div class="cfg-meta">
-            <div class="cfg-title">Alerta de Regalo</div>
-            <div class="cfg-subtitle">Aparece en OBS unos segundos cuando alguien envía un regalo</div>
+            <div class="cfg-title" data-i18n="overlay2.giftsTitle">Alerta de Regalo</div>
+            <div class="cfg-subtitle" data-i18n="overlay2.giftsSubtitle">Aparece en OBS unos segundos cuando alguien envía un regalo</div>
           </div>
           <span class="obs-hint">440 × 130 px</span>
         </div>
@@ -1712,8 +1710,8 @@
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-alertas">http://localhost:3000/overlay-alertas.html</span>
           <button class="cfg-btn" onclick="testGiftAlert()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Test</button>
-          <button class="cfg-btn" onclick="copyCfgUrl('alertas')">Copiar</button>
-          <a class="cfg-btn" id="cfg-open-alertas" href="http://localhost:3000/overlay-alertas.html" target="_blank">Abrir</a>
+          <button class="cfg-btn" onclick="copyCfgUrl('alertas')" data-i18n="btn.copy">Copiar</button>
+          <a class="cfg-btn" id="cfg-open-alertas" href="http://localhost:3000/overlay-alertas.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
       </div>
 
@@ -1722,8 +1720,8 @@
         <div class="cfg-header">
           <div class="cfg-icon">💜</div>
           <div class="cfg-meta">
-            <div class="cfg-title">Alerta de Follow / Share</div>
-            <div class="cfg-subtitle">Aparece en OBS unos segundos cuando alguien te sigue o comparte</div>
+            <div class="cfg-title" data-i18n="overlay2.socialTitle">Alerta de Follow / Share</div>
+            <div class="cfg-subtitle" data-i18n="overlay2.socialSubtitle">Aparece en OBS unos segundos cuando alguien te sigue o comparte</div>
           </div>
           <span class="obs-hint">440 × 130 px</span>
         </div>
@@ -1763,8 +1761,8 @@
           <span class="cfg-url-text" id="cfg-url-social-alert">http://localhost:3000/overlay-alertas-social.html</span>
           <button class="cfg-btn" onclick="testSocialAlert('follow')">💜 Test Follow</button>
           <button class="cfg-btn" onclick="testSocialAlert('share')">🔗 Test Share</button>
-          <button class="cfg-btn" onclick="copySocialAlertUrl()">Copiar</button>
-          <a class="cfg-btn" id="cfg-open-social-alert" href="http://localhost:3000/overlay-alertas-social.html" target="_blank">Abrir</a>
+          <button class="cfg-btn" onclick="copySocialAlertUrl()" data-i18n="btn.copy">Copiar</button>
+          <a class="cfg-btn" id="cfg-open-social-alert" href="http://localhost:3000/overlay-alertas-social.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
       </div>
 
@@ -1773,8 +1771,8 @@
         <div class="cfg-header">
           <div class="cfg-icon"><img class="icon-inline" src="icons/emoji_events.svg" alt=""></div>
           <div class="cfg-meta">
-            <div class="cfg-title">Créditos del Stream</div>
-            <div class="cfg-subtitle">Scroll automático con donadores, seguidores y compartidos</div>
+            <div class="cfg-title" data-i18n="overlay2.creditosTitle">Créditos del Stream</div>
+            <div class="cfg-subtitle" data-i18n="overlay2.creditosSubtitle">Scroll automático con donadores, seguidores y compartidos</div>
           </div>
           <span class="obs-hint">380 × 500 px</span>
         </div>
@@ -1807,8 +1805,8 @@
         </div>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-creditos">http://localhost:3000/overlay-creditos.html</span>
-          <button class="cfg-btn" onclick="copyCfgUrl('creditos')">Copiar</button>
-          <a class="cfg-btn" id="cfg-open-creditos" href="http://localhost:3000/overlay-creditos.html" target="_blank">Abrir</a>
+          <button class="cfg-btn" onclick="copyCfgUrl('creditos')" data-i18n="btn.copy">Copiar</button>
+          <a class="cfg-btn" id="cfg-open-creditos" href="http://localhost:3000/overlay-creditos.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
       </div>
 
@@ -1817,8 +1815,8 @@
         <div class="cfg-header">
           <div class="cfg-icon"><img class="icon-inline" src="icons/public.svg" alt=""></div>
           <div class="cfg-meta">
-            <div class="cfg-title">Lista de Seguidores &amp; Compartidos</div>
-            <div class="cfg-subtitle">Panel acumulado visible durante todo el stream en OBS</div>
+            <div class="cfg-title" data-i18n="overlay2.socialListTitle">Lista de Seguidores &amp; Compartidos</div>
+            <div class="cfg-subtitle" data-i18n="overlay2.socialListSubtitle">Panel acumulado visible durante todo el stream en OBS</div>
           </div>
           <span class="obs-hint">480 × 300 px</span>
         </div>
@@ -1853,8 +1851,8 @@
         </div>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-social">http://localhost:3000/overlay-social.html</span>
-          <button class="cfg-btn" onclick="copyCfgUrl('social')">Copiar</button>
-          <a class="cfg-btn" id="cfg-open-social" href="http://localhost:3000/overlay-social.html" target="_blank">Abrir</a>
+          <button class="cfg-btn" onclick="copyCfgUrl('social')" data-i18n="btn.copy">Copiar</button>
+          <a class="cfg-btn" id="cfg-open-social" href="http://localhost:3000/overlay-social.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
       </div>
     </div>
@@ -1862,23 +1860,23 @@
     <!-- ── VIEW: Bot ───────────────────────────────────── -->
     <div class="view" id="view-bot">
       <div class="view-header">
-        <h2><img class="icon-inline" src="icons/music_note.svg" alt=""> Bot de Música</h2>
-        <p>El chat puede pedir canciones con <strong>!p nombre</strong> o <strong>!p link de YouTube</strong>. Tu playlist suena de fondo cuando no hay peticiones.</p>
+        <h2><img class="icon-inline" src="icons/music_note.svg" alt=""> <span data-i18n="bot.title">Bot de Música</span></h2>
+        <p data-i18n-html="bot.desc">El chat puede pedir canciones con <strong>!p nombre</strong> o <strong>!p link de YouTube</strong>. Tu playlist suena de fondo cuando no hay peticiones.</p>
       </div>
 
       <!-- Now Playing -->
       <div class="cfg-card" id="music-now-playing-card">
         <div class="cfg-card-header">
-          <span>▶ Reproduciendo ahora</span>
+          <span data-i18n="bot.nowPlaying">▶ Reproduciendo ahora</span>
           <div style="display:flex;gap:8px;align-items:center;">
             <label class="toggle-label" style="font-size:12px;">
               <input type="checkbox" id="musicEnabledToggle" onchange="musicSetEnabled(this.checked)">
-              Activar !p
+              <span data-i18n="bot.enableCmd">Activar !p</span>
             </label>
-            <button class="btn btn-sm" onclick="musicSkip()" title="Saltar canción">⏭ Skip</button>
+            <button class="btn btn-sm" onclick="musicSkip()" title="Saltar canción" data-i18n="bot.skipSong">⏭ Skip</button>
           </div>
         </div>
-        <div id="music-idle-msg" style="color:var(--text-muted);font-size:13px;padding:8px 0;">Sin música reproduciéndose.</div>
+        <div id="music-idle-msg" style="color:var(--text-muted);font-size:13px;padding:8px 0;" data-i18n="bot.noMusic">Sin música reproduciéndose.</div>
         <div id="music-track-info" style="display:none;gap:12px;align-items:center;">
           <img id="music-thumb" src="" alt="" style="width:60px;height:60px;object-fit:cover;border-radius:6px;flex-shrink:0;">
           <div style="flex:1;min-width:0;">
@@ -1894,7 +1892,7 @@
         <!-- Volume -->
         <div style="margin-top:12px;display:flex;align-items:center;gap:10px;">
           <img src="icons/volume_up.svg" class="icon-inline" alt="" style="opacity:.7;">
-          <span style="font-size:12px;white-space:nowrap;">Vol. Música</span>
+          <span style="font-size:12px;white-space:nowrap;" data-i18n="bot.musicVol">Vol. Música</span>
           <input type="range" id="musicVolRange" min="0" max="1" step="0.05" value="0.5"
             oninput="musicSetVolume(this.value)" style="flex:1;">
           <span id="musicVolVal" style="font-size:12px;min-width:32px;text-align:right;">50%</span>
@@ -1904,50 +1902,50 @@
       <!-- Queue -->
       <div class="cfg-card">
         <div class="cfg-card-header">
-          <span>📋 Cola de peticiones <span id="music-queue-count" style="font-size:11px;opacity:.6;">(0)</span></span>
-          <button class="btn btn-sm" onclick="musicClearQueue()" title="Limpiar cola">🗑 Limpiar</button>
+          <span data-i18n="bot.requestQueue">📋 Cola de peticiones</span> <span id="music-queue-count" style="font-size:11px;opacity:.6;">(0)</span>
+          <button class="btn btn-sm" onclick="musicClearQueue()" title="Limpiar cola" data-i18n="bot.clearQueue">🗑 Limpiar</button>
         </div>
         <div id="music-queue-list" style="display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;">
-          <div style="color:var(--text-muted);font-size:13px;">La cola está vacía.</div>
+          <div style="color:var(--text-muted);font-size:13px;" data-i18n="bot.queueEmpty">La cola está vacía.</div>
         </div>
       </div>
 
       <!-- Streamer Playlist -->
       <div class="cfg-card">
         <div class="cfg-card-header">
-          <span>🎵 Mi Playlist (fondo)</span>
+          <span data-i18n="bot.myPlaylist">🎵 Mi Playlist (fondo)</span>
           <div style="display:flex;gap:8px;align-items:center;">
             <label class="toggle-label" style="font-size:12px;">
               <input type="checkbox" id="playlistEnabledToggle" onchange="playlistSetEnabled(this.checked)">
-              Activar
+              <span data-i18n="bot.enable">Activar</span>
             </label>
             <label class="toggle-label" style="font-size:12px;">
               <input type="checkbox" id="playlistShuffleToggle" onchange="playlistSetShuffle(this.checked)">
-              Aleatorio
+              <span data-i18n="bot.shuffle">Aleatorio</span>
             </label>
           </div>
         </div>
-        <p style="font-size:12px;color:var(--text-muted);margin:0 0 8px;">Una canción por línea: nombre o URL de YouTube. Suena cuando no hay peticiones del chat.</p>
-        <div id="music-playlist-active" style="display:none;font-size:12px;color:var(--accent);margin-bottom:6px;">▶ Sonando de playlist: <span id="playlist-now-title"></span></div>
+        <p style="font-size:12px;color:var(--text-muted);margin:0 0 8px;" data-i18n="bot.playlistHint">Una canción por línea: nombre o URL de YouTube. Suena cuando no hay peticiones del chat.</p>
+        <div id="music-playlist-active" style="display:none;font-size:12px;color:var(--accent);margin-bottom:6px;"><span data-i18n="bot.playlistActive">▶ Sonando de playlist:</span> <span id="playlist-now-title"></span></div>
         <textarea id="playlistTextarea" rows="6" style="width:100%;box-sizing:border-box;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;padding:8px;color:var(--text);font-size:13px;resize:vertical;"
           placeholder="Bohemian Rhapsody Queen&#10;https://www.youtube.com/watch?v=fJ9rUzIMcZQ&#10;Lose Yourself Eminem"></textarea>
         <div style="margin-top:8px;display:flex;justify-content:flex-end;">
-          <button class="btn btn-primary btn-sm" onclick="playlistSave()">💾 Guardar playlist</button>
+          <button class="btn btn-primary btn-sm" onclick="playlistSave()" data-i18n="bot.savePlaylist">💾 Guardar playlist</button>
         </div>
       </div>
 
       <!-- Bot Settings -->
       <div class="cfg-card">
-        <div class="cfg-card-header"><span>⚙ Configuración del bot</span></div>
+        <div class="cfg-card-header"><span data-i18n="bot.botSettings">⚙ Configuración del bot</span></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
           <label style="font-size:13px;">
-            Cooldown por usuario (seg)
+            <span data-i18n="bot.cooldown">Cooldown por usuario (seg)</span>
             <input type="number" id="musicCooldownInput" min="0" max="3600" value="60"
               style="width:100%;margin-top:4px;padding:6px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:4px;color:var(--text);"
               onchange="musicSaveCooldown(this.value)">
           </label>
           <label style="font-size:13px;">
-            Máx canciones en cola
+            <span data-i18n="bot.maxQueue">Máx canciones en cola</span>
             <input type="number" id="musicMaxQueueInput" min="1" max="50" value="10"
               style="width:100%;margin-top:4px;padding:6px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:4px;color:var(--text);"
               onchange="musicSaveMaxQueue(this.value)">
@@ -1956,12 +1954,12 @@
 
         <!-- Banned users -->
         <div style="margin-top:12px;">
-          <div style="font-size:13px;margin-bottom:6px;font-weight:600;">Usuarios baneados del !p</div>
+          <div style="font-size:13px;margin-bottom:6px;font-weight:600;" data-i18n="bot.bannedUsers">Usuarios baneados del !p</div>
           <div style="display:flex;gap:6px;">
-            <input type="text" id="musicBanInput" placeholder="@usuario o ID"
+            <input type="text" id="musicBanInput" data-i18n-placeholder="bot.banPlaceholder" placeholder="@usuario o ID"
               style="flex:1;padding:6px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:13px;"
               onkeydown="if(event.key==='Enter')musicBanUser()">
-            <button class="btn btn-sm" onclick="musicBanUser()">Banear</button>
+            <button class="btn btn-sm" onclick="musicBanUser()" data-i18n="bot.ban">Banear</button>
           </div>
           <div id="music-banned-list" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;"></div>
         </div>
@@ -1979,7 +1977,7 @@
         <div class="settings-section-title" data-i18n="settings.voice">Voz y audio</div>
         <div class="settings-panel">
           <div class="setting-group">
-            <label><img class="icon-inline" src="icons/mic.svg" alt=""> Voz</label>
+            <label><img class="icon-inline" src="icons/mic.svg" alt=""> <span data-i18n="label.voice">Voz</span></label>
             <div class="voice-dropdown" id="voiceDropdown">
               <div class="voice-dropdown-trigger" id="voiceDropdownTrigger" onclick="toggleVoiceDropdown()">
                 <img class="flag-icon" id="voiceDropdownFlag" src="flags/ES.svg" alt="">
@@ -1991,7 +1989,7 @@
             <input type="hidden" id="voiceSelect" />
           </div>
           <div class="setting-group">
-            <label><img class="icon-inline" src="icons/science.svg" alt=""> Probar voz</label>
+            <label><img class="icon-inline" src="icons/science.svg" alt=""> <span data-i18n="label.testVoice">Probar voz</span></label>
             <div style="display:flex;gap:8px;align-items:center;">
               <input type="text" id="testVoiceInput" placeholder="Escribe algo para probar..." style="flex:1;" />
               <button id="btnTestVoice" class="btn-test" onclick="testVoice()">▶ Probar</button>
@@ -2000,56 +1998,56 @@
           <div class="setting-group">
             <label><img class="icon-inline" src="icons/flash_on.svg" alt=""> Velocidad — <span id="rateVal">1.0</span>x</label>
             <input type="range" id="rateRange" min="0.5" max="2" step="0.1" value="1" oninput="updateRate(this.value)" />
-            <div class="range-labels"><span>Lento</span><span>Rápido</span></div>
+            <div class="range-labels"><span data-i18n="label.slow">Lento</span><span data-i18n="label.fast">Rápido</span></div>
           </div>
           <div class="setting-group">
             <label><img class="icon-inline" src="icons/volume_up.svg" alt=""> Volumen — <span id="volVal">100</span>%</label>
             <input type="range" id="volRange" min="0" max="1" step="0.05" value="1" oninput="updateVol(this.value)" />
-            <div class="range-labels"><span>Mute</span><span>Máx</span></div>
+            <div class="range-labels"><span data-i18n="label.mute">Mute</span><span data-i18n="label.max">Máx</span></div>
           </div>
         </div>
       </div>
 
       <!-- PAUSE TTS SECTION -->
       <div class="settings-section">
-        <div class="settings-section-title">Pausar TTS</div>
+        <div class="settings-section-title" data-i18n="settings.pause">Pausar TTS</div>
         <div class="settings-panel">
           <div class="setting-group" style="gap:8px;">
             <label style="margin-bottom:2px;display:flex;align-items:center;gap:6px;">
               <img class="icon-inline" src="icons/volume_off.svg" alt="" onerror="this.style.display='none'">
-              Control de reproducción
+              <span data-i18n="label.playbackControl">Control de reproducción</span>
             </label>
             <button id="btnPauseTTS" onclick="togglePauseTts()"
               style="width:100%;padding:10px 16px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:2px solid var(--accent);background:rgba(62,207,142,0.12);color:var(--accent);transition:all .2s;letter-spacing:.3px;">
-              ⏸ Pausar TTS
+              <span data-i18n="btn.pauseTTS">⏸ Pausar TTS</span>
             </button>
           </div>
           <div class="setting-group">
             <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
               <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
-              Atajo de teclado global
+              <span data-i18n="label.globalShortcut">Atajo de teclado global</span>
             </label>
             <div style="display:flex;gap:8px;align-items:center;">
               <input id="pauseShortcutInput" readonly placeholder="Clic aquí y presiona teclas..."
-                onclick="startCapturingShortcut()"
+  onclick="startCapturingShortcut()"
                 style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
               <button onclick="clearPauseShortcut()"
-                style="padding:8px 12px;border-radius:8px;font-size:12px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--text-muted);cursor:pointer;">
+                style="padding:8px 12px;border-radius:8px;font-size:12px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--text-muted);cursor:pointer;" data-i18n="btn.clearShortcut">
                 ✕ Limpiar
               </button>
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
               <button onclick="applyPauseShortcutPreset('F8')"
-                style="padding:6px 10px;border-radius:8px;font-size:11px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--text-secondary);cursor:pointer;">
+                style="padding:6px 10px;border-radius:8px;font-size:11px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--text-secondary);cursor:pointer;" data-i18n="btn.useF8">
                 Usar F8
               </button>
               <button onclick="applyPauseShortcutPreset('MediaPlayPause')"
-                style="padding:6px 10px;border-radius:8px;font-size:11px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--text-secondary);cursor:pointer;">
+                style="padding:6px 10px;border-radius:8px;font-size:11px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--text-secondary);cursor:pointer;" data-i18n="btn.usePlayPause">
                 Usar tecla Play/Pausa
               </button>
             </div>
             <div id="pauseShortcutHint" style="font-size:11px;color:var(--text-muted);margin-top:4px;">
-              Atajo activo: <span id="activeShortcutLabel" style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
+              <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span id="activeShortcutLabel" style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
             </div>
           </div>
         </div>
@@ -2057,7 +2055,7 @@
 
       <!-- CONEXIÓN PRINCIPAL -->
       <div class="settings-section">
-        <div class="settings-section-title">Conexión principal</div>
+        <div class="settings-section-title" data-i18n="settings.connection">Conexión principal</div>
         <div class="connect-panel" style="margin-bottom:0;">
           <div class="panel-title">
             <img class="icon-inline" src="icons/lens.svg" alt=""> TikTok Live
@@ -2080,9 +2078,9 @@
       <!-- CANALES ADICIONALES -->
       <div class="settings-section">
         <div class="settings-section-title" style="display:flex;justify-content:space-between;align-items:center;">
-          Canales adicionales
+          <span data-i18n="settings.channels">Canales adicionales</span>
           <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
-            <button class="btn-supabase-primary" id="btn-connect-saved" onclick="connectSavedChannels()">Conectar todo</button>
+            <button class="btn-supabase-primary" id="btn-connect-saved" onclick="connectSavedChannels()" data-i18n="btn.connectAll">Conectar todo</button>
             <button class="btn-supabase-primary" id="btn-toggle-add-channel" onclick="toggleAddChannelForm()">
               ＋ Agregar canal
             </button>
@@ -2117,64 +2115,64 @@
       </div>
 
       <div class="settings-section">
-        <div class="settings-section-title">Configuración avanzada</div>
-        <a href="/advanced.html" class="btn-nav"><img class="icon-inline" src="icons/build.svg" alt=""> Abrir panel avanzado (filtros, rate limit, logs) →</a>
+        <div class="settings-section-title" data-i18n="settings.advanced">Configuración avanzada</div>
+        <a href="/advanced.html" class="btn-nav" data-i18n="btn.openAdvanced"><img class="icon-inline" src="icons/build.svg" alt=""> Abrir panel avanzado (filtros, rate limit, logs) →</a>
       </div>
     </div>
 
     <!-- ── VIEW: Clips ─────────────────────────────────── -->
     <div class="view" id="view-clips">
       <div class="view-header">
-        <h2><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Marcadores de Clip</h2>
-        <p>Marca momentos del stream para sacar clips después.</p>
+        <h2><img class="icon-inline" src="icons/play_arrow.svg" alt=""> <span data-i18n="view.clips.title">Marcadores de Clip</span></h2>
+        <p data-i18n="view.clips.desc">Marca momentos del stream para sacar clips después.</p>
       </div>
 
       <div class="connect-panel">
-        <div class="panel-title"><img class="icon-inline" src="icons/lens.svg" alt=""> Temporizador del Stream</div>
+        <div class="panel-title"><img class="icon-inline" src="icons/lens.svg" alt=""> <span data-i18n="clips2.streamTimer">Temporizador del Stream</span></div>
         <div style="display:flex;align-items:center;gap:20px;margin:16px 0 14px;">
           <div class="stream-timer-display" id="streamTimer">00:00:00</div>
           <div style="display:flex;flex-direction:column;gap:6px;">
-            <button class="btn btn-connect" id="btnStartStream" onclick="startStreamManual()" style="font-size:13px;">
+            <button class="btn btn-connect" id="btnStartStream" onclick="startStreamManual()" style="font-size:13px;" data-i18n="btn.startStream">
               <img class="icon-inline" src="icons/play_arrow.svg" alt=""> Iniciar stream
             </button>
-            <button class="btn btn-disconnect" id="btnStopStream" onclick="stopStream()" style="display:none;font-size:13px;">
+            <button class="btn btn-disconnect" id="btnStopStream" onclick="stopStream()" style="display:none;font-size:13px;" data-i18n="btn.stopStream">
               Detener
             </button>
           </div>
         </div>
         <button class="btn btn-connect" id="btnMarkClip" onclick="markClip()" disabled
           style="width:100%;margin-bottom:10px;background:var(--surface);color:var(--text-muted);border:1px solid var(--border);cursor:not-allowed;">
-          <img class="icon-inline" src="icons/play_arrow.svg" alt=""> Marcar Clip &nbsp;<kbd style="font-size:10px;opacity:0.6;background:var(--border);padding:2px 5px;border-radius:4px;">Ctrl+Shift+M</kbd>
+          <img class="icon-inline" src="icons/play_arrow.svg" alt=""> <span data-i18n="btn.markClip">Marcar Clip</span> &nbsp;<kbd style="font-size:10px;opacity:0.6;background:var(--border);padding:2px 5px;border-radius:4px;">Ctrl+Shift+M</kbd>
         </button>
-        <div style="font-size:11px;color:var(--text-muted);">El atajo global funciona aunque la app esté minimizada.</div>
+        <div style="font-size:11px;color:var(--text-muted);" data-i18n="clipHint">El atajo global funciona aunque la app esté minimizada.</div>
       </div>
 
       <div class="settings-section">
         <div class="settings-section-title">
-          <span class="obs-status-dot" id="obsStatusDot"></span>Conexión OBS WebSocket <span style="font-weight:400;color:var(--text-muted)">(opcional)</span>
+          <span class="obs-status-dot" id="obsStatusDot"></span><span data-i18n="clips2.obsOptional">Conexión OBS WebSocket (opcional)</span>
         </div>
         <div class="settings-panel" style="grid-template-columns:1fr 1fr;">
           <div class="setting-group">
-            <label>Puerto OBS WS</label>
+            <label data-i18n="label.obsPort">Puerto OBS WS</label>
             <input type="number" id="obsPort" value="4455" min="1" max="65535" />
           </div>
           <div class="setting-group">
-            <label>Contraseña (si aplica)</label>
+            <label data-i18n="label.obsPassword">Contraseña (si aplica)</label>
             <input type="password" id="obsPassword" placeholder="dejar vacío si no hay" autocomplete="off" />
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
-          <button class="btn btn-connect" id="btnConnectOBS" onclick="connectOBSFromUI()" style="font-size:13px;">Conectar OBS</button>
-          <button class="btn btn-disconnect" id="btnDisconnectOBS" onclick="disconnectOBSFromUI()" style="font-size:13px;display:none;">Desconectar OBS</button>
-          <span id="obsStatusText" style="font-size:12px;color:var(--text-muted);">Desconectado</span>
+          <button class="btn btn-connect" id="btnConnectOBS" onclick="connectOBSFromUI()" style="font-size:13px;" data-i18n="btn.connectOBS">Conectar OBS</button>
+          <button class="btn btn-disconnect" id="btnDisconnectOBS" onclick="disconnectOBSFromUI()" style="font-size:13px;display:none;" data-i18n="btn.disconnectOBS">Desconectar OBS</button>
+          <span id="obsStatusText" style="font-size:12px;color:var(--text-muted);" data-i18n="obs.disconnected">Desconectado</span>
         </div>
-        <p style="font-size:11px;color:var(--text-muted);margin-top:8px;">OBS > Herramientas > Servidor WebSocket → habilitar en puerto 4455.</p>
+        <p style="font-size:11px;color:var(--text-muted);margin-top:8px;" data-i18n="obs.hint">OBS > Herramientas > Servidor WebSocket → habilitar en puerto 4455.</p>
       </div>
 
       <div class="settings-section">
         <div class="settings-section-title" style="display:flex;justify-content:space-between;align-items:center;">
-          <span>Historial de marcadores</span>
-          <button onclick="clearAllClips()" style="background:none;border:none;cursor:pointer;font-size:11px;color:var(--text-muted);padding:2px 6px;border-radius:6px;font-family:'Inter',sans-serif;" onmouseover="this.style.color='#fe2c55'" onmouseout="this.style.color='var(--text-muted)'">Borrar todo</button>
+          <span data-i18n="settings.clipsHistory">Historial de marcadores</span>
+          <button onclick="clearAllClips()" style="background:none;border:none;cursor:pointer;font-size:11px;color:var(--text-muted);padding:2px 6px;border-radius:6px;font-family:'Inter',sans-serif;" onmouseover="this.style.color='#fe2c55'" onmouseout="this.style.color='var(--text-muted)'" data-i18n="btn.clearAll">Borrar todo</button>
         </div>
         <div id="clipsHistory"></div>
       </div>
@@ -2205,13 +2203,13 @@
     <!-- ── VIEW: Móvil ─────────────────────────────────── -->
     <div class="view" id="view-mobile">
       <div class="view-header">
-        <h2>📱 Control Móvil</h2>
-        <p>Controla el TTS desde tu celular en la misma red WiFi.</p>
+        <h2>📱 <span data-i18n="view.mobile.title">Control Móvil</span></h2>
+        <p data-i18n="view.mobile.desc">Controla el TTS desde tu celular en la misma red WiFi.</p>
       </div>
 
       <div class="connect-panel" style="max-width:560px;">
-        <div class="panel-title">Acceso desde celular</div>
-        <p style="font-size:12px;color:var(--text-muted);margin:10px 0 16px;">Escaneá el código QR con la cámara de tu teléfono. El celular debe estar en la misma red WiFi que esta PC.</p>
+        <div class="panel-title" data-i18n="mobile.panelTitle">Acceso desde celular</div>
+        <p style="font-size:12px;color:var(--text-muted);margin:10px 0 16px;" data-i18n="mobile.hint">Escaneá el código QR con la cámara de tu teléfono. El celular debe estar en la misma red WiFi que esta PC.</p>
         <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;">
           <div style="flex-shrink:0;">
             <img id="mobileQR" src="/api/mobile/qr" alt="QR Code" width="180" height="180"
@@ -2221,13 +2219,13 @@
           </div>
           <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:12px;">
             <div>
-              <div style="font-size:11px;color:var(--text-muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;font-weight:600;">URL de acceso</div>
-              <div id="mobileURL" style="font-size:13px;color:var(--accent);word-break:break-all;font-family:monospace;padding:8px 10px;background:var(--surface);border-radius:8px;border:1px solid var(--border);">Cargando...</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;font-weight:600;" data-i18n="label.accessUrl">URL de acceso</div>
+              <div id="mobileURL" style="font-size:13px;color:var(--accent);word-break:break-all;font-family:monospace;padding:8px 10px;background:var(--surface);border-radius:8px;border:1px solid var(--border);" data-i18n="mobile2.loading">Cargando...</div>
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
               <button class="cfg-btn" onclick="copyMobileURL()" data-i18n="btn.copyLink">Copiar enlace</button>
             </div>
-            <div style="font-size:11px;color:var(--text-muted);line-height:1.5;">
+            <div style="font-size:11px;color:var(--text-muted);line-height:1.5;" data-i18n="mobile.appDesc">
               La app móvil incluye chat en vivo, controles TTS (pausa, skip, toggles) y marcadores de clip.
             </div>
           </div>
@@ -2343,6 +2341,8 @@
 
   (function initI18n() {
     const saved = localStorage.getItem(I18N_KEY) || 'es';
+    const sel = document.getElementById('langSelect');
+    if (sel) sel.value = saved;
     loadLanguage(saved);
   })();
 </script>
@@ -2680,7 +2680,7 @@
 
   function updateFollowerDisplay(count) {
     const el = document.getElementById('cfg-seg-auto');
-    if (el) el.textContent = count ? Number(count).toLocaleString('es') : 'Conecta para obtener';
+    if (el) el.textContent = count ? Number(count).toLocaleString('es') : t('label.connectToGet');
   }
 
   async function testGiftAlert() {
@@ -2780,7 +2780,7 @@
     sendStateSync();
     const btn = document.getElementById('btnPauseTTS');
     if (btn) {
-      btn.textContent = ttsPaused ? '▶ Reanudar TTS' : '⏸ Pausar TTS';
+      btn.textContent = ttsPaused ? t('btn.resumeTTS') : t('btn.pauseTTS');
       btn.style.borderColor  = ttsPaused ? '#ff6b6b' : 'var(--accent)';
       btn.style.background   = ttsPaused ? 'rgba(255,107,107,0.12)' : 'rgba(62,207,142,0.12)';
       btn.style.color        = ttsPaused ? '#ff6b6b' : 'var(--accent)';
@@ -2822,10 +2822,10 @@
         hint.innerHTML = `Atajo no registrado: <span style="font-family:monospace;font-weight:600;">${escapeHtml(status.shortcut || shortcut || '')}</span>. ${escapeHtml(status.error || 'Prueba otro atajo.')}`;
       } else if (shortcut) {
         hint.style.color = 'var(--text-muted)';
-        hint.innerHTML = `Atajo activo: <span id="activeShortcutLabel" style="color:var(--accent);font-family:monospace;font-weight:600;">${escapeHtml(shortcut)}</span>`;
+        hint.innerHTML = `${t('conn.shortcutHint')} <span id="activeShortcutLabel" style="color:var(--accent);font-family:monospace;font-weight:600;">${escapeHtml(shortcut)}</span>`;
       } else {
         hint.style.color = 'var(--text-muted)';
-        hint.innerHTML = 'Atajo activo: <span id="activeShortcutLabel" style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>';
+        hint.innerHTML = `${t('conn.shortcutHint')} <span id="activeShortcutLabel" style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>`;
       }
     }
   }
@@ -2841,7 +2841,7 @@
       appSettings.pauseShortcut = status.shortcut;
       saveSettings();
       renderShortcutDisplay(status);
-      if (!silent) showToast('Atajo global registrado: ' + status.shortcut);
+      if (!silent) showToast(t('conn.shortcutRegistered', { shortcut: status.shortcut }));
       return true;
     }
     pauseShortcutGlobalActive = false;
@@ -3791,7 +3791,7 @@
     if (!username) { setStatus('error', 'Escribe tu nombre de usuario'); return; }
 
     const btn = document.getElementById('btnConnect');
-    if (btn) { btn.disabled = true; btn.textContent = 'Conectando...'; }
+    if (btn) { btn.disabled = true; btn.textContent = t('conn.connecting'); }
     setStatus('', `Conectando a @${username.replace('@', '')}...`);
     logStorage.addLog('info', 'client', `Conectando a @${username.replace('@', '')}`);
 
@@ -3809,12 +3809,12 @@
       if (!res.ok) {
         setStatus('error', data.error);
         logStorage.addLog('error', 'network', `Conexión fallida: ${data.error}`);
-        if (btn) { btn.disabled = false; btn.textContent = 'Conectar'; }
+        if (btn) { btn.disabled = false; btn.textContent = t('btn.connect'); }
       }
     } catch (err) {
       setStatus('error', 'Error de red');
       logStorage.addLog('error', 'network', `Error de red: ${err.message}`);
-      if (btn) { btn.disabled = false; btn.textContent = 'Conectar'; }
+      if (btn) { btn.disabled = false; btn.textContent = t('btn.connect'); }
     }
   }
 
@@ -3988,7 +3988,7 @@
     saveClipsData(data);
   }
   function clearAllClips() {
-    if (!confirm('¿Borrar todos los marcadores de clip? Esta acción no se puede deshacer.')) return;
+    if (!confirm(t('clips2.confirmClearAll'))) return;
     localStorage.removeItem(CLIPS_KEY);
     renderClipsHistory();
   }
@@ -3998,7 +3998,7 @@
     const data = getClipsData();
     const dates = Object.keys(data).sort().reverse();
     if (dates.length === 0) {
-      container.innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:14px 0;">Sin marcadores aún. Inicia el stream y presiona Ctrl+Shift+M para marcar.</div>';
+      container.innerHTML = `<div style="color:var(--text-muted);font-size:13px;padding:14px 0;">${t('clips2.noMarkers')}</div>`;
       return;
     }
     container.innerHTML = '';
@@ -4039,7 +4039,7 @@
         labelWrap.appendChild(input);
         const del = document.createElement('button');
         del.className = 'clip-delete';
-        del.title = 'Borrar marcador';
+        del.title = t('clips2.deleteMarker');
         del.textContent = '✕';
         del.onclick = () => deleteClip(dateStr, e.id);
         row.append(elapsed, absolute, labelWrap, del);
@@ -4048,12 +4048,12 @@
       const dayFooter = document.createElement('div');
       dayFooter.style.cssText = 'padding:4px 0 6px;text-align:right;';
       const delDayBtn = document.createElement('button');
-      delDayBtn.textContent = 'Borrar día';
+      delDayBtn.textContent = t('clips2.deleteDay');
       delDayBtn.style.cssText = 'background:none;border:none;cursor:pointer;font-size:11px;color:var(--text-muted);padding:2px 6px;border-radius:4px;font-family:"Inter",sans-serif;';
       delDayBtn.onmouseover = () => { delDayBtn.style.color = '#fe2c55'; };
       delDayBtn.onmouseout  = () => { delDayBtn.style.color = 'var(--text-muted)'; };
       delDayBtn.onclick = () => {
-        if (!confirm(`¿Borrar todos los marcadores del ${dateStr}?`)) return;
+        if (!confirm(`${t('clips2.confirmClearDay')} ${dateStr}?`)) return;
         const d = getClipsData(); delete d[dateStr]; saveClipsData(d); renderClipsHistory();
       };
       dayFooter.appendChild(delDayBtn);
@@ -4068,7 +4068,7 @@
     const dot  = document.getElementById('obsStatusDot');
     const text = document.getElementById('obsStatusText');
     if (dot)  dot.className  = 'obs-status-dot' + (connected ? ' connected' : '');
-    if (text) { text.textContent = connected ? 'OBS conectado' : 'Desconectado'; text.style.color = connected ? 'var(--accent)' : 'var(--text-muted)'; }
+    if (text) { text.textContent = connected ? t('status.connected') : t('obs.disconnected'); text.style.color = connected ? 'var(--accent)' : 'var(--text-muted)'; }
   }
   let obsConnected = false;
   async function connectOBSFromUI() {
@@ -4076,21 +4076,21 @@
     const password = document.getElementById('obsPassword')?.value || '';
     const btn    = document.getElementById('btnConnectOBS');
     const btnDis = document.getElementById('btnDisconnectOBS');
-    if (btn) { btn.disabled = true; btn.textContent = 'Conectando...'; }
+    if (btn) { btn.disabled = true; btn.textContent = t('conn.connecting'); }
     try {
       const res = await fetch('/api/obs/connect', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ port, password }) });
       const d = await res.json();
       if (d.success) {
         updateOBSStatus(true);
-        if (btn)    { btn.style.display = 'none'; btn.disabled = false; btn.textContent = 'Conectar OBS'; }
+        if (btn)    { btn.style.display = 'none'; btn.disabled = false; btn.textContent = t('btn.connectOBS'); }
         if (btnDis) btnDis.style.display = 'inline-block';
       } else {
         showToast('Error OBS: ' + (d.error || 'desconocido'));
-        if (btn) { btn.disabled = false; btn.textContent = 'Conectar OBS'; }
+        if (btn) { btn.disabled = false; btn.textContent = t('btn.connectOBS'); }
       }
     } catch (e) {
       showToast('No se pudo conectar a OBS');
-      if (btn) { btn.disabled = false; btn.textContent = 'Conectar OBS'; }
+      if (btn) { btn.disabled = false; btn.textContent = t('btn.connectOBS'); }
     }
   }
   async function disconnectOBSFromUI() {
@@ -4123,7 +4123,7 @@
         switch (ev.type) {
           case 'checking':
             banner.classList.add('visible');
-            if (text) text.textContent = 'Buscando actualizaciones...';
+            if (text) text.textContent = t('update.checking');
             break;
           case 'available':
             if (text) text.textContent = `Nueva versión disponible: v${ev.version}`;
@@ -4334,7 +4334,7 @@
     await fetch(`/api/soundpad/${soundId}`, { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ shortcut }) });
     if (window.electronAPI?.registerSoundpadShortcut) {
       const result = await window.electronAPI.registerSoundpadShortcut(soundId, shortcut);
-      if (!result?.ok) showToast(result?.error || 'Atajo no disponible');
+      if (!result?.ok) showToast(result?.error || t('conn.shortcutUnavailable'));
     }
   }
 
@@ -4499,7 +4499,7 @@
     if (!plannedEntry) { showToast('Canal invalido'); return; }
 
     const btn = document.getElementById('btn-add-channel');
-    if (btn) { btn.disabled = true; btn.textContent = 'Conectando...'; }
+    if (btn) { btn.disabled = true; btn.textContent = t('conn.connecting'); }
 
     try {
       const res = await fetch('/api/platforms/connect', {
@@ -4531,7 +4531,7 @@
     } catch (e) {
       showToast('Error de red al conectar ' + selectedAddPlatform);
     } finally {
-      if (btn) { btn.disabled = false; btn.textContent = 'Conectar'; }
+      if (btn) { btn.disabled = false; btn.textContent = t('btn.connect'); }
     }
     renderSettingsChannels();
   }
@@ -4569,7 +4569,7 @@
     }
 
     const btn = document.getElementById('btn-connect-saved');
-    if (btn) { btn.disabled = true; btn.textContent = 'Conectando...'; }
+    if (btn) { btn.disabled = true; btn.textContent = t('conn.connecting'); }
 
     let connected = 0;
     let failed = 0;
@@ -4595,12 +4595,12 @@
       }
     }
 
-    if (btn) { btn.disabled = false; btn.textContent = 'Conectar todo'; }
+    if (btn) { btn.disabled = false; btn.textContent = t('btn.connectAll'); }
     renderSettingsChannels();
     const parts = [`${connected} conectados`];
     if (failed) parts.push(`${failed} fallidos`);
     if (manualCount) parts.push(`${manualCount} manual`);
-    showToast('Conectar todo: ' + parts.join(', '));
+    showToast(t('conn.connectAllMsg', { parts: parts.join(', ') }));
   }
 
   async function renderSettingsChannels() {
@@ -4643,7 +4643,7 @@
     const all = Array.from(byKey.values());
     el.innerHTML = '';
     if (all.length === 0) {
-      el.innerHTML = '<div style="font-size:12px;color:var(--text-muted);">Sin canales guardados. Agrega TikTok/Twitch/YouTube y luego usa Conectar todo.</div>';
+      el.innerHTML = `<div style="font-size:12px;color:var(--text-muted);">${t('conn.noSavedChannels')}</div>`;
       return;
     }
     all.forEach(({ platform, ch, state }) => {
@@ -4681,7 +4681,7 @@
 
   function doInstallUpdate() {
     const btn = document.getElementById('update-btn-install');
-    if (btn) { btn.disabled = true; btn.textContent = 'Instalando...'; }
+    if (btn) { btn.disabled = true; btn.textContent = t('update.installing'); }
     if (window.electronAPI?.installUpdate) window.electronAPI.installUpdate();
   }
 
@@ -4801,7 +4801,7 @@
     if (!list) return;
     if (count) count.textContent = `(${musicQueue.length})`;
     if (musicQueue.length === 0) {
-      list.innerHTML = '<div style="color:var(--text-muted);font-size:13px;">La cola está vacía.</div>';
+      list.innerHTML = `<div style="color:var(--text-muted);font-size:13px;">${t('bot.queueEmpty')}</div>`;
       return;
     }
     list.innerHTML = musicQueue.map((t, i) => `

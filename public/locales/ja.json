@@ -1,0 +1,339 @@
+{
+  "nav": {
+    "chat": "チャット",
+    "overlays": "オーバーレイ",
+    "clips": "クリップ",
+    "mobile": "モバイル",
+    "settings": "設定",
+    "soundpad": "サウンド",
+    "bot": "Bot"
+  },
+  "community": {
+    "label": "TikLiveTTS コミュニティ",
+    "desc": "公式 Discord · フィードバック・質問歓迎"
+  },
+  "footer": {
+    "donate": "寄付",
+    "channels": "チャンネル",
+    "advanced": "詳細設定"
+  },
+  "toggle": {
+    "readChat": "コメントを読む",
+    "readGifts": "ギフトを通知",
+    "readJoins": "参加を通知",
+    "readFollows": "フォローを通知",
+    "readLikes": "いいねを通知",
+    "readShares": "シェアを通知",
+    "sayUsername": "ユーザー名を読む"
+  },
+  "tts": {
+    "on": "🔊 TTS オン",
+    "off": "🔇 TTS オフ",
+    "offHint": "TTS をオフにすると音声が停止しキューがクリアされます。"
+  },
+  "btn": {
+    "skipCurrent": "現在をスキップ",
+    "clearQueue": "キューをクリア",
+    "emergency": "緊急モード",
+    "clearChat": "クリア",
+    "connect": "接続",
+    "disconnect": "切断",
+    "connectAll": "全て接続",
+    "addChannel": "＋ チャンネル追加",
+    "cancel": "キャンセル",
+    "testVoice": "▶ テスト",
+    "copyLink": "リンクをコピー",
+    "refreshQR": "QR更新",
+    "startStream": "配信開始",
+    "stopStream": "停止",
+    "markClip": "クリップをマーク",
+    "connectOBS": "OBS接続",
+    "disconnectOBS": "OBS切断",
+    "clearAll": "全て削除",
+    "openAdvanced": "詳細パネルを開く（フィルター、レート制限、ログ）→",
+    "pauseTTS": "⏸ TTS 一時停止",
+    "resumeTTS": "▶ TTS 再開",
+    "copy": "コピー",
+    "open": "開く",
+    "uploadImage": "画像アップロード",
+    "remove": "削除",
+    "useF8": "F8 を使用",
+    "usePlayPause": "再生/一時停止キーを使用",
+    "clearShortcut": "✕ クリア"
+  },
+  "chat": {
+    "title": "ライブチャット",
+    "empty": "TikTok ライブに接続して<br>ここでチャットを確認",
+    "speaking": "読み上げ中...",
+    "queue": "キュー：{n} 件"
+  },
+  "emergencyHint": "緊急モードはギフトとフォローを維持し、チャット/いいね/参加/シェアを無音にします。",
+  "status": {
+    "waiting": "接続を待っています...",
+    "connected": "接続済み",
+    "disconnected": "切断済み"
+  },
+  "view": {
+    "overlays": {
+      "title": "OBS オーバーレイ",
+      "desc": "各オーバーレイをカスタマイズしてURLをコピー → OBS → ソース追加 → ブラウザ → 透明背景を有効化。"
+    },
+    "settings": {
+      "title": "TTS 設定",
+      "desc": "音声、速度、動作を調整します。全て自動保存されます。"
+    },
+    "clips": {
+      "title": "クリップマーカー",
+      "desc": "配信の瞬間を記録。グローバルショートカット Ctrl+Shift+M はアプリ最小化中も動作します。"
+    },
+    "mobile": {
+      "title": "📱 モバイル制御",
+      "desc": "同じWiFiネットワーク内のスマホからTTSを制御。"
+    }
+  },
+  "settings": {
+    "voice": "音声・オーディオ",
+    "pause": "TTS 一時停止",
+    "connection": "メイン接続",
+    "channels": "追加チャンネル",
+    "advanced": "詳細設定",
+    "obs": "OBS WebSocket 接続",
+    "clipsHistory": "マーカー履歴"
+  },
+  "label": {
+    "voice": "音声",
+    "testVoice": "音声テスト",
+    "speed": "速度",
+    "volume": "音量",
+    "slow": "遅い",
+    "fast": "速い",
+    "mute": "ミュート",
+    "max": "最大",
+    "playbackControl": "再生コントロール",
+    "globalShortcut": "グローバルショートカット",
+    "accentColor": "アクセントカラー",
+    "bgOpacity": "背景の透明度",
+    "visibleMsgs": "表示メッセージ数",
+    "textSize": "テキストサイズ",
+    "showNames": "名前を表示",
+    "visiblePlatforms": "表示プラットフォーム",
+    "customBg": "カスタム背景",
+    "followerGoal": "新フォロワー目標",
+    "totalFollowers": "現在のフォロワー総数",
+    "maxRows": "最大行数",
+    "obsPort": "OBS WS ポート",
+    "obsPassword": "パスワード（あれば）",
+    "accessUrl": "アクセスURL",
+    "activeShortcut": "有効なショートカット",
+    "users": "ユーザー",
+    "connectToGet": "接続して取得"
+  },
+  "overlay": {
+    "chat": {
+      "title": "統合チャット",
+      "subtitle": "TikTok・Twitch・YouTubeの全メッセージを1つのオーバーレイに"
+    },
+    "followers": {
+      "title": "フォロワーカウンター",
+      "subtitle": "リアルタイムの新フォロワー"
+    },
+    "topLikers": {
+      "title": "トップライカー",
+      "subtitle": "配信中のいいね数ランキング"
+    },
+    "gifts": {
+      "title": "ギフトアラート",
+      "subtitle": "TikTok ライブのリアルタイムギフト"
+    },
+    "likes": {
+      "title": "いいねカウンター",
+      "subtitle": "配信中の累計いいね数"
+    },
+    "giftsSocial": {
+      "title": "ソーシャルアラート",
+      "subtitle": "配信の新フォロワーとシェア"
+    }
+  },
+  "mobile": {
+    "panelTitle": "スマホアクセス",
+    "hint": "スマホのカメラでQRコードをスキャン。スマホはこのPCと同じWiFiに接続している必要があります。",
+    "appDesc": "モバイルアプリにはライブチャット、TTSコントロール（一時停止・スキップ・切替）、クリップマーカーが含まれます。"
+  },
+  "obs": {
+    "hint": "OBS > ツール > WebSocketサーバー → ポート4455で有効化。",
+    "disconnected": "切断済み"
+  },
+  "clipHint": "グローバルショートカットはアプリ最小化中も動作します。",
+  "lang": {
+    "label": "言語"
+  },
+  "soundpad": {
+    "desc": "サウンドをアップロードしてクリックまたはキーボードショートカットで再生（フルスクリーンでも動作）。",
+    "upload": "アップロード",
+    "empty": "最初のサウンドをアップロードしてください",
+    "noShortcut": "ショートカットなし",
+    "pressKey": "キーを押してください…",
+    "clickToAssign": "クリックでショートカット割り当て (Ctrl/Alt/Shift + キー)"
+  },
+  "update": {
+    "checking": "アップデートを確認中...",
+    "installNow": "今すぐインストール",
+    "later": "後で",
+    "installing": "インストール中..."
+  },
+  "bot": {
+    "title": "ミュージックBot",
+    "desc": "チャットで !p 曲名 または !p YouTubeリンク でリクエストできます。リクエストがないときはプレイリストが流れます。",
+    "nowPlaying": "▶ 再生中",
+    "enableCmd": "!p を有効化",
+    "skipSong": "⏭ スキップ",
+    "noMusic": "音楽が再生されていません。",
+    "musicVol": "音楽音量",
+    "requestQueue": "📋 リクエストキュー",
+    "clearQueue": "🗑 クリア",
+    "queueEmpty": "キューは空です。",
+    "myPlaylist": "🎵 マイプレイリスト（バックグラウンド）",
+    "enable": "有効化",
+    "shuffle": "シャッフル",
+    "playlistHint": "1行1曲：曲名またはYouTube URL。チャットのリクエストがないときに再生。",
+    "playlistActive": "▶ プレイリストから再生中：",
+    "savePlaylist": "💾 プレイリスト保存",
+    "botSettings": "⚙ Bot設定",
+    "cooldown": "ユーザーごとのクールダウン（秒）",
+    "maxQueue": "キュー最大曲数",
+    "bannedUsers": "!pからBANされたユーザー",
+    "banPlaceholder": "@ユーザー または ID",
+    "ban": "BAN"
+  },
+  "overlay2": {
+    "giftsTitle": "ギフトアラート",
+    "giftsSubtitle": "誰かがギフトを送るとOBSに数秒間表示されます",
+    "alertDuration": "アラート表示時間（ms）",
+    "socialTitle": "フォロー / シェアアラート",
+    "socialSubtitle": "誰かがフォローまたはシェアするとOBSに数秒間表示されます",
+    "followImg": "フォロー用画像",
+    "shareImg": "シェア用画像",
+    "creditosTitle": "ストリームクレジット",
+    "creditosSubtitle": "サポーター・フォロワー・シェアの自動スクロール",
+    "scrollSpeed": "スクロール速度",
+    "socialListTitle": "フォロワー & シェアリスト",
+    "socialListSubtitle": "ストリーム中OBSに表示される累積パネル",
+    "cols": "2列",
+    "rows": "縦積み"
+  },
+  "clips2": {
+    "streamTimer": "ストリームタイマー",
+    "obsOptional": "OBS WebSocket接続（オプション）",
+    "deleteMarker": "マーカーを削除",
+    "deleteDay": "この日を削除",
+    "confirmClearAll": "全てのクリップマーカーを削除しますか？この操作は元に戻せません。",
+    "confirmClearDay": "この日の全マーカーを削除しますか？",
+    "noMarkers": "マーカーはまだありません。ストリームを開始してCtrl+Shift+Mで記録してください。"
+  },
+  "conn": {
+    "connecting": "接続中...",
+    "shortcutRegistered": "グローバルショートカット登録済み: {shortcut}",
+    "shortcutUnavailable": "ショートカット使用不可",
+    "shortcutActive": "有効なショートカット: {shortcut}",
+    "shortcutCapturing": "ここをクリックしてキーを押してください...",
+    "noSavedChannels": "保存されたチャンネルがありません。TikTok/Twitch/YouTubeを追加して全て接続を使ってください。",
+    "connectAllMsg": "全て接続: {parts}"
+  },
+  "mobile2": {
+    "loading": "読み込み中...",
+    "qrError": "QRコードの生成エラー"
+  },
+  "adv": {
+    "subtitle": "サーバー設定",
+    "navBack": "← ライブチャット",
+    "navSettings": "設定",
+    "h2": "サーバー設定",
+    "desc": "レート制限、メッセージフィルター、システム状態をリアルタイムで管理します。変更は即時バックエンドに適用されます。",
+    "rlTitle": "TTS レート制限",
+    "rlDesc": "サーバー速度制御",
+    "rlHowTitle": "仕組み",
+    "rlHowP1": "ライブ配信中は<strong>毎秒数十のメッセージ</strong>が届くことがあります。制限がないとTTSキューが無制限に増大します。",
+    "rlHowP2": "レート制限は<strong>サーバー側フィルター</strong>として機能し、一定時間内に許可するTTSリクエスト数を決定します。",
+    "rlHowP3": "デフォルトは無効です。Botが飽和する場合のみ有効にしてください。",
+    "rlHowP4": "例：10リクエスト / 5秒の設定で、5秒間に20メッセージが来た場合、最初の10件のみ読み上げられます。",
+    "rlToggleName": "サーバーレート制限を有効化",
+    "rlToggleHint": "デフォルト無効。スパムが多い場合のみ有効にしてください。",
+    "rlMax": "最大リクエスト数",
+    "rlWindow": "時間ウィンドウ",
+    "rlWindowUnit": "秒",
+    "rlQueue": "キュー最大メッセージ数",
+    "save": "変更を保存",
+    "saved": "保存済み！",
+    "generalTitle": "一般設定",
+    "generalDesc": "その他のTTSサーバーパラメーター",
+    "maxChars": "TTS最大文字数",
+    "debounce": "いいねデバウンス",
+    "debounceUnit": "ms",
+    "filtersTitle": "メッセージフィルター",
+    "filtersDesc": "サーバー上の禁止ワード",
+    "filtersExplainerTitle": "サーバー自動ルール",
+    "filtersExplainerP1": "サーバーは自動でフィルタリング済み：<strong>繰り返しメッセージ</strong>、<strong>URL</strong>、<strong>メンション</strong>、<strong>絵文字</strong>、<strong>300文字超のメッセージ</strong>。",
+    "filtersExplainerP2": "ここで<strong>追加ワード</strong>を設定して該当メッセージをブロックできます。",
+    "blockedLabel": "ブロックワード",
+    "blockedDesc": "これらのワードを含むメッセージはTTSで完全に無視されます。大文字小文字を区別しません。",
+    "blockedPlaceholder": "ワードを入力して追加を押してください...",
+    "blockedAdd": "+ 追加",
+    "blockedEmpty": "ブロックワードなし",
+    "blockedSync": "サーバーと同期",
+    "mdLabel": "リスト全体を編集",
+    "mdDesc": "blocked-words.mdファイルをここで直接編集するか、新しいものをアップロードできます。形式: - で始まる1行1ワード。",
+    "mdReload": "ファイルから再読み込み",
+    "mdDownload": ".mdをダウンロード",
+    "mdSave": "ファイルに変更を保存",
+    "mdUploadLabel": ".mdファイルをアップロード",
+    "mdUploadBtn": "アップロードして置き換え",
+    "statusTitle": "サーバー状態",
+    "statusDesc": "リアルタイム監視",
+    "statusRefresh": "↻ 更新",
+    "statUptime": "稼働時間",
+    "statClients": "WSクライアント",
+    "statMem": "メモリ MB",
+    "statRateMax": "レート最大",
+    "statRateLimit": "レート制限",
+    "cfgCurrent": "現在の設定",
+    "cfgRateActive": "レート制限有効",
+    "cfgMaxReq": "最大リクエスト",
+    "cfgWindow": "時間ウィンドウ",
+    "cfgMaxChars": "TTS最大文字数",
+    "cfgDebounce": "いいねデバウンス",
+    "logsTitle": "ログ",
+    "logsDesc": "イベントとエラーの履歴",
+    "logsRefresh": "↻ 更新",
+    "logsSearch": "ログを検索...",
+    "logsAllLevels": "全レベル",
+    "logsAllSources": "全ソース",
+    "logsSourceServer": "サーバー",
+    "logsSourceClient": "クライアント",
+    "logsSourceNetwork": "ネットワーク",
+    "logsEmpty": "まだログがありません",
+    "logsNone": "表示するログがありません",
+    "logsExportPrompt": "エクスポート形式（json/csv）？",
+    "logsClearConfirm": "全てのログをクリアしますか？元に戻せません。",
+    "statConnected": "接続済み",
+    "statOff": "オフ",
+    "statusYes": "はい",
+    "statusNo": "いいえ",
+    "errorLoadConfig": "設定の読み込みエラー",
+    "errorLoadBlocked": "ブロックワードの読み込みエラー",
+    "errorLoadMd": ".mdファイルの読み込みエラー",
+    "errorSaveMd": ".mdファイルの保存エラー",
+    "errorImportMd": ".mdファイルのインポートエラー",
+    "errorExportLogs": "ログのエクスポートエラー",
+    "errorServerUnavailable": "サーバー利用不可",
+    "errorSelectMd": ".mdファイルを選択してください",
+    "savedRateLimit": "レート制限が更新されました",
+    "savedGeneral": "一般設定が更新されました",
+    "savedWords": "ワードがサーバーと同期されました",
+    "savedMd": ".mdファイルが保存されワードが更新されました",
+    "importedMd": ".mdファイルが正常にインポートされました",
+    "logsExported": "ログがエクスポートされました",
+    "logsCleared": "ローカルログが削除されました",
+    "invalidValue": "{field}の値が無効です",
+    "configRejected": "設定が拒否されました"
+  }
+}

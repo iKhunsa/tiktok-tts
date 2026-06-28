@@ -4,6 +4,32 @@ const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const http = require('http');
 
+// ── Telemetry (fire-and-forget, anónimo) ──────────────────────────────────
+const _crypto = require('crypto');
+const _os = require('os');
+const TELEMETRY_URL = 'https://TU_SERVIDOR_AQUI/api/ping'; // ← cambia esto
+const _telSession = _crypto.randomUUID();
+const _telStart   = Date.now();
+const _machineId  = _crypto.createHash('sha256')
+  .update(_os.userInfo().username + _os.hostname()).digest('hex');
+
+function _telPing(event, extra = {}) {
+  fetch(TELEMETRY_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      machine_id:      _machineId,
+      session_id:      _telSession,
+      app_version:     app.getVersion(),
+      os_version:      _os.release(),
+      event,
+      ...extra
+    }),
+    signal: AbortSignal.timeout(4000)
+  }).catch(() => {});
+}
+// ─────────────────────────────────────────────────────────────────────────
+
 // ── Low-level keyboard hook (works in exclusive-fullscreen / games) ────────────
 // uiohook-napi uses SetWindowsHookEx(WH_KEYBOARD_LL) instead of RegisterHotKey,
 // so it fires even when a DirectX exclusive-fullscreen game has focus.
@@ -343,6 +369,9 @@ app.whenReady().then(() => {
     createWindow();
     createTray();
     if (app.isPackaged) setupAutoUpdater();
+    _telPing('startup');
+    const _telTimer = setInterval(() => _telPing('heartbeat'), 5 * 60 * 1000);
+    app.once('before-quit', () => clearInterval(_telTimer));
 
     startUiohook();
 
@@ -371,6 +400,9 @@ app.on('will-quit', () => {
   globalShortcut.unregisterAll();
   soundpadShortcuts.clear();
   stopUiohook();
+  _telPing('shutdown', {
+    session_duration_minutes: Math.round((Date.now() - _telStart) / 60000)
+  });
 });
 
 function sendUpdate(data) {

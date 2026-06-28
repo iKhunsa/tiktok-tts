@@ -586,7 +586,7 @@ function loadConfig() {
 loadConfig();
 
 // ── FEATURE FLAGS — set to true to re-enable ─────────────────────────────────
-const FEATURES = { musicBot: false };
+const FEATURES = { musicBot: true };
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ── MUSIC BOT STATE ──────────────────────────────────────────────────────────

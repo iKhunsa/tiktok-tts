@@ -731,51 +731,51 @@
       <img class="logo-icon" src="logo.png" alt="TikLive TTS">
       <div>
         <h1>TikLive <span>TTS</span></h1>
-        <div class="subtitle">Configuración del Servidor</div>
+        <div class="subtitle" data-i18n="adv.subtitle">Configuración del Servidor</div>
       </div>
     </a>
     <nav class="nav">
-      <a href="/" class="nav-link">← Chat Live</a>
-      <a href="/advanced.html" class="nav-link active"><img class="icon-inline" src="icons/settings.svg" alt=""> Configuración</a>
+      <a href="/" class="nav-link" data-i18n="adv.navBack">← Chat Live</a>
+      <a href="/advanced.html" class="nav-link active"><img class="icon-inline" src="icons/settings.svg" alt=""> <span data-i18n="adv.navSettings">Configuración</span></a>
     </nav>
   </header>
 
   <!-- PAGE TITLE -->
   <div class="page-title">
-    <h2>Ajustes del Servidor</h2>
-    <p>Controla el rate limiting, filtros de mensajes y monitorea el estado del sistema en tiempo real. Estos cambios aplican inmediatamente al backend.</p>
+    <h2 data-i18n="adv.h2">Ajustes del Servidor</h2>
+    <p data-i18n="adv.desc">Controla el rate limiting, filtros de mensajes y monitorea el estado del sistema en tiempo real. Estos cambios aplican inmediatamente al backend.</p>
   </div>
 
   <!-- ═══ PANEL 1: RATE LIMITING ═══ -->
   <div class="panel panel-rate">
-    <div class="panel-title"><img class="icon-inline" src="icons/flash_on.svg" alt=""> Rate Limiting de TTS</div>
-    <div class="panel-desc">Control de velocidad del servidor<span class="badge badge-off" id="rlBadge">OFF</span></div>
+    <div class="panel-title"><img class="icon-inline" src="icons/flash_on.svg" alt=""> <span data-i18n="adv.rlTitle">Rate Limiting de TTS</span></div>
+    <div class="panel-desc"><span data-i18n="adv.rlDesc">Control de velocidad del servidor</span><span class="badge badge-off" id="rlBadge">OFF</span></div>
 
     <div class="explainer">
-      <div class="explainer-title">¿Cómo funciona?</div>
-      <p>
+      <div class="explainer-title" data-i18n="adv.rlHowTitle">¿Cómo funciona?</div>
+      <p data-i18n-html="adv.rlHowP1">
         Durante un live activo pueden llegar <strong>decenas de mensajes por segundo</strong>. Sin límites,
         la cola TTS crecería sin control y el bot acumularía minutos de retraso.
       </p>
-      <p>
+      <p data-i18n-html="adv.rlHowP2">
         El rate limiting actúa como un <strong>filtro en el servidor</strong>: decide cuántas peticiones TTS
         se permiten en una ventana de tiempo. Si se supera el límite, las peticiones adicionales se rechazan
         con error 429 y el mensaje no entra a la cola de voz.
       </p>
-      <p>
-        <span class="highlight">Por defecto está DESACTIVADO</span>. Actívalo solo si ves que el bot se satura
+      <p data-i18n="adv.rlHowP3">
+        Por defecto está DESACTIVADO. Actívalo solo si ves que el bot se satura
         o si Google TTS empieza a dar errores por demasiadas peticiones.
       </p>
-      <p>
-        Ejemplo práctico: con <span class="code">10 peticiones / 5 segundos</span>, si llegan 20 mensajes en 5 segundos,
+      <p data-i18n="adv.rlHowP4">
+        Ejemplo práctico: con 10 peticiones / 5 segundos, si llegan 20 mensajes en 5 segundos,
         solo los primeros 10 se leerán. El resto se descartan silenciosamente.
       </p>
     </div>
 
     <div class="toggle-row" style="border-bottom:1px solid var(--border); margin-bottom:20px;">
       <div class="toggle-info">
-        <div class="toggle-name">Activar rate limit en el servidor</div>
-        <div class="toggle-hint">Desactivado por defecto. Solo actívalo si el live tiene mucho spam o el TTS se satura.</div>
+        <div class="toggle-name" data-i18n="adv.rlToggleName">Activar rate limit en el servidor</div>
+        <div class="toggle-hint" data-i18n="adv.rlToggleHint">Desactivado por defecto. Solo actívalo si el live tiene mucho spam o el TTS se satura.</div>
       </div>
       <label class="switch">
         <input type="checkbox" id="rlEnabled" onchange="toggleRateLimit()" />
@@ -785,21 +785,21 @@
 
     <div class="grid-2">
       <div class="control-group">
-        <label>Máximo de peticiones — <span class="val-display" id="rlMaxVal">10</span></label>
+        <label><span data-i18n="adv.rlMax">Máximo de peticiones</span> — <span class="val-display" id="rlMaxVal">10</span></label>
         <input type="range" id="rlMax" min="1" max="30" step="1" value="10"
           oninput="document.getElementById('rlMaxVal').textContent = this.value" />
         <div class="range-labels"><span>1</span><span>30</span></div>
       </div>
 
       <div class="control-group">
-        <label>Ventana de tiempo — <span class="val-display" id="rlWindowVal">5</span> seg</label>
+        <label><span data-i18n="adv.rlWindow">Ventana de tiempo</span> — <span class="val-display" id="rlWindowVal">5</span> <span data-i18n="adv.rlWindowUnit">seg</span></label>
         <input type="range" id="rlWindow" min="1" max="60" step="1" value="5"
           oninput="document.getElementById('rlWindowVal').textContent = this.value" />
         <div class="range-labels"><span>1s</span><span>60s</span></div>
       </div>
 
       <div class="control-group" style="grid-column: 1 / -1;">
-        <label>Máx. mensajes en cola — <span class="val-display" id="rlQueueVal">15</span></label>
+        <label><span data-i18n="adv.rlQueue">Máx. mensajes en cola</span> — <span class="val-display" id="rlQueueVal">15</span></label>
         <input type="range" id="rlQueue" min="5" max="50" step="1" value="15"
           oninput="document.getElementById('rlQueueVal').textContent = this.value" />
         <div class="range-labels"><span>5 msgs</span><span>50 msgs</span></div>
@@ -807,25 +807,25 @@
     </div>
 
     <div class="save-row">
-      <button class="btn-save" id="btnSaveRL" onclick="saveRateLimit()">Guardar cambios</button>
+      <button class="btn-save" id="btnSaveRL" onclick="saveRateLimit()" data-i18n="adv.save">Guardar cambios</button>
     </div>
   </div>
 
   <!-- ═══ PANEL 2: CONFIGURACIÓN GENERAL ═══ -->
   <div class="panel panel-rate">
-    <div class="panel-title"><img class="icon-inline" src="icons/settings_applications.svg" alt=""> Configuración General</div>
-    <div class="panel-desc">Otros parámetros del servidor TTS</div>
+    <div class="panel-title"><img class="icon-inline" src="icons/settings_applications.svg" alt=""> <span data-i18n="adv.generalTitle">Configuración General</span></div>
+    <div class="panel-desc" data-i18n="adv.generalDesc">Otros parámetros del servidor TTS</div>
 
     <div class="grid-2">
       <div class="control-group">
-        <label>Máx. caracteres TTS — <span class="val-display" id="cfgCharsVal">500</span></label>
+        <label><span data-i18n="adv.maxChars">Máx. caracteres TTS</span> — <span class="val-display" id="cfgCharsVal">500</span></label>
         <input type="range" id="cfgChars" min="20" max="1000" step="10" value="500"
           oninput="document.getElementById('cfgCharsVal').textContent = this.value" />
         <div class="range-labels"><span>20</span><span>1000</span></div>
       </div>
 
       <div class="control-group">
-        <label>Debounce de likes — <span class="val-display" id="cfgDebounceVal">1500</span> ms</label>
+        <label><span data-i18n="adv.debounce">Debounce de likes</span> — <span class="val-display" id="cfgDebounceVal">1500</span> <span data-i18n="adv.debounceUnit">ms</span></label>
         <input type="range" id="cfgDebounce" min="250" max="5000" step="100" value="1500"
           oninput="document.getElementById('cfgDebounceVal').textContent = this.value" />
         <div class="range-labels"><span>250ms</span><span>5s</span></div>
@@ -833,42 +833,42 @@
     </div>
 
     <div class="save-row">
-      <button class="btn-save" id="btnSaveGeneral" onclick="saveGeneral()">Guardar cambios</button>
+      <button class="btn-save" id="btnSaveGeneral" onclick="saveGeneral()" data-i18n="adv.save">Guardar cambios</button>
     </div>
   </div>
 
   <!-- ═══ PANEL 3: FILTROS DE MENSAJES ═══ -->
   <div class="panel panel-filter">
-    <div class="panel-title"><img class="icon-inline" src="icons/search.svg" alt=""> Filtros de Mensajes</div>
-    <div class="panel-desc">Palabras prohibidas en el servidor</div>
+    <div class="panel-title"><img class="icon-inline" src="icons/search.svg" alt=""> <span data-i18n="adv.filtersTitle">Filtros de Mensajes</span></div>
+    <div class="panel-desc" data-i18n="adv.filtersDesc">Palabras prohibidas en el servidor</div>
 
     <div class="explainer">
-      <div class="explainer-title">Reglas automáticas del servidor</div>
-      <p>El servidor ya filtra automáticamente: <strong>mensajes repetitivos</strong> (aaaaaa), <strong>URLs</strong> (se reemplazan por "link"), <strong>menciones</strong> (@usuario se eliminan), <strong>emojis</strong> (se convierten a espacio) y <strong>mensajes mayores a 300 caracteres</strong>.</p>
-      <p>Aquí puedes añadir <strong>palabras adicionales</strong> para bloquear mensajes que las contengan.</p>
+      <div class="explainer-title" data-i18n="adv.filtersExplainerTitle">Reglas automáticas del servidor</div>
+      <p data-i18n-html="adv.filtersExplainerP1">El servidor ya filtra automáticamente: <strong>mensajes repetitivos</strong> (aaaaaa), <strong>URLs</strong> (se reemplazan por "link"), <strong>menciones</strong> (@usuario se eliminan), <strong>emojis</strong> (se convierten a espacio) y <strong>mensajes mayores a 300 caracteres</strong>.</p>
+      <p data-i18n-html="adv.filtersExplainerP2">Aquí puedes añadir <strong>palabras adicionales</strong> para bloquear mensajes que las contengan.</p>
     </div>
 
-    <div class="section-label">Palabras bloqueadas</div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;">
+    <div class="section-label" data-i18n="adv.blockedLabel">Palabras bloqueadas</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;" data-i18n="adv.blockedDesc">
       Los mensajes que contengan estas palabras serán ignorados completamente por el TTS. El filtro no distingue mayúsculas/minúsculas.
     </p>
 
     <div class="tag-input-row">
-      <input type="text" id="blockedWordInput" placeholder="Escribe una palabra y presiona Agregar..."
+      <input type="text" id="blockedWordInput" data-i18n-placeholder="adv.blockedPlaceholder" placeholder="Escribe una palabra y presiona Agregar..."
         onkeydown="if(event.key==='Enter') addBlockedWord()" />
-      <button class="btn-add" onclick="addBlockedWord()">+ Agregar</button>
+      <button class="btn-add" onclick="addBlockedWord()" data-i18n="adv.blockedAdd">+ Agregar</button>
     </div>
 
     <div class="tags-container" id="blockedWordsTags">
-      <span class="tags-empty" id="blockedEmpty">Sin palabras bloqueadas</span>
+      <span class="tags-empty" id="blockedEmpty" data-i18n="adv.blockedEmpty">Sin palabras bloqueadas</span>
     </div>
 
     <div class="save-row" style="margin-top:10px;">
-      <button class="btn-save" id="btnSaveFilters" onclick="saveBlockedWords()">Sincronizar con servidor</button>
+      <button class="btn-save" id="btnSaveFilters" onclick="saveBlockedWords()" data-i18n="adv.blockedSync">Sincronizar con servidor</button>
     </div>
 
-    <div class="section-label">Editar lista completa</div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;">
+    <div class="section-label" data-i18n="adv.mdLabel">Editar lista completa</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;" data-i18n-html="adv.mdDesc">
       Puedes editar el archivo <code>blocked-words.md</code> directamente aquí o subir uno nuevo. El formato es una palabra por línea empezando con <code>- </code>.
     </p>
 
@@ -876,15 +876,15 @@
 - palabra2"></textarea>
 
     <div class="save-row" style="margin-top:12px;gap:10px;display:flex;justify-content:flex-end;flex-wrap:wrap;">
-      <button class="btn-refresh" onclick="loadMdContent()"><img class="icon-inline" src="icons/refresh.svg" alt=""> Recargar desde archivo</button>
-      <button class="btn-add" onclick="downloadMd()"><img class="icon-inline" src="icons/download.svg" alt=""> Descargar .md</button>
-      <button class="btn-save" onclick="saveMdContent()"><img class="icon-inline" src="icons/save.svg" alt=""> Guardar cambios al archivo</button>
+      <button class="btn-refresh" onclick="loadMdContent()"><img class="icon-inline" src="icons/refresh.svg" alt=""> <span data-i18n="adv.mdReload">Recargar desde archivo</span></button>
+      <button class="btn-add" onclick="downloadMd()"><img class="icon-inline" src="icons/download.svg" alt=""> <span data-i18n="adv.mdDownload">Descargar .md</span></button>
+      <button class="btn-save" onclick="saveMdContent()"><img class="icon-inline" src="icons/save.svg" alt=""> <span data-i18n="adv.mdSave">Guardar cambios al archivo</span></button>
     </div>
 
-    <div class="section-label">Subir archivo .md</div>
+    <div class="section-label" data-i18n="adv.mdUploadLabel">Subir archivo .md</div>
     <div class="tag-input-row">
       <input type="file" id="mdFileInput" accept=".md" style="flex:1;cursor:pointer;" />
-      <button class="btn-add" onclick="uploadMdFile()"><img class="icon-inline" src="icons/upload.svg" alt=""> Subir y reemplazar</button>
+      <button class="btn-add" onclick="uploadMdFile()"><img class="icon-inline" src="icons/upload.svg" alt=""> <span data-i18n="adv.mdUploadBtn">Subir y reemplazar</span></button>
     </div>
   </div>
 
@@ -892,20 +892,20 @@
   <div class="panel panel-status">
     <div class="status-header">
       <div>
-        <div class="panel-title"><img class="icon-inline" src="icons/assessment.svg" alt=""> Estado del Servidor</div>
-        <div class="panel-desc">Monitoreo en tiempo real</div>
+        <div class="panel-title"><img class="icon-inline" src="icons/assessment.svg" alt=""> <span data-i18n="adv.statusTitle">Estado del Servidor</span></div>
+        <div class="panel-desc" data-i18n="adv.statusDesc">Monitoreo en tiempo real</div>
       </div>
-      <button class="btn-refresh" onclick="refreshStatus()">↻ Actualizar</button>
+      <button class="btn-refresh" onclick="refreshStatus()" data-i18n="adv.statusRefresh">↻ Actualizar</button>
     </div>
 
     <div class="status-grid">
       <div class="stat-card">
         <div class="stat-value" id="statUptime">0m</div>
-        <div class="stat-label">Tiempo activo</div>
+        <div class="stat-label" data-i18n="adv.statUptime">Tiempo activo</div>
       </div>
       <div class="stat-card">
         <div class="stat-value" id="statClients">0</div>
-        <div class="stat-label">Clientes WS</div>
+        <div class="stat-label" data-i18n="adv.statClients">Clientes WS</div>
       </div>
       <div class="stat-card">
         <div class="stat-value" id="statConn">—</div>
@@ -913,38 +913,38 @@
       </div>
       <div class="stat-card">
         <div class="stat-value" id="statMem">0</div>
-        <div class="stat-label">Memoria MB</div>
+        <div class="stat-label" data-i18n="adv.statMem">Memoria MB</div>
       </div>
       <div class="stat-card">
         <div class="stat-value" id="statRateMax">10</div>
-        <div class="stat-label">Rate max</div>
+        <div class="stat-label" data-i18n="adv.statRateMax">Rate max</div>
       </div>
       <div class="stat-card">
         <div class="stat-value" id="statRateEnabled">OFF</div>
-        <div class="stat-label">Rate limit</div>
+        <div class="stat-label" data-i18n="adv.statRateLimit">Rate limit</div>
       </div>
     </div>
 
-    <div class="section-label">Configuración actual</div>
+    <div class="section-label" data-i18n="adv.cfgCurrent">Configuración actual</div>
     <div class="conn-info">
       <div class="conn-row">
-        <span class="conn-key">Rate limit activo</span>
+        <span class="conn-key" data-i18n="adv.cfgRateActive">Rate limit activo</span>
         <span class="conn-val" id="statusRateEnabled" style="color:var(--muted)">—</span>
       </div>
       <div class="conn-row">
-        <span class="conn-key">Máximo peticiones</span>
+        <span class="conn-key" data-i18n="adv.cfgMaxReq">Máximo peticiones</span>
         <span class="conn-val" id="statusRateMax">—</span>
       </div>
       <div class="conn-row">
-        <span class="conn-key">Ventana de tiempo</span>
+        <span class="conn-key" data-i18n="adv.cfgWindow">Ventana de tiempo</span>
         <span class="conn-val" id="statusRateWindow">—</span>
       </div>
       <div class="conn-row">
-        <span class="conn-key">Máx. caracteres TTS</span>
+        <span class="conn-key" data-i18n="adv.cfgMaxChars">Máx. caracteres TTS</span>
         <span class="conn-val" id="statusMaxChars">—</span>
       </div>
       <div class="conn-row">
-        <span class="conn-key">Debounce likes</span>
+        <span class="conn-key" data-i18n="adv.cfgDebounce">Debounce likes</span>
         <span class="conn-val" id="statusDebounce">—</span>
       </div>
     </div>
@@ -955,36 +955,36 @@
   <div class="panel panel-status">
     <div class="status-header">
       <div>
-        <div class="panel-title"><img class="icon-inline" src="icons/description.svg" alt=""> Logs</div>
-        <div class="panel-desc">Historial de eventos y errores</div>
+        <div class="panel-title"><img class="icon-inline" src="icons/description.svg" alt=""> <span data-i18n="adv.logsTitle">Logs</span></div>
+        <div class="panel-desc" data-i18n="adv.logsDesc">Historial de eventos y errores</div>
       </div>
-      <button class="btn-refresh" onclick="refreshLogs()">↻ Actualizar</button>
+      <button class="btn-refresh" onclick="refreshLogs()" data-i18n="adv.logsRefresh">↻ Actualizar</button>
     </div>
 
     <div style="margin-bottom: 20px;">
       <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; margin-bottom: 12px;">
-        <input type="text" id="logSearch" placeholder="Buscar logs..." style="outline:none;" />
+        <input type="text" id="logSearch" data-i18n-placeholder="adv.logsSearch" placeholder="Buscar logs..." style="outline:none;" />
         <select id="logLevelFilter" style="cursor:pointer;">
-          <option value="">Todos los niveles</option>
+          <option value="" data-i18n="adv.logsAllLevels">Todos los niveles</option>
           <option value="error">Error</option>
           <option value="warn">Warn</option>
           <option value="info">Info</option>
         </select>
         <select id="logSourceFilter" style="cursor:pointer;">
-          <option value="">Todas las fuentes</option>
-          <option value="server">Servidor</option>
-          <option value="client">Cliente</option>
-          <option value="network">Red</option>
+          <option value="" data-i18n="adv.logsAllSources">Todas las fuentes</option>
+          <option value="server" data-i18n="adv.logsSourceServer">Servidor</option>
+          <option value="client" data-i18n="adv.logsSourceClient">Cliente</option>
+          <option value="network" data-i18n="adv.logsSourceNetwork">Red</option>
         </select>
         <div style="display: flex; gap: 5px;">
-          <button class="btn-add" onclick="exportLogs()" title="Exportar logs"><img class="icon-inline" src="icons/download.svg" alt=""></button>
+          <button class="btn-add" onclick="exportLogs()" data-i18n-title="adv.logsRefresh" title="Exportar logs"><img class="icon-inline" src="icons/download.svg" alt=""></button>
           <button class="btn-refresh" onclick="clearLogs()" title="Limpiar logs"><img class="icon-inline" src="icons/delete.svg" alt=""></button>
         </div>
       </div>
     </div>
 
     <div id="logsContainer" style="max-height:350px;overflow-y:auto;">
-      <div style="color: var(--muted); text-align: center; padding: 20px;">Sin logs aún</div>
+      <div style="color: var(--muted); text-align: center; padding: 20px;" data-i18n="adv.logsEmpty">Sin logs aún</div>
     </div>
   </div>
 </div>
@@ -993,6 +993,34 @@
 <div class="toast" id="toast"></div>
 
 <script>
+  // ─── i18n ───────────────────────────────────────────────────────────
+  let _locale = {};
+  async function loadLocale() {
+    const lang = localStorage.getItem('tikliveTTS_lang') || 'es';
+    try {
+      const res = await fetch(`/locales/${lang}.json`);
+      _locale = await res.json();
+    } catch(_) {
+      try { _locale = await (await fetch('/locales/es.json')).json(); } catch(__) {}
+    }
+    applyI18n();
+  }
+  function t(key, vars) {
+    const parts = key.split('.');
+    let val = _locale;
+    for (const p of parts) { val = val?.[p]; if (val === undefined) break; }
+    if (typeof val !== 'string') return key;
+    if (vars) Object.keys(vars).forEach(k => { val = val.replace(new RegExp(`\\{${k}\\}`, 'g'), vars[k]); });
+    return val;
+  }
+  function applyI18n() {
+    document.querySelectorAll('[data-i18n]').forEach(el => { const v = t(el.dataset.i18n); if (v !== el.dataset.i18n) el.textContent = v; });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => { const v = t(el.dataset.i18nHtml); if (v !== el.dataset.i18nHtml) el.innerHTML = v; });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { const v = t(el.dataset.i18nPlaceholder); if (v !== el.dataset.i18nPlaceholder) el.placeholder = v; });
+    document.querySelectorAll('[data-i18n-title]').forEach(el => { const v = t(el.dataset.i18nTitle); if (v !== el.dataset.i18nTitle) el.title = v; });
+  }
+  loadLocale();
+
   // ─── Load config from server ────────────────────────────────────────
   async function loadConfig() {
     try {
@@ -1014,7 +1042,7 @@
 
       updateRlBadge(cfg.rateLimitEnabled);
     } catch (e) {
-      showToast('Error cargando configuración');
+      showToast(t('adv.errorLoadConfig'));
     }
   }
 
@@ -1026,7 +1054,7 @@
       blockedWords = data.words || [];
       renderTags();
     } catch (e) {
-      showToast('Error cargando palabras bloqueadas');
+      showToast(t('adv.errorLoadBlocked'));
     }
   }
 
@@ -1055,7 +1083,7 @@
     if (!Number.isInteger(value)) {
       el.style.borderColor = '#e74c3c';
       el.focus();
-      showToast(`Valor inválido en ${label}`);
+      showToast(t('adv.invalidValue', { field: label }));
       return null;
     }
     el.style.borderColor = '';
@@ -1083,12 +1111,12 @@
         body: JSON.stringify(payload)
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || 'Config rechazada');
+      if (!res.ok) throw new Error(data.error || t('adv.configRejected'));
       flashSave('btnSaveRL');
-      showToast('Rate limit actualizado');
+      showToast(t('adv.savedRateLimit'));
       refreshStatus();
     } catch (e) {
-      showToast(e.message || 'Error guardando rate limit');
+      showToast(e.message || t('adv.errorLoadConfig'));
     }
   }
 
@@ -1110,12 +1138,12 @@
         body: JSON.stringify(payload)
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || 'Config rechazada');
+      if (!res.ok) throw new Error(data.error || t('adv.configRejected'));
       flashSave('btnSaveGeneral');
-      showToast('Configuración general actualizada');
+      showToast(t('adv.savedGeneral'));
       refreshStatus();
     } catch (e) {
-      showToast(e.message || 'Error guardando configuración');
+      showToast(e.message || t('adv.errorLoadConfig'));
     }
   }
 
@@ -1144,7 +1172,7 @@
       const empty = document.createElement('span');
       empty.className = 'tags-empty';
       empty.id = 'blockedEmpty';
-      empty.textContent = 'Sin palabras bloqueadas';
+      empty.textContent = t('adv.blockedEmpty');
       container.appendChild(empty);
       return;
     }
@@ -1173,15 +1201,15 @@
         body: JSON.stringify({ content })
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || 'Error del servidor');
+      if (!res.ok) throw new Error(data.error || t('adv.errorServerUnavailable'));
 
       blockedWords = data.words || [];
       renderTags();
       flashSave('btnSaveFilters');
-      showToast('Palabras sincronizadas con el servidor');
+      showToast(t('adv.savedWords'));
       loadMdContent();
     } catch (e) {
-      showToast(e.message || 'Error sincronizando palabras');
+      showToast(e.message || t('adv.errorLoadBlocked'));
     }
   }
 
@@ -1192,7 +1220,7 @@
       const text = await res.text();
       document.getElementById('mdEditor').value = text;
     } catch (e) {
-      showToast('Error cargando archivo .md');
+      showToast(t('adv.errorLoadMd'));
     }
   }
 
@@ -1207,16 +1235,16 @@
       const data = await res.json();
       blockedWords = data.words || [];
       renderTags();
-      showToast('Archivo .md guardado y palabras actualizadas');
+      showToast(t('adv.savedMd'));
     } catch (e) {
-      showToast('Error guardando archivo .md');
+      showToast(t('adv.errorSaveMd'));
     }
   }
 
   function uploadMdFile() {
     const input = document.getElementById('mdFileInput');
     const file = input.files[0];
-    if (!file) { showToast('Selecciona un archivo .md'); return; }
+    if (!file) { showToast(t('adv.errorSelectMd')); return; }
     const reader = new FileReader();
     reader.onload = async (e) => {
       try {
@@ -1230,9 +1258,9 @@
         renderTags();
         document.getElementById('mdEditor').value = e.target.result;
         input.value = '';
-        showToast('Archivo .md importado correctamente');
+        showToast(t('adv.importedMd'));
       } catch (err) {
-        showToast('Error importando archivo .md');
+        showToast(t('adv.errorImportMd'));
       }
     };
     reader.readAsText(file);
@@ -1344,7 +1372,7 @@
 
       const container = document.getElementById('logsContainer');
       if (logs.length === 0) {
-        container.innerHTML = '<div style="color: var(--muted); text-align: center; padding: 20px;">Sin logs para mostrar</div>';
+        container.innerHTML = `<div style="color: var(--muted); text-align: center; padding: 20px;">${t('adv.logsNone')}</div>`;
         return;
       }
 
@@ -1366,7 +1394,7 @@
 
   async function exportLogs() {
     try {
-      const format = prompt('¿Exportar como (json/csv)?', 'json');
+      const format = prompt(t('adv.logsExportPrompt'), 'json');
       if (!format || !['json', 'csv'].includes(format)) return;
 
       const logs = await getCombinedLogs();
@@ -1382,17 +1410,17 @@
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      showToast('Logs exportados');
+      showToast(t('adv.logsExported'));
     } catch (e) {
-      showToast('Error exportando logs');
+      showToast(t('adv.errorExportLogs'));
     }
   }
 
   function clearLogs() {
-    if (confirm('¿Limpiar todos los logs? No se puede deshacer.')) {
+    if (confirm(t('adv.logsClearConfirm'))) {
       logStorage.clearLogs();
       refreshLogs();
-      showToast('Logs locales eliminados');
+      showToast(t('adv.logsCleared'));
     }
   }
 
@@ -1417,21 +1445,21 @@
       const hrs = Math.floor(mins / 60);
       document.getElementById('statUptime').textContent = hrs > 0 ? `${hrs}h ${mins % 60}m` : `${mins}m`;
       document.getElementById('statClients').textContent = data.wsClients;
-      document.getElementById('statConn').textContent = data.connected ? 'Conectado' : 'Off';
+      document.getElementById('statConn').textContent = data.connected ? t('adv.statConnected') : t('adv.statOff');
       document.getElementById('statConn').style.color = data.connected ? 'var(--green)' : 'var(--muted)';
       document.getElementById('statMem').textContent = data.memoryMB;
       document.getElementById('statRateMax').textContent = data.config.TTS_RATE_LIMIT_MAX;
       document.getElementById('statRateEnabled').textContent = data.config.rateLimitEnabled ? 'ON' : 'OFF';
       document.getElementById('statRateEnabled').style.color = data.config.rateLimitEnabled ? 'var(--green)' : 'var(--muted)';
 
-      document.getElementById('statusRateEnabled').textContent = data.config.rateLimitEnabled ? 'Sí' : 'No';
+      document.getElementById('statusRateEnabled').textContent = data.config.rateLimitEnabled ? t('adv.statusYes') : t('adv.statusNo');
       document.getElementById('statusRateEnabled').style.color = data.config.rateLimitEnabled ? 'var(--green)' : 'var(--muted)';
       document.getElementById('statusRateMax').textContent = data.config.TTS_RATE_LIMIT_MAX;
       document.getElementById('statusRateWindow').textContent = (data.config.TTS_RATE_WINDOW_MS / 1000) + 's';
       document.getElementById('statusMaxChars').textContent = data.config.TTS_MAX_CHARS;
       document.getElementById('statusDebounce').textContent = data.config.LIKE_DEBOUNCE_MS + 'ms';
     } catch (e) {
-      showToast('Servidor no disponible');
+      showToast(t('adv.errorServerUnavailable'));
     }
   }
 
@@ -1439,7 +1467,7 @@
   function flashSave(btnId) {
     const btn = document.getElementById(btnId);
     const original = btn.textContent;
-    btn.textContent = '¡Guardado!';
+    btn.textContent = t('adv.saved');
     btn.classList.add('saved');
     setTimeout(() => {
       btn.textContent = original;

@@ -1,0 +1,339 @@
+{
+  "nav": {
+    "chat": "Chat",
+    "overlays": "Overlays",
+    "clips": "Clips",
+    "mobile": "Mobile",
+    "settings": "Settings",
+    "soundpad": "Sounds",
+    "bot": "Bot"
+  },
+  "community": {
+    "label": "TikLiveTTS Community",
+    "desc": "Official Discord · feedback & questions welcome"
+  },
+  "footer": {
+    "donate": "Donate",
+    "channels": "Channels",
+    "advanced": "Advanced"
+  },
+  "toggle": {
+    "readChat": "Read comments",
+    "readGifts": "Announce gifts",
+    "readJoins": "Announce joins",
+    "readFollows": "Announce follows",
+    "readLikes": "Announce likes",
+    "readShares": "Announce shares",
+    "sayUsername": "Say username"
+  },
+  "tts": {
+    "on": "🔊 TTS On",
+    "off": "🔇 TTS Off",
+    "offHint": "Turning off TTS stops the voice and clears the queue."
+  },
+  "btn": {
+    "skipCurrent": "Skip current",
+    "clearQueue": "Clear queue",
+    "emergency": "Emergency mode",
+    "clearChat": "Clear",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "connectAll": "Connect all",
+    "addChannel": "＋ Add channel",
+    "cancel": "Cancel",
+    "testVoice": "▶ Test",
+    "copyLink": "Copy link",
+    "refreshQR": "Refresh QR",
+    "startStream": "Start stream",
+    "stopStream": "Stop",
+    "markClip": "Mark Clip",
+    "connectOBS": "Connect OBS",
+    "disconnectOBS": "Disconnect OBS",
+    "clearAll": "Clear all",
+    "openAdvanced": "Open advanced panel (filters, rate limit, logs) →",
+    "pauseTTS": "⏸ Pause TTS",
+    "resumeTTS": "▶ Resume TTS",
+    "copy": "Copy",
+    "open": "Open",
+    "uploadImage": "Upload image",
+    "remove": "Remove",
+    "useF8": "Use F8",
+    "usePlayPause": "Use Play/Pause key",
+    "clearShortcut": "✕ Clear"
+  },
+  "chat": {
+    "title": "Live chat",
+    "empty": "Connect your TikTok Live<br>to see the chat here",
+    "speaking": "Reading...",
+    "queue": "Queue: {n} messages"
+  },
+  "emergencyHint": "Emergency keeps gifts and follows active, silences chat/likes/joins/shares.",
+  "status": {
+    "waiting": "Waiting for connection...",
+    "connected": "Connected",
+    "disconnected": "Disconnected"
+  },
+  "view": {
+    "overlays": {
+      "title": "OBS Overlays",
+      "desc": "Customize each overlay and copy the URL → OBS → Add Source → Browser → Enable transparent background."
+    },
+    "settings": {
+      "title": "TTS Settings",
+      "desc": "Adjust voice, speed and behaviors. Everything saves automatically."
+    },
+    "clips": {
+      "title": "Clip Markers",
+      "desc": "Record stream moments. The global shortcut Ctrl+Shift+M works even when the app is minimized."
+    },
+    "mobile": {
+      "title": "📱 Mobile Control",
+      "desc": "Control TTS from your phone on the same WiFi network."
+    }
+  },
+  "settings": {
+    "voice": "Voice & audio",
+    "pause": "Pause TTS",
+    "connection": "Main connection",
+    "channels": "Additional channels",
+    "advanced": "Advanced settings",
+    "obs": "OBS WebSocket Connection",
+    "clipsHistory": "Clip history"
+  },
+  "label": {
+    "voice": "Voice",
+    "testVoice": "Test voice",
+    "speed": "Speed",
+    "volume": "Volume",
+    "slow": "Slow",
+    "fast": "Fast",
+    "mute": "Mute",
+    "max": "Max",
+    "playbackControl": "Playback control",
+    "globalShortcut": "Global keyboard shortcut",
+    "accentColor": "Accent color",
+    "bgOpacity": "Background opacity",
+    "visibleMsgs": "Visible messages",
+    "textSize": "Text size",
+    "showNames": "Show names",
+    "visiblePlatforms": "Visible platforms",
+    "customBg": "Custom background",
+    "followerGoal": "New follower goal",
+    "totalFollowers": "Current total followers",
+    "maxRows": "Max rows",
+    "obsPort": "OBS WS Port",
+    "obsPassword": "Password (if applicable)",
+    "accessUrl": "Access URL",
+    "activeShortcut": "Active shortcut",
+    "users": "Users",
+    "connectToGet": "Connect to get"
+  },
+  "overlay": {
+    "chat": {
+      "title": "Unified Chat",
+      "subtitle": "All TikTok, Twitch and YouTube messages in one overlay"
+    },
+    "followers": {
+      "title": "Follower Counter",
+      "subtitle": "New stream followers in real time"
+    },
+    "topLikers": {
+      "title": "Top Likers",
+      "subtitle": "Ranking of users with the most stream likes"
+    },
+    "gifts": {
+      "title": "Gift Alerts",
+      "subtitle": "Real-time gifts from TikTok Live"
+    },
+    "likes": {
+      "title": "Like Counter",
+      "subtitle": "Cumulative likes during the stream"
+    },
+    "giftsSocial": {
+      "title": "Social Alerts",
+      "subtitle": "New followers and shares from the stream"
+    }
+  },
+  "mobile": {
+    "panelTitle": "Phone access",
+    "hint": "Scan the QR code with your phone's camera. The phone must be on the same WiFi network as this PC.",
+    "appDesc": "The mobile app includes live chat, TTS controls (pause, skip, toggles) and clip markers."
+  },
+  "obs": {
+    "hint": "OBS > Tools > WebSocket Server → enable on port 4455.",
+    "disconnected": "Disconnected"
+  },
+  "clipHint": "The global shortcut works even when the app is minimized.",
+  "lang": {
+    "label": "Language"
+  },
+  "soundpad": {
+    "desc": "Upload sounds and play them with a click or keyboard shortcut (works in fullscreen).",
+    "upload": "Upload sound",
+    "empty": "Upload your first sound to get started",
+    "noShortcut": "No shortcut",
+    "pressKey": "Press a key…",
+    "clickToAssign": "Click to assign shortcut (Ctrl/Alt/Shift + key)"
+  },
+  "update": {
+    "checking": "Checking for updates...",
+    "installNow": "Install now",
+    "later": "Later",
+    "installing": "Installing..."
+  },
+  "bot": {
+    "title": "Music Bot",
+    "desc": "Chat can request songs with !p name or !p YouTube link. Your playlist plays in the background when there are no requests.",
+    "nowPlaying": "▶ Now Playing",
+    "enableCmd": "Enable !p",
+    "skipSong": "⏭ Skip",
+    "noMusic": "No music playing.",
+    "musicVol": "Music Vol.",
+    "requestQueue": "📋 Request queue",
+    "clearQueue": "🗑 Clear",
+    "queueEmpty": "Queue is empty.",
+    "myPlaylist": "🎵 My Playlist (background)",
+    "enable": "Enable",
+    "shuffle": "Shuffle",
+    "playlistHint": "One song per line: name or YouTube URL. Plays when chat has no requests.",
+    "playlistActive": "▶ Playing from playlist:",
+    "savePlaylist": "💾 Save playlist",
+    "botSettings": "⚙ Bot settings",
+    "cooldown": "Cooldown per user (sec)",
+    "maxQueue": "Max songs in queue",
+    "bannedUsers": "Banned from !p",
+    "banPlaceholder": "@user or ID",
+    "ban": "Ban"
+  },
+  "overlay2": {
+    "giftsTitle": "Gift Alert",
+    "giftsSubtitle": "Appears in OBS for a few seconds when someone sends a gift",
+    "alertDuration": "Duration per alert (ms)",
+    "socialTitle": "Follow / Share Alert",
+    "socialSubtitle": "Appears in OBS for a few seconds when someone follows or shares",
+    "followImg": "Image for Follow",
+    "shareImg": "Image for Share",
+    "creditosTitle": "Stream Credits",
+    "creditosSubtitle": "Auto-scroll with donors, followers and shares",
+    "scrollSpeed": "Scroll speed",
+    "socialListTitle": "Followers & Shares List",
+    "socialListSubtitle": "Cumulative panel visible throughout the stream in OBS",
+    "cols": "Two columns",
+    "rows": "Vertical stack"
+  },
+  "clips2": {
+    "streamTimer": "Stream Timer",
+    "obsOptional": "OBS WebSocket Connection (optional)",
+    "deleteMarker": "Delete marker",
+    "deleteDay": "Delete day",
+    "confirmClearAll": "Delete all clip markers? This action cannot be undone.",
+    "confirmClearDay": "Delete all markers for",
+    "noMarkers": "No markers yet. Start the stream and press Ctrl+Shift+M to mark."
+  },
+  "conn": {
+    "connecting": "Connecting...",
+    "shortcutRegistered": "Global shortcut registered: {shortcut}",
+    "shortcutUnavailable": "Shortcut unavailable",
+    "shortcutActive": "Active shortcut: {shortcut}",
+    "shortcutCapturing": "Click here and press keys...",
+    "noSavedChannels": "No saved channels. Add TikTok/Twitch/YouTube and use Connect all.",
+    "connectAllMsg": "Connect all: {parts}"
+  },
+  "mobile2": {
+    "loading": "Loading...",
+    "qrError": "Error generating QR"
+  },
+  "adv": {
+    "subtitle": "Server Settings",
+    "navBack": "← Live Chat",
+    "navSettings": "Settings",
+    "h2": "Server Settings",
+    "desc": "Control rate limiting, message filters and monitor system status in real time. Changes apply immediately to the backend.",
+    "rlTitle": "TTS Rate Limiting",
+    "rlDesc": "Server speed control",
+    "rlHowTitle": "How does it work?",
+    "rlHowP1": "During an active live, <strong>dozens of messages per second</strong> can arrive. Without limits, the TTS queue would grow uncontrollably and the bot would accumulate minutes of delay.",
+    "rlHowP2": "Rate limiting acts as a <strong>server-side filter</strong>: it decides how many TTS requests are allowed in a time window. If the limit is exceeded, additional requests are rejected with error 429 and the message does not enter the voice queue.",
+    "rlHowP3": "It is DISABLED by default. Enable it only if you see the bot saturating or if Google TTS starts giving errors due to too many requests.",
+    "rlHowP4": "Practical example: with 10 requests / 5 seconds, if 20 messages arrive in 5 seconds, only the first 10 will be read. The rest are silently discarded.",
+    "rlToggleName": "Enable server rate limit",
+    "rlToggleHint": "Disabled by default. Only enable it if the live has a lot of spam or TTS gets saturated.",
+    "rlMax": "Maximum requests",
+    "rlWindow": "Time window",
+    "rlWindowUnit": "sec",
+    "rlQueue": "Max. messages in queue",
+    "save": "Save changes",
+    "saved": "Saved!",
+    "generalTitle": "General Settings",
+    "generalDesc": "Other TTS server parameters",
+    "maxChars": "Max. TTS characters",
+    "debounce": "Like debounce",
+    "debounceUnit": "ms",
+    "filtersTitle": "Message Filters",
+    "filtersDesc": "Banned words on the server",
+    "filtersExplainerTitle": "Automatic server rules",
+    "filtersExplainerP1": "The server already filters automatically: <strong>repetitive messages</strong> (aaaaaa), <strong>URLs</strong> (replaced by \"link\"), <strong>mentions</strong> (@user removed), <strong>emojis</strong> (converted to space) and <strong>messages over 300 characters</strong>.",
+    "filtersExplainerP2": "Here you can add <strong>additional words</strong> to block messages containing them.",
+    "blockedLabel": "Blocked words",
+    "blockedDesc": "Messages containing these words will be completely ignored by TTS. The filter is case-insensitive.",
+    "blockedPlaceholder": "Type a word and press Add...",
+    "blockedAdd": "+ Add",
+    "blockedEmpty": "No blocked words",
+    "blockedSync": "Sync with server",
+    "mdLabel": "Edit full list",
+    "mdDesc": "You can edit the blocked-words.md file directly here or upload a new one. Format: one word per line starting with - .",
+    "mdReload": "Reload from file",
+    "mdDownload": "Download .md",
+    "mdSave": "Save changes to file",
+    "mdUploadLabel": "Upload .md file",
+    "mdUploadBtn": "Upload and replace",
+    "statusTitle": "Server Status",
+    "statusDesc": "Real-time monitoring",
+    "statusRefresh": "↻ Refresh",
+    "statUptime": "Uptime",
+    "statClients": "WS Clients",
+    "statMem": "Memory MB",
+    "statRateMax": "Rate max",
+    "statRateLimit": "Rate limit",
+    "cfgCurrent": "Current configuration",
+    "cfgRateActive": "Rate limit active",
+    "cfgMaxReq": "Max requests",
+    "cfgWindow": "Time window",
+    "cfgMaxChars": "Max. TTS characters",
+    "cfgDebounce": "Like debounce",
+    "logsTitle": "Logs",
+    "logsDesc": "Event and error history",
+    "logsRefresh": "↻ Refresh",
+    "logsSearch": "Search logs...",
+    "logsAllLevels": "All levels",
+    "logsAllSources": "All sources",
+    "logsSourceServer": "Server",
+    "logsSourceClient": "Client",
+    "logsSourceNetwork": "Network",
+    "logsEmpty": "No logs yet",
+    "logsNone": "No logs to show",
+    "logsExportPrompt": "Export as (json/csv)?",
+    "logsClearConfirm": "Clear all logs? This cannot be undone.",
+    "statConnected": "Connected",
+    "statOff": "Off",
+    "statusYes": "Yes",
+    "statusNo": "No",
+    "errorLoadConfig": "Error loading configuration",
+    "errorLoadBlocked": "Error loading blocked words",
+    "errorLoadMd": "Error loading .md file",
+    "errorSaveMd": "Error saving .md file",
+    "errorImportMd": "Error importing .md file",
+    "errorExportLogs": "Error exporting logs",
+    "errorServerUnavailable": "Server unavailable",
+    "errorSelectMd": "Select a .md file",
+    "savedRateLimit": "Rate limit updated",
+    "savedGeneral": "General settings updated",
+    "savedWords": "Words synced with server",
+    "savedMd": ".md file saved and words updated",
+    "importedMd": ".md file imported successfully",
+    "logsExported": "Logs exported",
+    "logsCleared": "Local logs cleared",
+    "invalidValue": "Invalid value in {field}",
+    "configRejected": "Config rejected"
+  }
+}

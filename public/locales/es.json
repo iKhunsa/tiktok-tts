@@ -1,0 +1,339 @@
+{
+  "nav": {
+    "chat": "Chat",
+    "overlays": "Overlays",
+    "clips": "Clips",
+    "mobile": "Móvil",
+    "settings": "Configuración",
+    "soundpad": "Sonidos",
+    "bot": "Bot"
+  },
+  "community": {
+    "label": "Comunidad TikLiveTTS",
+    "desc": "Discord oficial · feedback y preguntas bienvenidos"
+  },
+  "footer": {
+    "donate": "Donar",
+    "channels": "Canales",
+    "advanced": "Avanzado"
+  },
+  "toggle": {
+    "readChat": "Leer comentarios",
+    "readGifts": "Anunciar regalos",
+    "readJoins": "Anunciar entradas",
+    "readFollows": "Anunciar follows",
+    "readLikes": "Anunciar likes",
+    "readShares": "Anunciar compartidos",
+    "sayUsername": "Decir nombre"
+  },
+  "tts": {
+    "on": "🔊 TTS Encendido",
+    "off": "🔇 TTS Apagado",
+    "offHint": "Apagar TTS detiene la voz y vacía la cola."
+  },
+  "btn": {
+    "skipCurrent": "Saltar actual",
+    "clearQueue": "Vaciar cola",
+    "emergency": "Modo emergencia",
+    "clearChat": "Limpiar",
+    "connect": "Conectar",
+    "disconnect": "Desconectar",
+    "connectAll": "Conectar todo",
+    "addChannel": "＋ Agregar canal",
+    "cancel": "Cancelar",
+    "testVoice": "▶ Probar",
+    "copyLink": "Copiar enlace",
+    "refreshQR": "Actualizar QR",
+    "startStream": "Iniciar stream",
+    "stopStream": "Detener",
+    "markClip": "Marcar Clip",
+    "connectOBS": "Conectar OBS",
+    "disconnectOBS": "Desconectar OBS",
+    "clearAll": "Borrar todo",
+    "openAdvanced": "Abrir panel avanzado (filtros, rate limit, logs) →",
+    "pauseTTS": "⏸ Pausar TTS",
+    "resumeTTS": "▶ Reanudar TTS",
+    "copy": "Copiar",
+    "open": "Abrir",
+    "uploadImage": "Subir imagen",
+    "remove": "Quitar",
+    "useF8": "Usar F8",
+    "usePlayPause": "Usar tecla Play/Pausa",
+    "clearShortcut": "✕ Limpiar"
+  },
+  "chat": {
+    "title": "Chat en vivo",
+    "empty": "Conecta tu TikTok Live<br>para ver el chat aquí",
+    "speaking": "Leyendo...",
+    "queue": "Cola: {n} mensajes"
+  },
+  "emergencyHint": "Emergencia deja activos regalos y follows, y silencia chat/likes/entradas/compartidos.",
+  "status": {
+    "waiting": "Esperando conexión...",
+    "connected": "Conectado",
+    "disconnected": "Desconectado"
+  },
+  "view": {
+    "overlays": {
+      "title": "Overlays para OBS",
+      "desc": "Personaliza cada overlay y copia la URL → OBS → Add Source → Browser → Enable transparent background."
+    },
+    "settings": {
+      "title": "Configuración TTS",
+      "desc": "Ajusta la voz, velocidad y comportamientos. Todo se guarda automáticamente."
+    },
+    "clips": {
+      "title": "Marcadores de Clip",
+      "desc": "Graba momentos del stream. El atajo global Ctrl+Shift+M funciona aunque la app esté minimizada."
+    },
+    "mobile": {
+      "title": "📱 Control Móvil",
+      "desc": "Controla el TTS desde tu celular en la misma red WiFi."
+    }
+  },
+  "settings": {
+    "voice": "Voz y audio",
+    "pause": "Pausar TTS",
+    "connection": "Conexión principal",
+    "channels": "Canales adicionales",
+    "advanced": "Configuración avanzada",
+    "obs": "Conexión OBS WebSocket",
+    "clipsHistory": "Historial de marcadores"
+  },
+  "label": {
+    "voice": "Voz",
+    "testVoice": "Probar voz",
+    "speed": "Velocidad",
+    "volume": "Volumen",
+    "slow": "Lento",
+    "fast": "Rápido",
+    "mute": "Mute",
+    "max": "Máx",
+    "playbackControl": "Control de reproducción",
+    "globalShortcut": "Atajo de teclado global",
+    "accentColor": "Color acento",
+    "bgOpacity": "Opacidad fondo",
+    "visibleMsgs": "Mensajes visibles",
+    "textSize": "Tamaño texto",
+    "showNames": "Mostrar nombres",
+    "visiblePlatforms": "Plataformas visibles",
+    "customBg": "Fondo personalizado",
+    "followerGoal": "Meta de nuevos seguidores",
+    "totalFollowers": "Total seguidores actuales",
+    "maxRows": "Máximo de filas",
+    "obsPort": "Puerto OBS WS",
+    "obsPassword": "Contraseña (si aplica)",
+    "accessUrl": "URL de acceso",
+    "activeShortcut": "Atajo activo",
+    "users": "Usuarios",
+    "connectToGet": "Conecta para obtener"
+  },
+  "overlay": {
+    "chat": {
+      "title": "Chat Unificado",
+      "subtitle": "Todos los mensajes de TikTok, Twitch y YouTube en un solo overlay"
+    },
+    "followers": {
+      "title": "Contador de Seguidores",
+      "subtitle": "Nuevos seguidores del stream en tiempo real"
+    },
+    "topLikers": {
+      "title": "Top Likers",
+      "subtitle": "Ranking de usuarios con más likes del stream"
+    },
+    "gifts": {
+      "title": "Alertas de Regalos",
+      "subtitle": "Regalos en tiempo real del TikTok Live"
+    },
+    "likes": {
+      "title": "Contador de Likes",
+      "subtitle": "Acumulado de likes durante el stream"
+    },
+    "giftsSocial": {
+      "title": "Alertas Sociales",
+      "subtitle": "Nuevos seguidores y compartidos del stream"
+    }
+  },
+  "mobile": {
+    "panelTitle": "Acceso desde celular",
+    "hint": "Escaneá el código QR con la cámara de tu teléfono. El celular debe estar en la misma red WiFi que esta PC.",
+    "appDesc": "La app móvil incluye chat en vivo, controles TTS (pausa, skip, toggles) y marcadores de clip."
+  },
+  "obs": {
+    "hint": "OBS > Herramientas > Servidor WebSocket → habilitar en puerto 4455.",
+    "disconnected": "Desconectado"
+  },
+  "clipHint": "El atajo global funciona aunque la app esté minimizada.",
+  "lang": {
+    "label": "Idioma"
+  },
+  "soundpad": {
+    "desc": "Sube sonidos y reprodúcelos con un clic o atajo de teclado (funciona en pantalla completa).",
+    "upload": "Subir sonido",
+    "empty": "Sube tu primer sonido para empezar",
+    "noShortcut": "Sin atajo",
+    "pressKey": "Presiona tecla…",
+    "clickToAssign": "Clic para asignar atajo (Ctrl/Alt/Shift + tecla)"
+  },
+  "update": {
+    "checking": "Buscando actualizaciones...",
+    "installNow": "Instalar ahora",
+    "later": "Después",
+    "installing": "Instalando..."
+  },
+  "bot": {
+    "title": "Bot de Música",
+    "desc": "El chat puede pedir canciones con !p nombre o !p link de YouTube. Tu playlist suena de fondo cuando no hay peticiones.",
+    "nowPlaying": "▶ Reproduciendo ahora",
+    "enableCmd": "Activar !p",
+    "skipSong": "⏭ Skip",
+    "noMusic": "Sin música reproduciéndose.",
+    "musicVol": "Vol. Música",
+    "requestQueue": "📋 Cola de peticiones",
+    "clearQueue": "🗑 Limpiar",
+    "queueEmpty": "La cola está vacía.",
+    "myPlaylist": "🎵 Mi Playlist (fondo)",
+    "enable": "Activar",
+    "shuffle": "Aleatorio",
+    "playlistHint": "Una canción por línea: nombre o URL de YouTube. Suena cuando no hay peticiones del chat.",
+    "playlistActive": "▶ Sonando de playlist:",
+    "savePlaylist": "💾 Guardar playlist",
+    "botSettings": "⚙ Configuración del bot",
+    "cooldown": "Cooldown por usuario (seg)",
+    "maxQueue": "Máx canciones en cola",
+    "bannedUsers": "Usuarios baneados del !p",
+    "banPlaceholder": "@usuario o ID",
+    "ban": "Banear"
+  },
+  "overlay2": {
+    "giftsTitle": "Alerta de Regalo",
+    "giftsSubtitle": "Aparece en OBS unos segundos cuando alguien envía un regalo",
+    "alertDuration": "Duración por alerta (ms)",
+    "socialTitle": "Alerta de Follow / Share",
+    "socialSubtitle": "Aparece en OBS unos segundos cuando alguien te sigue o comparte",
+    "followImg": "Imagen para Follow",
+    "shareImg": "Imagen para Share",
+    "creditosTitle": "Créditos del Stream",
+    "creditosSubtitle": "Scroll automático con donadores, seguidores y compartidos",
+    "scrollSpeed": "Velocidad scroll",
+    "socialListTitle": "Lista de Seguidores & Compartidos",
+    "socialListSubtitle": "Panel acumulado visible durante todo el stream en OBS",
+    "cols": "Dos columnas",
+    "rows": "Apilado vertical"
+  },
+  "clips2": {
+    "streamTimer": "Temporizador del Stream",
+    "obsOptional": "Conexión OBS WebSocket (opcional)",
+    "deleteMarker": "Borrar marcador",
+    "deleteDay": "Borrar día",
+    "confirmClearAll": "¿Borrar todos los marcadores de clip? Esta acción no se puede deshacer.",
+    "confirmClearDay": "¿Borrar todos los marcadores del",
+    "noMarkers": "Sin marcadores aún. Inicia el stream y presiona Ctrl+Shift+M para marcar."
+  },
+  "conn": {
+    "connecting": "Conectando...",
+    "shortcutRegistered": "Atajo global registrado: {shortcut}",
+    "shortcutUnavailable": "Atajo no disponible",
+    "shortcutActive": "Atajo activo: {shortcut}",
+    "shortcutCapturing": "Clic aquí y presiona teclas...",
+    "noSavedChannels": "Sin canales guardados. Agrega TikTok/Twitch/YouTube y luego usa Conectar todo.",
+    "connectAllMsg": "Conectar todo: {parts}"
+  },
+  "mobile2": {
+    "loading": "Cargando...",
+    "qrError": "Error al generar QR"
+  },
+  "adv": {
+    "subtitle": "Configuración del Servidor",
+    "navBack": "← Chat Live",
+    "navSettings": "Configuración",
+    "h2": "Ajustes del Servidor",
+    "desc": "Controla el rate limiting, filtros de mensajes y monitorea el estado del sistema en tiempo real. Estos cambios aplican inmediatamente al backend.",
+    "rlTitle": "Rate Limiting de TTS",
+    "rlDesc": "Control de velocidad del servidor",
+    "rlHowTitle": "¿Cómo funciona?",
+    "rlHowP1": "Durante un live activo pueden llegar <strong>decenas de mensajes por segundo</strong>. Sin límites, la cola TTS crecería sin control y el bot acumularía minutos de retraso.",
+    "rlHowP2": "El rate limiting actúa como un <strong>filtro en el servidor</strong>: decide cuántas peticiones TTS se permiten en una ventana de tiempo. Si se supera el límite, las peticiones adicionales se rechazan con error 429 y el mensaje no entra a la cola de voz.",
+    "rlHowP3": "Por defecto está DESACTIVADO. Actívalo solo si ves que el bot se satura o si Google TTS empieza a dar errores por demasiadas peticiones.",
+    "rlHowP4": "Ejemplo práctico: con 10 peticiones / 5 segundos, si llegan 20 mensajes en 5 segundos, solo los primeros 10 se leerán. El resto se descartan silenciosamente.",
+    "rlToggleName": "Activar rate limit en el servidor",
+    "rlToggleHint": "Desactivado por defecto. Solo actívalo si el live tiene mucho spam o el TTS se satura.",
+    "rlMax": "Máximo de peticiones",
+    "rlWindow": "Ventana de tiempo",
+    "rlWindowUnit": "seg",
+    "rlQueue": "Máx. mensajes en cola",
+    "save": "Guardar cambios",
+    "saved": "¡Guardado!",
+    "generalTitle": "Configuración General",
+    "generalDesc": "Otros parámetros del servidor TTS",
+    "maxChars": "Máx. caracteres TTS",
+    "debounce": "Debounce de likes",
+    "debounceUnit": "ms",
+    "filtersTitle": "Filtros de Mensajes",
+    "filtersDesc": "Palabras prohibidas en el servidor",
+    "filtersExplainerTitle": "Reglas automáticas del servidor",
+    "filtersExplainerP1": "El servidor ya filtra automáticamente: <strong>mensajes repetitivos</strong> (aaaaaa), <strong>URLs</strong> (se reemplazan por \"link\"), <strong>menciones</strong> (@usuario se eliminan), <strong>emojis</strong> (se convierten a espacio) y <strong>mensajes mayores a 300 caracteres</strong>.",
+    "filtersExplainerP2": "Aquí puedes añadir <strong>palabras adicionales</strong> para bloquear mensajes que las contengan.",
+    "blockedLabel": "Palabras bloqueadas",
+    "blockedDesc": "Los mensajes que contengan estas palabras serán ignorados completamente por el TTS. El filtro no distingue mayúsculas/minúsculas.",
+    "blockedPlaceholder": "Escribe una palabra y presiona Agregar...",
+    "blockedAdd": "+ Agregar",
+    "blockedEmpty": "Sin palabras bloqueadas",
+    "blockedSync": "Sincronizar con servidor",
+    "mdLabel": "Editar lista completa",
+    "mdDesc": "Puedes editar el archivo blocked-words.md directamente aquí o subir uno nuevo. El formato es una palabra por línea empezando con - .",
+    "mdReload": "Recargar desde archivo",
+    "mdDownload": "Descargar .md",
+    "mdSave": "Guardar cambios al archivo",
+    "mdUploadLabel": "Subir archivo .md",
+    "mdUploadBtn": "Subir y reemplazar",
+    "statusTitle": "Estado del Servidor",
+    "statusDesc": "Monitoreo en tiempo real",
+    "statusRefresh": "↻ Actualizar",
+    "statUptime": "Tiempo activo",
+    "statClients": "Clientes WS",
+    "statMem": "Memoria MB",
+    "statRateMax": "Rate max",
+    "statRateLimit": "Rate limit",
+    "cfgCurrent": "Configuración actual",
+    "cfgRateActive": "Rate limit activo",
+    "cfgMaxReq": "Máximo peticiones",
+    "cfgWindow": "Ventana de tiempo",
+    "cfgMaxChars": "Máx. caracteres TTS",
+    "cfgDebounce": "Debounce likes",
+    "logsTitle": "Logs",
+    "logsDesc": "Historial de eventos y errores",
+    "logsRefresh": "↻ Actualizar",
+    "logsSearch": "Buscar logs...",
+    "logsAllLevels": "Todos los niveles",
+    "logsAllSources": "Todas las fuentes",
+    "logsSourceServer": "Servidor",
+    "logsSourceClient": "Cliente",
+    "logsSourceNetwork": "Red",
+    "logsEmpty": "Sin logs aún",
+    "logsNone": "Sin logs para mostrar",
+    "logsExportPrompt": "¿Exportar como (json/csv)?",
+    "logsClearConfirm": "¿Limpiar todos los logs? No se puede deshacer.",
+    "statConnected": "Conectado",
+    "statOff": "Off",
+    "statusYes": "Sí",
+    "statusNo": "No",
+    "errorLoadConfig": "Error cargando configuración",
+    "errorLoadBlocked": "Error cargando palabras bloqueadas",
+    "errorLoadMd": "Error cargando archivo .md",
+    "errorSaveMd": "Error guardando archivo .md",
+    "errorImportMd": "Error importando archivo .md",
+    "errorExportLogs": "Error exportando logs",
+    "errorServerUnavailable": "Servidor no disponible",
+    "errorSelectMd": "Selecciona un archivo .md",
+    "savedRateLimit": "Rate limit actualizado",
+    "savedGeneral": "Configuración general actualizada",
+    "savedWords": "Palabras sincronizadas con el servidor",
+    "savedMd": "Archivo .md guardado y palabras actualizadas",
+    "importedMd": "Archivo .md importado correctamente",
+    "logsExported": "Logs exportados",
+    "logsCleared": "Logs locales eliminados",
+    "invalidValue": "Valor inválido en {field}",
+    "configRejected": "Config rechazada"
+  }
+}

@@ -1,0 +1,339 @@
+{
+  "nav": {
+    "chat": "聊天",
+    "overlays": "叠加层",
+    "clips": "剪辑",
+    "mobile": "手机",
+    "settings": "设置",
+    "soundpad": "音效",
+    "bot": "Bot"
+  },
+  "community": {
+    "label": "TikLiveTTS 社区",
+    "desc": "官方 Discord · 欢迎反馈和提问"
+  },
+  "footer": {
+    "donate": "捐赠",
+    "channels": "频道",
+    "advanced": "高级"
+  },
+  "toggle": {
+    "readChat": "朗读评论",
+    "readGifts": "播报礼物",
+    "readJoins": "播报加入",
+    "readFollows": "播报关注",
+    "readLikes": "播报点赞",
+    "readShares": "播报分享",
+    "sayUsername": "说出用户名"
+  },
+  "tts": {
+    "on": "🔊 TTS 开启",
+    "off": "🔇 TTS 关闭",
+    "offHint": "关闭 TTS 会停止语音并清空队列。"
+  },
+  "btn": {
+    "skipCurrent": "跳过当前",
+    "clearQueue": "清空队列",
+    "emergency": "紧急模式",
+    "clearChat": "清除",
+    "connect": "连接",
+    "disconnect": "断开",
+    "connectAll": "全部连接",
+    "addChannel": "＋ 添加频道",
+    "cancel": "取消",
+    "testVoice": "▶ 测试",
+    "copyLink": "复制链接",
+    "refreshQR": "刷新二维码",
+    "startStream": "开始直播",
+    "stopStream": "停止",
+    "markClip": "标记片段",
+    "connectOBS": "连接 OBS",
+    "disconnectOBS": "断开 OBS",
+    "clearAll": "全部删除",
+    "openAdvanced": "打开高级面板（过滤器、频率限制、日志）→",
+    "pauseTTS": "⏸ 暂停 TTS",
+    "resumeTTS": "▶ 恢复 TTS",
+    "copy": "复制",
+    "open": "打开",
+    "uploadImage": "上传图片",
+    "remove": "移除",
+    "useF8": "使用 F8",
+    "usePlayPause": "使用播放/暂停键",
+    "clearShortcut": "✕ 清除"
+  },
+  "chat": {
+    "title": "实时聊天",
+    "empty": "连接您的 TikTok 直播<br>在此查看聊天",
+    "speaking": "正在朗读...",
+    "queue": "队列：{n} 条消息"
+  },
+  "emergencyHint": "紧急模式保持礼物和关注活跃，静音聊天/点赞/加入/分享。",
+  "status": {
+    "waiting": "等待连接...",
+    "connected": "已连接",
+    "disconnected": "已断开"
+  },
+  "view": {
+    "overlays": {
+      "title": "OBS 叠加层",
+      "desc": "自定义每个叠加层并复制 URL → OBS → 添加来源 → 浏览器 → 启用透明背景。"
+    },
+    "settings": {
+      "title": "TTS 设置",
+      "desc": "调整语音、速度和行为。所有内容自动保存。"
+    },
+    "clips": {
+      "title": "片段标记",
+      "desc": "记录直播精彩时刻。全局快捷键 Ctrl+Shift+M 即使最小化也可使用。"
+    },
+    "mobile": {
+      "title": "📱 手机控制",
+      "desc": "在同一 WiFi 网络中用手机控制 TTS。"
+    }
+  },
+  "settings": {
+    "voice": "语音与音频",
+    "pause": "暂停 TTS",
+    "connection": "主连接",
+    "channels": "附加频道",
+    "advanced": "高级设置",
+    "obs": "OBS WebSocket 连接",
+    "clipsHistory": "标记历史"
+  },
+  "label": {
+    "voice": "语音",
+    "testVoice": "测试语音",
+    "speed": "速度",
+    "volume": "音量",
+    "slow": "慢",
+    "fast": "快",
+    "mute": "静音",
+    "max": "最大",
+    "playbackControl": "播放控制",
+    "globalShortcut": "全局快捷键",
+    "accentColor": "强调色",
+    "bgOpacity": "背景透明度",
+    "visibleMsgs": "可见消息数",
+    "textSize": "文字大小",
+    "showNames": "显示名称",
+    "visiblePlatforms": "可见平台",
+    "customBg": "自定义背景",
+    "followerGoal": "新粉丝目标",
+    "totalFollowers": "当前粉丝总数",
+    "maxRows": "最大行数",
+    "obsPort": "OBS WS 端口",
+    "obsPassword": "密码（如有）",
+    "accessUrl": "访问 URL",
+    "activeShortcut": "当前快捷键",
+    "users": "用户",
+    "connectToGet": "连接后获取"
+  },
+  "overlay": {
+    "chat": {
+      "title": "统一聊天",
+      "subtitle": "TikTok、Twitch 和 YouTube 所有消息在同一叠加层"
+    },
+    "followers": {
+      "title": "粉丝计数器",
+      "subtitle": "实时新粉丝"
+    },
+    "topLikers": {
+      "title": "点赞排行榜",
+      "subtitle": "直播中点赞最多的用户排行"
+    },
+    "gifts": {
+      "title": "礼物提醒",
+      "subtitle": "TikTok 直播实时礼物"
+    },
+    "likes": {
+      "title": "点赞计数器",
+      "subtitle": "直播累计点赞数"
+    },
+    "giftsSocial": {
+      "title": "社交提醒",
+      "subtitle": "直播新粉丝和分享"
+    }
+  },
+  "mobile": {
+    "panelTitle": "手机访问",
+    "hint": "用手机摄像头扫描二维码。手机必须与本电脑在同一 WiFi 网络。",
+    "appDesc": "手机应用包含实时聊天、TTS 控制（暂停、跳过、开关）和片段标记。"
+  },
+  "obs": {
+    "hint": "OBS > 工具 > WebSocket 服务器 → 在 4455 端口启用。",
+    "disconnected": "已断开"
+  },
+  "clipHint": "全局快捷键即使最小化也可使用。",
+  "lang": {
+    "label": "语言"
+  },
+  "soundpad": {
+    "desc": "上传音效，通过点击或键盘快捷键播放（全屏模式下同样有效）。",
+    "upload": "上传音效",
+    "empty": "上传第一个音效开始使用",
+    "noShortcut": "无快捷键",
+    "pressKey": "按下按键…",
+    "clickToAssign": "点击分配快捷键 (Ctrl/Alt/Shift + 按键)"
+  },
+  "update": {
+    "checking": "检查更新中...",
+    "installNow": "立即安装",
+    "later": "稍后",
+    "installing": "安装中..."
+  },
+  "bot": {
+    "title": "音乐机器人",
+    "desc": "聊天可通过 !p 歌名 或 !p YouTube链接 点歌。没有点歌时播放列表在后台播放。",
+    "nowPlaying": "▶ 正在播放",
+    "enableCmd": "启用 !p",
+    "skipSong": "⏭ 跳过",
+    "noMusic": "没有音乐在播放。",
+    "musicVol": "音乐音量",
+    "requestQueue": "📋 点歌队列",
+    "clearQueue": "🗑 清空",
+    "queueEmpty": "队列为空。",
+    "myPlaylist": "🎵 我的播放列表（背景）",
+    "enable": "启用",
+    "shuffle": "随机",
+    "playlistHint": "每行一首歌：歌名或YouTube URL。聊天没有点歌时播放。",
+    "playlistActive": "▶ 正在播放列表：",
+    "savePlaylist": "💾 保存播放列表",
+    "botSettings": "⚙ 机器人设置",
+    "cooldown": "每用户冷却时间（秒）",
+    "maxQueue": "队列最大曲数",
+    "bannedUsers": "被封禁的 !p 用户",
+    "banPlaceholder": "@用户 或 ID",
+    "ban": "封禁"
+  },
+  "overlay2": {
+    "giftsTitle": "礼物提醒",
+    "giftsSubtitle": "有人送礼物时在OBS中显示几秒钟",
+    "alertDuration": "每次提醒时长 (ms)",
+    "socialTitle": "关注 / 分享提醒",
+    "socialSubtitle": "有人关注或分享时在OBS中显示几秒钟",
+    "followImg": "关注图片",
+    "shareImg": "分享图片",
+    "creditosTitle": "直播片尾",
+    "creditosSubtitle": "打赏者、关注者和分享者的自动滚动",
+    "scrollSpeed": "滚动速度",
+    "socialListTitle": "粉丝 & 分享列表",
+    "socialListSubtitle": "直播全程在OBS中显示的累积面板",
+    "cols": "两列",
+    "rows": "垂直堆叠"
+  },
+  "clips2": {
+    "streamTimer": "直播计时器",
+    "obsOptional": "OBS WebSocket 连接（可选）",
+    "deleteMarker": "删除标记",
+    "deleteDay": "删除当天",
+    "confirmClearAll": "删除所有片段标记？此操作无法撤销。",
+    "confirmClearDay": "删除该日期的所有标记",
+    "noMarkers": "还没有标记。开始直播并按 Ctrl+Shift+M 进行标记。"
+  },
+  "conn": {
+    "connecting": "连接中...",
+    "shortcutRegistered": "全局快捷键已注册：{shortcut}",
+    "shortcutUnavailable": "快捷键不可用",
+    "shortcutActive": "当前快捷键：{shortcut}",
+    "shortcutCapturing": "点击此处并按键...",
+    "noSavedChannels": "没有保存的频道。添加TikTok/Twitch/YouTube并使用全部连接。",
+    "connectAllMsg": "全部连接：{parts}"
+  },
+  "mobile2": {
+    "loading": "加载中...",
+    "qrError": "生成二维码出错"
+  },
+  "adv": {
+    "subtitle": "服务器设置",
+    "navBack": "← 直播聊天",
+    "navSettings": "设置",
+    "h2": "服务器设置",
+    "desc": "控制速率限制、消息过滤器并实时监控系统状态。更改立即应用于后端。",
+    "rlTitle": "TTS 速率限制",
+    "rlDesc": "服务器速度控制",
+    "rlHowTitle": "工作原理",
+    "rlHowP1": "活跃直播期间可能每秒到达<strong>数十条消息</strong>。没有限制，TTS队列会无限制增长。",
+    "rlHowP2": "速率限制作为<strong>服务器端过滤器</strong>工作：决定时间窗口内允许的TTS请求数量。",
+    "rlHowP3": "默认禁用。仅在机器人过载时启用。",
+    "rlHowP4": "示例：设置10请求/5秒，5秒内到达20条消息，只读取前10条。",
+    "rlToggleName": "启用服务器速率限制",
+    "rlToggleHint": "默认禁用。仅在有大量垃圾信息时启用。",
+    "rlMax": "最大请求数",
+    "rlWindow": "时间窗口",
+    "rlWindowUnit": "秒",
+    "rlQueue": "队列最大消息数",
+    "save": "保存更改",
+    "saved": "已保存！",
+    "generalTitle": "常规设置",
+    "generalDesc": "其他TTS服务器参数",
+    "maxChars": "TTS最大字符数",
+    "debounce": "点赞防抖",
+    "debounceUnit": "ms",
+    "filtersTitle": "消息过滤器",
+    "filtersDesc": "服务器上的禁用词",
+    "filtersExplainerTitle": "服务器自动规则",
+    "filtersExplainerP1": "服务器已自动过滤：<strong>重复消息</strong>、<strong>URL</strong>、<strong>@提及</strong>、<strong>表情符号</strong>和<strong>超过300字符的消息</strong>。",
+    "filtersExplainerP2": "在这里可以添加<strong>额外词语</strong>来屏蔽包含它们的消息。",
+    "blockedLabel": "屏蔽词",
+    "blockedDesc": "包含这些词语的消息将被TTS完全忽略。过滤不区分大小写。",
+    "blockedPlaceholder": "输入词语并按添加...",
+    "blockedAdd": "+ 添加",
+    "blockedEmpty": "没有屏蔽词",
+    "blockedSync": "与服务器同步",
+    "mdLabel": "编辑完整列表",
+    "mdDesc": "可以在此直接编辑blocked-words.md文件或上传新文件。格式：每行一词，以 - 开头。",
+    "mdReload": "从文件重新加载",
+    "mdDownload": "下载 .md",
+    "mdSave": "保存更改到文件",
+    "mdUploadLabel": "上传 .md 文件",
+    "mdUploadBtn": "上传并替换",
+    "statusTitle": "服务器状态",
+    "statusDesc": "实时监控",
+    "statusRefresh": "↻ 刷新",
+    "statUptime": "运行时间",
+    "statClients": "WS客户端",
+    "statMem": "内存 MB",
+    "statRateMax": "速率上限",
+    "statRateLimit": "速率限制",
+    "cfgCurrent": "当前配置",
+    "cfgRateActive": "速率限制活跃",
+    "cfgMaxReq": "最大请求",
+    "cfgWindow": "时间窗口",
+    "cfgMaxChars": "TTS最大字符",
+    "cfgDebounce": "点赞防抖",
+    "logsTitle": "日志",
+    "logsDesc": "事件和错误历史",
+    "logsRefresh": "↻ 刷新",
+    "logsSearch": "搜索日志...",
+    "logsAllLevels": "所有级别",
+    "logsAllSources": "所有来源",
+    "logsSourceServer": "服务器",
+    "logsSourceClient": "客户端",
+    "logsSourceNetwork": "网络",
+    "logsEmpty": "暂无日志",
+    "logsNone": "没有日志可显示",
+    "logsExportPrompt": "导出为 (json/csv)？",
+    "logsClearConfirm": "清除所有日志？无法撤销。",
+    "statConnected": "已连接",
+    "statOff": "关",
+    "statusYes": "是",
+    "statusNo": "否",
+    "errorLoadConfig": "加载配置出错",
+    "errorLoadBlocked": "加载屏蔽词出错",
+    "errorLoadMd": "加载 .md 文件出错",
+    "errorSaveMd": "保存 .md 文件出错",
+    "errorImportMd": "导入 .md 文件出错",
+    "errorExportLogs": "导出日志出错",
+    "errorServerUnavailable": "服务器不可用",
+    "errorSelectMd": "请选择 .md 文件",
+    "savedRateLimit": "速率限制已更新",
+    "savedGeneral": "常规设置已更新",
+    "savedWords": "词语已与服务器同步",
+    "savedMd": ".md 文件已保存，词语已更新",
+    "importedMd": ".md 文件导入成功",
+    "logsExported": "日志已导出",
+    "logsCleared": "本地日志已清除",
+    "invalidValue": "{field} 中的值无效",
+    "configRejected": "配置被拒绝"
+  }
+}
