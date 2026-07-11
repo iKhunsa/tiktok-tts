@@ -1523,12 +1523,12 @@
         </div>
         <div class="cfg-fields">
           <div class="cfg-field">
-            <label>Color acento</label>
+            <label data-i18n="label.accentColor">Color acento</label>
             <input type="color" id="cfg-chat-color" value="#3ecf8e"
                    oninput="onCfgChange('chat','color', this.value)" />
           </div>
           <div class="cfg-field">
-            <label>Opacidad fondo — <span id="cfg-chat-bg-val">82</span>%</label>
+            <label><span data-i18n="label.bgOpacity">Opacidad fondo</span> — <span id="cfg-chat-bg-val">82</span>%</label>
             <input type="range" id="cfg-chat-bg" min="0.30" max="1.00" step="0.05" value="0.82"
                    oninput="onCfgChange('chat','bg', parseFloat(this.value)); document.getElementById('cfg-chat-bg-val').textContent = Math.round(this.value*100)" />
           </div>
@@ -1558,12 +1558,12 @@
             </div>
           </div>
           <div class="cfg-field full">
-            <label>Fondo personalizado</label>
+            <label data-i18n="label.customBg">Fondo personalizado</label>
             <div class="bg-upload-row">
               <input type="file" id="cfg-chat-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
                      onchange="uploadBg('chat', this.files[0])" />
-              <label class="cfg-btn" for="cfg-chat-bgimg">Subir imagen</label>
-              <button type="button" class="cfg-btn danger small" id="cfg-chat-bgimg-remove" onclick="removeBg('chat')" style="display:none;">Quitar</button>
+              <label class="cfg-btn" for="cfg-chat-bgimg"><span data-i18n="btn.uploadImage">Subir imagen</span></label>
+              <button type="button" class="cfg-btn danger small" id="cfg-chat-bgimg-remove" onclick="removeBg('chat')" style="display:none;" data-i18n="btn.remove">Quitar</button>
               <img class="bg-preview" id="cfg-chat-bgimg-preview" alt="">
             </div>
           </div>
@@ -1598,22 +1598,22 @@
             </div>
           </div>
           <div class="cfg-field">
-            <label>Color acento</label>
+            <label data-i18n="label.accentColor">Color acento</label>
             <input type="color" id="cfg-seg-color" value="#3ecf8e"
                    oninput="onCfgChange('seguidores','color', this.value)" />
           </div>
           <div class="cfg-field">
-            <label>Opacidad fondo — <span id="cfg-seg-bg-val">80</span>%</label>
+            <label><span data-i18n="label.bgOpacity">Opacidad fondo</span> — <span id="cfg-seg-bg-val">80</span>%</label>
             <input type="range" id="cfg-seg-bg" min="0.30" max="1.00" step="0.05" value="0.80"
                    oninput="onCfgChange('seguidores','bg', parseFloat(this.value)); document.getElementById('cfg-seg-bg-val').textContent = Math.round(this.value*100)" />
           </div>
           <div class="cfg-field full">
-            <label>Fondo personalizado</label>
+            <label data-i18n="label.customBg">Fondo personalizado</label>
             <div class="bg-upload-row">
               <input type="file" id="cfg-seguidores-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
                      onchange="uploadBg('seguidores', this.files[0])" />
-              <label class="cfg-btn" for="cfg-seguidores-bgimg">Subir imagen</label>
-              <button type="button" class="cfg-btn danger small" id="cfg-seguidores-bgimg-remove" onclick="removeBg('seguidores')" style="display:none;">Quitar</button>
+              <label class="cfg-btn" for="cfg-seguidores-bgimg"><span data-i18n="btn.uploadImage">Subir imagen</span></label>
+              <button type="button" class="cfg-btn danger small" id="cfg-seguidores-bgimg-remove" onclick="removeBg('seguidores')" style="display:none;" data-i18n="btn.remove">Quitar</button>
               <img class="bg-preview" id="cfg-seguidores-bgimg-preview" alt="">
             </div>
           </div>
@@ -1642,22 +1642,22 @@
                    oninput="onCfgChange('likes','rows', parseInt(this.value)||10)" />
           </div>
           <div class="cfg-field">
-            <label>Color acento</label>
+            <label data-i18n="label.accentColor">Color acento</label>
             <input type="color" id="cfg-likes-color" value="#3ecf8e"
                    oninput="onCfgChange('likes','color', this.value)" />
           </div>
           <div class="cfg-field full">
-            <label>Opacidad fondo — <span id="cfg-likes-bg-val">80</span>%</label>
+            <label><span data-i18n="label.bgOpacity">Opacidad fondo</span> — <span id="cfg-likes-bg-val">80</span>%</label>
             <input type="range" id="cfg-likes-bg" min="0.30" max="1.00" step="0.05" value="0.80"
                    oninput="onCfgChange('likes','bg', parseFloat(this.value)); document.getElementById('cfg-likes-bg-val').textContent = Math.round(this.value*100)" />
           </div>
           <div class="cfg-field full">
-            <label>Fondo personalizado</label>
+            <label data-i18n="label.customBg">Fondo personalizado</label>
             <div class="bg-upload-row">
               <input type="file" id="cfg-likes-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
                      onchange="uploadBg('likes', this.files[0])" />
-              <label class="cfg-btn" for="cfg-likes-bgimg">Subir imagen</label>
-              <button type="button" class="cfg-btn danger small" id="cfg-likes-bgimg-remove" onclick="removeBg('likes')" style="display:none;">Quitar</button>
+              <label class="cfg-btn" for="cfg-likes-bgimg"><span data-i18n="btn.uploadImage">Subir imagen</span></label>
+              <button type="button" class="cfg-btn danger small" id="cfg-likes-bgimg-remove" onclick="removeBg('likes')" style="display:none;" data-i18n="btn.remove">Quitar</button>
               <img class="bg-preview" id="cfg-likes-bgimg-preview" alt="">
             </div>
           </div>
@@ -1687,22 +1687,22 @@
                    oninput="onCfgChange('alertas','dur', parseInt(this.value)||4000)" />
           </div>
           <div class="cfg-field">
-            <label>Color acento</label>
+            <label data-i18n="label.accentColor">Color acento</label>
             <input type="color" id="cfg-alertas-color" value="#3ecf8e"
                    oninput="onCfgChange('alertas','color', this.value)" />
           </div>
           <div class="cfg-field">
-            <label>Opacidad fondo — <span id="cfg-alertas-bg-val">90</span>%</label>
+            <label><span data-i18n="label.bgOpacity">Opacidad fondo</span> — <span id="cfg-alertas-bg-val">90</span>%</label>
             <input type="range" id="cfg-alertas-bg" min="0.30" max="1.00" step="0.05" value="0.90"
                    oninput="onCfgChange('alertas','bg', parseFloat(this.value)); document.getElementById('cfg-alertas-bg-val').textContent = Math.round(this.value*100)" />
           </div>
           <div class="cfg-field full">
-            <label>Fondo personalizado</label>
+            <label data-i18n="label.customBg">Fondo personalizado</label>
             <div class="bg-upload-row">
               <input type="file" id="cfg-alertas-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
                      onchange="uploadBg('alertas', this.files[0])" />
-              <label class="cfg-btn" for="cfg-alertas-bgimg">Subir imagen</label>
-              <button type="button" class="cfg-btn danger small" id="cfg-alertas-bgimg-remove" onclick="removeBg('alertas')" style="display:none;">Quitar</button>
+              <label class="cfg-btn" for="cfg-alertas-bgimg"><span data-i18n="btn.uploadImage">Subir imagen</span></label>
+              <button type="button" class="cfg-btn danger small" id="cfg-alertas-bgimg-remove" onclick="removeBg('alertas')" style="display:none;" data-i18n="btn.remove">Quitar</button>
               <img class="bg-preview" id="cfg-alertas-bgimg-preview" alt="">
             </div>
           </div>
@@ -1737,22 +1737,22 @@
                    oninput="updateSocialOverlayUrl()" style="font-size:12px;" />
           </div>
           <div class="cfg-field">
-            <label>Color acento</label>
+            <label data-i18n="label.accentColor">Color acento</label>
             <input type="color" id="cfg-alertas-social-color" value="#3ecf8e"
                    oninput="updateSocialOverlayUrl()" />
           </div>
           <div class="cfg-field">
-            <label>Opacidad fondo — <span id="cfg-alertas-social-bg-val">90</span>%</label>
+            <label><span data-i18n="label.bgOpacity">Opacidad fondo</span> — <span id="cfg-alertas-social-bg-val">90</span>%</label>
             <input type="range" id="cfg-alertas-social-bg" min="0.30" max="1.00" step="0.05" value="0.90"
                    oninput="updateSocialOverlayUrl(); document.getElementById('cfg-alertas-social-bg-val').textContent = Math.round(this.value*100)" />
           </div>
           <div class="cfg-field full">
-            <label>Fondo personalizado</label>
+            <label data-i18n="label.customBg">Fondo personalizado</label>
             <div class="bg-upload-row">
               <input type="file" id="cfg-alertas-social-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
                      onchange="uploadBg('alertas-social', this.files[0])" />
-              <label class="cfg-btn" for="cfg-alertas-social-bgimg">Subir imagen</label>
-              <button type="button" class="cfg-btn danger small" id="cfg-alertas-social-bgimg-remove" onclick="removeBg('alertas-social')" style="display:none;">Quitar</button>
+              <label class="cfg-btn" for="cfg-alertas-social-bgimg"><span data-i18n="btn.uploadImage">Subir imagen</span></label>
+              <button type="button" class="cfg-btn danger small" id="cfg-alertas-social-bgimg-remove" onclick="removeBg('alertas-social')" style="display:none;" data-i18n="btn.remove">Quitar</button>
               <img class="bg-preview" id="cfg-alertas-social-bgimg-preview" alt="">
             </div>
           </div>
@@ -1783,22 +1783,22 @@
                    oninput="onCfgChange('creditos','speed', parseInt(this.value)); document.getElementById('cfg-creditos-speed-val').textContent = this.value" />
           </div>
           <div class="cfg-field">
-            <label>Color acento</label>
+            <label data-i18n="label.accentColor">Color acento</label>
             <input type="color" id="cfg-creditos-color" value="#3ecf8e"
                    oninput="onCfgChange('creditos','color', this.value)" />
           </div>
           <div class="cfg-field">
-            <label>Opacidad fondo — <span id="cfg-creditos-bg-val">85</span>%</label>
+            <label><span data-i18n="label.bgOpacity">Opacidad fondo</span> — <span id="cfg-creditos-bg-val">85</span>%</label>
             <input type="range" id="cfg-creditos-bg" min="0.30" max="1.00" step="0.05" value="0.85"
                    oninput="onCfgChange('creditos','bg', parseFloat(this.value)); document.getElementById('cfg-creditos-bg-val').textContent = Math.round(this.value*100)" />
           </div>
           <div class="cfg-field full">
-            <label>Fondo personalizado</label>
+            <label data-i18n="label.customBg">Fondo personalizado</label>
             <div class="bg-upload-row">
               <input type="file" id="cfg-creditos-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
                      onchange="uploadBg('creditos', this.files[0])" />
-              <label class="cfg-btn" for="cfg-creditos-bgimg">Subir imagen</label>
-              <button type="button" class="cfg-btn danger small" id="cfg-creditos-bgimg-remove" onclick="removeBg('creditos')" style="display:none;">Quitar</button>
+              <label class="cfg-btn" for="cfg-creditos-bgimg"><span data-i18n="btn.uploadImage">Subir imagen</span></label>
+              <button type="button" class="cfg-btn danger small" id="cfg-creditos-bgimg-remove" onclick="removeBg('creditos')" style="display:none;" data-i18n="btn.remove">Quitar</button>
               <img class="bg-preview" id="cfg-creditos-bgimg-preview" alt="">
             </div>
           </div>
@@ -1829,22 +1829,22 @@
             </select>
           </div>
           <div class="cfg-field">
-            <label>Color acento</label>
+            <label data-i18n="label.accentColor">Color acento</label>
             <input type="color" id="cfg-social-color" value="#3ecf8e"
                    oninput="onCfgChange('social','color', this.value)" />
           </div>
           <div class="cfg-field">
-            <label>Opacidad fondo — <span id="cfg-social-bg-val">80</span>%</label>
+            <label><span data-i18n="label.bgOpacity">Opacidad fondo</span> — <span id="cfg-social-bg-val">80</span>%</label>
             <input type="range" id="cfg-social-bg" min="0.30" max="1.00" step="0.05" value="0.80"
                    oninput="onCfgChange('social','bg', parseFloat(this.value)); document.getElementById('cfg-social-bg-val').textContent = Math.round(this.value*100)" />
           </div>
           <div class="cfg-field full">
-            <label>Fondo personalizado</label>
+            <label data-i18n="label.customBg">Fondo personalizado</label>
             <div class="bg-upload-row">
               <input type="file" id="cfg-social-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
                      onchange="uploadBg('social', this.files[0])" />
-              <label class="cfg-btn" for="cfg-social-bgimg">Subir imagen</label>
-              <button type="button" class="cfg-btn danger small" id="cfg-social-bgimg-remove" onclick="removeBg('social')" style="display:none;">Quitar</button>
+              <label class="cfg-btn" for="cfg-social-bgimg"><span data-i18n="btn.uploadImage">Subir imagen</span></label>
+              <button type="button" class="cfg-btn danger small" id="cfg-social-bgimg-remove" onclick="removeBg('social')" style="display:none;" data-i18n="btn.remove">Quitar</button>
               <img class="bg-preview" id="cfg-social-bgimg-preview" alt="">
             </div>
           </div>
@@ -2005,12 +2005,19 @@
             <input type="range" id="volRange" min="0" max="1" step="0.05" value="1" oninput="updateVol(this.value)" />
             <div class="range-labels"><span data-i18n="label.mute">Mute</span><span data-i18n="label.max">Máx</span></div>
           </div>
+          <div class="setting-group">
+            <label class="toggle-chip" style="width:max-content;">
+              <input type="checkbox" id="langFilterToggle" onchange="toggleLangFilter(this)" />
+              <span data-i18n="toggle.langFilter">Filtrar caracteres de otros idiomas</span>
+            </label>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px;" data-i18n="toggle.langFilterHint">Ignora mensajes de chat con caracteres que no correspondan al idioma de la voz activa (ej: bloquea chino/japonés si tu voz está en Español, y viceversa).</div>
+          </div>
         </div>
       </div>
 
-      <!-- PAUSE TTS SECTION -->
+      <!-- KEYBOARD SHORTCUTS SECTION -->
       <div class="settings-section">
-        <div class="settings-section-title" data-i18n="settings.pause">Pausar TTS</div>
+        <div class="settings-section-title" data-i18n="settings.shortcuts">Atajos de teclado</div>
         <div class="settings-panel">
           <div class="setting-group" style="gap:8px;">
             <label style="margin-bottom:2px;display:flex;align-items:center;gap:6px;">
@@ -2025,29 +2032,77 @@
           <div class="setting-group">
             <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
               <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
-              <span data-i18n="label.globalShortcut">Atajo de teclado global</span>
+              <span data-i18n="label.pauseShortcut">Pausar / Reanudar TTS</span>
             </label>
             <div style="display:flex;gap:8px;align-items:center;">
               <input id="pauseShortcutInput" readonly placeholder="Clic aquí y presiona teclas..."
-  onclick="startCapturingShortcut()"
+  onclick="startCapturingShortcut('pause')"
                 style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
-              <button onclick="clearPauseShortcut()"
+              <button onclick="clearTtsShortcut('pause')"
                 style="padding:8px 12px;border-radius:8px;font-size:12px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--text-muted);cursor:pointer;" data-i18n="btn.clearShortcut">
                 ✕ Limpiar
               </button>
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
-              <button onclick="applyPauseShortcutPreset('F8')"
+              <button onclick="applyTtsShortcutPreset('pause', 'F8')"
                 style="padding:6px 10px;border-radius:8px;font-size:11px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--text-secondary);cursor:pointer;" data-i18n="btn.useF8">
                 Usar F8
               </button>
-              <button onclick="applyPauseShortcutPreset('MediaPlayPause')"
+              <button onclick="applyTtsShortcutPreset('pause', 'MediaPlayPause')"
                 style="padding:6px 10px;border-radius:8px;font-size:11px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--text-secondary);cursor:pointer;" data-i18n="btn.usePlayPause">
                 Usar tecla Play/Pausa
               </button>
             </div>
             <div id="pauseShortcutHint" style="font-size:11px;color:var(--text-muted);margin-top:4px;">
-              <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span id="activeShortcutLabel" style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
+              <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
+            </div>
+          </div>
+          <div class="setting-group">
+            <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
+              <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
+              <span data-i18n="label.skipShortcut">Saltar mensaje actual</span>
+            </label>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <input id="skipShortcutInput" readonly placeholder="Clic aquí y presiona teclas..."
+  onclick="startCapturingShortcut('skip')"
+                style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
+              <button onclick="clearTtsShortcut('skip')"
+                style="padding:8px 12px;border-radius:8px;font-size:12px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--text-muted);cursor:pointer;" data-i18n="btn.clearShortcut">
+                ✕ Limpiar
+              </button>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+              <button onclick="applyTtsShortcutPreset('skip', 'F9')"
+                style="padding:6px 10px;border-radius:8px;font-size:11px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--text-secondary);cursor:pointer;">
+                F9
+              </button>
+            </div>
+            <div id="skipShortcutHint" style="font-size:11px;color:var(--text-muted);margin-top:4px;">
+              <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
+            </div>
+          </div>
+          <div class="setting-group">
+            <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
+              <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
+              <span data-i18n="label.clearQueueShortcut">Limpiar cola</span>
+            </label>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <input id="clearShortcutInput" readonly placeholder="Clic aquí y presiona teclas..."
+  onclick="startCapturingShortcut('clear')"
+                style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
+              <button onclick="clearTtsShortcut('clear')"
+                style="padding:8px 12px;border-radius:8px;font-size:12px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--text-muted);cursor:pointer;" data-i18n="btn.clearShortcut">
+                ✕ Limpiar
+              </button>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+              <button onclick="applyTtsShortcutPreset('clear', 'F10')"
+                style="padding:6px 10px;border-radius:8px;font-size:11px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--text-secondary);cursor:pointer;">
+                F10
+              </button>
+            </div>
+            <div id="clearShortcutHint" style="font-size:11px;color:var(--text-muted);margin-top:4px;">
+              <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
             </div>
           </div>
         </div>
@@ -2242,20 +2297,20 @@
 <div id="donationsModal" class="modal-overlay" onclick="closeDonationsModal(event)">
   <div class="modal-content" onclick="event.stopPropagation()">
     <button class="modal-close" onclick="closeDonationsModal()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
-    <h2><img class="icon-inline" src="icons/favorite.svg" alt=""> Apoya mi contenido</h2>
+    <h2><img class="icon-inline" src="icons/favorite.svg" alt=""> <span data-i18n="donations.title">Apoya mi contenido</span></h2>
 
     <div class="qr-card">
       <h3>Lightning Network (Instant)</h3>
       <p>Khunsa@coinos.io</p>
       <input type="text" value="Khunsa@coinos.io" readonly class="donation-input" onclick="this.select()">
-      <button class="btn-copy" onclick="copyToClipboard('Khunsa@coinos.io')"><img class="icon-inline" src="icons/content_copy.svg" alt=""> Copiar dirección</button>
+      <button class="btn-copy" onclick="copyToClipboard('Khunsa@coinos.io')"><img class="icon-inline" src="icons/content_copy.svg" alt=""> <span data-i18n="donations.copyAddress">Copiar dirección</span></button>
     </div>
 
     <div class="qr-card">
-      <h3>Bitcoin Nativo</h3>
+      <h3 data-i18n="donations.btcNative">Bitcoin Nativo</h3>
       <p>bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk</p>
       <input type="text" value="bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk" readonly class="donation-input" onclick="this.select()">
-      <button class="btn-copy" onclick="copyToClipboard('bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk')"><img class="icon-inline" src="icons/content_copy.svg" alt=""> Copiar dirección</button>
+      <button class="btn-copy" onclick="copyToClipboard('bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk')"><img class="icon-inline" src="icons/content_copy.svg" alt=""> <span data-i18n="donations.copyAddress">Copiar dirección</span></button>
     </div>
   </div>
 </div>
@@ -2264,7 +2319,7 @@
 <div id="socialModal" class="modal-overlay" onclick="closeSocialModal(event)">
   <div class="modal-content" onclick="event.stopPropagation()">
     <button class="modal-close" onclick="closeSocialModal()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
-    <h2><img class="icon-inline" src="icons/smartphone.svg" alt=""> Sigue mi contenido</h2>
+    <h2><img class="icon-inline" src="icons/smartphone.svg" alt=""> <span data-i18n="donations.socialTitle">Sigue mi contenido</span></h2>
     <div class="social-grid">
       <a href="https://www.youtube.com/@SpeedMucho" target="_blank" class="social-card">
         <img style="width:32px;height:32px;" src="icons/tv.svg" alt="">
@@ -2362,8 +2417,11 @@
     readLikes: false,
     readShares: false,
     sayUsername: true,
+    langFilterEnabled: false,
     lastUsername: '',
     pauseShortcut: null,
+    skipShortcut: null,
+    clearShortcut: null,
     overlays: {
       seguidores: { goal: '', color: '#3ecf8e', bg: 0.80, bgimg: '' },
       likes:      { rows: 10, color: '#3ecf8e', bg: 0.80, bgimg: '' },
@@ -2433,6 +2491,13 @@
       const cb = chip.querySelector('input[type=checkbox]');
       if (cb) cb.checked = val;
       chip.classList.toggle('active', val);
+    }
+
+    // Lang filter toggle
+    const langFilterCb = document.getElementById('langFilterToggle');
+    if (langFilterCb) {
+      langFilterCb.checked = !!appSettings.langFilterEnabled;
+      langFilterCb.closest('.toggle-chip')?.classList.toggle('active', !!appSettings.langFilterEnabled);
     }
 
     // Last username
@@ -2547,12 +2612,12 @@
         if (type === 'alertas-social') updateSocialOverlayUrl();
         else updateOverlayUrl(type);
         saveSettings();
-        showToast('Fondo subido correctamente');
+        showToast(t('toast.bgUploaded'));
       } else {
-        showToast(data.error || 'Error al subir fondo');
+        showToast(data.error || t('toast.bgUploadError'));
       }
     } catch (e) {
-      showToast('Error de red al subir fondo');
+      showToast(t('toast.bgUploadError'));
     }
   }
 
@@ -2666,7 +2731,7 @@
     if (!Object.values(chatCfg.platforms).some(Boolean)) {
       chatCfg.platforms[platform] = true;
       setChecked('cfg-chat-platform-' + platform, true);
-      showToast('Deja al menos una plataforma visible');
+      showToast(t('toast.minOnePlatform'));
     }
     updateOverlayUrl('chat');
     saveSettings();
@@ -2674,8 +2739,8 @@
 
   function copyCfgUrl(type) {
     navigator.clipboard.writeText(buildOverlayUrl(type))
-      .then(() => showToast('URL copiada — pégala en OBS Browser Source'))
-      .catch(() => showToast('Error al copiar'));
+      .then(() => showToast(t('toast.urlCopied')))
+      .catch(() => showToast(t('toast.copyError')));
   }
 
   function updateFollowerDisplay(count) {
@@ -2687,10 +2752,10 @@
     try {
       const res = await fetch('/api/test/gift', { method: 'POST' });
       const data = await res.json();
-      if (data.success) showToast('Test alerta enviada: ' + data.giftName);
-      else showToast('Error al enviar test');
+      if (data.success) showToast(t('toast.testAlertSent').replace('{name}', data.giftName));
+      else showToast(t('toast.testError'));
     } catch (e) {
-      showToast('Error al enviar test');
+      showToast(t('toast.testError'));
     }
   }
 
@@ -2699,10 +2764,10 @@
       const endpoint = eventType === 'follow' ? '/api/test/follow' : '/api/test/share';
       const res  = await fetch(endpoint, { method: 'POST' });
       const data = await res.json();
-      if (data.success) showToast('Test ' + eventType + ' enviado: ' + data.user);
-      else showToast('Error al enviar test');
+      if (data.success) showToast(t('toast.testSocialSent').replace('{type}', eventType).replace('{user}', data.user));
+      else showToast(t('toast.testError'));
     } catch (e) {
-      showToast('Error al enviar test');
+      showToast(t('toast.testError'));
     }
   }
 
@@ -2732,18 +2797,18 @@
   function copySocialAlertUrl() {
     const url = document.getElementById('cfg-url-social-alert')?.textContent || 'http://localhost:3000/overlay-alertas-social.html';
     navigator.clipboard.writeText(url)
-      .then(() => showToast('URL copiada — pégala en OBS Browser Source'))
-      .catch(() => showToast('Error al copiar'));
+      .then(() => showToast(t('toast.urlCopied')))
+      .catch(() => showToast(t('toast.copyError')));
   }
 
   async function testTopLikers() {
     try {
       const res = await fetch('/api/test/likes', { method: 'POST' });
       const data = await res.json();
-      if (data.success) showToast('Test likes enviados (' + data.count + ' usuarios)');
-      else showToast('Error al enviar test');
+      if (data.success) showToast(t('toast.testLikesSent').replace('{count}', data.count));
+      else showToast(t('toast.testError'));
     } catch (e) {
-      showToast('Error al enviar test');
+      showToast(t('toast.testError'));
     }
   }
 
@@ -2760,7 +2825,7 @@
     sendStateSync();
     const btn = document.getElementById('btnTTSToggle');
     if (btn) {
-      btn.textContent = ttsGlobalEnabled ? '🔊 TTS Encendido' : '🔇 TTS Apagado';
+      btn.textContent = ttsGlobalEnabled ? t('tts.on') : t('tts.off');
       btn.style.borderColor   = ttsGlobalEnabled ? 'var(--accent)' : 'var(--text-muted)';
       btn.style.background    = ttsGlobalEnabled ? 'rgba(62,207,142,0.12)' : 'rgba(255,255,255,0.04)';
       btn.style.color         = ttsGlobalEnabled ? 'var(--accent)' : 'var(--text-muted)';
@@ -2770,10 +2835,15 @@
     }
   }
 
-  // ─── PAUSE TTS ────────────────────────────────────────────────
+  // ─── PAUSE TTS / KEYBOARD SHORTCUTS ───────────────────────────
   let ttsPaused = false;
-  let capturingShortcut = false;
-  let pauseShortcutGlobalActive = false;
+  let capturingShortcutFor = null; // 'pause' | 'skip' | 'clear' | null
+  const TTS_SHORTCUT_ACTIONS = {
+    pause: { settingKey: 'pauseShortcut', inputId: 'pauseShortcutInput', hintId: 'pauseShortcutHint', run: () => togglePauseTts() },
+    skip:  { settingKey: 'skipShortcut',  inputId: 'skipShortcutInput',  hintId: 'skipShortcutHint',  run: () => skipCurrentTTS() },
+    clear: { settingKey: 'clearShortcut', inputId: 'clearShortcutInput', hintId: 'clearShortcutHint', run: () => clearTTSQueue() },
+  };
+  const ttsShortcutGlobalActive = { pause: false, skip: false, clear: false };
 
   function togglePauseTts() {
     ttsPaused = !ttsPaused;
@@ -2792,67 +2862,74 @@
     }
   }
 
-  function startCapturingShortcut() {
-    capturingShortcut = true;
-    const inp = document.getElementById('pauseShortcutInput');
+  function startCapturingShortcut(action) {
+    if (!TTS_SHORTCUT_ACTIONS[action]) return;
+    capturingShortcutFor = action;
+    const inp = document.getElementById(TTS_SHORTCUT_ACTIONS[action].inputId);
     if (inp) { inp.value = '⌨ Presiona teclas...'; inp.style.borderColor = 'var(--accent)'; }
   }
 
-  async function clearPauseShortcut() {
-    appSettings.pauseShortcut = null;
-    pauseShortcutGlobalActive = false;
+  async function clearTtsShortcut(action) {
+    const cfg = TTS_SHORTCUT_ACTIONS[action];
+    if (!cfg) return;
+    appSettings[cfg.settingKey] = null;
+    ttsShortcutGlobalActive[action] = false;
     saveSettings();
-    capturingShortcut = false;
-    renderShortcutDisplay();
-    if (window.electronAPI?.registerPauseShortcut) {
-      await window.electronAPI.registerPauseShortcut('');
+    capturingShortcutFor = null;
+    renderShortcutDisplay(action);
+    if (window.electronAPI?.registerTtsShortcut) {
+      await window.electronAPI.registerTtsShortcut(action, '');
     }
   }
 
-  function renderShortcutDisplay(status = null) {
-    const shortcut = appSettings.pauseShortcut || null;
-    const inp = document.getElementById('pauseShortcutInput');
-    const lbl = document.getElementById('activeShortcutLabel');
-    const hint = document.getElementById('pauseShortcutHint');
+  function renderShortcutDisplay(action = null, status = null) {
+    if (!action) {
+      for (const a of Object.keys(TTS_SHORTCUT_ACTIONS)) renderShortcutDisplay(a);
+      return;
+    }
+    const cfg = TTS_SHORTCUT_ACTIONS[action];
+    if (!cfg) return;
+    const shortcut = appSettings[cfg.settingKey] || null;
+    const inp = document.getElementById(cfg.inputId);
+    const hint = document.getElementById(cfg.hintId);
     if (inp) { inp.value = shortcut || ''; inp.style.borderColor = shortcut ? 'var(--accent)' : 'var(--border)'; }
-    if (lbl) lbl.textContent = shortcut || '—';
     if (hint) {
       if (status && status.ok === false) {
         hint.style.color = '#ff6b6b';
         hint.innerHTML = `Atajo no registrado: <span style="font-family:monospace;font-weight:600;">${escapeHtml(status.shortcut || shortcut || '')}</span>. ${escapeHtml(status.error || 'Prueba otro atajo.')}`;
-      } else if (shortcut) {
-        hint.style.color = 'var(--text-muted)';
-        hint.innerHTML = `${t('conn.shortcutHint')} <span id="activeShortcutLabel" style="color:var(--accent);font-family:monospace;font-weight:600;">${escapeHtml(shortcut)}</span>`;
       } else {
         hint.style.color = 'var(--text-muted)';
-        hint.innerHTML = `${t('conn.shortcutHint')} <span id="activeShortcutLabel" style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>`;
+        hint.innerHTML = `<span data-i18n="conn.shortcutHint">${t('conn.shortcutHint')}</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">${escapeHtml(shortcut || '—')}</span>`;
       }
     }
   }
 
-  async function registerPauseShortcut(shortcut, { silent = false } = {}) {
-    if (!window.electronAPI?.registerPauseShortcut) {
-      renderShortcutDisplay({ ok: false, shortcut, error: 'Los atajos globales solo funcionan dentro de Electron.' });
+  async function registerTtsShortcut(action, shortcut, { silent = false } = {}) {
+    const cfg = TTS_SHORTCUT_ACTIONS[action];
+    if (!cfg) return false;
+    if (!window.electronAPI?.registerTtsShortcut) {
+      renderShortcutDisplay(action, { ok: false, shortcut, error: 'Los atajos globales solo funcionan dentro de Electron.' });
       return false;
     }
-    const status = await window.electronAPI.registerPauseShortcut(shortcut);
+    const status = await window.electronAPI.registerTtsShortcut(action, shortcut);
     if (status?.ok) {
-      pauseShortcutGlobalActive = true;
-      appSettings.pauseShortcut = status.shortcut;
+      ttsShortcutGlobalActive[action] = true;
+      appSettings[cfg.settingKey] = status.shortcut;
       saveSettings();
-      renderShortcutDisplay(status);
+      renderShortcutDisplay(action, status);
       if (!silent) showToast(t('conn.shortcutRegistered', { shortcut: status.shortcut }));
       return true;
     }
-    pauseShortcutGlobalActive = false;
-    renderShortcutDisplay(status || { ok: false, shortcut, error: 'No se pudo registrar el atajo.' });
-    if (!silent) showToast((status && status.error) || 'No se pudo registrar el atajo');
+    ttsShortcutGlobalActive[action] = false;
+    const errMsg = status?.error === 'conflict' ? t('conn.shortcutConflict') : (status && status.error);
+    renderShortcutDisplay(action, status ? { ...status, error: errMsg || status.error } : { ok: false, shortcut, error: t('conn.shortcutUnavailable') });
+    if (!silent) showToast(errMsg || t('conn.shortcutUnavailable'));
     return false;
   }
 
-  async function applyPauseShortcutPreset(shortcut) {
-    capturingShortcut = false;
-    await registerPauseShortcut(shortcut);
+  async function applyTtsShortcutPreset(action, shortcut) {
+    capturingShortcutFor = null;
+    await registerTtsShortcut(action, shortcut);
   }
 
   function matchShortcut(e, shortcut) {
@@ -2867,7 +2944,7 @@
   }
 
   document.addEventListener('keydown', async (e) => {
-    if (capturingShortcut) {
+    if (capturingShortcutFor) {
       // Ignore pure modifier keys
       if (['Control','Shift','Alt','Meta'].includes(e.key)) return;
       e.preventDefault();
@@ -2877,15 +2954,21 @@
       if (e.altKey)   parts.push('Alt');
       parts.push(e.key.length === 1 ? e.key.toUpperCase() : e.key);
       const shortcut = parts.join('+');
-      capturingShortcut = false;
-      appSettings.pauseShortcut = shortcut;
-      renderShortcutDisplay();
-      await registerPauseShortcut(shortcut);
+      const action = capturingShortcutFor;
+      capturingShortcutFor = null;
+      appSettings[TTS_SHORTCUT_ACTIONS[action].settingKey] = shortcut;
+      renderShortcutDisplay(action);
+      await registerTtsShortcut(action, shortcut);
       return;
     }
-    if (appSettings.pauseShortcut && !pauseShortcutGlobalActive && matchShortcut(e, appSettings.pauseShortcut)) {
-      e.preventDefault();
-      togglePauseTts();
+    // Fallback in-window shortcuts when global registration is unavailable
+    for (const [action, cfg] of Object.entries(TTS_SHORTCUT_ACTIONS)) {
+      const sc = appSettings[cfg.settingKey];
+      if (sc && !ttsShortcutGlobalActive[action] && matchShortcut(e, sc)) {
+        e.preventDefault();
+        cfg.run();
+        return;
+      }
     }
   });
 
@@ -2978,6 +3061,17 @@
     voiceDropdownTrigger.classList.remove('open');
   }
 
+  function syncTtsVoiceLang(id) {
+    fetch('/api/config', { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ ttsVoiceLang: id }) }).catch(() => {});
+  }
+
+  function toggleLangFilter(checkbox) {
+    appSettings.langFilterEnabled = checkbox.checked;
+    checkbox.closest('.toggle-chip')?.classList.toggle('active', checkbox.checked);
+    saveSettings();
+    fetch('/api/config', { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ langFilterEnabled: checkbox.checked }) }).catch(() => {});
+  }
+
   function selectVoice(id) {
     const voiceObj = availableVoices.find(v => v.id === id);
     if (!voiceObj) return;
@@ -2985,6 +3079,7 @@
     appSettings.voice = id;
     updateVoiceDisplay(voiceObj);
     saveSettings();
+    syncTtsVoiceLang(id);
     closeVoiceDropdown();
     // highlight active option
     document.querySelectorAll('.voice-option').forEach(el => {
@@ -3027,6 +3122,7 @@
         const firstEs = availableVoices.find(v => v.id.startsWith('es'));
         if (firstEs) { updateVoiceDisplay(firstEs); selectedVoice = firstEs.id; }
       }
+      if (selectedVoice) syncTtsVoiceLang(selectedVoice);
 
       // highlight active
       document.querySelectorAll('.voice-option').forEach(el => {
@@ -3079,7 +3175,7 @@
   function skipCurrentTTS() {
     const hadPending = activeAudio || ttsAbortController || isSpeaking;
     stopCurrentTTS({ clearQueue: false });
-    showToast(hadPending ? 'Mensaje TTS saltado' : 'No hay TTS activo');
+    showToast(hadPending ? t('toast.ttsSkipped') : t('toast.ttsNoActive'));
     if (!ttsPaused && ttsGlobalEnabled && speechQueue.length > 0) setTimeout(() => processQueue(), 50);
   }
 
@@ -3089,7 +3185,7 @@
     ttsDroppedCount = 0;
     ttsErrorCount = 0;
     updateQueueBadge();
-    showToast(cleared ? 'Cola TTS vaciada' : 'La cola ya estaba vacia');
+    showToast(cleared ? t('toast.ttsQueueCleared') : t('toast.ttsQueueEmpty'));
   }
 
   function enableEmergencyTTSMode() {
@@ -3105,7 +3201,7 @@
     saveSettings();
     clearTTSQueue();
     sendStateSync();
-    showToast('Modo emergencia activo: solo regalos y follows');
+    showToast(t('toast.emergencyActive'));
   }
 
   function playAudioBlob(blob, { onEnd, onError } = {}) {
@@ -3171,13 +3267,13 @@
       }
       const blob = await res.blob();
       if (blob.size < 100) {
-        showToast('TTS no respondio correctamente; verifica tu conexion a internet');
+        showToast(t('toast.ttsNetError'));
         done(); return;
       }
       playAudioBlob(blob, { onEnd: done, onError: done });
     } catch (err) {
       console.error('Test voice error:', err);
-      showToast('TTS fallo; verifica tu conexion a internet');
+      showToast(t('toast.ttsFailed'));
       done();
     }
   }
@@ -3228,7 +3324,7 @@
     });
     saveSettings();
     sendStateSync();
-    showToast('Modo solo chat activado');
+    showToast(t('toast.onlyChatActivated'));
   }
 
   function sendStateSync() {
@@ -3329,7 +3425,7 @@
       ttsErrorCount++;
       updateQueueBadge();
       if (ttsErrorCount >= TTS_MAX_ERRORS) {
-        showToast('TTS pausado tras múltiples errores');
+        showToast(t('toast.ttsPausedErrors'));
         isSpeaking = false;
         hideSpeakingIndicator();
         const glow2 = document.getElementById('appGlow');
@@ -3390,7 +3486,7 @@
       ws = null;
       wsReconnectAttempts++;
       if (wsReconnectAttempts >= MAX_WS_RECONNECT) {
-        setStatus('error', 'Conexión perdida. Recarga la app.');
+        setStatus('error', t('conn.connectionLost'));
         return;
       }
       const delay = Math.min(2000 * Math.pow(2, wsReconnectAttempts), 30000);
@@ -3501,12 +3597,12 @@
         break;
 
       case 'twitch-auth-ready':
-        showToast('Twitch autenticado' + (data.login ? ' como ' + data.login : ''));
+        showToast(data.login ? t('toast.twitchAuthAs').replace('{login}', data.login) : t('toast.twitchAuth'));
         break;
 
       case 'platform-connected':
         renderSettingsChannels();
-        showToast(data.platform.charAt(0).toUpperCase() + data.platform.slice(1) + ' conectado');
+        showToast(t('toast.platformConnected').replace('{platform}', data.platform.charAt(0).toUpperCase() + data.platform.slice(1)));
         break;
 
       case 'platform-disconnected':
@@ -3526,17 +3622,17 @@
         break;
 
       case 'obs-reconnecting':
-        showToast(`Reconectando OBS… (intento ${data.attempt})`);
+        showToast(t('toast.obsReconnecting').replace('{attempt}', data.attempt));
         break;
 
       case 'obs-stream-started':
         // Auto-start stream timer when OBS begins streaming
         if (!streamStartTime) startStreamManual();
-        showToast('🔴 OBS: stream iniciado');
+        showToast(t('toast.obsStreamStart'));
         break;
 
       case 'obs-stream-stopped':
-        showToast('⏹ OBS: stream detenido');
+        showToast(t('toast.obsStreamStop'));
         break;
 
       case 'remote-cmd':
@@ -3552,7 +3648,7 @@
         } else if (data.action === 'globalTTS') {
           ttsGlobalEnabled = !!data.value;
           const btn = document.getElementById('btnTTSToggle');
-          if (btn) btn.textContent = ttsGlobalEnabled ? '🔊 TTS Encendido' : '🔇 TTS Apagado';
+          if (btn) btn.textContent = ttsGlobalEnabled ? t('tts.on') : t('tts.off');
         } else if (data.action === 'pause') {
           if (ttsPaused !== !!data.value) togglePauseTts();
         } else if (data.action === 'skip') {
@@ -3613,6 +3709,10 @@
         break;
       case 'music-playlist-update':
         musicOnPlaylistUpdate(data);
+        break;
+      case 'music-engine':
+        if (data.status === 'downloading') showToast(t('toast.musicEngineDownloading'));
+        else if (data.status === 'error') showToast(t('toast.musicEngineError'));
         break;
     }
   }
@@ -3867,8 +3967,8 @@
   // ─── UTILS ────────────────────────────────────────────────────
   function copyToClipboard(text) {
     navigator.clipboard.writeText(text)
-      .then(() => showToast('Copiado al portapapeles'))
-      .catch(() => showToast('Error al copiar'));
+      .then(() => showToast(t('toast.clipboardCopied')))
+      .catch(() => showToast(t('toast.copyError')));
   }
 
   function showToast(message) {
@@ -3948,7 +4048,7 @@
     }, 1000);
   }
   function markClip() {
-    if (!streamStartTime) { showToast('Iniciá el stream primero para marcar clips'); return; }
+    if (!streamStartTime) { showToast(t('toast.startStreamFirst')); return; }
     // If OBS is connected, also trigger replay buffer save
     if (obsConnected) fetch('/api/obs/save-replay', { method: 'POST' }).catch(() => {});
     const now = new Date();
@@ -3967,7 +4067,7 @@
     saveClipsData(data);
     renderClipsHistory();
     sendStateSync();
-    showToast('Clip marcado: ' + entry.elapsed);
+    showToast(t('toast.clipMarked').replace('{elapsed}', entry.elapsed));
   }
   function deleteClip(dateStr, id) {
     const data = getClipsData();
@@ -4085,11 +4185,11 @@
         if (btn)    { btn.style.display = 'none'; btn.disabled = false; btn.textContent = t('btn.connectOBS'); }
         if (btnDis) btnDis.style.display = 'inline-block';
       } else {
-        showToast('Error OBS: ' + (d.error || 'desconocido'));
+        showToast(t('toast.obsError').replace('{error}', d.error || 'desconocido'));
         if (btn) { btn.disabled = false; btn.textContent = t('btn.connectOBS'); }
       }
     } catch (e) {
-      showToast('No se pudo conectar a OBS');
+      showToast(t('toast.obsConnectFailed'));
       if (btn) { btn.disabled = false; btn.textContent = t('btn.connectOBS'); }
     }
   }
@@ -4105,8 +4205,8 @@
   if (window.electronAPI) {
     if (window.electronAPI.onMarkClip)
       electronCleanups.push(window.electronAPI.onMarkClip(() => markClip()));
-    if (window.electronAPI.onPauseTts)
-      electronCleanups.push(window.electronAPI.onPauseTts(() => togglePauseTts()));
+    if (window.electronAPI.onTtsShortcut)
+      electronCleanups.push(window.electronAPI.onTtsShortcut((action) => TTS_SHORTCUT_ACTIONS[action]?.run()));
     if (window.electronAPI.onPlaySoundpad)
       electronCleanups.push(window.electronAPI.onPlaySoundpad((d) => spPlaySound(d.soundId)));
     if (window.electronAPI.onUpdateEvent)
@@ -4126,14 +4226,14 @@
             if (text) text.textContent = t('update.checking');
             break;
           case 'available':
-            if (text) text.textContent = `Nueva versión disponible: v${ev.version}`;
+            if (text) text.textContent = t('update.available').replace('{version}', ev.version);
             break;
           case 'not-available':
             banner.classList.remove('visible');
             break;
           case 'progress':
             banner.classList.add('visible');
-            if (text) text.textContent = `Descargando v${ev.version || 'nueva'}...`;
+            if (text) text.textContent = t('update.downloading').replace('{version}', ev.version || '?');
             if (barWrap) barWrap.style.display = 'block';
             if (barFill) barFill.style.width = ev.percent + '%';
             if (pct) { pct.style.display = 'inline'; pct.textContent = ev.percent + '%'; }
@@ -4237,7 +4337,7 @@
         osc.start(ctx.currentTime + when);
         osc.stop(ctx.currentTime + when + 0.4);
       });
-    } catch (_) { showToast('No se pudo reproducir audio de prueba'); }
+    } catch (_) { showToast(t('toast.audioTestFailed')); }
   }
 
   function spUploadTrigger() {
@@ -4248,16 +4348,16 @@
     const file = input.files[0];
     if (!file) return;
     input.value = '';
-    if (_spSounds.length >= 24) { showToast('Máximo 24 sonidos'); return; }
+    if (_spSounds.length >= 24) { showToast(t('toast.maxSounds')); return; }
     const fd = new FormData();
     fd.append('audio', file);
     try {
       const r = await fetch('/api/soundpad/upload', { method: 'POST', body: fd });
-      if (!r.ok) { const e = await r.json(); showToast(e.error || 'Error al subir'); return; }
+      if (!r.ok) { const e = await r.json(); showToast(e.error || t('toast.soundUploadError')); return; }
       const entry = await r.json();
       _spSounds.push(entry);
       spRender();
-    } catch (_) { showToast('Error al subir sonido'); }
+    } catch (_) { showToast(t('toast.soundUploadError')); }
   }
 
   async function spSaveName(soundId, name) {
@@ -4278,7 +4378,7 @@
   }
 
   async function spDelete(soundId) {
-    if (!confirm('¿Eliminar este sonido?')) return;
+    if (!confirm(t('toast.deleteSoundConfirm'))) return;
     const idx = _spSounds.findIndex(x => x.id === soundId);
     if (idx === -1) return;
     if (window.electronAPI?.unregisterSoundpadShortcut) window.electronAPI.unregisterSoundpadShortcut(soundId);
@@ -4320,7 +4420,7 @@
     const key = e.key.toUpperCase();
     if (['CONTROL','SHIFT','ALT','META'].includes(key)) return; // wait for main key
     if (!mods.length) {
-      showToast('Requiere modificador: Ctrl, Alt o Shift + tecla');
+      showToast(t('toast.shortcutModifier'));
       return;
     }
     const shortcut = [...mods, key].join('+');
@@ -4493,10 +4593,10 @@
   async function addChannelFromSettings() {
     const input = document.getElementById('add-channel-input');
     const channel = (input?.value || '').trim();
-    if (!channel) { showToast('Escribe el nombre del canal'); return; }
+    if (!channel) { showToast(t('toast.writeChannel')); return; }
 
     const plannedEntry = normalizeChannelEntry(selectedAddPlatform, channel);
-    if (!plannedEntry) { showToast('Canal invalido'); return; }
+    if (!plannedEntry) { showToast(t('toast.invalidChannel')); return; }
 
     const btn = document.getElementById('btn-add-channel');
     if (btn) { btn.disabled = true; btn.textContent = t('conn.connecting'); }
@@ -4512,24 +4612,24 @@
         if (selectedAddPlatform === 'youtube') {
           upsertSavedChannel(selectedAddPlatform, plannedEntry);
           showToast(plannedEntry.autoConnect
-            ? 'YouTube guardado; se conectara cuando haya live'
-            : 'YouTube temporal guardado como manual');
+            ? t('toast.youtubeAutoSaved')
+            : t('toast.youtubeTmpSaved'));
           input.value = '';
           toggleAddChannelForm();
         } else {
-          showToast('Error: ' + (d.error || 'no se pudo conectar'));
+          showToast(t('toast.channelConnectError').replace('{error}', d.error || 'no se pudo conectar'));
         }
       } else {
         const connectedEntry = normalizeChannelEntry(selectedAddPlatform, d.channel || plannedEntry.channel) || plannedEntry;
         connectedEntry.autoConnect = plannedEntry.autoConnect;
         connectedEntry.mode = plannedEntry.mode;
         upsertSavedChannel(selectedAddPlatform, connectedEntry);
-        showToast(PLATFORM_LABELS[selectedAddPlatform] + ' conectado');
+        showToast(t('toast.platformConnected').replace('{platform}', PLATFORM_LABELS[selectedAddPlatform]));
         input.value = '';
         toggleAddChannelForm();
       }
     } catch (e) {
-      showToast('Error de red al conectar ' + selectedAddPlatform);
+      showToast(t('toast.channelNetError').replace('{platform}', selectedAddPlatform));
     } finally {
       if (btn) { btn.disabled = false; btn.textContent = t('btn.connect'); }
     }
@@ -4545,9 +4645,9 @@
       });
       removeSavedChannel(platform, channel);
       renderSettingsChannels();
-      showToast(PLATFORM_LABELS[platform] + ' desconectado');
+      showToast(t('toast.platformDisconnected').replace('{platform}', PLATFORM_LABELS[platform]));
     } catch (e) {
-      showToast('Error al desconectar ' + platform);
+      showToast(t('toast.channelDisconnectError').replace('{platform}', platform));
     }
   }
 
@@ -4564,7 +4664,7 @@
     });
 
     if (targets.length === 0) {
-      showToast(manualCount ? 'Solo hay canales manuales guardados' : 'No hay canales guardados');
+      showToast(manualCount ? t('conn.onlyManualChannels') : t('conn.noSavedChannels'));
       return;
     }
 
@@ -4690,9 +4790,12 @@
   applySettings();
   loadRuntimeConfig();
   renderShortcutDisplay();
-  // Re-register global pause shortcut after reload
-  if (appSettings.pauseShortcut && window.electronAPI?.registerPauseShortcut)
-    registerPauseShortcut(appSettings.pauseShortcut, { silent: true });
+  // Re-register global TTS shortcuts after reload
+  if (window.electronAPI?.registerTtsShortcut) {
+    for (const [action, cfg] of Object.entries(TTS_SHORTCUT_ACTIONS)) {
+      if (appSettings[cfg.settingKey]) registerTtsShortcut(action, appSettings[cfg.settingKey], { silent: true });
+    }
+  }
   loadVoices();
   connectWS();
   updateQueueBadge();
@@ -4723,7 +4826,7 @@
     musicAudio.play().catch(() => {});
     musicAudio.onerror = () => {
       console.error('music stream error', musicAudio?.error?.message);
-      showToast('❌ Error al reproducir canción');
+      showToast(t('toast.songError'));
       fetch('/api/music/next', { method: 'POST' }).catch(() => {});
     };
     musicAudio.onended = () => {
@@ -4777,7 +4880,7 @@
     const channel = document.getElementById('music-channel');
     const req = document.getElementById('music-req');
     if (thumb) thumb.src = track.thumbnail || '';
-    if (title) title.textContent = track.title || 'Sin título';
+    if (title) title.textContent = track.title || t('mobile3.noTitle');
     if (channel) channel.textContent = track.channelName || '';
     if (req) {
       if (track.platform === 'playlist') {
@@ -4953,7 +5056,7 @@
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ lines })
-    }).then(() => { delete ta.dataset.dirty; showToast('✅ Playlist guardada'); }).catch(() => {});
+    }).then(() => { delete ta.dataset.dirty; showToast(t('toast.playlistSaved')); }).catch(() => {});
   }
 
   function playlistSetEnabled(val) {

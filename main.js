@@ -502,22 +502,27 @@ function isValidShortcut(shortcut) {
   return /^(Ctrl|CommandOrControl|Cmd|Alt|Shift|Super)\+([A-Z0-9]|F\d{1,2})(\+([A-Z0-9]|F\d{1,2}))*$/i.test(normalized);
 }
 
-let registeredPauseShortcut = null;
+// ── TTS shortcuts (pause / skip / clear) ─────────────────────────────────────
+const TTS_SHORTCUT_ACTIONS = new Set(['pause', 'skip', 'clear']);
+const ttsShortcuts = new Map(); // action → normalizedShortcut
 
-function unregisterPauseShortcut() {
-  if (registeredPauseShortcut) {
-    if (uiohookActive) {
-      unregisterUiohookShortcut('pause');
-    } else {
-      try { globalShortcut.unregister(registeredPauseShortcut); } catch (_) {}
-    }
-    registeredPauseShortcut = null;
+function unregisterTtsShortcut(action) {
+  const prev = ttsShortcuts.get(action);
+  if (!prev) return;
+  if (uiohookActive) {
+    unregisterUiohookShortcut(`tts:${action}`);
+  } else {
+    try { globalShortcut.unregister(prev); } catch (_) {}
   }
+  ttsShortcuts.delete(action);
 }
 
-ipcMain.handle('register-pause-shortcut', (_event, shortcut) => {
+ipcMain.handle('register-tts-shortcut', (_event, { action, shortcut }) => {
+  if (!TTS_SHORTCUT_ACTIONS.has(action)) {
+    return { ok: false, error: 'Accion desconocida' };
+  }
   if (!shortcut) {
-    unregisterPauseShortcut();
+    unregisterTtsShortcut(action);
     return { ok: true, shortcut: null };
   }
   const normalized = normalizeShortcut(shortcut);
@@ -525,11 +530,16 @@ ipcMain.handle('register-pause-shortcut', (_event, shortcut) => {
     console.error('Invalid or forbidden shortcut rejected:', normalized);
     return { ok: false, shortcut: normalized, error: 'Atajo invalido o reservado por el sistema' };
   }
-  unregisterPauseShortcut();
+  for (const [otherAction, otherShortcut] of ttsShortcuts) {
+    if (otherAction !== action && otherShortcut === normalized) {
+      return { ok: false, shortcut: normalized, error: 'conflict' };
+    }
+  }
+  unregisterTtsShortcut(action);
 
-  const pauseCallback = () => {
+  const callback = () => {
     if (mainWindow && !mainWindow.isDestroyed())
-      mainWindow.webContents.send('pause-tts');
+      mainWindow.webContents.send('tts-shortcut', action);
   };
 
   // MediaPlayPause goes through the Windows multimedia API — works in fullscreen
@@ -537,24 +547,24 @@ ipcMain.handle('register-pause-shortcut', (_event, shortcut) => {
   const isMediaKey = normalized === 'MediaPlayPause';
 
   if (uiohookActive && !isMediaKey) {
-    const ok = registerUiohookShortcut('pause', normalized, pauseCallback);
+    const ok = registerUiohookShortcut(`tts:${action}`, normalized, callback);
     if (!ok) {
       return { ok: false, shortcut: normalized, error: 'Atajo no soportado. Prueba F8, Ctrl+F8 o MediaPlayPause.' };
     }
-    registeredPauseShortcut = normalized;
+    ttsShortcuts.set(action, normalized);
     return { ok: true, shortcut: normalized };
   }
 
   // Fallback: globalShortcut (used when uiohook unavailable, or for MediaPlayPause)
   try {
-    const registered = globalShortcut.register(normalized, pauseCallback);
+    const registered = globalShortcut.register(normalized, callback);
     if (!registered || !globalShortcut.isRegistered(normalized)) {
       return { ok: false, shortcut: normalized, error: 'Windows no permitio registrar este atajo. Prueba F8 o MediaPlayPause.' };
     }
-    registeredPauseShortcut = normalized;
+    ttsShortcuts.set(action, normalized);
     return { ok: true, shortcut: normalized };
   } catch (err) {
-    console.error('Failed to register pause shortcut:', err.message);
+    console.error(`Failed to register tts shortcut (${action}):`, err.message);
     return { ok: false, shortcut: normalized, error: err.message };
   }
 });
