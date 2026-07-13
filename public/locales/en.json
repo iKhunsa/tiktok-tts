@@ -89,7 +89,7 @@
       "desc": "Record stream moments. The global shortcut Ctrl+Shift+M works even when the app is minimized."
     },
     "mobile": {
-      "title": "📱 Mobile Control",
+      "title": "Mobile Control",
       "desc": "Control TTS from your phone on the same WiFi network."
     }
   },
@@ -115,6 +115,7 @@
     "pauseShortcut": "Pause / Resume TTS",
     "skipShortcut": "Skip current message",
     "clearQueueShortcut": "Clear queue",
+    "musicPauseShortcut": "Pause/resume bot music",
     "accentColor": "Accent color",
     "bgOpacity": "Background opacity",
     "visibleMsgs": "Visible messages",
@@ -190,21 +191,23 @@
   "bot": {
     "title": "Music Bot",
     "desc": "Chat can request songs with !p name or !p YouTube link. Your playlist plays in the background when there are no requests.",
-    "nowPlaying": "▶ Now Playing",
+    "nowPlaying": "Now Playing",
     "enableCmd": "Enable !p",
     "skipSong": "⏭ Skip",
+    "pauseSong": "⏸ Pause",
+    "resumeSong": "▶ Resume",
     "noMusic": "No music playing.",
     "musicVol": "Music Vol.",
-    "requestQueue": "📋 Request queue",
+    "requestQueue": "Request queue",
     "clearQueue": "🗑 Clear",
     "queueEmpty": "Queue is empty.",
-    "myPlaylist": "🎵 My Playlist (background)",
+    "myPlaylist": "My Playlist (background)",
     "enable": "Enable",
     "shuffle": "Shuffle",
     "playlistHint": "One song per line: name or YouTube URL. Plays when chat has no requests.",
     "playlistActive": "▶ Playing from playlist:",
     "savePlaylist": "💾 Save playlist",
-    "botSettings": "⚙ Bot settings",
+    "botSettings": "Bot settings",
     "cooldown": "Cooldown per user (sec)",
     "maxQueue": "Max songs in queue",
     "bannedUsers": "Banned from !p",
@@ -467,6 +470,7 @@
     "obsReconnecting": "Reconnecting OBS… (attempt {attempt})",
     "platformConnected": "{platform} connected",
     "platformDisconnected": "{platform} disconnected",
+    "allChannelsDisconnected": "All channels disconnected",
     "youtubeAutoSaved": "YouTube saved; will connect when live",
     "youtubeTmpSaved": "YouTube saved as manual channel"
   }

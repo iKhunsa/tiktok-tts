@@ -89,7 +89,7 @@
       "desc": "Stream-Momente aufzeichnen. Der globale Shortcut Ctrl+Shift+M funktioniert auch bei minimierter App."
     },
     "mobile": {
-      "title": "📱 Mobile Steuerung",
+      "title": "Mobile Steuerung",
       "desc": "TTS vom Handy im gleichen WLAN steuern."
     }
   },
@@ -115,6 +115,7 @@
     "pauseShortcut": "TTS pausieren / fortsetzen",
     "skipShortcut": "Aktuelle Nachricht überspringen",
     "clearQueueShortcut": "Warteschlange leeren",
+    "musicPauseShortcut": "Bot-Musik pausieren/fortsetzen",
     "accentColor": "Akzentfarbe",
     "bgOpacity": "Hintergrundtransparenz",
     "visibleMsgs": "Sichtbare Nachrichten",
@@ -190,21 +191,23 @@
   "bot": {
     "title": "Musik-Bot",
     "desc": "Der Chat kann Songs mit !p Name oder !p YouTube-Link anfragen. Deine Playlist läuft im Hintergrund wenn keine Anfragen vorliegen.",
-    "nowPlaying": "▶ Wird abgespielt",
+    "nowPlaying": "Wird abgespielt",
     "enableCmd": "!p aktivieren",
     "skipSong": "⏭ Überspringen",
+    "pauseSong": "⏸ Pause",
+    "resumeSong": "▶ Fortsetzen",
     "noMusic": "Keine Musik läuft.",
     "musicVol": "Musik-Lautstärke",
-    "requestQueue": "📋 Anfrage-Warteschlange",
+    "requestQueue": "Anfrage-Warteschlange",
     "clearQueue": "🗑 Leeren",
     "queueEmpty": "Warteschlange ist leer.",
-    "myPlaylist": "🎵 Meine Playlist (Hintergrund)",
+    "myPlaylist": "Meine Playlist (Hintergrund)",
     "enable": "Aktivieren",
     "shuffle": "Zufällig",
     "playlistHint": "Ein Song pro Zeile: Name oder YouTube-URL. Läuft wenn der Chat keine Anfragen hat.",
     "playlistActive": "▶ Spielt aus Playlist:",
     "savePlaylist": "💾 Playlist speichern",
-    "botSettings": "⚙ Bot-Einstellungen",
+    "botSettings": "Bot-Einstellungen",
     "cooldown": "Abklingzeit pro Nutzer (Sek)",
     "maxQueue": "Max. Songs in Warteschlange",
     "bannedUsers": "Von !p gesperrte Nutzer",
@@ -467,6 +470,7 @@
     "obsReconnecting": "OBS wird erneut verbunden… (Versuch {attempt})",
     "platformConnected": "{platform} verbunden",
     "platformDisconnected": "{platform} getrennt",
+    "allChannelsDisconnected": "Alle Kanäle getrennt",
     "youtubeAutoSaved": "YouTube gespeichert; verbindet sich wenn live",
     "youtubeTmpSaved": "YouTube als manuellen Kanal gespeichert"
   }

@@ -89,7 +89,7 @@
       "desc": "记录直播精彩时刻。全局快捷键 Ctrl+Shift+M 即使最小化也可使用。"
     },
     "mobile": {
-      "title": "📱 手机控制",
+      "title": "手机控制",
       "desc": "在同一 WiFi 网络中用手机控制 TTS。"
     }
   },
@@ -115,6 +115,7 @@
     "pauseShortcut": "暂停 / 恢复 TTS",
     "skipShortcut": "跳过当前消息",
     "clearQueueShortcut": "清空队列",
+    "musicPauseShortcut": "暂停/继续机器人音乐",
     "accentColor": "强调色",
     "bgOpacity": "背景透明度",
     "visibleMsgs": "可见消息数",
@@ -190,21 +191,23 @@
   "bot": {
     "title": "音乐机器人",
     "desc": "聊天可通过 !p 歌名 或 !p YouTube链接 点歌。没有点歌时播放列表在后台播放。",
-    "nowPlaying": "▶ 正在播放",
+    "nowPlaying": "正在播放",
     "enableCmd": "启用 !p",
     "skipSong": "⏭ 跳过",
+    "pauseSong": "⏸ 暂停",
+    "resumeSong": "▶ 继续",
     "noMusic": "没有音乐在播放。",
     "musicVol": "音乐音量",
-    "requestQueue": "📋 点歌队列",
+    "requestQueue": "点歌队列",
     "clearQueue": "🗑 清空",
     "queueEmpty": "队列为空。",
-    "myPlaylist": "🎵 我的播放列表（背景）",
+    "myPlaylist": "我的播放列表（背景）",
     "enable": "启用",
     "shuffle": "随机",
     "playlistHint": "每行一首歌：歌名或YouTube URL。聊天没有点歌时播放。",
     "playlistActive": "▶ 正在播放列表：",
     "savePlaylist": "💾 保存播放列表",
-    "botSettings": "⚙ 机器人设置",
+    "botSettings": "机器人设置",
     "cooldown": "每用户冷却时间（秒）",
     "maxQueue": "队列最大曲数",
     "bannedUsers": "被封禁的 !p 用户",
@@ -467,6 +470,7 @@
     "obsReconnecting": "正在重新连接OBS… (尝试 {attempt})",
     "platformConnected": "{platform} 已连接",
     "platformDisconnected": "{platform} 已断开",
+    "allChannelsDisconnected": "所有频道已断开",
     "youtubeAutoSaved": "YouTube已保存；直播时将自动连接",
     "youtubeTmpSaved": "YouTube已保存为手动频道"
   }

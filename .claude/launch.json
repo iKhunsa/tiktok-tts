@@ -9,6 +9,20 @@
       "autoPort": false
     },
     {
+      "name": "TikTok TTS (Preview 3010)",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["server.js"],
+      "port": 3010,
+      "env": { "PORT": "3010" }
+    },
+    {
+      "name": "TikTok TTS (Preview 3020)",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["server.js"],
+      "port": 3020,
+      "env": { "PORT": "3020" }
+    },
+    {
       "name": "TikTok TTS (Dev - with nodemon)",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],

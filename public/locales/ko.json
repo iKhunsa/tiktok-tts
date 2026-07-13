@@ -89,7 +89,7 @@
       "desc": "방송의 순간을 기록합니다. 전역 단축키 Ctrl+Shift+M은 앱이 최소화되어도 작동합니다."
     },
     "mobile": {
-      "title": "📱 모바일 제어",
+      "title": "모바일 제어",
       "desc": "같은 WiFi 네트워크의 스마트폰으로 TTS를 제어하세요."
     }
   },
@@ -115,6 +115,7 @@
     "pauseShortcut": "TTS 일시정지 / 재개",
     "skipShortcut": "현재 메시지 건너뛰기",
     "clearQueueShortcut": "대기열 비우기",
+    "musicPauseShortcut": "봇 음악 일시정지/재개",
     "accentColor": "강조 색상",
     "bgOpacity": "배경 불투명도",
     "visibleMsgs": "표시 메시지 수",
@@ -190,21 +191,23 @@
   "bot": {
     "title": "뮤직 봇",
     "desc": "채팅에서 !p 노래명 또는 !p 유튜브링크 로 신청할 수 있습니다. 신청이 없을 때 플레이리스트가 배경으로 재생됩니다.",
-    "nowPlaying": "▶ 재생 중",
+    "nowPlaying": "재생 중",
     "enableCmd": "!p 활성화",
     "skipSong": "⏭ 건너뛰기",
+    "pauseSong": "⏸ 일시정지",
+    "resumeSong": "▶ 재개",
     "noMusic": "재생 중인 음악이 없습니다.",
     "musicVol": "음악 볼륨",
-    "requestQueue": "📋 신청 대기열",
+    "requestQueue": "신청 대기열",
     "clearQueue": "🗑 지우기",
     "queueEmpty": "대기열이 비어 있습니다.",
-    "myPlaylist": "🎵 내 플레이리스트 (배경)",
+    "myPlaylist": "내 플레이리스트 (배경)",
     "enable": "활성화",
     "shuffle": "셔플",
     "playlistHint": "한 줄에 한 곡: 이름 또는 유튜브 URL. 채팅 신청이 없을 때 재생됩니다.",
     "playlistActive": "▶ 플레이리스트에서 재생 중:",
     "savePlaylist": "💾 플레이리스트 저장",
-    "botSettings": "⚙ 봇 설정",
+    "botSettings": "봇 설정",
     "cooldown": "사용자당 쿨다운 (초)",
     "maxQueue": "대기열 최대 곡 수",
     "bannedUsers": "!p 차단된 사용자",
@@ -467,6 +470,7 @@
     "obsReconnecting": "OBS 재연결 중… (시도 {attempt})",
     "platformConnected": "{platform} 연결됨",
     "platformDisconnected": "{platform} 연결 해제됨",
+    "allChannelsDisconnected": "모든 채널 연결 해제됨",
     "youtubeAutoSaved": "YouTube 저장됨; 라이브 시 연결됩니다",
     "youtubeTmpSaved": "YouTube를 수동 채널로 저장했습니다"
   }

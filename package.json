@@ -1,6 +1,6 @@
 {
   "name": "tiktok-live-tts",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "TikTok Live Chat TTS Reader",
   "author": "iKhunsa",
   "main": "main.js",
@@ -60,6 +60,7 @@
       "main.js",
       "preload.js",
       "server.js",
+      "music-engine.js",
       "node_modules/**/*",
       "!node_modules/.cache",
       "!node_modules/**/test{s,}/**",
@@ -69,7 +70,6 @@
     ]
   },
   "dependencies": {
-    "@distube/ytdl-core": "^4.16.12",
     "electron-updater": "^6.8.3",
     "express": "^4.18.2",
     "google-tts-api": "^2.0.2",
@@ -80,8 +80,7 @@
     "uiohook-napi": "^1.5.5",
     "undici": "^8.0.2",
     "ws": "^8.14.2",
-    "youtube-chat": "^2.2.0",
-    "ytsr": "^3.8.4"
+    "youtube-chat": "^2.2.0"
   },
   "devDependencies": {
     "electron": "^41.5.0",

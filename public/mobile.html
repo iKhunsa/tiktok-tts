@@ -389,7 +389,7 @@ nav::-webkit-scrollbar { display: none; }
     <div class="status-dot" id="statusDot"></div>
     <span class="header-title">TTS Remote</span>
     <span style="font-size:9px;font-weight:800;background:rgba(255,146,43,.18);color:#ff922b;border:1px solid rgba(255,146,43,.4);padding:2px 6px;border-radius:5px;letter-spacing:.4px;flex-shrink:0;">BETA</span>
-    <span class="header-sub" id="statusText">Conectando…</span>
+    <span class="header-sub" id="statusText" data-i18n="mobile3.connecting">Conectando…</span>
   </header>
 
   <!-- TAB CONTENT -->
@@ -397,52 +397,52 @@ nav::-webkit-scrollbar { display: none; }
 
     <!-- TAB 1: CHAT -->
     <div class="tab-panel active" id="tabChat">
-      <div class="chat-empty" id="chatEmpty">Esperando mensajes del chat…</div>
+      <div class="chat-empty" id="chatEmpty" data-i18n="mobile3.waitingChat">Esperando mensajes del chat…</div>
     </div>
 
     <!-- TAB 2: CONTROL -->
     <div class="tab-panel" id="tabControl">
 
       <!-- Master TTS -->
-      <button id="btnGlobalTTS" onclick="toggleGlobal()">🔊 TTS Encendido</button>
+      <button id="btnGlobalTTS" onclick="toggleGlobal()" data-i18n="mobile3.ttsOn">🔊 TTS Encendido</button>
 
       <!-- Pause / Skip -->
       <div class="action-grid">
         <button class="act-btn" id="btnPause" onclick="togglePause()">
-          <span class="act-icon">⏸</span>Pausar
+          <span class="act-icon">⏸</span><span data-i18n="mobile3.pause">Pausar</span>
         </button>
         <button class="act-btn" onclick="cmd('skip')">
-          <span class="act-icon">⏭</span>Saltar
+          <span class="act-icon">⏭</span><span data-i18n="mobile3.skip">Saltar</span>
         </button>
       </div>
 
       <!-- Clear / Emergency -->
       <div class="action-grid">
         <button class="act-btn" onclick="cmd('clear')">
-          <span class="act-icon">🗑</span>Vaciar cola
+          <span class="act-icon">🗑</span><span data-i18n="mobile3.clearQueue">Vaciar cola</span>
         </button>
         <button class="act-btn danger" onclick="cmd('emergency')">
-          <span class="act-icon">⚡</span>Emergencia
+          <span class="act-icon">⚡</span><span data-i18n="mobile3.emergency">Emergencia</span>
         </button>
       </div>
 
       <!-- Toggle chips -->
-      <div class="ctrl-label">Qué se lee</div>
+      <div class="ctrl-label" data-i18n="mobile3.whatToRead">Qué se lee</div>
       <div class="chips-grid">
         <div class="m-chip" id="chip-readChat"    onclick="toggleChip('readChat')">   <span class="chip-dot"></span>Chat</div>
-        <div class="m-chip" id="chip-readGifts"   onclick="toggleChip('readGifts')">  <span class="chip-dot"></span>Regalos</div>
-        <div class="m-chip" id="chip-readJoins"   onclick="toggleChip('readJoins')">  <span class="chip-dot"></span>Entradas</div>
+        <div class="m-chip" id="chip-readGifts"   onclick="toggleChip('readGifts')">  <span class="chip-dot"></span><span data-i18n="mobile3.gifts">Regalos</span></div>
+        <div class="m-chip" id="chip-readJoins"   onclick="toggleChip('readJoins')">  <span class="chip-dot"></span><span data-i18n="mobile3.joins">Entradas</span></div>
         <div class="m-chip" id="chip-readFollows" onclick="toggleChip('readFollows')"><span class="chip-dot"></span>Follows</div>
         <div class="m-chip" id="chip-readLikes"   onclick="toggleChip('readLikes')">  <span class="chip-dot"></span>Likes</div>
-        <div class="m-chip" id="chip-readShares"  onclick="toggleChip('readShares')"> <span class="chip-dot"></span>Compartidos</div>
-        <div class="m-chip" id="chip-sayUsername" onclick="toggleChip('sayUsername')"><span class="chip-dot"></span>Decir usuario</div>
+        <div class="m-chip" id="chip-readShares"  onclick="toggleChip('readShares')"> <span class="chip-dot"></span><span data-i18n="mobile3.shared">Compartidos</span></div>
+        <div class="m-chip" id="chip-sayUsername" onclick="toggleChip('sayUsername')"><span class="chip-dot"></span><span data-i18n="mobile3.sayUsername">Decir usuario</span></div>
       </div>
 
       <!-- Presets -->
-      <button id="btnSoloChat" class="full-btn" onclick="cmd('soloChat')">⭐ Solo Chat</button>
+      <button id="btnSoloChat" class="full-btn" onclick="cmd('soloChat')" data-i18n="mobile3.onlyChat">⭐ Solo Chat</button>
 
       <!-- Mark clip -->
-      <button id="btnMarkClip" class="full-btn" onclick="cmd('markClip')" disabled>
+      <button id="btnMarkClip" class="full-btn" onclick="cmd('markClip')" disabled data-i18n="mobile3.markClip">
         🎬 Marcar Clip
       </button>
 
@@ -457,13 +457,13 @@ nav::-webkit-scrollbar { display: none; }
 
     <!-- TAB 3: CLIPS -->
     <div class="tab-panel" id="tabClips">
-      <div class="clips-empty" id="clipsEmpty">Sin marcas de clip aún.<br>Iniciá el stream en el desktop y marcá clips desde la pestaña Control.</div>
+      <div class="clips-empty" id="clipsEmpty" data-i18n-html="mobile3.noClips">Sin marcas de clip aún.<br>Iniciá el stream en el desktop y marcá clips desde la pestaña Control.</div>
       <div id="clipList"></div>
     </div>
 
     <!-- TAB 4: SOUND PAD -->
     <div class="tab-panel" id="tabPad">
-      <div class="pad-empty" id="padEmpty">🎵 No hay sonidos aún.<br>Subí sonidos desde la app de escritorio.</div>
+      <div class="pad-empty" id="padEmpty" data-i18n-html="mobile3.noSounds">🎵 No hay sonidos aún.<br>Subí sonidos desde la app de escritorio.</div>
       <div id="padGrid" class="pad-grid"></div>
     </div>
 
@@ -472,8 +472,8 @@ nav::-webkit-scrollbar { display: none; }
 
       <!-- Now Playing -->
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;">
-        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">Reproduciendo</div>
-        <div id="m-music-idle" style="color:var(--muted);font-size:13px;">Sin música.</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;" data-i18n="mobile3.playing">Reproduciendo</div>
+        <div id="m-music-idle" style="color:var(--muted);font-size:13px;" data-i18n="mobile3.noMusic">Sin música.</div>
         <div id="m-music-info" style="display:none;gap:10px;align-items:center;">
           <img id="m-music-thumb" src="" alt="" style="width:52px;height:52px;object-fit:cover;border-radius:8px;flex-shrink:0;">
           <div style="flex:1;min-width:0;">
@@ -486,7 +486,7 @@ nav::-webkit-scrollbar { display: none; }
 
       <!-- Controls -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <button id="m-btnMusicToggle" onclick="mMusicToggle()"
+        <button id="m-btnMusicToggle" onclick="mMusicToggle()" data-i18n="mobile3.musicOn"
           style="padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:14px;font-weight:600;cursor:pointer;">
           🎵 Música ON
         </button>
@@ -499,13 +499,13 @@ nav::-webkit-scrollbar { display: none; }
       <!-- Playlist toggle -->
       <button id="m-btnPlaylistToggle" onclick="mPlaylistToggle()"
         style="padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;text-align:left;">
-        📋 Playlist de fondo: <span id="m-playlist-status">OFF</span>
+        <span data-i18n="mobile3.bgPlaylist">📋 Playlist de fondo:</span> <span id="m-playlist-status">OFF</span>
       </button>
 
       <!-- Volume -->
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;">
         <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
-          <span style="font-size:13px;">🔊 Volumen Música</span>
+          <span style="font-size:13px;" data-i18n="mobile3.musicVol">🔊 Volumen Música</span>
           <span id="m-musicVolVal" style="font-size:13px;color:var(--accent);">50%</span>
         </div>
         <input type="range" id="m-musicVolRange" min="0" max="1" step="0.05" value="0.5"
@@ -515,9 +515,9 @@ nav::-webkit-scrollbar { display: none; }
 
       <!-- Queue preview -->
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;">
-        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">Cola <span id="m-queue-count">(0)</span></div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;"><span data-i18n="mobile3.queue">Cola</span> <span id="m-queue-count">(0)</span></div>
         <div id="m-queue-list" style="display:flex;flex-direction:column;gap:6px;">
-          <div style="color:var(--muted);font-size:13px;">Vacía.</div>
+          <div style="color:var(--muted);font-size:13px;" data-i18n="mobile3.queueEmpty">Vacía.</div>
         </div>
       </div>
 
@@ -549,6 +549,25 @@ nav::-webkit-scrollbar { display: none; }
 <div id="toast"></div>
 
 <script>
+let _locale = {};
+async function loadLocale() {
+  const lang = localStorage.getItem('tikliveTTS_lang') || 'es';
+  try { _locale = await (await fetch(`/locales/${lang}.json`)).json(); }
+  catch(_) { try { _locale = await (await fetch('/locales/es.json')).json(); } catch(__) {} }
+  applyI18n();
+  connectWS();
+}
+function t(key) {
+  const parts = key.split('.');
+  let val = _locale;
+  for (const p of parts) { val = val?.[p]; if (val === undefined) break; }
+  return typeof val === 'string' ? val : key;
+}
+function applyI18n() {
+  document.querySelectorAll('[data-i18n]').forEach(el => { const v = t(el.dataset.i18n); if (v !== el.dataset.i18n) el.textContent = v; });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => { const v = t(el.dataset.i18nHtml); if (v !== el.dataset.i18nHtml) el.innerHTML = v; });
+}
+
 'use strict';
 
 // ── STATE ─────────────────────────────────────────────────────────────────
@@ -577,7 +596,7 @@ function connectWS() {
 
   ws.onopen = () => {
     wsRetry = 0;
-    setStatus('online', 'Conectado');
+    setStatus('online', t('mobile3.connected'));
     fetchState();
   };
   ws.onmessage = (e) => {
@@ -585,7 +604,7 @@ function connectWS() {
   };
   ws.onclose = () => {
     ws = null;
-    setStatus('error', 'Desconectado');
+    setStatus('error', t('mobile3.disconnected'));
     wsRetry++;
     setTimeout(connectWS, Math.min(500 * Math.pow(1.5, wsRetry), 15000));
   };
@@ -598,19 +617,19 @@ function dispatch(d) {
       addChat(d);
       break;
     case 'gift':
-      addEvent(d, '🎁', `envió ${d.giftName || 'un regalo'}${d.repeatCount > 1 ? ' ×' + d.repeatCount : ''}`);
+      addEvent(d, '🎁', `${t('mobile3.sent')} ${d.giftName || t('mobile3.aGift')}${d.repeatCount > 1 ? ' ×' + d.repeatCount : ''}`);
       break;
     case 'follow':
-      addEvent(d, '❤️', 'te siguió');
+      addEvent(d, '❤️', t('mobile3.followed'));
       break;
     case 'like':
-      addEvent(d, '👍', `dio ${d.likeCount || 1} like${d.likeCount > 1 ? 's' : ''}`);
+      addEvent(d, '👍', `${t('mobile3.gave')} ${d.likeCount || 1} like${d.likeCount > 1 ? 's' : ''}`);
       break;
     case 'share':
-      addEvent(d, '🔁', 'compartió el stream');
+      addEvent(d, '🔁', t('mobile3.sharedStream'));
       break;
     case 'join':
-      addEvent(d, '👋', 'se unió');
+      addEvent(d, '👋', t('mobile3.joined'));
       break;
     case 'state-sync':
       if (d.state) applyState(d.state);
@@ -658,10 +677,10 @@ function renderControl() {
   // Global TTS
   const gb = document.getElementById('btnGlobalTTS');
   if (state.ttsGlobalEnabled) {
-    gb.textContent = '🔊 TTS Encendido';
+    gb.textContent = t('mobile3.ttsOn');
     gb.classList.remove('off');
   } else {
-    gb.textContent = '🔇 TTS Apagado';
+    gb.textContent = t('mobile3.ttsOff');
     gb.classList.add('off');
   }
 
@@ -669,10 +688,10 @@ function renderControl() {
   const pb = document.getElementById('btnPause');
   if (state.ttsPaused) {
     pb.classList.add('pause-active');
-    pb.innerHTML = '<span class="act-icon">▶️</span>Reanudar';
+    pb.innerHTML = `<span class="act-icon">▶️</span>${t('mobile3.resume')}`;
   } else {
     pb.classList.remove('pause-active');
-    pb.innerHTML = '<span class="act-icon">⏸</span>Pausar';
+    pb.innerHTML = `<span class="act-icon">⏸</span>${t('mobile3.pause')}`;
   }
 
   // Chips
@@ -698,7 +717,7 @@ function renderClips() {
   empty.style.display = clips.length ? 'none' : 'block';
 
   list.innerHTML = clips.length
-    ? `<div class="clips-day-header">Hoy — ${clips.length} marca${clips.length !== 1 ? 's' : ''}</div>` +
+    ? `<div class="clips-day-header">${t('mobile3.today')} — ${clips.length} ${clips.length !== 1 ? t('mobile3.marks') : t('mobile3.mark')}</div>` +
       clips.map((c, i) => `
         <div class="clip-item">
           <div class="clip-left">
@@ -708,7 +727,7 @@ function renderClips() {
               ${c.absoluteTime ? `<span class="clip-abs">${esc(c.absoluteTime)}</span>` : ''}
             </div>
           </div>
-          <button class="clip-del" data-clip-id="${esc(String(c.id))}" onclick="deleteClip(this.dataset.clipId)" aria-label="Borrar">×</button>
+          <button class="clip-del" data-clip-id="${esc(String(c.id))}" onclick="deleteClip(this.dataset.clipId)" aria-label="${t('mobile3.deleteAria')}">×</button>
         </div>
       `).join('')
     : '';
@@ -804,18 +823,24 @@ function cmd(action, extra = {}) {
     // mostrado se actualiza vía state-sync de vuelta, no optimistamente.
     if (!resp || resp.ok !== true) {
       if (resp && resp.reason === 'desktop-offline') {
-        showToast('Abrí la app de escritorio para usar este control');
+        showToast(t('mobile3.openDesktop'));
       } else {
-        showToast('No se pudo enviar el comando');
+        showToast(t('mobile3.cmdFailed'));
       }
       fetchState();
       return;
     }
-    const toasts = { skip:'Mensaje saltado', clear:'Cola vaciada', markClip:'Clip marcado', emergency:'Modo emergencia', soloChat:'Solo chat activado' };
+    const toasts = {
+      skip: t('mobile3.msgSkipped'),
+      clear: t('mobile3.queueCleared'),
+      markClip: t('mobile3.clipMarked'),
+      emergency: t('mobile3.emergencyMode'),
+      soloChat: t('mobile3.onlyChatActivated')
+    };
     if (toasts[action]) showToast(toasts[action]);
     fetchState();
   })
-  .catch(() => showToast('Error de conexión'));
+  .catch(() => showToast(t('mobile3.connectionError')));
 }
 
 function toggleGlobal()       { cmd('globalTTS', { value: !state.ttsGlobalEnabled }); }
@@ -884,11 +909,11 @@ function mRenderNowPlaying(track) {
   const ch    = document.getElementById('m-music-channel');
   const req   = document.getElementById('m-music-req');
   if (thumb) thumb.src = track.thumbnail || '';
-  if (title) title.textContent = track.title || 'Sin título';
+  if (title) title.textContent = track.title || t('mobile3.noTitle');
   if (ch)    ch.textContent    = track.channelName || '';
   if (req)   req.textContent   = track.platform === 'playlist'
-    ? '🎵 Playlist del streamer'
-    : (track.requestedBy ? `Pedido por ${esc(track.requestedBy)}` : '');
+    ? t('mobile3.streamerPlaylist')
+    : (track.requestedBy ? `${t('mobile3.requestedBy')} ${esc(track.requestedBy)}` : '');
 }
 
 function mFetchQueue() {
@@ -898,7 +923,7 @@ function mFetchQueue() {
     const q = d.queue || [];
     if (count) count.textContent = `(${q.length})`;
     if (!list) return;
-    if (!q.length) { list.innerHTML = '<div style="color:var(--muted);font-size:13px;">Vacía.</div>'; return; }
+    if (!q.length) { list.innerHTML = `<div style="color:var(--muted);font-size:13px;">${t('mobile3.queueEmpty')}</div>`; return; }
     list.innerHTML = q.slice(0, 5).map((t, i) => `
       <div style="display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);">
         <span style="font-size:11px;color:var(--muted);min-width:14px;">${i+1}</span>
@@ -914,7 +939,7 @@ function mApplyMusicState(d) {
   if (typeof d.enabled === 'boolean') {
     mMusicEnabled = d.enabled;
     const btn = document.getElementById('m-btnMusicToggle');
-    if (btn) { btn.textContent = mMusicEnabled ? '🎵 Música ON' : '🔇 Música OFF'; btn.style.color = mMusicEnabled ? 'var(--accent)' : 'var(--muted)'; }
+    if (btn) { btn.textContent = mMusicEnabled ? t('mobile3.musicOn') : t('mobile3.musicOff'); btn.style.color = mMusicEnabled ? 'var(--accent)' : 'var(--muted)'; }
   }
   if (typeof d.playlistEnabled === 'boolean') {
     mPlaylistEnabled = d.playlistEnabled;
@@ -965,14 +990,14 @@ fetch('/api/music/config').then(r=>r.json()).then(d=>{
   mPlaylistEnabled = !!d.playlistEnabled;
   mSetVolUI(d.musicVolume ?? 0.5);
   const btn = document.getElementById('m-btnMusicToggle');
-  if (btn) { btn.textContent = mMusicEnabled ? '🎵 Música ON' : '🔇 Música OFF'; btn.style.color = mMusicEnabled ? 'var(--accent)' : 'var(--muted)'; }
+  if (btn) { btn.textContent = mMusicEnabled ? t('mobile3.musicOn') : t('mobile3.musicOff'); btn.style.color = mMusicEnabled ? 'var(--accent)' : 'var(--muted)'; }
   const s = document.getElementById('m-playlist-status');
   if (s) s.textContent = mPlaylistEnabled ? 'ON' : 'OFF';
 }).catch(()=>{});
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ── INIT ──────────────────────────────────────────────────────────────────
-connectWS();
+loadLocale();
 </script>
 </body>
 </html>

@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: telemetry
+      POSTGRES_USER: telemetry
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U telemetry"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: ./api
+    restart: unless-stopped
+    ports:
+      - "${PORT:-4000}:4000"
+    environment:
+      POSTGRES_URL: postgresql://telemetry:${POSTGRES_PASSWORD:-changeme}@postgres:5432/telemetry
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-change_me}
+      PORT: 4000
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pg_data:

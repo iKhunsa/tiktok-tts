@@ -89,7 +89,7 @@
       "desc": "Graba momentos del stream. El atajo global Ctrl+Shift+M funciona aunque la app esté minimizada."
     },
     "mobile": {
-      "title": "📱 Control Móvil",
+      "title": "Control Móvil",
       "desc": "Controla el TTS desde tu celular en la misma red WiFi."
     }
   },
@@ -115,6 +115,7 @@
     "pauseShortcut": "Pausar / Reanudar TTS",
     "skipShortcut": "Saltar mensaje actual",
     "clearQueueShortcut": "Limpiar cola",
+    "musicPauseShortcut": "Pausar/Reanudar música del bot",
     "accentColor": "Color acento",
     "bgOpacity": "Opacidad fondo",
     "visibleMsgs": "Mensajes visibles",
@@ -190,21 +191,23 @@
   "bot": {
     "title": "Bot de Música",
     "desc": "El chat puede pedir canciones con !p nombre o !p link de YouTube. Tu playlist suena de fondo cuando no hay peticiones.",
-    "nowPlaying": "▶ Reproduciendo ahora",
+    "nowPlaying": "Reproduciendo ahora",
     "enableCmd": "Activar !p",
     "skipSong": "⏭ Skip",
+    "pauseSong": "⏸ Pausa",
+    "resumeSong": "▶ Reanudar",
     "noMusic": "Sin música reproduciéndose.",
     "musicVol": "Vol. Música",
-    "requestQueue": "📋 Cola de peticiones",
+    "requestQueue": "Cola de peticiones",
     "clearQueue": "🗑 Limpiar",
     "queueEmpty": "La cola está vacía.",
-    "myPlaylist": "🎵 Mi Playlist (fondo)",
+    "myPlaylist": "Mi Playlist (fondo)",
     "enable": "Activar",
     "shuffle": "Aleatorio",
     "playlistHint": "Una canción por línea: nombre o URL de YouTube. Suena cuando no hay peticiones del chat.",
     "playlistActive": "▶ Sonando de playlist:",
     "savePlaylist": "💾 Guardar playlist",
-    "botSettings": "⚙ Configuración del bot",
+    "botSettings": "Configuración del bot",
     "cooldown": "Cooldown por usuario (seg)",
     "maxQueue": "Máx canciones en cola",
     "bannedUsers": "Usuarios baneados del !p",
@@ -467,6 +470,7 @@
     "obsReconnecting": "Reconectando OBS… (intento {attempt})",
     "platformConnected": "{platform} conectado",
     "platformDisconnected": "{platform} desconectado",
+    "allChannelsDisconnected": "Todos los canales desconectados",
     "youtubeAutoSaved": "YouTube guardado; se conectará cuando haya live",
     "youtubeTmpSaved": "YouTube temporal guardado como manual"
   }

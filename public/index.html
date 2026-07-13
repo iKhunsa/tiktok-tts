@@ -188,14 +188,7 @@
     .lang-selector-row select:hover { border-color: var(--accent); color: var(--text); }
 
     /* ── SOUND PAD ───────────────────────────────────────── */
-    .soundpad-toolbar {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
-    }
-    .soundpad-count { font-size: 12px; color: var(--text-muted); }
+    .soundpad-count { font-size: 12px; font-weight: 400; color: var(--text-muted); margin-left: 4px; }
     .soundpad-deck {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -209,18 +202,28 @@
       line-height: 1.6;
     }
     .sp-card {
-      border-radius: 14px;
+      --sp-color: var(--accent);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
       padding: 14px 12px 10px;
       display: flex;
       flex-direction: column;
       gap: 8px;
       position: relative;
-      transition: filter 0.12s, transform 0.1s, box-shadow 0.12s;
+      overflow: hidden;
       min-height: 130px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+      transition: border-color 0.12s, transform 0.1s;
     }
-    .sp-card:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.35); }
-    .sp-card:active { transform: scale(0.96); }
+    .sp-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--sp-color);
+    }
+    .sp-card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+    .sp-card:active { transform: scale(0.97); }
     .sp-play-area {
       flex: 1;
       display: flex;
@@ -231,9 +234,9 @@
       gap: 6px;
     }
     .sp-play-btn {
-      font-size: 30px;
+      font-size: 22px;
       line-height: 1;
-      background: rgba(255,255,255,0.15);
+      background: var(--sp-color);
       border: none;
       border-radius: 50%;
       width: 48px;
@@ -242,17 +245,18 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      color: rgba(255,255,255,0.95);
-      transition: background 0.1s;
+      color: #fff;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+      transition: filter 0.1s;
       flex-shrink: 0;
     }
-    .sp-card:hover .sp-play-btn { background: rgba(255,255,255,0.25); }
+    .sp-card:hover .sp-play-btn { filter: brightness(1.15); }
     .sp-play-btn.playing { animation: sp-pulse 0.4s ease; }
     @keyframes sp-pulse { 0%{transform:scale(1)} 50%{transform:scale(1.2)} 100%{transform:scale(1)} }
     .sp-name {
       font-size: 12px;
-      font-weight: 700;
-      color: rgba(255,255,255,0.95);
+      font-weight: 600;
+      color: var(--text);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -262,31 +266,34 @@
       border: none;
       width: 100%;
       padding: 2px 4px;
-      border-radius: 4px;
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
     }
     .sp-name:focus {
       outline: none;
-      background: rgba(0,0,0,0.2);
+      background: var(--bg-button);
+      box-shadow: 0 0 0 1px var(--border-strong);
     }
     .sp-shortcut {
       font-size: 10px;
       font-weight: 600;
-      color: rgba(255,255,255,0.75);
+      font-family: 'Source Code Pro', monospace;
+      color: var(--text-secondary);
       text-align: center;
       cursor: pointer;
-      background: rgba(0,0,0,0.2);
-      border-radius: 5px;
+      background: var(--bg-button);
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
       padding: 3px 6px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      border: 1px solid rgba(255,255,255,0.15);
-      transition: background 0.1s;
+      transition: border-color 0.1s, color 0.1s;
       letter-spacing: 0.3px;
     }
-    .sp-shortcut:hover { background: rgba(0,0,0,0.35); border-color: rgba(255,255,255,0.3); }
-    .sp-shortcut.capturing { border-color: rgba(255,255,255,0.7); background: rgba(0,0,0,0.4); color: #fff; animation: blink-border 0.8s infinite; }
-    @keyframes blink-border { 0%,100%{border-color:rgba(255,255,255,0.7)} 50%{border-color:rgba(255,255,255,0.2)} }
+    .sp-shortcut:hover { border-color: var(--accent); color: var(--text); }
+    .sp-shortcut.capturing { border-color: var(--accent); color: var(--accent); animation: blink-border 0.8s infinite; }
+    @keyframes blink-border { 0%,100%{border-color:var(--accent)} 50%{border-color:var(--border)} }
     .sp-footer {
       display: flex;
       align-items: center;
@@ -297,25 +304,26 @@
       width: 18px;
       height: 18px;
       border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.5);
+      border: 2px solid var(--border-strong);
       cursor: pointer;
       flex-shrink: 0;
       padding: 0;
       background: transparent;
     }
+    .sp-color-btn:hover { border-color: var(--text-muted); }
     .sp-delete-btn {
-      font-size: 14px;
-      background: rgba(0,0,0,0.15);
+      font-size: 13px;
+      background: none;
       border: none;
       cursor: pointer;
-      color: rgba(255,255,255,0.5);
+      color: var(--text-muted);
       padding: 2px 5px;
-      border-radius: 5px;
+      border-radius: 6px;
       line-height: 1.4;
       flex-shrink: 0;
       transition: background 0.1s, color 0.1s;
     }
-    .sp-delete-btn:hover { color: rgba(255,80,80,0.9); background: rgba(200,30,30,0.15); }
+    .sp-delete-btn:hover { color: #ff6666; background: rgba(255, 68, 68, 0.12); }
 
     /* ── MAIN AREA ───────────────────────────────────────── */
     .main-area {
@@ -561,6 +569,14 @@
     }
 
     .btn-clear:hover { border-color: var(--border-strong); color: var(--text-secondary); }
+
+    .btn-clear.channels-connected {
+      background: rgba(62,207,142,0.12);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .btn-clear.channels-connected:hover { border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,0.12); }
 
     #chatLog {
       min-height: 260px;
@@ -1386,7 +1402,7 @@
         <span data-i18n="nav.soundpad">Sonidos</span>
       </button>
       <button class="sidebar-item" data-view="mobile" onclick="switchView('mobile')">
-        <img class="sidebar-icon icon-inline" src="icons/label.svg" alt="">
+        <img class="sidebar-icon icon-inline" src="icons/smartphone.svg" alt="">
         <span data-i18n="nav.mobile">Móvil</span>
       </button>
       <button class="sidebar-item" data-view="bot" onclick="switchView('bot')">
@@ -1409,7 +1425,7 @@
       <button class="sidebar-footer-btn" onclick="openSocialModal()"><img class="icon-inline" src="icons/smartphone.svg" alt=""> <span data-i18n="footer.channels">Canales</span></button>
       <a href="/advanced.html" class="sidebar-footer-btn"><img class="icon-inline" src="icons/build.svg" alt=""> <span data-i18n="footer.advanced">Avanzado</span></a>
       <div class="lang-selector-row">
-        <img class="icon-inline" src="icons/g_translate.svg" alt="" style="opacity:0.6;flex-shrink:0;">
+        <img class="icon-inline" src="icons/language.svg" alt="" style="opacity:0.6;flex-shrink:0;">
         <select id="langSelect" onchange="setLanguage(this.value)" title="UI Language">
           <option value="es">Español</option>
           <option value="en">English</option>
@@ -1476,6 +1492,7 @@
         <button class="cfg-btn" onclick="skipCurrentTTS()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> <span data-i18n="btn.skipCurrent">Saltar actual</span></button>
         <button class="cfg-btn danger" onclick="clearTTSQueue()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="btn.clearQueue">Vaciar cola</span></button>
         <button class="cfg-btn" onclick="enableEmergencyTTSMode()"><img class="icon-inline" src="icons/warning.svg" alt=""> <span data-i18n="btn.emergency">Modo emergencia</span></button>
+        <button class="cfg-btn" onclick="clearChat()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="btn.clearChat">Limpiar</span></button>
         <span style="font-size:11px;color:var(--text-muted);" data-i18n="emergencyHint">Emergencia deja activos regalos y follows, y silencia chat/likes/entradas/compartidos.</span>
       </div>
 
@@ -1486,7 +1503,7 @@
             <img class="icon-inline" src="icons/mail_outline.svg" alt=""> <span data-i18n="chat.title">Chat en vivo</span>
             <span class="chat-count" id="msgCount">0</span>
           </div>
-          <button class="btn-clear" onclick="clearChat()" data-i18n="btn.clearChat">Limpiar</button>
+          <button class="btn-clear" id="btn-connect-all-chat" onclick="toggleConnectAllChat()" data-i18n="btn.connectAll">Conectar todo</button>
         </div>
         <div id="chatLog">
           <div class="empty-state" id="emptyState">
@@ -1866,15 +1883,17 @@
 
       <!-- Now Playing -->
       <div class="cfg-card" id="music-now-playing-card">
-        <div class="cfg-card-header">
-          <span data-i18n="bot.nowPlaying">▶ Reproduciendo ahora</span>
-          <div style="display:flex;gap:8px;align-items:center;">
-            <label class="toggle-label" style="font-size:12px;">
-              <input type="checkbox" id="musicEnabledToggle" onchange="musicSetEnabled(this.checked)">
-              <span data-i18n="bot.enableCmd">Activar !p</span>
-            </label>
-            <button class="btn btn-sm" onclick="musicSkip()" title="Saltar canción" data-i18n="bot.skipSong">⏭ Skip</button>
+        <div class="cfg-header">
+          <div class="cfg-icon"><img class="icon-inline" src="icons/play_arrow.svg" alt=""></div>
+          <div class="cfg-meta">
+            <div class="cfg-title" data-i18n="bot.nowPlaying">Reproduciendo ahora</div>
           </div>
+          <label class="toggle-chip">
+            <input type="checkbox" id="musicEnabledToggle" onchange="musicSetEnabled(this.checked)">
+            <span data-i18n="bot.enableCmd">Activar !p</span>
+          </label>
+          <button class="btn-test" id="btnMusicPause" onclick="musicTogglePause()" title="Pausar/Reanudar" data-i18n="bot.pauseSong">⏸ Pausa</button>
+          <button class="btn-test" onclick="musicSkip()" title="Saltar canción" data-i18n="bot.skipSong">⏭ Skip</button>
         </div>
         <div id="music-idle-msg" style="color:var(--text-muted);font-size:13px;padding:8px 0;" data-i18n="bot.noMusic">Sin música reproduciéndose.</div>
         <div id="music-track-info" style="display:none;gap:12px;align-items:center;">
@@ -1883,7 +1902,7 @@
             <div id="music-title" style="font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
             <div id="music-channel" style="font-size:12px;color:var(--text-muted);"></div>
             <div id="music-req" style="font-size:11px;color:var(--text-muted);margin-top:2px;"></div>
-            <div style="margin-top:6px;background:var(--bg-secondary);border-radius:4px;height:4px;overflow:hidden;">
+            <div style="margin-top:6px;background:var(--surface);border-radius:4px;height:4px;overflow:hidden;">
               <div id="music-progress-bar" style="height:100%;background:var(--accent);width:0%;transition:width 1s linear;"></div>
             </div>
           </div>
@@ -1892,18 +1911,21 @@
         <!-- Volume -->
         <div style="margin-top:12px;display:flex;align-items:center;gap:10px;">
           <img src="icons/volume_up.svg" class="icon-inline" alt="" style="opacity:.7;">
-          <span style="font-size:12px;white-space:nowrap;" data-i18n="bot.musicVol">Vol. Música</span>
+          <span style="font-size:12px;font-weight:500;color:var(--text-secondary);white-space:nowrap;" data-i18n="bot.musicVol">Vol. Música</span>
           <input type="range" id="musicVolRange" min="0" max="1" step="0.05" value="0.5"
-            oninput="musicSetVolume(this.value)" style="flex:1;">
-          <span id="musicVolVal" style="font-size:12px;min-width:32px;text-align:right;">50%</span>
+            oninput="musicSetVolume(this.value)" style="flex:1;accent-color:var(--accent);">
+          <span id="musicVolVal" style="font-size:12px;color:var(--text-secondary);min-width:32px;text-align:right;">50%</span>
         </div>
       </div>
 
       <!-- Queue -->
       <div class="cfg-card">
-        <div class="cfg-card-header">
-          <span data-i18n="bot.requestQueue">📋 Cola de peticiones</span> <span id="music-queue-count" style="font-size:11px;opacity:.6;">(0)</span>
-          <button class="btn btn-sm" onclick="musicClearQueue()" title="Limpiar cola" data-i18n="bot.clearQueue">🗑 Limpiar</button>
+        <div class="cfg-header">
+          <div class="cfg-icon"><img class="icon-inline" src="icons/filter_none.svg" alt=""></div>
+          <div class="cfg-meta">
+            <div class="cfg-title"><span data-i18n="bot.requestQueue">Cola de peticiones</span> <span id="music-queue-count" style="font-size:11px;color:var(--text-muted);font-weight:500;">(0)</span></div>
+          </div>
+          <button class="btn-test" onclick="musicClearQueue()" title="Limpiar cola" data-i18n="bot.clearQueue">🗑 Limpiar</button>
         </div>
         <div id="music-queue-list" style="display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;">
           <div style="color:var(--text-muted);font-size:13px;" data-i18n="bot.queueEmpty">La cola está vacía.</div>
@@ -1912,56 +1934,57 @@
 
       <!-- Streamer Playlist -->
       <div class="cfg-card">
-        <div class="cfg-card-header">
-          <span data-i18n="bot.myPlaylist">🎵 Mi Playlist (fondo)</span>
-          <div style="display:flex;gap:8px;align-items:center;">
-            <label class="toggle-label" style="font-size:12px;">
-              <input type="checkbox" id="playlistEnabledToggle" onchange="playlistSetEnabled(this.checked)">
-              <span data-i18n="bot.enable">Activar</span>
-            </label>
-            <label class="toggle-label" style="font-size:12px;">
-              <input type="checkbox" id="playlistShuffleToggle" onchange="playlistSetShuffle(this.checked)">
-              <span data-i18n="bot.shuffle">Aleatorio</span>
-            </label>
+        <div class="cfg-header">
+          <div class="cfg-icon"><img class="icon-inline" src="icons/music_note.svg" alt=""></div>
+          <div class="cfg-meta">
+            <div class="cfg-title" data-i18n="bot.myPlaylist">Mi Playlist (fondo)</div>
+            <div class="cfg-subtitle" data-i18n="bot.playlistHint">Una canción por línea: nombre o URL de YouTube. Suena cuando no hay peticiones del chat.</div>
           </div>
+          <label class="toggle-chip">
+            <input type="checkbox" id="playlistEnabledToggle" onchange="playlistSetEnabled(this.checked)">
+            <span data-i18n="bot.enable">Activar</span>
+          </label>
+          <label class="toggle-chip">
+            <input type="checkbox" id="playlistShuffleToggle" onchange="playlistSetShuffle(this.checked)">
+            <span data-i18n="bot.shuffle">Aleatorio</span>
+          </label>
         </div>
-        <p style="font-size:12px;color:var(--text-muted);margin:0 0 8px;" data-i18n="bot.playlistHint">Una canción por línea: nombre o URL de YouTube. Suena cuando no hay peticiones del chat.</p>
         <div id="music-playlist-active" style="display:none;font-size:12px;color:var(--accent);margin-bottom:6px;"><span data-i18n="bot.playlistActive">▶ Sonando de playlist:</span> <span id="playlist-now-title"></span></div>
-        <textarea id="playlistTextarea" rows="6" style="width:100%;box-sizing:border-box;background:var(--bg-secondary);border:1px solid var(--border);border-radius:6px;padding:8px;color:var(--text);font-size:13px;resize:vertical;"
+        <textarea id="playlistTextarea" rows="6" style="width:100%;box-sizing:border-box;background:var(--bg-button);border:1px solid var(--border-strong);border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;resize:vertical;outline:none;"
           placeholder="Bohemian Rhapsody Queen&#10;https://www.youtube.com/watch?v=fJ9rUzIMcZQ&#10;Lose Yourself Eminem"></textarea>
-        <div style="margin-top:8px;display:flex;justify-content:flex-end;">
-          <button class="btn btn-primary btn-sm" onclick="playlistSave()" data-i18n="bot.savePlaylist">💾 Guardar playlist</button>
+        <div style="margin-top:10px;display:flex;justify-content:flex-end;">
+          <button class="btn btn-connect" onclick="playlistSave()" data-i18n="bot.savePlaylist">💾 Guardar playlist</button>
         </div>
       </div>
 
       <!-- Bot Settings -->
       <div class="cfg-card">
-        <div class="cfg-card-header"><span data-i18n="bot.botSettings">⚙ Configuración del bot</span></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-          <label style="font-size:13px;">
-            <span data-i18n="bot.cooldown">Cooldown por usuario (seg)</span>
-            <input type="number" id="musicCooldownInput" min="0" max="3600" value="60"
-              style="width:100%;margin-top:4px;padding:6px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:4px;color:var(--text);"
-              onchange="musicSaveCooldown(this.value)">
-          </label>
-          <label style="font-size:13px;">
-            <span data-i18n="bot.maxQueue">Máx canciones en cola</span>
-            <input type="number" id="musicMaxQueueInput" min="1" max="50" value="10"
-              style="width:100%;margin-top:4px;padding:6px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:4px;color:var(--text);"
-              onchange="musicSaveMaxQueue(this.value)">
-          </label>
-        </div>
-
-        <!-- Banned users -->
-        <div style="margin-top:12px;">
-          <div style="font-size:13px;margin-bottom:6px;font-weight:600;" data-i18n="bot.bannedUsers">Usuarios baneados del !p</div>
-          <div style="display:flex;gap:6px;">
-            <input type="text" id="musicBanInput" data-i18n-placeholder="bot.banPlaceholder" placeholder="@usuario o ID"
-              style="flex:1;padding:6px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:13px;"
-              onkeydown="if(event.key==='Enter')musicBanUser()">
-            <button class="btn btn-sm" onclick="musicBanUser()" data-i18n="bot.ban">Banear</button>
+        <div class="cfg-header">
+          <div class="cfg-icon"><img class="icon-inline" src="icons/settings.svg" alt=""></div>
+          <div class="cfg-meta">
+            <div class="cfg-title" data-i18n="bot.botSettings">Configuración del bot</div>
           </div>
-          <div id="music-banned-list" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;"></div>
+        </div>
+        <div class="cfg-fields">
+          <div class="cfg-field">
+            <label data-i18n="bot.cooldown">Cooldown por usuario (seg)</label>
+            <input type="number" id="musicCooldownInput" min="0" max="3600" value="60"
+              onchange="musicSaveCooldown(this.value)">
+          </div>
+          <div class="cfg-field">
+            <label data-i18n="bot.maxQueue">Máx canciones en cola</label>
+            <input type="number" id="musicMaxQueueInput" min="1" max="50" value="10"
+              onchange="musicSaveMaxQueue(this.value)">
+          </div>
+          <div class="cfg-field full">
+            <label data-i18n="bot.bannedUsers">Usuarios baneados del !p</label>
+            <div style="display:flex;gap:8px;">
+              <input type="text" id="musicBanInput" data-i18n-placeholder="bot.banPlaceholder" placeholder="@usuario o ID"
+                style="flex:1;" onkeydown="if(event.key==='Enter')musicBanUser()">
+              <button class="btn-test" onclick="musicBanUser()" data-i18n="bot.ban">Banear</button>
+            </div>
+            <div id="music-banned-list" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -1971,6 +1994,67 @@
       <div class="view-header">
         <h2><img class="icon-inline" src="icons/settings.svg" alt=""> <span data-i18n="view.settings.title">Configuración TTS</span></h2>
         <p data-i18n="view.settings.desc">Ajusta la voz, velocidad y comportamientos. Todo se guarda automáticamente.</p>
+      </div>
+
+      <!-- CONEXIÓN PRINCIPAL -->
+      <div class="settings-section">
+        <div class="settings-section-title" data-i18n="settings.connection">Conexión principal</div>
+        <div class="connect-panel" style="margin-bottom:0;">
+          <div class="panel-title">
+            <img class="icon-inline" src="icons/lens.svg" alt=""> TikTok Live
+          </div>
+          <div class="input-row">
+            <div class="input-wrapper">
+              <span>@</span>
+              <input type="text" id="usernameInput" placeholder="usuario_tiktok" autocomplete="off" />
+            </div>
+            <button class="btn btn-connect" id="btnConnect" onclick="connect()" data-i18n="btn.connect">Conectar</button>
+            <button class="btn btn-disconnect" id="btnDisconnect" onclick="disconnect()" style="display:none" data-i18n="btn.disconnect">Desconectar</button>
+          </div>
+          <div class="status-bar">
+            <div class="status-dot" id="statusDot"></div>
+            <span class="status-text" id="statusText">Esperando conexión...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CANALES ADICIONALES -->
+      <div class="settings-section">
+        <div class="settings-section-title" style="display:flex;justify-content:space-between;align-items:center;">
+          <span data-i18n="settings.channels">Canales adicionales</span>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
+            <button class="btn-supabase-primary" id="btn-connect-saved" onclick="connectSavedChannels()" data-i18n="btn.connectAll">Conectar todo</button>
+            <button class="btn-supabase-primary" id="btn-toggle-add-channel" onclick="toggleAddChannelForm()">
+              ＋ Agregar canal
+            </button>
+          </div>
+        </div>
+        <div id="settings-channels-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:20px;margin-bottom:4px;"></div>
+        <div id="add-channel-form" style="display:none;flex-direction:column;gap:10px;margin-top:10px;">
+          <div class="seg-control" id="platform-seg">
+            <button class="seg-btn active" id="seg-tiktok" onclick="selectAddPlatform('tiktok')">
+              <img style="width:13px;height:13px;vertical-align:middle;" src="icons/tiktok.svg" alt=""> TikTok
+            </button>
+            <button class="seg-btn" id="seg-twitch" onclick="selectAddPlatform('twitch')">
+              <img style="width:13px;height:13px;vertical-align:middle;" src="icons/sports_esports.svg" alt=""> Twitch
+            </button>
+            <button class="seg-btn" id="seg-youtube" onclick="selectAddPlatform('youtube')">
+              <img style="width:13px;height:13px;vertical-align:middle;" src="icons/tv.svg" alt=""> YouTube
+            </button>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <div class="input-wrapper" style="flex:1;">
+              <input type="text" id="add-channel-input" placeholder="@usuario"
+                autocomplete="off" onkeydown="if(event.key==='Enter')addChannelFromSettings()" />
+            </div>
+            <button class="btn-supabase-primary" id="btn-add-channel" onclick="addChannelFromSettings()">Conectar</button>
+            <button class="btn btn-disconnect" onclick="toggleAddChannelForm()"
+              style="font-size:12px;padding:9px 14px;border-radius:9999px;">Cancelar</button>
+          </div>
+          <div id="youtube-channel-hint" style="display:none;font-size:11px;color:var(--text-muted);line-height:1.5;">
+            Usa @canal o Channel ID para reconectar sin pegar link nuevo. Links watch/youtu.be se guardan como live temporal manual.
+          </div>
+        </div>
       </div>
 
       <div class="settings-section">
@@ -2105,66 +2189,29 @@
               <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
             </div>
           </div>
-        </div>
-      </div>
-
-      <!-- CONEXIÓN PRINCIPAL -->
-      <div class="settings-section">
-        <div class="settings-section-title" data-i18n="settings.connection">Conexión principal</div>
-        <div class="connect-panel" style="margin-bottom:0;">
-          <div class="panel-title">
-            <img class="icon-inline" src="icons/lens.svg" alt=""> TikTok Live
-          </div>
-          <div class="input-row">
-            <div class="input-wrapper">
-              <span>@</span>
-              <input type="text" id="usernameInput" placeholder="usuario_tiktok" autocomplete="off" />
+          <div class="setting-group">
+            <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
+              <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
+              <span data-i18n="label.musicPauseShortcut">Pausar/Reanudar música del bot</span>
+            </label>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <input id="musicPauseShortcutInput" readonly placeholder="Clic aquí y presiona teclas..."
+  onclick="startCapturingShortcut('musicPause')"
+                style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
+              <button onclick="clearTtsShortcut('musicPause')"
+                style="padding:8px 12px;border-radius:8px;font-size:12px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--text-muted);cursor:pointer;" data-i18n="btn.clearShortcut">
+                ✕ Limpiar
+              </button>
             </div>
-            <button class="btn btn-connect" id="btnConnect" onclick="connect()" data-i18n="btn.connect">Conectar</button>
-            <button class="btn btn-disconnect" id="btnDisconnect" onclick="disconnect()" style="display:none" data-i18n="btn.disconnect">Desconectar</button>
-          </div>
-          <div class="status-bar">
-            <div class="status-dot" id="statusDot"></div>
-            <span class="status-text" id="statusText">Esperando conexión...</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- CANALES ADICIONALES -->
-      <div class="settings-section">
-        <div class="settings-section-title" style="display:flex;justify-content:space-between;align-items:center;">
-          <span data-i18n="settings.channels">Canales adicionales</span>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
-            <button class="btn-supabase-primary" id="btn-connect-saved" onclick="connectSavedChannels()" data-i18n="btn.connectAll">Conectar todo</button>
-            <button class="btn-supabase-primary" id="btn-toggle-add-channel" onclick="toggleAddChannelForm()">
-              ＋ Agregar canal
-            </button>
-          </div>
-        </div>
-        <div id="settings-channels-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:20px;margin-bottom:4px;"></div>
-        <div id="add-channel-form" style="display:none;flex-direction:column;gap:10px;margin-top:10px;">
-          <div class="seg-control" id="platform-seg">
-            <button class="seg-btn active" id="seg-tiktok" onclick="selectAddPlatform('tiktok')">
-              <img style="width:13px;height:13px;vertical-align:middle;" src="icons/tiktok.svg" alt=""> TikTok
-            </button>
-            <button class="seg-btn" id="seg-twitch" onclick="selectAddPlatform('twitch')">
-              <img style="width:13px;height:13px;vertical-align:middle;" src="icons/sports_esports.svg" alt=""> Twitch
-            </button>
-            <button class="seg-btn" id="seg-youtube" onclick="selectAddPlatform('youtube')">
-              <img style="width:13px;height:13px;vertical-align:middle;" src="icons/tv.svg" alt=""> YouTube
-            </button>
-          </div>
-          <div style="display:flex;gap:8px;align-items:center;">
-            <div class="input-wrapper" style="flex:1;">
-              <input type="text" id="add-channel-input" placeholder="@usuario"
-                autocomplete="off" onkeydown="if(event.key==='Enter')addChannelFromSettings()" />
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+              <button onclick="applyTtsShortcutPreset('musicPause', 'F11')"
+                style="padding:6px 10px;border-radius:8px;font-size:11px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--text-secondary);cursor:pointer;">
+                F11
+              </button>
             </div>
-            <button class="btn-supabase-primary" id="btn-add-channel" onclick="addChannelFromSettings()">Conectar</button>
-            <button class="btn btn-disconnect" onclick="toggleAddChannelForm()"
-              style="font-size:12px;padding:9px 14px;border-radius:9999px;">Cancelar</button>
-          </div>
-          <div id="youtube-channel-hint" style="display:none;font-size:11px;color:var(--text-muted);line-height:1.5;">
-            Usa @canal o Channel ID para reconectar sin pegar link nuevo. Links watch/youtu.be se guardan como live temporal manual.
+            <div id="musicPauseShortcutHint" style="font-size:11px;color:var(--text-muted);margin-top:4px;">
+              <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
+            </div>
           </div>
         </div>
       </div>
@@ -2239,26 +2286,30 @@
         <h2>🎵 <span data-i18n="nav.soundpad">Pad de Sonidos</span></h2>
         <p data-i18n="soundpad.desc">Sube sonidos y reprodúcelos con un clic o atajo de teclado (funciona en pantalla completa).</p>
       </div>
-      <div class="soundpad-toolbar">
-        <button class="btn-primary" onclick="spUploadTrigger()" id="spUploadBtn">
-          ⬆ <span data-i18n="soundpad.upload">Subir sonido</span>
-        </button>
-        <button class="btn-secondary" onclick="spPlayTestSound()" title="Reproducir sonido de prueba">
-          🔊 Test
-        </button>
-        <span class="soundpad-count" id="spCount"></span>
-        <input type="file" id="spFileInput" accept=".mp3,.wav,.ogg,.webm,.m4a" style="display:none" onchange="spHandleUpload(this)">
-      </div>
-      <div id="spDeck" class="soundpad-deck"></div>
-      <div id="spEmpty" class="soundpad-empty" style="display:none">
-        🎵 <span data-i18n="soundpad.empty">Sube tu primer sonido para empezar</span>
+      <div class="cfg-card">
+        <div class="cfg-header" style="flex-wrap:wrap;">
+          <div class="cfg-icon"><img class="icon-inline" src="icons/music_note.svg" alt=""></div>
+          <div class="cfg-meta">
+            <div class="cfg-title"><span data-i18n="nav.soundpad">Sonidos</span> <span class="soundpad-count" id="spCount"></span></div>
+            <div class="cfg-subtitle" data-i18n="soundpad.clickToAssign">Clic para asignar atajo de teclado (requiere modificador: Ctrl/Alt/Shift)</div>
+          </div>
+          <button class="btn-test" onclick="spPlayTestSound()" title="Reproducir sonido de prueba">🔊 Test</button>
+          <button class="btn btn-connect" onclick="spUploadTrigger()" id="spUploadBtn" style="padding:9px 18px;font-size:13px;">
+            ⬆ <span data-i18n="soundpad.upload">Subir sonido</span>
+          </button>
+          <input type="file" id="spFileInput" accept=".mp3,.wav,.ogg,.webm,.m4a" style="display:none" onchange="spHandleUpload(this)">
+        </div>
+        <div id="spDeck" class="soundpad-deck"></div>
+        <div id="spEmpty" class="soundpad-empty" style="display:none">
+          🎵 <span data-i18n="soundpad.empty">Sube tu primer sonido para empezar</span>
+        </div>
       </div>
     </div>
 
     <!-- ── VIEW: Móvil ─────────────────────────────────── -->
     <div class="view" id="view-mobile">
       <div class="view-header">
-        <h2>📱 <span data-i18n="view.mobile.title">Control Móvil</span></h2>
+        <h2><img class="icon-inline" src="icons/smartphone.svg" alt=""> <span data-i18n="view.mobile.title">Control Móvil</span></h2>
         <p data-i18n="view.mobile.desc">Controla el TTS desde tu celular en la misma red WiFi.</p>
       </div>
 
@@ -2842,8 +2893,9 @@
     pause: { settingKey: 'pauseShortcut', inputId: 'pauseShortcutInput', hintId: 'pauseShortcutHint', run: () => togglePauseTts() },
     skip:  { settingKey: 'skipShortcut',  inputId: 'skipShortcutInput',  hintId: 'skipShortcutHint',  run: () => skipCurrentTTS() },
     clear: { settingKey: 'clearShortcut', inputId: 'clearShortcutInput', hintId: 'clearShortcutHint', run: () => clearTTSQueue() },
+    musicPause: { settingKey: 'musicPauseShortcut', inputId: 'musicPauseShortcutInput', hintId: 'musicPauseShortcutHint', run: () => musicTogglePause() },
   };
-  const ttsShortcutGlobalActive = { pause: false, skip: false, clear: false };
+  const ttsShortcutGlobalActive = { pause: false, skip: false, clear: false, musicPause: false };
 
   function togglePauseTts() {
     ttsPaused = !ttsPaused;
@@ -3688,8 +3740,9 @@
         if (Array.isArray(data.queue)) { musicQueue = data.queue; musicRenderQueue(); }
         break;
       case 'music-skip':
+        // Solo detener audio local: el servidor ya avanza la cola y emite
+        // music-now-playing / music-idle (evita N avances con N clientes)
         musicStop();
-        fetch('/api/music/next', { method: 'POST' }).catch(() => {});
         break;
       case 'music-idle':
         musicOnIdle();
@@ -4278,7 +4331,7 @@
     if (!_spSounds.length) {
       deck.innerHTML = '';
       if (empty) empty.style.display = '';
-      if (count) count.textContent = '';
+      if (count) count.textContent = '0/24';
       return;
     }
     if (empty) empty.style.display = 'none';
@@ -4286,7 +4339,7 @@
     deck.innerHTML = _spSounds.map(s => {
       const sc = s.shortcut ? escapeHtml(s.shortcut) : (t('soundpad.noShortcut') || 'Sin atajo');
       const id = escapeHtml(s.id);
-      return `<div class="sp-card" id="spcard-${id}" style="background:${escapeHtml(s.color)}">
+      return `<div class="sp-card" id="spcard-${id}" style="--sp-color:${escapeHtml(s.color)}">
         <div class="sp-play-area" onclick="spPlaySoundWithAnim('${id}')">
           <button class="sp-play-btn" id="spplay-${id}" tabindex="-1">▶</button>
           <input class="sp-name" value="${escapeHtml(s.name)}" maxlength="40"
@@ -4373,7 +4426,7 @@
     if (!s) return;
     s.color = color;
     const card = document.getElementById(`spcard-${soundId}`);
-    if (card) card.style.background = color;
+    if (card) card.style.setProperty('--sp-color', color);
     await fetch(`/api/soundpad/${soundId}`, { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ color }) });
   }
 
@@ -4393,7 +4446,7 @@
     const el = document.getElementById(`spsc-${soundId}`);
     if (el) {
       el.textContent = t('soundpad.pressKey') || 'Presiona tecla…';
-      el.style.outline = '2px solid rgba(255,255,255,0.8)';
+      el.classList.add('capturing');
     }
     document.addEventListener('keydown', _spKeyCapture, { capture: true });
   }
@@ -4405,7 +4458,7 @@
     if (id) {
       const s = _spSounds.find(x => x.id === id);
       const el = document.getElementById(`spsc-${id}`);
-      if (el && s) { el.textContent = s.shortcut || (t('soundpad.noShortcut') || 'Sin atajo'); el.style.outline = ''; }
+      if (el && s) { el.textContent = s.shortcut || (t('soundpad.noShortcut') || 'Sin atajo'); el.classList.remove('capturing'); }
     }
   }
 
@@ -4669,7 +4722,9 @@
     }
 
     const btn = document.getElementById('btn-connect-saved');
+    const chatBtn = document.getElementById('btn-connect-all-chat');
     if (btn) { btn.disabled = true; btn.textContent = t('conn.connecting'); }
+    if (chatBtn) { chatBtn.disabled = true; chatBtn.textContent = t('conn.connecting'); }
 
     let connected = 0;
     let failed = 0;
@@ -4696,11 +4751,69 @@
     }
 
     if (btn) { btn.disabled = false; btn.textContent = t('btn.connectAll'); }
+    if (chatBtn) { chatBtn.disabled = false; chatBtn.textContent = t('btn.connectAll'); }
     renderSettingsChannels();
     const parts = [`${connected} conectados`];
     if (failed) parts.push(`${failed} fallidos`);
     if (manualCount) parts.push(`${manualCount} manual`);
     showToast(t('conn.connectAllMsg', { parts: parts.join(', ') }));
+  }
+
+  async function toggleConnectAllChat() {
+    const chatBtn = document.getElementById('btn-connect-all-chat');
+    if (chatBtn && chatBtn.classList.contains('channels-connected')) {
+      chatBtn.disabled = true;
+      const prevText = chatBtn.textContent;
+      chatBtn.textContent = t('conn.connecting');
+      let channels = { tiktok: [], twitch: [], youtube: [] };
+      try {
+        const res = await fetch('/api/channels');
+        if (res.ok) channels = await res.json();
+      } catch (e) {}
+      const active = [];
+      PLATFORMS.forEach(platform => {
+        (channels[platform] || []).forEach(ch => {
+          const normalized = normalizeChannelEntry(platform, ch)?.channel;
+          if (normalized) active.push({ platform, channel: normalized });
+        });
+      });
+      for (const { platform, channel } of active) {
+        try {
+          await fetch('/api/platforms/disconnect', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ platform, channel }),
+          });
+        } catch (e) {}
+      }
+      chatBtn.disabled = false;
+      chatBtn.textContent = prevText;
+      renderSettingsChannels();
+      showToast(t('toast.allChannelsDisconnected'));
+    } else {
+      connectSavedChannels();
+    }
+  }
+
+  async function updateChatConnectAllState(preloadedChannels) {
+    const chatBtn = document.getElementById('btn-connect-all-chat');
+    if (!chatBtn) return;
+    let channels = preloadedChannels;
+    if (!channels) {
+      channels = { tiktok: [], twitch: [], youtube: [] };
+      try {
+        const res = await fetch('/api/channels');
+        if (res.ok) channels = await res.json();
+      } catch (e) {}
+    }
+    const activeCount = PLATFORMS.reduce((sum, platform) => sum + (channels[platform] || []).length, 0);
+    if (activeCount > 0) {
+      chatBtn.classList.add('channels-connected');
+      chatBtn.title = `${activeCount} canal(es) conectado(s) — clic para desconectar`;
+    } else {
+      chatBtn.classList.remove('channels-connected');
+      chatBtn.title = 'Sin canales conectados — clic para conectar todo';
+    }
   }
 
   async function renderSettingsChannels() {
@@ -4714,6 +4827,7 @@
       if (res.ok) channels = await res.json();
     } catch (e) {}
     if (renderSeq !== settingsChannelsRenderSeq) return;
+    updateChatConnectAllState(channels);
 
     const saved = loadPlatformChannels();
     const byKey = new Map();
@@ -4817,19 +4931,34 @@
   let musicProgressInterval = null;
   let musicQueue = [];
 
+  // Desecha el Audio activo sin disparar sus handlers: asignar src='' lanza el
+  // load algorithm contra la URL de la página → evento error fantasma que
+  // llamaba /api/music/next de más y drenaba la cola en cascada.
+  function musicDisposeAudio() {
+    if (!musicAudio) return;
+    musicAudio.onerror = null;
+    musicAudio.onended = null;
+    musicAudio.pause();
+    musicAudio.removeAttribute('src');
+    musicAudio = null;
+  }
+
   function musicPlayTrack(track) {
-    if (musicAudio) { musicAudio.pause(); musicAudio.src = ''; musicAudio = null; }
+    musicDisposeAudio();
     clearInterval(musicProgressInterval);
     musicCurrentTrack = track;
-    musicAudio = new Audio(`/api/music/stream?videoId=${track.videoId}`);
-    musicAudio.volume = musicVol;
-    musicAudio.play().catch(() => {});
-    musicAudio.onerror = () => {
-      console.error('music stream error', musicAudio?.error?.message);
+    const audio = new Audio(`/api/music/stream?videoId=${track.videoId}`);
+    musicAudio = audio;
+    audio.volume = musicVol;
+    audio.play().catch(() => {});
+    audio.onerror = () => {
+      if (audio !== musicAudio) return; // evento tardío de un Audio ya descartado
+      console.error('music stream error', audio.error?.message);
       showToast(t('toast.songError'));
       fetch('/api/music/next', { method: 'POST' }).catch(() => {});
     };
-    musicAudio.onended = () => {
+    audio.onended = () => {
+      if (audio !== musicAudio) return;
       fetch('/api/music/next', { method: 'POST' }).catch(() => {});
     };
     // Progress bar (estimated from duration string "m:ss")
@@ -4855,10 +4984,11 @@
   }
 
   function musicStop() {
-    if (musicAudio) { musicAudio.pause(); musicAudio.src = ''; musicAudio = null; }
+    musicDisposeAudio();
     clearInterval(musicProgressInterval);
     musicCurrentTrack = null;
     musicRenderNowPlaying(null);
+    updateMusicPauseBtn();
   }
 
   function musicRenderNowPlaying(track) {
@@ -4925,6 +5055,7 @@
   function musicOnNowPlaying(track) {
     musicPlayTrack(track);
     musicRenderNowPlaying(track);
+    updateMusicPauseBtn();
   }
 
   function musicOnQueued() {
@@ -4942,8 +5073,7 @@
 
   function musicOnStateSync(data) {
     if (typeof data.enabled === 'boolean') {
-      const tog = document.getElementById('musicEnabledToggle');
-      if (tog) tog.checked = data.enabled;
+      syncMusicChip('musicEnabledToggle', data.enabled);
     }
     if (typeof data.volume === 'number') {
       musicVol = data.volume;
@@ -4954,8 +5084,7 @@
       if (vv) vv.textContent = Math.round(musicVol * 100) + '%';
     }
     if (typeof data.playlistEnabled === 'boolean') {
-      const pe = document.getElementById('playlistEnabledToggle');
-      if (pe) pe.checked = data.playlistEnabled;
+      syncMusicChip('playlistEnabledToggle', data.playlistEnabled);
     }
   }
 
@@ -4971,7 +5100,30 @@
     fetch('/api/music/skip', { method: 'POST' }).catch(() => {});
   }
 
+  // Sincroniza checked + clase .active del toggle-chip contenedor
+  function syncMusicChip(id, checked) {
+    const cb = document.getElementById(id);
+    if (!cb) return;
+    cb.checked = checked;
+    cb.closest('.toggle-chip')?.classList.toggle('active', checked);
+  }
+
+  function musicTogglePause() {
+    if (!musicAudio) return;
+    if (musicAudio.paused) musicAudio.play().catch(() => {});
+    else musicAudio.pause();
+    updateMusicPauseBtn();
+  }
+
+  function updateMusicPauseBtn() {
+    const btn = document.getElementById('btnMusicPause');
+    if (!btn) return;
+    const paused = !musicAudio || musicAudio.paused;
+    btn.textContent = paused ? t('bot.resumeSong') : t('bot.pauseSong');
+  }
+
   function musicSetEnabled(val) {
+    syncMusicChip('musicEnabledToggle', val);
     fetch('/api/music/config', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -5041,7 +5193,7 @@
     const list = document.getElementById('music-banned-list');
     if (!list) return;
     list.innerHTML = banned.map(u => `
-      <span style="display:inline-flex;align-items:center;gap:4px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:2px 8px;font-size:12px;">
+      <span style="display:inline-flex;align-items:center;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:9999px;padding:3px 10px;font-size:12px;">
         ${escHtml(u)}
         <button onclick="musicUnbanUser('${escHtml(u)}')" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:14px;line-height:1;padding:0;">×</button>
       </span>`).join('');
@@ -5060,10 +5212,18 @@
   }
 
   function playlistSetEnabled(val) {
-    fetch('/api/music/playlist/toggle', { method: 'POST' }).catch(() => {});
+    syncMusicChip('playlistEnabledToggle', val);
+    // Estado explícito: evita que un flip ciego desincronice el checkbox si
+    // otro cliente (móvil) también toglea
+    fetch('/api/music/playlist/toggle', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ enabled: val })
+    }).catch(() => {});
   }
 
   function playlistSetShuffle(val) {
+    syncMusicChip('playlistShuffleToggle', val);
     fetch('/api/music/playlist/shuffle', { method: 'POST' }).catch(() => {});
   }
 
@@ -5080,8 +5240,7 @@
       const vv = document.getElementById('musicVolVal');
       if (vr) vr.value = musicVol;
       if (vv) vv.textContent = Math.round(musicVol * 100) + '%';
-      const et = document.getElementById('musicEnabledToggle');
-      if (et) et.checked = d.musicEnabled !== false;
+      syncMusicChip('musicEnabledToggle', d.musicEnabled !== false);
       const cd = document.getElementById('musicCooldownInput');
       if (cd) cd.value = Math.round((d.musicUserCooldownMs || 60000) / 1000);
       const mq = document.getElementById('musicMaxQueueInput');
@@ -5091,10 +5250,8 @@
     fetch('/api/music/playlist').then(r => r.json()).then(d => {
       const ta = document.getElementById('playlistTextarea');
       if (ta && d.raw) ta.value = d.raw.join('\n');
-      const pe = document.getElementById('playlistEnabledToggle');
-      if (pe) pe.checked = !!d.enabled;
-      const ps = document.getElementById('playlistShuffleToggle');
-      if (ps) ps.checked = !!d.shuffle;
+      syncMusicChip('playlistEnabledToggle', !!d.enabled);
+      syncMusicChip('playlistShuffleToggle', !!d.shuffle);
     }).catch(() => {});
   }
 

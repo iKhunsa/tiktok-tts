@@ -89,7 +89,7 @@
       "desc": "Записывайте моменты трансляции. Глобальный ярлык Ctrl+Shift+M работает даже при свёрнутом приложении."
     },
     "mobile": {
-      "title": "📱 Мобильное управление",
+      "title": "Мобильное управление",
       "desc": "Управляйте TTS со смартфона в той же сети WiFi."
     }
   },
@@ -115,6 +115,7 @@
     "pauseShortcut": "Пауза / Возобновить TTS",
     "skipShortcut": "Пропустить текущее сообщение",
     "clearQueueShortcut": "Очистить очередь",
+    "musicPauseShortcut": "Пауза/продолжение музыки бота",
     "accentColor": "Цвет акцента",
     "bgOpacity": "Прозрачность фона",
     "visibleMsgs": "Видимых сообщений",
@@ -190,21 +191,23 @@
   "bot": {
     "title": "Музыкальный бот",
     "desc": "Чат может запросить песни через !p название или !p ссылка YouTube. Плейлист воспроизводится в фоне при отсутствии запросов.",
-    "nowPlaying": "▶ Сейчас играет",
+    "nowPlaying": "Сейчас играет",
     "enableCmd": "Включить !p",
     "skipSong": "⏭ Пропустить",
+    "pauseSong": "⏸ Пауза",
+    "resumeSong": "▶ Продолжить",
     "noMusic": "Музыка не воспроизводится.",
     "musicVol": "Громкость музыки",
-    "requestQueue": "📋 Очередь запросов",
+    "requestQueue": "Очередь запросов",
     "clearQueue": "🗑 Очистить",
     "queueEmpty": "Очередь пуста.",
-    "myPlaylist": "🎵 Мой плейлист (фон)",
+    "myPlaylist": "Мой плейлист (фон)",
     "enable": "Включить",
     "shuffle": "Случайный порядок",
     "playlistHint": "Одна песня в строке: название или URL YouTube. Воспроизводится при отсутствии запросов.",
     "playlistActive": "▶ Воспроизводится из плейлиста:",
     "savePlaylist": "💾 Сохранить плейлист",
-    "botSettings": "⚙ Настройки бота",
+    "botSettings": "Настройки бота",
     "cooldown": "Кулдаун на пользователя (сек)",
     "maxQueue": "Макс. песен в очереди",
     "bannedUsers": "Заблокированные для !p",
@@ -467,6 +470,7 @@
     "obsReconnecting": "Переподключение OBS… (попытка {attempt})",
     "platformConnected": "{platform} подключён",
     "platformDisconnected": "{platform} отключён",
+    "allChannelsDisconnected": "Все каналы отключены",
     "youtubeAutoSaved": "YouTube сохранён; подключится когда начнётся эфир",
     "youtubeTmpSaved": "YouTube сохранён как ручной канал"
   }

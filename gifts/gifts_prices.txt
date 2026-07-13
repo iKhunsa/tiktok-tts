@@ -1,0 +1,820 @@
+LISTA DE PRECIOS DE REGALOS TIKTOK LIVE
+============================================================
+
+Total de imagenes: 810
+Con precio encontrado: 550
+Sin precio (personalizados/no listados): 260
+
+------------------------------------------------------------------------------------------
+Imagen                                        Nombre                                 Coins
+------------------------------------------------------------------------------------------
+001_Rosa.png                                  Rosa                                      10
+002_Coraz_n_de_fuego.png                      Flame heart                                1
+003_Huella_de_dinosaurio.png                  Dinosaur                                1000
+004_Alas_de_hada.png                          Fairy Wings                             1000
+005_Te_adoro.png                              Love you so much                           1
+006_Eres_incre_ble.png                        Youre awesome                              1
+007_Nube_de_coraz_n.png                       Heart Puff                                 1
+008_TikTok.png                                TikTok                                     1
+009_Estrella_de_la_partida.png                ---                                      N/A
+010_Gui_o_gui_o.png                           Wink wink                                  1
+011_Estilo_libre.png                          Freestyle                                  1
+012_Cl_sicos.png                              Oldies                                     1
+013_TGIF.png                                  ---                                      N/A
+014_Pop.png                                   Pop                                        1
+015_Tom_el_tomate.png                         Gamer Tater                               10
+016_Genial.png                                Cool                                       1
+017_Mamma_mia.png                             ---                                      N/A
+018_Steven_Wingman.png                        ---                                      N/A
+019_Mascota_extraterrestre.png                Alien Buddy                              399
+020_Alas_de_guardi_n.png                      ---                                      N/A
+021_Pase_de_verano_S.png                      Journey Pass                              10
+022_Hablar_de_coraz_n.png                     Heart                                      1
+023__Vamos_.png                               ---                                      N/A
+024_Flores_matutinas.png                      ---                                      N/A
+025_Slay.png                                  ---                                      N/A
+026_Rosa_blanca.png                           My First Rose                              1
+027_Arco_ris.png                              ---                                      N/A
+028_Beso.png                                  ---                                      N/A
+029_Baloncesto.png                            League Ball                               10
+030_Rebanada_de_pastel.png                    Cake Slice                                 1
+031_Rayo.png                                  Lightning Bolt                             1
+032_A_todo_gas.png                            GOAT                                       1
+033_Claqueta.png                              ---                                      N/A
+034_GG.png                                    GG                                         1
+035_Cono_de_helado.png                        Ice Cream Cone                             1
+036_Coraz_n_de_jengibre.png                   Heart                                      1
+037_Qui_reme.png                              ---                                      N/A
+038_Creeper.png                               Creeper                                    1
+039_Enhorabuena.png                           Congratulations                            1
+040_Qu_lindo.png                              So Cute                                    1
+041_OK.png                                    ---                                      N/A
+042_Coraz_n.png                               Heart                                      1
+043_Te_quiero.png                             Love you                                   1
+044_Tarta_de_cumplea_os.png                   Cake Slice                                 1
+045__lbum_de_m_sica.png                       Music Album                                1
+046_Mi_primera_rosa.png                       My First Rose                              1
+047_coldy.png                                 coldy                                      1
+048_Rel_mpago_rojo.png                        Red Lightning                              1
+049_Rel_mpago_azul.png                        Blue Lightning                             1
+050_Rel_mpago_amarillo.png                    Yellow Lightning                           1
+051_Gui_o_encantador.png                      Wink Charm                                 1
+052_Hazte_popular.png                         Go Popular                                 1
+053__nimo_del_equipo.png                      Club Cheers                                1
+054_Javi_Santander.png                        ---                                      N/A
+055_Werita_Coqueta.png                        ---                                      N/A
+056_Le_n_Blackstars.png                       Lion                                   29999
+057_So_adora_21.png                           ---                                      N/A
+058_Ingenio_Afilado.png                       ---                                      N/A
+059_Kiki_Feng.png                             ---                                      N/A
+060_Chiquitita_Turquesa.png                   ---                                      N/A
+061_Cari_o_Sincero.png                        ---                                      N/A
+062_Sebas_Mej_a.png                           ---                                      N/A
+063_Scrop_Micro.png                           ---                                      N/A
+064_Porte_de_Campe_n.png                      ---                                      N/A
+065_Lobo_Villa.png                            Wolf                                    5500
+066_Jorgita_Coqueta.png                       ---                                      N/A
+067_Helen_Azul.png                            ---                                      N/A
+068_Tr_bol_Sonriente.png                      ---                                      N/A
+069_Reino_de_Atlantis.png                     ---                                      N/A
+070_Akela_Azul.png                            ---                                      N/A
+071_Spring.png                                ---                                      N/A
+072_Juli_Literal.png                          ---                                      N/A
+073_V_nculo_Familiar.png                      ---                                      N/A
+074_Pascal_Naranja.png                        ---                                      N/A
+075_Pap_LOKI.png                              ---                                      N/A
+076_Kiwi_Octopvs.png                          ---                                      N/A
+077_Tibur_n_Azul.png                          ---                                      N/A
+078_Blue_LOBO.png                             Wolf                                    5500
+079_Veri_Valyrio.png                          ---                                      N/A
+080_Quesito_Tridente.png                      ---                                      N/A
+081_Mago_El_ctrico.png                        ---                                      N/A
+082_Energ_a_Marchosa.png                      ---                                      N/A
+083_DJ_Mircea.png                             ---                                      N/A
+084_Pap_Del_Valle.png                         ---                                      N/A
+085_Sere_Miau.png                             ---                                      N/A
+086_Sonrisa_Meiga.png                         ---                                      N/A
+087_Patrona_Floral.png                        ---                                      N/A
+088_Pantera_Blanca.png                        ---                                      N/A
+089_Liz_Girasol.png                           ---                                      N/A
+090_Osme_Dorada.png                           ---                                      N/A
+091_Bandana_Blue.png                          ---                                      N/A
+092_Gui_o_de_Ra_l.png                         ---                                      N/A
+093_Lazo_Rosa.png                             Rose                                       1
+094_Draco_Lila.png                            ---                                      N/A
+095_Familia_Le_n.png                          Lion                                   29999
+096_Pantera_Negra.png                         ---                                      N/A
+097_Guajapen_Chavales.png                     ---                                      N/A
+098_D_o_de_Carcajadas.png                     ---                                      N/A
+099_Encanto_Real.png                          ---                                      N/A
+100_Team_Alien.png                            ---                                      N/A
+101_Princesa_Radiante.png                     ---                                      N/A
+102_Camisa_Rebelde.png                        ---                                      N/A
+103_Ruth_Silvera.png                          ---                                      N/A
+104_Le_n_Atento.png                           Lion                                   29999
+105_Maestro_Rivas.png                         ---                                      N/A
+106_Belu_Nevada.png                           ---                                      N/A
+107_Consentida_Radiante.png                   ---                                      N/A
+108_Madrina_Roja.png                          ---                                      N/A
+109_Marcia_Rosa.png                           Rose                                       1
+110_Equipo_Astrid.png                         ---                                      N/A
+111_Juventud_Eterna.png                       ---                                      N/A
+112_Angel_de_Bronce.png                       ---                                      N/A
+113_Cabritas_Jena.png                         ---                                      N/A
+114_Mary_Floral.png                           ---                                      N/A
+115_Danne_Serena.png                          ---                                      N/A
+116_Patr_n_Azul.png                           ---                                      N/A
+117_Lechu_Bebe_Granate.png                    ---                                      N/A
+118_Gafas_Rojas.png                           ---                                      N/A
+119_Infinito_Morado.png                       ---                                      N/A
+120_Grito_de_Gol.png                          ---                                      N/A
+121_Prezen_Autentic_.png                      ---                                      N/A
+122_Caritoo_Osito.png                         ---                                      N/A
+123_Patrona_Daya.png                          ---                                      N/A
+124_Leones_Calele.png                         ---                                      N/A
+125_QUI_REME_Lila.png                         ---                                      N/A
+126_Toni_Celeste.png                          ---                                      N/A
+127_Furia_Bestial.png                         ---                                      N/A
+128_Esfinge_Violeta.png                       ---                                      N/A
+129_Nana_Pollito.png                          Baby Chicks                              500
+130_Elenita_Emperatriz.png                    ---                                      N/A
+131_Desi_Oficial.png                          ---                                      N/A
+132_Micr_fono_Chikiis.png                     ---                                      N/A
+133_Sue_Black.png                             ---                                      N/A
+134_Mabel_Hielito.png                         ---                                      N/A
+135_Patitas_Kimi.png                          ---                                      N/A
+136_BotXisco_Azul.png                         ---                                      N/A
+137_Bomb_n_de_Chocolate.png                   ---                                      N/A
+138_Tridentes_Dorados.png                     ---                                      N/A
+139_D_o_Inseparable.png                       ---                                      N/A
+140_Diamante_Mau.png                          ---                                      N/A
+141_Yeirol_TGR.png                            ---                                      N/A
+142_Mel_Tierna.png                            ---                                      N/A
+143_Max_Bufanda.png                           ---                                      N/A
+144_Ismael_Cotillas.png                       ---                                      N/A
+145_Reto_o.png                                ---                                      N/A
+146_Tortus_Verde.png                          ---                                      N/A
+147_Ari_Polar.png                             ---                                      N/A
+148_Evoluci_n_Salvaje.png                     ---                                      N/A
+149_Croqueta_Feliz.png                        ---                                      N/A
+150_Peiyou_Dragons.png                        Dinosaur                                1000
+151_Team_Bestia_Feroz.png                     ---                                      N/A
+152_Auriculares_DreamBig.png                  ---                                      N/A
+153_Yurena_Violeta.png                        ---                                      N/A
+154_Instinto_Felino.png                       ---                                      N/A
+155_El_Lobo_De_Aur.png                        Wolf                                    5500
+156_Rox_Piojitos.png                          ---                                      N/A
+157_Voz_Sincera.png                           ---                                      N/A
+158_AldrinTV_Tridente.png                     ---                                      N/A
+159_Oiga_Jairon.png                           ---                                      N/A
+160_Reacci_n_pica.png                         Overreact                                  5
+161_Vecina_Chula.png                          ---                                      N/A
+162_Sara_Panda.png                            Panda Snap                               399
+163_es_ma_z.png                               Its corn                                   1
+164_Maracas.png                               Beach Maracas                            349
+165_Aleja_Menta.png                           ---                                      N/A
+166_Carpe_Diem_Colorido.png                   ---                                      N/A
+167_Team_Glasses.png                          ---                                      N/A
+168_Le_n_TeamRoy.png                          Lion                                   29999
+169_Goku_Rosa.png                             Rose                                       1
+170_Pirata_Naranja.png                        ---                                      N/A
+171_Sabor_Triunfal.png                        ---                                      N/A
+172_Arbolito_Doble.png                        ---                                      N/A
+173_Corona_Reina_Madre.png                    ---                                      N/A
+174_Karencita_Beige.png                       ---                                      N/A
+175_Lobo_Sonriente.png                        Wolf                                    5500
+176_Lois_Bestia.png                           ---                                      N/A
+177_Renacer_de_Gloria.png                     ---                                      N/A
+178_Regalo_de_la_comunidad.png                ---                                      N/A
+179_Gorra_Intensa.png                         ---                                      N/A
+180_Pedrusky_Gatito.png                       ---                                      N/A
+181_Fruta_T_ctica.png                         ---                                      N/A
+182_Rayitos_Dorados.png                       ---                                      N/A
+183_Pulgarcita_Pili.png                       ---                                      N/A
+184_Barra_fluorescente.png                    Glow Stick                                 1
+185_Chile.png                                 Chilli Pepper                              1
+186_Poder_del_Diamante.png                    ---                                      N/A
+187_Tortilla.png                              ---                                      N/A
+188_Flamenco.png                              Flamingo Groove                         1000
+189_Caf_.png                                  Coffee Magic                             199
+190_Escudo.png                                ---                                      N/A
+191_Consulta_Damel.png                        ---                                      N/A
+192_Lui_Besado.png                            ---                                      N/A
+193_Josue_Rs_Gorro.png                        ---                                      N/A
+194_OK.png                                    ---                                      N/A
+195_Pulsera_de_equipo.png                     Team Bracelet                              2
+196_Exageraci_n.png                           Overreact                                  5
+197_Saludo_personalizado.png                  Name shoutout                              5
+198_Melocot_n.png                             ---                                      N/A
+199_Tofu.png                                  ---                                      N/A
+200_soy_azul.png                              ---                                      N/A
+201_Hola_viajero.png                          ---                                      N/A
+202_Jugador_de_oro.png                        ---                                      N/A
+203_Galletas_con_pepitas_de_chocolate.png     ---                                      N/A
+204_Coraz_n_coreano.png                       Finger Heart                               5
+205_Paquetes_verdes_Raya_.png                 ---                                      N/A
+206_Helado.png                                Ice Cream Cone                             1
+207_Fuegos_artificiales_sauce_.png            Fireworks                               1088
+208_Abanico.png                               ---                                      N/A
+209_Clavel.png                                ---                                      N/A
+210_Aplauso.png                               Bravo                                     15
+211_Superpopular.png                          Super Popular                              9
+212_Apoyo.png                                 ---                                      N/A
+213_Poder_del_equipo.png                      Club Power                                 9
+214_Lupa.png                                  ---                                      N/A
+215_Vinilo_de_DJ.png                          Vinyl Flip                               349
+216_C_mara_lenta.png                          Slow motion                               10
+217_Pase_para_el_evento.png                   Journey Pass                              10
+218_Cerdito_enamorado.png                     ---                                      N/A
+219_Patata_con_helado.png                     Gamer Tater                               10
+220_Collar_de_amistad.png                     Friendship Necklace                       10
+221_Rosa.png                                  Rosa                                      10
+222_Silbato.png                               ---                                      N/A
+223_Peque_o_dinosaurio.png                    Tiny dino                                N/A
+224_Paleta.png                                ---                                      N/A
+225_Guantes_de_boxeo_dorados.png              Gold Boxing Gloves                        10
+226_Poni_de_la_suerte.png                     Lucky Pony                                10
+227_Bal_n_de_la_liga.png                      League Ball                               10
+228_Abanico_del_FANDOM.png                    FANDOM Fan                                10
+229_Chocolate.png                             Chocolate                                 10
+230_Hora_de_ASMR.png                          ---                                      N/A
+231_Conejito_con_flor_de_cerezo.png           ---                                      N/A
+232_EWC.png                                   EWC Trophy                              1500
+233_Dame_tu_estilo.png                        Style Me Up                               10
+234_C_scara_de_pl_tano.png                    Banana Peel                               10
+235_Mirada_de_coraz_n.png                     Heart Gaze                                10
+236_Fuego_furioso.png                         Fireworks                               1088
+237_Globos.png                                Wolf                                    5500
+238_Coraz_n.png                               Heart                                      1
+239_Pastor_ovejero_australiano.png            ---                                      N/A
+240__Bravo_.png                               Bravo                                     15
+241_Sol_de_verano.png                         ---                                      N/A
+242_Flores_S.png                              ---                                      N/A
+243_Perfume.png                               Perfume                                   20
+244_Cono_de_tr_fico.png                       Traffic Cone                              20
+245_Capibara.png                              Capybara                                  30
+246_U_make_Miso_happy_.png                    ---                                      N/A
+247_You_are_my_Jam.png                        You are my Jam                            30
+248_You_are_on_a_Roll.png                     ---                                      N/A
+249_Rosquilla.png                             Doughnut                                  30
+250_P_ldora_de_energ_a.png                    Energy Capsule                            30
+251_Maravilla_del_bosque.png                  ---                                      N/A
+252_Bagel.png                                 ---                                      N/A
+253_Te_quiero_en_lengua_de_signos.png         ---                                      N/A
+254_Mariposa.png                              Butterfly                                 88
+255_Familia.png                               ---                                      N/A
+256_Choque_de_pu_os.png                       Fist Bump                                 90
+257_Corona_de_cumplea_os.png                  ---                                      N/A
+258_Arco_del_amor.png                         Cupids Bow                                99
+259_Bol_de_helado.png                         Sundae Bowl                               99
+260_Estrella_emergente.png                    ---                                      N/A
+261_Marca_de_amor.png                         Mark of Love                              99
+262_Chicle.png                                Bubble Gum                                99
+263_Pintura_de_amor.png                       Love Painting                             99
+264_Metralleta_de_me_gustas.png               Like-Pop                                  99
+265_Guitarra.png                              ---                                      N/A
+266_Beso_de_coraz_n.png                       Heart                                      1
+267_Sombrero_y_bigote.png                     Hat and Mustache                          99
+268_Gorra.png                                 Cap                                       99
+269_Coronita.png                              Little Crown                              99
+270_Cisne_de_papel.png                        Paper Crane                               99
+271_Tarta_de_subida_de_nivel.png              Cake Slice                                 1
+272_Coraz_n_de_felicitaci_n.png               Greeting Heart                            99
+273_Victoria_del_Club_de_fans.png             Club Victory                              99
+274_Narcisos.png                              ---                                      N/A
+275_Mi_rcoles_de_victoria.png                 ---                                      N/A
+276_Tirar_tomates.png                         Gamer Tater                               10
+277_Osito_Mishka.png                          Mishka Bear                              100
+278_Coraz_n_con_las_manos.png                 Hand Hearts                              100
+279_Concha_con_energ_a.png                    Shell of a Warrior                       500
+280_Confeti.png                               Confetti                                 100
+281_Sello_del_FANDOM.png                      FANDOM Stamp                             100
+282_Chip_de_potencia.png                      Power Chip                               100
+283_Canto_m_gico.png                          Singing Magic                            100
+284_Confeti_de_Colores.png                    Marvelous Confetti                       100
+285_Control_Retro.png                         ---                                      N/A
+286_Super_GG.png                              Super GG                                 100
+287_Hada_escondida.png                        Fairy Hide                               149
+288_Gafas_de_coraz_n.png                      Love Glasses                             149
+289_Taza_de_chocolate_de_Pap_Noel.png         Santa Cocoa                              149
+290_Caracol_delirante.png                     Raving Snail                             149
+291_Catrina.png                               Catrina                                  149
+292_Caos_con_oruga.png                        Caterpillar Chaos                        149
+293_Tiara_de_plumas.png                       Feather Tiara                            149
+294_Globos_con_forma_de_coraz_n.png           Balloon Crown                            149
+295_M_scara_misteriosa.png                    Masquerade                               149
+296_Chat_con_palomitas.png                    Chatting Popcorn                         149
+297_Un_grito_por_todo_lo_alto.png             Big Shout Out                            149
+298_Lazo.png                                  Bowknot                                  149
+299_Patata_en_transformaci_n.png              Potato Transformation                    150
+300_Cetro.png                                 ---                                      N/A
+301_Paraguas.png                              Umbrella of Love                        1200
+302_Beso.png                                  ---                                      N/A
+303_Canci_n_de_la_cosecha.png                 ---                                      N/A
+304_Poni_festivo.png                          Party Pony                               199
+305_Gorro_con_forma_de_coraz_n.png            Heart Hood                               199
+306_Bola_del_joker.png                        Joker Ball                               199
+307_Besitos_de_pajaritos.png                  Chirpy Kisses                            199
+308_Agua_de_coco.png                          Coconut Juice                            N/A
+309_Rosa_de_mano.png                          Rose Hand                                199
+310_Sonrisa_jugosa.png                        ---                                      N/A
+311_Amigo_cido.png                            Sour Buddy                               199
+312_Maleta.png                                ---                                      N/A
+313_Diadema_de_flores.png                     Flower Headband                          199
+314_Pulpo_flotante.png                        Floating Octopus                         199
+315_Cangrejo_animador.png                     Cheering Crab                            199
+316_Caf_m_gico.png                            Coffee Magic                             199
+317_Masaje_para_ti.png                        Massage for You                          199
+318_Abeja_dispuesta_a_picar.png               Stinging Bee                             199
+319_Energ_a_positiva.png                      ---                                      N/A
+320_Te_quiero.png                             Love you                                   1
+321_Tocado_de_flores.png                      Garland Headpiece                        199
+322_Corazones.png                             Hearts                                   199
+323_Gafas_de_sol.png                          Sunglasses                               199
+324_Cuenta_atr_s_para_la_liga.png             League Countdown                         199
+325_Me_alegro_por_ti.png                      Cheer For You                            199
+326_Gafas_de_cumplea_os.png                   ---                                      N/A
+327_Gafas_de_fiesta.png                       ---                                      N/A
+328_Panda_Climb.png                           Panda Snap                               399
+329_Juntos.png                                ---                                      N/A
+330_Gafas_con_forma_de_estrella.png           Star Goggles                             249
+331_Estrella_nocturna.png                     Night Star                               199
+332_Coco.png                                  ---                                      N/A
+333_Bengalas.png                              ---                                      N/A
+334_Panda_escalador.png                       Panda Snap                               399
+335_Coraz_n_con_las_manos.png                 Hand Hearts                              100
+336_Estrella_brillante.png                    Twinkling Star                           199
+337_Zumo_de_mel_n.png                         Melon Juice                              199
+338_Cesta_de_comida.png                       ---                                      N/A
+339_Te_veo.png                                ---                                      N/A
+340_Ventilador.png                            Fan Cat                                  199
+341_Corona_con_lazo.png                       ---                                      N/A
+342_Reproductor_de_m_sica.png                 ---                                      N/A
+343_Tomates_jugosos.png                       Gamer Tater                               10
+344_Pompero.png                               ---                                      N/A
+345_Genio_m_gico.png                          Magic Genie                              200
+346_Dino_cap.png                              ---                                      N/A
+347_Medalla_de_oro.png                        Gold Medal                               200
+348_Globos.png                                Wolf                                    5500
+349_Caja_de_tulipanes.png                     ---                                      N/A
+350_Casta_uelas.png                           ---                                      N/A
+351_Oso_rosa.png                              Rose Bear                                214
+352_Gato.png                                  Gamer Cat                                199
+353_Amplificado.png                           Amped Up                                 249
+354_Flores_de_nieve.png                       Snow Bloom                               249
+355_Dulce_aleteo.png                          Sweet Flutter                            249
+356_Cuerdas_de_ensue_o.png                    Dreamy Strings                           249
+357_Flores_festivas.png                       Party Blossom                            249
+358_Ping_ino_surfista.png                     Surfing Penguin                          249
+359_P_jaros_mel_dicos.png                     Melodic birds                            249
+360_Voz_preciada.png                          Treasured Voice                          249
+361_Fantasma_travieso.png                     ---                                      N/A
+362_Elfo_del_bosque.png                       Forest Elf                               249
+363_Brisa_de_palmera.png                      Palm Breeze                              249
+364_Auriculares_con_pompas.png                Music Bubbles                            249
+365_Micr_fono_animador.png                    Cheer Mic                                249
+366_Gafas_de_estrellas.png                    Star Goggles                             249
+367_Micr_fono_de_helado.png                   Ice Cream Mic                            249
+368_Ramo_de_caramelos.png                     Candy Bouquet                            249
+369_Pellizcar_los_mofletes.png                Pinch Face                               249
+370_Guantes_de_boxeo.png                      Boxing Gloves                            299
+371_Ritmo_de_saxo.png                         Sax Groove                               299
+372_Nube_despierta.png                        Wakey Mallow                             299
+373_Brote_primaveral.png                      Spring Sprout                            299
+374_Poni_con_farolillo.png                    Pony Lantern                             299
+375_Llamada_del_amor.png                      Love Call                                299
+376_Compa_ero_musical.png                     Music Mate                               299
+377_Amigo_ping_ino_en_d_as_de_nieve.png       Penguin Snowpal                          299
+378_Gafas_Melody.png                          Melody Glasses                           299
+379_Sombrero_de_murci_lago.png                Bat Headwear                             299
+380_Convi_rtete_en_un_h_mster.png             Go Hamster                               299
+381_El_estilo_de_Rosie.png                    Hi Rosie                                 299
+382_Reto_de_goleador.png                      Kicker Challenge                         299
+383_Coraz_n_de_amor.png                       United Heart                             299
+384_Besitos_de_cachorrito.png                 Puppy Kisses                             299
+385_Mariposas_para_ti.png                     Butterfly for You                        299
+386_Estrella_del_rock.png                     Rock Star                                299
+387_Toca_para_ti.png                          Play for You                             299
+388_Pollo_travieso.png                        Naughty Chicken                          299
+389_Amigos_frutales.png                       Fruit Friends                            299
+390_Trompa_y_orejas_de_elefante.png           Elephant trunk                           299
+391_Corgi.png                                 Corgi                                    299
+392_Corona_de_clasificaci_n_LIVE.png          LIVE Ranking Crown                       299
+393_Caja_de_regalo_del_Eid_n_m_.png           EID Gift Box                             299
+394_Pergamino.png                             Scroll                                   299
+395_Coraz_n_naciente.png                      Budding Heart                            299
+396_Gamer_2025.png                            ---                                      N/A
+397_Apret_n_de_manos.png                      Hand Hearts                              100
+398_Corona_de_TikTok.png                      ---                                      N/A
+399_Pose_de_Judy.png                          ---                                      N/A
+400_Miaugn_fico.png                           ---                                      N/A
+401_Corona_triunfal.png                       ---                                      N/A
+402_Tiny_Diny_con_tri_ngulo.png               Tiny Diny Trek                           200
+403_Diario.png                                Journal                                  299
+404_M_scara_con_plumas.png                    Feather Mask                             300
+405_Bailar_n_inflable.png                     Air Dancer                               300
+406_Ramo_primaveral.png                       Spring Bouquet                           349
+407_Poni_con_varita_brillante.png             Sparkle Pony                             349
+408_Champi_n_roquero.png                      Rocking Shroom                           349
+409_Ramo_de_caramelos.png                     Candy Bouquet                            249
+410_Mu_eco_de_jengibre.png                    Gingerbread Man                          349
+411_Aviador_vintage.png                       Vintage flight                           349
+412_Maracas_de_playa.png                      Beach Maracas                            349
+413_Bebida_m_stica.png                        Mystic Drink                             349
+414_Sombrero_con_alas_de_murci_lago.png       Batwing Hat                              349
+415_Gorra_con_vasos.png                       ---                                      N/A
+416_Estela_colorida.png                       ---                                      N/A
+417_Convi_rtete_en_gatito.png                 Become Kitten                            349
+418_Mono_con_platillos.png                    ---                                      N/A
+419_Pase_de_verano_M.png                      Journey Pass                              10
+420_Pulsera_del_festival.png                  Festival Bracelet                        349
+421_Vinilo_girando.png                        Vinyl Flip                               349
+422_Ranas_cantoras.png                        Singing Frogs                            398
+423_Feliz_viernes.png                         ---                                      N/A
+424_Buenas_noches.png                         ---                                      N/A
+425_Cactus_Shuffle.png                        Cactus Shuffle                           399
+426_Oso_vocalista.png                         Vocal Bear                               399
+427_Gorro_de_dormir.png                       Dreamy Hat                               399
+428_Hada_floral.png                           Blossom Fairy                            399
+429_Instant_nea_de_panda.png                  Panda Snap                               399
+430_Medall_n_m_gico.png                       Fairy Locket                             399
+431_Saxof_n_cantar_n.png                      Singing Sax                              399
+432_Oso_con_confeti.png                       Confetti Bear                            399
+433_B_ho_sorpresa_de_Pap_Noel.png             Santa Owl Surprise                       399
+434_Entrenando_como_un_tigre.png              Tiger Lift                               399
+435_El_saxof_n_de_Rosie.png                   Rosies Concert                           399
+436_M_scara_de_fara_n.png                     ---                                      N/A
+437_Amigo_alien_gena.png                      Alien Buddy                              399
+438_Dispara_a_la_manzana.png                  Shoot the Apple                          399
+439_Gatito_achuchable.png                     Kitten Kneading                          399
+440_Deja_que_la_mariposa_baile.png            Let butterfly dances                     399
+441_Sage_la_semilla_inteligente.png           Sage the Smart Bean                      399
+442_Rocky_la_semilla_roquera.png              Rocky the Rock Bean                      399
+443_Jollie_la_semilla_de_la_alegr_a.png       Jollie the Joy Bean                      399
+444_Rosie_la_semilla_rosa.png                 Rosie the Rose Bean                      399
+445_Abrazo_de_Tom.png                         Toms Hug                                 399
+446_Oca_relajada.png                          Relaxed Goose                            399
+447_Ritmo_m_gico.png                          Magic Rhythm                             399
+448_Rosa_de_la_eternidad.png                  Forever Rosa                             399
+449_Foca_Algodoncito.png                      Cotton the Seal                          399
+450_El_descuento_de_Sage.png                  Sages Slash                              399
+451_Poci_n_medicinal.png                      Health Potion                            399
+452_Vuelo_en_flor.png                         Flower flight                            399
+453_Gato_de_la_suerte.png                     Gamer Cat                                199
+454__No_me_lo_puedo_creer_.png                Overreact                                  5
+455_Beso_de_nutria.png                        ---                                      N/A
+456_Eres_amado_a.png                          You Are Loved                            399
+457_Buenos_d_as.png                           ---                                      N/A
+458_Buenas_tardes.png                         ---                                      N/A
+459_Ola_de_DJ.png                             DJ Wave                                  400
+460_Cachorrito_travieso.png                   Cheeky Pup                               400
+461_Taza_de_leche_con_forma_de_reno.png       Reindeer Milk                            400
+462_Corgi_con_diente_de_le_n.png              Taraxacum Corgi                          400
+463_Altavoces_que_rebotan.png                 Bounce Speakers                          400
+464_As_del_micr_fono.png                      Mic Champ                                400
+465_Tarta_para_pedir_un_deseo.png             Wishing Cake                             400
+466_Sue_os_de_cristal.png                     Crystal Dreams                           400
+467_Fiebre_del_FANDOM.png                     FANDOM Fever                             400
+468_Payaso_bailar_n.png                       Clown Boogie                             449
+469_Sombrero_de_rbol_de_Navidad.png           Xmas Tree Hat                            449
+470_Amor_espacial.png                         Space Love                               449
+471_Bateador_mono.png                         Batting Cutie                            449
+472_Voces_capturadas.png                      Captured Vocals                          449
+473_Bot_n_de_dulces.png                       Candy Loot                               449
+474_El_tesoro_de_un_pirata.png                Pirates Treasure                         449
+475_Rostro_de_Terminator.png                  ---                                      N/A
+476_Pedir_aplausos.png                        Encore Clap                              449
+477_Coraz_n_que_late.png                      Beating Heart                            449
+478_Mirada_de_perezoso.png                    Sloth Peek                               450
+479_Sombrero_de_tr_bol.png                    Clover Hat                               450
+480_Supermujer.png                            Superwoman                               450
+481_Llamada_de_perrito.png                    Paw Call                                 450
+482_Koala_cupido.png                          Cupid Koala                              450
+483_Pop_urbano.png                            City Pop                                 450
+484_Gorro_de_fiesta.png                       Celebration Hat                          450
+485_Director_de_orquesta.png                  Music Conductor                          450
+486_Sombrero_divertido_de_Halloween.png       Halloween Fun Hat                        450
+487_Gorro_divertido.png                       Hat of Joy                               450
+488_Mente_poderosa.png                        Powerful Mind                            450
+489_Mi_rcoles_de_victoria.png                 ---                                      N/A
+490_Vibraci_n_rosa.png                        Rose                                       1
+491_Ping_ino_surfista.png                     Surfing Penguin                          249
+492_Abrazo_de_panda.png                       Panda Hug                                499
+493_Corgi_con_flor_de_cerezo.png              Sakura Corgi                             499
+494_Coral.png                                 Coral                                    499
+495_Micr_fono_de_oro.png                      Diamond Microphone                       500
+496_Manos_arriba.png                          Hands Up                                 499
+497_Gorro_peludito_con_estrellas.png          Starry Fluff                             500
+498_Guitarra_con_forma_de_coraz_n.png         Heart Guitar                             500
+499_Caja_sorpresa.png                         Mystery Box                              500
+500__Lluvia_de_Puyos_.png                     ---                                      N/A
+501_Conjunto_navide_o_calentito.png           Cozy Xmas Set                            500
+502_Fantasma_de_Halloween.png                 ---                                      N/A
+503_Prince.png                                Prince                                   500
+504_Sombrero_con_orejitas_de_conejo.png       Bunny Crown                              500
+505_Espect_culo_floral.png                    Flower Show                              500
+506_Flores_XXXL.png                           XXXL Flowers                             500
+507_Corona_de_drag_n.png                      Dragon Crown                             500
+508_Adicto_a_las_pantallas.png                Couch Potato                             500
+509_Manifestando.png                          Manifesting                              500
+510_Gafas_de_DJ.png                           DJ Glasses                               500
+511_Gafas_de_RV.png                           VR Goggles                               500
+512_Patata_grande.png                         Couch Potato                             500
+513_Molas_un_mont_n.png                       Youre Amazing                            500
+514_Equipo_de_ensue_o.png                     ---                                      N/A
+515_Melena_del_le_n.png                       Lion                                   29999
+516_Pistola_de_dinero.png                     Money Gun                                500
+517_Trofeo.png                                Award                                   4500
+518_Pollitos.png                              Baby Chicks                              500
+519_Mic_Drop.png                              ---                                      N/A
+520_Premio_m_gico.png                         Magic Prop                               500
+521_Diny_en_la_pradera.png                    Prairie Diny                             500
+522_Tom_en_la_pradera.png                     Prairie Tom                              500
+523_Blitzy_en_la_pradera.png                  Prairie Blitzy                           500
+524_Cooper_en_la_pradera.png                  Prairie Cooper                           500
+525_Diny_en_la_jungla.png                     Jungle Diny                              500
+526_Tom_en_la_jungla.png                      Jungle Tom                               500
+527_Blitzy_en_la_jungla.png                   Jungle Blitzy                            500
+528_Cooper_en_la_jungla.png                   Jungle Cooper                            500
+529_Pistola_de_Gemas.png                      Gem Gun                                  500
+530_Polaris.png                               Star Map Polaris                         500
+531_Rosas.png                                 Bouquet                                  500
+532_Dilo_con_un_coraz_n.png                   Heart                                      1
+533_Jardiner_a.png                            Gardening                                500
+534_Casco_de_carrera.png                      Racing Helmet                            500
+535_Star_Map_Polaris.png                      Star Map Polaris                         500
+536_Beso_de_burbujas.png                      Blow Bubbles                             199
+537_H_mster_con_tambor.png                    Drum Hamster                             549
+538_Escape_de_la_colmena.png                  Hive Escape                              549
+539_Im_n_de_dinero.png                        ---                                      N/A
+540_Trofeo_de_la_liga.png                     League Trophy                            599
+541_Cerezo_en_flor.png                        Fully Bloomed Sakura                     599
+542_Feliz_finde.png                           ---                                      N/A
+543_Rey_de_los_principiantes.png              ---                                      N/A
+544_Alas_radiantes.png                        ---                                      N/A
+545_Pop_de_caballito_de_mar.png               Seahorse Pop                             649
+546_Cisne.png                                 Swan                                     699
+547_Alas_coloridas.png                        Colorful Wings                           700
+548_Trofeo_de_baloncesto.png                  Award                                   4500
+549__Hola_Shaun_.png                          ---                                      N/A
+550_Gato_y_cometa.png                         Gamer Cat                                199
+551_Gato_Van.png                              Gamer Cat                                199
+552_El_vuelo_del_amor.png                     Love Flight                              800
+553_Atrapasol.png                             ---                                      N/A
+554_Oso_surfista.png                          Cub on Clouds                           5888
+555_Tren.png                                  Train                                    899
+556_Corona_de_flores_de_cerezo.png            ---                                      N/A
+557_LOVE_U.png                                Love you so much                           1
+558_F_ndom_medio.png                          ---                                      N/A
+559_Flamenco_flotante.png                     Flamingo Groove                         1000
+560_Viaje_juntos.png                          Travel with You                          999
+561_Caja_de_lanzamiento_a_reo_de_la_suerte.png Lucky Airdrop Box                        999
+562_Gran_espect_culo.png                      Strong Finish                           6000
+563_Celebridad.png                            Trending Figure                          999
+564__Mezcla_de_Puyos_.png                     ---                                      N/A
+565_dinosaurio.png                            Dinosaur                                1000
+566_Tambor.png                                ---                                      N/A
+567_Cesta_de_p_cnic.png                       ---                                      N/A
+568_Ritmo_flamenco.png                        Flamingo Groove                         1000
+569_Alas_de_hada.png                          Fairy Wings                             1000
+570_Pluma.png                                 ---                                      N/A
+571_Galaxia.png                               Galaxy                                  1000
+572_Cintas_florecientes.png                   Blooming Ribbons                        1000
+573_Medusa_brillante.png                      Glowing Jellyfish                       1000
+574_Tambores.png                              ---                                      N/A
+575_Jirafa_Gerry.png                          Gerry the Giraffe                       1000
+576_Bola_de_discoteca.png                     Disco ball                              1000
+577_Diny_en_el_cr_ter_de_lava.png             Firepit Diny                            1000
+578_Tom_en_el_cr_ter_de_lava.png              Firepit Tom                             1000
+579_Blitzy_en_el_cr_ter_de_lava.png           Firepit Blitzy                          1000
+580_Cooper_en_el_cr_ter_de_lava.png           Firepit Cooper                          1000
+581_Diny_en_el_desierto.png                   Desert Diny                             1000
+582_Tom_en_el_desierto.png                    Desert Tom                              1000
+583_Blitzy_en_el_desierto.png                 Desert Blitzy                           1000
+584_Cooper_en_el_desierto.png                 Desert Cooper                           1000
+585_Diny_en_la_tundra.png                     Tundra Diny                             1000
+586_Tom_en_la_tundra.png                      Tundra Tom                              1000
+587_Blitzy_en_la_tundra.png                   Tundra Blitzy                           1000
+588_Cooper_en_la_tundra.png                   Tundra Cooper                           1000
+589_Poci_n_m_gica.png                         Magic Potion                            1000
+590_Baile_brillante.png                       Sparkle Dance                           1000
+591_Globo_Aerost_tico_Brillante.png           Shiny air balloon                       1000
+592_Sand_a_enamorada.png                      Watermelon Love                         1000
+593_Delicia_flotante.png                      Joy Floats                              1030
+594_Galaxia_dulce.png                         Galaxy Globe                            1500
+595_Fuegos_artificiales.png                   Fireworks                               1088
+596__rbol_de_diamantes.png                    Diamond                                 1099
+597_Rol_m_gico.png                            Magic Role                              1088
+598_Chispa_exclusiva.png                      ---                                      N/A
+599_Estrellas_de_oro.png                      ---                                      N/A
+600_Refugio_de_amor.png                       ---                                      N/A
+601_Silla_gaming.png                          Game Controller                          100
+602_L_ser_festivo.png                         Party Laser                             1300
+603_Escenario_vibrante.png                    Vibrant Stage                           1400
+604_Flor_lunar.png                            ---                                      N/A
+605_Micro_salvaje.png                         Wild Mic                                1500
+606_Debut_en_las_carreras.png                 Racing Debut                            1500
+607_Gato_espacial.png                         Astrobear                               1500
+608_Manifestaci_n_XXL.png                     Manifesting                              500
+609_Bajo_control.png                          Under Control                           1500
+610_Patata_con_flotador.png                   Gamer Tater                               10
+611_Patata_comiendo_espaguetis.png            Gamer Tater                               10
+612_Futuro_encuentro.png                      Future Encounter                        1500
+613_Tarjeta_de_felicitaci_n.png               Greeting Card                           1500
+614_Candado_de_amor.png                       Lovers Lock                             1500
+615_Oso_Pim.png                               Mishka Bear                              100
+616_Todo_por_un_sue_o.png                     Chasing the Dream                       1500
+617_Rey_de_diamantes.png                      Diamond                                 1099
+618_Nave_de_nivel.png                         Level Ship                              1500
+619_Tarjeta_regalo_de_Raya.png                Raya Gift Card                          1500
+620_Martillo_Vikingo.png                      Viking Hammer                           1500
+621_Trofeo_EWC.png                            EWC Trophy                              1500
+622_Molas_un_mont_n_en_el_aire.png            Youre So Fly                            1500
+623_Oso_espacial.png                          Astrobear                               1500
+624_Viaje_en_el_tiempo.png                    ---                                      N/A
+625_Estrellas_fugaces.png                     Meteor Shower                           3000
+626_Kit_b_sico_de_ASMR.png                    ---                                      N/A
+627_Coraz_n_en_flor.png                       Blooming Heart                          1599
+628_Mi_rcoles_de_victoria.png                 ---                                      N/A
+629_Escenario_principal.png                   ---                                      N/A
+630_All_vamos.png                             Here We Go                              1799
+631_Zorro_de_nueve_colas.png                  Fox Legend                              1800
+632_Atenci_n.png                              ---                                      N/A
+633_Sorpresa_rom_ntica.png                    Love Drop                               1800
+634_Fuegos_artificiales_misteriosos.png       Mystery Firework                        1999
+635_Cooper_vuela_a_casa.png                   Cooper Flies Home                       1999
+636__Bailamos_.png                            Moonwalk                                 150
+637_Felicitaci_n_de_A_o_Nuevo_con_mu_ecos.png Doll New Year Greeting                  1999
+638_Estrella_de_la_alfombra_roja.png          Star of Red Carpet                      1999
+639_B_squeda_de_huevos_de_Pascua.png          Egg Hunt                                1999
+640_Carrusel.png                              ---                                      N/A
+641_Casita_en_la_playa.png                    ---                                      N/A
+642__Recibe_mi_rosa_.png                      Rose                                       1
+643_Pareja_poderosa.png                       Rose                                       1
+644_M_sica_disco.png                          Club Music                              2000
+645_Discoteca.png                             ---                                      N/A
+646_Vacaciones_LIVE.png                       I Love TikTok LIVE                       200
+647_Galaxia_voladora.png                      Galaxy                                  1000
+648_Corona_de_cristal.png                     Crystal Crown                           2000
+649_Beb_drag_n.png                            Baby Dragon                             2000
+650_Ballena_sumergida.png                     Whale Diving                            2150
+651_Puesto_de_limonada.png                    ---                                      N/A
+652_Bot_de_Monedas_de_Sage.png                Sages Coinbot                           2199
+653_El_pu_etazo_de_Rocky.png                  Rockys Punch                            2199
+654_Isla_Coraz_n.png                          Heart                                      1
+655_Tira_besos_con_Rosie.png                  Blow Rosie Kisses                       2199
+656_Moto_de_agua.png                          ---                                      N/A
+657_Luces_oscilantes.png                      Wave Lights                             2200
+658_Por_los_glaseados.png                     ---                                      N/A
+659_Pase_de_verano_L.png                      Journey Pass                              10
+660_Perro_alien_gena.png                      Puppy Kisses                             299
+661_Banda_animal.png                          Animal Band                             2500
+662__nimos_del_FANDOM.png                     FANDOM Cheer                            2500
+663_Escenario_m_gico.png                      ---                                      N/A
+664_Aventuras_de_Tom_y_Sam_en_el_mar.png      ---                                      N/A
+665_Moto.png                                  Motorcycle                              2988
+666_Sue_o_rosa.png                            Pink Dream                              2988
+667_Cami_n_de_helados.png                     ---                                      N/A
+668_Autob_s_de_fiesta.png                     Party Bus                               2999
+669_Toro.png                                  ---                                      N/A
+670_Osito_r_tmico.png                         Rhythmic Bear                           2999
+671_D_a_de_playa.png                          ---                                      N/A
+672_Anillo_de_honor.png                       Ring Of Honor-Cube                      2999
+673_Beb_de_criatura_sorpresa.png              Surprise Baby Mob                       2999
+674_Foco_de_subida_de_nivel.png               Level-up Spotlight                      2999
+675_Bons_i_de_primavera.png                   ---                                      N/A
+676_Ositos_bailarines.png                     ---                                      N/A
+677_Drifting.png                              Sky Drift                               2000
+678_Lluvia_de_meteoritos.png                  Meteor Shower                           3000
+679_Cuerno_de_invocaci_n.png                  Summoning Horn                          3000
+680_Diny_en_el_mar.png                        Sea Diny                                3088
+681_Tom_en_el_mar.png                         Sea Tom                                 3088
+682_Blitzy_en_el_mar.png                      Sea Blitzy                              3088
+683_Cooper_en_el_mar.png                      Sea Cooper                              3088
+684_Gallina_rapera.png                        Hip-Hop Hen                             3200
+685_Levanta_la_vista.png                      Look Up                                 3350
+686_Sue_a_a_lo_grande.png                     Dream Big                               3350
+687_Esqueleto_de_T-Rex_beb_.png               Dinosaur                                1000
+688_De_regreso_a_casa.png                     Go Home                                 3999
+689_Teclado_gaming.png                        Game Controller                          100
+690_Hada_del_bosque.png                       ---                                      N/A
+691_Brilla_brillante.png                      Shine Bright                            4088
+692_Mundo_m_gico.png                          Magic World                              N/A
+693_Siguiente_nivel.png                       Gamer Level Up                             5
+694_Tractor.png                               ---                                      N/A
+695_Tu_concierto.png                          Your Concert                            4500
+696_Drag_n_de_fuego.png                       Fiery Dragon                            4888
+697_Le_n_el_gatito.png                        Leon the Kitten                         4888
+698_Jet_privado.png                           Private Jet                             4888
+699_M_sica_din_mica.png                       Dynamic Music                           4888
+700_Bigotes_de_az_car.png                     Sugar Whiskers                          4918
+701_Noqueo.png                                ---                                      N/A
+702_Benny_el_peque_o_rinoceronte.png          ---                                      N/A
+703_Nave_del_h_roe.png                        Hero Space Ship                         4999
+704_La_aventura_de_Sage.png                   Sages Venture                           4999
+705_Pistola_de_diamantes.png                  Diamond Gun                             5000
+706_Aviones_volando.png                       Flying Jets                             5000
+707_Afici_n_de_la_liga.png                    League Fandom                           5000
+708_1_er_aniversario.png                      ---                                      N/A
+709_LIVE_de_vacaciones.png                    I Love TikTok LIVE                       200
+710_Capa_con_sellos_de_Leoncito.png           Leons Sigil Cape                        5000
+711_Elefanta_Ellie.png                        ---                                      N/A
+712_Unicornio_de_fantas_a.png                 Unicorn Fantasy                         5000
+713_Amigos_peluditos.png                      Furry Friends                            249
+714_Lobo.png                                  Wolf                                    5500
+715_Lobo_del_desierto.png                     Wolf                                    5500
+716_Leoncito_en_las_nubes.png                 Cub on Clouds                           5888
+717_Odisea_heroica.png                        Valiant Odyssey                         5888
+718_Coraz_n_apasionado.png                    Devoted Heart                           5999
+719_Final_por_todo_lo_alto.png                Strong Finish                           6000
+720_Trabaja_mucho_y_disfruta_a_n_m_s.png      Work Hard Play Harder                   6000
+721_Ciudad_del_futuro.png                     Future City                             6000
+722_Estampida_de_pollitos.png                 Chick Stampede                          6000
+723_Contigo.png                               ---                                      N/A
+724_Sam_en_la_nueva_ciudad.png                Sam in New City                         6000
+725_Leoparda_Lili.png                         Lili the Leopard                        6599
+726_Hora_de_la_celebraci_n.png                Celebration Time                        6999
+727_Fiesta_animada.png                        Happy Party                             6999
+728_Ciervo.png                                ---                                      N/A
+729_Cisne_negro.png                           Swan                                     699
+730_Coche_deportivo.png                       Sports Car                              7000
+731_2_aniversario.png                         ---                                      N/A
+732_Noria_y_fuegos_artificiales.png           Fireworks                               1088
+733_Majestic_Hearts.png                       Majestic Hearts                         7238
+734_Conductor_imparable.png                   ---                                      N/A
+735_Trono_estelar.png                         Star Throne                             7999
+736_El_FANDOM_definitivo.png                  Ultimate FANDOM                         8000
+737_Saxof_n.png                               Singing Sax                              399
+738_Leoncito_y_Lili.png                       Leon and Lili                           9699
+739_Tierra.png                                ---                                      N/A
+740_Pulpo.png                                 Octopus                                10000
+741_Bulevar_del_ocaso.png                     Sunset Speedway                        10000
+742_Interestelar.png                          Interstellar                           10000
+743_Banderines_de_festival.png                ---                                      N/A
+744_Halc_n.png                                Falcon                                 10999
+745_Superestrella.png                         Super LIVE Star                         1000
+746_3_er_aniversario.png                      ---                                      N/A
+747_Descapotable.png                          Convertible car                        12000
+748_Rel_mpago_rojo.png                        Red Lightning                              1
+749_Coche_de_carreras.png                     Racing Debut                            1500
+750_Oso_negro.png                             Wolf                                    5500
+751_Espect_culo_de_subida_de_nivel.png        Level-up Spectacle                     12999
+752_Pase_de_verano_XL.png                     Journey Pass                              10
+753_Nave_espacial.png                         TikTok Shuttle                         20000
+754_Martillo_invencible.png                   Invincible Hammer                      14999
+755_Tridente_llamamareas.png                  Tidecaller Trident                     14999
+756_Coraz_n_de_cristal.png                    Crystal Heart                          14999
+757_Traves_a_interestelar.png                 Interstellar                           10000
+758_Batalla_Definitiva.png                    ---                                      N/A
+759_Lobo_negro.png                            Wolf                                    5500
+760_Tiempo_en_familia.png                     Time for Family                        15000
+761_Gran_semental.png                         Stallion                               15000
+762_Apoyo_de_la_comunidad.png                 ---                                      N/A
+763_Que_siga_la_fiesta.png                    Party OnOn                             15000
+764_Consola_de_videojuegos.png                Game Controller                          100
+765_Futuro_viaje.png                          Future Journey                         15000
+766_Pir_mides.png                             Pyramids                               15000
+767_Rosa_c_smica.png                          Rosa Nebula                            15000
+768_Leopardo.png                              Leopard                                15000
+769_Campe_n_de_la_batalla.png                 Battle Champion                        15000
+770_Jinete_escurridizo.png                    Sneaky Jockey                          15000
+771_Par_s.png                                 Paris                                  15000
+772_Cocodrilo.png                             Crocodile                              15000
+773_Caballo_del_A_o_Nuevo_lunar.png           Golden Gallop                          15000
+774_Barco_pirata.png                          Pirate ship                            15000
+775_Tigre_blanco.png                          Lion                                   29999
+776_Parque_de_atracciones.png                 Amusement Park                         17000
+777_Amor_en_el_aire.png                       Fly Love                               19999
+778_Spark.png                                 ---                                      N/A
+779_Transbordador.png                         TikTok Shuttle                         20000
+780_Castillo_de_fantas_a.png                  Castle Fantasy                         20000
+781_Transbordador_Premium.png                 Premium Shuttle                        20000
+782_Delf_n.png                                Dolphin                                   10
+783_Nave_de_nivel.png                         Level Ship                              1500
+784_Tigre_negro.png                           Lion                                   29999
+785_Coraz_n_infinito.png                      Infinite Heart                         23999
+786_Tiranosaurio_rex.png                      Dinosaur                                1000
+787_El_sue_o_de_Adam.png                      Adams Dream                            25999
+788_F_nix.png                                 Phoenix                                25999
+789_Clamor_cibern_tico.png                    Cyber Roar                             25999
+790_Reino_submarino.png                       Undersea Kingdom                       25999
+791_Grifo.png                                 Griffin                                25999
+792_Bailadores_de_flamenco.png                Flamingo Groove                         1000
+793_Llama_de_drag_n.png                       Dragon Flame                           26999
+794_Le_n.png                                  Lion                                   29999
+795_Golazo.png                                Goal                                     500
+796_Gorila.png                                Gorilla                                30000
+797_Ballena_Sam.png                           Sam the whale                          30000
+798_Gorilla.png                               Gorilla                                30000
+799_Contemplando_la_Tierra.png                ---                                      N/A
+800_Rinoceronte_guardi_n.png                  ---                                      N/A
+801_Zeus.png                                  Zeus                                   34000
+802_Leoncito_y_Le_n.png                       Leon and Lion                          34000
+803_TikTok_Universe_.png                      TikTok Universe                        44999
+804_TikTok_Stars.png                          TikTok Stars                           39999
+805_Halc_n_de_trueno.png                      Thunder Falcon                         39999
+806_F_nix_de_fuego.png                        Fire Phoenix                           41999
+807_Legendario_Marcellus.png                  Legend Marcellus                       42999
+808_Pegaso.png                                Pegasus                                42999
+809_Julius_el_Campe_n.png                     Julius the Champion                    43999
+810_TikTok_Universe.png                       TikTok Universe                        44999

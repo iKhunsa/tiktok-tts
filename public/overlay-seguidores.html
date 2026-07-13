@@ -97,7 +97,7 @@
 <body>
   <div class="card">
     <div class="icon"><img class="icon-inline" src="icons/people.svg" alt=""></div>
-    <div class="label">Nuevos seguidores</div>
+    <div class="label" data-i18n="overlayStr.newFollowers">Nuevos seguidores</div>
     <div class="count" id="count">0</div>
     <div class="divider" id="divider" style="display:none"></div>
     <div class="goal-section" id="goalSection" style="display:none">
@@ -112,6 +112,23 @@
   </div>
 
   <script>
+    let _locale = {};
+    async function loadLocale() {
+      const lang = localStorage.getItem('tikliveTTS_lang') || 'es';
+      try { _locale = await (await fetch(`/locales/${lang}.json`)).json(); }
+      catch(_) { try { _locale = await (await fetch('/locales/es.json')).json(); } catch(__) {} }
+      applyI18n();
+      connectWS();
+    }
+    function t(key) {
+      const parts = key.split('.');
+      let val = _locale;
+      for (const p of parts) { val = val?.[p]; if (val === undefined) break; }
+      return typeof val === 'string' ? val : key;
+    }
+    function applyI18n() {
+      document.querySelectorAll('[data-i18n]').forEach(el => { const v = t(el.dataset.i18n); if (v !== el.dataset.i18n) el.textContent = v; });
+    }
     const params = new URLSearchParams(location.search);
     // Apply color/bg params as CSS vars
     const _c = params.get('color'); if (_c) document.documentElement.style.setProperty('--accent', '#' + _c);
@@ -181,7 +198,7 @@
       };
       ws.onerror = () => ws.close();
     }
-    connectWS();
+    loadLocale();
   </script>
 </body>
 </html>

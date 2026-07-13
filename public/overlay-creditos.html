@@ -105,13 +105,30 @@
 </head>
 <body>
   <div class="card">
-    <div class="header"><h1>&#11088; Gracias &#11088;</h1></div>
+    <div class="header"><h1>&#11088; <span data-i18n="overlayStr.thanks">Gracias</span> &#11088;</h1></div>
     <div class="scroll-window">
       <div class="scroll-track" id="track"></div>
     </div>
   </div>
 
   <script>
+    let _locale = {};
+    async function loadLocale() {
+      const lang = localStorage.getItem('tikliveTTS_lang') || 'es';
+      try { _locale = await (await fetch(`/locales/${lang}.json`)).json(); }
+      catch(_) { try { _locale = await (await fetch('/locales/es.json')).json(); } catch(__) {} }
+      applyI18n();
+      connectWS();
+    }
+    function t(key) {
+      const parts = key.split('.');
+      let val = _locale;
+      for (const p of parts) { val = val?.[p]; if (val === undefined) break; }
+      return typeof val === 'string' ? val : key;
+    }
+    function applyI18n() {
+      document.querySelectorAll('[data-i18n]').forEach(el => { const v = t(el.dataset.i18n); if (v !== el.dataset.i18n) el.textContent = v; });
+    }
     const params = new URLSearchParams(location.search);
     const _c = params.get('color'); if (_c) document.documentElement.style.setProperty('--accent', '#' + _c);
     const _b = params.get('bg');    if (_b) document.documentElement.style.setProperty('--bg-alpha', _b);
@@ -145,17 +162,17 @@
       const sections = [];
 
       if (credits.donors.length) {
-        sections.push({ label: '🎁 Donaciones', items: credits.donors.map(d => ({
+        sections.push({ label: t('overlayStr.donations'), items: credits.donors.map(d => ({
           icon: '🎁', name: d.user, badge: `x${d.count} ${d.giftName}`
         }))});
       }
       if (credits.followers.length) {
-        sections.push({ label: '💜 Nuevos seguidores', items: credits.followers.map(f => ({
+        sections.push({ label: t('overlayStr.newFollowersSect'), items: credits.followers.map(f => ({
           icon: '💜', name: f.user, badge: ''
         }))});
       }
       if (credits.sharers.length) {
-        sections.push({ label: '🔗 Compartieron', items: credits.sharers.map(s => ({
+        sections.push({ label: t('overlayStr.sharedSect'), items: credits.sharers.map(s => ({
           icon: '🔗', name: s.user, badge: ''
         }))});
       }
@@ -163,7 +180,7 @@
       if (!sections.length) {
         const ph = document.createElement('div');
         ph.className = 'credit-row';
-        ph.innerHTML = '<span class="credit-name" style="color:rgba(255,255,255,0.3);text-align:center;width:100%">Esperando eventos del stream...</span>';
+        ph.innerHTML = `<span class="credit-name" style="color:rgba(255,255,255,0.3);text-align:center;width:100%">${t('overlayStr.waitingEvents')}</span>`;
         track.appendChild(ph);
         return;
       }
@@ -217,7 +234,7 @@
       ws.onclose = () => { setTimeout(connectWS, retryDelay); retryDelay = Math.min(retryDelay * 2, 30000); };
       ws.onerror = () => ws.close();
     }
-    connectWS();
+    loadLocale();
   </script>
 </body>
 </html>

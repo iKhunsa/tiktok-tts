@@ -107,26 +107,43 @@
     <div class="panel" id="panel-follows">
       <div class="panel-header">
         <span class="panel-icon">💜</span>
-        <span class="panel-title">Seguidores</span>
+        <span class="panel-title" data-i18n="overlayStr.followers">Seguidores</span>
         <span class="panel-count" id="count-follows">0</span>
       </div>
       <div class="entry-list" id="list-follows">
-        <div class="empty">Sin seguidores aún</div>
+        <div class="empty" data-i18n="overlayStr.noFollowers">Sin seguidores aún</div>
       </div>
     </div>
     <div class="panel" id="panel-shares">
       <div class="panel-header">
         <span class="panel-icon">🔗</span>
-        <span class="panel-title">Compartidos</span>
+        <span class="panel-title" data-i18n="overlayStr.sharedList">Compartidos</span>
         <span class="panel-count" id="count-shares">0</span>
       </div>
       <div class="entry-list" id="list-shares">
-        <div class="empty">Sin compartidos aún</div>
+        <div class="empty" data-i18n="overlayStr.noShared">Sin compartidos aún</div>
       </div>
     </div>
   </div>
 
   <script>
+    let _locale = {};
+    async function loadLocale() {
+      const lang = localStorage.getItem('tikliveTTS_lang') || 'es';
+      try { _locale = await (await fetch(`/locales/${lang}.json`)).json(); }
+      catch(_) { try { _locale = await (await fetch('/locales/es.json')).json(); } catch(__) {} }
+      applyI18n();
+      connectWS();
+    }
+    function t(key) {
+      const parts = key.split('.');
+      let val = _locale;
+      for (const p of parts) { val = val?.[p]; if (val === undefined) break; }
+      return typeof val === 'string' ? val : key;
+    }
+    function applyI18n() {
+      document.querySelectorAll('[data-i18n]').forEach(el => { const v = t(el.dataset.i18n); if (v !== el.dataset.i18n) el.textContent = v; });
+    }
     const MAX_ENTRIES = 10;
     const params = new URLSearchParams(location.search);
     const _c = params.get('color'); if (_c) document.documentElement.style.setProperty('--accent', '#' + _c);
@@ -214,15 +231,15 @@
             totals = { follows: 0, shares: 0 };
             countFollows.textContent = 0;
             countShares.textContent  = 0;
-            listFollows.innerHTML = '<div class="empty">Sin seguidores aún</div>';
-            listShares.innerHTML  = '<div class="empty">Sin compartidos aún</div>';
+            listFollows.innerHTML = `<div class="empty">${t('overlayStr.noFollowers')}</div>`;
+            listShares.innerHTML  = `<div class="empty">${t('overlayStr.noShared')}</div>`;
           }
         } catch(_) {}
       };
       ws.onclose = () => { setTimeout(connectWS, retryDelay); retryDelay = Math.min(retryDelay * 2, 30000); };
       ws.onerror = () => ws.close();
     }
-    connectWS();
+    loadLocale();
   </script>
 </body>
 </html>

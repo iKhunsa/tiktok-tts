@@ -96,11 +96,28 @@
   <div class="card">
     <div class="title"><img class="icon-inline" src="icons/favorite.svg" alt=""> Top Likers</div>
     <div id="leaderboard">
-      <div class="empty-msg">Esperando likes...</div>
+      <div class="empty-msg" data-i18n="overlayStr.waitingLikes">Esperando likes...</div>
     </div>
   </div>
 
   <script>
+    let _locale = {};
+    async function loadLocale() {
+      const lang = localStorage.getItem('tikliveTTS_lang') || 'es';
+      try { _locale = await (await fetch(`/locales/${lang}.json`)).json(); }
+      catch(_) { try { _locale = await (await fetch('/locales/es.json')).json(); } catch(__) {} }
+      applyI18n();
+      connectWS();
+    }
+    function t(key) {
+      const parts = key.split('.');
+      let val = _locale;
+      for (const p of parts) { val = val?.[p]; if (val === undefined) break; }
+      return typeof val === 'string' ? val : key;
+    }
+    function applyI18n() {
+      document.querySelectorAll('[data-i18n]').forEach(el => { const v = t(el.dataset.i18n); if (v !== el.dataset.i18n) el.textContent = v; });
+    }
     const params  = new URLSearchParams(location.search);
     const _c = params.get('color'); if (_c) document.documentElement.style.setProperty('--accent', '#' + _c);
     const _b = params.get('bg');    if (_b) document.documentElement.style.setProperty('--bg-alpha', _b);
@@ -127,7 +144,7 @@
       const sorted = getSorted();
 
       if (sorted.length === 0) {
-        board.innerHTML = '<div class="empty-msg">Esperando likes...</div>';
+        board.innerHTML = `<div class="empty-msg">${t('overlayStr.waitingLikes')}</div>`;
         return;
       }
 
@@ -221,7 +238,7 @@
       };
       ws.onerror = () => ws.close();
     }
-    connectWS();
+    loadLocale();
   </script>
 </body>
 </html>

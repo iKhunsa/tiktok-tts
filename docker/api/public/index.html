@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TikTok TTS · Telemetry</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg:       #0a0a0a;
+    --surface:  #141414;
+    --surface2: #1c1c1c;
+    --border:   #2a2a2a;
+    --accent:   #fe2c55;
+    --accent2:  #25f4ee;
+    --text:     #f0f0f0;
+    --muted:    #777;
+    --green:    #22c55e;
+    --yellow:   #f59e0b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; }
+
+  /* ── Auth modal ── */
+  #auth-modal {
+    position: fixed; inset: 0; background: rgba(0,0,0,.85);
+    display: flex; align-items: center; justify-content: center; z-index: 999;
+  }
+  #auth-modal.hidden { display: none; }
+  .auth-box {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 32px; width: 360px; text-align: center;
+  }
+  .auth-box h2 { margin-bottom: 8px; font-size: 1.2rem; }
+  .auth-box p  { color: var(--muted); font-size: .85rem; margin-bottom: 20px; }
+  .auth-box input {
+    width: 100%; padding: 10px 14px; background: var(--surface2);
+    border: 1px solid var(--border); border-radius: 8px; color: var(--text);
+    font-size: .95rem; margin-bottom: 12px; outline: none;
+  }
+  .auth-box input:focus { border-color: var(--accent); }
+  .auth-box button {
+    width: 100%; padding: 10px; background: var(--accent); border: none;
+    border-radius: 8px; color: #fff; font-size: 1rem; cursor: pointer; font-weight: 600;
+  }
+  .auth-box button:hover { opacity: .9; }
+  #auth-error { color: var(--accent); font-size: .8rem; margin-top: 8px; min-height: 16px; }
+
+  /* ── Layout ── */
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 28px; border-bottom: 1px solid var(--border);
+    background: var(--surface); position: sticky; top: 0; z-index: 10;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+  .logo h1 { font-size: 1rem; font-weight: 700; letter-spacing: -.3px; }
+  .logo span { color: var(--muted); font-size: .8rem; }
+  .header-actions { display: flex; align-items: center; gap: 10px; }
+  #refresh-badge {
+    font-size: .75rem; color: var(--muted);
+    background: var(--surface2); padding: 4px 10px; border-radius: 20px;
+    border: 1px solid var(--border);
+  }
+  .btn {
+    padding: 7px 14px; border-radius: 8px; border: none; cursor: pointer;
+    font-size: .82rem; font-weight: 600; transition: opacity .15s;
+  }
+  .btn:hover { opacity: .85; }
+  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  .btn-accent  { background: var(--accent); color: #fff; }
+  .btn-cyan    { background: var(--accent2); color: #000; }
+
+  main { padding: 24px 28px; max-width: 1400px; margin: 0 auto; }
+
+  /* ── Cards ── */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px; margin-bottom: 24px;
+  }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px 20px;
+  }
+  .card-label { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 8px; }
+  .card-value { font-size: 2rem; font-weight: 700; line-height: 1; }
+  .card-value.accent  { color: var(--accent); }
+  .card-value.cyan    { color: var(--accent2); }
+  .card-value.green   { color: var(--green); }
+  .card-value.yellow  { color: var(--yellow); }
+  .card-sub { font-size: .72rem; color: var(--muted); margin-top: 4px; }
+
+  /* ── Map ── */
+  .map-section {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px; margin-bottom: 24px;
+  }
+  .section-title { font-size: .8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 14px; }
+  #map-container { width: 100%; height: 420px; border-radius: 8px; overflow: hidden; background: #0d1117; position: relative; }
+  #map-canvas { width: 100%; height: 100%; }
+  #map-placeholder { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: .85rem; }
+  #active-count-badge {
+    position: absolute; top: 12px; right: 12px;
+    background: rgba(0,0,0,.7); border: 1px solid var(--border);
+    border-radius: 20px; padding: 4px 12px; font-size: .75rem;
+  }
+  #active-count-badge span { color: var(--accent); font-weight: 700; }
+
+  /* ── Charts row ── */
+  .charts-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 14px; margin-bottom: 24px;
+  }
+  @media (max-width: 760px) { .charts-row { grid-template-columns: 1fr; } }
+  .chart-box {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px;
+  }
+  .chart-box canvas { max-height: 260px; }
+
+  /* ── Daily activity chart ── */
+  .chart-full {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px; margin-bottom: 24px;
+  }
+  .chart-full canvas { max-height: 200px; }
+
+  /* ── Table ── */
+  .table-section {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px;
+  }
+  .table-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+  th { text-align: left; padding: 8px 12px; color: var(--muted); font-weight: 500; font-size: .72rem; text-transform: uppercase; letter-spacing: .6px; border-bottom: 1px solid var(--border); }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--text); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+  .badge {
+    display: inline-block; padding: 2px 7px; border-radius: 4px;
+    font-size: .68rem; font-weight: 600;
+  }
+  .badge-new  { background: rgba(34,197,94,.15); color: var(--green); border: 1px solid rgba(34,197,94,.3); }
+  .badge-old  { background: rgba(119,119,119,.1); color: var(--muted); border: 1px solid var(--border); }
+  .platform-tag {
+    display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: .65rem;
+    font-weight: 700; margin-right: 3px;
+  }
+  .platform-tiktok   { background: rgba(254,44,85,.15);  color: var(--accent); }
+  .platform-twitch   { background: rgba(145,70,255,.15); color: #9146ff; }
+  .platform-youtube  { background: rgba(255,0,0,.12);    color: #ff4444; }
+
+  .mono { font-family: 'SF Mono', 'Fira Code', monospace; font-size: .75rem; color: var(--muted); }
+
+  /* ── Loading skeleton ── */
+  .skeleton { background: linear-gradient(90deg, var(--surface2) 25%, var(--border) 50%, var(--surface2) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; height: 2rem; }
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+</style>
+</head>
+<body>
+
+<!-- Auth modal -->
+<div id="auth-modal">
+  <div class="auth-box">
+    <h2>🔒 Dashboard</h2>
+    <p>Ingresa tu token de administrador</p>
+    <input type="password" id="token-input" placeholder="Token secreto..." />
+    <button onclick="saveToken()">Entrar</button>
+    <div id="auth-error"></div>
+  </div>
+</div>
+
+<header>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    <div>
+      <h1>TikTok TTS · Telemetry</h1>
+      <span id="refresh-badge">Cargando...</span>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-outline" onclick="loadAll()">↻ Refrescar</button>
+    <button class="btn btn-outline" onclick="exportCSV()">⬇ CSV</button>
+    <button class="btn btn-outline" onclick="exportJSON()">⬇ JSON</button>
+    <button class="btn btn-outline" style="color:var(--muted);font-size:.75rem" onclick="logout()">Salir</button>
+  </div>
+</header>
+
+<main>
+  <!-- Cards -->
+  <div class="cards">
+    <div class="card">
+      <div class="card-label">Total installs</div>
+      <div class="card-value accent" id="c-total">—</div>
+      <div class="card-sub">máquinas únicas</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Activos ahora</div>
+      <div class="card-value cyan" id="c-now">—</div>
+      <div class="card-sub">heartbeat &lt;5min</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Activos hoy</div>
+      <div class="card-value" id="c-today">—</div>
+      <div class="card-sub">últimas 24h</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Activos mes</div>
+      <div class="card-value" id="c-month">—</div>
+      <div class="card-sub">últimos 30 días</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Nuevos hoy</div>
+      <div class="card-value green" id="c-new-today">—</div>
+      <div class="card-sub">primer install</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Nuevos mes</div>
+      <div class="card-value green" id="c-new-month">—</div>
+      <div class="card-sub">últimos 30 días</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Sesión promedio</div>
+      <div class="card-value yellow" id="c-avg">—</div>
+      <div class="card-sub">minutos</div>
+    </div>
+  </div>
+
+  <!-- Map -->
+  <div class="map-section">
+    <div class="section-title">Usuarios activos en tiempo real</div>
+    <div id="map-container">
+      <canvas id="map-canvas"></canvas>
+      <div id="map-placeholder">Cargando mapa...</div>
+      <div id="active-count-badge">Activos: <span id="map-count">0</span></div>
+    </div>
+  </div>
+
+  <!-- Daily chart -->
+  <div class="chart-full">
+    <div class="section-title">Actividad diaria (últimos 30 días)</div>
+    <canvas id="daily-chart"></canvas>
+  </div>
+
+  <!-- Charts row -->
+  <div class="charts-row">
+    <div class="chart-box">
+      <div class="section-title">Top 10 países</div>
+      <canvas id="countries-chart"></canvas>
+    </div>
+    <div class="chart-box">
+      <div class="section-title">Versiones de la app</div>
+      <canvas id="versions-chart"></canvas>
+    </div>
+  </div>
+
+  <!-- Recent sessions table -->
+  <div class="table-section">
+    <div class="table-header">
+      <div class="section-title" style="margin:0">Sesiones recientes</div>
+      <span style="font-size:.75rem;color:var(--muted)">últimas 50</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Machine ID</th>
+          <th>País</th>
+          <th>Ciudad</th>
+          <th>Versión</th>
+          <th>Plataformas</th>
+          <th>Duración</th>
+          <th>Inicio</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody id="sessions-tbody">
+        <tr><td colspan="8" style="color:var(--muted);text-align:center;padding:32px">Cargando...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<script>
+// ── Auth ──────────────────────────────────────────────────────────────────
+let TOKEN = localStorage.getItem('ttt_token') || '';
+
+function saveToken() {
+  TOKEN = document.getElementById('token-input').value.trim();
+  document.getElementById('auth-error').textContent = '';
+  loadAll();
+}
+
+function logout() {
+  localStorage.removeItem('ttt_token');
+  TOKEN = '';
+  document.getElementById('auth-modal').classList.remove('hidden');
+}
+
+if (TOKEN) {
+  document.getElementById('auth-modal').classList.add('hidden');
+  loadAll();
+}
+
+document.getElementById('token-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') saveToken();
+});
+
+async function apiFetch(url) {
+  const r = await fetch(url, { headers: { Authorization: `Bearer ${TOKEN}` } });
+  if (r.status === 401) {
+    document.getElementById('auth-modal').classList.remove('hidden');
+    document.getElementById('auth-error').textContent = 'Token incorrecto.';
+    throw new Error('unauthorized');
+  }
+  return r.json();
+}
+
+// ── Charts instances ──────────────────────────────────────────────────────
+let chartCountries, chartVersions, chartDaily;
+
+function destroyChart(c) { if (c) c.destroy(); }
+
+// ── Load all ──────────────────────────────────────────────────────────────
+async function loadAll() {
+  try {
+    await Promise.all([loadSummary(), loadMap(), loadCountries(), loadVersions(), loadDaily(), loadSessions()]);
+    localStorage.setItem('ttt_token', TOKEN);
+    document.getElementById('auth-modal').classList.add('hidden');
+    document.getElementById('refresh-badge').textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es');
+  } catch (e) {
+    if (e.message !== 'unauthorized') console.error(e);
+  }
+}
+
+// ── Summary cards ─────────────────────────────────────────────────────────
+async function loadSummary() {
+  const d = await apiFetch('/api/dashboard/summary');
+  document.getElementById('c-total').textContent     = fmt(d.total_installs);
+  document.getElementById('c-now').textContent       = fmt(d.active_now);
+  document.getElementById('c-today').textContent     = fmt(d.active_today);
+  document.getElementById('c-month').textContent     = fmt(d.active_month);
+  document.getElementById('c-new-today').textContent = fmt(d.new_today);
+  document.getElementById('c-new-month').textContent = fmt(d.new_month);
+  document.getElementById('c-avg').textContent       = d.avg_session_min ?? '—';
+}
+
+function fmt(n) { return n == null ? '0' : Number(n).toLocaleString(); }
+
+// ── World map (canvas-based mercator projection) ──────────────────────────
+async function loadMap() {
+  const points = await apiFetch('/api/dashboard/active-map');
+  document.getElementById('map-count').textContent = points.length;
+  document.getElementById('map-placeholder').style.display = 'none';
+  renderMap(points);
+}
+
+function renderMap(points) {
+  const canvas = document.getElementById('map-canvas');
+  const container = document.getElementById('map-container');
+  canvas.width  = container.clientWidth;
+  canvas.height = container.clientHeight;
+  const ctx = canvas.getContext('2d');
+
+  // Dark ocean background
+  ctx.fillStyle = '#0d1117';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Simple grid lines
+  ctx.strokeStyle = 'rgba(255,255,255,.04)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 6; i++) {
+    const y = (canvas.height / 6) * i;
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+  }
+  for (let i = 0; i <= 12; i++) {
+    const x = (canvas.width / 12) * i;
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+  }
+
+  // Project lat/lon → pixel (Web Mercator approximation)
+  function project(lat, lon) {
+    const x = (lon + 180) / 360 * canvas.width;
+    const latRad = lat * Math.PI / 180;
+    const mercN  = Math.log(Math.tan(Math.PI / 4 + latRad / 2));
+    const y      = (canvas.height / 2) - (canvas.width * mercN / (2 * Math.PI));
+    return { x, y };
+  }
+
+  // Draw dots
+  points.forEach(({ lat, lon }) => {
+    if (lat == null || lon == null) return;
+    const { x, y } = project(lat, lon);
+
+    // Glow
+    const grd = ctx.createRadialGradient(x, y, 0, x, y, 14);
+    grd.addColorStop(0, 'rgba(254,44,85,.6)');
+    grd.addColorStop(1, 'rgba(254,44,85,0)');
+    ctx.fillStyle = grd;
+    ctx.beginPath(); ctx.arc(x, y, 14, 0, Math.PI * 2); ctx.fill();
+
+    // Core dot
+    ctx.fillStyle = '#fe2c55';
+    ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2); ctx.fill();
+
+    // White center
+    ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.arc(x, y, 1.5, 0, Math.PI * 2); ctx.fill();
+  });
+
+  // Label: no active = faint message
+  if (points.length === 0) {
+    ctx.fillStyle = 'rgba(255,255,255,.15)';
+    ctx.font = '13px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Sin usuarios activos en este momento', canvas.width / 2, canvas.height / 2);
+  }
+}
+
+// ── Countries bar chart ───────────────────────────────────────────────────
+async function loadCountries() {
+  const rows = await apiFetch('/api/dashboard/countries');
+  const labels = rows.map(r => r.country || 'Desconocido');
+  const data   = rows.map(r => Number(r.users));
+
+  destroyChart(chartCountries);
+  chartCountries = new Chart(document.getElementById('countries-chart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Usuarios',
+        data,
+        backgroundColor: 'rgba(254,44,85,.7)',
+        borderColor: '#fe2c55',
+        borderWidth: 1,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: '#777', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,.05)' } },
+        y: { ticks: { color: '#777', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,.05)' } }
+      }
+    }
+  });
+}
+
+// ── Versions pie chart ────────────────────────────────────────────────────
+async function loadVersions() {
+  const rows = await apiFetch('/api/dashboard/versions');
+  const COLORS = ['#fe2c55','#25f4ee','#f59e0b','#22c55e','#9146ff','#60a5fa','#f87171','#a78bfa'];
+  const labels = rows.map(r => 'v' + r.app_version);
+  const data   = rows.map(r => Number(r.users));
+
+  destroyChart(chartVersions);
+  chartVersions = new Chart(document.getElementById('versions-chart'), {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{
+        data,
+        backgroundColor: COLORS.slice(0, rows.length),
+        borderColor: '#141414',
+        borderWidth: 2,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#ccc', font: { size: 11 }, padding: 12 } }
+      }
+    }
+  });
+}
+
+// ── Daily activity line chart ─────────────────────────────────────────────
+async function loadDaily() {
+  const rows = await apiFetch('/api/dashboard/daily');
+  const labels  = rows.map(r => r.day?.slice(0, 10));
+  const sessions = rows.map(r => Number(r.sessions));
+  const users    = rows.map(r => Number(r.users));
+
+  destroyChart(chartDaily);
+  chartDaily = new Chart(document.getElementById('daily-chart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Sesiones',
+          data: sessions,
+          borderColor: '#fe2c55',
+          backgroundColor: 'rgba(254,44,85,.08)',
+          fill: true,
+          tension: .4,
+          pointRadius: 3,
+        },
+        {
+          label: 'Usuarios únicos',
+          data: users,
+          borderColor: '#25f4ee',
+          backgroundColor: 'rgba(37,244,238,.05)',
+          fill: true,
+          tension: .4,
+          pointRadius: 3,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { labels: { color: '#ccc', font: { size: 11 } } } },
+      scales: {
+        x: { ticks: { color: '#777', font: { size: 10 }, maxTicksLimit: 10 }, grid: { color: 'rgba(255,255,255,.05)' } },
+        y: { ticks: { color: '#777', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,.05)' } }
+      }
+    }
+  });
+}
+
+// ── Sessions table ────────────────────────────────────────────────────────
+async function loadSessions() {
+  const rows = await apiFetch('/api/dashboard/recent');
+  const tbody = document.getElementById('sessions-tbody');
+
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="color:var(--muted);text-align:center;padding:32px">Sin datos aún</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = rows.map(r => {
+    const platforms = (r.platforms_used || []).map(p =>
+      `<span class="platform-tag platform-${p}">${p}</span>`
+    ).join('');
+    const dur = r.session_duration_minutes != null ? `${r.session_duration_minutes}m` : '—';
+    const ts  = r.started_at ? new Date(r.started_at).toLocaleString('es') : '—';
+    const mid = (r.machine_id || '').substring(0, 8) + '…';
+    const badge = r.first_seen
+      ? '<span class="badge badge-new">NUEVO</span>'
+      : '<span class="badge badge-old">—</span>';
+
+    return `<tr>
+      <td class="mono">${mid}</td>
+      <td>${r.country || '<span style="color:var(--muted)">—</span>'}</td>
+      <td style="color:var(--muted);font-size:.78rem">${r.city || '—'}</td>
+      <td>${r.app_version ? 'v'+r.app_version : '—'}</td>
+      <td>${platforms || '<span style="color:var(--muted)">—</span>'}</td>
+      <td>${dur}</td>
+      <td style="font-size:.78rem;color:var(--muted)">${ts}</td>
+      <td>${badge}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Export ────────────────────────────────────────────────────────────────
+function exportCSV()  { window.open(`/api/export/csv?token=${encodeURIComponent(TOKEN)}`); }
+function exportJSON() { window.open(`/api/export/json?token=${encodeURIComponent(TOKEN)}`); }
+
+// ── Auto-refresh every 30s ────────────────────────────────────────────────
+setInterval(() => { if (TOKEN) loadAll(); }, 30000);
+
+// Re-render map on resize
+window.addEventListener('resize', () => {
+  apiFetch('/api/dashboard/active-map').then(renderMap).catch(() => {});
+});
+</script>
+</body>
+</html>

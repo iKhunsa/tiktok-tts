@@ -1,0 +1,14 @@
+{
+  "name": "tiktok-tts-telemetry",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.11.5",
+    "json2csv": "^6.0.0-alpha.2",
+    "helmet": "^7.1.0"
+  }
+}

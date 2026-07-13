@@ -89,7 +89,7 @@
       "desc": "配信の瞬間を記録。グローバルショートカット Ctrl+Shift+M はアプリ最小化中も動作します。"
     },
     "mobile": {
-      "title": "📱 モバイル制御",
+      "title": "モバイル制御",
       "desc": "同じWiFiネットワーク内のスマホからTTSを制御。"
     }
   },
@@ -115,6 +115,7 @@
     "pauseShortcut": "TTSの一時停止 / 再開",
     "skipShortcut": "現在のメッセージをスキップ",
     "clearQueueShortcut": "キューをクリア",
+    "musicPauseShortcut": "ボット音楽の一時停止/再開",
     "accentColor": "アクセントカラー",
     "bgOpacity": "背景の透明度",
     "visibleMsgs": "表示メッセージ数",
@@ -190,21 +191,23 @@
   "bot": {
     "title": "ミュージックBot",
     "desc": "チャットで !p 曲名 または !p YouTubeリンク でリクエストできます。リクエストがないときはプレイリストが流れます。",
-    "nowPlaying": "▶ 再生中",
+    "nowPlaying": "再生中",
     "enableCmd": "!p を有効化",
     "skipSong": "⏭ スキップ",
+    "pauseSong": "⏸ 一時停止",
+    "resumeSong": "▶ 再開",
     "noMusic": "音楽が再生されていません。",
     "musicVol": "音楽音量",
-    "requestQueue": "📋 リクエストキュー",
+    "requestQueue": "リクエストキュー",
     "clearQueue": "🗑 クリア",
     "queueEmpty": "キューは空です。",
-    "myPlaylist": "🎵 マイプレイリスト（バックグラウンド）",
+    "myPlaylist": "マイプレイリスト（バックグラウンド）",
     "enable": "有効化",
     "shuffle": "シャッフル",
     "playlistHint": "1行1曲：曲名またはYouTube URL。チャットのリクエストがないときに再生。",
     "playlistActive": "▶ プレイリストから再生中：",
     "savePlaylist": "💾 プレイリスト保存",
-    "botSettings": "⚙ Bot設定",
+    "botSettings": "Bot設定",
     "cooldown": "ユーザーごとのクールダウン（秒）",
     "maxQueue": "キュー最大曲数",
     "bannedUsers": "!pからBANされたユーザー",
@@ -467,6 +470,7 @@
     "obsReconnecting": "OBSに再接続中… (試行 {attempt})",
     "platformConnected": "{platform} 接続済み",
     "platformDisconnected": "{platform} 切断済み",
+    "allChannelsDisconnected": "すべてのチャンネルを切断しました",
     "youtubeAutoSaved": "YouTubeを保存しました；ライブ時に接続します",
     "youtubeTmpSaved": "YouTubeを手動チャンネルとして保存しました"
   }

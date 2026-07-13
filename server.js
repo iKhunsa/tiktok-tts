@@ -10,11 +10,21 @@ const multer = require('multer');
 const crypto = require('crypto');
 const os = require('os');
 const QRCode = require('qrcode');
-const ytdl = require('@distube/ytdl-core');
-const ytsr = require('ytsr');
+const { createMusicEngine } = require('./music-engine');
 
 const RESOURCE_BASE = process.env.TIKTOK_RESOURCES_PATH || __dirname;
 const DATA_BASE = process.env.TIKTOK_USER_DATA_PATH || RESOURCE_BASE;
+
+// Motor de música (yt-dlp): búsqueda, metadata y streaming de audio.
+// log/broadcast son function declarations (hoisted); los callbacks corren después.
+const musicEngine = createMusicEngine({
+  dataDir: DATA_BASE,
+  log: (...args) => log(...args),
+  onStatus: (s) => {
+    if (s.state === 'downloading') broadcast({ type: 'music-engine', status: 'downloading' });
+    else if (s.state === 'error') broadcast({ type: 'music-engine', status: 'error', error: s.error });
+  },
+});
 
 const app = express();
 const server = http.createServer(app);
@@ -525,6 +535,8 @@ const DEFAULT_CONFIG = {
   streamerPlaylist: [],
   playlistShuffle: false,
   playlistEnabled: false,
+  langFilterEnabled: false,
+  ttsVoiceLang: 'es-MX',
 };
 
 const CONFIG_VALIDATORS = {
@@ -542,6 +554,8 @@ const CONFIG_VALIDATORS = {
   streamerPlaylist: (v) => Array.isArray(v),
   playlistShuffle: (v) => typeof v === 'boolean',
   playlistEnabled: (v) => typeof v === 'boolean',
+  langFilterEnabled: (v) => typeof v === 'boolean',
+  ttsVoiceLang: (v) => GOOGLE_TTS_LANGS.has(v),
 };
 
 const config = { ...DEFAULT_CONFIG };
@@ -590,10 +604,11 @@ const FEATURES = { musicBot: true };
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ── MUSIC BOT STATE ──────────────────────────────────────────────────────────
-const YTDL_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36';
 let musicQueue = [];       // [{ videoId, title, channelName, thumbnail, duration, requestedBy, platform }]
 let currentTrack = null;   // currently playing track object (null = idle)
-let userLastRequest = {};  // { userId: timestamp } — cooldown tracking
+let userLastRequest = {};  // { userId: timestamp } — cooldown tracking (configurable, may be 0/disabled)
+const recentMusicCommands = new Map(); // `${userId}::${query}` → timestamp — dedup fijo, independiente del cooldown configurable
+const MUSIC_DEDUP_WINDOW_MS = 3000;
 let playlistResolved = []; // [{ raw, videoId, title, channelName, thumbnail }] — resolved playlist entries
 let playlistIndex = 0;
 let playlistActive = false;
@@ -631,20 +646,11 @@ async function resolveYoutubeId(query) {
     return null;
   }
 
-  // Text search via ytsr
+  // Text search via yt-dlp
   try {
-    const results = await ytsr(query, { limit: 5 });
-    const video = results.items.find(i => i.type === 'video' && i.id);
-    if (!video) return null;
-    return {
-      videoId: video.id,
-      title: video.title,
-      channelName: video.author?.name || '',
-      thumbnail: video.bestThumbnail?.url || video.thumbnails?.[0]?.url || '',
-      duration: video.duration || '',
-    };
+    return await musicEngine.search(query);
   } catch (err) {
-    log('warn', 'music', 'ytsr search failed', { query, error: err.message });
+    log('warn', 'music', 'búsqueda falló', { query, error: err.message });
     return null;
   }
 }
@@ -652,23 +658,15 @@ async function resolveYoutubeId(query) {
 async function resolveFullTrack(query) {
   const partial = await resolveYoutubeId(query);
   if (!partial) return null;
-  if (partial.title) return partial; // already have metadata from ytsr
+  if (partial.title) return partial; // already have metadata from search
 
-  // Fetch metadata from ytdl if we only have a videoId
+  // Fetch metadata from yt-dlp if we only have a videoId
   try {
-    const info = await ytdl.getInfo(`https://www.youtube.com/watch?v=${partial.videoId}`, {
-      requestOptions: { headers: { 'User-Agent': YTDL_UA } }
-    });
-    const d = info.videoDetails;
-    return {
-      videoId: partial.videoId,
-      title: d.title,
-      channelName: d.author?.name || '',
-      thumbnail: d.thumbnails?.[d.thumbnails.length - 1]?.url || '',
-      duration: formatDuration(parseInt(d.lengthSeconds, 10)),
-    };
+    const info = await musicEngine.getInfo(partial.videoId);
+    if (info) return info;
+    return { videoId: partial.videoId, title: query, channelName: '', thumbnail: '', duration: '' };
   } catch (err) {
-    log('warn', 'music', 'ytdl getInfo failed', { videoId: partial.videoId, error: err.message });
+    log('warn', 'music', 'getInfo falló', { videoId: partial.videoId, error: err.message });
     return { videoId: partial.videoId, title: query, channelName: '', thumbnail: '', duration: '' };
   }
 }
@@ -697,15 +695,48 @@ function musicBroadcastState() {
 async function handleMusicRequest(query, user, userId, platform) {
   log('info', 'music', '!p recibido', { query, user, platform });
   if (!config.musicEnabled) { log('info', 'music', 'deshabilitado'); return; }
+
+  const now = Date.now();
+
+  // Dedup fijo, siempre activo (independiente del cooldown configurable,
+  // que el usuario puede dejar en 0): ignora el mismo comando del mismo
+  // usuario si llega duplicado (p.ej. replay de reconexión del chat) dentro
+  // de una ventana corta.
+  const dedupKey = `${userId}::${query.toLowerCase()}`;
+  const lastSeen = recentMusicCommands.get(dedupKey);
+  if (lastSeen && now - lastSeen < MUSIC_DEDUP_WINDOW_MS) {
+    log('info', 'music', 'comando duplicado ignorado', { user, query });
+    return;
+  }
+  recentMusicCommands.set(dedupKey, now);
+  if (recentMusicCommands.size > 300) {
+    for (const [k, t] of recentMusicCommands) {
+      if (now - t > MUSIC_DEDUP_WINDOW_MS) recentMusicCommands.delete(k);
+    }
+  }
+
   const bannedList = config.musicBannedUsers.map(u => u.toLowerCase());
   if (bannedList.includes(String(userId || '').toLowerCase()) ||
       bannedList.includes(String(user || '').toLowerCase())) { log('info', 'music', 'usuario baneado', { user }); return; }
 
-  const now = Date.now();
   if (config.musicUserCooldownMs > 0 && userLastRequest[userId] &&
       now - userLastRequest[userId] < config.musicUserCooldownMs) { log('info', 'music', 'cooldown activo', { user }); return; }
 
   if (musicQueue.length >= config.musicMaxQueue) { log('info', 'music', 'cola llena'); return; }
+
+  // Marcar el cooldown ya aquí (antes de los await) para que un evento de
+  // chat duplicado llegando mientras esto resuelve sea bloqueado, no
+  // procesado dos veces.
+  userLastRequest[userId] = now;
+
+  // Asegurar binario yt-dlp (descarga on-demand la primera vez; broadcast de
+  // estado via onStatus del engine para que la UI muestre toast)
+  try {
+    await musicEngine.ensureReady();
+  } catch (err) {
+    log('warn', 'music', 'motor no disponible', { error: err.message });
+    return;
+  }
 
   let track;
   try {
@@ -720,7 +751,6 @@ async function handleMusicRequest(query, user, userId, platform) {
 
   track.requestedBy = user;
   track.platform = platform;
-  userLastRequest[userId] = now;
 
   const wasEmpty = musicQueue.length === 0 && !currentTrack;
   musicQueue.push(track);
@@ -1052,11 +1082,65 @@ function normalizeForModeration(text) {
   return String(text || '').toLowerCase().replace(/\s+/g, ' ').trim();
 }
 
-function isSpam(comment) {
+const VOICE_SCRIPT_REGEX = {
+  'es-MX': /\p{Script=Latin}/u, 'en': /\p{Script=Latin}/u, 'en-GB': /\p{Script=Latin}/u,
+  'pt': /\p{Script=Latin}/u, 'pt-PT': /\p{Script=Latin}/u, 'fr': /\p{Script=Latin}/u,
+  'de': /\p{Script=Latin}/u, 'it': /\p{Script=Latin}/u,
+  'ru': /\p{Script=Cyrillic}/u,
+  'ja': /[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]/u,
+  'zh-CN': /\p{Script=Han}/u,
+  'ko': /\p{Script=Hangul}/u,
+};
+
+function messageMatchesVoiceScript(text, voiceId) {
+  const letters = text.match(/\p{L}/gu);
+  if (!letters) return true;
+  const allowed = VOICE_SCRIPT_REGEX[voiceId] || VOICE_SCRIPT_REGEX['es-MX'];
+  return letters.every((ch) => allowed.test(ch));
+}
+
+const LEET_MAP = { '0': 'o', '1': 'i', '3': 'e', '4': 'a', '5': 's', '7': 't', '@': 'a', '$': 's' };
+
+function normalizeAggressive(text) {
+  return String(text || '')
+    .toLowerCase()
+    .replace(/[01345@$]/g, (c) => LEET_MAP[c])
+    .replace(/[^\p{L}\p{N}]/gu, '')
+    .replace(/(.)\1+/g, '$1');
+}
+
+const DUP_WINDOW_MS = 45000;
+const DUP_MAX_HISTORY = 5;
+const DUP_MIN_LEN = 4; // mensajes cortos (ok, no, ja) quedan exentos del check
+const userRecentMessages = new Map(); // userKey -> [{ norm, ts }]
+
+function isDuplicateRecent(userKey, norm) {
+  const now = Date.now();
+  let history = userRecentMessages.get(userKey);
+  if (!history) { history = []; userRecentMessages.set(userKey, history); }
+  while (history.length && history[0].ts < now - DUP_WINDOW_MS) history.shift();
+  const isDup = history.some((h) => h.norm === norm);
+  history.push({ norm, ts: now });
+  if (history.length > DUP_MAX_HISTORY) history.shift();
+  return isDup;
+}
+
+// Barrido periódico: borra usuarios inactivos para no acumular memoria indefinidamente.
+setInterval(() => {
+  const cutoff = Date.now() - DUP_WINDOW_MS;
+  for (const [key, history] of userRecentMessages) {
+    if (!history.length || history[history.length - 1].ts < cutoff) userRecentMessages.delete(key);
+  }
+}, 5 * 60 * 1000);
+
+function isSpam(comment, userKey) {
   if (comment.length > 300) return true;
   if (/^(.)\1+$/.test(comment.trim())) return true;
   const lower = comment.toLowerCase();
   for (const w of blockedWords) if (lower.includes(w)) return true;
+  if (config.langFilterEnabled && !messageMatchesVoiceScript(comment, config.ttsVoiceLang)) return true;
+  const norm = normalizeAggressive(comment);
+  if (norm.length >= DUP_MIN_LEN && isDuplicateRecent(userKey, norm)) return true;
   return false;
 }
 
@@ -1137,7 +1221,7 @@ function setupTikTokConnection(cleanUsername) {
       handleMusicRequest(comment.slice(comment.indexOf(' ') + 1).trim(), user, data.uniqueId || user, 'tiktok');
       return;
     }
-    if (isSpam(normalizeForModeration(comment))) return;
+    if (isSpam(normalizeForModeration(comment), `tiktok:${data.uniqueId || user}`)) return;
     broadcast({
       type: 'chat',
       platform: 'tiktok',
@@ -1729,7 +1813,7 @@ async function connectTwitch(channel, token = null, attempt = 0) {
       handleMusicRequest(message.trim().slice(message.trim().indexOf(' ') + 1).trim(), twitchUser, twitchUserId, 'twitch');
       return;
     }
-    if (isSpam(normalizeForModeration(message))) return;
+    if (isSpam(normalizeForModeration(message), `twitch:${twitchUserId}`)) return;
     const emotes = {};
     if (tags.emotes) {
       for (const [emoteId, positions] of Object.entries(tags.emotes)) {
@@ -1834,7 +1918,7 @@ async function connectYoutube(channelOrId, attempt = 0) {
       handleMusicRequest(displayText.slice(displayText.indexOf(' ') + 1).trim(), ytUser, ytUserId, 'youtube');
       return;
     }
-    if (isSpam(normalizeForModeration(ttsText || displayText))) return;
+    if (isSpam(normalizeForModeration(ttsText || displayText), `youtube:${ytUserId}`)) return;
     broadcast({
       type: 'chat',
       platform: 'youtube',
@@ -2448,8 +2532,10 @@ app.post('/api/mobile/command', validateMobileRequest, (req, res) => {
   // Music actions are handled server-side directly — no desktop relay needed
   if (action === 'musicSkip') {
     currentTrack = null;
+    // music-skip solo detiene el audio local en los clientes; el avance de la
+    // cola ocurre aquí, una sola vez, sin importar cuántos clientes escuchan
     broadcast({ type: 'music-skip' });
-    // Client will call /api/music/next after receiving music-skip
+    advanceMusicQueue();
     return res.json({ ok: true });
   }
   if (action === 'musicToggle') {
@@ -2466,10 +2552,7 @@ app.post('/api/mobile/command', validateMobileRequest, (req, res) => {
     return res.json({ ok: true });
   }
   if (action === 'playlistToggle') {
-    config.playlistEnabled = !config.playlistEnabled;
-    saveConfig();
-    if (config.playlistEnabled && !currentTrack) advanceMusicQueue();
-    musicBroadcastState();
+    setPlaylistEnabled(!config.playlistEnabled);
     return res.json({ ok: true, playlistEnabled: config.playlistEnabled });
   }
 
@@ -2487,35 +2570,49 @@ app.post('/api/mobile/command', validateMobileRequest, (req, res) => {
 
 // ── MUSIC API ROUTES ─────────────────────────────────────────────────────────
 
-app.get('/api/music/stream', (req, res) => {
+app.get('/api/music/stream', async (req, res) => {
   const { videoId } = req.query;
   if (!videoId || !/^[A-Za-z0-9_-]{11}$/.test(videoId)) {
     return res.status(400).json({ error: 'videoId inválido' });
   }
-  const url = `https://www.youtube.com/watch?v=${videoId}`;
   log('info', 'music', 'stream solicitado', { videoId });
   res.setHeader('Cache-Control', 'no-store');
   try {
-    const stream = ytdl(url, {
-      filter: 'audioonly',
-      quality: 'highestaudio',
-      requestOptions: { headers: { 'User-Agent': YTDL_UA } },
-    });
-    stream.once('info', (_info, format) => {
-      const mime = format?.mimeType?.split(';')[0] || 'audio/webm';
-      if (!res.headersSent) res.setHeader('Content-Type', mime);
-    });
-    stream.on('error', (err) => {
-      log('warn', 'music', 'stream error', { videoId, error: err.message });
-      if (!res.headersSent) res.status(500).end();
-      else res.end();
-    });
-    stream.pipe(res);
-    req.on('close', () => { try { stream.destroy(); } catch (_) {} });
+    // Cubre el caso playlist-con-URL-directa donde el stream es el primer uso
+    await musicEngine.ensureReady();
   } catch (err) {
-    log('warn', 'music', 'ytdl init error', { error: err.message });
-    res.status(500).json({ error: 'No se pudo iniciar stream' });
+    return res.status(503).json({ error: 'Motor de música no disponible' });
   }
+  // Caso dominante es webm/opus; Chromium sniffa el contenido real, así que
+  // el fallback m4a también reproduce aunque el mime no coincida.
+  res.setHeader('Content-Type', 'audio/webm');
+  const child = musicEngine.createStream(videoId);
+  // end:false — si yt-dlp falla sin emitir bytes, el pipe no cierra la
+  // respuesta con 200 vacío antes de que podamos responder 500 (el 500
+  // preserva el auto-skip del cliente via Audio.onerror)
+  child.stdout.pipe(res, { end: false });
+  let aborted = false;
+  child.on('error', (err) => {
+    log('warn', 'music', 'stream spawn error', { videoId, error: err.message });
+    if (!res.headersSent) res.status(500).end();
+    else res.end();
+  });
+  child.on('close', (code) => {
+    // Si el cliente abortó (skip/cierre), el kill produce exit≠0: no es error
+    if (code !== 0 && !aborted) {
+      log('warn', 'music', 'stream error', { videoId, code, error: child.stderrTail() });
+      if (!res.headersSent) return res.status(500).end();
+    }
+    res.end();
+  });
+  res.on('close', () => {
+    if (!res.writableEnded) aborted = true;
+    try { child.kill(); } catch (_) {}
+  });
+});
+
+app.get('/api/music/engine', (_req, res) => {
+  res.json(musicEngine.getStatus());
 });
 
 app.get('/api/music/queue', (_req, res) => {
@@ -2524,7 +2621,9 @@ app.get('/api/music/queue', (_req, res) => {
 
 app.post('/api/music/skip', (req, res) => {
   currentTrack = null;
+  // music-skip solo detiene el audio local; el avance de la cola es server-side
   broadcast({ type: 'music-skip' });
+  advanceMusicQueue();
   res.json({ ok: true });
 });
 
@@ -2597,11 +2696,29 @@ app.put('/api/music/playlist', async (req, res) => {
   res.json({ ok: true, count: playlistResolved.length });
 });
 
-app.post('/api/music/playlist/toggle', (_req, res) => {
-  config.playlistEnabled = !config.playlistEnabled;
+function setPlaylistEnabled(enabled) {
+  config.playlistEnabled = enabled;
   saveConfig();
-  if (config.playlistEnabled && !currentTrack) advanceMusicQueue();
+  if (enabled) {
+    // Arrancar de fondo solo si no hay nada sonando (las peticiones del chat
+    // tienen prioridad; la playlist entra cuando la cola queda vacía)
+    if (!currentTrack) advanceMusicQueue();
+  } else if (playlistActive) {
+    // Cortar la canción de playlist en curso: music-skip detiene el audio en
+    // los clientes y advanceMusicQueue pasa a la cola del chat o queda idle
+    currentTrack = null;
+    playlistActive = false;
+    broadcast({ type: 'music-skip' });
+    advanceMusicQueue();
+  }
   musicBroadcastState();
+}
+
+app.post('/api/music/playlist/toggle', (req, res) => {
+  // Con { enabled } en el body el estado es explícito (checkbox de la UI);
+  // sin body invierte (retrocompat con clientes que solo hacen flip)
+  const explicit = req.body && typeof req.body.enabled === 'boolean';
+  setPlaylistEnabled(explicit ? req.body.enabled : !config.playlistEnabled);
   res.json({ ok: true, enabled: config.playlistEnabled });
 });
 
@@ -2616,6 +2733,14 @@ app.post('/api/music/playlist/shuffle', (_req, res) => {
 
 // Cargar palabras bloqueadas al iniciar
 loadBlockedWordsFromFile();
+
+// Warm-up del motor de música: descarga el binario si falta y chequea updates
+// (throttled a 1 vez/24h) para que la primera !p no pague la espera.
+if (FEATURES.musicBot) {
+  musicEngine.ensureReady()
+    .then(() => musicEngine.checkForUpdates())
+    .catch(() => {}); // ya logueado en el engine; se reintenta en la próxima !p
+}
 
 // Inicializar soundPads en mobileState con lo que haya guardado
 mobileState.soundPads = loadSounds().map(s => ({ id: s.id, name: s.name, color: s.color }));
@@ -2676,6 +2801,7 @@ module.exports.shutdown = function shutdownServer() {
   }
 
   stopFollowerRefresh();
+  try { musicEngine.shutdown(); } catch (_) {}
   try { wss.close(); } catch (_) {}
   try { server.close(); } catch (_) {}
 };

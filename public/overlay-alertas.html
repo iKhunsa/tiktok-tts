@@ -125,6 +125,19 @@
 </head>
 <body>
   <script>
+    let _locale = {};
+    async function loadLocale() {
+      const lang = localStorage.getItem('tikliveTTS_lang') || 'es';
+      try { _locale = await (await fetch(`/locales/${lang}.json`)).json(); }
+      catch(_) { try { _locale = await (await fetch('/locales/es.json')).json(); } catch(__) {} }
+      connectWS();
+    }
+    function t(key) {
+      const parts = key.split('.');
+      let val = _locale;
+      for (const p of parts) { val = val?.[p]; if (val === undefined) break; }
+      return typeof val === 'string' ? val : key;
+    }
     const params   = new URLSearchParams(location.search);
     const _c = params.get('color'); if (_c) document.documentElement.style.setProperty('--accent', '#' + _c);
     const _b = params.get('bg');    if (_b) document.documentElement.style.setProperty('--bg-alpha', _b);
@@ -256,7 +269,7 @@
       const info = document.createElement('div');
       info.className = 'info';
       info.innerHTML = `
-        <div class="action-label">Regalo recibido</div>
+        <div class="action-label">${t('overlayStr.giftReceived')}</div>
         <div class="gift-name">${escapeHtml(gift.giftName)}</div>
         <div class="username">de @${escapeHtml(gift.user)}</div>
         ${gift.usdValue ? `<div class="usd-value">≈ $${escapeHtml(String(gift.usdValue))} USD</div>` : ''}
@@ -313,7 +326,7 @@
       };
       ws.onerror = () => ws.close();
     }
-    connectWS();
+    loadLocale();
   </script>
 </body>
 </html>
