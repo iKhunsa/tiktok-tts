@@ -2213,6 +2213,30 @@
               <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
             </div>
           </div>
+          <div class="setting-group">
+            <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
+              <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
+              <span data-i18n="label.musicSkipShortcut">Saltar canción del bot</span>
+            </label>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <input id="musicSkipShortcutInput" readonly placeholder="Clic aquí y presiona teclas..."
+  onclick="startCapturingShortcut('musicSkip')"
+                style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
+              <button onclick="clearTtsShortcut('musicSkip')"
+                style="padding:8px 12px;border-radius:8px;font-size:12px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--text-muted);cursor:pointer;" data-i18n="btn.clearShortcut">
+                ✕ Limpiar
+              </button>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+              <button onclick="applyTtsShortcutPreset('musicSkip', 'F12')"
+                style="padding:6px 10px;border-radius:8px;font-size:11px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--text-secondary);cursor:pointer;">
+                F12
+              </button>
+            </div>
+            <div id="musicSkipShortcutHint" style="font-size:11px;color:var(--text-muted);margin-top:4px;">
+              <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -2473,6 +2497,8 @@
     pauseShortcut: null,
     skipShortcut: null,
     clearShortcut: null,
+    musicPauseShortcut: null,
+    musicSkipShortcut: null,
     overlays: {
       seguidores: { goal: '', color: '#3ecf8e', bg: 0.80, bgimg: '' },
       likes:      { rows: 10, color: '#3ecf8e', bg: 0.80, bgimg: '' },
@@ -2894,8 +2920,9 @@
     skip:  { settingKey: 'skipShortcut',  inputId: 'skipShortcutInput',  hintId: 'skipShortcutHint',  run: () => skipCurrentTTS() },
     clear: { settingKey: 'clearShortcut', inputId: 'clearShortcutInput', hintId: 'clearShortcutHint', run: () => clearTTSQueue() },
     musicPause: { settingKey: 'musicPauseShortcut', inputId: 'musicPauseShortcutInput', hintId: 'musicPauseShortcutHint', run: () => musicTogglePause() },
+    musicSkip: { settingKey: 'musicSkipShortcut', inputId: 'musicSkipShortcutInput', hintId: 'musicSkipShortcutHint', run: () => musicSkip() },
   };
-  const ttsShortcutGlobalActive = { pause: false, skip: false, clear: false, musicPause: false };
+  const ttsShortcutGlobalActive = { pause: false, skip: false, clear: false, musicPause: false, musicSkip: false };
 
   function togglePauseTts() {
     ttsPaused = !ttsPaused;
@@ -2908,9 +2935,14 @@
       btn.style.color        = ttsPaused ? '#ff6b6b' : 'var(--accent)';
     }
     if (ttsPaused) {
-      stopCurrentTTS({ clearQueue: false });
-    } else if (!ttsPaused) {
-      if (!isSpeaking) processQueue();
+      // Pausa real: congelar el audio activo sin destruirlo para poder reanudar
+      if (activeAudio) activeAudio.pause();
+    } else {
+      if (activeAudio && activeAudio.paused) {
+        activeAudio.play().catch(() => processQueue());
+      } else if (!isSpeaking) {
+        processQueue();
+      }
     }
   }
 
@@ -3426,7 +3458,8 @@
     }
 
     isSpeaking = true;
-    const { text, msgId } = speechQueue.shift();
+    const queueItem = speechQueue.shift();
+    const { text, msgId } = queueItem;
     updateQueueBadge();
 
     if (currentMsgId) {
@@ -3457,7 +3490,14 @@
       if (!res.ok) { logStorage.addLog('error', 'network', `Error TTS HTTP ${res.status}`); throw new Error('TTS error'); }
 
       const blob = await res.blob();
-      if (ttsPaused || !ttsGlobalEnabled) {
+      if (ttsPaused) {
+        // Pausado durante el fetch: devolver el mensaje al frente de la cola
+        speechQueue.unshift(queueItem);
+        updateQueueBadge();
+        resetSpeakingState();
+        return;
+      }
+      if (!ttsGlobalEnabled) {
         resetSpeakingState();
         return;
       }

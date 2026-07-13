@@ -116,6 +116,7 @@
     "skipShortcut": "현재 메시지 건너뛰기",
     "clearQueueShortcut": "대기열 비우기",
     "musicPauseShortcut": "봇 음악 일시정지/재개",
+    "musicSkipShortcut": "봇 노래 건너뛰기",
     "accentColor": "강조 색상",
     "bgOpacity": "배경 불투명도",
     "visibleMsgs": "표시 메시지 수",

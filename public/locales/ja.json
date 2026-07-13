@@ -116,6 +116,7 @@
     "skipShortcut": "現在のメッセージをスキップ",
     "clearQueueShortcut": "キューをクリア",
     "musicPauseShortcut": "ボット音楽の一時停止/再開",
+    "musicSkipShortcut": "ボットの曲をスキップ",
     "accentColor": "アクセントカラー",
     "bgOpacity": "背景の透明度",
     "visibleMsgs": "表示メッセージ数",

@@ -116,6 +116,7 @@
     "skipShortcut": "跳过当前消息",
     "clearQueueShortcut": "清空队列",
     "musicPauseShortcut": "暂停/继续机器人音乐",
+    "musicSkipShortcut": "跳过机器人歌曲",
     "accentColor": "强调色",
     "bgOpacity": "背景透明度",
     "visibleMsgs": "可见消息数",

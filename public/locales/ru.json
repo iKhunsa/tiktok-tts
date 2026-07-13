@@ -116,6 +116,7 @@
     "skipShortcut": "Пропустить текущее сообщение",
     "clearQueueShortcut": "Очистить очередь",
     "musicPauseShortcut": "Пауза/продолжение музыки бота",
+    "musicSkipShortcut": "Пропустить песню бота",
     "accentColor": "Цвет акцента",
     "bgOpacity": "Прозрачность фона",
     "visibleMsgs": "Видимых сообщений",

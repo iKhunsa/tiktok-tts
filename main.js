@@ -503,7 +503,7 @@ function isValidShortcut(shortcut) {
 }
 
 // ── TTS shortcuts (pause / skip / clear) ─────────────────────────────────────
-const TTS_SHORTCUT_ACTIONS = new Set(['pause', 'skip', 'clear', 'musicPause']);
+const TTS_SHORTCUT_ACTIONS = new Set(['pause', 'skip', 'clear', 'musicPause', 'musicSkip']);
 const ttsShortcuts = new Map(); // action → normalizedShortcut
 
 function unregisterTtsShortcut(action) {

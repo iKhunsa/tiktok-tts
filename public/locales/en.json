@@ -116,6 +116,7 @@
     "skipShortcut": "Skip current message",
     "clearQueueShortcut": "Clear queue",
     "musicPauseShortcut": "Pause/resume bot music",
+    "musicSkipShortcut": "Skip bot song",
     "accentColor": "Accent color",
     "bgOpacity": "Background opacity",
     "visibleMsgs": "Visible messages",

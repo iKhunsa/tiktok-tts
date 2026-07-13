@@ -116,6 +116,7 @@
     "skipShortcut": "Aktuelle Nachricht überspringen",
     "clearQueueShortcut": "Warteschlange leeren",
     "musicPauseShortcut": "Bot-Musik pausieren/fortsetzen",
+    "musicSkipShortcut": "Bot-Song überspringen",
     "accentColor": "Akzentfarbe",
     "bgOpacity": "Hintergrundtransparenz",
     "visibleMsgs": "Sichtbare Nachrichten",

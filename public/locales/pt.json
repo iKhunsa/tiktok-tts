@@ -116,6 +116,7 @@
     "skipShortcut": "Pular mensagem atual",
     "clearQueueShortcut": "Limpar fila",
     "musicPauseShortcut": "Pausar/retomar música do bot",
+    "musicSkipShortcut": "Pular música do bot",
     "accentColor": "Cor de destaque",
     "bgOpacity": "Opacidade do fundo",
     "visibleMsgs": "Mensagens visíveis",

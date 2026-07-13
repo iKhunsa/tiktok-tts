@@ -116,6 +116,7 @@
     "skipShortcut": "Saltar mensaje actual",
     "clearQueueShortcut": "Limpiar cola",
     "musicPauseShortcut": "Pausar/Reanudar música del bot",
+    "musicSkipShortcut": "Saltar canción del bot",
     "accentColor": "Color acento",
     "bgOpacity": "Opacidad fondo",
     "visibleMsgs": "Mensajes visibles",
