@@ -1048,6 +1048,27 @@
 
     #donationNoticeModal p { margin: 0 0 24px; font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
 
+    .badge-new {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 1px 7px;
+      background: rgba(62, 207, 142, 0.15);
+      color: #3ecf8e;
+      border: 1px solid rgba(62, 207, 142, 0.4);
+      border-radius: 9999px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      line-height: 1.5;
+      animation: pulseBadge 2s ease-in-out infinite;
+    }
+
+    @keyframes pulseBadge {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.55; }
+    }
+
     .social-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; margin-top: 20px; }
 
     .social-card {
@@ -1442,7 +1463,7 @@
     </a>
 
     <div class="sidebar-footer">
-      <button class="sidebar-footer-btn" onclick="openDonationsModal()"><img class="icon-inline" src="icons/favorite.svg" alt=""> <span data-i18n="footer.donate">Donar</span></button>
+      <button class="sidebar-footer-btn" onclick="openDonationsModal()"><img class="icon-inline" src="icons/favorite.svg" alt=""> <span data-i18n="footer.donate">Donar</span> <span id="donateNewBadge" class="badge-new" data-i18n="footer.newBadge">Nuevo</span></button>
       <button class="sidebar-footer-btn" onclick="openSocialModal()"><img class="icon-inline" src="icons/smartphone.svg" alt=""> <span data-i18n="footer.channels">Canales</span></button>
       <a href="/advanced.html" class="sidebar-footer-btn"><img class="icon-inline" src="icons/build.svg" alt=""> <span data-i18n="footer.advanced">Avanzado</span></a>
       <div class="lang-selector-row">
