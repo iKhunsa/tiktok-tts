@@ -373,7 +373,14 @@
     "title": "支持我的内容",
     "copyAddress": "复制地址",
     "btcNative": "原生比特币",
-    "socialTitle": "关注我的内容"
+    "socialTitle": "关注我的内容",
+    "kofiDesc": "请我喝杯咖啡来支持我",
+    "paypalDesc": "通过 PayPal 直接捐赠"
+  },
+  "notice": {
+    "donationsTitle": "支持项目的新方式",
+    "donationsBody": "我们新增了 Ko-fi 和 PayPal 捐赠方式。应用将始终 100% 免费——如果它对你有帮助并且你想支持这个项目，现在比以往任何时候都更方便。",
+    "donationsCta": "查看捐赠方式"
   },
   "mobile3": {
     "connecting": "连接中…",

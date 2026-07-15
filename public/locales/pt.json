@@ -373,7 +373,14 @@
     "title": "Apoie meu conteúdo",
     "copyAddress": "Copiar endereço",
     "btcNative": "Bitcoin Nativo",
-    "socialTitle": "Siga meu conteúdo"
+    "socialTitle": "Siga meu conteúdo",
+    "kofiDesc": "Me apoie com um cafezinho",
+    "paypalDesc": "Doação direta via PayPal"
+  },
+  "notice": {
+    "donationsTitle": "Novas formas de apoiar o projeto",
+    "donationsBody": "Adicionamos Ko-fi e PayPal como opções de doação. O app continuará 100% grátis — se ele é útil para você e você quer apoiar o projeto, agora é mais fácil do que nunca.",
+    "donationsCta": "Ver opções de doação"
   },
   "mobile3": {
     "connecting": "Conectando…",

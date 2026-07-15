@@ -373,7 +373,14 @@
     "title": "コンテンツを支援する",
     "copyAddress": "アドレスをコピー",
     "btcNative": "ネイティブビットコイン",
-    "socialTitle": "コンテンツをフォローする"
+    "socialTitle": "コンテンツをフォローする",
+    "kofiDesc": "コーヒー1杯分の支援をお願いします",
+    "paypalDesc": "PayPalで直接寄付"
+  },
+  "notice": {
+    "donationsTitle": "プロジェクトを支援する新しい方法",
+    "donationsBody": "寄付オプションにKo-fiとPayPalを追加しました。アプリはこれからも100%無料です。役に立っていて、プロジェクトを支援したい方は、今まで以上に簡単に寄付できます。",
+    "donationsCta": "寄付オプションを見る"
   },
   "mobile3": {
     "connecting": "接続中…",

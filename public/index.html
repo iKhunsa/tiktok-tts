@@ -1027,6 +1027,27 @@
 
     .btn-copy:hover { opacity: 0.8; }
 
+    .donation-link-card {
+      display: block;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin: 20px 0;
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .donation-link-card h3 { display: flex; align-items: center; gap: 8px; }
+    .donation-link-card h3 .ext-arrow { margin-left: auto; color: var(--text-muted); font-size: 13px; }
+    .donation-link-card p { margin: 0; font-size: 13px; color: var(--text-muted); }
+
+    .donation-link-card.kofi { background: rgba(255, 94, 91, 0.05); border: 1px solid rgba(255, 94, 91, 0.25); }
+    .donation-link-card.kofi:hover { background: rgba(255, 94, 91, 0.12); border-color: rgba(255, 94, 91, 0.5); }
+
+    .donation-link-card.paypal { background: rgba(0, 112, 186, 0.07); border: 1px solid rgba(0, 112, 186, 0.35); }
+    .donation-link-card.paypal:hover { background: rgba(0, 112, 186, 0.15); border-color: rgba(0, 112, 186, 0.6); }
+
+    #donationNoticeModal p { margin: 0 0 24px; font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+
     .social-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; margin-top: 20px; }
 
     .social-card {
@@ -2374,6 +2395,16 @@
     <button class="modal-close" onclick="closeDonationsModal()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
     <h2><img class="icon-inline" src="icons/favorite.svg" alt=""> <span data-i18n="donations.title">Apoya mi contenido</span></h2>
 
+    <a href="https://ko-fi.com/ikhunsa" target="_blank" class="donation-link-card kofi">
+      <h3>☕ Ko-fi <span class="ext-arrow">↗</span></h3>
+      <p data-i18n="donations.kofiDesc">Apóyame con un cafecito</p>
+    </a>
+
+    <a href="https://paypal.me/KhunsaUwU" target="_blank" class="donation-link-card paypal">
+      <h3>💙 PayPal <span class="ext-arrow">↗</span></h3>
+      <p data-i18n="donations.paypalDesc">Donación directa vía PayPal</p>
+    </a>
+
     <div class="qr-card">
       <h3>Lightning Network (Instant)</h3>
       <p>Khunsa@coinos.io</p>
@@ -2387,6 +2418,16 @@
       <input type="text" value="bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk" readonly class="donation-input" onclick="this.select()">
       <button class="btn-copy" onclick="copyToClipboard('bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk')"><img class="icon-inline" src="icons/content_copy.svg" alt=""> <span data-i18n="donations.copyAddress">Copiar dirección</span></button>
     </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: Aviso donaciones (one-time) ═══════════════ -->
+<div id="donationNoticeModal" class="modal-overlay" onclick="closeDonationNotice(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeDonationNotice()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <h2><img class="icon-inline" src="icons/favorite.svg" alt=""> <span data-i18n="notice.donationsTitle">Nuevas formas de apoyar el proyecto</span></h2>
+    <p data-i18n="notice.donationsBody">Agregamos Ko-fi y PayPal como opciones de donación. La app seguirá siendo 100% gratis — si te sirve y quieres aportar al proyecto, ahora es más fácil que nunca.</p>
+    <button class="btn-copy" onclick="openDonationsFromNotice()"><span data-i18n="notice.donationsCta">Ver opciones de donación</span></button>
   </div>
 </div>
 
@@ -4034,10 +4075,27 @@
     document.getElementById('socialModal').classList.remove('show');
   }
 
+  function closeDonationNotice(e) {
+    if (e && e.target.id !== 'donationNoticeModal') return;
+    document.getElementById('donationNoticeModal').classList.remove('show');
+  }
+  function openDonationsFromNotice() {
+    document.getElementById('donationNoticeModal').classList.remove('show');
+    openDonationsModal();
+  }
+
+  // Aviso one-time: nuevas opciones de donación (v1.5.2)
+  const DONATION_NOTICE_KEY = 'tikliveTTS_noticeDonations_v1';
+  if (!localStorage.getItem(DONATION_NOTICE_KEY)) {
+    localStorage.setItem(DONATION_NOTICE_KEY, '1');
+    setTimeout(() => document.getElementById('donationNoticeModal').classList.add('show'), 1200);
+  }
+
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       document.getElementById('donationsModal').classList.remove('show');
       document.getElementById('socialModal').classList.remove('show');
+      document.getElementById('donationNoticeModal').classList.remove('show');
     }
   });
 
