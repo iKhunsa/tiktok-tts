@@ -3437,7 +3437,16 @@
         selectedVoice = savedVoice;
       } else {
         const firstEs = availableVoices.find(v => v.id.startsWith('es'));
-        if (firstEs) { updateVoiceDisplay(firstEs); selectedVoice = firstEs.id; }
+        if (firstEs) {
+          updateVoiceDisplay(firstEs);
+          selectedVoice = firstEs.id;
+          // savedVoice era un id obsoleto (ej: 'es' de antes del rename a 'es-MX') —
+          // corregir appSettings.voice también, no solo selectedVoice, para que todo
+          // lo que lea appSettings.voice directamente (ej: modal de idiomas permitidos)
+          // no se quede con el valor legacy para siempre en localStorage.
+          appSettings.voice = firstEs.id;
+          saveSettings();
+        }
       }
       if (selectedVoice) syncTtsVoiceLang(selectedVoice);
 
