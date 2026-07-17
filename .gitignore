@@ -7,3 +7,7 @@ dist/
 installer/
 electron-dist/
 release-output/
+auth-tokens.json
+platform-config.json
+config.json
+sounds-config.json

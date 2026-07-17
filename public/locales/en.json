@@ -27,7 +27,9 @@
     "readShares": "Announce shares",
     "sayUsername": "Say username",
     "langFilter": "Filter characters from other languages",
-    "langFilterHint": "Ignores chat messages with characters that don't match the active voice's language (e.g. blocks Chinese/Japanese if your voice is Spanish, and vice versa)."
+    "langFilterHint": "Ignores chat messages with characters that don't match the active voice's language (e.g. blocks Chinese/Japanese if your voice is Spanish, and vice versa).",
+    "dictFilter": "Filter by language (words)",
+    "dictFilterHint": "Only reads messages written in the active voice language or in the extra languages you allow. Unknown words (names, typos) never block."
   },
   "tts": {
     "on": "🔊 TTS On",
@@ -482,5 +484,11 @@
     "allChannelsDisconnected": "All channels disconnected",
     "youtubeAutoSaved": "YouTube saved; will connect when live",
     "youtubeTmpSaved": "YouTube saved as manual channel"
+  },
+  "dictLang": {
+    "title": "Allowed languages",
+    "desc": "Besides the voice language, also allow messages in:",
+    "voiceAlways": "(voice language — always allowed)",
+    "notApplicable": "This filter only applies to voices using the Latin alphabet."
   }
 }

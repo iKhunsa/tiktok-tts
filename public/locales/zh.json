@@ -27,7 +27,9 @@
     "readShares": "播报分享",
     "sayUsername": "说出用户名",
     "langFilter": "过滤其他语言的字符",
-    "langFilterHint": "忽略与当前语音语言不匹配字符的聊天消息（例如：语音为西班牙语时会屏蔽中文/日文，反之亦然）。"
+    "langFilterHint": "忽略与当前语音语言不匹配字符的聊天消息（例如：语音为西班牙语时会屏蔽中文/日文，反之亦然）。",
+    "dictFilter": "按语言过滤（单词）",
+    "dictFilterHint": "仅朗读使用当前语音语言或你允许的额外语言书写的消息。未知单词（名字、拼写错误）不会被屏蔽。"
   },
   "tts": {
     "on": "🔊 TTS 开启",
@@ -482,5 +484,11 @@
     "allChannelsDisconnected": "所有频道已断开",
     "youtubeAutoSaved": "YouTube已保存；直播时将自动连接",
     "youtubeTmpSaved": "YouTube已保存为手动频道"
+  },
+  "dictLang": {
+    "title": "允许的语言",
+    "desc": "除语音语言外，还允许以下语言的消息：",
+    "voiceAlways": "（语音语言 — 始终允许）",
+    "notApplicable": "此过滤器仅适用于拉丁字母语音。"
   }
 }

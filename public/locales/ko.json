@@ -27,7 +27,9 @@
     "readShares": "공유 알림",
     "sayUsername": "사용자명 읽기",
     "langFilter": "다른 언어 문자 필터링",
-    "langFilterHint": "활성 음성의 언어와 일치하지 않는 문자가 포함된 채팅 메시지를 무시합니다 (예: 음성이 스페인어면 중국어/일본어를 차단하며, 반대의 경우도 마찬가지입니다)."
+    "langFilterHint": "활성 음성의 언어와 일치하지 않는 문자가 포함된 채팅 메시지를 무시합니다 (예: 음성이 스페인어면 중국어/일본어를 차단하며, 반대의 경우도 마찬가지입니다).",
+    "dictFilter": "언어별 필터 (단어)",
+    "dictFilterHint": "활성 음성 언어 또는 허용한 추가 언어로 작성된 메시지만 읽습니다. 알 수 없는 단어(이름, 오타)는 차단되지 않습니다."
   },
   "tts": {
     "on": "🔊 TTS 켜짐",
@@ -482,5 +484,11 @@
     "allChannelsDisconnected": "모든 채널 연결 해제됨",
     "youtubeAutoSaved": "YouTube 저장됨; 라이브 시 연결됩니다",
     "youtubeTmpSaved": "YouTube를 수동 채널로 저장했습니다"
+  },
+  "dictLang": {
+    "title": "허용 언어",
+    "desc": "음성 언어 외에 다음 언어의 메시지도 허용:",
+    "voiceAlways": "(음성 언어 — 항상 허용)",
+    "notApplicable": "이 필터는 라틴 문자 음성에만 적용됩니다."
   }
 }

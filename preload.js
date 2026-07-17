@@ -31,8 +31,6 @@ function once(channel, cb) {
 contextBridge.exposeInMainWorld('electronAPI', {
   onMarkClip: (cb) => on('mark-clip', () => cb()),
   offMarkClip: (cb) => off('mark-clip', cb),
-  openOAuthWindow: (url, callbackPattern) =>
-    ipcRenderer.invoke('open-oauth-window', { url, callbackPattern }),
   onUpdateEvent: (cb) => on('update-event', (_e, data) => cb(data)),
   offUpdateEvent: (cb) => off('update-event', cb),
   installUpdate: () => ipcRenderer.send('install-update'),

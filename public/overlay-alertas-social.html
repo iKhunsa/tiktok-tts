@@ -165,10 +165,19 @@
         .replace(/"/g, '&quot;');
     }
 
+    const PLATFORM_META = {
+      tiktok:  { label: 'TIKTOK',  color: '#ff0050' },
+      twitch:  { label: 'TWITCH',  color: '#9146FF' },
+      youtube: { label: 'YOUTUBE', color: '#FF0000' },
+    };
+    const userSetColor = !!_c;
+
     function showAlert(event) {
       const isFollow = event.type === 'follow';
+      const meta = PLATFORM_META[event.platform] || null;
       const card = document.createElement('div');
       card.className = 'alert-card';
+      if (meta && !userSetColor) card.style.setProperty('--accent', meta.color);
 
       // icon/image
       const customImg = isFollow ? followImg : shareImg;
@@ -186,8 +195,9 @@
       // info block
       const info = document.createElement('div');
       info.className = 'info';
+      const platPrefix = meta ? `${meta.label} · ` : '';
       info.innerHTML = `
-        <div class="action-label">${isFollow ? t('overlayStr.newFollower') : t('overlayStr.shared')}</div>
+        <div class="action-label">${platPrefix}${isFollow ? t('overlayStr.newFollower') : t('overlayStr.shared')}</div>
         <div class="event-name">${escapeHtml(event.username || event.user || t('overlayStr.someone'))}</div>
         <div class="username">${isFollow ? t('overlayStr.followed') : t('overlayStr.sharedStream')}</div>
       `;

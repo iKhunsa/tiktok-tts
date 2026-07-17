@@ -243,7 +243,75 @@
       return span;
     }
 
+    // ── Alertas multi-plataforma (twitch/youtube) ────────────
+    const PLATFORM_META = {
+      tiktok:  { label: 'TIKTOK',  color: '#ff0050' },
+      twitch:  { label: 'TWITCH',  color: '#9146FF' },
+      youtube: { label: 'YOUTUBE', color: '#FF0000' },
+    };
+    const userSetColor = !!_c; // si el usuario fijó ?color=, respetarlo siempre
+
+    function describeEvent(d) {
+      switch (d.type) {
+        case 'sub': {
+          const tierTxt = d.isPrime ? 'Prime' : (d.tierLabel || (d.tier ? `Tier ${d.tier}` : 'Sub'));
+          if (d.subType === 'resub') return { emoji: '🟣', action: 'RESUSCRIPCIÓN', title: d.user, sub: d.months ? `${d.months} meses de sub` : tierTxt, badge: d.months ? `x${d.months}` : null };
+          if (d.subType === 'gift') return { emoji: '🎁', action: 'SUB REGALADA', title: d.user, sub: d.recipient ? `para @${d.recipient}` : tierTxt, badge: null };
+          if (d.subType === 'mysterygift') return { emoji: '🎁', action: 'SUBS REGALADAS', title: d.user, sub: `${d.giftCount || 1} subs para el chat`, badge: `x${d.giftCount || 1}` };
+          if (d.subType === 'upgrade') return { emoji: '⬆️', action: 'MEJORA DE SUB', title: d.user, sub: tierTxt, badge: null };
+          return { emoji: '🟣', action: 'NUEVA SUSCRIPCIÓN', title: d.user, sub: tierTxt, badge: null };
+        }
+        case 'cheer':
+          return { emoji: '💎', action: 'BITS', title: d.user, sub: d.message || '', badge: `${d.bits || 0} bits` };
+        case 'raid':
+          return { emoji: '🚀', action: 'RAID', title: d.user, sub: 'llega con su comunidad', badge: `${d.viewers || 0} viewers` };
+        case 'superchat':
+          return { emoji: '💰', action: 'SUPERCHAT', title: d.user, sub: d.comment || '', badge: d.amount || null };
+        default:
+          return null;
+      }
+    }
+
+    function showGenericAlert(d) {
+      const meta = PLATFORM_META[d.platform] || PLATFORM_META.tiktok;
+      const desc = describeEvent(d);
+      if (!desc) { processQueue(); return; }
+      const card = document.createElement('div');
+      card.className = 'alert-card';
+      if (!userSetColor) card.style.setProperty('--accent', meta.color);
+
+      const icon = document.createElement('span');
+      icon.className = 'gift-fallback';
+      icon.textContent = desc.emoji;
+      card.appendChild(icon);
+
+      const info = document.createElement('div');
+      info.className = 'info';
+      info.innerHTML = `
+        <div class="action-label">${meta.label} · ${desc.action}</div>
+        <div class="gift-name">${escapeHtml(desc.title || 'Anónimo')}</div>
+        ${desc.sub ? `<div class="username">${escapeHtml(desc.sub)}</div>` : ''}
+      `;
+      card.appendChild(info);
+
+      if (desc.badge) {
+        const badge = document.createElement('div');
+        badge.className = 'qty-badge';
+        badge.textContent = desc.badge;
+        card.appendChild(badge);
+      }
+
+      document.body.appendChild(card);
+      const dur = d.duration || alertDur;
+      setTimeout(() => {
+        card.classList.add('leaving');
+        card.addEventListener('animationend', () => { card.remove(); processQueue(); }, { once: true });
+      }, dur);
+      setTimeout(() => { if (card.parentNode) { card.remove(); processQueue(); } }, dur + 1500);
+    }
+
     function showAlert(gift) {
+      if (gift.type && gift.type !== 'gift') { showGenericAlert(gift); return; }
       const imgSrc     = resolveGiftImage(gift.giftName || '');
       const cdnSrc     = gift.giftPictureUrl || '';
       const card       = document.createElement('div');
@@ -317,7 +385,7 @@
       ws.onmessage = (e) => {
         try {
           const d = JSON.parse(e.data);
-          if (d.type === 'gift') enqueue(d);
+          if (['gift', 'sub', 'cheer', 'raid', 'superchat'].includes(d.type)) enqueue(d);
         } catch(_) {}
       };
       ws.onclose = () => {

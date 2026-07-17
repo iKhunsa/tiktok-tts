@@ -509,6 +509,15 @@ function computeGiftUsd({ giftName, repeatCount = 1, diamondCount = 0 } = {}) {
 }
 const GOOGLE_TTS_LANGS = new Set(['es-MX', 'en', 'en-GB', 'pt', 'pt-PT', 'fr', 'de', 'it', 'ja', 'zh-CN', 'ru', 'ko']);
 
+// Idiomas con diccionario de frecuencia (public/lang-words/*.json) para el
+// filtro por palabras. Solo alfabeto latino: ru/ja/zh-CN/ko no mapean porque
+// el filtro de script (VOICE_SCRIPT_REGEX) ya los distingue.
+const DICT_FILTER_LANGS = ['es', 'en', 'pt', 'fr', 'de', 'it'];
+const VOICE_TO_DICT_LANG = {
+  'es-MX': 'es', en: 'en', 'en-GB': 'en', pt: 'pt', 'pt-PT': 'pt',
+  fr: 'fr', de: 'de', it: 'it',
+};
+
 const clients = new Set();
 const serverLogs = [];
 const MAX_SERVER_LOGS = 250;
@@ -536,6 +545,8 @@ const DEFAULT_CONFIG = {
   playlistShuffle: false,
   playlistEnabled: false,
   langFilterEnabled: false,
+  dictFilterEnabled: false,
+  allowedExtraLangs: [],
   ttsVoiceLang: 'es-MX',
 };
 
@@ -555,6 +566,9 @@ const CONFIG_VALIDATORS = {
   playlistShuffle: (v) => typeof v === 'boolean',
   playlistEnabled: (v) => typeof v === 'boolean',
   langFilterEnabled: (v) => typeof v === 'boolean',
+  dictFilterEnabled: (v) => typeof v === 'boolean',
+  allowedExtraLangs: (v) => Array.isArray(v) && v.length <= DICT_FILTER_LANGS.length
+    && v.every((x) => DICT_FILTER_LANGS.includes(x)),
   ttsVoiceLang: (v) => GOOGLE_TTS_LANGS.has(v),
 };
 
@@ -1047,6 +1061,7 @@ function loadBlockedWordsFromFile() {
         if (word) blockedWords.add(word);
       }
     }
+    invalidateBlockedMatchers();
     log('info', 'blocked-words', 'loaded from file', { count: blockedWords.size });
   } catch (err) {
     log('error', 'blocked-words', 'failed to load file', { error: err.message });
@@ -1099,14 +1114,100 @@ function messageMatchesVoiceScript(text, voiceId) {
   return letters.every((ch) => allowed.test(ch));
 }
 
+// Diccionarios de frecuencia por idioma para el filtro por palabras.
+// Carga lazy: solo se leen del disco la primera vez que se necesitan
+// (es decir, nunca si dictFilterEnabled queda apagado).
+let langDicts = null;
+function getLangDicts() {
+  if (langDicts) return langDicts;
+  langDicts = new Map();
+  for (const lang of DICT_FILTER_LANGS) {
+    const set = new Set();
+    try {
+      const file = path.join(RESOURCE_BASE, 'public', 'lang-words', `${lang}.json`);
+      for (const word of JSON.parse(fs.readFileSync(file, 'utf-8'))) {
+        set.add(word);
+        // Variante sin acentos: un typo como "cancion" también cuenta como evidencia.
+        const folded = word.normalize('NFD').replace(/\p{M}/gu, '');
+        if (folded !== word) set.add(folded);
+      }
+    } catch (err) {
+      // Fail-open: sin diccionario, ese idioma nunca genera evidencia.
+      log('warn', 'dict-filter', `failed to load lang-words/${lang}.json`, { error: err.message });
+    }
+    langDicts.set(lang, set);
+  }
+  return langDicts;
+}
+
+// Decide si el mensaje "suena" al idioma de la voz (o a uno extra permitido).
+// Por token: en dict permitido → positivo; solo en dicts no permitidos →
+// negativo; en ninguno (typos, nombres, slang) → neutral. Se bloquea solo con
+// evidencia negativa y cero positiva — sesgo fail-open a propósito.
+function messageMatchesDictLang(text) {
+  const voiceLang = VOICE_TO_DICT_LANG[config.ttsVoiceLang];
+  if (!voiceLang) return { ok: true, positive: 0, negative: 0 };
+  const dicts = getLangDicts();
+  const allowed = new Set([voiceLang, ...config.allowedExtraLangs]);
+  let positive = 0;
+  let negative = 0;
+  const tokens = text.normalize('NFC').split(/[^\p{L}]+/u).filter((t) => t.length >= 2);
+  for (const token of tokens) {
+    let inAllowed = false;
+    let inOther = false;
+    for (const lang of DICT_FILTER_LANGS) {
+      if (!dicts.get(lang).has(token)) continue;
+      if (allowed.has(lang)) { inAllowed = true; break; }
+      inOther = true;
+    }
+    if (inAllowed) positive++;
+    else if (inOther) negative++;
+  }
+  return { ok: !(negative > 0 && positive === 0), positive, negative };
+}
+
 const LEET_MAP = { '0': 'o', '1': 'i', '3': 'e', '4': 'a', '5': 's', '7': 't', '@': 'a', '$': 's' };
 
+const foldAccents = (s) => s.normalize('NFD').replace(/\p{M}/gu, '');
+const collapseRepeats = (s) => s.replace(/(.)\1+/gu, '$1');
+const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 function normalizeAggressive(text) {
-  return String(text || '')
-    .toLowerCase()
-    .replace(/[01345@$]/g, (c) => LEET_MAP[c])
-    .replace(/[^\p{L}\p{N}]/gu, '')
-    .replace(/(.)\1+/g, '$1');
+  return collapseRepeats(
+    String(text || '')
+      .toLowerCase()
+      .replace(/[01345@$]/g, (c) => LEET_MAP[c])
+      .replace(/[^\p{L}\p{N}]/gu, '')
+  );
+}
+
+// Matchers de palabras bloqueadas con límite de palabra Unicode-aware.
+// Reemplaza el matching por substring, que daba falsos positivos al bloquear
+// palabras incrustadas en otras inocentes ("pito" → "capito", "culo" → "cálculo").
+// Dos pasadas: re1 = palabras con acentos plegados (cumple el "sin importar
+// acentos" que promete blocked-words.md); re2 = además con repeticiones
+// colapsadas, para seguir atrapando elongaciones ("putaaa").
+// El boundary es "no-letra": dígitos pegados no salvan la palabra ("puta123").
+let blockedMatchers = null; // null = rebuild pendiente
+
+function invalidateBlockedMatchers() { blockedMatchers = null; }
+
+function getBlockedMatchers() {
+  if (blockedMatchers) return blockedMatchers;
+  if (!blockedWords.size) {
+    blockedMatchers = { re1: null, re2: null };
+    return blockedMatchers;
+  }
+  const boundary = (alts) => new RegExp(`(?<=^|[^\\p{L}])(?:${alts.join('|')})(?=$|[^\\p{L}])`, 'u');
+  const plain = new Set();
+  const collapsed = new Set();
+  for (const word of blockedWords) {
+    const folded = foldAccents(word);
+    plain.add(escapeRegex(folded));
+    collapsed.add(escapeRegex(collapseRepeats(folded)));
+  }
+  blockedMatchers = { re1: boundary([...plain]), re2: boundary([...collapsed]) };
+  return blockedMatchers;
 }
 
 const DUP_WINDOW_MS = 45000;
@@ -1133,12 +1234,28 @@ setInterval(() => {
   }
 }, 5 * 60 * 1000);
 
+// Etapas de moderación sin estado (todo menos el chequeo de duplicados).
+// Compartida entre isSpam y POST /api/moderation/preview: devuelve la etapa
+// que bloquea el mensaje, o null si pasa todas.
+function moderationStage(comment) {
+  if (comment.length > 300) return { stage: 'length' };
+  if (/^(.)\1+$/.test(comment.trim())) return { stage: 'repeatedChar' };
+  const folded = foldAccents(comment.toLowerCase());
+  const { re1, re2 } = getBlockedMatchers();
+  if (re1 && re1.test(folded)) return { stage: 'blockedWord' };
+  if (re2 && re2.test(collapseRepeats(folded))) return { stage: 'blockedWord' };
+  if (config.langFilterEnabled && !messageMatchesVoiceScript(comment, config.ttsVoiceLang)) {
+    return { stage: 'script' };
+  }
+  if (config.dictFilterEnabled) {
+    const dict = messageMatchesDictLang(comment);
+    if (!dict.ok) return { stage: 'dict', positive: dict.positive, negative: dict.negative };
+  }
+  return null;
+}
+
 function isSpam(comment, userKey) {
-  if (comment.length > 300) return true;
-  if (/^(.)\1+$/.test(comment.trim())) return true;
-  const lower = comment.toLowerCase();
-  for (const w of blockedWords) if (lower.includes(w)) return true;
-  if (config.langFilterEnabled && !messageMatchesVoiceScript(comment, config.ttsVoiceLang)) return true;
+  if (moderationStage(comment)) return true;
   const norm = normalizeAggressive(comment);
   if (norm.length >= DUP_MIN_LEN && isDuplicateRecent(userKey, norm)) return true;
   return false;
@@ -1292,7 +1409,7 @@ function setupTikTokConnection(cleanUsername) {
   conn.on('follow', (data) => {
     const user = resolveDisplayName(data.nickname, data.uniqueId);
     overlayState.credits.followers.push({ user, ts: Date.now() });
-    broadcast({ type: 'follow', user, timestamp: Date.now() });
+    broadcast({ type: 'follow', platform: 'tiktok', user, timestamp: Date.now() });
     overlayState.followCount += 1;
   });
 
@@ -1300,7 +1417,7 @@ function setupTikTokConnection(cleanUsername) {
     const user = resolveDisplayName(data.nickname, data.uniqueId);
     overlayState.sharers.push({ user, ts: Date.now() });
     overlayState.credits.sharers.push({ user, ts: Date.now() });
-    broadcast({ type: 'share', user, timestamp: Date.now() });
+    broadcast({ type: 'share', platform: 'tiktok', user, timestamp: Date.now() });
   });
 
   conn.on('disconnected', () => {
@@ -1586,6 +1703,17 @@ app.patch('/api/config', (req, res) => {
   res.json(config);
 });
 
+// Prueba de moderación sin efectos secundarios: aplica los mismos filtros que
+// el chat real (palabras bloqueadas, script, diccionario) pero NO toca el
+// historial de duplicados ni dispara TTS.
+app.post('/api/moderation/preview', (req, res) => {
+  const text = typeof (req.body || {}).text === 'string' ? req.body.text : '';
+  if (!text.trim()) return res.status(400).json({ error: 'text requerido' });
+  const result = moderationStage(normalizeForModeration(text));
+  if (!result) return res.json({ blocked: false, stage: 'none' });
+  res.json({ blocked: true, ...result });
+});
+
 // Palabras bloqueadas
 app.get('/api/blocked-words', (req, res) => res.json({ words: [...blockedWords] }));
 
@@ -1611,6 +1739,7 @@ app.post('/api/blocked-words/import', (req, res) => {
       if (word) blockedWords.add(word);
     }
   }
+  invalidateBlockedMatchers();
   saveBlockedWordsToFile();
   res.json({ words: [...blockedWords] });
 });
@@ -1618,6 +1747,7 @@ app.post('/api/blocked-words/import', (req, res) => {
 app.post('/api/block-word', (req, res) => {
   const { word } = req.body || {};
   if (word && typeof word === 'string') blockedWords.add(word.toLowerCase().trim());
+  invalidateBlockedMatchers();
   saveBlockedWordsToFile();
   res.json({ words: [...blockedWords] });
 });
@@ -1625,6 +1755,7 @@ app.post('/api/block-word', (req, res) => {
 app.delete('/api/block-word', (req, res) => {
   const { word } = req.body || {};
   if (word) blockedWords.delete(word.toLowerCase().trim());
+  invalidateBlockedMatchers();
   saveBlockedWordsToFile();
   res.json({ words: [...blockedWords] });
 });
@@ -1725,13 +1856,15 @@ app.post('/api/test/gift', (req, res) => {
 });
 
 app.post('/api/test/follow', (req, res) => {
+  const platform = ['tiktok', 'twitch'].includes(req.query.platform || req.body?.platform)
+    ? (req.query.platform || req.body.platform) : 'tiktok';
   const testUsers = ['TestUser', 'FanRandom', 'ViewerPro', 'TikToker', 'StreamerFan'];
   const user = testUsers[Math.floor(Math.random() * testUsers.length)] + Math.floor(Math.random() * 99);
   overlayState.credits.followers.push({ user, ts: Date.now() });
-  broadcast({ type: 'follow', user, timestamp: Date.now() });
-  overlayState.followCount += 1;
-  log('info', 'test', 'Test follow broadcasted', { user });
-  res.json({ success: true, user });
+  broadcast({ type: 'follow', platform, user, timestamp: Date.now() });
+  if (platform === 'tiktok') overlayState.followCount += 1;
+  log('info', 'test', 'Test follow broadcasted', { user, platform });
+  res.json({ success: true, user, platform });
 });
 
 app.post('/api/test/share', (req, res) => {
@@ -1739,9 +1872,43 @@ app.post('/api/test/share', (req, res) => {
   const user = testUsers[Math.floor(Math.random() * testUsers.length)] + Math.floor(Math.random() * 99);
   overlayState.sharers.push({ user, ts: Date.now() });
   overlayState.credits.sharers.push({ user, ts: Date.now() });
-  broadcast({ type: 'share', user, timestamp: Date.now() });
+  broadcast({ type: 'share', platform: 'tiktok', user, timestamp: Date.now() });
   log('info', 'test', 'Test share broadcasted', { user });
   res.json({ success: true, user });
+});
+
+app.post('/api/test/sub', (req, res) => {
+  const testUsers = ['SubKing', 'TwitchFan', 'PogViewer', 'StreamLover', 'ChatHero'];
+  const user = testUsers[Math.floor(Math.random() * testUsers.length)] + Math.floor(Math.random() * 99);
+  const variants = [
+    { subType: 'new', tier: 1, tierLabel: 'Tier 1', isPrime: false },
+    { subType: 'new', tier: 'prime', tierLabel: 'Prime', isPrime: true },
+    { subType: 'resub', tier: 1, tierLabel: 'Tier 1', isPrime: false, months: Math.floor(Math.random() * 24) + 2 },
+    { subType: 'gift', tier: 1, tierLabel: 'Tier 1', isPrime: false, recipient: 'LuckyViewer' + Math.floor(Math.random() * 99) },
+    { subType: 'mysterygift', tier: 1, tierLabel: 'Tier 1', isPrime: false, giftCount: Math.floor(Math.random() * 10) + 1 },
+  ];
+  const v = variants[Math.floor(Math.random() * variants.length)];
+  broadcast({ type: 'sub', platform: 'twitch', user, channel: 'test', timestamp: Date.now(), test: true, ...v });
+  log('info', 'test', 'Test sub broadcasted', { user, subType: v.subType });
+  res.json({ success: true, user, ...v });
+});
+
+app.post('/api/test/cheer', (req, res) => {
+  const testUsers = ['BitsMaster', 'CheerFan', 'PogChamp', 'BitLover', 'HypeTrain'];
+  const user = testUsers[Math.floor(Math.random() * testUsers.length)] + Math.floor(Math.random() * 99);
+  const bits = [100, 500, 1000, 5000][Math.floor(Math.random() * 4)];
+  broadcast({ type: 'cheer', platform: 'twitch', user, bits, message: '¡Toma tus bits!', channel: 'test', timestamp: Date.now(), test: true });
+  log('info', 'test', 'Test cheer broadcasted', { user, bits });
+  res.json({ success: true, user, bits });
+});
+
+app.post('/api/test/raid', (req, res) => {
+  const testUsers = ['RaidLeader', 'StreamerAmigo', 'BigRaider', 'TwitchPartner'];
+  const user = testUsers[Math.floor(Math.random() * testUsers.length)] + Math.floor(Math.random() * 99);
+  const viewers = Math.floor(Math.random() * 500) + 5;
+  broadcast({ type: 'raid', platform: 'twitch', user, viewers, channel: 'test', timestamp: Date.now(), test: true });
+  log('info', 'test', 'Test raid broadcasted', { user, viewers });
+  res.json({ success: true, user, viewers });
 });
 
 app.post('/api/test/likes', (req, res) => {
@@ -1762,8 +1929,55 @@ app.post('/api/test/likes', (req, res) => {
 });
 
 // ── AUTH TOKENS & PLATFORM CONFIG ────────────────────────────────────────────
-const authTokens = { twitch: null, twitchLogin: null };
+// authTokens.twitch:  { accessToken, refreshToken, expiresAt, login, userId }
+const AUTH_TOKENS_FILE = path.join(DATA_BASE, 'auth-tokens.json');
+const PLATFORM_CONFIG_FILE = path.join(DATA_BASE, 'platform-config.json');
+const authTokens = { twitch: null };
 const platformConfig = { twitchClientId: '' };
+
+function saveAuthTokens() {
+  try {
+    fs.writeFileSync(AUTH_TOKENS_FILE, `${JSON.stringify(authTokens, null, 2)}\n`, 'utf8');
+  } catch (err) {
+    log('error', 'auth', 'failed to save auth tokens', { error: err.message });
+  }
+}
+
+function loadAuthTokens() {
+  try {
+    if (!fs.existsSync(AUTH_TOKENS_FILE)) return;
+    const parsed = JSON.parse(fs.readFileSync(AUTH_TOKENS_FILE, 'utf8'));
+    if (parsed && typeof parsed === 'object') {
+      if (parsed.twitch && parsed.twitch.accessToken) authTokens.twitch = parsed.twitch;
+    }
+    log('info', 'auth', 'loaded persisted auth tokens', { twitch: !!authTokens.twitch });
+  } catch (err) {
+    log('warn', 'auth', 'failed to load persisted auth tokens', { error: err.message });
+  }
+}
+
+function savePlatformConfig() {
+  try {
+    fs.writeFileSync(PLATFORM_CONFIG_FILE, `${JSON.stringify(platformConfig, null, 2)}\n`, 'utf8');
+  } catch (err) {
+    log('error', 'auth', 'failed to save platform config', { error: err.message });
+  }
+}
+
+function loadPlatformConfig() {
+  try {
+    if (!fs.existsSync(PLATFORM_CONFIG_FILE)) return;
+    const parsed = JSON.parse(fs.readFileSync(PLATFORM_CONFIG_FILE, 'utf8'));
+    for (const k of Object.keys(platformConfig)) {
+      if (typeof parsed?.[k] === 'string') platformConfig[k] = parsed[k];
+    }
+  } catch (err) {
+    log('warn', 'auth', 'failed to load platform config', { error: err.message });
+  }
+}
+
+loadAuthTokens();
+loadPlatformConfig();
 
 // ── MULTI-PLATFORM CHAT ───────────────────────────────────────────────────────
 const twitchChannels = new Map(); // channel → tmi.Client
@@ -1798,9 +2012,9 @@ async function connectTwitch(channel, token = null, attempt = 0) {
     twitchChannels.delete(channel);
   }
   const clientOpts = { channels: [channel] };
-  const effectiveToken = token || authTokens.twitch;
-  if (effectiveToken && authTokens.twitchLogin) {
-    clientOpts.identity = { username: authTokens.twitchLogin, password: `oauth:${effectiveToken}` };
+  const effectiveToken = token || authTokens.twitch?.accessToken;
+  if (effectiveToken && authTokens.twitch?.login) {
+    clientOpts.identity = { username: authTokens.twitch.login, password: `oauth:${effectiveToken}` };
   }
   const client = new tmi.Client(clientOpts);
   client._intentionalDisconnect = false;
@@ -1841,6 +2055,66 @@ async function connectTwitch(channel, token = null, attempt = 0) {
       ttsComment: sanitizeForTTS(message.trim()),
       emotes: Object.keys(emotes).length > 0 ? emotes : undefined,
       timestamp: Date.now(),
+    });
+  });
+
+  // ── Alertas Twitch (sub/cheer/raid) — llegan por el mismo IRC anónimo ──────
+  // No bindear 'sub' ni 'subanniversary': tmi.js los emite junto con
+  // 'subscription'/'resub' respectivamente y dispararían doble alerta.
+  const planToTier = (methods) => {
+    if (!methods) return { tier: null, tierLabel: '', isPrime: false };
+    const isPrime = !!methods.prime || methods.plan === 'Prime';
+    const tier = isPrime ? 'prime' : ({ 1000: 1, 2000: 2, 3000: 3 })[methods.plan] || null;
+    return { tier, tierLabel: methods.planName || '', isPrime };
+  };
+  const emitSub = (subType, user, extra = {}) => {
+    broadcast({ type: 'sub', platform: 'twitch', subType, user, channel, timestamp: Date.now(), ...extra });
+  };
+
+  client.on('subscription', (_ch, username, methods, message) => {
+    emitSub('new', cleanName(username), { ...planToTier(methods), message: message ? sanitizeForTTS(message) : '' });
+  });
+  client.on('resub', (_ch, username, streakMonths, message, tags, methods) => {
+    const months = parseInt(tags?.['msg-param-cumulative-months'], 10) || streakMonths || 0;
+    emitSub('resub', cleanName(username), {
+      ...planToTier(methods), months, streakMonths: streakMonths || 0,
+      message: message ? sanitizeForTTS(message) : '',
+    });
+  });
+  client.on('subgift', (_ch, username, _streak, recipient, methods) => {
+    emitSub('gift', cleanName(username), { ...planToTier(methods), recipient: cleanName(recipient) });
+  });
+  client.on('anonsubgift', (_ch, _streak, recipient, methods) => {
+    emitSub('gift', 'Anónimo', { ...planToTier(methods), recipient: cleanName(recipient), isAnonymous: true });
+  });
+  client.on('submysterygift', (_ch, username, numbOfSubs, methods) => {
+    emitSub('mysterygift', cleanName(username), { ...planToTier(methods), giftCount: numbOfSubs || 1 });
+  });
+  client.on('anonsubmysterygift', (_ch, numbOfSubs, methods) => {
+    emitSub('mysterygift', 'Anónimo', { ...planToTier(methods), giftCount: numbOfSubs || 1, isAnonymous: true });
+  });
+  client.on('primepaidupgrade', (_ch, username, methods) => {
+    emitSub('upgrade', cleanName(username), planToTier(methods));
+  });
+  client.on('giftpaidupgrade', (_ch, username, sender) => {
+    emitSub('upgrade', cleanName(username), { sender: cleanName(sender) });
+  });
+  client.on('anongiftpaidupgrade', (_ch, username) => {
+    emitSub('upgrade', cleanName(username));
+  });
+  client.on('cheer', (_ch, tags, message) => {
+    broadcast({
+      type: 'cheer', platform: 'twitch',
+      user: cleanName(tags['display-name'] || tags.username || 'Anónimo'),
+      bits: parseInt(tags.bits, 10) || 0,
+      message: message ? sanitizeForTTS(message) : '',
+      channel, timestamp: Date.now(),
+    });
+  });
+  client.on('raided', (_ch, username, viewers) => {
+    broadcast({
+      type: 'raid', platform: 'twitch', user: cleanName(username),
+      viewers: parseInt(viewers, 10) || 0, channel, timestamp: Date.now(),
     });
   });
 
@@ -1911,9 +2185,25 @@ async function connectYoutube(channelOrId, attempt = 0) {
     }
     const displayText = displayParts.join('').trim();
     const ttsText = displayText.replace(/:[\w\-]+:/g, '').trim();
-    if (!displayText) return;
     const ytUser = cleanName(item.author?.name || 'Anónimo');
     const ytUserId = item.author?.channelId || ytUser;
+
+    // Superchat: puede venir sin texto (solo monto) — alertar antes del guard
+    // de displayText y de forma independiente del broadcast de chat normal.
+    if (item.superchat) {
+      broadcast({
+        type: 'superchat',
+        platform: 'youtube',
+        user: ytUser,
+        amount: item.superchat.amount || '',
+        color: item.superchat.color || '',
+        sticker: item.superchat.sticker?.url || null,
+        comment: displayText ? sanitizeForTTS(displayText) : '',
+        channel: target.key,
+        timestamp: Date.now(),
+      });
+    }
+    if (!displayText) return;
     if (FEATURES.musicBot && config.musicEnabled && /^!p\s+\S/i.test(displayText)) {
       handleMusicRequest(displayText.slice(displayText.indexOf(' ') + 1).trim(), ytUser, ytUserId, 'youtube');
       return;
@@ -2345,63 +2635,381 @@ app.post('/api/obs/save-replay', (_req, res) => {
   }
 });
 
-app.get('/api/platform-config', (_req, res) => res.json(platformConfig));
+app.get('/api/platform-config', (_req, res) => res.json({
+  twitchClientId: platformConfig.twitchClientId,
+}));
 
 app.patch('/api/platform-config', (req, res) => {
   const allowed = Object.keys(platformConfig);
   for (const [k, v] of Object.entries(req.body || {})) {
     if (allowed.includes(k) && typeof v === 'string') platformConfig[k] = v;
   }
-  res.json(platformConfig);
+  savePlatformConfig();
+  res.json({
+    twitchClientId: platformConfig.twitchClientId,
+  });
 });
 
-app.get('/auth/twitch/callback', (_req, res) => {
-  res.send(`<!DOCTYPE html><html><head><title>Twitch Auth</title></head><body>
-    <p style="font-family:sans-serif;padding:20px">Autenticando con Twitch...</p>
-    <script>
-      const hash = new URLSearchParams(location.hash.slice(1));
-      const token = hash.get('access_token');
-      if (token) {
-        fetch('/auth/twitch/token', {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({ token })
-        }).then(() => { document.body.innerHTML = '<p style="font-family:sans-serif;padding:20px;color:green">✓ Twitch conectado. Puedes cerrar esta ventana.</p>'; });
-      } else {
-        document.body.innerHTML = '<p style="font-family:sans-serif;padding:20px;color:red">Error: no se recibió token. Intenta de nuevo.</p>';
-      }
-    <\/script>
-  </body></html>`);
-});
+// ── OAUTH (Twitch Device Code Flow) ──────────────────────────────────────────
+const { fetch: undiciFetch } = require('undici');
+// Cliente público: Twitch solo le permite Device Code Grant (no hay PKCE en
+// Twitch y authorization_code exige client_secret). Sin redirect URI ni secret.
+const TWITCH_OAUTH_SCOPES = 'moderator:read:followers';
+const pendingOAuth = { twitch: null }; // { deviceCode, interval, expiresAt, timer }
 
-app.post('/auth/twitch/token', async (req, res) => {
-  const { token } = req.body || {};
-  if (!token) return res.status(400).json({ error: 'Token requerido' });
+let twitchFollowActive = false;
+
+function oauthStatusPayload() {
+  return {
+    twitch: {
+      connected: !!authTokens.twitch,
+      login: authTokens.twitch?.login || null,
+      followActive: twitchFollowActive,
+    },
+  };
+}
+
+function broadcastOauthStatus() {
+  broadcast({ type: 'oauth-status-changed', ...oauthStatusPayload() });
+}
+
+// ── Twitch OAuth (Device Code Grant, cliente público sin secret) ─────────────
+function cancelTwitchDevicePoll() {
+  if (pendingOAuth.twitch?.timer) clearTimeout(pendingOAuth.twitch.timer);
+  pendingOAuth.twitch = null;
+}
+
+app.get('/api/auth/twitch/start', async (_req, res) => {
   if (!platformConfig.twitchClientId) {
-    return res.status(400).json({ error: 'Cliente ID de Twitch no configurado. Ve a Configuración > Plataformas.' });
+    return res.status(400).json({ error: 'Client ID de Twitch no configurado' });
   }
-  authTokens.twitch = token;
-  // TODO: persist token to config file + add expiry/refresh logic so it survives restarts
-  log('info', 'twitch-oauth', 'Token stored in memory (not persisted — lost on restart)');
+  cancelTwitchDevicePoll();
   try {
-    const { fetch: nodeFetch } = require('undici');
-    const r = await nodeFetch('https://api.twitch.tv/helix/users', {
-      headers: { 'Authorization': `Bearer ${token}`, 'Client-Id': platformConfig.twitchClientId },
+    const r = await undiciFetch('https://id.twitch.tv/oauth2/device', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ client_id: platformConfig.twitchClientId, scopes: TWITCH_OAUTH_SCOPES }),
     });
-    if (!r.ok) {
-      authTokens.twitchLogin = null;
-      return res.status(401).json({ error: 'Token inválido o Client ID incorrecto' });
-    }
     const d = await r.json();
-    authTokens.twitchLogin = d.data?.[0]?.login || null;
+    if (!r.ok || !d.device_code) throw new Error(d.message || `device request HTTP ${r.status}`);
+    pendingOAuth.twitch = {
+      deviceCode: d.device_code,
+      interval: Math.max(d.interval || 5, 5),
+      expiresAt: Date.now() + (d.expires_in || 1800) * 1000,
+      timer: null,
+    };
+    scheduleTwitchDevicePoll();
+    log('info', 'twitch-oauth', 'Device code emitido', { userCode: d.user_code });
+    res.json({ url: d.verification_uri, userCode: d.user_code, expiresIn: d.expires_in || 1800 });
   } catch (e) {
-    authTokens.twitchLogin = null;
-    return res.status(502).json({ error: 'Error contactando Twitch', detail: e.message });
+    log('warn', 'twitch-oauth', 'Fallo solicitando device code', { error: e.message });
+    res.status(502).json({ error: `No se pudo iniciar la autorización: ${e.message}` });
   }
-  broadcast({ type: 'twitch-auth-ready', login: authTokens.twitchLogin });
-  log('info', 'twitch-oauth', 'Token recibido', { login: authTokens.twitchLogin });
-  res.json({ success: true, login: authTokens.twitchLogin });
 });
+
+function scheduleTwitchDevicePoll() {
+  const p = pendingOAuth.twitch;
+  if (!p) return;
+  // +1s de margen: Twitch responde slow_down si se pollea más rápido que interval
+  p.timer = setTimeout(() => pollTwitchDeviceToken(), (p.interval + 1) * 1000);
+}
+
+async function pollTwitchDeviceToken() {
+  const p = pendingOAuth.twitch;
+  if (!p) return;
+  if (Date.now() > p.expiresAt) {
+    pendingOAuth.twitch = null;
+    log('warn', 'twitch-oauth', 'Device code expirado sin autorizar');
+    broadcast({ type: 'twitch-auth-error', error: 'La autorización expiró. Intentá de nuevo.' });
+    return;
+  }
+  let tok;
+  try {
+    const r = await undiciFetch('https://id.twitch.tv/oauth2/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        client_id: platformConfig.twitchClientId,
+        scopes: TWITCH_OAUTH_SCOPES,
+        device_code: p.deviceCode,
+        grant_type: 'urn:ietf:params:oauth:grant-type:device_code',
+      }),
+    });
+    tok = await r.json();
+    if (!r.ok || !tok.access_token) {
+      const msg = String(tok.message || '').toLowerCase();
+      if (msg.includes('authorization_pending')) return scheduleTwitchDevicePoll();
+      if (msg.includes('slow')) { p.interval += 5; return scheduleTwitchDevicePoll(); }
+      pendingOAuth.twitch = null;
+      log('warn', 'twitch-oauth', 'Fallo device flow', { error: tok.message || `HTTP ${r.status}` });
+      broadcast({ type: 'twitch-auth-error', error: tok.message || 'Twitch rechazó la autorización' });
+      return;
+    }
+  } catch (_) {
+    // Error de red transitorio: reintentar en el próximo intervalo
+    return scheduleTwitchDevicePoll();
+  }
+  pendingOAuth.twitch = null;
+  try {
+    const ur = await undiciFetch('https://api.twitch.tv/helix/users', {
+      headers: { Authorization: `Bearer ${tok.access_token}`, 'Client-Id': platformConfig.twitchClientId },
+    });
+    const ud = await ur.json();
+    const me = ud.data?.[0];
+    if (!ur.ok || !me) throw new Error('no se pudo obtener el usuario de Twitch');
+    authTokens.twitch = {
+      accessToken: tok.access_token,
+      refreshToken: tok.refresh_token || null,
+      expiresAt: Date.now() + (tok.expires_in || 3600) * 1000,
+      login: me.login,
+      userId: me.id,
+    };
+    saveAuthTokens();
+    broadcast({ type: 'twitch-auth-ready', login: me.login }); // compat con UI vieja
+    broadcastOauthStatus();
+    log('info', 'twitch-oauth', 'Twitch autorizado', { login: me.login });
+    startTwitchEventSub();
+  } catch (e) {
+    log('warn', 'twitch-oauth', 'Fallo completando autorización', { error: e.message });
+    broadcast({ type: 'twitch-auth-error', error: `Error conectando con Twitch: ${e.message}` });
+  }
+}
+
+async function refreshTwitchToken() {
+  const t = authTokens.twitch;
+  if (!t?.refreshToken) throw new Error('sin refresh token de Twitch');
+  const r = await undiciFetch('https://id.twitch.tv/oauth2/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      client_id: platformConfig.twitchClientId,
+      grant_type: 'refresh_token',
+      refresh_token: t.refreshToken,
+    }),
+  });
+  const tok = await r.json();
+  if (!r.ok || !tok.access_token) {
+    // Refresh inválido/revocado: requiere reautorizar manualmente.
+    authTokens.twitch = null;
+    saveAuthTokens();
+    stopTwitchEventSub('token-revoked');
+    broadcastOauthStatus();
+    throw new Error(tok.message || `refresh HTTP ${r.status}`);
+  }
+  t.accessToken = tok.access_token;
+  if (tok.refresh_token) t.refreshToken = tok.refresh_token; // Twitch rota el refresh token
+  t.expiresAt = Date.now() + (tok.expires_in || 3600) * 1000;
+  saveAuthTokens();
+  return t.accessToken;
+}
+
+async function ensureTwitchAccessToken() {
+  const t = authTokens.twitch;
+  if (!t) throw new Error('Twitch no autorizado');
+  if (Date.now() > t.expiresAt - 5 * 60 * 1000) await refreshTwitchToken();
+  return authTokens.twitch.accessToken;
+}
+
+// ── Twitch EventSub WebSocket (follows) ──────────────────────────────────────
+let twitchEsWs = null;
+let twitchEsKeepaliveTimer = null;
+let twitchEsReconnectTimer = null;
+let twitchEsReconnectAttempts = 0;
+let twitchEsStopped = true;
+const twitchEsSeenMsgIds = new Set();
+
+function clearTwitchEsTimers() {
+  if (twitchEsKeepaliveTimer) { clearTimeout(twitchEsKeepaliveTimer); twitchEsKeepaliveTimer = null; }
+  if (twitchEsReconnectTimer) { clearTimeout(twitchEsReconnectTimer); twitchEsReconnectTimer = null; }
+}
+
+function stopTwitchEventSub(reason = 'stop') {
+  twitchEsStopped = true;
+  clearTwitchEsTimers();
+  twitchFollowActive = false;
+  if (twitchEsWs) {
+    try { twitchEsWs.removeAllListeners(); twitchEsWs.close(); } catch (_) {}
+    twitchEsWs = null;
+  }
+  log('info', 'twitch-eventsub', 'EventSub detenido', { reason });
+}
+
+function scheduleTwitchEsReconnect() {
+  if (twitchEsStopped || twitchEsReconnectTimer || !authTokens.twitch) return;
+  if (twitchEsReconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
+    log('warn', 'twitch-eventsub', 'Reconexión EventSub agotada', { attempts: twitchEsReconnectAttempts });
+    twitchFollowActive = false;
+    broadcastOauthStatus();
+    return;
+  }
+  const delay = Math.min(1000 * Math.pow(2, twitchEsReconnectAttempts), 30000);
+  twitchEsReconnectAttempts++;
+  twitchEsReconnectTimer = setTimeout(() => {
+    twitchEsReconnectTimer = null;
+    connectTwitchEventSubSocket('wss://eventsub.wss.twitch.tv/ws');
+  }, delay);
+}
+
+async function createTwitchFollowSubscription(sessionId) {
+  const accessToken = await ensureTwitchAccessToken();
+  const { userId } = authTokens.twitch;
+  const r = await undiciFetch('https://api.twitch.tv/helix/eventsub/subscriptions', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Client-Id': platformConfig.twitchClientId,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      type: 'channel.follow',
+      version: '2',
+      condition: { broadcaster_user_id: userId, moderator_user_id: userId },
+      transport: { method: 'websocket', session_id: sessionId },
+    }),
+  });
+  if (r.status === 202) {
+    twitchFollowActive = true;
+    twitchEsReconnectAttempts = 0;
+    broadcastOauthStatus();
+    log('info', 'twitch-eventsub', 'Suscripción channel.follow activa');
+    return;
+  }
+  const body = await r.json().catch(() => ({}));
+  throw new Error(`suscripción falló HTTP ${r.status}: ${body.message || ''}`);
+}
+
+function connectTwitchEventSubSocket(url, previousWs = null) {
+  if (twitchEsStopped) return;
+  let ws;
+  try { ws = new WebSocket(url); } catch (e) {
+    log('warn', 'twitch-eventsub', 'No se pudo abrir WS', { error: e.message });
+    scheduleTwitchEsReconnect();
+    return;
+  }
+
+  const armKeepaliveWatchdog = (timeoutSec) => {
+    if (twitchEsKeepaliveTimer) clearTimeout(twitchEsKeepaliveTimer);
+    twitchEsKeepaliveTimer = setTimeout(() => {
+      log('warn', 'twitch-eventsub', 'Keepalive perdido, reconectando');
+      try { ws.terminate(); } catch (_) {}
+    }, (timeoutSec + 10) * 1000);
+  };
+
+  let keepaliveSec = 10;
+
+  ws.on('message', async (raw) => {
+    let msg;
+    try { msg = JSON.parse(raw.toString()); } catch (_) { return; }
+    const msgType = msg.metadata?.message_type;
+    const msgId = msg.metadata?.message_id;
+    if (msgId) {
+      if (twitchEsSeenMsgIds.has(msgId)) return;
+      twitchEsSeenMsgIds.add(msgId);
+      if (twitchEsSeenMsgIds.size > 200) {
+        twitchEsSeenMsgIds.delete(twitchEsSeenMsgIds.values().next().value);
+      }
+    }
+    armKeepaliveWatchdog(keepaliveSec);
+
+    if (msgType === 'session_welcome') {
+      keepaliveSec = msg.payload?.session?.keepalive_timeout_seconds || 10;
+      armKeepaliveWatchdog(keepaliveSec);
+      // Reconexión graceful: cerrar el socket viejo recién al recibir el welcome nuevo.
+      if (previousWs) { try { previousWs.removeAllListeners(); previousWs.close(); } catch (_) {} }
+      twitchEsWs = ws;
+      // Solo suscribir en sesiones nuevas: al usar reconnect_url las
+      // suscripciones existentes se conservan.
+      if (!previousWs) {
+        try {
+          await createTwitchFollowSubscription(msg.payload.session.id);
+        } catch (e) {
+          log('warn', 'twitch-eventsub', 'No se pudo suscribir a follows', { error: e.message });
+          twitchFollowActive = false;
+          broadcastOauthStatus();
+          try { ws.close(); } catch (_) {}
+        }
+      }
+    } else if (msgType === 'session_keepalive') {
+      // watchdog ya rearmado arriba
+    } else if (msgType === 'notification') {
+      const evType = msg.payload?.subscription?.type;
+      const ev = msg.payload?.event;
+      if (evType === 'channel.follow' && ev) {
+        const user = cleanName(ev.user_name || ev.user_login || 'Anónimo');
+        overlayState.credits.followers.push({ user, ts: Date.now() });
+        broadcast({ type: 'follow', platform: 'twitch', user, timestamp: Date.now() });
+        log('info', 'twitch-eventsub', 'Follow', { user });
+      }
+    } else if (msgType === 'session_reconnect') {
+      const reconnectUrl = msg.payload?.session?.reconnect_url;
+      log('info', 'twitch-eventsub', 'session_reconnect recibido');
+      if (reconnectUrl) connectTwitchEventSubSocket(reconnectUrl, ws);
+    } else if (msgType === 'revocation') {
+      const reason = msg.payload?.subscription?.status || 'revoked';
+      log('warn', 'twitch-eventsub', 'Suscripción revocada', { reason });
+      twitchFollowActive = false;
+      broadcastOauthStatus();
+      stopTwitchEventSub(`revocation:${reason}`);
+    }
+  });
+
+  ws.on('close', () => {
+    if (twitchEsWs === ws) {
+      twitchEsWs = null;
+      if (twitchEsKeepaliveTimer) { clearTimeout(twitchEsKeepaliveTimer); twitchEsKeepaliveTimer = null; }
+      const wasActive = twitchFollowActive;
+      twitchFollowActive = false;
+      if (!twitchEsStopped) {
+        if (wasActive) broadcastOauthStatus();
+        scheduleTwitchEsReconnect();
+      }
+    }
+  });
+
+  ws.on('error', (err) => {
+    log('warn', 'twitch-eventsub', 'WS error', { error: err.message });
+    try { ws.close(); } catch (_) {}
+  });
+}
+
+function startTwitchEventSub() {
+  if (!authTokens.twitch) return;
+  stopTwitchEventSub('restart');
+  twitchEsStopped = false;
+  twitchEsReconnectAttempts = 0;
+  connectTwitchEventSubSocket('wss://eventsub.wss.twitch.tv/ws');
+}
+
+// ── OAuth status + disconnect ────────────────────────────────────────────────
+app.get('/api/oauth/status', (_req, res) => res.json(oauthStatusPayload()));
+
+app.post('/api/auth/twitch/disconnect', async (_req, res) => {
+  stopTwitchEventSub('user-disconnect');
+  const token = authTokens.twitch?.accessToken;
+  authTokens.twitch = null;
+  saveAuthTokens();
+  if (token && platformConfig.twitchClientId) {
+    undiciFetch('https://id.twitch.tv/oauth2/revoke', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ client_id: platformConfig.twitchClientId, token }),
+    }).catch(() => {});
+  }
+  broadcastOauthStatus();
+  res.json({ success: true });
+});
+
+// Reanudar sesiones OAuth persistidas al arrancar (best-effort).
+setTimeout(async () => {
+  if (authTokens.twitch) {
+    try {
+      await ensureTwitchAccessToken();
+      startTwitchEventSub();
+    } catch (e) {
+      log('warn', 'twitch-oauth', 'No se pudo reanudar sesión Twitch', { error: e.message });
+    }
+  }
+}, 1000);
 
 // ─── MOBILE REMOTE ROUTES ────────────────────────────────────────────────────
 

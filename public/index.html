@@ -2138,6 +2138,16 @@
             </label>
             <div style="font-size:11px;color:var(--text-muted);margin-top:4px;" data-i18n="toggle.langFilterHint">Ignora mensajes de chat con caracteres que no correspondan al idioma de la voz activa (ej: bloquea chino/japonés si tu voz está en Español, y viceversa).</div>
           </div>
+          <div class="setting-group">
+            <label class="toggle-chip" style="width:max-content;">
+              <input type="checkbox" id="dictFilterToggle" onchange="toggleDictFilter(this)" />
+              <span data-i18n="toggle.dictFilter">Filtrar por idioma (palabras)</span>
+            </label>
+            <button onclick="openDictLangModal()" style="margin-top:6px;display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.14);background:transparent;color:var(--text-muted);font-size:12px;cursor:pointer;width:max-content;">
+              <img class="icon-inline" src="icons/settings.svg" alt=""> <span data-i18n="dictLang.title">Idiomas permitidos</span>
+            </button>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px;" data-i18n="toggle.dictFilterHint">Solo lee mensajes escritos en el idioma de la voz activa o en los idiomas extra que permitas. Las palabras desconocidas (nombres, typos) no bloquean.</div>
+          </div>
         </div>
       </div>
 
@@ -2279,6 +2289,43 @@
               <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title" style="color:#9146FF;">💜 Twitch — alertas en vivo</div>
+        <div class="settings-panel" style="grid-template-columns:1fr;">
+          <div class="setting-group">
+            <label>Client ID de Twitch</label>
+            <input type="text" id="twitchOAuthClientId" placeholder="Client ID de tu app en dev.twitch.tv" autocomplete="off"
+                   onchange="saveTwitchClientId(this.value)" />
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+          <button class="btn btn-connect" id="btnConnectTwitchAuth" onclick="connectTwitchAuth()" style="font-size:13px;">Conectar Twitch</button>
+          <button class="btn btn-disconnect" id="btnDisconnectTwitchAuth" onclick="disconnectTwitchAuth()" style="font-size:13px;display:none;">Desconectar</button>
+          <span id="twitchAuthStatusText" style="font-size:12px;color:var(--text-muted);">Sin conectar — solo llegarán sub/bits/raids (sin follows con nombre)</span>
+        </div>
+        <p style="font-size:11px;color:var(--text-muted);margin-top:8px;">Sub, bits y raids ya funcionan sin conectar nada. Conectar solo habilita follows con nombre real.</p>
+        <div class="toggles-row" style="margin-top:12px;">
+          <label class="toggle-chip" id="chip-twitch-sub">
+            <input type="checkbox" onchange="toggleOption('readTwitchSub', this)" /> 🟣 Anunciar subs
+          </label>
+          <label class="toggle-chip" id="chip-twitch-cheer">
+            <input type="checkbox" onchange="toggleOption('readTwitchCheer', this)" /> 💎 Anunciar bits
+          </label>
+          <label class="toggle-chip" id="chip-twitch-raid">
+            <input type="checkbox" onchange="toggleOption('readTwitchRaid', this)" /> 🚀 Anunciar raids
+          </label>
+          <label class="toggle-chip" id="chip-twitch-follow">
+            <input type="checkbox" onchange="toggleOption('readTwitchFollow', this)" /> 💜 Anunciar follows
+          </label>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+          <button class="cfg-btn" onclick="testAlertType('sub')">Test sub</button>
+          <button class="cfg-btn" onclick="testAlertType('cheer')">Test bits</button>
+          <button class="cfg-btn" onclick="testAlertType('raid')">Test raid</button>
+          <button class="cfg-btn" onclick="testSocialAlert('follow', 'twitch')">Test follow twitch</button>
         </div>
       </div>
 
@@ -2482,6 +2529,17 @@
   </div>
 </div>
 
+<!-- ══ MODAL: Idiomas permitidos (filtro por palabras) ══ -->
+<div id="dictLangModal" class="modal-overlay" onclick="closeDictLangModal(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeDictLangModal()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <h2><img class="icon-inline" src="icons/language.svg" alt=""> <span data-i18n="dictLang.title">Idiomas permitidos</span></h2>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;" data-i18n="dictLang.desc">Además del idioma de la voz, permitir mensajes en:</p>
+    <div id="dictLangNA" style="display:none;font-size:13px;color:var(--text-muted);" data-i18n="dictLang.notApplicable">Este filtro solo aplica a voces con alfabeto latino.</div>
+    <div id="dictLangList"></div>
+  </div>
+</div>
+
 <script>
   // ─── I18N ─────────────────────────────────────────────────────
   const I18N_KEY = 'tikliveTTS_lang';
@@ -2553,8 +2611,14 @@
     readFollows: false,
     readLikes: false,
     readShares: false,
+    readTwitchSub: false,
+    readTwitchCheer: false,
+    readTwitchRaid: false,
+    readTwitchFollow: false,
     sayUsername: true,
     langFilterEnabled: false,
+    dictFilterEnabled: false,
+    allowedExtraLangs: [],
     lastUsername: '',
     pauseShortcut: null,
     skipShortcut: null,
@@ -2620,7 +2684,9 @@
     // Toggles
     const chipMap = {
       readChat: 'chip-chat', readGifts: 'chip-gifts', readJoins: 'chip-joins',
-      readFollows: 'chip-follows', readLikes: 'chip-likes', readShares: 'chip-shares', sayUsername: 'chip-username'
+      readFollows: 'chip-follows', readLikes: 'chip-likes', readShares: 'chip-shares', sayUsername: 'chip-username',
+      readTwitchSub: 'chip-twitch-sub', readTwitchCheer: 'chip-twitch-cheer',
+      readTwitchRaid: 'chip-twitch-raid', readTwitchFollow: 'chip-twitch-follow',
     };
     for (const [key, chipId] of Object.entries(chipMap)) {
       const val  = appSettings[key];
@@ -2637,6 +2703,13 @@
     if (langFilterCb) {
       langFilterCb.checked = !!appSettings.langFilterEnabled;
       langFilterCb.closest('.toggle-chip')?.classList.toggle('active', !!appSettings.langFilterEnabled);
+    }
+
+    // Dict filter toggle
+    const dictFilterCb = document.getElementById('dictFilterToggle');
+    if (dictFilterCb) {
+      dictFilterCb.checked = !!appSettings.dictFilterEnabled;
+      dictFilterCb.closest('.toggle-chip')?.classList.toggle('active', !!appSettings.dictFilterEnabled);
     }
 
     // Last username
@@ -2898,9 +2971,11 @@
     }
   }
 
-  async function testSocialAlert(eventType) {
+  async function testSocialAlert(eventType, platform) {
     try {
-      const endpoint = eventType === 'follow' ? '/api/test/follow' : '/api/test/share';
+      const endpoint = eventType === 'follow'
+        ? '/api/test/follow' + (platform ? `?platform=${platform}` : '')
+        : '/api/test/share';
       const res  = await fetch(endpoint, { method: 'POST' });
       const data = await res.json();
       if (data.success) showToast(t('toast.testSocialSent').replace('{type}', eventType).replace('{user}', data.user));
@@ -2908,6 +2983,94 @@
     } catch (e) {
       showToast(t('toast.testError'));
     }
+  }
+
+  async function testAlertType(kind) {
+    try {
+      const res  = await fetch(`/api/test/${kind}`, { method: 'POST' });
+      const data = await res.json();
+      if (data.success) showToast(`Alerta de prueba: ${data.user}`);
+      else showToast(t('toast.testError'));
+    } catch (e) {
+      showToast(t('toast.testError'));
+    }
+  }
+
+  // ─── OAuth Twitch ───────────────────────────────────────────────
+  async function saveTwitchClientId(value) {
+    await patchPlatformConfig({ twitchClientId: (value || '').trim() });
+  }
+  async function patchPlatformConfig(patch) {
+    try {
+      await fetch('/api/platform-config', {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(patch),
+      });
+    } catch (_) { showToast(t('toast.testError')); }
+  }
+
+  async function loadPlatformConfigUI() {
+    try {
+      const res = await fetch('/api/platform-config');
+      const cfg = await res.json();
+      const twitchInp = document.getElementById('twitchOAuthClientId');
+      if (twitchInp) twitchInp.value = cfg.twitchClientId || '';
+    } catch (_) {}
+  }
+
+  // Device Code Flow: el server pollea a Twitch hasta que el usuario autoriza;
+  // acá solo se abre la página de activación (twitch.tv/activate, con el código
+  // prefilled) y el resultado llega por WS (twitch-auth-ready / twitch-auth-error).
+  // En Electron window.open() se deriva al navegador del sistema, donde el
+  // usuario ya está logueado en Twitch. En navegador el popup se abre
+  // síncronamente dentro del gesto del click, porque window.open() tras un
+  // await pierde la activación de usuario y se bloquea en silencio.
+  async function startOAuthFlow(provider) {
+    const isElectron = !!window.electronAPI;
+    const popup = isElectron ? null : window.open('about:blank', '_blank');
+    try {
+      const res = await fetch(`/api/auth/${provider}/start`);
+      const data = await res.json();
+      if (!res.ok || !data.url) { if (popup) popup.close(); showToast(data.error || t('toast.testError')); return; }
+      showToast(data.userCode
+        ? `Autorizá en el navegador — código ${data.userCode}`
+        : 'Autorizá en la ventana que se abrió y volvé acá');
+      if (provider === 'twitch' && data.userCode) {
+        const twText = document.getElementById('twitchAuthStatusText');
+        if (twText) twText.textContent = `Esperando autorización en el navegador (código ${data.userCode})...`;
+      }
+      if (popup) popup.location.href = data.url;
+      else if (isElectron) window.open(data.url, '_blank'); // windowOpenHandler → shell.openExternal
+      else window.location.href = data.url; // Popup bloqueado: última opción
+    } catch (e) { if (popup) popup.close(); showToast(t('toast.testError')); }
+  }
+
+  function connectTwitchAuth() { return startOAuthFlow('twitch'); }
+
+  async function disconnectTwitchAuth() {
+    try { await fetch('/api/auth/twitch/disconnect', { method: 'POST' }); } catch (_) {}
+  }
+
+  function updateOAuthStatusUI(status) {
+    if (!status) return;
+    const tw = status.twitch || {};
+
+    const twBtnC = document.getElementById('btnConnectTwitchAuth');
+    const twBtnD = document.getElementById('btnDisconnectTwitchAuth');
+    const twText = document.getElementById('twitchAuthStatusText');
+    if (twBtnC) twBtnC.style.display = tw.connected ? 'none' : 'inline-block';
+    if (twBtnD) twBtnD.style.display = tw.connected ? 'inline-block' : 'none';
+    if (twText) {
+      twText.textContent = !tw.connected
+        ? 'Sin conectar — solo llegarán sub/bits/raids (sin follows con nombre)'
+        : `Conectado como ${tw.login || '—'} — Follows: ${tw.followActive ? 'activo' : 'reconectando...'}`;
+    }
+  }
+
+  async function loadOAuthStatusUI() {
+    try {
+      const res = await fetch('/api/oauth/status');
+      updateOAuthStatusUI(await res.json());
+    } catch (_) {}
   }
 
   function updateSocialOverlayUrl() {
@@ -3168,7 +3331,8 @@
 
   const options = {
     readChat: true, readGifts: false, readJoins: false,
-    readFollows: false, readLikes: false, readShares: false, sayUsername: true
+    readFollows: false, readLikes: false, readShares: false, sayUsername: true,
+    readTwitchSub: false, readTwitchCheer: false, readTwitchRaid: false, readTwitchFollow: false,
   };
 
   let ttsRate = 1.0;
@@ -3216,6 +3380,13 @@
     checkbox.closest('.toggle-chip')?.classList.toggle('active', checkbox.checked);
     saveSettings();
     fetch('/api/config', { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ langFilterEnabled: checkbox.checked }) }).catch(() => {});
+  }
+
+  function toggleDictFilter(checkbox) {
+    appSettings.dictFilterEnabled = checkbox.checked;
+    checkbox.closest('.toggle-chip')?.classList.toggle('active', checkbox.checked);
+    saveSettings();
+    fetch('/api/config', { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ dictFilterEnabled: checkbox.checked }) }).catch(() => {});
   }
 
   function selectVoice(id) {
@@ -3444,7 +3615,9 @@
     options[key] = checkbox.checked;
     const chipId = {
       readChat: 'chip-chat', readGifts: 'chip-gifts', readJoins: 'chip-joins',
-      readFollows: 'chip-follows', readLikes: 'chip-likes', readShares: 'chip-shares', sayUsername: 'chip-username'
+      readFollows: 'chip-follows', readLikes: 'chip-likes', readShares: 'chip-shares', sayUsername: 'chip-username',
+      readTwitchSub: 'chip-twitch-sub', readTwitchCheer: 'chip-twitch-cheer',
+      readTwitchRaid: 'chip-twitch-raid', readTwitchFollow: 'chip-twitch-follow',
     }[key];
     if (chipId) document.getElementById(chipId)?.classList.toggle('active', checkbox.checked);
     appSettings[key] = checkbox.checked;
@@ -3698,15 +3871,63 @@
         }
         break;
 
-      case 'follow':
-        if (options.readFollows) {
+      case 'follow': {
+        const isTwitchFollow = data.platform === 'twitch';
+        const followEnabled  = isTwitchFollow ? options.readTwitchFollow : options.readFollows;
+        if (followEnabled) {
           msgCount++;
           document.getElementById('msgCount').textContent = msgCount;
           const followId   = `msg-${msgCount}`;
-          const followText = `${data.user} te acaba de seguir`;
+          const followText = isTwitchFollow
+            ? `${data.user} te sigue en Twitch`
+            : `${data.user} te acaba de seguir`;
           addSystemMsg(followText, 'join', followId, { iconSrc: 'icons/person_add.svg' });
           speak(followText, followId, data.timestamp);
         }
+        break;
+      }
+
+      case 'sub': {
+        if (options.readTwitchSub) {
+          msgCount++;
+          document.getElementById('msgCount').textContent = msgCount;
+          const subId = `msg-${msgCount}`;
+          let subText;
+          if (data.subType === 'resub') subText = `${data.user} se resuscribió, ${data.months || 0} meses`;
+          else if (data.subType === 'gift') subText = `${data.user} regaló una sub a ${data.recipient}`;
+          else if (data.subType === 'mysterygift') subText = `${data.user} regaló ${data.giftCount} subs al chat`;
+          else if (data.subType === 'upgrade') subText = `${data.user} mejoró su sub`;
+          else subText = `${data.user} se suscribió en Twitch`;
+          addSystemMsg(subText, 'gift', subId, { iconSrc: 'icons/card_giftcard.svg' });
+          speak(subText, subId, data.timestamp);
+        }
+        break;
+      }
+
+      case 'cheer':
+        if (options.readTwitchCheer) {
+          msgCount++;
+          document.getElementById('msgCount').textContent = msgCount;
+          const cheerId   = `msg-${msgCount}`;
+          const cheerText = `${data.user} envió ${data.bits} bits`;
+          addSystemMsg(cheerText, 'gift', cheerId, { iconSrc: 'icons/card_giftcard.svg' });
+          speak(cheerText, cheerId, data.timestamp);
+        }
+        break;
+
+      case 'raid':
+        if (options.readTwitchRaid) {
+          msgCount++;
+          document.getElementById('msgCount').textContent = msgCount;
+          const raidId   = `msg-${msgCount}`;
+          const raidText = `${data.user} hizo un raid con ${data.viewers} viewers`;
+          addSystemMsg(raidText, 'join', raidId, { iconSrc: 'icons/emoji_people.svg' });
+          speak(raidText, raidId, data.timestamp);
+        }
+        break;
+
+      case 'oauth-status-changed':
+        updateOAuthStatusUI(data);
         break;
 
       case 'like':
@@ -3752,6 +3973,11 @@
 
       case 'twitch-auth-ready':
         showToast(data.login ? t('toast.twitchAuthAs').replace('{login}', data.login) : t('toast.twitchAuth'));
+        break;
+
+      case 'twitch-auth-error':
+        showToast(data.error || 'Error en la autorización de Twitch');
+        loadOAuthStatusUI();
         break;
 
       case 'platform-connected':
@@ -4096,6 +4322,54 @@
     document.getElementById('socialModal').classList.remove('show');
   }
 
+  // Modal "Idiomas permitidos" (filtro por diccionario de palabras).
+  // Espejo del VOICE_TO_DICT_LANG del servidor: voces ru/ja/zh/ko no aplican.
+  const VOICE_TO_DICT_LANG_UI = {
+    'es-MX': 'es', en: 'en', 'en-GB': 'en', pt: 'pt', 'pt-PT': 'pt',
+    fr: 'fr', de: 'de', it: 'it',
+  };
+  const DICT_LANG_NAMES = { es: 'Español', en: 'English', pt: 'Português', fr: 'Français', de: 'Deutsch', it: 'Italiano' };
+
+  function openDictLangModal() {
+    renderDictLangModal();
+    document.getElementById('dictLangModal').classList.add('show');
+  }
+  function closeDictLangModal(e) {
+    if (e && e.target.id !== 'dictLangModal') return;
+    document.getElementById('dictLangModal').classList.remove('show');
+  }
+
+  function renderDictLangModal() {
+    const voiceLang = VOICE_TO_DICT_LANG_UI[appSettings.voice] || null;
+    const list = document.getElementById('dictLangList');
+    const na = document.getElementById('dictLangNA');
+    list.innerHTML = '';
+    na.style.display = voiceLang ? 'none' : 'block';
+    if (!voiceLang) return;
+    for (const lang of Object.keys(DICT_LANG_NAMES)) {
+      const isVoice = lang === voiceLang;
+      const label = document.createElement('label');
+      label.style.cssText = 'display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;background:rgba(255,255,255,0.05);cursor:pointer;margin-bottom:6px;font-size:14px;' + (isVoice ? 'opacity:0.6;cursor:default;' : '');
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.checked = isVoice || (appSettings.allowedExtraLangs || []).includes(lang);
+      cb.disabled = isVoice;
+      if (!isVoice) cb.onchange = () => setAllowedExtraLang(lang, cb.checked);
+      const span = document.createElement('span');
+      span.textContent = DICT_LANG_NAMES[lang] + (isVoice ? ' ' + t('dictLang.voiceAlways') : '');
+      label.append(cb, span);
+      list.appendChild(label);
+    }
+  }
+
+  function setAllowedExtraLang(lang, enabled) {
+    const langs = new Set(appSettings.allowedExtraLangs || []);
+    if (enabled) langs.add(lang); else langs.delete(lang);
+    appSettings.allowedExtraLangs = [...langs];
+    saveSettings();
+    fetch('/api/config', { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ allowedExtraLangs: appSettings.allowedExtraLangs }) }).catch(() => {});
+  }
+
   function closeDonationNotice(e) {
     if (e && e.target.id !== 'donationNoticeModal') return;
     document.getElementById('donationNoticeModal').classList.remove('show');
@@ -4117,6 +4391,7 @@
       document.getElementById('donationsModal').classList.remove('show');
       document.getElementById('socialModal').classList.remove('show');
       document.getElementById('donationNoticeModal').classList.remove('show');
+      document.getElementById('dictLangModal').classList.remove('show');
     }
   });
 
@@ -5034,6 +5309,8 @@
   updateQueueBadge();
   renderSettingsChannels();
   loadMobileURL();
+  loadPlatformConfigUI();
+  loadOAuthStatusUI();
   // Load sound pad and restore shortcuts
   spLoad().then(() => spRestoreShortcuts());
 
