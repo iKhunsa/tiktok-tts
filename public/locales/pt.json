@@ -46,6 +46,7 @@
     "connect": "Conectar",
     "disconnect": "Desconectar",
     "connectAll": "Conectar tudo",
+    "saveChannel": "Salvar",
     "addChannel": "＋ Adicionar canal",
     "cancel": "Cancelar",
     "testVoice": "▶ Testar",
@@ -101,8 +102,7 @@
   "settings": {
     "voice": "Voz e áudio",
     "shortcuts": "Atalhos de teclado",
-    "connection": "Conexão principal",
-    "channels": "Canais adicionais",
+    "channels": "Canais vinculados",
     "advanced": "Configurações avançadas",
     "obs": "Conexão OBS WebSocket",
     "clipsHistory": "Histórico de marcadores"
@@ -485,6 +485,7 @@
     "writeChannel": "Escreva o nome do canal",
     "invalidChannel": "Canal inválido",
     "channelConnectError": "Erro: {error}",
+    "channelSaved": "{platform} salvo — use \"Conectar tudo\" para conectá-lo",
     "channelNetError": "Erro de rede ao conectar {platform}",
     "channelDisconnectError": "Erro ao desconectar {platform}",
     "songError": "❌ Erro ao reproduzir música",

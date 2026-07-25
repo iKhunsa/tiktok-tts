@@ -46,6 +46,7 @@
     "connect": "Verbinden",
     "disconnect": "Trennen",
     "connectAll": "Alles verbinden",
+    "saveChannel": "Speichern",
     "addChannel": "＋ Kanal hinzufügen",
     "cancel": "Abbrechen",
     "testVoice": "▶ Testen",
@@ -101,8 +102,7 @@
   "settings": {
     "voice": "Stimme & Audio",
     "shortcuts": "Tastenkürzel",
-    "connection": "Hauptverbindung",
-    "channels": "Zusätzliche Kanäle",
+    "channels": "Verknüpfte Kanäle",
     "advanced": "Erweiterte Einstellungen",
     "obs": "OBS WebSocket Verbindung",
     "clipsHistory": "Markierungsverlauf"
@@ -485,6 +485,7 @@
     "writeChannel": "Kanalnamen eingeben",
     "invalidChannel": "Ungültiger Kanal",
     "channelConnectError": "Fehler: {error}",
+    "channelSaved": "{platform} gespeichert — nutze „Alles verbinden“ zum Verbinden",
     "channelNetError": "Netzwerkfehler beim Verbinden mit {platform}",
     "channelDisconnectError": "Fehler beim Trennen von {platform}",
     "songError": "❌ Fehler beim Abspielen des Songs",

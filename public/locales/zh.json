@@ -46,6 +46,7 @@
     "connect": "连接",
     "disconnect": "断开",
     "connectAll": "全部连接",
+    "saveChannel": "保存",
     "addChannel": "＋ 添加频道",
     "cancel": "取消",
     "testVoice": "▶ 测试",
@@ -101,8 +102,7 @@
   "settings": {
     "voice": "语音与音频",
     "shortcuts": "键盘快捷键",
-    "connection": "主连接",
-    "channels": "附加频道",
+    "channels": "已关联频道",
     "advanced": "高级设置",
     "obs": "OBS WebSocket 连接",
     "clipsHistory": "标记历史"
@@ -485,6 +485,7 @@
     "writeChannel": "输入频道名称",
     "invalidChannel": "无效频道",
     "channelConnectError": "错误: {error}",
+    "channelSaved": "{platform} 已保存 — 使用\"全部连接\"来连接它",
     "channelNetError": "连接{platform}时网络错误",
     "channelDisconnectError": "断开{platform}时出错",
     "songError": "❌ 播放歌曲时出错",

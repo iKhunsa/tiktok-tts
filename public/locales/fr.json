@@ -46,6 +46,7 @@
     "connect": "Connecter",
     "disconnect": "Déconnecter",
     "connectAll": "Tout connecter",
+    "saveChannel": "Enregistrer",
     "addChannel": "＋ Ajouter chaîne",
     "cancel": "Annuler",
     "testVoice": "▶ Tester",
@@ -101,8 +102,7 @@
   "settings": {
     "voice": "Voix et audio",
     "shortcuts": "Raccourcis clavier",
-    "connection": "Connexion principale",
-    "channels": "Chaînes supplémentaires",
+    "channels": "Chaînes liées",
     "advanced": "Paramètres avancés",
     "obs": "Connexion OBS WebSocket",
     "clipsHistory": "Historique des marqueurs"
@@ -485,6 +485,7 @@
     "writeChannel": "Entrez le nom de la chaîne",
     "invalidChannel": "Chaîne invalide",
     "channelConnectError": "Erreur: {error}",
+    "channelSaved": "{platform} enregistré — utilisez « Tout connecter » pour le connecter",
     "channelNetError": "Erreur réseau lors de la connexion à {platform}",
     "channelDisconnectError": "Erreur lors de la déconnexion de {platform}",
     "songError": "❌ Erreur lors de la lecture de la chanson",
