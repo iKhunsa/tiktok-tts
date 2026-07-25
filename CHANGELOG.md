@@ -4,6 +4,22 @@ Todas las novedades relevantes de este proyecto se documentan aquí.
 
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.5.8] — 2026-07-25
+
+### Añadido
+- **Toggle "Leer monto del regalo"**: permite desactivar el anuncio por voz del equivalente en dólares de los regalos de TikTok, sin apagar el anuncio de regalos completo. Activado por defecto (sin cambio de comportamiento salvo que se desactive manualmente). El badge visual `≈ $X USD` en el chat sigue mostrándose siempre. No afecta bits de Twitch ni YouTube.
+- **Sección "Accesibilidad"** en Configuración Avanzada:
+  - Reducir movimiento: apaga animaciones en los 7 overlays de OBS (excepto el scroll de créditos, que solo se hace más lento).
+  - Tamaño de texto y botones: 4 niveles de escala para ventana principal, configuración y overlay de chat.
+  - Alto contraste: refuerza bordes y texto secundario.
+  - TTS de voz lenta.
+  - Indicador de plataforma por letra (T/W/Y) además de color, para usuarios daltónicos.
+  - Todos los ajustes sincronizan en vivo por WebSocket sin recargar OBS; overlays con `?size=`/`?speed=` manual en la URL mantienen ese valor.
+
+### Arreglado
+- **Issue #14 — TTS forzaba "Usuario dice: comentario"** sin opción de desactivarlo. Ahora existe un toggle independiente "Decir 'dice'" junto a "Decir nombre". La palabra conectora se localiza según la voz TTS activa (says/diz/dit/sagt/etc. en los 13 idiomas soportados) en vez de estar fija en español.
+- **UX de Configuración**: la vista ya no dispara conexiones. Se eliminó el panel "Conexión principal" (atajo legacy solo-TikTok); "Canales adicionales" pasa a llamarse "Canales vinculados" y su botón ahora solo "Guardar" (vincula sin conectar). Conectar de verdad ocurre únicamente desde "Conectar todo" en la vista Chat.
+
 ## [1.5.5] — 2026-07-17
 
 ### Arreglado
