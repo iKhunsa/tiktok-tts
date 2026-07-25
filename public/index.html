@@ -30,6 +30,7 @@
       --modal-radius: 12px;
       --btn-radius: 9999px;
       --shadow-subtle: none;
+      --chat-font-scale: 1;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -637,20 +638,20 @@
     .msg-body { flex: 1; min-width: 0; }
 
     .msg-user {
-      font-size: 12px;
+      font-size: calc(12px * var(--chat-font-scale));
       font-weight: 600;
       margin-bottom: 2px;
     }
 
     .msg-text {
-      font-size: 14px;
+      font-size: calc(14px * var(--chat-font-scale));
       color: var(--text-secondary);
       line-height: 1.4;
       word-break: break-word;
     }
 
     .msg-time {
-      font-size: 10px;
+      font-size: calc(10px * var(--chat-font-scale));
       color: var(--text-muted);
       margin-top: 2px;
       flex-shrink: 0;
@@ -1500,6 +1501,10 @@
           <input type="checkbox" onchange="toggleOption('readGifts', this)" />
           <img class="icon-inline" src="icons/card_giftcard.svg" alt=""> <span data-i18n="toggle.readGifts">Anunciar regalos</span>
         </label>
+        <label class="toggle-chip" id="chip-gift-amount">
+          <input type="checkbox" onchange="toggleOption('readGiftAmount', this)" />
+          <img class="icon-inline" src="icons/card_giftcard.svg" alt=""> <span data-i18n="toggle.readGiftAmount">Leer monto del regalo</span>
+        </label>
         <label class="toggle-chip" id="chip-joins">
           <input type="checkbox" onchange="toggleOption('readJoins', this)" />
           <img class="icon-inline" src="icons/emoji_people.svg" alt=""> <span data-i18n="toggle.readJoins">Anunciar entradas</span>
@@ -1519,6 +1524,10 @@
         <label class="toggle-chip" id="chip-username">
           <input type="checkbox" onchange="toggleOption('sayUsername', this)" />
           <img class="icon-inline" src="icons/label.svg" alt=""> <span data-i18n="toggle.sayUsername">Decir nombre</span>
+        </label>
+        <label class="toggle-chip" id="chip-username-connector" style="width:max-content;">
+          <input type="checkbox" id="sayUsernameConnectorToggle" onchange="toggleSayUsernameConnector(this)" />
+          <span data-i18n="toggle.sayUsernameConnector">+ "dice"</span>
         </label>
       </div>
 
@@ -2607,6 +2616,7 @@
     vol: 1.0,
     readChat: true,
     readGifts: false,
+    readGiftAmount: true,
     readJoins: false,
     readFollows: false,
     readLikes: false,
@@ -2616,6 +2626,7 @@
     readTwitchRaid: false,
     readTwitchFollow: false,
     sayUsername: true,
+    sayUsernameConnector: true,
     langFilterEnabled: false,
     dictFilterEnabled: false,
     allowedExtraLangs: [],
@@ -2683,7 +2694,7 @@
 
     // Toggles
     const chipMap = {
-      readChat: 'chip-chat', readGifts: 'chip-gifts', readJoins: 'chip-joins',
+      readChat: 'chip-chat', readGifts: 'chip-gifts', readGiftAmount: 'chip-gift-amount', readJoins: 'chip-joins',
       readFollows: 'chip-follows', readLikes: 'chip-likes', readShares: 'chip-shares', sayUsername: 'chip-username',
       readTwitchSub: 'chip-twitch-sub', readTwitchCheer: 'chip-twitch-cheer',
       readTwitchRaid: 'chip-twitch-raid', readTwitchFollow: 'chip-twitch-follow',
@@ -2697,6 +2708,13 @@
       if (cb) cb.checked = val;
       chip.classList.toggle('active', val);
     }
+
+    const connCb = document.getElementById('sayUsernameConnectorToggle');
+    if (connCb) {
+      connCb.checked = !!appSettings.sayUsernameConnector;
+      connCb.closest('.toggle-chip')?.classList.toggle('active', !!appSettings.sayUsernameConnector);
+    }
+    updateConnectorChipState();
 
     // Lang filter toggle
     const langFilterCb = document.getElementById('langFilterToggle');
@@ -3293,7 +3311,14 @@
       const cfg = await res.json();
       if (Number.isInteger(cfg.TTS_MAX_CHARS) && cfg.TTS_MAX_CHARS > 0) CHAT_TTS_MAX_LEN = cfg.TTS_MAX_CHARS;
       if (Number.isInteger(cfg.MAX_QUEUE_MSG) && cfg.MAX_QUEUE_MSG > 0) MAX_QUEUE_SIZE = cfg.MAX_QUEUE_MSG;
+      applyA11yConfig(cfg);
     } catch (e) {}
+  }
+
+  function applyA11yConfig(cfg) {
+    if (cfg.a11yChatFontScale) {
+      document.documentElement.style.setProperty('--chat-font-scale', cfg.a11yChatFontScale);
+    }
   }
 
   // Limpieza periódica de memoria
@@ -3387,6 +3412,22 @@
     checkbox.closest('.toggle-chip')?.classList.toggle('active', checkbox.checked);
     saveSettings();
     fetch('/api/config', { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ dictFilterEnabled: checkbox.checked }) }).catch(() => {});
+  }
+
+  function toggleSayUsernameConnector(checkbox) {
+    appSettings.sayUsernameConnector = checkbox.checked;
+    checkbox.closest('.toggle-chip')?.classList.toggle('active', checkbox.checked);
+    saveSettings();
+  }
+
+  function updateConnectorChipState() {
+    const chip = document.getElementById('chip-username-connector');
+    const cb = document.getElementById('sayUsernameConnectorToggle');
+    if (!chip || !cb) return;
+    const enabled = !!appSettings.sayUsername;
+    cb.disabled = !enabled;
+    chip.style.opacity = enabled ? '1' : '.4';
+    chip.style.pointerEvents = enabled ? 'auto' : 'none';
   }
 
   function selectVoice(id) {
@@ -3623,7 +3664,7 @@
   function toggleOption(key, checkbox) {
     options[key] = checkbox.checked;
     const chipId = {
-      readChat: 'chip-chat', readGifts: 'chip-gifts', readJoins: 'chip-joins',
+      readChat: 'chip-chat', readGifts: 'chip-gifts', readGiftAmount: 'chip-gift-amount', readJoins: 'chip-joins',
       readFollows: 'chip-follows', readLikes: 'chip-likes', readShares: 'chip-shares', sayUsername: 'chip-username',
       readTwitchSub: 'chip-twitch-sub', readTwitchCheer: 'chip-twitch-cheer',
       readTwitchRaid: 'chip-twitch-raid', readTwitchFollow: 'chip-twitch-follow',
@@ -3632,6 +3673,7 @@
     appSettings[key] = checkbox.checked;
     saveSettings();
     sendStateSync();
+    if (key === 'sayUsername') updateConnectorChipState();
   }
 
   function setSoloChatMode() {
@@ -3650,6 +3692,7 @@
         chip.classList.toggle('active', k === 'readChat');
       }
     });
+    updateConnectorChipState();
     saveSettings();
     sendStateSync();
     showToast(t('toast.onlyChatActivated'));
@@ -3859,7 +3902,7 @@
           msgCount++;
           document.getElementById('msgCount').textContent = msgCount;
           const giftId   = `msg-${msgCount}`;
-          const usdSuffix = data.usdValue ? `, equivale a $${data.usdValue} dólares` : '';
+          const usdSuffix = (options.readGiftAmount && data.usdValue) ? `, equivale a $${data.usdValue} dólares` : '';
           const giftText = `${data.user} envió ${data.repeatCount} ${data.giftName}${usdSuffix}`;
           addSystemMsg(`${data.user} envió ${data.repeatCount} ${data.giftName}`, 'gift', giftId, {
             iconSrc: 'icons/card_giftcard.svg',
@@ -4028,11 +4071,12 @@
         if (data.action === 'toggle' && data.key) {
           options[data.key] = !!data.value;
           appSettings[data.key] = !!data.value;
-          const chipId = {readChat:'chip-chat',readGifts:'chip-gifts',readJoins:'chip-joins',readFollows:'chip-follows',readLikes:'chip-likes',readShares:'chip-shares',sayUsername:'chip-username'}[data.key];
+          const chipId = {readChat:'chip-chat',readGifts:'chip-gifts',readGiftAmount:'chip-gift-amount',readJoins:'chip-joins',readFollows:'chip-follows',readLikes:'chip-likes',readShares:'chip-shares',sayUsername:'chip-username'}[data.key];
           if (chipId) {
             const chip = document.getElementById(chipId);
             if (chip) { const cb = chip.querySelector('input[type=checkbox]'); if (cb) cb.checked = !!data.value; chip.classList.toggle('active', !!data.value); }
           }
+          if (data.key === 'sayUsername') updateConnectorChipState();
           saveSettings();
         } else if (data.action === 'globalTTS') {
           ttsGlobalEnabled = !!data.value;
@@ -4104,6 +4148,9 @@
         if (data.status === 'downloading') showToast(t('toast.musicEngineDownloading'));
         else if (data.status === 'error') showToast(t('toast.musicEngineError'));
         break;
+      case 'config-updated':
+        applyA11yConfig(data.config || {});
+        break;
     }
   }
 
@@ -4112,7 +4159,13 @@
     addChatMsg(data, chatId);
     if (options.readChat) {
       const ttsBase = data.ttsComment || data.comment;
-      const raw = options.sayUsername ? `${data.user}: ${ttsBase}` : ttsBase;
+      let raw;
+      if (!options.sayUsername) {
+        raw = ttsBase;
+      } else {
+        const connector = getSayUsernameConnector();
+        raw = connector ? `${data.user} ${connector} ${ttsBase}` : `${data.user}: ${ttsBase}`;
+      }
       const text = raw.length > CHAT_TTS_MAX_LEN ? raw.substring(0, CHAT_TTS_MAX_LEN) : raw;
       speak(text, chatId, data.timestamp);
     }
@@ -4329,6 +4382,30 @@
   function closeSocialModal(e) {
     if (e && e.target.id !== 'socialModal') return;
     document.getElementById('socialModal').classList.remove('show');
+  }
+
+  // Palabra conectora hablada entre el nombre de usuario y el comentario
+  // (ej: "Usuario dice: comentario"). Independiente de VOICE_TO_DICT_LANG_UI:
+  // aquí sí cubrimos ja/zh-CN/ru/ko porque es una palabra hablada, no un filtro de alfabeto.
+  const SAY_USERNAME_CONNECTOR_WORD = {
+    'es-MX': 'dice:',
+    en: 'says:',
+    'en-GB': 'says:',
+    pt: 'diz:',
+    'pt-PT': 'diz:',
+    fr: 'dit:',
+    de: 'sagt:',
+    it: 'dice:',
+    ja: 'さん:',
+    'zh-CN': '说:',
+    ru: 'говорит:',
+    ko: '님:',
+  };
+  const DEFAULT_CONNECTOR_WORD = 'says:';
+
+  function getSayUsernameConnector() {
+    if (!appSettings.sayUsernameConnector) return null;
+    return SAY_USERNAME_CONNECTOR_WORD[appSettings.voice] || DEFAULT_CONNECTOR_WORD;
   }
 
   // Modal "Idiomas permitidos" (filtro por diccionario de palabras).

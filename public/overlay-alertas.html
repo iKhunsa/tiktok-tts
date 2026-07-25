@@ -121,6 +121,19 @@
       margin-top: 3px;
       opacity: 0.9;
     }
+    /* Reduce motion: collapse animation duration instead of removing it —
+       keeps animationend firing so the alert queue/dismiss logic still works. */
+    body.reduce-motion .alert-card,
+    body.reduce-motion .gift-name {
+      animation-duration: 0.01s !important;
+      animation-iteration-count: 1 !important;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .alert-card, .gift-name {
+        animation-duration: 0.01s !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -386,6 +399,7 @@
         try {
           const d = JSON.parse(e.data);
           if (['gift', 'sub', 'cheer', 'raid', 'superchat'].includes(d.type)) enqueue(d);
+          else if (d.type === 'config-updated') applyA11yConfig(d.config || {});
         } catch(_) {}
       };
       ws.onclose = () => {
@@ -394,6 +408,12 @@
       };
       ws.onerror = () => ws.close();
     }
+
+    function applyA11yConfig(cfg) {
+      document.body.classList.toggle('reduce-motion', !!cfg.a11yReduceMotion);
+    }
+    fetch('/api/config').then(r => r.json()).then(applyA11yConfig).catch(() => {});
+
     loadLocale();
   </script>
 </body>

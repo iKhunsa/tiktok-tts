@@ -60,15 +60,26 @@
       to   { opacity: 1; transform: translateY(0)    scale(1);    }
     }
     .platform-dot {
-      width: 8px;
-      height: 8px;
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
       flex-shrink: 0;
-      margin-top: 5px;
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      font-weight: 700;
+      color: rgba(0,0,0,0.55);
+      line-height: 1;
     }
     .dot-tiktok  { background: var(--tiktok); }
     .dot-twitch  { background: var(--twitch); }
     .dot-youtube { background: var(--youtube); }
+    body.reduce-motion .msg { animation: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .msg { animation: none; }
+    }
     .msg-user {
       font-weight: 700;
       color: #fff;
@@ -94,10 +105,13 @@
 <body>
   <div id="chat-container"></div>
   <script>
+    const PLATFORM_LABEL = { tiktok: 'T', twitch: 'W', youtube: 'Y' };
     const params    = new URLSearchParams(location.search);
     const _c = params.get('color');   if (_c) document.documentElement.style.setProperty('--accent', '#' + _c);
     const _b = params.get('bg');      if (_b) document.documentElement.style.setProperty('--bg-alpha', _b);
-    const _s = parseFloat(params.get('size')); if (Number.isFinite(_s) && _s > 0) document.documentElement.style.setProperty('--font-size', _s + 'px');
+    const _s = parseFloat(params.get('size'));
+    const hasManualSize = Number.isFinite(_s) && _s > 0;
+    if (hasManualSize) document.documentElement.style.setProperty('--font-size', _s + 'px');
     const _bgimg = params.get('bgimg');
     if (_bgimg) { document.documentElement.style.setProperty('--bg-img', `url('${_bgimg}')`); document.body.classList.add('has-bgimg'); }
     function intParam(name, def) { const n = parseInt(params.get(name), 10); return Number.isFinite(n) && n > 0 ? n : def; }
@@ -139,6 +153,7 @@
 
       const dot = document.createElement('span');
       dot.className = `platform-dot dot-${data.platform}`;
+      dot.textContent = PLATFORM_LABEL[data.platform] || '';
       msg.appendChild(dot);
 
       const body = document.createElement('div');
@@ -179,11 +194,21 @@
         try {
           const d = JSON.parse(e.data);
           if (d.type === 'chat') addMessage(d);
+          else if (d.type === 'config-updated') applyA11yConfig(d.config || {});
         } catch (_) {}
       };
       ws.onclose = () => { ws = null; setTimeout(connectWS, 2000); };
       ws.onerror = () => ws.close();
     }
+
+    function applyA11yConfig(cfg) {
+      document.body.classList.toggle('reduce-motion', !!cfg.a11yReduceMotion);
+      if (!hasManualSize && cfg.a11yChatFontScale) {
+        document.documentElement.style.setProperty('--font-size', (14 * cfg.a11yChatFontScale) + 'px');
+      }
+    }
+
+    fetch('/api/config').then(r => r.json()).then(applyA11yConfig).catch(() => {});
     connectWS();
   </script>
 </body>

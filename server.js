@@ -84,7 +84,7 @@ let mobileState = {
   ttsPaused: false,
   streamTimerRunning: false,
   options: {
-    readChat: true, readGifts: true, readJoins: true,
+    readChat: true, readGifts: true, readGiftAmount: true, readJoins: true,
     readFollows: true, readLikes: true, readShares: true, sayUsername: true,
   },
   clips: [],
@@ -548,6 +548,9 @@ const DEFAULT_CONFIG = {
   dictFilterEnabled: false,
   allowedExtraLangs: [],
   ttsVoiceLang: 'es-MX',
+  a11yReduceMotion: false,
+  a11yChatFontScale: 1,
+  ttsSlowSpeech: false,
 };
 
 const CONFIG_VALIDATORS = {
@@ -570,6 +573,9 @@ const CONFIG_VALIDATORS = {
   allowedExtraLangs: (v) => Array.isArray(v) && v.length <= DICT_FILTER_LANGS.length
     && v.every((x) => DICT_FILTER_LANGS.includes(x)),
   ttsVoiceLang: (v) => GOOGLE_TTS_LANGS.has(v),
+  a11yReduceMotion: (v) => typeof v === 'boolean',
+  a11yChatFontScale: (v) => [1, 1.15, 1.3, 1.5].includes(v),
+  ttsSlowSpeech: (v) => typeof v === 'boolean',
 };
 
 const config = { ...DEFAULT_CONFIG };
@@ -1577,7 +1583,7 @@ app.post('/api/tts', async (req, res) => {
     const lang = GOOGLE_TTS_LANGS.has(voice) ? voice : 'es';
     const audioUrl = gTTS.getAudioUrl(limitedText, {
       lang: lang,
-      slow: false,
+      slow: !!config.ttsSlowSpeech,
       host: 'https://translate.google.com',
     });
 
@@ -1698,7 +1704,10 @@ app.patch('/api/config', (req, res) => {
   if (rejected.length) {
     return res.status(400).json({ error: 'Config invalida', rejected, config });
   }
-  if (changed) saveConfig();
+  if (changed) {
+    saveConfig();
+    broadcast({ type: 'config-updated', config });
+  }
   log('info', 'config', 'updated', config);
   res.json(config);
 });

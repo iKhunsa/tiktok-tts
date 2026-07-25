@@ -132,7 +132,10 @@
     const params = new URLSearchParams(location.search);
     const _c = params.get('color'); if (_c) document.documentElement.style.setProperty('--accent', '#' + _c);
     const _b = params.get('bg');    if (_b) document.documentElement.style.setProperty('--bg-alpha', _b);
-    const _s = parseFloat(params.get('speed')); if (Number.isFinite(_s) && _s > 0) document.documentElement.style.setProperty('--speed', _s + 's');
+    const _s = parseFloat(params.get('speed'));
+    const hasManualSpeed = Number.isFinite(_s) && _s > 0;
+    const baseSpeed = hasManualSpeed ? _s : 40;
+    if (hasManualSpeed) document.documentElement.style.setProperty('--speed', _s + 's');
     const _bgimg = params.get('bgimg');
     if (_bgimg) { document.documentElement.style.setProperty('--bg-img', `url('${_bgimg}')`); document.body.classList.add('has-bgimg'); }
 
@@ -228,12 +231,24 @@
           } else if (d.type === 'connected' && d.isFirst) {
             credits = { donors: [], followers: [], sharers: [] };
             renderTrack();
+          } else if (d.type === 'config-updated') {
+            applyA11yConfig(d.config || {});
           }
         } catch(_) {}
       };
       ws.onclose = () => { setTimeout(connectWS, retryDelay); retryDelay = Math.min(retryDelay * 2, 30000); };
       ws.onerror = () => ws.close();
     }
+
+    // Reduce motion aquí no detiene el scroll (es la función del overlay),
+    // solo lo hace más lento para menor estimulación.
+    function applyA11yConfig(cfg) {
+      if (hasManualSpeed) return;
+      const speed = cfg.a11yReduceMotion ? baseSpeed * 1.6 : baseSpeed;
+      document.documentElement.style.setProperty('--speed', speed + 's');
+    }
+    fetch('/api/config').then(r => r.json()).then(applyA11yConfig).catch(() => {});
+
     loadLocale();
   </script>
 </body>
