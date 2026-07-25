@@ -116,6 +116,17 @@
       padding: 5px 10px;
       border-radius: 999px;
     }
+    body.reduce-motion .alert-card,
+    body.reduce-motion .event-name {
+      animation-duration: 0.01s !important;
+      animation-iteration-count: 1 !important;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .alert-card, .event-name {
+        animation-duration: 0.01s !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -237,6 +248,7 @@
         try {
           const d = JSON.parse(e.data);
           if (d.type === 'follow' || d.type === 'share') enqueue(d);
+          else if (d.type === 'config-updated') applyA11yConfig(d.config || {});
         } catch(_) {}
       };
       ws.onclose = () => {
@@ -245,6 +257,12 @@
       };
       ws.onerror = () => ws.close();
     }
+
+    function applyA11yConfig(cfg) {
+      document.body.classList.toggle('reduce-motion', !!cfg.a11yReduceMotion);
+    }
+    fetch('/api/config').then(r => r.json()).then(applyA11yConfig).catch(() => {});
+
     loadLocale();
   </script>
 </body>

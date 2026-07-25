@@ -837,6 +837,50 @@
     </div>
   </div>
 
+  <!-- ═══ PANEL 2B: ACCESIBILIDAD ═══ -->
+  <div class="panel panel-a11y">
+    <div class="panel-title"><img class="icon-inline" src="icons/settings_applications.svg" alt=""> <span data-i18n="adv.a11yTitle">Accesibilidad</span></div>
+    <div class="panel-desc" data-i18n="adv.a11yDesc">Ajustes visuales y de audio para lectura y movimiento reducido</div>
+
+    <div class="explainer">
+      <div class="explainer-title" data-i18n="adv.a11yHowTitle">¿Para qué sirve esto?</div>
+      <p data-i18n="adv.a11yHowP1">Algunos overlays usan animaciones continuas (brillos, rebotes) que pueden molestar a personas con sensibilidad al movimiento o fotosensibilidad. "Reducir movimiento" las apaga en todos los overlays de OBS.</p>
+      <p data-i18n="adv.a11yHowP2">El tamaño de texto agranda el chat en la ventana principal y en el overlay de chat de OBS. La voz lenta activa un modo de lectura más pausada en el TTS.</p>
+    </div>
+
+    <div class="toggle-row">
+      <div class="toggle-info">
+        <div class="toggle-name" data-i18n="adv.a11yReduceMotionName">Reducir movimiento en overlays</div>
+        <div class="toggle-hint" data-i18n="adv.a11yReduceMotionHint">Apaga animaciones de alertas, seguidores, likes y regalos en los overlays de OBS.</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="a11yReduceMotion" onchange="saveAccessibility()" />
+        <span class="switch-track"></span>
+      </label>
+    </div>
+
+    <div class="toggle-row">
+      <div class="toggle-info">
+        <div class="toggle-name" data-i18n="adv.a11ySlowSpeechName">TTS de voz lenta</div>
+        <div class="toggle-hint" data-i18n="adv.a11ySlowSpeechHint">La voz del TTS lee más despacio. Útil para procesar mejor el audio.</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="a11ySlowSpeech" onchange="saveAccessibility()" />
+        <span class="switch-track"></span>
+      </label>
+    </div>
+
+    <div class="control-group" style="margin-top:6px;">
+      <label><span data-i18n="adv.a11yFontScaleLabel">Tamaño de texto del chat</span></label>
+      <select id="a11yChatFontScale" onchange="saveAccessibility()">
+        <option value="1" data-i18n="adv.a11yFontScaleNormal">Normal</option>
+        <option value="1.15" data-i18n="adv.a11yFontScaleMedium">Grande</option>
+        <option value="1.3" data-i18n="adv.a11yFontScaleLarge">Muy grande</option>
+        <option value="1.5" data-i18n="adv.a11yFontScaleXL">Máximo</option>
+      </select>
+    </div>
+  </div>
+
   <!-- ═══ PANEL 3: FILTROS DE MENSAJES ═══ -->
   <div class="panel panel-filter">
     <div class="panel-title"><img class="icon-inline" src="icons/search.svg" alt=""> <span data-i18n="adv.filtersTitle">Filtros de Mensajes</span></div>
@@ -1040,6 +1084,10 @@
       document.getElementById('cfgDebounce').value = cfg.LIKE_DEBOUNCE_MS;
       document.getElementById('cfgDebounceVal').textContent = cfg.LIKE_DEBOUNCE_MS;
 
+      document.getElementById('a11yReduceMotion').checked = !!cfg.a11yReduceMotion;
+      document.getElementById('a11ySlowSpeech').checked = !!cfg.ttsSlowSpeech;
+      document.getElementById('a11yChatFontScale').value = String(cfg.a11yChatFontScale ?? 1);
+
       updateRlBadge(cfg.rateLimitEnabled);
     } catch (e) {
       showToast(t('adv.errorLoadConfig'));
@@ -1142,6 +1190,27 @@
       flashSave('btnSaveGeneral');
       showToast(t('adv.savedGeneral'));
       refreshStatus();
+    } catch (e) {
+      showToast(e.message || t('adv.errorLoadConfig'));
+    }
+  }
+
+  // ─── Accesibilidad ──────────────────────────────────────────────────
+  async function saveAccessibility() {
+    const payload = {
+      a11yReduceMotion: document.getElementById('a11yReduceMotion').checked,
+      ttsSlowSpeech: document.getElementById('a11ySlowSpeech').checked,
+      a11yChatFontScale: parseFloat(document.getElementById('a11yChatFontScale').value),
+    };
+    try {
+      const res = await fetch('/api/config', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || t('adv.configRejected'));
+      showToast(t('adv.savedGeneral'));
     } catch (e) {
       showToast(e.message || t('adv.errorLoadConfig'));
     }

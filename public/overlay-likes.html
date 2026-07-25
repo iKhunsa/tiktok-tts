@@ -90,6 +90,10 @@
       padding: 16px 0 8px;
     }
     .icon-inline { width: 1em; height: 1em; vertical-align: -0.15em; display: inline-block; }
+    body.reduce-motion .row.highlight { animation: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .row.highlight { animation: none; }
+    }
   </style>
 </head>
 <body>
@@ -132,6 +136,7 @@
     };
 
     let likersMap = new Map();
+    let reduceMotion = false;
 
     function getSorted() {
       return [...likersMap.values()]
@@ -150,7 +155,7 @@
 
       // FLIP: record old positions
       const oldPos = new Map();
-      if (animate) {
+      if (animate && !reduceMotion) {
         board.querySelectorAll('.row[data-user]').forEach(el => {
           oldPos.set(el.dataset.user, el.getBoundingClientRect().top);
         });
@@ -182,7 +187,7 @@
       });
 
       // FLIP: play
-      if (animate) {
+      if (animate && !reduceMotion) {
         board.querySelectorAll('.row[data-user]').forEach(el => {
           const old = oldPos.get(el.dataset.user);
           if (old === undefined) return;
@@ -230,6 +235,7 @@
             likersMap.clear();
             renderLeaderboard(false);
           }
+          if (d.type === 'config-updated') applyA11yConfig(d.config || {});
         } catch(_) {}
       };
       ws.onclose = () => {
@@ -238,6 +244,13 @@
       };
       ws.onerror = () => ws.close();
     }
+
+    function applyA11yConfig(cfg) {
+      reduceMotion = !!cfg.a11yReduceMotion;
+      document.body.classList.toggle('reduce-motion', reduceMotion);
+    }
+    fetch('/api/config').then(r => r.json()).then(applyA11yConfig).catch(() => {});
+
     loadLocale();
   </script>
 </body>

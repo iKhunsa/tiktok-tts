@@ -100,6 +100,10 @@
       text-align: center;
       padding: 10px 0;
     }
+    body.reduce-motion .entry { animation: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .entry { animation: none; }
+    }
   </style>
 </head>
 <body>
@@ -233,12 +237,20 @@
             countShares.textContent  = 0;
             listFollows.innerHTML = `<div class="empty">${t('overlayStr.noFollowers')}</div>`;
             listShares.innerHTML  = `<div class="empty">${t('overlayStr.noShared')}</div>`;
+          } else if (d.type === 'config-updated') {
+            applyA11yConfig(d.config || {});
           }
         } catch(_) {}
       };
       ws.onclose = () => { setTimeout(connectWS, retryDelay); retryDelay = Math.min(retryDelay * 2, 30000); };
       ws.onerror = () => ws.close();
     }
+
+    function applyA11yConfig(cfg) {
+      document.body.classList.toggle('reduce-motion', !!cfg.a11yReduceMotion);
+    }
+    fetch('/api/config').then(r => r.json()).then(applyA11yConfig).catch(() => {});
+
     loadLocale();
   </script>
 </body>

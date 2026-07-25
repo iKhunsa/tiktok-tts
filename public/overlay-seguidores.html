@@ -92,6 +92,10 @@
     }
     .goal-current { color: #fff; font-weight: 600; }
     .icon-inline { width: 1em; height: 1em; vertical-align: -0.15em; display: inline-block; }
+    body.reduce-motion .count.bump { animation: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .count.bump { animation: none; }
+    }
   </style>
 </head>
 <body>
@@ -190,6 +194,7 @@
             updateGoalTarget();
             render();
           }
+          if (d.type === 'config-updated') applyA11yConfig(d.config || {});
         } catch(_) {}
       };
       ws.onclose = () => {
@@ -198,6 +203,12 @@
       };
       ws.onerror = () => ws.close();
     }
+
+    function applyA11yConfig(cfg) {
+      document.body.classList.toggle('reduce-motion', !!cfg.a11yReduceMotion);
+    }
+    fetch('/api/config').then(r => r.json()).then(applyA11yConfig).catch(() => {});
+
     loadLocale();
   </script>
 </body>
