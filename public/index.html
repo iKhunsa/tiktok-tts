@@ -30,7 +30,15 @@
       --modal-radius: 12px;
       --btn-radius: 9999px;
       --shadow-subtle: none;
-      --chat-font-scale: 1;
+    }
+
+    /* Alto contraste: refuerza bordes y texto secundario/muted para mayor legibilidad */
+    body.high-contrast {
+      --border: #565656;
+      --border-strong: #6e6e6e;
+      --text-secondary: #e6e6e6;
+      --text-muted: #cfcfcf;
+      --accent-border: rgba(62, 207, 142, 0.6);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -638,20 +646,20 @@
     .msg-body { flex: 1; min-width: 0; }
 
     .msg-user {
-      font-size: calc(12px * var(--chat-font-scale));
+      font-size: 12px;
       font-weight: 600;
       margin-bottom: 2px;
     }
 
     .msg-text {
-      font-size: calc(14px * var(--chat-font-scale));
+      font-size: 14px;
       color: var(--text-secondary);
       line-height: 1.4;
       word-break: break-word;
     }
 
     .msg-time {
-      font-size: calc(10px * var(--chat-font-scale));
+      font-size: 10px;
       color: var(--text-muted);
       margin-top: 2px;
       flex-shrink: 0;
@@ -3316,9 +3324,10 @@
   }
 
   function applyA11yConfig(cfg) {
-    if (cfg.a11yChatFontScale) {
-      document.documentElement.style.setProperty('--chat-font-scale', cfg.a11yChatFontScale);
+    if (cfg.a11yUiFontScale) {
+      document.body.style.zoom = cfg.a11yUiFontScale;
     }
+    document.body.classList.toggle('high-contrast', !!cfg.a11yHighContrast);
   }
 
   // Limpieza periódica de memoria
