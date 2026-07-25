@@ -2055,34 +2055,11 @@
         <p data-i18n="view.settings.desc">Ajusta la voz, velocidad y comportamientos. Todo se guarda automáticamente.</p>
       </div>
 
-      <!-- CONEXIÓN PRINCIPAL -->
-      <div class="settings-section">
-        <div class="settings-section-title" data-i18n="settings.connection">Conexión principal</div>
-        <div class="connect-panel" style="margin-bottom:0;">
-          <div class="panel-title">
-            <img class="icon-inline" src="icons/lens.svg" alt=""> TikTok Live
-          </div>
-          <div class="input-row">
-            <div class="input-wrapper">
-              <span>@</span>
-              <input type="text" id="usernameInput" placeholder="usuario_tiktok" autocomplete="off" />
-            </div>
-            <button class="btn btn-connect" id="btnConnect" onclick="connect()" data-i18n="btn.connect">Conectar</button>
-            <button class="btn btn-disconnect" id="btnDisconnect" onclick="disconnect()" style="display:none" data-i18n="btn.disconnect">Desconectar</button>
-          </div>
-          <div class="status-bar">
-            <div class="status-dot" id="statusDot"></div>
-            <span class="status-text" id="statusText">Esperando conexión...</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- CANALES ADICIONALES -->
+      <!-- CANALES VINCULADOS -->
       <div class="settings-section">
         <div class="settings-section-title" style="display:flex;justify-content:space-between;align-items:center;">
-          <span data-i18n="settings.channels">Canales adicionales</span>
+          <span data-i18n="settings.channels">Canales vinculados</span>
           <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
-            <button class="btn-supabase-primary" id="btn-connect-saved" onclick="connectSavedChannels()" data-i18n="btn.connectAll">Conectar todo</button>
             <button class="btn-supabase-primary" id="btn-toggle-add-channel" onclick="toggleAddChannelForm()">
               ＋ Agregar canal
             </button>
@@ -2106,7 +2083,7 @@
               <input type="text" id="add-channel-input" placeholder="@usuario"
                 autocomplete="off" onkeydown="if(event.key==='Enter')addChannelFromSettings()" />
             </div>
-            <button class="btn-supabase-primary" id="btn-add-channel" onclick="addChannelFromSettings()">Conectar</button>
+            <button class="btn-supabase-primary" id="btn-add-channel" onclick="addChannelFromSettings()" data-i18n="btn.saveChannel">Guardar</button>
             <button class="btn btn-disconnect" onclick="toggleAddChannelForm()"
               style="font-size:12px;padding:9px 14px;border-radius:9999px;">Cancelar</button>
           </div>
@@ -2736,12 +2713,6 @@
     if (dictFilterCb) {
       dictFilterCb.checked = !!appSettings.dictFilterEnabled;
       dictFilterCb.closest('.toggle-chip')?.classList.toggle('active', !!appSettings.dictFilterEnabled);
-    }
-
-    // Last username
-    if (appSettings.lastUsername) {
-      const inp = document.getElementById('usernameInput');
-      if (inp) inp.value = appSettings.lastUsername;
     }
 
     // Overlay config fields
@@ -3887,15 +3858,11 @@
     switch (data.type) {
       case 'connected':
         setStatus('online', 'Conectado a @' + data.username);
-        { const btnC = document.getElementById('btnConnect'); const btnD = document.getElementById('btnDisconnect');
-          if (btnC) btnC.style.display = 'none'; if (btnD) btnD.style.display = 'block'; }
         logStorage.addLog('info', 'server', `Conectado a @${data.username}`);
         break;
 
       case 'disconnected':
         setStatus('', 'Desconectado');
-        { const btnC = document.getElementById('btnConnect'); const btnD = document.getElementById('btnDisconnect');
-          if (btnC) btnC.style.display = 'block'; if (btnD) btnD.style.display = 'none'; }
         logStorage.addLog('info', 'server', 'Desconectado');
         break;
 
@@ -4336,49 +4303,6 @@
     label.className = 'status-text' + (type ? ` ${type}` : '');
     label.textContent = text;
   }
-
-  // ─── CONNECT ──────────────────────────────────────────────────
-  async function connect() {
-    const username = document.getElementById('usernameInput').value.trim();
-    if (!username) { setStatus('error', 'Escribe tu nombre de usuario'); return; }
-
-    const btn = document.getElementById('btnConnect');
-    if (btn) { btn.disabled = true; btn.textContent = t('conn.connecting'); }
-    setStatus('', `Conectando a @${username.replace('@', '')}...`);
-    logStorage.addLog('info', 'client', `Conectando a @${username.replace('@', '')}`);
-
-    // Guardar último usuario
-    appSettings.lastUsername = username.replace('@', '');
-    saveSettings();
-
-    try {
-      const res  = await fetch('/api/connect', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username })
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setStatus('error', data.error);
-        logStorage.addLog('error', 'network', `Conexión fallida: ${data.error}`);
-        if (btn) { btn.disabled = false; btn.textContent = t('btn.connect'); }
-      }
-    } catch (err) {
-      setStatus('error', 'Error de red');
-      logStorage.addLog('error', 'network', `Error de red: ${err.message}`);
-      if (btn) { btn.disabled = false; btn.textContent = t('btn.connect'); }
-    }
-  }
-
-  async function disconnect() {
-    try { await fetch('/api/disconnect', { method: 'POST' }); } catch(e) {}
-    if (ws) ws.close();
-    stopCurrentTTS({ clearQueue: true });
-  }
-
-  document.getElementById('usernameInput').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') connect();
-  });
 
   // ─── MODALS ───────────────────────────────────────────────────
   function openDonationsModal() { document.getElementById('donationsModal').classList.add('show'); }
@@ -5132,7 +5056,7 @@
     if (hint) hint.style.display = platform === 'youtube' ? 'block' : 'none';
   }
 
-  async function addChannelFromSettings() {
+  function addChannelFromSettings() {
     const input = document.getElementById('add-channel-input');
     const channel = (input?.value || '').trim();
     if (!channel) { showToast(t('toast.writeChannel')); return; }
@@ -5140,41 +5064,18 @@
     const plannedEntry = normalizeChannelEntry(selectedAddPlatform, channel);
     if (!plannedEntry) { showToast(t('toast.invalidChannel')); return; }
 
-    const btn = document.getElementById('btn-add-channel');
-    if (btn) { btn.disabled = true; btn.textContent = t('conn.connecting'); }
+    // Solo guarda/vincula el canal — la conexión real ocurre con "Conectar todo" en Chat.
+    upsertSavedChannel(selectedAddPlatform, plannedEntry);
 
-    try {
-      const res = await fetch('/api/platforms/connect', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ platform: selectedAddPlatform, channel }),
-      });
-      const d = await res.json();
-      if (!res.ok) {
-        if (selectedAddPlatform === 'youtube') {
-          upsertSavedChannel(selectedAddPlatform, plannedEntry);
-          showToast(plannedEntry.autoConnect
-            ? t('toast.youtubeAutoSaved')
-            : t('toast.youtubeTmpSaved'));
-          input.value = '';
-          toggleAddChannelForm();
-        } else {
-          showToast(t('toast.channelConnectError').replace('{error}', d.error || 'no se pudo conectar'));
-        }
-      } else {
-        const connectedEntry = normalizeChannelEntry(selectedAddPlatform, d.channel || plannedEntry.channel) || plannedEntry;
-        connectedEntry.autoConnect = plannedEntry.autoConnect;
-        connectedEntry.mode = plannedEntry.mode;
-        upsertSavedChannel(selectedAddPlatform, connectedEntry);
-        showToast(t('toast.platformConnected').replace('{platform}', PLATFORM_LABELS[selectedAddPlatform]));
-        input.value = '';
-        toggleAddChannelForm();
-      }
-    } catch (e) {
-      showToast(t('toast.channelNetError').replace('{platform}', selectedAddPlatform));
-    } finally {
-      if (btn) { btn.disabled = false; btn.textContent = t('btn.connect'); }
+    if (selectedAddPlatform === 'youtube') {
+      showToast(plannedEntry.autoConnect
+        ? t('toast.youtubeAutoSaved')
+        : t('toast.youtubeTmpSaved'));
+    } else {
+      showToast(t('toast.channelSaved').replace('{platform}', PLATFORM_LABELS[selectedAddPlatform]));
     }
+    input.value = '';
+    toggleAddChannelForm();
     renderSettingsChannels();
   }
 
@@ -5210,9 +5111,7 @@
       return;
     }
 
-    const btn = document.getElementById('btn-connect-saved');
     const chatBtn = document.getElementById('btn-connect-all-chat');
-    if (btn) { btn.disabled = true; btn.textContent = t('conn.connecting'); }
     if (chatBtn) { chatBtn.disabled = true; chatBtn.textContent = t('conn.connecting'); }
 
     let connected = 0;
@@ -5239,7 +5138,6 @@
       }
     }
 
-    if (btn) { btn.disabled = false; btn.textContent = t('btn.connectAll'); }
     if (chatBtn) { chatBtn.disabled = false; chatBtn.textContent = t('btn.connectAll'); }
     renderSettingsChannels();
     const parts = [`${connected} conectados`];

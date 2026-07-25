@@ -46,6 +46,7 @@
     "connect": "Connect",
     "disconnect": "Disconnect",
     "connectAll": "Connect all",
+    "saveChannel": "Save",
     "addChannel": "＋ Add channel",
     "cancel": "Cancel",
     "testVoice": "▶ Test",
@@ -101,8 +102,7 @@
   "settings": {
     "voice": "Voice & audio",
     "shortcuts": "Keyboard shortcuts",
-    "connection": "Main connection",
-    "channels": "Additional channels",
+    "channels": "Linked channels",
     "advanced": "Advanced settings",
     "obs": "OBS WebSocket Connection",
     "clipsHistory": "Clip history"
@@ -485,6 +485,7 @@
     "writeChannel": "Write the channel name",
     "invalidChannel": "Invalid channel",
     "channelConnectError": "Error: {error}",
+    "channelSaved": "{platform} saved — use \"Connect all\" to connect it",
     "channelNetError": "Network error connecting {platform}",
     "channelDisconnectError": "Error disconnecting {platform}",
     "songError": "❌ Error playing song",

@@ -46,6 +46,7 @@
     "connect": "接続",
     "disconnect": "切断",
     "connectAll": "全て接続",
+    "saveChannel": "保存",
     "addChannel": "＋ チャンネル追加",
     "cancel": "キャンセル",
     "testVoice": "▶ テスト",
@@ -101,8 +102,7 @@
   "settings": {
     "voice": "音声・オーディオ",
     "shortcuts": "キーボードショートカット",
-    "connection": "メイン接続",
-    "channels": "追加チャンネル",
+    "channels": "連携チャンネル",
     "advanced": "詳細設定",
     "obs": "OBS WebSocket 接続",
     "clipsHistory": "マーカー履歴"
@@ -485,6 +485,7 @@
     "writeChannel": "チャンネル名を入力してください",
     "invalidChannel": "無効なチャンネル",
     "channelConnectError": "エラー: {error}",
+    "channelSaved": "{platform}を保存しました。接続するには「全て接続」を使ってください",
     "channelNetError": "{platform}への接続中にネットワークエラーが発生しました",
     "channelDisconnectError": "{platform}からの切断中にエラーが発生しました",
     "songError": "❌ 曲の再生中にエラーが発生しました",

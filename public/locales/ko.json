@@ -46,6 +46,7 @@
     "connect": "연결",
     "disconnect": "연결 해제",
     "connectAll": "모두 연결",
+    "saveChannel": "저장",
     "addChannel": "＋ 채널 추가",
     "cancel": "취소",
     "testVoice": "▶ 테스트",
@@ -101,8 +102,7 @@
   "settings": {
     "voice": "음성 및 오디오",
     "shortcuts": "키보드 단축키",
-    "connection": "기본 연결",
-    "channels": "추가 채널",
+    "channels": "연결된 채널",
     "advanced": "고급 설정",
     "obs": "OBS WebSocket 연결",
     "clipsHistory": "마커 기록"
@@ -485,6 +485,7 @@
     "writeChannel": "채널 이름을 입력하세요",
     "invalidChannel": "잘못된 채널",
     "channelConnectError": "오류: {error}",
+    "channelSaved": "{platform} 저장됨 — 연결하려면 \"모두 연결\"을 사용하세요",
     "channelNetError": "{platform} 연결 중 네트워크 오류",
     "channelDisconnectError": "{platform} 연결 해제 오류",
     "songError": "❌ 노래 재생 오류",

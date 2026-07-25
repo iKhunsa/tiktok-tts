@@ -46,6 +46,7 @@
     "connect": "Подключить",
     "disconnect": "Отключить",
     "connectAll": "Подключить всё",
+    "saveChannel": "Сохранить",
     "addChannel": "＋ Добавить канал",
     "cancel": "Отмена",
     "testVoice": "▶ Тест",
@@ -101,8 +102,7 @@
   "settings": {
     "voice": "Голос и аудио",
     "shortcuts": "Горячие клавиши",
-    "connection": "Основное подключение",
-    "channels": "Дополнительные каналы",
+    "channels": "Связанные каналы",
     "advanced": "Расширенные настройки",
     "obs": "Подключение OBS WebSocket",
     "clipsHistory": "История маркеров"
@@ -485,6 +485,7 @@
     "writeChannel": "Введите название канала",
     "invalidChannel": "Недопустимый канал",
     "channelConnectError": "Ошибка: {error}",
+    "channelSaved": "{platform} сохранён — используйте «Подключить всё», чтобы подключить",
     "channelNetError": "Сетевая ошибка при подключении к {platform}",
     "channelDisconnectError": "Ошибка при отключении от {platform}",
     "songError": "❌ Ошибка воспроизведения песни",
