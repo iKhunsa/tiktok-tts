@@ -549,7 +549,8 @@ const DEFAULT_CONFIG = {
   allowedExtraLangs: [],
   ttsVoiceLang: 'es-MX',
   a11yReduceMotion: false,
-  a11yChatFontScale: 1,
+  a11yUiFontScale: 1,
+  a11yHighContrast: false,
   ttsSlowSpeech: false,
 };
 
@@ -574,7 +575,8 @@ const CONFIG_VALIDATORS = {
     && v.every((x) => DICT_FILTER_LANGS.includes(x)),
   ttsVoiceLang: (v) => GOOGLE_TTS_LANGS.has(v),
   a11yReduceMotion: (v) => typeof v === 'boolean',
-  a11yChatFontScale: (v) => [1, 1.15, 1.3, 1.5].includes(v),
+  a11yUiFontScale: (v) => [1, 1.15, 1.3, 1.5].includes(v),
+  a11yHighContrast: (v) => typeof v === 'boolean',
   ttsSlowSpeech: (v) => typeof v === 'boolean',
 };
 

@@ -203,8 +203,8 @@
 
     function applyA11yConfig(cfg) {
       document.body.classList.toggle('reduce-motion', !!cfg.a11yReduceMotion);
-      if (!hasManualSize && cfg.a11yChatFontScale) {
-        document.documentElement.style.setProperty('--font-size', (14 * cfg.a11yChatFontScale) + 'px');
+      if (!hasManualSize && cfg.a11yUiFontScale) {
+        document.documentElement.style.setProperty('--font-size', (14 * cfg.a11yUiFontScale) + 'px');
       }
     }
 
