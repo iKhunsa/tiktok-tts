@@ -16,7 +16,49 @@
     "donate": "Donar",
     "newBadge": "Nuevo",
     "channels": "Canales",
-    "advanced": "Avanzado"
+    "advanced": "Avanzado",
+    "bugReport": "Reportar Bug"
+  },
+  "bugReport": {
+    "title": "Reportar un problema",
+    "guide": "¿Tenés un problema? 1) Intentá reproducirlo de nuevo. 2) Completá este formulario contando qué pasó con tus propias palabras. 3) Al enviar, se manda automáticamente al equipo junto con el registro técnico de tu sesión (no incluye contraseñas ni datos sensibles).",
+    "discordNickLabel": "Tu nick de Discord",
+    "discordNickPlaceholder": "usuario#0000",
+    "channelLinkLabel": "Link de tu canal (TikTok/Twitch/YouTube)",
+    "channelLinkPlaceholder": "https://...",
+    "descriptionLabel": "Contanos qué pasó",
+    "descriptionPlaceholder": "¿Qué estabas haciendo? ¿Qué esperabas que pasara? ¿Qué pasó en realidad?",
+    "extraLabel": "¿Algo más que quieras agregar? (opcional)",
+    "extraPlaceholder": "Mensajes de error, cuándo pasó, etc.",
+    "submit": "Enviar reporte",
+    "sending": "Enviando...",
+    "sent": "Reporte enviado, ¡gracias!",
+    "errorRequired": "Completá tu nick, tu canal y contanos qué pasó",
+    "errorSend": "No se pudo enviar el reporte, intentá de nuevo",
+    "discordHint": "¿Es solo una duda rápida? ",
+    "discordLink": "Únete a nuestro Discord",
+    "tourTitle": "¡Acá está!",
+    "tourDesc": "Apretá este botón cada vez que tengas un problema para contármelo.",
+    "tourDone": "Entendido"
+  },
+  "tour": {
+    "next": "Siguiente",
+    "prev": "Atrás",
+    "done": "Listo"
+  },
+  "onboarding": {
+    "step1Title": "Primero, andá a Configuración",
+    "step1Desc": "Acá vas a vincular tu canal antes de conectarte.",
+    "step2Title": "Canales vinculados",
+    "step2Desc": "Tocá \"Agregar canal\" para sumar tu TikTok, Twitch o YouTube.",
+    "step3Title": "Elegí la plataforma",
+    "step3Desc": "Seleccioná si es TikTok, Twitch o YouTube.",
+    "step4Title": "Escribí tu usuario o canal",
+    "step4Desc": "Poné tu @usuario, nombre de canal o link, según la plataforma.",
+    "step5Title": "Guardá el canal",
+    "step5Desc": "Esto solo lo guarda, todavía no te conecta a nada.",
+    "step6Title": "¡Último paso! Andá en vivo primero",
+    "step6Desc": "Antes de tocar acá: iniciá tu transmisión en la plataforma (TikTok/Twitch/YouTube) y esperá a estar en vivo. Recién ahí volvé y tocá \"Conectar todo\". No antes de estar en vivo."
   },
   "toggle": {
     "readChat": "Leer comentarios",
@@ -92,7 +134,7 @@
     },
     "clips": {
       "title": "Marcadores de Clip",
-      "desc": "Graba momentos del stream. El atajo global Ctrl+Shift+M funciona aunque la app esté minimizada."
+      "desc": "Marcá el minuto exacto en el que pasó algo bueno con Ctrl+Shift+M (funciona con la app minimizada). Al terminar el stream, vas directo a esos momentos en la grabación sin tener que revisarla entera para sacar tus clips."
     },
     "mobile": {
       "title": "Control Móvil",
@@ -336,19 +378,6 @@
     "cfgWindow": "Ventana de tiempo",
     "cfgMaxChars": "Máx. caracteres TTS",
     "cfgDebounce": "Debounce likes",
-    "logsTitle": "Logs",
-    "logsDesc": "Historial de eventos y errores",
-    "logsRefresh": "↻ Actualizar",
-    "logsSearch": "Buscar logs...",
-    "logsAllLevels": "Todos los niveles",
-    "logsAllSources": "Todas las fuentes",
-    "logsSourceServer": "Servidor",
-    "logsSourceClient": "Cliente",
-    "logsSourceNetwork": "Red",
-    "logsEmpty": "Sin logs aún",
-    "logsNone": "Sin logs para mostrar",
-    "logsExportPrompt": "¿Exportar como (json/csv)?",
-    "logsClearConfirm": "¿Limpiar todos los logs? No se puede deshacer.",
     "statConnected": "Conectado",
     "statOff": "Off",
     "statusYes": "Sí",
@@ -358,7 +387,6 @@
     "errorLoadMd": "Error cargando archivo .md",
     "errorSaveMd": "Error guardando archivo .md",
     "errorImportMd": "Error importando archivo .md",
-    "errorExportLogs": "Error exportando logs",
     "errorServerUnavailable": "Servidor no disponible",
     "errorSelectMd": "Selecciona un archivo .md",
     "savedRateLimit": "Rate limit actualizado",
@@ -366,8 +394,6 @@
     "savedWords": "Palabras sincronizadas con el servidor",
     "savedMd": "Archivo .md guardado y palabras actualizadas",
     "importedMd": "Archivo .md importado correctamente",
-    "logsExported": "Logs exportados",
-    "logsCleared": "Logs locales eliminados",
     "invalidValue": "Valor inválido en {field}",
     "configRejected": "Config rechazada"
   },
@@ -401,7 +427,20 @@
   "notice": {
     "donationsTitle": "Nuevas formas de apoyar el proyecto",
     "donationsBody": "Agregamos Ko-fi y PayPal como opciones de donación. La app seguirá siendo 100% gratis — si te sirve y quieres aportar al proyecto, ahora es más fácil que nunca.",
-    "donationsCta": "Ver opciones de donación"
+    "donationsCta": "Ver opciones de donación",
+    "bugReportTitle": "¿Tenés un problema? Avisame al toque",
+    "bugReportBody": "Agregamos un botón de \"Reportar Bug\". Cada vez que algo falle, apretalo, contame en pocas palabras qué pasó y se me manda todo automáticamente, es como si viera tu computadora en el momento, así lo arreglo más rápido.",
+    "bugReportCta": "Ver botón de Reportar Bug",
+    "bugReportDevBody": "Esta app está en desarrollo constante, así que es normal encontrarse de vez en cuando con algún error. Si querés ayudar a mejorarla, podés sumarte como developer o apoyar con una donación.",
+    "bugReportDevCta": "Sumate como developer",
+    "bugReportDonateCta": "Apoyar con una donación",
+    "onboardingTitle": "¡Bienvenido/a! ¿Te mostramos cómo conectar?",
+    "onboardingBody": "Te guiamos paso a paso: vincular tu canal y conectarte cuando estés en vivo. Te toma menos de un minuto.",
+    "onboardingCta": "Empezar tutorial",
+    "onboardingSkip": "Ahora no",
+    "onboardingDoneTitle": "¡Listo! Ya sabés cómo conectar",
+    "onboardingDoneBody": "Mucho éxito con tu stream, que se te dé todo bien ahí arriba. Esta app la hago solo, así que si en algún momento la mencionás en tu canal, ayuda un montón a que más streamers la conozcan. ¡Gracias por usarla!",
+    "onboardingDoneCta": "¡Vamos!"
   },
   "mobile3": {
     "connecting": "Conectando…",

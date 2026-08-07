@@ -504,18 +504,6 @@
 
     select:focus { border-color: rgba(62, 207, 142, 0.5); }
 
-    /* LOGS CONTAINER */
-    #logsContainer {
-      background: var(--bg-button);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 12px;
-      font-family: 'Source Code Pro', monospace;
-      font-size: 12px;
-      color: var(--text);
-      line-height: 1.5;
-    }
-
     /* STATUS */
     .status-grid {
       display: grid;
@@ -1014,42 +1002,6 @@
   </div>
 
 
-  <!-- ═══ PANEL 5: LOGS ═══ -->
-  <div class="panel panel-status">
-    <div class="status-header">
-      <div>
-        <div class="panel-title"><img class="icon-inline" src="icons/description.svg" alt=""> <span data-i18n="adv.logsTitle">Logs</span></div>
-        <div class="panel-desc" data-i18n="adv.logsDesc">Historial de eventos y errores</div>
-      </div>
-      <button class="btn-refresh" onclick="refreshLogs()" data-i18n="adv.logsRefresh">↻ Actualizar</button>
-    </div>
-
-    <div style="margin-bottom: 20px;">
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; margin-bottom: 12px;">
-        <input type="text" id="logSearch" data-i18n-placeholder="adv.logsSearch" placeholder="Buscar logs..." style="outline:none;" />
-        <select id="logLevelFilter" style="cursor:pointer;">
-          <option value="" data-i18n="adv.logsAllLevels">Todos los niveles</option>
-          <option value="error">Error</option>
-          <option value="warn">Warn</option>
-          <option value="info">Info</option>
-        </select>
-        <select id="logSourceFilter" style="cursor:pointer;">
-          <option value="" data-i18n="adv.logsAllSources">Todas las fuentes</option>
-          <option value="server" data-i18n="adv.logsSourceServer">Servidor</option>
-          <option value="client" data-i18n="adv.logsSourceClient">Cliente</option>
-          <option value="network" data-i18n="adv.logsSourceNetwork">Red</option>
-        </select>
-        <div style="display: flex; gap: 5px;">
-          <button class="btn-add" onclick="exportLogs()" data-i18n-title="adv.logsRefresh" title="Exportar logs"><img class="icon-inline" src="icons/download.svg" alt=""></button>
-          <button class="btn-refresh" onclick="clearLogs()" title="Limpiar logs"><img class="icon-inline" src="icons/delete.svg" alt=""></button>
-        </div>
-      </div>
-    </div>
-
-    <div id="logsContainer" style="max-height:350px;overflow-y:auto;">
-      <div style="color: var(--muted); text-align: center; padding: 20px;" data-i18n="adv.logsEmpty">Sin logs aún</div>
-    </div>
-  </div>
 </div>
 
 <!-- TOAST -->
@@ -1382,156 +1334,6 @@
     return d.innerHTML;
   }
 
-  // ─── LogStorage ──────────────────────────────────────────────────────
-  class LogStorage {
-    constructor(maxEntries = 100) {
-      this.key = 'tiktok_tts_logs';
-      this.maxEntries = maxEntries;
-    }
-
-    addLog(level, source, message, data = null) {
-      try {
-        const logs = this.getLogs();
-        logs.push({
-          timestamp: new Date().toISOString(),
-          level,
-          source,
-          message,
-          data
-        });
-        if (logs.length > this.maxEntries) logs.shift();
-        localStorage.setItem(this.key, JSON.stringify(logs));
-      } catch (e) {
-        console.error('LogStorage.addLog error:', e);
-      }
-    }
-
-    getLogs() {
-      try {
-        return JSON.parse(localStorage.getItem(this.key) || '[]');
-      } catch (e) {
-        return [];
-      }
-    }
-
-    clearLogs() {
-      try {
-        localStorage.removeItem(this.key);
-      } catch (e) {
-        console.error('LogStorage.clearLogs error:', e);
-      }
-    }
-
-    exportLogs(format = 'json') {
-      const logs = this.getLogs();
-      if (format === 'csv') {
-        return 'timestamp,level,source,message\n' +
-          logs.map(l => `${l.timestamp},${l.level},${l.source},"${(l.message || '').replace(/"/g, '""')}"`).join('\n');
-      }
-      return JSON.stringify(logs, null, 2);
-    }
-  }
-
-  const logStorage = new LogStorage(100);
-
-  // ─── Log refresh & export ────────────────────────────────────────────
-  async function getCombinedLogs() {
-    const localLogs = logStorage.getLogs().map((log) => ({ ...log, source: log.source || 'client' }));
-    try {
-      const res = await fetch('/api/logs?limit=150');
-      if (!res.ok) return localLogs;
-      const data = await res.json();
-      const serverLogs = (data.logs || []).map((log) => ({
-        timestamp: log.ts || log.timestamp,
-        level: log.level || 'info',
-        source: log.ctx ? `server:${log.ctx}` : 'server',
-        message: log.msg || log.message || '',
-        data: log.data || null,
-      }));
-      return [...localLogs, ...serverLogs].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-    } catch (_) {
-      return localLogs;
-    }
-  }
-
-  async function refreshLogs() {
-    try {
-      const search = document.getElementById('logSearch').value.toLowerCase();
-      const levelFilter = document.getElementById('logLevelFilter').value;
-      const sourceFilter = document.getElementById('logSourceFilter').value;
-
-      let logs = await getCombinedLogs();
-      logs = logs.filter(log =>
-        (!search || String(log.message || '').toLowerCase().includes(search)) &&
-        (!levelFilter || log.level === levelFilter) &&
-        (!sourceFilter || String(log.source || '').startsWith(sourceFilter))
-      );
-
-      const container = document.getElementById('logsContainer');
-      if (logs.length === 0) {
-        container.innerHTML = `<div style="color: var(--muted); text-align: center; padding: 20px;">${t('adv.logsNone')}</div>`;
-        return;
-      }
-
-      const html = logs.reverse().slice(0, 100).map(log => {
-        const icon = { error: '<img class="icon-inline" src="icons/lens.svg" alt="">', warn: '<img class="icon-inline" src="icons/warning.svg" alt="">', info: '<img class="icon-inline" src="icons/info.svg" alt="">', debug: '<img class="icon-inline" src="icons/help_outline.svg" alt="">' }[log.level] || '<img class="icon-inline" src="icons/help_outline.svg" alt="">';
-        const time = new Date(log.timestamp).toLocaleTimeString();
-        return `<div style="border-bottom: 1px solid var(--border); padding: 8px 0; line-height: 1.4;">
-          <div>${icon} <small style="color: var(--muted);">${time}</small> <code style="color: var(--tiktok-cyan);">[${log.source}]</code></div>
-          <div style="margin-left: 20px; color: var(--text);">${escHtml(log.message)}</div>
-          ${log.data ? `<div style="margin-left: 20px; font-size: 11px; color: var(--muted);"><code>${escHtml(JSON.stringify(log.data))}</code></div>` : ''}
-        </div>`;
-      }).join('');
-
-      container.innerHTML = html;
-    } catch (e) {
-      console.error('refreshLogs error:', e);
-    }
-  }
-
-  async function exportLogs() {
-    try {
-      const format = prompt(t('adv.logsExportPrompt'), 'json');
-      if (!format || !['json', 'csv'].includes(format)) return;
-
-      const logs = await getCombinedLogs();
-      const content = format === 'csv'
-        ? 'timestamp,level,source,message\n' + logs.map(l => `${l.timestamp},${l.level},${l.source},"${(l.message || '').replace(/"/g, '""')}"`).join('\n')
-        : JSON.stringify(logs, null, 2);
-      const blob = new Blob([content], { type: format === 'csv' ? 'text/csv' : 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `tiktok-tts-logs-${new Date().toISOString().split('T')[0]}.${format}`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      showToast(t('adv.logsExported'));
-    } catch (e) {
-      showToast(t('adv.errorExportLogs'));
-    }
-  }
-
-  function clearLogs() {
-    if (confirm(t('adv.logsClearConfirm'))) {
-      logStorage.clearLogs();
-      refreshLogs();
-      showToast(t('adv.logsCleared'));
-    }
-  }
-
-  // Add event listeners for log filtering
-  document.addEventListener('DOMContentLoaded', () => {
-    const logSearch = document.getElementById('logSearch');
-    const logLevelFilter = document.getElementById('logLevelFilter');
-    const logSourceFilter = document.getElementById('logSourceFilter');
-
-    if (logSearch) logSearch.addEventListener('input', refreshLogs);
-    if (logLevelFilter) logLevelFilter.addEventListener('change', refreshLogs);
-    if (logSourceFilter) logSourceFilter.addEventListener('change', refreshLogs);
-  });
-
   // ─── Status ─────────────────────────────────────────────────────────
   async function refreshStatus() {
     try {
@@ -1584,11 +1386,9 @@
   loadBlockedWords();
   loadMdContent();
   refreshStatus();
-  refreshLogs();
 
   let statusRefreshId = setInterval(() => {
     refreshStatus();
-    refreshLogs();
   }, 5000);
 
   document.addEventListener('visibilitychange', () => {
@@ -1597,10 +1397,8 @@
     } else {
       statusRefreshId = setInterval(() => {
         refreshStatus();
-        refreshLogs();
       }, 5000);
       refreshStatus();
-      refreshLogs();
     }
   });
 </script>

@@ -17,10 +17,16 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Write bug-report webhook config
+        shell: pwsh
+        run: |
+          $config = @{ discordWebhookUrl = "${{ secrets.DISCORD_BUG_REPORT_WEBHOOK }}" } | ConvertTo-Json
+          Set-Content -Path webhook-config.generated.json -Value $config
 
       - name: Build & publish installer
         run: npm run build:electron -- --publish always

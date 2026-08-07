@@ -11,3 +11,6 @@ auth-tokens.json
 platform-config.json
 config.json
 sounds-config.json
+webhook-config.json
+webhook-config.generated.json
+logs/

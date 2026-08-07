@@ -4,29 +4,27 @@ const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const http = require('http');
 
-// ── Telemetry (fire-and-forget, anónimo) ──────────────────────────────────
-const _crypto = require('crypto');
-const _os = require('os');
-const TELEMETRY_URL = 'https://TU_SERVIDOR_AQUI/api/ping'; // ← cambia esto
-const _telSession = _crypto.randomUUID();
-const _telStart   = Date.now();
-const _machineId  = _crypto.createHash('sha256')
-  .update(_os.userInfo().username + _os.hostname()).digest('hex');
+// ── Telemetría ─────────────────────────────────────────────────────────────
+// El módulo vive en telemetry/. Si no hay URL configurada no hace nada: cero
+// peticiones de red.
+//
+// La URL sale de TELEMETRY_URL (inyectada en el build) o de un telemetry.json
+// en userData. Archivo aparte a propósito: config.json lo gestiona server.js,
+// que descarta las claves que no conoce y borraría esta en el primer guardado.
+const telemetry = require('./telemetry');
 
-function _telPing(event, extra = {}) {
-  fetch(TELEMETRY_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      machine_id:      _machineId,
-      session_id:      _telSession,
-      app_version:     app.getVersion(),
-      os_version:      _os.release(),
-      event,
-      ...extra
-    }),
-    signal: AbortSignal.timeout(4000)
-  }).catch(() => {});
+function resolveTelemetryUrl() {
+  if (process.env.TELEMETRY_URL) return process.env.TELEMETRY_URL.trim();
+  try {
+    const fs = require('fs');
+    const file = path.join(app.getPath('userData'), 'telemetry.json');
+    if (!fs.existsSync(file)) return null;
+    const url = JSON.parse(fs.readFileSync(file, 'utf8')).url;
+    if (typeof url !== 'string' || !/^https?:\/\//i.test(url.trim())) return null;
+    return url.trim();
+  } catch (_) {
+    return null;
+  }
 }
 // ─────────────────────────────────────────────────────────────────────────
 
@@ -133,9 +131,17 @@ try {
 
 process.on('uncaughtException', (err) => {
   console.error('[main] uncaughtException:', err);
+  telemetry.bus.emit('error:uncaught', {
+    where: 'main', message: err && err.message, stack: err && err.stack,
+  });
 });
 process.on('unhandledRejection', (reason) => {
   console.error('[main] unhandledRejection:', reason);
+  telemetry.bus.emit('error:uncaught', {
+    where: 'main:rejection',
+    message: (reason && reason.message) || String(reason),
+    stack: reason && reason.stack,
+  });
 });
 
 // Poll until server is accepting connections
@@ -315,13 +321,19 @@ app.whenReady().then(() => {
     createWindow();
     createTray();
     if (app.isPackaged) setupAutoUpdater();
-    _telPing('startup');
-    const _telTimer = setInterval(() => _telPing('heartbeat'), 5 * 60 * 1000);
-    app.once('before-quit', () => clearInterval(_telTimer));
+
+    telemetry.init({
+      url: resolveTelemetryUrl(),
+      appVersion: app.getVersion(),
+      dataDir: app.getPath('userData'),
+    });
 
     startUiohook();
 
-    const clipCallback = () => { if (mainWindow) mainWindow.webContents.send('mark-clip'); };
+    const clipCallback = () => {
+      telemetry.bus.emit('obs:clip-saved');
+      if (mainWindow) mainWindow.webContents.send('mark-clip');
+    };
     if (uiohookActive) {
       registerUiohookShortcut('clip', 'CommandOrControl+Shift+M', clipCallback);
     } else {
@@ -332,13 +344,29 @@ app.whenReady().then(() => {
   });
 });
 
-app.on('before-quit', () => {
+let quitTasksDone = false;
+
+app.on('before-quit', (event) => {
   isQuitting = true;
   if (mainWindow && !mainWindow.isDestroyed()) {
     mainWindow.removeAllListeners('close');
   }
+
+  // El handler se vuelve a disparar tras el app.quit() de abajo; la segunda
+  // vez solo tiene que dejar pasar el cierre.
+  if (quitTasksDone) return;
+  quitTasksDone = true;
+
   if (serverShutdown) {
     try { serverShutdown(); } catch (_) {}
+  }
+
+  // El evento de cierre se manda aquí, no en 'will-quit': allí el proceso
+  // muere antes de que la petición llegue a salir. Se pospone el cierre 1,5 s
+  // como máximo; si no da tiempo, el evento queda en disco y sale al arrancar.
+  if (telemetry.enabled) {
+    event.preventDefault();
+    telemetry.shutdown({ timeoutMs: 1500 }).finally(() => app.quit());
   }
 });
 
@@ -346,9 +374,6 @@ app.on('will-quit', () => {
   globalShortcut.unregisterAll();
   soundpadShortcuts.clear();
   stopUiohook();
-  _telPing('shutdown', {
-    session_duration_minutes: Math.round((Date.now() - _telStart) / 60000)
-  });
 });
 
 function sendUpdate(data) {
@@ -361,11 +386,15 @@ function setupAutoUpdater() {
   autoUpdater.autoDownload = true;
   autoUpdater.autoInstallOnAppQuit = true;
 
-  autoUpdater.on('checking-for-update', () =>
-    sendUpdate({ type: 'checking' }));
+  autoUpdater.on('checking-for-update', () => {
+    telemetry.bus.emit('update:check');
+    sendUpdate({ type: 'checking' });
+  });
 
-  autoUpdater.on('update-available', (info) =>
-    sendUpdate({ type: 'available', version: info.version }));
+  autoUpdater.on('update-available', (info) => {
+    telemetry.bus.emit('update:available', { from: app.getVersion(), to: info.version });
+    sendUpdate({ type: 'available', version: info.version });
+  });
 
   autoUpdater.on('update-not-available', () =>
     sendUpdate({ type: 'not-available' }));
@@ -381,6 +410,7 @@ function setupAutoUpdater() {
 
   autoUpdater.on('update-downloaded', (info) => {
     pendingUpdateVersion = info.version;
+    telemetry.bus.emit('update:downloaded', { from: app.getVersion(), to: info.version });
 
     // Rebuild tray menu with install shortcut — works even if preload/banner is unavailable
     if (tray) tray.setContextMenu(buildTrayMenu(info.version));
@@ -402,8 +432,10 @@ function setupAutoUpdater() {
     });
   });
 
-  autoUpdater.on('error', (err) =>
-    sendUpdate({ type: 'error', message: err.message }));
+  autoUpdater.on('error', (err) => {
+    telemetry.bus.emit('update:error', { message: err.message });
+    sendUpdate({ type: 'error', message: err.message });
+  });
 
   autoUpdater.checkForUpdatesAndNotify().catch((err) => console.error('[updater] notify error:', err.message));
 }
@@ -538,6 +570,7 @@ ipcMain.handle('register-soundpad-shortcut', (_event, { soundId, shortcut }) => 
   if (!normalized) return { ok: false, error: 'Atajo inválido' };
 
   const playCallback = () => {
+    telemetry.bus.emit('soundpad:triggered', { via: 'hotkey' });
     if (mainWindow && !mainWindow.isDestroyed())
       mainWindow.webContents.send('play-soundpad', { soundId });
   };

@@ -12,11 +12,34 @@
     "label": "TikLiveTTS コミュニティ",
     "desc": "公式 Discord · フィードバック・質問歓迎"
   },
+  "bugReport": {
+    "title": "問題を報告",
+    "guide": "問題がありますか？1）もう一度再現してみてください。2）このフォームに、何が起きたかをご自身の言葉で記入してください。3）送信すると、セッションの技術ログと一緒に自動的にチームへ送られます（パスワードや機密情報は含まれません）。",
+    "discordNickLabel": "あなたのDiscordニックネーム",
+    "discordNickPlaceholder": "ユーザー#0000",
+    "channelLinkLabel": "あなたのチャンネルリンク（TikTok/Twitch/YouTube）",
+    "channelLinkPlaceholder": "https://...",
+    "descriptionLabel": "何が起きたか教えてください",
+    "descriptionPlaceholder": "何をしていましたか？何が起こると思っていましたか？実際に何が起こりましたか？",
+    "extraLabel": "他に追加したいことはありますか？（任意）",
+    "extraPlaceholder": "エラーメッセージ、発生した時間など",
+    "submit": "レポートを送信",
+    "sending": "送信中...",
+    "sent": "レポートを送信しました、ありがとうございます！",
+    "errorRequired": "ニックネーム、チャンネル、何が起きたかを入力してください",
+    "errorSend": "レポートを送信できませんでした。もう一度お試しください",
+    "discordHint": "ちょっとした質問だけですか？",
+    "discordLink": "Discordに参加する",
+    "tourTitle": "これです！",
+    "tourDesc": "問題があったらいつでもこのボタンを押して教えてください。",
+    "tourDone": "わかりました"
+  },
   "footer": {
     "donate": "寄付",
     "newBadge": "新着",
     "channels": "チャンネル",
-    "advanced": "詳細設定"
+    "advanced": "詳細設定",
+    "bugReport": "バグを報告"
   },
   "toggle": {
     "readChat": "コメントを読む",
@@ -92,7 +115,7 @@
     },
     "clips": {
       "title": "クリップマーカー",
-      "desc": "配信の瞬間を記録。グローバルショートカット Ctrl+Shift+M はアプリ最小化中も動作します。"
+      "desc": "Ctrl+Shift+Mで良い瞬間が起きた正確な時間をマーク（アプリを最小化していても使えます）。配信終了後は、録画全体を見返さなくても、その瞬間に直接ジャンプしてクリップを探せます。"
     },
     "mobile": {
       "title": "モバイル制御",
@@ -401,7 +424,20 @@
   "notice": {
     "donationsTitle": "プロジェクトを支援する新しい方法",
     "donationsBody": "寄付オプションにKo-fiとPayPalを追加しました。アプリはこれからも100%無料です。役に立っていて、プロジェクトを支援したい方は、今まで以上に簡単に寄付できます。",
-    "donationsCta": "寄付オプションを見る"
+    "donationsCta": "寄付オプションを見る",
+    "bugReportTitle": "問題がありますか？すぐに教えてください",
+    "bugReportBody": "「バグを報告」ボタンを追加しました。何か不具合があったら押してください。何が起きたか簡単に書いてもらえれば、自動的にすべて送信されます。まるであなたのパソコンをその場で見ているように、早く直せます。",
+    "bugReportCta": "バグを報告ボタンを見る",
+    "bugReportDevBody": "このアプリは常に開発中なので、たまにバグに遭遇するのは普通のことです。改善に協力したい方は、開発者として参加するか、寄付で応援してください。",
+    "bugReportDevCta": "開発者として参加する",
+    "bugReportDonateCta": "寄付で応援する",
+    "onboardingTitle": "ようこそ！接続方法をご案内しましょうか？",
+    "onboardingBody": "チャンネルの連携から配信中の接続まで、順を追ってご案内します。1分もかかりません。",
+    "onboardingCta": "チュートリアルを始める",
+    "onboardingSkip": "今はしない",
+    "onboardingDoneTitle": "完了！これで接続方法がわかりましたね",
+    "onboardingDoneBody": "配信、頑張ってください。うまくいきますように。このアプリは僕ひとりで開発しています。もしいつかチャンネルで少しでも紹介していただけたら、もっと多くの配信者に知ってもらえてすごく助かります。使ってくれてありがとう！",
+    "onboardingDoneCta": "始めよう！"
   },
   "mobile3": {
     "connecting": "接続中…",
@@ -509,5 +545,24 @@
     "desc": "音声の言語に加えて、次の言語のメッセージも許可：",
     "voiceAlways": "（音声の言語 — 常に許可）",
     "notApplicable": "このフィルターはラテン文字の音声にのみ適用されます。"
+  },
+  "tour": {
+    "next": "次へ",
+    "prev": "戻る",
+    "done": "完了"
+  },
+  "onboarding": {
+    "step1Title": "まず「設定」に移動してください",
+    "step1Desc": "ここで接続する前にチャンネルを連携します。",
+    "step2Title": "連携済みチャンネル",
+    "step2Desc": "「チャンネルを追加」をタップして、TikTok、Twitch、YouTubeを追加してください。",
+    "step3Title": "プラットフォームを選択",
+    "step3Desc": "TikTok、Twitch、YouTubeのいずれかを選んでください。",
+    "step4Title": "ユーザー名またはチャンネルを入力",
+    "step4Desc": "プラットフォームに応じて@ユーザー名、チャンネル名、リンクを入力してください。",
+    "step5Title": "チャンネルを保存",
+    "step5Desc": "これは保存するだけで、まだ何にも接続されません。",
+    "step6Title": "最後のステップ！先に配信を開始してください",
+    "step6Desc": "ここを押す前に：プラットフォーム（TikTok/Twitch/YouTube）で配信を開始し、配信中になるまで待ってください。配信中になってから戻って「すべて接続」を押してください。配信前には押さないでください。"
   }
 }
