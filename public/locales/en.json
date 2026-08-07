@@ -580,7 +580,7 @@
     "step6Desc": "Before tapping here: start your stream on the platform (TikTok/Twitch/YouTube) and wait until you're live. Only then come back and tap \"Connect all\". Not before you're live."
   },
   "mod": {
-    "note": "Messages filtered as spam or by blocked words don't count here. YouTube sends no follow events: mark those viewers as followers manually.",
+    "note": "YouTube sends no follow events: mark those viewers as followers by hand.",
     "stats": {
       "total": "Registered",
       "followers": "Followers",
@@ -631,7 +631,17 @@
       "clear": "Clear penalties",
       "refresh": "Refresh",
       "wipe": "Wipe registry",
-      "wipeConfirm": "Delete the whole viewer registry? Mutes and bans are lost too."
+      "wipeConfirm": "Delete the whole viewer registry? Mutes and bans are lost too.",
+      "tour": "View tutorial"
+    },
+    "wipeModal": {
+      "title": "Are you sure?",
+      "body": "This completely erases the viewer database: marked followers, mutes and bans. This cannot be undone.",
+      "confirm": "Yes, delete everything",
+      "cancel": "Cancel",
+      "typeInstruction": "Type",
+      "typeInstructionSuffix": "to confirm",
+      "keyword": "DELETE"
     },
     "dur": {
       "15m": "15 minutes",
@@ -668,5 +678,25 @@
     "blockWordPrompt": "Word to block:",
     "blockWordDone": "\"{word}\" blocked",
     "openModeration": "View in Moderation"
+  },
+  "modTour": {
+    "introTitle": "New: Moderation",
+    "introDesc": "Every viewer who interacts with your streams is registered here. From this table you control who can talk and who the TTS reads. This is in-app moderation: it does not ban on TikTok, Twitch or YouTube.",
+    "tabsTitle": "Followers and non-followers",
+    "tabsDesc": "Someone becomes a Follower in two ways: they follow you while you're connected, or you mark them by hand. The app can't ask the platform for your follower list, so anyone following you from before shows up under Non-followers until you mark them.",
+    "statsTitle": "At a glance",
+    "statsDesc": "How many people are registered, how many are followers, and how many have an active penalty right now.",
+    "filtersTitle": "Search and filter",
+    "filtersDesc": "Search by name, filter by platform or state (muted, banned, no penalty), and sort by recent activity or name.",
+    "tableTitle": "Per-viewer actions",
+    "tableDesc": "On each row: Mute (still visible in chat, but TTS skips them), Ban (their messages don't even show up), ★ to mark as follower, Clear penalties, and ✕ to drop them from the registry. Temporary penalties expire on their own, even with the app closed.",
+    "chatMenuTitle": "Moderate from the chat",
+    "chatMenuDesc": "You don't have to come here: click anyone's name in the live chat and the same menu opens — mute, ban, mark as follower or block a word.",
+    "toggleTitle": "Read non-followers",
+    "toggleDesc": "On, the TTS reads everyone. Off, it only reads followers and whoever you marked by hand; the rest still show up in chat, just without a voice. Careful on day one: with an empty registry you silence almost your whole audience.",
+    "blockedTitle": "Blocked words",
+    "blockedDesc": "Direct shortcut to the blocked words panel, no hunting inside Advanced. Messages containing them are ignored entirely.",
+    "scrollTitle": "The chat follows the reading",
+    "scrollDesc": "The chat no longer chases the newest message but the one the TTS is reading, which usually lags a few messages behind. Scroll up and it stays put so you can read; return to the bottom and it resumes on its own."
   }
 }

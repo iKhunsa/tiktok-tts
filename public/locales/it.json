@@ -580,7 +580,7 @@
     "step6Desc": "Prima di toccare qui: avvia la tua diretta sulla piattaforma (TikTok/Twitch/YouTube) e aspetta di essere in diretta. Solo allora torna e tocca \"Connetti tutto\". Non prima di essere in diretta."
   },
   "mod": {
-    "note": "I messaggi filtrati come spam o da parole bloccate non contano qui. YouTube non invia eventi di follow: segna quegli spettatori come follower a mano.",
+    "note": "YouTube non invia eventi di follow: segna quegli spettatori come follower a mano.",
     "stats": {
       "total": "Registrati",
       "followers": "Follower",
@@ -631,7 +631,17 @@
       "clear": "Rimuovi sanzioni",
       "refresh": "Aggiorna",
       "wipe": "Svuota registro",
-      "wipeConfirm": "Cancellare tutto il registro degli spettatori? Si perdono anche silenziamenti e ban."
+      "wipeConfirm": "Cancellare tutto il registro degli spettatori? Si perdono anche silenziamenti e ban.",
+      "tour": "Vedi tutorial"
+    },
+    "wipeModal": {
+      "title": "Sei sicuro?",
+      "body": "Questa azione cancella completamente il database degli spettatori: follower segnati, silenziamenti e ban. Non si può annullare.",
+      "confirm": "Sì, cancella tutto",
+      "cancel": "Annulla",
+      "typeInstruction": "Scrivi",
+      "typeInstructionSuffix": "per confermare",
+      "keyword": "ELIMINA"
     },
     "dur": {
       "15m": "15 minuti",
@@ -668,5 +678,25 @@
     "blockWordPrompt": "Parola da bloccare:",
     "blockWordDone": "\"{word}\" bloccata",
     "openModeration": "Vedi in Moderazione"
+  },
+  "modTour": {
+    "introTitle": "Novità: Moderazione",
+    "introDesc": "Qui viene registrato ogni spettatore che interagisce nelle tue live. Da questa tabella controlli chi può parlare e chi legge il TTS. È moderazione dentro l'app: non banna su TikTok, Twitch né YouTube.",
+    "tabsTitle": "Follower e non follower",
+    "tabsDesc": "Si diventa Follower in due modi: ti segue mentre sei connesso, oppure lo segni a mano. L'app non può chiedere la lista dei follower alla piattaforma, quindi chi ti seguiva da prima resta in Non follower finché non lo segni.",
+    "statsTitle": "Colpo d'occhio",
+    "statsDesc": "Quante persone sono registrate, quante sono follower e quante hanno una sanzione attiva adesso.",
+    "filtersTitle": "Cerca e filtra",
+    "filtersDesc": "Cerca per nome, filtra per piattaforma o per stato (silenziati, bannati, senza sanzione) e ordina per attività recente o per nome.",
+    "tableTitle": "Azioni per spettatore",
+    "tableDesc": "Su ogni riga: Silenzia (resta visibile in chat, ma il TTS lo salta), Banna (i messaggi non compaiono nemmeno), ★ per segnarlo come follower, Rimuovi sanzioni e ✕ per toglierlo dal registro. Le sanzioni temporanee scadono da sole, anche ad app chiusa.",
+    "chatMenuTitle": "Moderare dalla chat",
+    "chatMenuDesc": "Non serve venire qui: clicca il nome di chiunque nella chat live e si apre lo stesso menu — silenzia, banna, segna come follower o blocca una parola.",
+    "toggleTitle": "Leggi i non follower",
+    "toggleDesc": "Acceso, il TTS legge tutti. Spento, legge solo follower e chi hai segnato a mano; gli altri restano visibili in chat, ma senza voce. Attenzione il primo giorno: con il registro vuoto zittisci quasi tutto il tuo pubblico.",
+    "blockedTitle": "Parole bloccate",
+    "blockedDesc": "Scorciatoia diretta al pannello delle parole bloccate, senza cercarlo dentro Avanzate. I messaggi che le contengono vengono ignorati del tutto.",
+    "scrollTitle": "La chat segue la lettura",
+    "scrollDesc": "La chat non insegue più l'ultimo messaggio ma quello che il TTS sta leggendo, di solito qualche messaggio più indietro. Se scorri in su resta ferma per farti leggere con calma; torni in fondo e riprende da sola."
   }
 }

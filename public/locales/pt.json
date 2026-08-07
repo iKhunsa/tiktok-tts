@@ -580,7 +580,7 @@
     "step6Desc": "Antes de tocar aqui: inicie sua transmissão na plataforma (TikTok/Twitch/YouTube) e espere ficar ao vivo. Só então volte e toque em \"Conectar tudo\". Não antes de estar ao vivo."
   },
   "mod": {
-    "note": "Mensagens filtradas por spam ou palavras bloqueadas não contam aqui. O YouTube não envia eventos de follow: marque esses espectadores como seguidores manualmente.",
+    "note": "O YouTube não envia eventos de follow: marque esses espectadores como seguidores manualmente.",
     "stats": {
       "total": "Registrados",
       "followers": "Seguidores",
@@ -631,7 +631,17 @@
       "clear": "Remover punições",
       "refresh": "Atualizar",
       "wipe": "Limpar registro",
-      "wipeConfirm": "Apagar todo o registro de espectadores? Silenciamentos e banimentos também se perdem."
+      "wipeConfirm": "Apagar todo o registro de espectadores? Silenciamentos e banimentos também se perdem.",
+      "tour": "Ver tutorial"
+    },
+    "wipeModal": {
+      "title": "Tem certeza?",
+      "body": "Esta ação apaga completamente o banco de dados de espectadores: seguidores marcados, silenciamentos e banimentos. Não pode ser desfeita.",
+      "confirm": "Sim, apagar tudo",
+      "cancel": "Cancelar",
+      "typeInstruction": "Digite",
+      "typeInstructionSuffix": "para confirmar",
+      "keyword": "APAGAR"
     },
     "dur": {
       "15m": "15 minutos",
@@ -668,5 +678,25 @@
     "blockWordPrompt": "Palavra a bloquear:",
     "blockWordDone": "\"{word}\" bloqueada",
     "openModeration": "Ver em Moderação"
+  },
+  "modTour": {
+    "introTitle": "Novo: Moderação",
+    "introDesc": "Aqui fica registrado todo espectador que interage nas suas lives. Desta tabela você controla quem pode falar e quem o TTS lê. É moderação dentro do app: não bane no TikTok, Twitch nem YouTube.",
+    "tabsTitle": "Seguidores e não seguidores",
+    "tabsDesc": "Alguém vira Seguidor de duas formas: te segue enquanto você está conectado, ou você marca manualmente. O app não pode pedir a lista de seguidores à plataforma, então quem já te seguia aparece em Não seguidores até você marcar.",
+    "statsTitle": "Resumo rápido",
+    "statsDesc": "Quantas pessoas estão registradas, quantas são seguidoras e quantas têm punição ativa agora.",
+    "filtersTitle": "Buscar e filtrar",
+    "filtersDesc": "Busque por nome, filtre por plataforma ou estado (silenciados, banidos, sem punição) e ordene por atividade recente ou por nome.",
+    "tableTitle": "Ações por espectador",
+    "tableDesc": "Em cada linha: Silenciar (continua visível no chat, mas o TTS não lê), Banir (as mensagens nem aparecem), ★ para marcar como seguidor, Remover punições e ✕ para tirar do registro. As punições temporárias expiram sozinhas, mesmo com o app fechado.",
+    "chatMenuTitle": "Moderar pelo chat",
+    "chatMenuDesc": "Não precisa vir até aqui: clique no nome de qualquer pessoa no chat ao vivo e abre o mesmo menu — silenciar, banir, marcar como seguidor ou bloquear uma palavra.",
+    "toggleTitle": "Ler não seguidores",
+    "toggleDesc": "Ligado, o TTS lê todo mundo. Desligado, lê só seguidores e quem você marcou; os demais continuam aparecendo no chat, mas sem voz. Cuidado no primeiro dia: com o registro vazio você cala quase todo o seu público.",
+    "blockedTitle": "Palavras bloqueadas",
+    "blockedDesc": "Atalho direto para o painel de palavras bloqueadas, sem procurar dentro de Avançado. Mensagens que as contenham são ignoradas por completo.",
+    "scrollTitle": "O chat acompanha a leitura",
+    "scrollDesc": "O chat não persegue mais a última mensagem, e sim a que o TTS está lendo, que costuma ficar algumas mensagens atrás. Se você rolar para cima ele para, para você ler com calma; volte ao fim e ele retoma sozinho."
   }
 }
