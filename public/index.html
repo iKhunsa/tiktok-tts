@@ -4592,10 +4592,13 @@
     btn.textContent = t('bugReport.sending');
 
     try {
+      const appVersion = window.electronAPI?.getAppVersion
+        ? await window.electronAPI.getAppVersion().catch(() => null)
+        : null;
       const res = await fetch('/api/report-bug', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ discordNick, channelLink, description, extra: extra || undefined }),
+        body: JSON.stringify({ discordNick, channelLink, description, extra: extra || undefined, appVersion: appVersion || undefined }),
       });
       if (!res.ok) throw new Error('report-bug failed');
       showToast(t('bugReport.sent'));

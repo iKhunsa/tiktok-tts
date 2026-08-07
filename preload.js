@@ -29,6 +29,7 @@ function once(channel, cb) {
 }
 
 contextBridge.exposeInMainWorld('electronAPI', {
+  getAppVersion: () => ipcRenderer.invoke('get-app-version'),
   onMarkClip: (cb) => on('mark-clip', () => cb()),
   offMarkClip: (cb) => off('mark-clip', cb),
   onUpdateEvent: (cb) => on('update-event', (_e, data) => cb(data)),

@@ -136,7 +136,7 @@ const SOUNDS_CONFIG_PATH = path.join(DATA_BASE, 'sounds-config.json');
 // ── Logging persistente por sesión (para diagnóstico y reporte de bugs) ────
 const LOGS_DIR = path.join(DATA_BASE, 'logs');
 const LOG_RETENTION_DAYS = 14;
-const MAX_SESSION_LOG_BYTES = 10 * 1024 * 1024; // 10MB cap por archivo de sesión
+const MAX_SESSION_LOG_BYTES = 480 * 1024 * 1024; // 480MB cap por archivo de sesión
 fs.mkdirSync(LOGS_DIR, { recursive: true });
 
 // Barrido de retención: borra sesiones viejas al arrancar.
@@ -1848,12 +1848,27 @@ app.post('/api/logs/client', (req, res) => {
 
 const SESSION_LOG_READ_CAP = 20 * 1024 * 1024; // 20MB
 
-function readSessionLogEntries() {
+// Lee solo la cola del archivo (últimos maxBytes) sin cargar el resto en
+// memoria ni bloquear el event loop — importante con logs de hasta 480MB
+// mientras la app sigue con un stream en vivo.
+async function readFileTail(filePath, maxBytes) {
+  const stat = await fs.promises.stat(filePath);
+  const start = Math.max(0, stat.size - maxBytes);
+  const length = stat.size - start;
+  const fh = await fs.promises.open(filePath, 'r');
   try {
-    const stat = fs.statSync(sessionLogPath);
-    const start = Math.max(0, stat.size - SESSION_LOG_READ_CAP);
-    const raw = fs.readFileSync(sessionLogPath, 'utf8').slice(start > 0 ? start : 0);
-    return raw.split('\n').filter(Boolean).map(line => {
+    const buf = Buffer.alloc(length);
+    if (length > 0) await fh.read(buf, 0, length, start);
+    return buf;
+  } finally {
+    await fh.close();
+  }
+}
+
+async function readSessionLogEntries() {
+  try {
+    const buf = await readFileTail(sessionLogPath, SESSION_LOG_READ_CAP);
+    return buf.toString('utf8').split('\n').filter(Boolean).map(line => {
       try { return JSON.parse(line); } catch (_) { return null; }
     }).filter(Boolean);
   } catch (_) {
@@ -1870,9 +1885,9 @@ function entriesToMarkdown(entries) {
   return lines.join('\n');
 }
 
-app.get('/api/logs/session-file', (req, res) => {
+app.get('/api/logs/session-file', async (req, res) => {
   const format = req.query.format === 'md' ? 'md' : 'json';
-  const entries = readSessionLogEntries();
+  const entries = await readSessionLogEntries();
   if (format === 'md') {
     res.type('text/markdown').send(entriesToMarkdown(entries));
   } else {
@@ -1880,43 +1895,115 @@ app.get('/api/logs/session-file', (req, res) => {
   }
 });
 
+// Descarga TODAS las sesiones guardadas (dentro de la retención de 14 días),
+// concatenadas en orden cronológico. Streaming archivo por archivo — nunca
+// carga todo en memoria a la vez, ni bloquea el server mientras se genera.
+app.get('/api/logs/download-all', async (req, res) => {
+  let files;
+  try {
+    files = (await fs.promises.readdir(LOGS_DIR))
+      .filter(f => f.startsWith('session-') && f.endsWith('.log'))
+      .sort();
+  } catch (_) {
+    files = [];
+  }
+
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.setHeader('Content-Disposition', `attachment; filename="tiktok-tts-logs-${new Date().toISOString().slice(0, 10)}.log"`);
+
+  if (!files.length) {
+    res.end('');
+    return;
+  }
+
+  for (const file of files) {
+    await new Promise((resolve) => {
+      const stream = fs.createReadStream(path.join(LOGS_DIR, file));
+      stream.on('error', resolve);
+      stream.on('end', resolve);
+      stream.pipe(res, { end: false });
+    });
+  }
+  res.end();
+});
+
 // ── Reporte de bug → Discord webhook ────────────────────────────────────
 let lastBugReportAt = 0;
 const BUG_REPORT_COOLDOWN_MS = 10000;
-const DISCORD_ATTACHMENT_CAP_BYTES = 9 * 1024 * 1024; // margen bajo el límite real (10MB, server free tier)
 
-function tailBuffer(buf, maxBytes) {
-  if (buf.length <= maxBytes) return buf;
-  return buf.subarray(buf.length - maxBytes);
-}
+// El límite real de adjuntos de un webhook lo pone Discord según el boost del
+// server (10MB sin boost, más con boost/Nitro) — no hay forma de consultarlo
+// de antemano, solo probar. En vez de arrancar siempre en un techo optimista
+// (que casi siempre falla y quema tiempo/ancho de banda en el intento
+// condenado), se prueba en escalones decrecientes y se cachea en memoria el
+// último tamaño que funcionó, para que el próximo reporte vaya directo a ese
+// tamaño sin repetir intentos fallidos. Arranca en 10MB (el piso real de
+// Discord) y solo sube si algún intento mayor llega a tener éxito.
+const ATTACHMENT_SIZE_LADDER = [480, 90, 40, 10, 8, 5, 2, 1].map(mb => Math.round(mb * 1024 * 1024));
+let knownGoodAttachmentBytes = 10 * 1024 * 1024;
 
-async function postToDiscordWebhook(webhookUrl, embed, logFilePath) {
+async function sendDiscordAttempt(webhookUrl, embed, logFilePath, capBytes) {
   const form = new FormData();
   form.append('payload_json', JSON.stringify({ embeds: [embed] }));
-  if (logFilePath && fs.existsSync(logFilePath)) {
-    try {
-      let fileBuf = fs.readFileSync(logFilePath);
-      if (fileBuf.length > DISCORD_ATTACHMENT_CAP_BYTES) {
-        fileBuf = tailBuffer(fileBuf, DISCORD_ATTACHMENT_CAP_BYTES);
-      }
-      form.append('files[0]', new Blob([fileBuf], { type: 'text/plain' }), path.basename(logFilePath));
-    } catch (_) {}
+  let attachedBytes = 0;
+  if (logFilePath && capBytes && fs.existsSync(logFilePath)) {
+    const fileBuf = await readFileTail(logFilePath, capBytes);
+    attachedBytes = fileBuf.length;
+    form.append('files[0]', new Blob([fileBuf], { type: 'text/plain' }), path.basename(logFilePath));
   }
   const resp = await fetch(webhookUrl, { method: 'POST', body: form });
   if (!resp.ok) {
     const bodyText = await resp.text().catch(() => '');
-    throw new Error(`Discord webhook HTTP ${resp.status}: ${bodyText.slice(0, 300)}`);
+    const err = new Error(`Discord webhook HTTP ${resp.status}: ${bodyText.slice(0, 300)}`);
+    err.status = resp.status;
+    throw err;
   }
+  return attachedBytes;
 }
 
-let appVersion = 'unknown';
-try { appVersion = require('./package.json').version; } catch (_) {}
+// Manda el reporte adjuntando el log más grande que el webhook realmente
+// acepte — nunca se resigna a "sin adjunto" salvo que ni el escalón más
+// chico entre. El archivo local completo nunca se toca, solo se lee su cola.
+async function postToDiscordWebhook(webhookUrl, embed, logFilePath) {
+  if (!logFilePath || !fs.existsSync(logFilePath)) {
+    await sendDiscordAttempt(webhookUrl, embed, null, 0);
+    return { attached: false, bytes: 0 };
+  }
+
+  const candidates = [knownGoodAttachmentBytes, ...ATTACHMENT_SIZE_LADDER]
+    .filter((v, i, arr) => arr.indexOf(v) === i) // sin duplicados
+    .sort((a, b) => b - a); // de mayor a menor: siempre se intenta primero lo más grande posible
+
+  for (const cap of candidates) {
+    try {
+      const bytes = await sendDiscordAttempt(webhookUrl, embed, logFilePath, cap);
+      knownGoodAttachmentBytes = cap;
+      return { attached: true, bytes };
+    } catch (err) {
+      if (err.status !== 413) throw err; // error real, no de tamaño: no seguir probando
+    }
+  }
+
+  // Ni el escalón más chico entró: se manda sin adjunto.
+  knownGoodAttachmentBytes = ATTACHMENT_SIZE_LADDER[ATTACHMENT_SIZE_LADDER.length - 1];
+  await sendDiscordAttempt(webhookUrl, embed, null, 0);
+  return { attached: false, bytes: 0 };
+}
+
+// Fallback solo para dev/browser sin Electron (no hay window.electronAPI ahí).
+// En producción la versión SIEMPRE viene del cliente (app.getVersion() real
+// de Electron, vía IPC), no de este package.json leído por el servidor.
+let fallbackAppVersion = 'unknown';
+try { fallbackAppVersion = require('./package.json').version; } catch (_) {}
 
 app.post('/api/report-bug', async (req, res) => {
-  const { discordNick, channelLink, description, extra } = req.body || {};
+  const { discordNick, channelLink, description, extra, appVersion: clientAppVersion } = req.body || {};
   if (!discordNick || !channelLink || !description) {
     return res.status(400).json({ error: 'Faltan campos requeridos' });
   }
+  const appVersion = (typeof clientAppVersion === 'string' && clientAppVersion.trim())
+    ? clientAppVersion.trim().slice(0, 30)
+    : fallbackAppVersion;
   const now = Date.now();
   if (now - lastBugReportAt < BUG_REPORT_COOLDOWN_MS) {
     return res.status(429).json({ error: 'Espera unos segundos antes de enviar otro reporte' });
@@ -1946,16 +2033,11 @@ app.post('/api/report-bug', async (req, res) => {
   lastBugReportAt = now;
 
   try {
-    try {
-      await postToDiscordWebhook(webhookUrl, embed, sessionLogPath);
-    } catch (attachErr) {
-      // Fallback: reintenta sin adjunto si Discord rechazó el archivo.
-      log('warn', 'bug-report', 'fallo con adjunto, reintentando sin log', { error: attachErr.message });
-      embed.fields.push({ name: 'Nota', value: 'Log demasiado grande para adjuntar, se guardó localmente.' });
-      await postToDiscordWebhook(webhookUrl, embed, null);
-    }
-    log('info', 'bug-report', 'Reporte enviado', { discordNick, channelLink });
-    res.json({ ok: true });
+    const result = await postToDiscordWebhook(webhookUrl, embed, sessionLogPath);
+    log('info', 'bug-report', 'Reporte enviado', {
+      discordNick, channelLink, attached: result.attached, attachedBytes: result.bytes,
+    });
+    res.json({ ok: true, attached: result.attached });
   } catch (err) {
     log('error', 'bug-report', 'Fallo enviando reporte', { error: err.message });
     res.status(502).json({ error: 'No se pudo enviar el reporte' });
