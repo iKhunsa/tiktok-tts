@@ -695,8 +695,18 @@
     "toggleTitle": "Nicht-Follower vorlesen",
     "toggleDesc": "An liest der TTS alle vor. Aus liest er nur Follower und manuell Markierte; die anderen bleiben im Chat sichtbar, nur ohne Stimme. Vorsicht am ersten Tag: bei leerem Register schweigt fast dein ganzes Publikum.",
     "blockedTitle": "Gesperrte Wörter",
-    "blockedDesc": "Direkter Sprung zum Panel der gesperrten Wörter, ohne in Erweitert zu suchen. Nachrichten mit diesen Wörtern werden komplett ignoriert.",
+    "blockedDesc": "Kopiere das störende Wort aus dem Chat, klick hier, füg es ein — schon ist es gesperrt, ohne die Ansicht zu verlassen oder neu zu verbinden. Das Fenster bleibt offen, um mehrere hintereinander einzufügen. Nachrichten damit werden komplett ignoriert.",
     "scrollTitle": "Der Chat folgt dem Vorlesen",
     "scrollDesc": "Der Chat springt nicht mehr zur neuesten Nachricht, sondern zu der, die der TTS gerade liest — meist ein paar Nachrichten weiter oben. Scrollst du hoch, bleibt er stehen, damit du in Ruhe lesen kannst; zurück nach unten und er läuft von selbst weiter."
+  },
+  "blockWord": {
+    "title": "Wort sperren",
+    "desc": "Wort einfügen oder tippen, fertig: der Server übernimmt es sofort, ohne neu zu verbinden. Du kannst weitere hinzufügen, ohne das Fenster zu schließen.",
+    "placeholder": "Wort eingeben oder einfügen...",
+    "add": "Sperren",
+    "count": "{n} gesperrte Wörter insgesamt",
+    "sessionAdded": "Gerade gesperrt",
+    "duplicate": "Das hast du gerade schon gesperrt",
+    "manageAll": "Alle ansehen und bearbeiten"
   }
 }

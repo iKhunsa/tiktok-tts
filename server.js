@@ -2403,6 +2403,13 @@ app.post('/api/test/chat', (req, res) => {
   const user = cleanName(b.user || 'TestUser');
   const comment = String(b.comment || '').trim();
   if (!comment) return res.status(400).json({ error: 'comment requerido' });
+  // Mismo orden que los handlers reales: el filtro de spam y de palabras
+  // bloqueadas corre ANTES del registro de espectadores. Sin esto el endpoint
+  // de prueba mentiría justo sobre lo que se quiere probar.
+  const userKey = `${platform}:${b.userId || user}`;
+  if (isSpam(normalizeForModeration(comment), userKey)) {
+    return res.json({ success: true, emitted: false, filtered: 'spam', user, platform });
+  }
   const emitted = emitChatMessage({
     platform,
     channel: 'test',

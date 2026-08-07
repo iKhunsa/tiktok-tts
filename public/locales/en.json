@@ -695,8 +695,18 @@
     "toggleTitle": "Read non-followers",
     "toggleDesc": "On, the TTS reads everyone. Off, it only reads followers and whoever you marked by hand; the rest still show up in chat, just without a voice. Careful on day one: with an empty registry you silence almost your whole audience.",
     "blockedTitle": "Blocked words",
-    "blockedDesc": "Direct shortcut to the blocked words panel, no hunting inside Advanced. Messages containing them are ignored entirely.",
+    "blockedDesc": "Copy the annoying word from chat, hit this, paste it and it's blocked — without leaving the view or reconnecting. The window stays open so you can paste several in a row. Messages containing it are ignored entirely.",
     "scrollTitle": "The chat follows the reading",
     "scrollDesc": "The chat no longer chases the newest message but the one the TTS is reading, which usually lags a few messages behind. Scroll up and it stays put so you can read; return to the bottom and it resumes on its own."
+  },
+  "blockWord": {
+    "title": "Block a word",
+    "desc": "Paste or type the word and you're done: the server applies it instantly, no reconnecting. You can keep adding without closing the window.",
+    "placeholder": "Type or paste the word...",
+    "add": "Block",
+    "count": "{n} blocked words in total",
+    "sessionAdded": "Blocked just now",
+    "duplicate": "You just blocked that one",
+    "manageAll": "View and edit all"
   }
 }
