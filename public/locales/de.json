@@ -6,7 +6,8 @@
     "mobile": "Mobil",
     "settings": "Einstellungen",
     "soundpad": "Töne",
-    "bot": "Bot"
+    "bot": "Bot",
+    "moderation": "Moderation"
   },
   "community": {
     "label": "TikLiveTTS Gemeinschaft",
@@ -97,7 +98,8 @@
     "title": "Live-Chat",
     "empty": "Verbinde dein TikTok Live<br>um den Chat hier zu sehen",
     "speaking": "Liest...",
-    "queue": "Warteschlange: {n} Nachrichten"
+    "queue": "Warteschlange: {n} Nachrichten",
+    "followerBadge": "Follower"
   },
   "emergencyHint": "Notfall hält Geschenke und Follows aktiv, stummt Chat/Likes/Eintritte/Shares.",
   "status": {
@@ -121,6 +123,10 @@
     "mobile": {
       "title": "Mobile Steuerung",
       "desc": "TTS vom Handy im gleichen WLAN steuern."
+    },
+    "moderation": {
+      "title": "Moderation",
+      "desc": "Alle Zuschauer, die interagiert haben, mit ihren Chat- und TTS-Rechten."
     }
   },
   "settings": {
@@ -568,5 +574,82 @@
     "step5Desc": "Das speichert ihn nur, es verbindet dich noch mit nichts.",
     "step6Title": "Letzter Schritt! Geh zuerst live",
     "step6Desc": "Bevor du hier klickst: Starte deinen Stream auf der Plattform (TikTok/Twitch/YouTube) und warte, bis du live bist. Erst dann komm zurück und klicke auf \"Alle verbinden\". Nicht bevor du live bist."
+  },
+  "mod": {
+    "note": "Als Spam oder durch gesperrte Wörter gefilterte Nachrichten zählen hier nicht. YouTube sendet keine Follow-Events: markiere diese Zuschauer manuell als Follower.",
+    "stats": {
+      "total": "Erfasst",
+      "followers": "Follower",
+      "others": "Nicht-Follower",
+      "muted": "Stummgeschaltet",
+      "banned": "Gebannt"
+    },
+    "tab": {
+      "followers": "Follower",
+      "others": "Nicht-Follower"
+    },
+    "filter": {
+      "search": "Nach Namen suchen...",
+      "allPlatforms": "Alle Plattformen",
+      "stateAll": "Alle Zustände",
+      "stateClean": "Ohne Strafe",
+      "stateMuted": "Stummgeschaltet",
+      "stateBanned": "Gebannt"
+    },
+    "sort": {
+      "activity": "Letzte Aktivität",
+      "messages": "Nachrichten",
+      "gifts": "Geschenke",
+      "likes": "Likes",
+      "name": "Name"
+    },
+    "col": {
+      "user": "Benutzer",
+      "platform": "Plattform",
+      "state": "Zustand",
+      "messages": "Nachrichten",
+      "gifts": "Geschenke",
+      "likes": "Likes",
+      "lastSeen": "Zuletzt gesehen",
+      "actions": "Aktionen"
+    },
+    "state": {
+      "clean": "Ohne Strafe",
+      "muted": "Stumm",
+      "banned": "Gebannt",
+      "mutedUntil": "Stumm {time}",
+      "bannedUntil": "Gebannt {time}",
+      "weakId": "Keine stabile ID: die Strafe geht bei Namensänderung verloren."
+    },
+    "action": {
+      "mute": "Stummschalten",
+      "ban": "Bannen",
+      "clear": "Strafen aufheben",
+      "refresh": "Aktualisieren",
+      "wipe": "Register leeren",
+      "wipeConfirm": "Das gesamte Zuschauerregister löschen? Stummschaltungen und Banns gehen ebenfalls verloren."
+    },
+    "dur": {
+      "15m": "15 Minuten",
+      "1h": "1 Stunde",
+      "forever": "Unbefristet"
+    },
+    "empty": "Hier sind noch keine Zuschauer erfasst.",
+    "pager": "{from}–{to} von {total}",
+    "time": {
+      "now": "jetzt",
+      "min": "vor {n} Min",
+      "hour": "vor {n} Std",
+      "day": "vor {n} T"
+    },
+    "toast": {
+      "mute": "Benutzer stummgeschaltet",
+      "unmute": "Stummschaltung aufgehoben",
+      "ban": "Benutzer gebannt",
+      "unban": "Bann aufgehoben",
+      "clear": "Strafen aufgehoben",
+      "follower": "Follower-Liste aktualisiert",
+      "error": "Aktion konnte nicht angewendet werden"
+    }
   }
 }

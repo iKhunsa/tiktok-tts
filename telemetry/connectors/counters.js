@@ -18,6 +18,8 @@ const COUNTED = [
   ['soundpad:triggered',         'soundpad',   'triggered'],
   ['moderation:message-filtered','moderation', 'message_filtered'],
   ['moderation:word-blocked',    'moderation', 'word_blocked'],
+  ['moderation:user-muted',      'moderation', 'user_muted'],
+  ['moderation:user-banned',     'moderation', 'user_banned'],
 ];
 
 function attach(bus, track) {

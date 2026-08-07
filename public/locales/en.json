@@ -6,7 +6,8 @@
     "mobile": "Mobile",
     "settings": "Settings",
     "soundpad": "Sounds",
-    "bot": "Bot"
+    "bot": "Bot",
+    "moderation": "Moderation"
   },
   "community": {
     "label": "TikLiveTTS Community",
@@ -97,7 +98,8 @@
     "title": "Live chat",
     "empty": "Connect your TikTok Live<br>to see the chat here",
     "speaking": "Reading...",
-    "queue": "Queue: {n} messages"
+    "queue": "Queue: {n} messages",
+    "followerBadge": "Follower"
   },
   "emergencyHint": "Emergency keeps gifts and follows active, silences chat/likes/joins/shares.",
   "status": {
@@ -121,6 +123,10 @@
     "mobile": {
       "title": "Mobile Control",
       "desc": "Control TTS from your phone on the same WiFi network."
+    },
+    "moderation": {
+      "title": "Moderation",
+      "desc": "Every viewer who interacted, with their chat and TTS permissions."
     }
   },
   "settings": {
@@ -568,5 +574,82 @@
     "step5Desc": "This only saves it. It doesn't connect you to anything yet.",
     "step6Title": "Last step! Go live first",
     "step6Desc": "Before tapping here: start your stream on the platform (TikTok/Twitch/YouTube) and wait until you're live. Only then come back and tap \"Connect all\". Not before you're live."
+  },
+  "mod": {
+    "note": "Messages filtered as spam or by blocked words don't count here. YouTube sends no follow events: mark those viewers as followers manually.",
+    "stats": {
+      "total": "Registered",
+      "followers": "Followers",
+      "others": "Non-followers",
+      "muted": "Muted",
+      "banned": "Banned"
+    },
+    "tab": {
+      "followers": "Followers",
+      "others": "Non-followers"
+    },
+    "filter": {
+      "search": "Search by name...",
+      "allPlatforms": "All platforms",
+      "stateAll": "All states",
+      "stateClean": "No penalty",
+      "stateMuted": "Muted",
+      "stateBanned": "Banned"
+    },
+    "sort": {
+      "activity": "Recent activity",
+      "messages": "Messages",
+      "gifts": "Gifts",
+      "likes": "Likes",
+      "name": "Name"
+    },
+    "col": {
+      "user": "User",
+      "platform": "Platform",
+      "state": "State",
+      "messages": "Messages",
+      "gifts": "Gifts",
+      "likes": "Likes",
+      "lastSeen": "Last seen",
+      "actions": "Actions"
+    },
+    "state": {
+      "clean": "No penalty",
+      "muted": "Muted",
+      "banned": "Banned",
+      "mutedUntil": "Muted {time}",
+      "bannedUntil": "Banned {time}",
+      "weakId": "No stable ID: the penalty is lost if they change name."
+    },
+    "action": {
+      "mute": "Mute",
+      "ban": "Ban",
+      "clear": "Clear penalties",
+      "refresh": "Refresh",
+      "wipe": "Wipe registry",
+      "wipeConfirm": "Delete the whole viewer registry? Mutes and bans are lost too."
+    },
+    "dur": {
+      "15m": "15 minutes",
+      "1h": "1 hour",
+      "forever": "Indefinite"
+    },
+    "empty": "No viewers registered here yet.",
+    "pager": "{from}–{to} of {total}",
+    "time": {
+      "now": "now",
+      "min": "{n} min ago",
+      "hour": "{n} h ago",
+      "day": "{n} d ago"
+    },
+    "toast": {
+      "mute": "User muted",
+      "unmute": "Mute removed",
+      "ban": "User banned",
+      "unban": "Ban removed",
+      "clear": "Penalties cleared",
+      "follower": "Follower list updated",
+      "error": "Could not apply the action"
+    }
   }
 }

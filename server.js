@@ -11,6 +11,7 @@ const crypto = require('crypto');
 const os = require('os');
 const QRCode = require('qrcode');
 const { createMusicEngine } = require('./music-engine');
+const { createModerationStore } = require('./moderation-store');
 
 // Bus de telemetría. Existe siempre; si main.js no la inicializó (o no hay
 // servidor configurado) cada emit es un no-op sin coste.
@@ -693,6 +694,15 @@ function loadConfig() {
 }
 
 loadConfig();
+
+// Registro de espectadores + moderación por usuario (mute/ban locales).
+// Único dueño de moderation.json. Se crea aquí y no arriba del todo porque
+// load() ya loguea, y log() depende de estado declarado más arriba en el
+// archivo (serverLogs).
+const moderationStore = createModerationStore({
+  dataDir: DATA_BASE,
+  log: (...args) => log(...args),
+});
 
 // ── FEATURE FLAGS — set to true to re-enable ─────────────────────────────────
 const FEATURES = { musicBot: true };
@@ -1451,6 +1461,44 @@ function broadcast(data) {
   });
 }
 
+// Punto único por el que salen los mensajes de chat de las 3 plataformas.
+// Registra al espectador, aplica la moderación por usuario y decide si el
+// mensaje puede leerse por TTS. Ninguna de esas reglas se duplica en los
+// handlers de plataforma ni en el cliente.
+function emitChatMessage({ platform, channel, user, userId, comment, ttsComment, emotes, ytMsgId }) {
+  const key = moderationStore.keyFor(platform, userId, user);
+  moderationStore.touch({ platform, userId, nick: user, kind: 'chat' });
+  const eff = moderationStore.getEffective(key);
+
+  if (eff.isBanned) {
+    log('info', 'moderation', 'mensaje descartado por ban de usuario', { platform });
+    telemetryBus.emit('moderation:message-filtered', { reason: 'user-banned' });
+    return false;
+  }
+
+  const isFollower = eff.isFollower || eff.isWhitelisted;
+  const ttsBlocked = eff.isMuted;
+  if (eff.isMuted) telemetryBus.emit('moderation:message-filtered', { reason: 'user-muted' });
+
+  broadcast({
+    type: 'chat',
+    platform,
+    channel,
+    user,
+    userId: userId || null,
+    modKey: key,
+    comment,
+    ttsComment,
+    emotes,
+    ytMsgId,
+    isFollower,
+    muted: eff.isMuted,
+    ttsBlocked,
+    timestamp: Date.now(),
+  });
+  return true;
+}
+
 // Broadcast current channel list to all clients
 function broadcastChannels() {
   broadcast({
@@ -1484,14 +1532,13 @@ function setupTikTokConnection(cleanUsername) {
       return;
     }
     if (isSpam(normalizeForModeration(comment), `tiktok:${data.uniqueId || user}`)) return;
-    broadcast({
-      type: 'chat',
+    emitChatMessage({
       platform: 'tiktok',
       channel: cleanUsername,
       user,
+      userId: data.uniqueId || null,
       comment,
       ttsComment: sanitizeForTTS(comment),
-      timestamp: Date.now()
     });
   });
 
@@ -1505,6 +1552,7 @@ function setupTikTokConnection(cleanUsername) {
       diamondCount: data.diamondCount || 0,
     });
     overlayState.credits.donors.push({ user, giftName: data.giftName, count: repeatCount, ts: Date.now() });
+    moderationStore.touch({ platform: 'tiktok', userId: data.uniqueId || null, nick: user, kind: 'gift', amount: repeatCount });
     broadcast({
       type: 'gift',
       user,
@@ -1518,7 +1566,11 @@ function setupTikTokConnection(cleanUsername) {
   });
 
   conn.on('like', (data) => {
+    // OJO: `userId` aquí es el nombre visible, no el uniqueId — así lo usan
+    // topLikers y el debounce desde siempre. El id real se captura aparte para
+    // que el registro de espectadores no atribuya los likes a otra clave.
     const userId = resolveDisplayName(data.nickname, data.uniqueId);
+    const likeUniqueId = data.uniqueId || null;
     if (likePendingTimers.has(userId)) {
       clearTimeout(likePendingTimers.get(userId).timer);
     } else {
@@ -1540,13 +1592,17 @@ function setupTikTokConnection(cleanUsername) {
       const existing2 = overlayState.topLikers.get(userId) || { user: userId, totalLikes: 0 };
       existing2.totalLikes += likeCount;
       overlayState.topLikers.set(userId, existing2);
+      moderationStore.touch({ platform: 'tiktok', userId: likeUniqueId, nick: userId, kind: 'like', amount: likeCount });
     }, config.LIKE_DEBOUNCE_MS);
   });
 
   conn.on('member', (data) => {
+    const user = resolveDisplayName(data.nickname, data.uniqueId);
+    moderationStore.touch({ platform: 'tiktok', userId: data.uniqueId || null, nick: user, kind: 'join' });
     broadcast({
       type: 'join',
-      user: resolveDisplayName(data.nickname, data.uniqueId),
+      user,
+      userId: data.uniqueId || null,
       timestamp: Date.now()
     });
   });
@@ -1554,7 +1610,8 @@ function setupTikTokConnection(cleanUsername) {
   conn.on('follow', (data) => {
     const user = resolveDisplayName(data.nickname, data.uniqueId);
     overlayState.credits.followers.push({ user, ts: Date.now() });
-    broadcast({ type: 'follow', platform: 'tiktok', user, timestamp: Date.now() });
+    moderationStore.markFollower({ platform: 'tiktok', userId: data.uniqueId || null, nick: user });
+    broadcast({ type: 'follow', platform: 'tiktok', user, userId: data.uniqueId || null, timestamp: Date.now() });
     overlayState.followCount += 1;
   });
 
@@ -2074,6 +2131,109 @@ app.post('/api/moderation/preview', (req, res) => {
   res.json({ blocked: true, ...result });
 });
 
+// ── Registro de espectadores y moderación por usuario ────────────────────────
+// "Banear" y "silenciar" son locales a la app: no se toca la plataforma.
+//   mute → el mensaje se ve en el chat pero el TTS no lo lee
+//   ban  → el mensaje no se emite
+
+const MOD_DURATION_MAX_MS = 365 * 24 * 60 * 60 * 1000;
+
+// Acepta { key } o { platform, userId, nick }. Devuelve null si no hay forma
+// de identificar al usuario.
+function resolveModTarget(body = {}) {
+  if (typeof body.key === 'string' && moderationStore.parseKey(body.key)) {
+    const parsed = moderationStore.parseKey(body.key);
+    return { key: body.key, platform: parsed.platform, userId: body.userId || null, nick: body.nick || null };
+  }
+  const platform = ['tiktok', 'twitch', 'youtube'].includes(body.platform) ? body.platform : null;
+  if (!platform) return null;
+  if (!body.userId && !body.nick) return null;
+  return { platform, userId: body.userId || null, nick: body.nick || null };
+}
+
+// null/omitido = indefinido (-1). Un número = milisegundos desde ahora.
+function resolveUntil(durationMs) {
+  if (durationMs === null || durationMs === undefined) return -1;
+  const ms = Number(durationMs);
+  if (!Number.isFinite(ms) || ms <= 0 || ms > MOD_DURATION_MAX_MS) return null;
+  return Date.now() + ms;
+}
+
+function applyModAction(req, res, fn) {
+  const target = resolveModTarget(req.body || {});
+  if (!target) return res.status(400).json({ error: 'Se requiere key o platform + (userId|nick)' });
+  const viewer = fn(target);
+  moderationStore.flush();
+  broadcast({ type: 'moderation-updated', viewer });
+  res.json({ ok: true, viewer });
+}
+
+app.get('/api/moderation/viewers', (req, res) => {
+  const q = req.query || {};
+  const limit = Math.min(500, Math.max(1, parseInt(q.limit, 10) || 100));
+  res.json(moderationStore.list({
+    tab: ['followers', 'others', 'all'].includes(q.tab) ? q.tab : 'all',
+    platform: ['tiktok', 'twitch', 'youtube'].includes(q.platform) ? q.platform : 'all',
+    state: ['muted', 'banned', 'punished', 'clean', 'all'].includes(q.state) ? q.state : 'all',
+    q: typeof q.q === 'string' ? q.q : '',
+    sort: q.sort,
+    dir: q.dir === 'asc' ? 'asc' : 'desc',
+    limit,
+    offset: Math.max(0, parseInt(q.offset, 10) || 0),
+  }));
+});
+
+app.get('/api/moderation/stats', (req, res) => res.json(moderationStore.stats()));
+
+app.post('/api/moderation/mute', (req, res) => {
+  const until = resolveUntil((req.body || {}).durationMs);
+  if (until === null) return res.status(400).json({ error: 'durationMs invalido' });
+  telemetryBus.emit('moderation:user-muted', { permanent: until === -1 });
+  applyModAction(req, res, (t) => moderationStore.setMute(t, until));
+});
+
+app.post('/api/moderation/unmute', (req, res) => {
+  applyModAction(req, res, (t) => moderationStore.setMute(t, 0));
+});
+
+app.post('/api/moderation/ban', (req, res) => {
+  const until = resolveUntil((req.body || {}).durationMs);
+  if (until === null) return res.status(400).json({ error: 'durationMs invalido' });
+  telemetryBus.emit('moderation:user-banned', { permanent: until === -1 });
+  applyModAction(req, res, (t) => moderationStore.setBan(t, until));
+});
+
+app.post('/api/moderation/unban', (req, res) => {
+  applyModAction(req, res, (t) => moderationStore.setBan(t, 0));
+});
+
+app.post('/api/moderation/clear', (req, res) => {
+  applyModAction(req, res, (t) => moderationStore.clearPunishments(t));
+});
+
+app.post('/api/moderation/follower', (req, res) => {
+  const value = (req.body || {}).value !== false;
+  applyModAction(req, res, (t) => moderationStore.setWhitelist(t, value));
+});
+
+app.delete('/api/moderation/viewer', (req, res) => {
+  const key = (req.body || {}).key;
+  if (!key || !moderationStore.parseKey(key)) return res.status(400).json({ error: 'key invalida' });
+  const removed = moderationStore.remove(key);
+  moderationStore.flush();
+  if (removed) broadcast({ type: 'moderation-reset' });
+  res.json({ ok: true, removed });
+});
+
+app.delete('/api/moderation/viewers', (req, res) => {
+  if ((req.body || {}).confirm !== true) return res.status(400).json({ error: 'confirm requerido' });
+  const removed = moderationStore.clearAll();
+  moderationStore.flush();
+  broadcast({ type: 'moderation-reset' });
+  log('info', 'moderation', 'registro de espectadores vaciado', { removed });
+  res.json({ ok: true, removed });
+});
+
 // Palabras bloqueadas
 app.get('/api/blocked-words', (req, res) => res.json({ words: [...blockedWords] }));
 
@@ -2219,12 +2379,33 @@ app.post('/api/test/follow', (req, res) => {
   const platform = ['tiktok', 'twitch'].includes(req.query.platform || req.body?.platform)
     ? (req.query.platform || req.body.platform) : 'tiktok';
   const testUsers = ['TestUser', 'FanRandom', 'ViewerPro', 'TikToker', 'StreamerFan'];
-  const user = testUsers[Math.floor(Math.random() * testUsers.length)] + Math.floor(Math.random() * 99);
+  const user = req.body?.user || testUsers[Math.floor(Math.random() * testUsers.length)] + Math.floor(Math.random() * 99);
+  const userId = req.body?.userId || null;
   overlayState.credits.followers.push({ user, ts: Date.now() });
-  broadcast({ type: 'follow', platform, user, timestamp: Date.now() });
+  moderationStore.markFollower({ platform, userId, nick: user });
+  broadcast({ type: 'follow', platform, user, userId, timestamp: Date.now() });
   if (platform === 'tiktok') overlayState.followCount += 1;
   log('info', 'test', 'Test follow broadcasted', { user, platform });
   res.json({ success: true, user, platform });
+});
+
+// Inyecta un mensaje por el mismo camino que el chat real (registro +
+// moderación + TTS), para poder probar sin ninguna plataforma conectada.
+app.post('/api/test/chat', (req, res) => {
+  const b = req.body || {};
+  const platform = ['tiktok', 'twitch', 'youtube'].includes(b.platform) ? b.platform : 'tiktok';
+  const user = cleanName(b.user || 'TestUser');
+  const comment = String(b.comment || '').trim();
+  if (!comment) return res.status(400).json({ error: 'comment requerido' });
+  const emitted = emitChatMessage({
+    platform,
+    channel: 'test',
+    user,
+    userId: b.userId || null,
+    comment: sanitizeForTTS(comment),
+    ttsComment: sanitizeForTTS(comment),
+  });
+  res.json({ success: true, emitted, user, platform });
 });
 
 app.post('/api/test/share', (req, res) => {
@@ -2406,15 +2587,16 @@ async function connectTwitch(channel, token = null, attempt = 0) {
         if (name) emotes[name] = { url: `https://static-cdn.jtvnw.net/emoticons/v2/${emoteId}/default/dark/1.0` };
       }
     }
-    broadcast({
-      type: 'chat',
+    emitChatMessage({
       platform: 'twitch',
       channel,
       user: twitchUser,
+      // Crudo, sin el fallback al nick de `twitchUserId`: así el store marca la
+      // entrada como identidad por nombre (frágil) en vez de fingir un id.
+      userId: tags['user-id'] || null,
       comment: sanitizeForTTS(message.trim()),
       ttsComment: sanitizeForTTS(message.trim()),
       emotes: Object.keys(emotes).length > 0 ? emotes : undefined,
-      timestamp: Date.now(),
     });
   });
 
@@ -2627,16 +2809,15 @@ async function connectYoutube(channelOrId, attempt = 0) {
       return;
     }
     if (isSpam(normalizeForModeration(ttsText || displayText), `youtube:${ytUserId}`)) return;
-    broadcast({
-      type: 'chat',
+    emitChatMessage({
       platform: 'youtube',
       channel: target.key,
       user: ytUser,
+      userId: item.author?.channelId || null,
       comment: sanitizeForTTS(displayText),
       ttsComment: ttsText ? sanitizeForTTS(ttsText) : undefined,
       emotes: Object.keys(emotes).length > 0 ? emotes : undefined,
       ytMsgId: msgId || undefined,
-      timestamp: Date.now(),
     });
   });
 
@@ -3385,7 +3566,8 @@ function connectTwitchEventSubSocket(url, previousWs = null) {
       if (evType === 'channel.follow' && ev) {
         const user = cleanName(ev.user_name || ev.user_login || 'Anónimo');
         overlayState.credits.followers.push({ user, ts: Date.now() });
-        broadcast({ type: 'follow', platform: 'twitch', user, timestamp: Date.now() });
+        moderationStore.markFollower({ platform: 'twitch', userId: ev.user_id || null, nick: user });
+        broadcast({ type: 'follow', platform: 'twitch', user, userId: ev.user_id || null, timestamp: Date.now() });
         log('info', 'twitch-eventsub', 'Follow', { user });
       }
     } else if (msgType === 'session_reconnect') {
@@ -3870,6 +4052,7 @@ module.exports.shutdown = function shutdownServer() {
   }
 
   stopFollowerRefresh();
+  try { moderationStore.shutdown(); } catch (_) {}
   try { musicEngine.shutdown(); } catch (_) {}
   try { wss.close(); } catch (_) {}
   try { server.close(); } catch (_) {}

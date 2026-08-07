@@ -6,7 +6,8 @@
     "mobile": "モバイル",
     "settings": "設定",
     "soundpad": "サウンド",
-    "bot": "Bot"
+    "bot": "Bot",
+    "moderation": "モデレーション"
   },
   "community": {
     "label": "TikLiveTTS コミュニティ",
@@ -97,7 +98,8 @@
     "title": "ライブチャット",
     "empty": "TikTok ライブに接続して<br>ここでチャットを確認",
     "speaking": "読み上げ中...",
-    "queue": "キュー：{n} 件"
+    "queue": "キュー：{n} 件",
+    "followerBadge": "フォロワー"
   },
   "emergencyHint": "緊急モードはギフトとフォローを維持し、チャット/いいね/参加/シェアを無音にします。",
   "status": {
@@ -121,6 +123,10 @@
     "mobile": {
       "title": "モバイル制御",
       "desc": "同じWiFiネットワーク内のスマホからTTSを制御。"
+    },
+    "moderation": {
+      "title": "モデレーション",
+      "desc": "反応した視聴者すべてと、チャット・TTSの権限。"
     }
   },
   "settings": {
@@ -568,5 +574,82 @@
     "step5Desc": "これは保存するだけで、まだ何にも接続されません。",
     "step6Title": "最後のステップ！先に配信を開始してください",
     "step6Desc": "ここを押す前に：プラットフォーム（TikTok/Twitch/YouTube）で配信を開始し、配信中になるまで待ってください。配信中になってから戻って「すべて接続」を押してください。配信前には押さないでください。"
+  },
+  "mod": {
+    "note": "スパムやNGワードで除外されたメッセージはカウントされません。YouTubeはフォローイベントを送らないため、手動でフォロワーに設定してください。",
+    "stats": {
+      "total": "登録数",
+      "followers": "フォロワー",
+      "others": "非フォロワー",
+      "muted": "ミュート中",
+      "banned": "BAN中"
+    },
+    "tab": {
+      "followers": "フォロワー",
+      "others": "非フォロワー"
+    },
+    "filter": {
+      "search": "名前で検索...",
+      "allPlatforms": "すべてのプラットフォーム",
+      "stateAll": "すべての状態",
+      "stateClean": "処罰なし",
+      "stateMuted": "ミュート中",
+      "stateBanned": "BAN中"
+    },
+    "sort": {
+      "activity": "最近の活動",
+      "messages": "メッセージ",
+      "gifts": "ギフト",
+      "likes": "いいね",
+      "name": "名前"
+    },
+    "col": {
+      "user": "ユーザー",
+      "platform": "プラットフォーム",
+      "state": "状態",
+      "messages": "メッセージ",
+      "gifts": "ギフト",
+      "likes": "いいね",
+      "lastSeen": "最終確認",
+      "actions": "操作"
+    },
+    "state": {
+      "clean": "処罰なし",
+      "muted": "ミュート",
+      "banned": "BAN",
+      "mutedUntil": "ミュート {time}",
+      "bannedUntil": "BAN {time}",
+      "weakId": "安定したIDなし：名前を変えると処罰が失われます。"
+    },
+    "action": {
+      "mute": "ミュート",
+      "ban": "BAN",
+      "clear": "処罰を解除",
+      "refresh": "更新",
+      "wipe": "記録を消去",
+      "wipeConfirm": "視聴者の記録をすべて削除しますか？ミュートとBANも失われます。"
+    },
+    "dur": {
+      "15m": "15分",
+      "1h": "1時間",
+      "forever": "無期限"
+    },
+    "empty": "ここにはまだ視聴者が登録されていません。",
+    "pager": "{total} 件中 {from}–{to}",
+    "time": {
+      "now": "たった今",
+      "min": "{n} 分前",
+      "hour": "{n} 時間前",
+      "day": "{n} 日前"
+    },
+    "toast": {
+      "mute": "ユーザーをミュートしました",
+      "unmute": "ミュートを解除しました",
+      "ban": "ユーザーをBANしました",
+      "unban": "BANを解除しました",
+      "clear": "処罰を解除しました",
+      "follower": "フォロワーリストを更新しました",
+      "error": "操作を適用できませんでした"
+    }
   }
 }

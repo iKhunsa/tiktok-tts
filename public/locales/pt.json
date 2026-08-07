@@ -6,7 +6,8 @@
     "mobile": "Mobile",
     "settings": "Configurações",
     "soundpad": "Sons",
-    "bot": "Bot"
+    "bot": "Bot",
+    "moderation": "Moderação"
   },
   "community": {
     "label": "Comunidade TikLiveTTS",
@@ -97,7 +98,8 @@
     "title": "Chat ao vivo",
     "empty": "Conecte seu TikTok Live<br>para ver o chat aqui",
     "speaking": "Lendo...",
-    "queue": "Fila: {n} mensagens"
+    "queue": "Fila: {n} mensagens",
+    "followerBadge": "Seguidor"
   },
   "emergencyHint": "Emergência mantém presentes e follows ativos, silencia chat/likes/entradas/compartilhamentos.",
   "status": {
@@ -121,6 +123,10 @@
     "mobile": {
       "title": "Controle Mobile",
       "desc": "Controle o TTS do seu celular na mesma rede WiFi."
+    },
+    "moderation": {
+      "title": "Moderação",
+      "desc": "Todos os espectadores que interagiram, com suas permissões de chat e TTS."
     }
   },
   "settings": {
@@ -568,5 +574,82 @@
     "step5Desc": "Isso só salva, ainda não conecta a nada.",
     "step6Title": "Último passo! Fique ao vivo primeiro",
     "step6Desc": "Antes de tocar aqui: inicie sua transmissão na plataforma (TikTok/Twitch/YouTube) e espere ficar ao vivo. Só então volte e toque em \"Conectar tudo\". Não antes de estar ao vivo."
+  },
+  "mod": {
+    "note": "Mensagens filtradas por spam ou palavras bloqueadas não contam aqui. O YouTube não envia eventos de follow: marque esses espectadores como seguidores manualmente.",
+    "stats": {
+      "total": "Registrados",
+      "followers": "Seguidores",
+      "others": "Não seguidores",
+      "muted": "Silenciados",
+      "banned": "Banidos"
+    },
+    "tab": {
+      "followers": "Seguidores",
+      "others": "Não seguidores"
+    },
+    "filter": {
+      "search": "Buscar por nome...",
+      "allPlatforms": "Todas as plataformas",
+      "stateAll": "Todos os estados",
+      "stateClean": "Sem punição",
+      "stateMuted": "Silenciados",
+      "stateBanned": "Banidos"
+    },
+    "sort": {
+      "activity": "Atividade recente",
+      "messages": "Mensagens",
+      "gifts": "Presentes",
+      "likes": "Likes",
+      "name": "Nome"
+    },
+    "col": {
+      "user": "Usuário",
+      "platform": "Plataforma",
+      "state": "Estado",
+      "messages": "Mensagens",
+      "gifts": "Presentes",
+      "likes": "Likes",
+      "lastSeen": "Última vez",
+      "actions": "Ações"
+    },
+    "state": {
+      "clean": "Sem punição",
+      "muted": "Silenciado",
+      "banned": "Banido",
+      "mutedUntil": "Silenciado {time}",
+      "bannedUntil": "Banido {time}",
+      "weakId": "Sem ID estável: a punição se perde se mudar de nome."
+    },
+    "action": {
+      "mute": "Silenciar",
+      "ban": "Banir",
+      "clear": "Remover punições",
+      "refresh": "Atualizar",
+      "wipe": "Limpar registro",
+      "wipeConfirm": "Apagar todo o registro de espectadores? Silenciamentos e banimentos também se perdem."
+    },
+    "dur": {
+      "15m": "15 minutos",
+      "1h": "1 hora",
+      "forever": "Indefinido"
+    },
+    "empty": "Ainda não há espectadores registrados aqui.",
+    "pager": "{from}–{to} de {total}",
+    "time": {
+      "now": "agora",
+      "min": "há {n} min",
+      "hour": "há {n} h",
+      "day": "há {n} d"
+    },
+    "toast": {
+      "mute": "Usuário silenciado",
+      "unmute": "Silêncio removido",
+      "ban": "Usuário banido",
+      "unban": "Banimento removido",
+      "clear": "Punições removidas",
+      "follower": "Lista de seguidores atualizada",
+      "error": "Não foi possível aplicar a ação"
+    }
   }
 }
