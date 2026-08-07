@@ -550,7 +550,9 @@
     "platformDisconnected": "{platform} 已断开",
     "allChannelsDisconnected": "所有频道已断开",
     "youtubeAutoSaved": "YouTube已保存；直播时将自动连接",
-    "youtubeTmpSaved": "YouTube已保存为手动频道"
+    "youtubeTmpSaved": "YouTube已保存为手动频道",
+    "readNonFollowersOn": "TTS 朗读所有人",
+    "readNonFollowersOff": "TTS 只朗读关注者"
   },
   "dictLang": {
     "title": "允许的语言",

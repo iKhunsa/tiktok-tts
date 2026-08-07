@@ -550,7 +550,9 @@
     "platformDisconnected": "{platform} desconectado",
     "allChannelsDisconnected": "Todos os canais desconectados",
     "youtubeAutoSaved": "YouTube salvo; vai conectar quando ao vivo",
-    "youtubeTmpSaved": "YouTube salvo como canal manual"
+    "youtubeTmpSaved": "YouTube salvo como canal manual",
+    "readNonFollowersOn": "O TTS lê todos",
+    "readNonFollowersOff": "O TTS só lê seguidores"
   },
   "dictLang": {
     "title": "Idiomas permitidos",

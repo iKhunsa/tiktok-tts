@@ -550,7 +550,9 @@
     "platformDisconnected": "{platform} 切断済み",
     "allChannelsDisconnected": "すべてのチャンネルを切断しました",
     "youtubeAutoSaved": "YouTubeを保存しました；ライブ時に接続します",
-    "youtubeTmpSaved": "YouTubeを手動チャンネルとして保存しました"
+    "youtubeTmpSaved": "YouTubeを手動チャンネルとして保存しました",
+    "readNonFollowersOn": "TTSは全員を読みます",
+    "readNonFollowersOff": "TTSはフォロワーのみ読みます"
   },
   "dictLang": {
     "title": "許可する言語",

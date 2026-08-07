@@ -550,7 +550,9 @@
     "platformDisconnected": "{platform} 연결 해제됨",
     "allChannelsDisconnected": "모든 채널 연결 해제됨",
     "youtubeAutoSaved": "YouTube 저장됨; 라이브 시 연결됩니다",
-    "youtubeTmpSaved": "YouTube를 수동 채널로 저장했습니다"
+    "youtubeTmpSaved": "YouTube를 수동 채널로 저장했습니다",
+    "readNonFollowersOn": "TTS가 모두를 읽습니다",
+    "readNonFollowersOff": "TTS가 팔로워만 읽습니다"
   },
   "dictLang": {
     "title": "허용 언어",
