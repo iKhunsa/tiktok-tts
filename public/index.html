@@ -909,6 +909,76 @@
     }
 
     .bg-preview.visible { display: block; }
+    /* ── Vista Moderación ───────────────────────────────────────── */
+    .mod-stats { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+    .mod-stat {
+      display: flex; flex-direction: column; gap: 2px;
+      padding: 8px 14px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--surface);
+      font-size: 11px; color: var(--text-muted); min-width: 92px;
+    }
+    .mod-stat-num { font-size: 18px; font-weight: 700; color: var(--text); }
+    .mod-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+    .mod-tab {
+      padding: 7px 16px; border-radius: 9999px; cursor: pointer;
+      border: 1px solid var(--border-strong); background: transparent;
+      color: var(--text-secondary); font-size: 12px; font-weight: 600;
+      font-family: 'Inter', sans-serif;
+    }
+    .mod-tab.active { border-color: var(--accent); color: var(--accent); background: rgba(62,207,142,0.10); }
+    .mod-filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+    .mod-filters input, .mod-filters select {
+      padding: 6px 10px; border-radius: 8px; font-size: 12px;
+      border: 1px solid var(--border); background: var(--surface); color: var(--text);
+      font-family: 'Inter', sans-serif;
+    }
+    .mod-filters input { min-width: 200px; }
+    .mod-note { font-size: 11px; color: var(--text-muted); margin: 0 0 12px; line-height: 1.5; }
+    .mod-table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; }
+    .mod-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .mod-table th {
+      text-align: left; padding: 10px 12px; font-size: 10px; text-transform: uppercase;
+      letter-spacing: .6px; color: var(--text-muted); border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .mod-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .mod-table tr:last-child td { border-bottom: none; }
+    .mod-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .mod-nick { font-weight: 600; color: var(--text); }
+    .mod-weak-id { color: #eab308; cursor: help; margin-left: 5px; }
+    .mod-pill {
+      display: inline-block; padding: 2px 8px; border-radius: 9999px;
+      font-size: 10px; font-weight: 600; white-space: nowrap;
+    }
+    .mod-pill.clean { color: var(--text-muted); border: 1px solid var(--border); }
+    .mod-pill.muted { color: #eab308; border: 1px solid rgba(234,179,8,0.45); }
+    .mod-pill.banned { color: #ef4444; border: 1px solid rgba(239,68,68,0.45); }
+    .mod-pill.follower { color: var(--accent); border: 1px solid var(--accent-border); }
+    .mod-actions { display: flex; gap: 5px; flex-wrap: nowrap; }
+    .mod-empty { padding: 26px; text-align: center; font-size: 12px; color: var(--text-muted); }
+    .mod-pager { display: flex; gap: 10px; align-items: center; justify-content: center; margin-top: 12px; font-size: 11px; color: var(--text-muted); }
+
+    /* Menú flotante compartido (duraciones y moderación por nick) */
+    .ctx-menu {
+      position: fixed; z-index: 1000; min-width: 190px; padding: 5px;
+      border-radius: 10px; border: 1px solid var(--border-strong);
+      background: var(--surface); box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+    }
+    .ctx-menu button {
+      display: flex; align-items: center; gap: 8px; width: 100%;
+      padding: 7px 10px; border: none; border-radius: 7px; background: transparent;
+      color: var(--text-secondary); font-size: 12px; text-align: left; cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+    .ctx-menu button:hover { background: rgba(255,255,255,0.06); color: var(--text); }
+    .ctx-menu button.danger:hover { color: #f87171; }
+    .ctx-menu .ctx-title {
+      padding: 6px 10px 8px; font-size: 11px; font-weight: 700; color: var(--text);
+      border-bottom: 1px solid var(--border); margin-bottom: 4px;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .ctx-menu hr { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
+
     .cfg-btn.small { padding: 5px 10px; font-size: 11px; }
     .cfg-btn.danger { border-color: rgba(239, 68, 68, 0.4); color: #ef4444; }
     .cfg-btn.danger:hover { border-color: rgba(239, 68, 68, 0.7); color: #f87171; }
@@ -1532,6 +1602,10 @@
       <button class="sidebar-item" data-view="bot" onclick="switchView('bot')">
         <img class="sidebar-icon icon-inline" src="icons/music_note.svg" alt="">
         <span>Bot</span>
+      </button>
+      <button class="sidebar-item" data-view="moderacion" onclick="switchView('moderacion')">
+        <img class="sidebar-icon icon-inline" src="icons/people.svg" alt="">
+        <span data-i18n="nav.moderation">Moderación</span>
       </button>
       <button id="navSettingsBtn" class="sidebar-item" data-view="settings" onclick="switchView('settings')">
         <img class="sidebar-icon icon-inline" src="icons/settings.svg" alt="">
@@ -2521,8 +2595,84 @@
       </div>
     </div>
 
+    <!-- ── VIEW: Moderación ────────────────────────────── -->
+    <div class="view" id="view-moderacion">
+      <div class="view-header">
+        <h2><img class="icon-inline" src="icons/people.svg" alt=""> <span data-i18n="view.moderation.title">Moderación</span></h2>
+        <p data-i18n="view.moderation.desc">Todos los espectadores que interactuaron, con sus permisos de chat y TTS.</p>
+      </div>
+
+      <div class="mod-stats" id="modStats">
+        <div class="mod-stat"><span class="mod-stat-num" id="modStatTotal">0</span><span data-i18n="mod.stats.total">Registrados</span></div>
+        <div class="mod-stat"><span class="mod-stat-num" id="modStatFollowers">0</span><span data-i18n="mod.stats.followers">Seguidores</span></div>
+        <div class="mod-stat"><span class="mod-stat-num" id="modStatOthers">0</span><span data-i18n="mod.stats.others">No seguidores</span></div>
+        <div class="mod-stat"><span class="mod-stat-num" id="modStatMuted">0</span><span data-i18n="mod.stats.muted">Silenciados</span></div>
+        <div class="mod-stat"><span class="mod-stat-num" id="modStatBanned">0</span><span data-i18n="mod.stats.banned">Baneados</span></div>
+      </div>
+
+      <div class="mod-tabs">
+        <button class="mod-tab active" data-tab="followers" onclick="modSetTab('followers')" data-i18n="mod.tab.followers">Seguidores</button>
+        <button class="mod-tab" data-tab="others" onclick="modSetTab('others')" data-i18n="mod.tab.others">No seguidores</button>
+      </div>
+
+      <div class="mod-filters">
+        <input type="text" id="modSearch" oninput="modOnSearch()" data-i18n-placeholder="mod.filter.search" placeholder="Buscar por nombre..." />
+        <select id="modPlatform" onchange="modReload(true)">
+          <option value="all" data-i18n="mod.filter.allPlatforms">Todas las plataformas</option>
+          <option value="tiktok">TikTok</option>
+          <option value="twitch">Twitch</option>
+          <option value="youtube">YouTube</option>
+        </select>
+        <select id="modState" onchange="modReload(true)">
+          <option value="all" data-i18n="mod.filter.stateAll">Todos los estados</option>
+          <option value="clean" data-i18n="mod.filter.stateClean">Sin castigo</option>
+          <option value="muted" data-i18n="mod.filter.stateMuted">Silenciados</option>
+          <option value="banned" data-i18n="mod.filter.stateBanned">Baneados</option>
+        </select>
+        <select id="modSort" onchange="modReload(true)">
+          <option value="last" data-i18n="mod.sort.activity">Actividad reciente</option>
+          <option value="msgs" data-i18n="mod.sort.messages">Mensajes</option>
+          <option value="gifts" data-i18n="mod.sort.gifts">Regalos</option>
+          <option value="likes" data-i18n="mod.sort.likes">Likes</option>
+          <option value="nick" data-i18n="mod.sort.name">Nombre</option>
+        </select>
+        <button class="cfg-btn" onclick="modReload(true)"><img class="icon-inline" src="icons/refresh.svg" alt=""> <span data-i18n="mod.action.refresh">Actualizar</span></button>
+        <button class="cfg-btn danger" onclick="modWipe()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="mod.action.wipe">Vaciar registro</span></button>
+      </div>
+
+      <p class="mod-note" data-i18n="mod.note">Los mensajes filtrados por spam o palabras bloqueadas no suman al contador. YouTube no envía eventos de follow: marcá a esos espectadores como seguidores a mano.</p>
+
+      <div class="mod-table-wrap">
+        <table class="mod-table" id="modTable">
+          <thead>
+            <tr>
+              <th data-i18n="mod.col.user">Usuario</th>
+              <th data-i18n="mod.col.platform">Plataforma</th>
+              <th data-i18n="mod.col.state">Estado</th>
+              <th data-i18n="mod.col.messages">Mensajes</th>
+              <th data-i18n="mod.col.gifts">Regalos</th>
+              <th data-i18n="mod.col.likes">Likes</th>
+              <th data-i18n="mod.col.lastSeen">Última vez</th>
+              <th data-i18n="mod.col.actions">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="modTableBody"></tbody>
+        </table>
+        <div class="mod-empty" id="modEmpty" data-i18n="mod.empty">Todavía no hay espectadores registrados aquí.</div>
+      </div>
+
+      <div class="mod-pager">
+        <button class="cfg-btn" id="modPrev" onclick="modPage(-1)">←</button>
+        <span id="modPagerLabel"></span>
+        <button class="cfg-btn" id="modNext" onclick="modPage(1)">→</button>
+      </div>
+    </div>
+
   </main>
 </div>
+
+<!-- Menú de duración compartido (mute/ban) — uno solo, reposicionado -->
+<div id="modDurMenu" class="ctx-menu" style="display:none"></div>
 
 <div class="app-glow" id="appGlow"></div>
 
@@ -3102,6 +3252,305 @@
     if (view) view.classList.add('active');
     const btn = document.querySelector(`.sidebar-item[data-view="${name}"]`);
     if (btn) btn.classList.add('active');
+    // El refresco de la tabla de moderación solo corre con la vista visible.
+    if (name === 'moderacion') {
+      modReload(true);
+      modStartAutoRefresh();
+    } else {
+      modStopAutoRefresh();
+    }
+  }
+
+  // ─── MODERACIÓN: registro de espectadores ─────────────────────
+  // La tabla se hidrata por fetch al entrar en la vista y al cambiar filtros.
+  // Las acciones puntuales llegan por WS (`moderation-updated`), así que no
+  // hace falta polling: solo un refresco lento para que los contadores de
+  // mensajes no se queden congelados mientras se mira la tabla.
+  const MOD_PAGE_SIZE = 100;
+  const MOD_REFRESH_MS = 15000;
+  let modTab = 'followers';
+  let modOffset = 0;
+  let modTotal = 0;
+  let modSearchTimer = null;
+  let modRefreshTimer = null;
+
+  function modQuery() {
+    const p = new URLSearchParams({
+      tab: modTab,
+      platform: document.getElementById('modPlatform').value,
+      state: document.getElementById('modState').value,
+      sort: document.getElementById('modSort').value,
+      limit: String(MOD_PAGE_SIZE),
+      offset: String(modOffset),
+    });
+    const q = document.getElementById('modSearch').value.trim();
+    if (q) p.set('q', q);
+    return p.toString();
+  }
+
+  async function modReload(resetPage) {
+    if (resetPage) modOffset = 0;
+    let data;
+    try {
+      const res = await fetch(`/api/moderation/viewers?${modQuery()}`);
+      data = await res.json();
+    } catch (_) {
+      showToast(t('mod.toast.error'));
+      return;
+    }
+    modTotal = data.total || 0;
+    modRenderStats(data.counts || {});
+    modRenderRows(data.items || []);
+    modRenderPager();
+  }
+
+  function modRenderStats(counts) {
+    const total = (counts.followers || 0) + (counts.others || 0);
+    document.getElementById('modStatTotal').textContent = total;
+    document.getElementById('modStatFollowers').textContent = counts.followers || 0;
+    document.getElementById('modStatOthers').textContent = counts.others || 0;
+    document.getElementById('modStatMuted').textContent = counts.muted || 0;
+    document.getElementById('modStatBanned').textContent = counts.banned || 0;
+  }
+
+  function modFormatAgo(ts) {
+    if (!ts) return '—';
+    const diff = Math.max(0, Date.now() - ts);
+    const min = Math.floor(diff / 60000);
+    if (min < 1) return t('mod.time.now');
+    if (min < 60) return t('mod.time.min', { n: min });
+    const h = Math.floor(min / 60);
+    if (h < 24) return t('mod.time.hour', { n: h });
+    return t('mod.time.day', { n: Math.floor(h / 24) });
+  }
+
+  function modStatePill(v) {
+    const span = document.createElement('span');
+    if (v.isBanned) {
+      span.className = 'mod-pill banned';
+      span.textContent = v.banUntil === -1 ? t('mod.state.banned') : t('mod.state.bannedUntil', { time: modFormatUntil(v.banUntil) });
+    } else if (v.isMuted) {
+      span.className = 'mod-pill muted';
+      span.textContent = v.muteUntil === -1 ? t('mod.state.muted') : t('mod.state.mutedUntil', { time: modFormatUntil(v.muteUntil) });
+    } else {
+      span.className = 'mod-pill clean';
+      span.textContent = t('mod.state.clean');
+    }
+    return span;
+  }
+
+  function modFormatUntil(ts) {
+    const min = Math.max(1, Math.round((ts - Date.now()) / 60000));
+    return min < 60 ? `${min}m` : `${Math.round(min / 60)}h`;
+  }
+
+  // Todo el render usa createElement/textContent: los nombres vienen de
+  // plataformas externas y no se inyectan nunca como HTML.
+  function modRenderRows(items) {
+    const body = document.getElementById('modTableBody');
+    body.textContent = '';
+    document.getElementById('modEmpty').style.display = items.length ? 'none' : '';
+    document.getElementById('modTable').style.display = items.length ? '' : 'none';
+
+    for (const v of items) {
+      const tr = document.createElement('tr');
+      tr.dataset.key = v.key;
+
+      const tdUser = document.createElement('td');
+      const nick = document.createElement('span');
+      nick.className = 'mod-nick';
+      nick.textContent = v.nick || v.userId;
+      tdUser.appendChild(nick);
+      if (v.isFollower) {
+        const star = document.createElement('span');
+        star.className = 'mod-pill follower';
+        star.style.marginLeft = '6px';
+        star.textContent = '★';
+        star.title = t('chat.followerBadge');
+        tdUser.appendChild(star);
+      }
+      if (v.idKind === 'name') {
+        // Sin id estable: el castigo se pierde si cambia de nombre.
+        const warn = document.createElement('span');
+        warn.className = 'mod-weak-id';
+        warn.textContent = '⚠';
+        warn.title = t('mod.state.weakId');
+        tdUser.appendChild(warn);
+      }
+      tr.appendChild(tdUser);
+
+      const tdPlat = document.createElement('td');
+      const badge = document.createElement('span');
+      badge.className = `chat-platform-badge badge-${v.platform}`;
+      badge.textContent = v.platform;
+      tdPlat.appendChild(badge);
+      tr.appendChild(tdPlat);
+
+      const tdState = document.createElement('td');
+      tdState.appendChild(modStatePill(v));
+      tr.appendChild(tdState);
+
+      for (const n of [v.messages, v.gifts, v.likes]) {
+        const td = document.createElement('td');
+        td.textContent = n;
+        tr.appendChild(td);
+      }
+
+      const tdSeen = document.createElement('td');
+      tdSeen.textContent = modFormatAgo(v.lastSeen);
+      tr.appendChild(tdSeen);
+
+      const tdAct = document.createElement('td');
+      const wrap = document.createElement('div');
+      wrap.className = 'mod-actions';
+      wrap.appendChild(modActionBtn(t('mod.action.mute'), (e) => modDurationMenu(e, 'mute', v.key)));
+      wrap.appendChild(modActionBtn(t('mod.action.ban'), (e) => modDurationMenu(e, 'ban', v.key), 'danger'));
+      wrap.appendChild(modActionBtn(v.isFollower ? '★' : '☆', () => modApi('follower', { key: v.key, value: !v.isFollower })));
+      wrap.appendChild(modActionBtn(t('mod.action.clear'), () => modApi('clear', { key: v.key })));
+      wrap.appendChild(modActionBtn('✕', () => modRemove(v.key), 'danger'));
+      tdAct.appendChild(wrap);
+      tr.appendChild(tdAct);
+
+      body.appendChild(tr);
+    }
+  }
+
+  function modActionBtn(label, onClick, extra) {
+    const b = document.createElement('button');
+    b.className = `cfg-btn small${extra ? ' ' + extra : ''}`;
+    b.textContent = label;
+    b.onclick = onClick;
+    return b;
+  }
+
+  function modRenderPager() {
+    const from = modTotal === 0 ? 0 : modOffset + 1;
+    const to = Math.min(modOffset + MOD_PAGE_SIZE, modTotal);
+    document.getElementById('modPagerLabel').textContent = t('mod.pager', { from, to, total: modTotal });
+    document.getElementById('modPrev').disabled = modOffset === 0;
+    document.getElementById('modNext').disabled = to >= modTotal;
+  }
+
+  function modPage(delta) {
+    const next = modOffset + delta * MOD_PAGE_SIZE;
+    if (next < 0 || next >= modTotal) return;
+    modOffset = next;
+    modReload(false);
+  }
+
+  function modSetTab(tab) {
+    modTab = tab;
+    document.querySelectorAll('.mod-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+    modReload(true);
+  }
+
+  function modOnSearch() {
+    clearTimeout(modSearchTimer);
+    modSearchTimer = setTimeout(() => modReload(true), 300);
+  }
+
+  // action ∈ mute | unmute | ban | unban | clear | follower
+  async function modApi(action, body) {
+    try {
+      const res = await fetch(`/api/moderation/${action}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) throw new Error('http');
+      const data = await res.json();
+      showToast(t(`mod.toast.${action}`));
+      return data.viewer;
+    } catch (_) {
+      showToast(t('mod.toast.error'));
+      return null;
+    }
+  }
+
+  async function modRemove(key) {
+    try {
+      await fetch('/api/moderation/viewer', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key }),
+      });
+      modReload(false);
+    } catch (_) { showToast(t('mod.toast.error')); }
+  }
+
+  async function modWipe() {
+    if (!confirm(t('mod.action.wipeConfirm'))) return;
+    try {
+      await fetch('/api/moderation/viewers', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ confirm: true }),
+      });
+      modReload(true);
+    } catch (_) { showToast(t('mod.toast.error')); }
+  }
+
+  // Menú compartido de duraciones. Sirve tanto a la tabla como al menú
+  // contextual del chat: un único nodo reposicionado, nunca uno por fila.
+  function modDurationMenu(evt, kind, key) {
+    evt.stopPropagation();
+    const menu = document.getElementById('modDurMenu');
+    menu.textContent = '';
+    const options = [
+      [t('mod.dur.15m'), 15 * 60 * 1000],
+      [t('mod.dur.1h'), 60 * 60 * 1000],
+      [t('mod.dur.forever'), null],
+    ];
+    for (const [label, durationMs] of options) {
+      const b = document.createElement('button');
+      b.textContent = label;
+      b.onclick = async () => {
+        modCloseMenus();
+        await modApi(kind, { key, durationMs });
+      };
+      menu.appendChild(b);
+    }
+    modPlaceMenu(menu, evt);
+  }
+
+  function modPlaceMenu(menu, evt) {
+    menu.style.display = '';
+    menu.style.visibility = 'hidden';
+    menu.style.left = '0px';
+    menu.style.top = '0px';
+    const rect = menu.getBoundingClientRect();
+    const x = Math.min(evt.clientX, window.innerWidth - rect.width - 8);
+    const y = Math.min(evt.clientY, window.innerHeight - rect.height - 8);
+    menu.style.left = `${Math.max(8, x)}px`;
+    menu.style.top = `${Math.max(8, y)}px`;
+    menu.style.visibility = '';
+  }
+
+  function modCloseMenus() {
+    const menu = document.getElementById('modDurMenu');
+    if (menu) menu.style.display = 'none';
+  }
+
+  document.addEventListener('click', modCloseMenus);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') modCloseMenus(); });
+
+  // Llega tras cualquier acción de moderación (también desde el menú del chat
+  // o desde otra ventana). Un cambio de whitelist mueve la fila de pestaña, así
+  // que se recarga la página actual en vez de parchear la celda.
+  function modOnViewerUpdated() {
+    const view = document.getElementById('view-moderacion');
+    if (!view || !view.classList.contains('active')) return;
+    modReload(false);
+  }
+
+  function modStartAutoRefresh() {
+    modStopAutoRefresh();
+    modRefreshTimer = setInterval(() => modReload(false), MOD_REFRESH_MS);
+  }
+
+  function modStopAutoRefresh() {
+    if (modRefreshTimer) clearInterval(modRefreshTimer);
+    modRefreshTimer = null;
   }
 
   // ─── OVERLAY CONFIGURADOR ─────────────────────────────────────
@@ -4378,6 +4827,10 @@
         break;
       case 'config-updated':
         applyA11yConfig(data.config || {});
+        break;
+      case 'moderation-updated':
+      case 'moderation-reset':
+        modOnViewerUpdated();
         break;
     }
   }

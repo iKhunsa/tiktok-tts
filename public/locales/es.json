@@ -6,7 +6,8 @@
     "mobile": "Móvil",
     "settings": "Configuración",
     "soundpad": "Sonidos",
-    "bot": "Bot"
+    "bot": "Bot",
+    "moderation": "Moderación"
   },
   "community": {
     "label": "Comunidad TikLiveTTS",
@@ -116,7 +117,8 @@
     "title": "Chat en vivo",
     "empty": "Conecta tu TikTok Live<br>para ver el chat aquí",
     "speaking": "Leyendo...",
-    "queue": "Cola: {n} mensajes"
+    "queue": "Cola: {n} mensajes",
+    "followerBadge": "Seguidor"
   },
   "emergencyHint": "Emergencia deja activos regalos y follows, y silencia chat/likes/entradas/compartidos.",
   "status": {
@@ -140,6 +142,10 @@
     "mobile": {
       "title": "Control Móvil",
       "desc": "Controla el TTS desde tu celular en la misma red WiFi."
+    },
+    "moderation": {
+      "title": "Moderación",
+      "desc": "Todos los espectadores que interactuaron, con sus permisos de chat y TTS."
     }
   },
   "settings": {
@@ -552,5 +558,82 @@
     "desc": "Además del idioma de la voz, permitir mensajes en:",
     "voiceAlways": "(idioma de la voz — siempre permitido)",
     "notApplicable": "Este filtro solo aplica a voces con alfabeto latino."
+  },
+  "mod": {
+    "note": "Los mensajes filtrados por spam o palabras bloqueadas no suman al contador. YouTube no envía eventos de follow: marcá a esos espectadores como seguidores a mano.",
+    "stats": {
+      "total": "Registrados",
+      "followers": "Seguidores",
+      "others": "No seguidores",
+      "muted": "Silenciados",
+      "banned": "Baneados"
+    },
+    "tab": {
+      "followers": "Seguidores",
+      "others": "No seguidores"
+    },
+    "filter": {
+      "search": "Buscar por nombre...",
+      "allPlatforms": "Todas las plataformas",
+      "stateAll": "Todos los estados",
+      "stateClean": "Sin castigo",
+      "stateMuted": "Silenciados",
+      "stateBanned": "Baneados"
+    },
+    "sort": {
+      "activity": "Actividad reciente",
+      "messages": "Mensajes",
+      "gifts": "Regalos",
+      "likes": "Likes",
+      "name": "Nombre"
+    },
+    "col": {
+      "user": "Usuario",
+      "platform": "Plataforma",
+      "state": "Estado",
+      "messages": "Mensajes",
+      "gifts": "Regalos",
+      "likes": "Likes",
+      "lastSeen": "Última vez",
+      "actions": "Acciones"
+    },
+    "state": {
+      "clean": "Sin castigo",
+      "muted": "Silenciado",
+      "banned": "Baneado",
+      "mutedUntil": "Silenciado {time}",
+      "bannedUntil": "Baneado {time}",
+      "weakId": "Sin ID estable: el castigo se pierde si cambia de nombre."
+    },
+    "action": {
+      "mute": "Silenciar",
+      "ban": "Banear",
+      "clear": "Quitar castigos",
+      "refresh": "Actualizar",
+      "wipe": "Vaciar registro",
+      "wipeConfirm": "¿Borrar todo el registro de espectadores? También se pierden los silencios y baneos."
+    },
+    "dur": {
+      "15m": "15 minutos",
+      "1h": "1 hora",
+      "forever": "Indefinido"
+    },
+    "empty": "Todavía no hay espectadores registrados aquí.",
+    "pager": "{from}–{to} de {total}",
+    "time": {
+      "now": "ahora",
+      "min": "hace {n} min",
+      "hour": "hace {n} h",
+      "day": "hace {n} d"
+    },
+    "toast": {
+      "mute": "Usuario silenciado",
+      "unmute": "Silencio quitado",
+      "ban": "Usuario baneado",
+      "unban": "Baneo quitado",
+      "clear": "Castigos quitados",
+      "follower": "Lista de seguidores actualizada",
+      "error": "No se pudo aplicar la acción"
+    }
   }
 }

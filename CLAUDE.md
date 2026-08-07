@@ -39,8 +39,35 @@ server.js (Express en puerto 3000)
   ├── PATCH /api/config            ← ajusta config en runtime
   ├── GET  /api/platforms/status   ← estado twitch/youtube
   ├── POST /api/platforms/connect  ← conecta twitch o youtube
-  └── POST /api/platforms/disconnect
+  ├── POST /api/platforms/disconnect
+  ├── GET  /api/moderation/viewers ← registro de espectadores (filtros/paginado)
+  └── POST /api/moderation/{mute,unmute,ban,unban,clear,follower}
 ```
+
+## Moderación de espectadores (`moderation-store.js`)
+
+Registro persistente de todo espectador que interactúa, más los seguidores, con
+moderación **local** por usuario (no se toca la plataforma). Único dueño de
+`moderation.json` (en `DATA_BASE`, o sea `app.getPath('userData')`).
+
+- Clave por usuario: `` `${platform}:${id}` ``; sin id estable cae a
+  `` `${platform}:name:${nick}` `` y se marca `idk:'name'` (castigo frágil: se
+  pierde si el usuario cambia de nombre). Las dos formas nunca se fusionan.
+- Dos ejes ortogonales: `mute` (el mensaje se ve, el TTS no lo lee) y `ban`
+  (el mensaje ni se emite). Valores `0` / `-1` (indefinido) / epoch ms.
+- Expiración perezosa (comparación contra `Date.now()`), nunca un `setTimeout`
+  por usuario: sobrevive a la app cerrada y al equipo suspendido.
+- Escritura con debounce de 15 s (techo de 60 s) para la ingesta de alta
+  frecuencia; las acciones de moderación hacen flush inmediato. `writeFileSync`
+  a `.tmp` + `rename`. JSON corrupto → se aparta como `.corrupt-<ts>` y se
+  arranca vacío; **nunca lanza**, porque el require corre al arrancar la app.
+- Cap de 5.000 espectadores con purga LRU a 4.000 que jamás descarta
+  seguidores, whitelisted ni usuarios con castigo vivo.
+- `emitChatMessage()` en `server.js` es el **único** punto por el que salen los
+  mensajes de las 3 plataformas: registra, aplica moderación y decide TTS. Los
+  handlers de plataforma y el cliente no repiten ninguna de esas reglas.
+- UI: vista "Moderación" en el menú izquierdo, con pestañas Seguidores / No
+  seguidores sobre la misma tabla.
 
 ## Telemetría (`telemetry/`)
 

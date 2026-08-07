@@ -6,7 +6,8 @@
     "mobile": "Mobile",
     "settings": "Impostazioni",
     "soundpad": "Suoni",
-    "bot": "Bot"
+    "bot": "Bot",
+    "moderation": "Moderazione"
   },
   "community": {
     "label": "Comunità TikLiveTTS",
@@ -97,7 +98,8 @@
     "title": "Chat in diretta",
     "empty": "Connetti il tuo TikTok Live<br>per vedere la chat qui",
     "speaking": "Leggendo...",
-    "queue": "Coda: {n} messaggi"
+    "queue": "Coda: {n} messaggi",
+    "followerBadge": "Follower"
   },
   "emergencyHint": "L'emergenza mantiene attivi regali e follow, silenzia chat/like/entrate/condivisioni.",
   "status": {
@@ -121,6 +123,10 @@
     "mobile": {
       "title": "Controllo Mobile",
       "desc": "Controlla il TTS dal tuo telefono sulla stessa rete WiFi."
+    },
+    "moderation": {
+      "title": "Moderazione",
+      "desc": "Tutti gli spettatori che hanno interagito, con i loro permessi di chat e TTS."
     }
   },
   "settings": {
@@ -568,5 +574,82 @@
     "step5Desc": "Questo lo salva soltanto, non ti connette ancora a nulla.",
     "step6Title": "Ultimo passo! Vai prima in diretta",
     "step6Desc": "Prima di toccare qui: avvia la tua diretta sulla piattaforma (TikTok/Twitch/YouTube) e aspetta di essere in diretta. Solo allora torna e tocca \"Connetti tutto\". Non prima di essere in diretta."
+  },
+  "mod": {
+    "note": "I messaggi filtrati come spam o da parole bloccate non contano qui. YouTube non invia eventi di follow: segna quegli spettatori come follower a mano.",
+    "stats": {
+      "total": "Registrati",
+      "followers": "Follower",
+      "others": "Non follower",
+      "muted": "Silenziati",
+      "banned": "Bannati"
+    },
+    "tab": {
+      "followers": "Follower",
+      "others": "Non follower"
+    },
+    "filter": {
+      "search": "Cerca per nome...",
+      "allPlatforms": "Tutte le piattaforme",
+      "stateAll": "Tutti gli stati",
+      "stateClean": "Senza sanzione",
+      "stateMuted": "Silenziati",
+      "stateBanned": "Bannati"
+    },
+    "sort": {
+      "activity": "Attività recente",
+      "messages": "Messaggi",
+      "gifts": "Regali",
+      "likes": "Like",
+      "name": "Nome"
+    },
+    "col": {
+      "user": "Utente",
+      "platform": "Piattaforma",
+      "state": "Stato",
+      "messages": "Messaggi",
+      "gifts": "Regali",
+      "likes": "Like",
+      "lastSeen": "Ultima volta",
+      "actions": "Azioni"
+    },
+    "state": {
+      "clean": "Senza sanzione",
+      "muted": "Silenziato",
+      "banned": "Bannato",
+      "mutedUntil": "Silenziato {time}",
+      "bannedUntil": "Bannato {time}",
+      "weakId": "Nessun ID stabile: la sanzione si perde se cambia nome."
+    },
+    "action": {
+      "mute": "Silenzia",
+      "ban": "Banna",
+      "clear": "Rimuovi sanzioni",
+      "refresh": "Aggiorna",
+      "wipe": "Svuota registro",
+      "wipeConfirm": "Cancellare tutto il registro degli spettatori? Si perdono anche silenziamenti e ban."
+    },
+    "dur": {
+      "15m": "15 minuti",
+      "1h": "1 ora",
+      "forever": "Indefinito"
+    },
+    "empty": "Non ci sono ancora spettatori registrati qui.",
+    "pager": "{from}–{to} di {total}",
+    "time": {
+      "now": "adesso",
+      "min": "{n} min fa",
+      "hour": "{n} h fa",
+      "day": "{n} g fa"
+    },
+    "toast": {
+      "mute": "Utente silenziato",
+      "unmute": "Silenzio rimosso",
+      "ban": "Utente bannato",
+      "unban": "Ban rimosso",
+      "clear": "Sanzioni rimosse",
+      "follower": "Lista follower aggiornata",
+      "error": "Impossibile applicare l'azione"
+    }
   }
 }

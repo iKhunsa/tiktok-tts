@@ -6,7 +6,8 @@
     "mobile": "모바일",
     "settings": "설정",
     "soundpad": "사운드",
-    "bot": "봇"
+    "bot": "봇",
+    "moderation": "모더레이션"
   },
   "community": {
     "label": "TikLiveTTS 커뮤니티",
@@ -97,7 +98,8 @@
     "title": "라이브 채팅",
     "empty": "TikTok 라이브에 연결하여<br>여기서 채팅을 확인하세요",
     "speaking": "읽는 중...",
-    "queue": "대기열: {n}개"
+    "queue": "대기열: {n}개",
+    "followerBadge": "팔로워"
   },
   "emergencyHint": "비상 모드는 선물과 팔로우를 유지하고 채팅/좋아요/입장/공유를 음소거합니다.",
   "status": {
@@ -121,6 +123,10 @@
     "mobile": {
       "title": "모바일 제어",
       "desc": "같은 WiFi 네트워크의 스마트폰으로 TTS를 제어하세요."
+    },
+    "moderation": {
+      "title": "모더레이션",
+      "desc": "상호작용한 모든 시청자와 채팅·TTS 권한."
     }
   },
   "settings": {
@@ -568,5 +574,82 @@
     "step5Desc": "이건 저장만 할 뿐 아직 아무것도 연결하지 않습니다.",
     "step6Title": "마지막 단계! 먼저 라이브를 시작하세요",
     "step6Desc": "여기를 누르기 전에: 플랫폼(TikTok/Twitch/YouTube)에서 방송을 시작하고 라이브 상태가 될 때까지 기다리세요. 라이브가 된 후에 돌아와서 \"전체 연결\"을 누르세요. 라이브 전에는 누르지 마세요."
+  },
+  "mod": {
+    "note": "스팸이나 차단 단어로 걸러진 메시지는 여기에 집계되지 않습니다. YouTube는 팔로우 이벤트를 보내지 않으므로 해당 시청자는 직접 팔로워로 표시하세요.",
+    "stats": {
+      "total": "등록됨",
+      "followers": "팔로워",
+      "others": "비팔로워",
+      "muted": "음소거됨",
+      "banned": "차단됨"
+    },
+    "tab": {
+      "followers": "팔로워",
+      "others": "비팔로워"
+    },
+    "filter": {
+      "search": "이름으로 검색...",
+      "allPlatforms": "모든 플랫폼",
+      "stateAll": "모든 상태",
+      "stateClean": "제재 없음",
+      "stateMuted": "음소거됨",
+      "stateBanned": "차단됨"
+    },
+    "sort": {
+      "activity": "최근 활동",
+      "messages": "메시지",
+      "gifts": "선물",
+      "likes": "좋아요",
+      "name": "이름"
+    },
+    "col": {
+      "user": "사용자",
+      "platform": "플랫폼",
+      "state": "상태",
+      "messages": "메시지",
+      "gifts": "선물",
+      "likes": "좋아요",
+      "lastSeen": "마지막 활동",
+      "actions": "작업"
+    },
+    "state": {
+      "clean": "제재 없음",
+      "muted": "음소거",
+      "banned": "차단",
+      "mutedUntil": "음소거 {time}",
+      "bannedUntil": "차단 {time}",
+      "weakId": "안정적인 ID 없음: 이름을 바꾸면 제재가 사라집니다."
+    },
+    "action": {
+      "mute": "음소거",
+      "ban": "차단",
+      "clear": "제재 해제",
+      "refresh": "새로고침",
+      "wipe": "기록 비우기",
+      "wipeConfirm": "시청자 기록을 모두 삭제할까요? 음소거와 차단도 사라집니다."
+    },
+    "dur": {
+      "15m": "15분",
+      "1h": "1시간",
+      "forever": "무기한"
+    },
+    "empty": "아직 등록된 시청자가 없습니다.",
+    "pager": "{total}개 중 {from}–{to}",
+    "time": {
+      "now": "방금",
+      "min": "{n}분 전",
+      "hour": "{n}시간 전",
+      "day": "{n}일 전"
+    },
+    "toast": {
+      "mute": "사용자를 음소거했습니다",
+      "unmute": "음소거를 해제했습니다",
+      "ban": "사용자를 차단했습니다",
+      "unban": "차단을 해제했습니다",
+      "clear": "제재를 해제했습니다",
+      "follower": "팔로워 목록을 업데이트했습니다",
+      "error": "작업을 적용할 수 없습니다"
+    }
   }
 }

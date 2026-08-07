@@ -6,7 +6,8 @@
     "mobile": "手机",
     "settings": "设置",
     "soundpad": "音效",
-    "bot": "Bot"
+    "bot": "Bot",
+    "moderation": "管理"
   },
   "community": {
     "label": "TikLiveTTS 社区",
@@ -97,7 +98,8 @@
     "title": "实时聊天",
     "empty": "连接您的 TikTok 直播<br>在此查看聊天",
     "speaking": "正在朗读...",
-    "queue": "队列：{n} 条消息"
+    "queue": "队列：{n} 条消息",
+    "followerBadge": "关注者"
   },
   "emergencyHint": "紧急模式保持礼物和关注活跃，静音聊天/点赞/加入/分享。",
   "status": {
@@ -121,6 +123,10 @@
     "mobile": {
       "title": "手机控制",
       "desc": "在同一 WiFi 网络中用手机控制 TTS。"
+    },
+    "moderation": {
+      "title": "管理",
+      "desc": "所有互动过的观众，以及他们的聊天和 TTS 权限。"
     }
   },
   "settings": {
@@ -568,5 +574,82 @@
     "step5Desc": "这只是保存，还不会连接任何东西。",
     "step6Title": "最后一步！先开始直播",
     "step6Desc": "点这里之前：先在平台（TikTok/Twitch/YouTube）开始直播，等到真正直播后，再回来点\"全部连接\"。不要在开播前点。"
+  },
+  "mod": {
+    "note": "被垃圾信息或屏蔽词过滤掉的消息不计入这里。YouTube 不发送关注事件：请手动把这些观众标记为关注者。",
+    "stats": {
+      "total": "已登记",
+      "followers": "关注者",
+      "others": "非关注者",
+      "muted": "已静音",
+      "banned": "已封禁"
+    },
+    "tab": {
+      "followers": "关注者",
+      "others": "非关注者"
+    },
+    "filter": {
+      "search": "按名称搜索...",
+      "allPlatforms": "所有平台",
+      "stateAll": "所有状态",
+      "stateClean": "无处罚",
+      "stateMuted": "已静音",
+      "stateBanned": "已封禁"
+    },
+    "sort": {
+      "activity": "最近活动",
+      "messages": "消息",
+      "gifts": "礼物",
+      "likes": "点赞",
+      "name": "名称"
+    },
+    "col": {
+      "user": "用户",
+      "platform": "平台",
+      "state": "状态",
+      "messages": "消息",
+      "gifts": "礼物",
+      "likes": "点赞",
+      "lastSeen": "最后活动",
+      "actions": "操作"
+    },
+    "state": {
+      "clean": "无处罚",
+      "muted": "静音",
+      "banned": "封禁",
+      "mutedUntil": "静音 {time}",
+      "bannedUntil": "封禁 {time}",
+      "weakId": "没有稳定 ID：改名后处罚会失效。"
+    },
+    "action": {
+      "mute": "静音",
+      "ban": "封禁",
+      "clear": "解除处罚",
+      "refresh": "刷新",
+      "wipe": "清空记录",
+      "wipeConfirm": "删除全部观众记录？静音和封禁也会一并丢失。"
+    },
+    "dur": {
+      "15m": "15 分钟",
+      "1h": "1 小时",
+      "forever": "无限期"
+    },
+    "empty": "这里还没有登记的观众。",
+    "pager": "第 {from}–{to} 项，共 {total} 项",
+    "time": {
+      "now": "刚刚",
+      "min": "{n} 分钟前",
+      "hour": "{n} 小时前",
+      "day": "{n} 天前"
+    },
+    "toast": {
+      "mute": "已静音该用户",
+      "unmute": "已解除静音",
+      "ban": "已封禁该用户",
+      "unban": "已解除封禁",
+      "clear": "已解除处罚",
+      "follower": "关注者列表已更新",
+      "error": "无法执行该操作"
+    }
   }
 }
