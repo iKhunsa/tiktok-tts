@@ -563,7 +563,8 @@
   "tour": {
     "next": "Next",
     "prev": "Back",
-    "done": "Done"
+    "done": "Done",
+    "viewTutorial": "Show tutorial"
   },
   "onboarding": {
     "step1Title": "First, go to Settings",
@@ -708,5 +709,69 @@
     "sessionAdded": "Blocked just now",
     "duplicate": "You just blocked that one",
     "manageAll": "View and edit all"
+  },
+  "soundTour": {
+    "introTitle": "Sound Pad",
+    "introDesc": "Upload sound effects and play them with a click or a keyboard shortcut, even while the app is fullscreen.",
+    "uploadTitle": "Upload a sound",
+    "uploadDesc": "Click here to upload an audio file (mp3, wav, ogg, webm, or m4a). You can have up to 24 sounds in your pad.",
+    "testTitle": "Test your audio",
+    "testDesc": "Use this button to check that your system audio is working before playing your sound effects.",
+    "shortcutTitle": "Assign a keyboard shortcut",
+    "shortcutDesc": "Click a sound's shortcut and press a combination with Ctrl, Alt, or Shift plus a key. That lets you trigger it without opening the app.",
+    "deckTitle": "Your sound pad",
+    "deckDesc": "Each card is a sound: click to play it, rename it, recolor it, or delete it with the trash icon.",
+    "limitTitle": "Sound limit",
+    "limitDesc": "You can upload up to 24 sounds total. This counter shows how many you've used."
+  },
+  "botTour": {
+    "introTitle": "Music Bot",
+    "introDesc": "Your chat can request songs by typing <strong>!p song name</strong> or pasting a YouTube link. From here you control everything: what's playing, the queue, and who's allowed to request.",
+    "nowPlayingTitle": "Now Playing",
+    "nowPlayingDesc": "Turn on the !p command with this switch. From here you can also pause, skip the current song, and adjust the music volume (separate from the TTS volume).",
+    "queueTitle": "Request Queue",
+    "queueDesc": "Songs requested by chat pile up here in order. You can clear the queue anytime with the Clear button.",
+    "playlistTitle": "Your Background Playlist",
+    "playlistDesc": "Add your own list here (one song or link per line). It plays on loop when there are no chat requests — turn it on and save so it starts.",
+    "settingsTitle": "Bot Settings",
+    "settingsDesc": "Adjust the cooldown between requests per user, the max songs allowed in queue, and ban users who abuse the !p command."
+  },
+  "clipsTour": {
+    "introTitle": "Clip Markers",
+    "introDesc": "Mark the exact moment something fun or important happens while you're live, so you can find it later and cut the clip without scrubbing through the whole recording.",
+    "startTitle": "Step 1: start the stream",
+    "startDesc": "Before you can mark clips you need to start the timer here. It's the reference point for every marker (00:00:00 onward).",
+    "markTitle": "Step 2: mark the moment",
+    "markDesc": "Once the stream is running, this button activates. Click it at the right moment, or press Ctrl+Shift+M — the shortcut works anytime, even with the app minimized.",
+    "obsTitle": "OBS connection (optional)",
+    "obsDesc": "If you connect OBS via WebSocket here, every clip you mark also automatically saves the OBS replay buffer, in addition to the marker in the app.",
+    "historyTitle": "Marker history",
+    "historyDesc": "Every clip you mark is listed here with its elapsed time and real timestamp, so you can later find those moments in your recording or in OBS."
+  },
+  "overlaysTour": {
+    "introTitle": "Overlays for OBS",
+    "introDesc": "Each card generates a unique URL for a different overlay. Paste it into OBS as a Browser Source and it updates live on its own.",
+    "urlTitle": "Your overlay URL",
+    "urlDesc": "This is the address you'll copy and paste into OBS. It updates automatically whenever you change the color, opacity, or other card options.",
+    "copyTitle": "Copy the URL",
+    "copyDesc": "Click \"Copy\" to grab the URL. Then in OBS: Add Source → Browser → paste the URL → enable \"Enable transparent background\".",
+    "customizeTitle": "Customize the overlay",
+    "customizeDesc": "Adjust the accent color, background opacity, and other options. Changes apply instantly to the URL, no need to reload OBS.",
+    "bgTitle": "Custom background",
+    "bgDesc": "Want to replace the semi-transparent background with your own image? Upload it here (PNG, JPG, WebP, or GIF, max 8MB).",
+    "testTitle": "Test the overlay",
+    "testDesc": "Use the \"Test\" button to trigger a sample alert and preview it in OBS before going live."
+  },
+  "chatActionsTour": {
+    "skipTitle": "Skip current",
+    "skipDesc": "Cuts off the message being read right now and moves to the next one in the queue.",
+    "queueTitle": "Clear queue",
+    "queueDesc": "Deletes all pending messages waiting to be read. Useful when text has piled up and you want a fresh start.",
+    "emergencyTitle": "Emergency mode",
+    "emergencyDesc": "Instantly mutes chat, likes, joins, and shares. Keeps only gift alerts and new follower announcements active.",
+    "clearTitle": "Clear",
+    "clearDesc": "Clears the on-screen chat log and empties the TTS queue. It doesn't affect messages already sent by viewers.",
+    "blockedTitle": "Blocked words",
+    "blockedDesc": "Opens the blocked words editor to manage which terms get filtered out before being read aloud."
   }
 }

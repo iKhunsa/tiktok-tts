@@ -1727,6 +1727,7 @@
         <button class="cfg-btn" onclick="enableEmergencyTTSMode()"><img class="icon-inline" src="icons/warning.svg" alt=""> <span data-i18n="btn.emergency">Modo emergencia</span></button>
         <button class="cfg-btn" onclick="clearChat()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="btn.clearChat">Limpiar</span></button>
         <button class="cfg-btn" id="btnBlockedWordsShortcut" onclick="openBlockWordModal()"><img class="icon-inline" src="icons/filter_none.svg" alt=""> <span data-i18n="btn.blockedWordsShortcut">Palabras bloqueadas</span></button>
+        <button class="cfg-btn" id="btnChatActionsTour" onclick="startChatActionsTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
         <span style="font-size:11px;color:var(--text-muted);" data-i18n="emergencyHint">Emergencia deja activos regalos y follows, y silencia chat/likes/entradas/compartidos.</span>
       </div>
 
@@ -1760,6 +1761,7 @@
       <div class="view-header">
         <h2><img class="icon-inline" src="icons/tv.svg" alt=""> <span data-i18n="view.overlays.title">Overlays para OBS</span></h2>
         <p data-i18n="view.overlays.desc">Personaliza cada overlay y copia la URL → OBS → Add Source → Browser → Enable transparent background.</p>
+        <button class="cfg-btn" id="btnOverlaysTour" onclick="startOverlaysTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
       </div>
 
       <!-- Chat Unificado -->
@@ -2113,6 +2115,7 @@
       <div class="view-header">
         <h2><img class="icon-inline" src="icons/music_note.svg" alt=""> <span data-i18n="bot.title">Bot de Música</span></h2>
         <p data-i18n-html="bot.desc">El chat puede pedir canciones con <strong>!p nombre</strong> o <strong>!p link de YouTube</strong>. Tu playlist suena de fondo cuando no hay peticiones.</p>
+        <button class="cfg-btn" id="btnBotTour" onclick="startBotTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
       </div>
 
       <!-- Now Playing -->
@@ -2509,6 +2512,7 @@
       <div class="view-header">
         <h2><img class="icon-inline" src="icons/play_arrow.svg" alt=""> <span data-i18n="view.clips.title">Marcadores de Clip</span></h2>
         <p data-i18n="view.clips.desc">Marca momentos del stream para sacar clips después.</p>
+        <button class="cfg-btn" id="btnClipsTour" onclick="startClipsTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
       </div>
 
       <div class="connect-panel">
@@ -2580,6 +2584,7 @@
             ⬆ <span data-i18n="soundpad.upload">Subir sonido</span>
           </button>
           <input type="file" id="spFileInput" accept=".mp3,.wav,.ogg,.webm,.m4a" style="display:none" onchange="spHandleUpload(this)">
+          <button class="cfg-btn" id="btnSoundTour" onclick="startSoundpadTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
         </div>
         <div id="spDeck" class="soundpad-deck"></div>
         <div id="spEmpty" class="soundpad-empty" style="display:none">
@@ -3828,6 +3833,196 @@
           element: '#btnBlockedWordsShortcut',
           popover: { title: t('modTour.blockedTitle'), description: t('modTour.blockedDesc'), side: 'bottom', align: 'end' },
           onHighlightStarted: inChat,
+        },
+      ],
+    }).drive();
+  }
+
+  function startSoundpadTour() {
+    if (!(window.driver && window.driver.js)) return;
+    const inSoundpad = () => switchView('soundpad');
+
+    window.driver.js.driver({
+      ...driverTourDefaults(),
+      steps: [
+        {
+          element: '#view-soundpad .view-header',
+          popover: { title: t('soundTour.introTitle'), description: t('soundTour.introDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSoundpad,
+        },
+        {
+          element: '#spUploadBtn',
+          popover: { title: t('soundTour.uploadTitle'), description: t('soundTour.uploadDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSoundpad,
+        },
+        {
+          element: '.btn-test',
+          popover: { title: t('soundTour.testTitle'), description: t('soundTour.testDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSoundpad,
+        },
+        {
+          element: '.cfg-subtitle',
+          popover: { title: t('soundTour.shortcutTitle'), description: t('soundTour.shortcutDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSoundpad,
+        },
+        {
+          element: '#spDeck',
+          popover: { title: t('soundTour.deckTitle'), description: t('soundTour.deckDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inSoundpad,
+        },
+        {
+          element: '#spCount',
+          popover: { title: t('soundTour.limitTitle'), description: t('soundTour.limitDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSoundpad,
+        },
+      ],
+    }).drive();
+  }
+
+  function startBotTour() {
+    if (!(window.driver && window.driver.js)) return;
+    const inBot = () => switchView('bot');
+
+    window.driver.js.driver({
+      ...driverTourDefaults(),
+      steps: [
+        {
+          element: '#view-bot .view-header',
+          popover: { title: t('botTour.introTitle'), description: t('botTour.introDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inBot,
+        },
+        {
+          element: '#music-now-playing-card',
+          popover: { title: t('botTour.nowPlayingTitle'), description: t('botTour.nowPlayingDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inBot,
+        },
+        {
+          element: '#music-queue-list',
+          popover: { title: t('botTour.queueTitle'), description: t('botTour.queueDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inBot,
+        },
+        {
+          element: '#playlistTextarea',
+          popover: { title: t('botTour.playlistTitle'), description: t('botTour.playlistDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inBot,
+        },
+        {
+          element: '#musicBanInput',
+          popover: { title: t('botTour.settingsTitle'), description: t('botTour.settingsDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inBot,
+        },
+      ],
+    }).drive();
+  }
+
+  function startChatActionsTour() {
+    if (!(window.driver && window.driver.js)) return;
+    const inChatActions = () => switchView('chat');
+
+    window.driver.js.driver({
+      ...driverTourDefaults(),
+      steps: [
+        {
+          element: 'button[onclick="skipCurrentTTS()"]',
+          popover: { title: t('chatActionsTour.skipTitle'), description: t('chatActionsTour.skipDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inChatActions,
+        },
+        {
+          element: 'button[onclick="clearTTSQueue()"]',
+          popover: { title: t('chatActionsTour.queueTitle'), description: t('chatActionsTour.queueDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inChatActions,
+        },
+        {
+          element: 'button[onclick="enableEmergencyTTSMode()"]',
+          popover: { title: t('chatActionsTour.emergencyTitle'), description: t('chatActionsTour.emergencyDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inChatActions,
+        },
+        {
+          element: 'button[onclick="clearChat()"]',
+          popover: { title: t('chatActionsTour.clearTitle'), description: t('chatActionsTour.clearDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inChatActions,
+        },
+        {
+          element: '#btnBlockedWordsShortcut',
+          popover: { title: t('chatActionsTour.blockedTitle'), description: t('chatActionsTour.blockedDesc'), side: 'bottom', align: 'end' },
+          onHighlightStarted: inChatActions,
+        },
+      ],
+    }).drive();
+  }
+
+  function startClipsTour() {
+    if (!(window.driver && window.driver.js)) return;
+    const inClips = () => switchView('clips');
+
+    window.driver.js.driver({
+      ...driverTourDefaults(),
+      steps: [
+        {
+          element: '#view-clips .view-header',
+          popover: { title: t('clipsTour.introTitle'), description: t('clipsTour.introDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inClips,
+        },
+        {
+          element: '#btnStartStream',
+          popover: { title: t('clipsTour.startTitle'), description: t('clipsTour.startDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inClips,
+        },
+        {
+          element: '#btnMarkClip',
+          popover: { title: t('clipsTour.markTitle'), description: t('clipsTour.markDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inClips,
+        },
+        {
+          element: '#obsStatusDot',
+          popover: { title: t('clipsTour.obsTitle'), description: t('clipsTour.obsDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inClips,
+        },
+        {
+          element: '#clipsHistory',
+          popover: { title: t('clipsTour.historyTitle'), description: t('clipsTour.historyDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inClips,
+        },
+      ],
+    }).drive();
+  }
+
+  function startOverlaysTour() {
+    if (!(window.driver && window.driver.js)) return;
+    const inOverlays = () => switchView('overlays');
+
+    window.driver.js.driver({
+      ...driverTourDefaults(),
+      steps: [
+        {
+          element: '#view-overlays .view-header',
+          popover: { title: t('overlaysTour.introTitle'), description: t('overlaysTour.introDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inOverlays,
+        },
+        {
+          element: '#cfg-url-chat',
+          popover: { title: t('overlaysTour.urlTitle'), description: t('overlaysTour.urlDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inOverlays,
+        },
+        {
+          element: '[onclick="copyCfgUrl(\'chat\')"]',
+          popover: { title: t('overlaysTour.copyTitle'), description: t('overlaysTour.copyDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inOverlays,
+        },
+        {
+          element: '#view-overlays .cfg-card:nth-of-type(1) .cfg-fields',
+          popover: { title: t('overlaysTour.customizeTitle'), description: t('overlaysTour.customizeDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inOverlays,
+        },
+        {
+          element: '#view-overlays .cfg-card:nth-of-type(1) .bg-upload-row',
+          popover: { title: t('overlaysTour.bgTitle'), description: t('overlaysTour.bgDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inOverlays,
+        },
+        {
+          element: '[onclick="testGiftAlert()"]',
+          popover: { title: t('overlaysTour.testTitle'), description: t('overlaysTour.testDesc'), side: 'top', align: 'end' },
+          onHighlightStarted: inOverlays,
         },
       ],
     }).drive();

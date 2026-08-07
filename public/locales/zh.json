@@ -563,7 +563,8 @@
   "tour": {
     "next": "下一步",
     "prev": "上一步",
-    "done": "完成"
+    "done": "完成",
+    "viewTutorial": "查看教程"
   },
   "onboarding": {
     "step1Title": "首先，前往设置",
@@ -708,5 +709,69 @@
     "sessionAdded": "刚刚屏蔽",
     "duplicate": "你刚刚已经屏蔽过了",
     "manageAll": "查看并编辑全部"
+  },
+  "soundTour": {
+    "introTitle": "音效板",
+    "introDesc": "上传音效，点击或用键盘快捷键播放，即使应用全屏也能用。",
+    "uploadTitle": "上传音效",
+    "uploadDesc": "点这里上传音频文件（mp3、wav、ogg、webm 或 m4a）。最多可以有 24 个音效。",
+    "testTitle": "测试音频",
+    "testDesc": "播放音效前，用这个按钮检查系统声音是否正常。",
+    "shortcutTitle": "设置快捷键",
+    "shortcutDesc": "点击某个音效的快捷键，然后按 Ctrl、Alt 或 Shift 加一个键的组合。这样不用打开应用也能触发。",
+    "deckTitle": "你的音效板",
+    "deckDesc": "每张卡片是一个音效：点击播放，改名字，改颜色，或用垃圾桶图标删除。",
+    "limitTitle": "音效数量上限",
+    "limitDesc": "总共最多可以上传 24 个音效。这个计数器显示你已经用了多少个。"
+  },
+  "botTour": {
+    "introTitle": "音乐机器人",
+    "introDesc": "你的观众可以输入 <strong>!p 歌曲名</strong> 或粘贴 YouTube 链接来点歌。这里可以控制一切：正在播放什么、队列，以及谁能点歌。",
+    "nowPlayingTitle": "正在播放",
+    "nowPlayingDesc": "用这个开关启用 !p 命令。这里还能暂停、跳过当前歌曲，调节音乐音量（和 TTS 音量分开）。",
+    "queueTitle": "点歌队列",
+    "queueDesc": "观众点的歌会按顺序堆积在这里。随时可以用清空按钮清空队列。",
+    "playlistTitle": "你的背景播放列表",
+    "playlistDesc": "在这里添加你自己的列表（每行一首歌或链接）。没有观众点歌时会循环播放——开启并保存后生效。",
+    "settingsTitle": "机器人设置",
+    "settingsDesc": "调整每个用户点歌的冷却时间、队列最大数量，并封禁滥用 !p 命令的用户。"
+  },
+  "clipsTour": {
+    "introTitle": "剪辑标记",
+    "introDesc": "在直播中标记有趣或重要的瞬间，之后就能快速找到，不用翻看整个录像来剪辑。",
+    "startTitle": "第一步：开始直播",
+    "startDesc": "标记剪辑之前，先在这里启动计时器。它是每个标记的时间基准（从00:00:00开始）。",
+    "markTitle": "第二步：标记瞬间",
+    "markDesc": "直播开始后，这个按钮会被激活。在合适的时刻点击，或按 Ctrl+Shift+M——这个快捷键随时有效，即使应用最小化也能用。",
+    "obsTitle": "OBS连接（可选）",
+    "obsDesc": "如果在这里通过WebSocket连接OBS，每次标记剪辑时也会自动保存OBS的回放缓冲，除了应用内的标记。",
+    "historyTitle": "标记历史",
+    "historyDesc": "所有标记的剪辑都会列在这里，包含经过时间和真实时间戳，方便你之后在录像或OBS中找到这些瞬间。"
+  },
+  "overlaysTour": {
+    "introTitle": "OBS叠加层",
+    "introDesc": "每张卡片为不同的叠加层生成唯一的URL。把它粘贴到OBS的浏览器源里，会自动实时更新。",
+    "urlTitle": "你的叠加层URL",
+    "urlDesc": "这是你要复制粘贴到OBS里的地址。当你调整颜色、透明度或其他卡片选项时会自动更新。",
+    "copyTitle": "复制URL",
+    "copyDesc": "点击\"复制\"获取URL。然后在OBS中：添加来源 → 浏览器 → 粘贴URL → 启用\"Enable transparent background\"。",
+    "customizeTitle": "自定义叠加层",
+    "customizeDesc": "调整强调色、背景透明度和其他选项。更改会立即反映到URL上，无需重新加载OBS。",
+    "bgTitle": "自定义背景",
+    "bgDesc": "想用自己的图片替换半透明背景吗？在这里上传（PNG、JPG、WebP或GIF，最大8MB）。",
+    "testTitle": "测试叠加层",
+    "testDesc": "使用\"Test\"按钮触发一个示例提醒，在开播前预览OBS中的效果。"
+  },
+  "chatActionsTour": {
+    "skipTitle": "跳过当前",
+    "skipDesc": "中断当前正在朗读的消息，跳到队列中的下一条。",
+    "queueTitle": "清空队列",
+    "queueDesc": "删除所有等待朗读的消息。当积压了很多文字，想重新开始时很有用。",
+    "emergencyTitle": "紧急模式",
+    "emergencyDesc": "立即静音聊天、点赞、进场和分享。只保留礼物提醒和新粉丝通知。",
+    "clearTitle": "清除",
+    "clearDesc": "清除屏幕上的聊天记录并清空TTS队列。不影响观众已经发送的消息。",
+    "blockedTitle": "屏蔽词",
+    "blockedDesc": "打开屏蔽词编辑器，管理哪些词语会在朗读前被过滤。"
   }
 }
