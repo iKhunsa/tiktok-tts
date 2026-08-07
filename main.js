@@ -121,8 +121,11 @@ process.env.TIKTOK_USER_DATA_PATH = app.getPath('userData');
 // instead of an unhandled exception that blocks the auto-updater from running.
 let serverLoadError = null;
 let serverShutdown = null;
+let serverLog = null;
 try {
-  serverShutdown = require('./server').shutdown;
+  const serverModule = require('./server');
+  serverShutdown = serverModule.shutdown;
+  serverLog = serverModule.log;
 } catch (e) {
   serverLoadError = e;
   // In development, surface the real error immediately instead of hiding it
@@ -131,12 +134,14 @@ try {
 
 process.on('uncaughtException', (err) => {
   console.error('[main] uncaughtException:', err);
+  if (serverLog) serverLog('error', 'main', 'uncaughtException', { message: err && err.message, stack: err && err.stack });
   telemetry.bus.emit('error:uncaught', {
     where: 'main', message: err && err.message, stack: err && err.stack,
   });
 });
 process.on('unhandledRejection', (reason) => {
   console.error('[main] unhandledRejection:', reason);
+  if (serverLog) serverLog('error', 'main', 'unhandledRejection', { message: (reason && reason.message) || String(reason), stack: reason && reason.stack });
   telemetry.bus.emit('error:uncaught', {
     where: 'main:rejection',
     message: (reason && reason.message) || String(reason),
@@ -494,6 +499,8 @@ function unregisterTtsShortcut(action) {
   }
   ttsShortcuts.delete(action);
 }
+
+ipcMain.handle('get-app-version', () => app.getVersion());
 
 ipcMain.handle('register-tts-shortcut', (_event, { action, shortcut }) => {
   if (!TTS_SHORTCUT_ACTIONS.has(action)) {

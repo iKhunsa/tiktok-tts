@@ -1001,6 +1001,16 @@
     </div>
   </div>
 
+  <!-- ═══ PANEL: DESCARGA DE LOGS ═══ -->
+  <div class="panel panel-status">
+    <div class="status-header">
+      <div>
+        <div class="panel-title"><img class="icon-inline" src="icons/description.svg" alt=""> <span data-i18n="adv.logsDownloadTitle">Logs de diagnóstico</span></div>
+        <div class="panel-desc" data-i18n="adv.logsDownloadDesc">Descarga el historial completo de logs guardados (últimos 14 días) a tu carpeta de Descargas.</div>
+      </div>
+      <button class="btn-refresh" onclick="downloadAllLogs()" data-i18n="adv.logsDownloadBtn">↓ Descargar todos</button>
+    </div>
+  </div>
 
 </div>
 
@@ -1326,6 +1336,15 @@
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  }
+
+  function downloadAllLogs() {
+    const a = document.createElement('a');
+    a.href = '/api/logs/download-all';
+    a.download = '';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
 
   function escHtml(s) {
