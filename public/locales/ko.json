@@ -563,7 +563,8 @@
   "tour": {
     "next": "다음",
     "prev": "이전",
-    "done": "완료"
+    "done": "완료",
+    "viewTutorial": "튜토리얼 보기"
   },
   "onboarding": {
     "step1Title": "먼저 설정으로 이동하세요",
@@ -708,5 +709,69 @@
     "sessionAdded": "방금 차단함",
     "duplicate": "방금 차단한 단어입니다",
     "manageAll": "전체 보기·편집"
+  },
+  "soundTour": {
+    "introTitle": "사운드 패드",
+    "introDesc": "효과음을 업로드하고 클릭이나 키보드 단축키로 재생하세요. 앱이 전체화면이어도 작동합니다.",
+    "uploadTitle": "사운드 업로드",
+    "uploadDesc": "여기를 클릭해 오디오 파일(mp3, wav, ogg, webm, m4a)을 업로드하세요. 최대 24개까지 가능합니다.",
+    "testTitle": "오디오 테스트",
+    "testDesc": "효과음을 재생하기 전에 이 버튼으로 시스템 소리가 정상인지 확인하세요.",
+    "shortcutTitle": "단축키 지정",
+    "shortcutDesc": "사운드의 단축키를 클릭하고 Ctrl, Alt, Shift 중 하나와 키를 함께 누르세요. 앱을 열지 않아도 실행할 수 있습니다.",
+    "deckTitle": "내 사운드 패드",
+    "deckDesc": "카드마다 하나의 사운드입니다: 클릭해서 재생, 이름/색상 변경, 휴지통 아이콘으로 삭제할 수 있습니다.",
+    "limitTitle": "사운드 개수 제한",
+    "limitDesc": "총 24개까지 업로드할 수 있습니다. 이 숫자는 현재 사용한 개수를 보여줍니다."
+  },
+  "botTour": {
+    "introTitle": "음악 봇",
+    "introDesc": "채팅에서 <strong>!p 곡 이름</strong>을 입력하거나 유튜브 링크를 붙여넣어 신청할 수 있습니다. 여기서 재생 중인 곡, 대기열, 신청 권한을 모두 관리합니다.",
+    "nowPlayingTitle": "현재 재생 중",
+    "nowPlayingDesc": "이 스위치로 !p 명령을 켭니다. 여기서 일시정지, 현재 곡 건너뛰기, 음악 볼륨 조절(TTS 볼륨과 별도)도 할 수 있습니다.",
+    "queueTitle": "신청 대기열",
+    "queueDesc": "채팅에서 신청한 곡이 순서대로 여기 쌓입니다. 지우기 버튼으로 언제든 비울 수 있습니다.",
+    "playlistTitle": "배경 재생목록",
+    "playlistDesc": "여기에 직접 목록을 추가하세요 (한 줄에 곡 또는 링크 하나). 신청곡이 없을 때 반복 재생됩니다 — 켜고 저장하면 시작됩니다.",
+    "settingsTitle": "봇 설정",
+    "settingsDesc": "사용자별 신청 쿨다운, 대기열 최대 개수를 조정하고 !p 명령을 남용하는 사용자를 차단하세요."
+  },
+  "clipsTour": {
+    "introTitle": "클립 마커",
+    "introDesc": "라이브 중 재미있거나 중요한 순간을 정확히 표시해두면, 나중에 전체 녹화본을 다시 보지 않고도 그 순간을 찾아 클립으로 만들 수 있습니다.",
+    "startTitle": "1단계: 방송 시작",
+    "startDesc": "클립을 표시하려면 먼저 여기서 타이머를 시작해야 합니다. 이것이 각 마커의 기준 시간(00:00:00부터)이 됩니다.",
+    "markTitle": "2단계: 순간 표시",
+    "markDesc": "방송이 시작되면 이 버튼이 활성화됩니다. 적절한 순간에 클릭하거나 Ctrl+Shift+M을 누르세요 — 이 단축키는 앱이 최소화되어 있어도 언제든 작동합니다.",
+    "obsTitle": "OBS 연결 (선택)",
+    "obsDesc": "여기서 OBS를 WebSocket으로 연결하면, 클립을 표시할 때마다 앱 내 마커뿐 아니라 OBS 리플레이 버퍼도 자동으로 저장됩니다.",
+    "historyTitle": "마커 기록",
+    "historyDesc": "표시한 모든 클립이 경과 시간과 실제 타임스탬프와 함께 여기에 나열되어, 나중에 녹화본이나 OBS에서 그 순간들을 찾을 수 있습니다."
+  },
+  "overlaysTour": {
+    "introTitle": "OBS용 오버레이",
+    "introDesc": "각 카드는 서로 다른 오버레이를 위한 고유 URL을 생성합니다. OBS에 브라우저 소스로 붙여넣으면 자동으로 실시간 업데이트됩니다.",
+    "urlTitle": "오버레이 URL",
+    "urlDesc": "OBS에 복사해서 붙여넣을 주소입니다. 색상, 투명도 등 카드 설정을 바꾸면 자동으로 업데이트됩니다.",
+    "copyTitle": "URL 복사",
+    "copyDesc": "\"복사\"를 클릭해 URL을 가져오세요. 그다음 OBS에서: Add Source → Browser → URL 붙여넣기 → \"Enable transparent background\" 활성화.",
+    "customizeTitle": "오버레이 꾸미기",
+    "customizeDesc": "강조 색상, 배경 투명도 등을 조정하세요. 변경 사항은 즉시 URL에 반영되며 OBS를 다시 불러올 필요가 없습니다.",
+    "bgTitle": "커스텀 배경",
+    "bgDesc": "반투명 배경을 직접 이미지로 바꾸고 싶으신가요? 여기서 업로드하세요 (PNG, JPG, WebP, GIF, 최대 8MB).",
+    "testTitle": "오버레이 테스트",
+    "testDesc": "\"Test\" 버튼으로 샘플 알림을 실행해 방송 전에 OBS에서 미리 확인하세요."
+  },
+  "chatActionsTour": {
+    "skipTitle": "현재 건너뛰기",
+    "skipDesc": "지금 읽고 있는 메시지를 중단하고 대기열의 다음 메시지로 넘어갑니다.",
+    "queueTitle": "대기열 비우기",
+    "queueDesc": "읽기를 기다리는 모든 메시지를 삭제합니다. 텍스트가 많이 쌓여서 처음부터 다시 시작하고 싶을 때 유용합니다.",
+    "emergencyTitle": "긴급 모드",
+    "emergencyDesc": "채팅, 좋아요, 입장, 공유를 즉시 음소거합니다. 선물 알림과 신규 팔로워 알림만 유지됩니다.",
+    "clearTitle": "지우기",
+    "clearDesc": "화면의 채팅 로그를 지우고 TTS 대기열을 비웁니다. 시청자가 이미 보낸 메시지에는 영향을 주지 않습니다.",
+    "blockedTitle": "차단된 단어",
+    "blockedDesc": "읽기 전에 필터링할 단어를 관리하는 편집기를 엽니다."
   }
 }

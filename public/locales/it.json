@@ -563,7 +563,8 @@
   "tour": {
     "next": "Avanti",
     "prev": "Indietro",
-    "done": "Fatto"
+    "done": "Fatto",
+    "viewTutorial": "Mostra tutorial"
   },
   "onboarding": {
     "step1Title": "Prima, vai su Impostazioni",
@@ -708,5 +709,69 @@
     "sessionAdded": "Bloccate ora",
     "duplicate": "L'hai appena bloccata",
     "manageAll": "Vedi e modifica tutte"
+  },
+  "soundTour": {
+    "introTitle": "Pad Suoni",
+    "introDesc": "Carica effetti sonori e riproducili con un clic o una scorciatoia da tastiera, anche a schermo intero.",
+    "uploadTitle": "Carica un suono",
+    "uploadDesc": "Clicca qui per caricare un file audio (mp3, wav, ogg, webm o m4a). Puoi avere fino a 24 suoni nel tuo pad.",
+    "testTitle": "Testa l'audio",
+    "testDesc": "Usa questo pulsante per verificare che l'audio del sistema funzioni prima di riprodurre i tuoi effetti.",
+    "shortcutTitle": "Assegna una scorciatoia",
+    "shortcutDesc": "Clicca sulla scorciatoia di un suono e premi una combinazione con Ctrl, Alt o Shift più un tasto. Così lo attivi senza aprire l'app.",
+    "deckTitle": "Il tuo pad",
+    "deckDesc": "Ogni scheda è un suono: clicca per riprodurlo, rinominalo, cambia colore o eliminalo con l'icona del cestino.",
+    "limitTitle": "Limite suoni",
+    "limitDesc": "Puoi caricare fino a 24 suoni in totale. Questo contatore mostra quanti ne hai usati."
+  },
+  "botTour": {
+    "introTitle": "Bot Musicale",
+    "introDesc": "La chat può richiedere canzoni scrivendo <strong>!p nome canzone</strong> o incollando un link YouTube. Da qui controlli tutto: cosa suona, la coda e chi può richiedere.",
+    "nowPlayingTitle": "In riproduzione",
+    "nowPlayingDesc": "Attiva il comando !p con questo switch. Da qui puoi anche mettere in pausa, saltare la canzone e regolare il volume della musica (separato dal volume TTS).",
+    "queueTitle": "Coda richieste",
+    "queueDesc": "Le canzoni richieste dalla chat si accumulano qui in ordine. Puoi svuotarla in qualsiasi momento con il pulsante Pulisci.",
+    "playlistTitle": "La tua playlist di sottofondo",
+    "playlistDesc": "Carica qui la tua lista (una canzone o link per riga). Suona in loop quando non ci sono richieste — attivala e salva per farla partire.",
+    "settingsTitle": "Impostazioni del bot",
+    "settingsDesc": "Regola il cooldown tra le richieste per utente, il numero massimo in coda e banna chi abusa del comando !p."
+  },
+  "clipsTour": {
+    "introTitle": "Marcatori Clip",
+    "introDesc": "Segna il momento esatto di qualcosa di divertente o importante mentre sei in diretta, per ritrovarlo dopo senza dover rivedere tutta la registrazione.",
+    "startTitle": "Passo 1: avvia la diretta",
+    "startDesc": "Prima di poter segnare i clip devi avviare il timer qui. È il riferimento temporale per ogni marcatore (da 00:00:00 in poi).",
+    "markTitle": "Passo 2: segna il momento",
+    "markDesc": "Con la diretta avviata, questo pulsante si attiva. Usalo al momento giusto, oppure premi Ctrl+Shift+M — funziona sempre, anche con l'app ridotta a icona.",
+    "obsTitle": "Connessione OBS (opzionale)",
+    "obsDesc": "Se colleghi OBS via WebSocket qui, ogni volta che segni un clip si salva automaticamente anche il replay buffer di OBS, oltre al marcatore nell'app.",
+    "historyTitle": "Cronologia marcatori",
+    "historyDesc": "Tutti i clip segnati vengono elencati qui con il tempo trascorso e l'orario reale, per ritrovare quei momenti nella registrazione o in OBS."
+  },
+  "overlaysTour": {
+    "introTitle": "Overlay per OBS",
+    "introDesc": "Ogni scheda genera un URL unico per un overlay diverso. Incollalo in OBS come Browser Source e si aggiorna da solo in diretta.",
+    "urlTitle": "Il tuo URL overlay",
+    "urlDesc": "Questo è l'indirizzo da copiare e incollare in OBS. Si aggiorna automaticamente se cambi colore, opacità o altre opzioni della scheda.",
+    "copyTitle": "Copia l'URL",
+    "copyDesc": "Clicca su \"Copia\" per prendere l'URL. Poi in OBS: Add Source → Browser → incolla l'URL → attiva \"Enable transparent background\".",
+    "customizeTitle": "Personalizza l'overlay",
+    "customizeDesc": "Regola il colore d'accento, l'opacità dello sfondo e altre opzioni. Le modifiche si riflettono subito nell'URL, senza dover ricaricare OBS.",
+    "bgTitle": "Sfondo personalizzato",
+    "bgDesc": "Vuoi sostituire lo sfondo semi-trasparente con un'immagine tua? Caricala qui (PNG, JPG, WebP o GIF, max 8MB).",
+    "testTitle": "Testa l'overlay",
+    "testDesc": "Usa il pulsante \"Test\" per generare un'allerta di prova e vederla in OBS prima di andare in diretta."
+  },
+  "chatActionsTour": {
+    "skipTitle": "Salta attuale",
+    "skipDesc": "Interrompe il messaggio in lettura in questo momento e passa al successivo in coda.",
+    "queueTitle": "Svuota coda",
+    "queueDesc": "Elimina tutti i messaggi in attesa di lettura. Utile se si è accumulato molto testo e vuoi ripartire da zero.",
+    "emergencyTitle": "Modalità emergenza",
+    "emergencyDesc": "Silenzia chat, like, ingressi e condivisioni all'istante. Lascia attivi solo gli avvisi di regali e nuovi follower.",
+    "clearTitle": "Pulisci",
+    "clearDesc": "Pulisce la chat visiva a schermo e svuota la coda TTS. Non influisce sui messaggi già inviati dagli spettatori.",
+    "blockedTitle": "Parole bloccate",
+    "blockedDesc": "Apre l'editor delle parole bloccate per gestire quali termini vengono filtrati prima di essere letti ad alta voce."
   }
 }
