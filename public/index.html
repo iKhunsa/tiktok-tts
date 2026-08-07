@@ -4546,7 +4546,12 @@
     }
     currentMsgId = msgId;
     const msgEl = document.getElementById(msgId);
-    if (msgEl) { msgEl.classList.add('speaking'); msgEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+    // Marcar el mensaje que se está leyendo no debe arrastrar la vista si el
+    // usuario subió a leer historial.
+    if (msgEl) {
+      msgEl.classList.add('speaking');
+      if (chatIsAtBottom()) msgEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
 
     showSpeakingIndicator(text);
     const glow = document.getElementById('appGlow');
@@ -4996,6 +5001,27 @@
     return colorMap[user];
   }
 
+  // ─── SCROLL PEGAJOSO DEL CHAT ─────────────────────────────────
+  // Si el usuario está mirando el fondo, el chat sigue bajando solo. Si subió
+  // a leer algo, se queda quieto hasta que vuelva a tocar el fondo.
+  const CHAT_STICK_PX = 60;
+
+  function chatIsAtBottom() {
+    const log = document.getElementById('chatLog');
+    if (!log) return true;
+    return log.scrollHeight - log.scrollTop - log.clientHeight <= CHAT_STICK_PX;
+  }
+
+  // Medir ANTES de insertar: al añadir el nodo cambia scrollHeight y ya no se
+  // podría saber si estábamos abajo.
+  function appendChatNode(node) {
+    const log = document.getElementById('chatLog');
+    if (!log) return;
+    const stick = chatIsAtBottom();
+    log.appendChild(node);
+    if (stick) log.scrollTop = log.scrollHeight;
+  }
+
   function addChatMsg(data, msgId) {
     const empty = document.getElementById('emptyState');
     if (empty) empty.remove();
@@ -5068,9 +5094,7 @@
     div.appendChild(body);
     div.appendChild(timeEl);
 
-    const log = document.getElementById('chatLog');
-    log.appendChild(div);
-    log.scrollTop = log.scrollHeight;
+    appendChatNode(div);
   }
 
   function addSystemMsg(text, type, msgId, { iconSrc = '', accentText = '' } = {}) {
@@ -5106,9 +5130,7 @@
     body.appendChild(txt);
     div.appendChild(body);
 
-    const log = document.getElementById('chatLog');
-    log.appendChild(div);
-    log.scrollTop = log.scrollHeight;
+    appendChatNode(div);
   }
 
   let ttsAbortController = null;
