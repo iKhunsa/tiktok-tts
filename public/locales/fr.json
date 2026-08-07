@@ -55,7 +55,8 @@
     "langFilter": "Filtrer les caractères d'autres langues",
     "langFilterHint": "Ignore les messages du chat contenant des caractères ne correspondant pas à la langue de la voix active (ex : bloque le chinois/japonais si votre voix est en espagnol, et inversement).",
     "dictFilter": "Filtrer par langue (mots)",
-    "dictFilterHint": "Ne lit que les messages écrits dans la langue de la voix active ou dans les langues supplémentaires autorisées. Les mots inconnus (noms, fautes de frappe) ne bloquent pas."
+    "dictFilterHint": "Ne lit que les messages écrits dans la langue de la voix active ou dans les langues supplémentaires autorisées. Les mots inconnus (noms, fautes de frappe) ne bloquent pas.",
+    "readNonFollowers": "Lire les non-abonnés"
   },
   "tts": {
     "on": "🔊 TTS Activé",

@@ -963,6 +963,7 @@
     .msg-user-clickable:hover { text-decoration: underline; }
     .chat-msg--muted { opacity: 0.55; }
     .chat-muted-badge { margin-left: 5px; font-size: 10px; }
+    .chat-follower-badge { margin-left: 5px; font-size: 10px; color: var(--accent); }
 
     /* Menú flotante compartido (duraciones y moderación por nick) */
     .ctx-menu {
@@ -1686,6 +1687,12 @@
         <label class="toggle-chip" id="chip-username">
           <input type="checkbox" onchange="toggleOption('sayUsername', this)" />
           <img class="icon-inline" src="icons/label.svg" alt=""> <span data-i18n="toggle.sayUsername">Decir nombre</span>
+        </label>
+        <!-- Único chip cuyo estado vive en el servidor (config.json) y no en
+             appSettings: el filtro se aplica server-side antes del broadcast. -->
+        <label class="toggle-chip" id="chip-nonfollowers">
+          <input type="checkbox" id="ttsReadNonFollowersToggle" onchange="setReadNonFollowers(this.checked)" />
+          <img class="icon-inline" src="icons/person_add.svg" alt=""> <span data-i18n="toggle.readNonFollowers">Leer a no seguidores</span>
         </label>
         <label class="toggle-chip" id="chip-username-connector" style="width:max-content;">
           <input type="checkbox" id="sayUsernameConnectorToggle" onchange="toggleSayUsernameConnector(this)" />
@@ -4043,7 +4050,23 @@
       if (Number.isInteger(cfg.TTS_MAX_CHARS) && cfg.TTS_MAX_CHARS > 0) CHAT_TTS_MAX_LEN = cfg.TTS_MAX_CHARS;
       if (Number.isInteger(cfg.MAX_QUEUE_MSG) && cfg.MAX_QUEUE_MSG > 0) MAX_QUEUE_SIZE = cfg.MAX_QUEUE_MSG;
       applyA11yConfig(cfg);
+      applyReadNonFollowers(cfg);
     } catch (e) {}
+  }
+
+  // El servidor decide qué mensajes puede leer el TTS (`ttsBlocked`); aquí solo
+  // se refleja el estado del interruptor.
+  function applyReadNonFollowers(cfg) {
+    const el = document.getElementById('ttsReadNonFollowersToggle');
+    if (el) el.checked = cfg.ttsReadNonFollowers !== false;
+  }
+
+  function setReadNonFollowers(value) {
+    fetch('/api/config', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ttsReadNonFollowers: !!value }),
+    }).catch(() => {});
   }
 
   function applyA11yConfig(cfg) {
@@ -4899,6 +4922,7 @@
         break;
       case 'config-updated':
         applyA11yConfig(data.config || {});
+        applyReadNonFollowers(data.config || {});
         break;
       case 'moderation-updated':
       case 'moderation-reset':
@@ -4910,7 +4934,9 @@
   // ─── CHAT HANDLER ─────────────────────────────────────────────
   function handleChatData(data, chatId) {
     addChatMsg(data, chatId);
-    if (options.readChat) {
+    // `ttsBlocked` lo decide el servidor: usuario silenciado, o no seguidor con
+    // el filtro de seguidores activo.
+    if (options.readChat && !data.ttsBlocked) {
       const ttsBase = data.ttsComment || data.comment;
       let raw;
       if (!options.sayUsername) {
@@ -4992,6 +5018,13 @@
     userEl.dataset.platform = platform;
     userEl.title = t('chatCtx.hint');
     userEl.onclick = (e) => openUserMenu(e, userEl.dataset);
+    if (data.isFollower) {
+      const star = document.createElement('span');
+      star.className = 'chat-follower-badge';
+      star.textContent = '★';
+      star.title = t('chat.followerBadge');
+      userEl.appendChild(star);
+    }
     if (data.muted) {
       const mutedBadge = document.createElement('span');
       mutedBadge.className = 'chat-muted-badge';

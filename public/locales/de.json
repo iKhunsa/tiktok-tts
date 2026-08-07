@@ -55,7 +55,8 @@
     "langFilter": "Zeichen anderer Sprachen filtern",
     "langFilterHint": "Ignoriert Chat-Nachrichten mit Zeichen, die nicht zur Sprache der aktiven Stimme passen (z. B. Chinesisch/Japanisch blockieren, wenn die Stimme Spanisch ist, und umgekehrt).",
     "dictFilter": "Nach Sprache filtern (Wörter)",
-    "dictFilterHint": "Liest nur Nachrichten in der Sprache der aktiven Stimme oder in den zusätzlich erlaubten Sprachen. Unbekannte Wörter (Namen, Tippfehler) blockieren nicht."
+    "dictFilterHint": "Liest nur Nachrichten in der Sprache der aktiven Stimme oder in den zusätzlich erlaubten Sprachen. Unbekannte Wörter (Namen, Tippfehler) blockieren nicht.",
+    "readNonFollowers": "Nicht-Follower vorlesen"
   },
   "tts": {
     "on": "🔊 TTS An",
