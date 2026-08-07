@@ -12,11 +12,34 @@
     "label": "TikLiveTTS 社区",
     "desc": "官方 Discord · 欢迎反馈和提问"
   },
+  "bugReport": {
+    "title": "报告问题",
+    "guide": "遇到问题了吗？1）先尝试重新复现一次。2）用你自己的话填写这份表单，说明发生了什么。3）提交后会自动连同本次会话的技术日志一起发送给团队（不包含密码或敏感信息）。",
+    "discordNickLabel": "你的 Discord 昵称",
+    "discordNickPlaceholder": "用户#0000",
+    "channelLinkLabel": "你的频道链接（TikTok/Twitch/YouTube）",
+    "channelLinkPlaceholder": "https://...",
+    "descriptionLabel": "告诉我们发生了什么",
+    "descriptionPlaceholder": "你当时在做什么？你期望发生什么？实际发生了什么？",
+    "extraLabel": "还有什么要补充的吗？（可选）",
+    "extraPlaceholder": "错误信息、发生时间等",
+    "submit": "发送报告",
+    "sending": "发送中...",
+    "sent": "报告已发送，谢谢！",
+    "errorRequired": "请填写你的昵称、频道并说明发生了什么",
+    "errorSend": "报告发送失败，请重试",
+    "discordHint": "只是想快速问一下？",
+    "discordLink": "加入我们的 Discord",
+    "tourTitle": "就是这个！",
+    "tourDesc": "每次遇到问题时点这个按钮告诉我。",
+    "tourDone": "知道了"
+  },
   "footer": {
     "donate": "捐赠",
     "newBadge": "新",
     "channels": "频道",
-    "advanced": "高级"
+    "advanced": "高级",
+    "bugReport": "报告问题"
   },
   "toggle": {
     "readChat": "朗读评论",
@@ -92,7 +115,7 @@
     },
     "clips": {
       "title": "片段标记",
-      "desc": "记录直播精彩时刻。全局快捷键 Ctrl+Shift+M 即使最小化也可使用。"
+      "desc": "用 Ctrl+Shift+M 标记精彩瞬间发生的确切时间点（应用最小化时也能用）。直播结束后，直接跳到录像中的这些时刻，不用从头看一遍找剪辑素材。"
     },
     "mobile": {
       "title": "手机控制",
@@ -401,7 +424,20 @@
   "notice": {
     "donationsTitle": "支持项目的新方式",
     "donationsBody": "我们新增了 Ko-fi 和 PayPal 捐赠方式。应用将始终 100% 免费——如果它对你有帮助并且你想支持这个项目，现在比以往任何时候都更方便。",
-    "donationsCta": "查看捐赠方式"
+    "donationsCta": "查看捐赠方式",
+    "bugReportTitle": "遇到问题了？马上告诉我",
+    "bugReportBody": "我们新增了一个\"报告问题\"按钮。以后遇到任何故障，点一下，用几句话告诉我发生了什么，系统会自动把所有信息发给我，就像我当时就在看着你的电脑一样，这样我能更快修好。",
+    "bugReportCta": "看看报告问题按钮",
+    "bugReportDevBody": "这个应用还在不断开发中，所以偶尔遇到点小问题很正常。如果你想帮忙改进它，可以作为开发者加入，或者通过捐赠支持。",
+    "bugReportDevCta": "作为开发者加入",
+    "bugReportDonateCta": "捐赠支持",
+    "onboardingTitle": "欢迎！要不要教你怎么连接？",
+    "onboardingBody": "我们会一步步引导你：绑定频道，等开播后再连接。用不了一分钟。",
+    "onboardingCta": "开始教程",
+    "onboardingSkip": "现在不用",
+    "onboardingDoneTitle": "搞定！现在你知道怎么连接了",
+    "onboardingDoneBody": "祝你直播顺利，一切都能开心大吉。这个应用是我一个人开发的，如果哪天你愿意在你的频道里提一嘴，会非常有帮助，让更多主播知道它。谢谢你使用它！",
+    "onboardingDoneCta": "开始吧！"
   },
   "mobile3": {
     "connecting": "连接中…",
@@ -509,5 +545,24 @@
     "desc": "除语音语言外，还允许以下语言的消息：",
     "voiceAlways": "（语音语言 — 始终允许）",
     "notApplicable": "此过滤器仅适用于拉丁字母语音。"
+  },
+  "tour": {
+    "next": "下一步",
+    "prev": "上一步",
+    "done": "完成"
+  },
+  "onboarding": {
+    "step1Title": "首先，前往设置",
+    "step1Desc": "在这里绑定你的频道，然后才能连接。",
+    "step2Title": "已绑定频道",
+    "step2Desc": "点击\"添加频道\"来添加你的 TikTok、Twitch 或 YouTube。",
+    "step3Title": "选择平台",
+    "step3Desc": "选择 TikTok、Twitch 或 YouTube。",
+    "step4Title": "输入你的用户名或频道",
+    "step4Desc": "根据平台填写你的 @用户名、频道名或链接。",
+    "step5Title": "保存频道",
+    "step5Desc": "这只是保存，还不会连接任何东西。",
+    "step6Title": "最后一步！先开始直播",
+    "step6Desc": "点这里之前：先在平台（TikTok/Twitch/YouTube）开始直播，等到真正直播后，再回来点\"全部连接\"。不要在开播前点。"
   }
 }

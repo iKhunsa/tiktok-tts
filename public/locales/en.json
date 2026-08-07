@@ -12,11 +12,34 @@
     "label": "TikLiveTTS Community",
     "desc": "Official Discord · feedback & questions welcome"
   },
+  "bugReport": {
+    "title": "Report a problem",
+    "guide": "Got a problem? 1) Try to reproduce it again. 2) Fill out this form describing what happened in your own words. 3) On submit, it's sent automatically to the team along with your session's technical log (no passwords or sensitive data included).",
+    "discordNickLabel": "Your Discord nickname",
+    "discordNickPlaceholder": "user#0000",
+    "channelLinkLabel": "Your channel link (TikTok/Twitch/YouTube)",
+    "channelLinkPlaceholder": "https://...",
+    "descriptionLabel": "Tell us what happened",
+    "descriptionPlaceholder": "What were you doing? What did you expect to happen? What actually happened?",
+    "extraLabel": "Anything else to add? (optional)",
+    "extraPlaceholder": "Error messages, when it happened, etc.",
+    "submit": "Send report",
+    "sending": "Sending...",
+    "sent": "Report sent, thanks!",
+    "errorRequired": "Fill in your nickname, channel, and tell us what happened",
+    "errorSend": "Couldn't send the report, try again",
+    "discordHint": "Just a quick question? ",
+    "discordLink": "Join our Discord",
+    "tourTitle": "Here it is!",
+    "tourDesc": "Click this button any time you run into a problem to let me know.",
+    "tourDone": "Got it"
+  },
   "footer": {
     "donate": "Donate",
     "newBadge": "New",
     "channels": "Channels",
-    "advanced": "Advanced"
+    "advanced": "Advanced",
+    "bugReport": "Report Bug"
   },
   "toggle": {
     "readChat": "Read comments",
@@ -92,7 +115,7 @@
     },
     "clips": {
       "title": "Clip Markers",
-      "desc": "Record stream moments. The global shortcut Ctrl+Shift+M works even when the app is minimized."
+      "desc": "Mark the exact moment something clip-worthy happens with Ctrl+Shift+M (works even while minimized). When the stream ends, jump straight to those moments in the recording instead of rewatching the whole thing to find your clips."
     },
     "mobile": {
       "title": "Mobile Control",
@@ -401,7 +424,20 @@
   "notice": {
     "donationsTitle": "New ways to support the project",
     "donationsBody": "We added Ko-fi and PayPal as donation options. The app will always be 100% free — if it's useful to you and you'd like to support the project, it's now easier than ever.",
-    "donationsCta": "See donation options"
+    "donationsCta": "See donation options",
+    "bugReportTitle": "Got a problem? Let me know instantly",
+    "bugReportBody": "We added a \"Report Bug\" button. Any time something breaks, tap it, tell me in a few words what happened, and everything gets sent to me automatically. It's like I can see your computer in the moment, so I can fix it faster.",
+    "bugReportCta": "Show me the Report Bug button",
+    "bugReportDevBody": "This app is under constant development, so it's normal to run into the occasional bug. If you'd like to help improve it, you can join as a developer or support it with a donation.",
+    "bugReportDevCta": "Join as a developer",
+    "bugReportDonateCta": "Support with a donation",
+    "onboardingTitle": "Welcome! Want us to show you how to connect?",
+    "onboardingBody": "We'll guide you step by step: link your channel and connect once you're live. Takes less than a minute.",
+    "onboardingCta": "Start tutorial",
+    "onboardingSkip": "Not now",
+    "onboardingDoneTitle": "You're all set! Now you know how to connect",
+    "onboardingDoneBody": "Best of luck with your stream, hope it goes great up there. I build this app solo, so if you ever give it a shoutout on your channel, it helps a ton to get more streamers to discover it. Thanks for using it!",
+    "onboardingDoneCta": "Let's go!"
   },
   "mobile3": {
     "connecting": "Connecting…",
@@ -509,5 +545,24 @@
     "desc": "Besides the voice language, also allow messages in:",
     "voiceAlways": "(voice language — always allowed)",
     "notApplicable": "This filter only applies to voices using the Latin alphabet."
+  },
+  "tour": {
+    "next": "Next",
+    "prev": "Back",
+    "done": "Done"
+  },
+  "onboarding": {
+    "step1Title": "First, go to Settings",
+    "step1Desc": "This is where you'll link your channel before connecting.",
+    "step2Title": "Linked channels",
+    "step2Desc": "Tap \"Add channel\" to add your TikTok, Twitch or YouTube.",
+    "step3Title": "Choose the platform",
+    "step3Desc": "Select TikTok, Twitch or YouTube.",
+    "step4Title": "Enter your username or channel",
+    "step4Desc": "Enter your @username, channel name or link, depending on the platform.",
+    "step5Title": "Save the channel",
+    "step5Desc": "This only saves it. It doesn't connect you to anything yet.",
+    "step6Title": "Last step! Go live first",
+    "step6Desc": "Before tapping here: start your stream on the platform (TikTok/Twitch/YouTube) and wait until you're live. Only then come back and tap \"Connect all\". Not before you're live."
   }
 }

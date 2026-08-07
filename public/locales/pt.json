@@ -12,11 +12,34 @@
     "label": "Comunidade TikLiveTTS",
     "desc": "Discord oficial · feedback e perguntas bem-vindos"
   },
+  "bugReport": {
+    "title": "Reportar um problema",
+    "guide": "Está com um problema? 1) Tente reproduzi-lo novamente. 2) Preencha este formulário contando o que aconteceu com suas próprias palavras. 3) Ao enviar, é mandado automaticamente para a equipe junto com o registro técnico da sua sessão (não inclui senhas nem dados sensíveis).",
+    "discordNickLabel": "Seu nick do Discord",
+    "discordNickPlaceholder": "usuario#0000",
+    "channelLinkLabel": "Link do seu canal (TikTok/Twitch/YouTube)",
+    "channelLinkPlaceholder": "https://...",
+    "descriptionLabel": "Conte o que aconteceu",
+    "descriptionPlaceholder": "O que você estava fazendo? O que esperava que acontecesse? O que aconteceu de fato?",
+    "extraLabel": "Algo mais que queira adicionar? (opcional)",
+    "extraPlaceholder": "Mensagens de erro, quando aconteceu, etc.",
+    "submit": "Enviar relatório",
+    "sending": "Enviando...",
+    "sent": "Relatório enviado, obrigado!",
+    "errorRequired": "Preencha seu nick, seu canal e conte o que aconteceu",
+    "errorSend": "Não foi possível enviar o relatório, tente novamente",
+    "discordHint": "É só uma dúvida rápida? ",
+    "discordLink": "Junte-se ao nosso Discord",
+    "tourTitle": "Aqui está!",
+    "tourDesc": "Aperte este botão sempre que tiver um problema para me avisar.",
+    "tourDone": "Entendi"
+  },
   "footer": {
     "donate": "Doar",
     "newBadge": "Novo",
     "channels": "Canais",
-    "advanced": "Avançado"
+    "advanced": "Avançado",
+    "bugReport": "Reportar Bug"
   },
   "toggle": {
     "readChat": "Ler comentários",
@@ -92,7 +115,7 @@
     },
     "clips": {
       "title": "Marcadores de Clipe",
-      "desc": "Grave momentos do stream. O atalho global Ctrl+Shift+M funciona mesmo com o app minimizado."
+      "desc": "Marque o minuto exato em que algo bom aconteceu com Ctrl+Shift+M (funciona com o app minimizado). Ao terminar a live, vá direto para esses momentos na gravação sem precisar revê-la inteira para tirar seus clipes."
     },
     "mobile": {
       "title": "Controle Mobile",
@@ -401,7 +424,20 @@
   "notice": {
     "donationsTitle": "Novas formas de apoiar o projeto",
     "donationsBody": "Adicionamos Ko-fi e PayPal como opções de doação. O app continuará 100% grátis — se ele é útil para você e você quer apoiar o projeto, agora é mais fácil do que nunca.",
-    "donationsCta": "Ver opções de doação"
+    "donationsCta": "Ver opções de doação",
+    "bugReportTitle": "Está com um problema? Me avise na hora",
+    "bugReportBody": "Adicionamos um botão \"Reportar Bug\". Toda vez que algo der errado, clique nele, conte em poucas palavras o que aconteceu e tudo chega até mim automaticamente, é como se eu visse seu computador na hora, assim consigo resolver mais rápido.",
+    "bugReportCta": "Ver botão de Reportar Bug",
+    "bugReportDevBody": "Este app está em desenvolvimento constante, então é normal encontrar algum erro de vez em quando. Se quiser ajudar a melhorá-lo, pode se juntar como desenvolvedor ou apoiar com uma doação.",
+    "bugReportDevCta": "Junte-se como desenvolvedor",
+    "bugReportDonateCta": "Apoiar com uma doação",
+    "onboardingTitle": "Bem-vindo/a! Quer que a gente mostre como conectar?",
+    "onboardingBody": "Vamos te guiar passo a passo: vincular seu canal e conectar quando estiver ao vivo. Leva menos de um minuto.",
+    "onboardingCta": "Começar tutorial",
+    "onboardingSkip": "Agora não",
+    "onboardingDoneTitle": "Pronto! Agora você sabe como conectar",
+    "onboardingDoneBody": "Muito sucesso com sua live, que tudo dê certo aí em cima. Eu desenvolvo esse app sozinho, então se em algum momento você mencionar ele no seu canal, ajuda muito a mais streamers conhecerem. Obrigado por usar!",
+    "onboardingDoneCta": "Vamos lá!"
   },
   "mobile3": {
     "connecting": "Conectando…",
@@ -509,5 +545,24 @@
     "desc": "Além do idioma da voz, permitir mensagens em:",
     "voiceAlways": "(idioma da voz — sempre permitido)",
     "notApplicable": "Este filtro só se aplica a vozes com alfabeto latino."
+  },
+  "tour": {
+    "next": "Próximo",
+    "prev": "Voltar",
+    "done": "Concluído"
+  },
+  "onboarding": {
+    "step1Title": "Primeiro, vá em Configuração",
+    "step1Desc": "Aqui você vai vincular seu canal antes de conectar.",
+    "step2Title": "Canais vinculados",
+    "step2Desc": "Toque em \"Adicionar canal\" para adicionar seu TikTok, Twitch ou YouTube.",
+    "step3Title": "Escolha a plataforma",
+    "step3Desc": "Selecione TikTok, Twitch ou YouTube.",
+    "step4Title": "Digite seu usuário ou canal",
+    "step4Desc": "Coloque seu @usuário, nome do canal ou link, dependendo da plataforma.",
+    "step5Title": "Salve o canal",
+    "step5Desc": "Isso só salva, ainda não conecta a nada.",
+    "step6Title": "Último passo! Fique ao vivo primeiro",
+    "step6Desc": "Antes de tocar aqui: inicie sua transmissão na plataforma (TikTok/Twitch/YouTube) e espere ficar ao vivo. Só então volte e toque em \"Conectar tudo\". Não antes de estar ao vivo."
   }
 }

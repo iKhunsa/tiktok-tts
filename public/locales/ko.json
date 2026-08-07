@@ -12,11 +12,34 @@
     "label": "TikLiveTTS 커뮤니티",
     "desc": "공식 Discord · 피드백과 질문 환영"
   },
+  "bugReport": {
+    "title": "문제 신고",
+    "guide": "문제가 있으신가요? 1) 다시 한번 재현해 보세요. 2) 무슨 일이 있었는지 직접 작성해서 이 양식을 채워주세요. 3) 제출하면 세션의 기술 로그와 함께 자동으로 팀에 전송됩니다 (비밀번호나 민감한 정보는 포함되지 않습니다).",
+    "discordNickLabel": "Discord 닉네임",
+    "discordNickPlaceholder": "사용자#0000",
+    "channelLinkLabel": "채널 링크 (TikTok/Twitch/YouTube)",
+    "channelLinkPlaceholder": "https://...",
+    "descriptionLabel": "무슨 일이 있었는지 알려주세요",
+    "descriptionPlaceholder": "무엇을 하고 있었나요? 무엇을 기대했나요? 실제로 무슨 일이 일어났나요?",
+    "extraLabel": "추가로 하고 싶은 말이 있나요? (선택)",
+    "extraPlaceholder": "오류 메시지, 발생 시점 등",
+    "submit": "신고 보내기",
+    "sending": "전송 중...",
+    "sent": "신고가 전송되었습니다, 감사합니다!",
+    "errorRequired": "닉네임, 채널을 입력하고 무슨 일이 있었는지 알려주세요",
+    "errorSend": "신고를 보낼 수 없습니다, 다시 시도해주세요",
+    "discordHint": "간단한 질문인가요? ",
+    "discordLink": "Discord에 참여하기",
+    "tourTitle": "여기 있어요!",
+    "tourDesc": "문제가 생기면 언제든 이 버튼을 눌러서 알려주세요.",
+    "tourDone": "확인했어요"
+  },
   "footer": {
     "donate": "후원",
     "newBadge": "신규",
     "channels": "채널",
-    "advanced": "고급"
+    "advanced": "고급",
+    "bugReport": "버그 신고"
   },
   "toggle": {
     "readChat": "댓글 읽기",
@@ -92,7 +115,7 @@
     },
     "clips": {
       "title": "클립 마커",
-      "desc": "방송의 순간을 기록합니다. 전역 단축키 Ctrl+Shift+M은 앱이 최소화되어도 작동합니다."
+      "desc": "Ctrl+Shift+M로 좋은 순간이 일어난 정확한 시점을 표시하세요 (앱이 최소화되어 있어도 작동합니다). 방송이 끝나면 녹화본 전체를 다시 보지 않고도 그 순간으로 바로 이동해 클립을 뽑을 수 있습니다."
     },
     "mobile": {
       "title": "모바일 제어",
@@ -401,7 +424,20 @@
   "notice": {
     "donationsTitle": "프로젝트를 지원하는 새로운 방법",
     "donationsBody": "기부 옵션으로 Ko-fi와 PayPal을 추가했습니다. 앱은 앞으로도 100% 무료입니다. 앱이 유용하고 프로젝트를 지원하고 싶다면, 이제 그 어느 때보다 쉽게 기부할 수 있습니다.",
-    "donationsCta": "기부 옵션 보기"
+    "donationsCta": "기부 옵션 보기",
+    "bugReportTitle": "문제가 있으신가요? 바로 알려주세요",
+    "bugReportBody": "\"버그 신고\" 버튼을 추가했습니다. 문제가 생기면 누르고, 무슨 일이 있었는지 몇 마디로 알려주세요. 모든 정보가 자동으로 전송됩니다. 마치 그 순간 당신의 컴퓨터를 보고 있는 것처럼, 더 빨리 고칠 수 있어요.",
+    "bugReportCta": "버그 신고 버튼 보기",
+    "bugReportDevBody": "이 앱은 계속 개발 중이라 가끔 오류가 발생하는 건 정상입니다. 개선을 돕고 싶으시다면 개발자로 참여하시거나 후원으로 응원해주세요.",
+    "bugReportDevCta": "개발자로 참여하기",
+    "bugReportDonateCta": "후원으로 응원하기",
+    "onboardingTitle": "환영합니다! 연결 방법을 알려드릴까요?",
+    "onboardingBody": "채널 연동부터 라이브 중 연결까지 단계별로 안내해 드립니다. 1분도 안 걸려요.",
+    "onboardingCta": "튜토리얼 시작",
+    "onboardingSkip": "나중에",
+    "onboardingDoneTitle": "완료! 이제 연결하는 방법을 아셨어요",
+    "onboardingDoneBody": "방송 잘 되길 바라요. 좋은 결과 있으시길. 이 앱은 저 혼자 만들고 있어서, 혹시 채널에서 한 번 언급해 주시면 더 많은 스트리머들이 알게 되는 데 큰 도움이 됩니다. 사용해 주셔서 감사해요!",
+    "onboardingDoneCta": "시작할게요!"
   },
   "mobile3": {
     "connecting": "연결 중…",
@@ -509,5 +545,24 @@
     "desc": "음성 언어 외에 다음 언어의 메시지도 허용:",
     "voiceAlways": "(음성 언어 — 항상 허용)",
     "notApplicable": "이 필터는 라틴 문자 음성에만 적용됩니다."
+  },
+  "tour": {
+    "next": "다음",
+    "prev": "이전",
+    "done": "완료"
+  },
+  "onboarding": {
+    "step1Title": "먼저 설정으로 이동하세요",
+    "step1Desc": "여기서 연결하기 전에 채널을 연동합니다.",
+    "step2Title": "연동된 채널",
+    "step2Desc": "\"채널 추가\"를 눌러 TikTok, Twitch 또는 YouTube를 추가하세요.",
+    "step3Title": "플랫폼 선택",
+    "step3Desc": "TikTok, Twitch, YouTube 중에서 선택하세요.",
+    "step4Title": "사용자 이름 또는 채널 입력",
+    "step4Desc": "플랫폼에 따라 @사용자 이름, 채널 이름 또는 링크를 입력하세요.",
+    "step5Title": "채널 저장",
+    "step5Desc": "이건 저장만 할 뿐 아직 아무것도 연결하지 않습니다.",
+    "step6Title": "마지막 단계! 먼저 라이브를 시작하세요",
+    "step6Desc": "여기를 누르기 전에: 플랫폼(TikTok/Twitch/YouTube)에서 방송을 시작하고 라이브 상태가 될 때까지 기다리세요. 라이브가 된 후에 돌아와서 \"전체 연결\"을 누르세요. 라이브 전에는 누르지 마세요."
   }
 }

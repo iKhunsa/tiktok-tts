@@ -12,6 +12,10 @@ const os = require('os');
 const QRCode = require('qrcode');
 const { createMusicEngine } = require('./music-engine');
 
+// Bus de telemetría. Existe siempre; si main.js no la inicializó (o no hay
+// servidor configurado) cada emit es un no-op sin coste.
+const { bus: telemetryBus } = require('./telemetry');
+
 const RESOURCE_BASE = process.env.TIKTOK_RESOURCES_PATH || __dirname;
 const DATA_BASE = process.env.TIKTOK_USER_DATA_PATH || RESOURCE_BASE;
 
@@ -129,6 +133,58 @@ const SOUNDS_DIR = path.join(DATA_BASE, 'sounds');
 fs.mkdirSync(SOUNDS_DIR, { recursive: true });
 const SOUNDS_CONFIG_PATH = path.join(DATA_BASE, 'sounds-config.json');
 
+// ── Logging persistente por sesión (para diagnóstico y reporte de bugs) ────
+const LOGS_DIR = path.join(DATA_BASE, 'logs');
+const LOG_RETENTION_DAYS = 14;
+const MAX_SESSION_LOG_BYTES = 10 * 1024 * 1024; // 10MB cap por archivo de sesión
+fs.mkdirSync(LOGS_DIR, { recursive: true });
+
+// Barrido de retención: borra sesiones viejas al arrancar.
+try {
+  const cutoff = Date.now() - LOG_RETENTION_DAYS * 24 * 60 * 60 * 1000;
+  for (const file of fs.readdirSync(LOGS_DIR)) {
+    if (!file.startsWith('session-') || !file.endsWith('.log')) continue;
+    const filePath = path.join(LOGS_DIR, file);
+    try {
+      if (fs.statSync(filePath).mtimeMs < cutoff) fs.unlinkSync(filePath);
+    } catch (_) {}
+  }
+} catch (_) {}
+
+const sessionLogFileName = `session-${new Date().toISOString().replace(/:/g, '-').split('.')[0]}.log`;
+const sessionLogPath = path.join(LOGS_DIR, sessionLogFileName);
+let sessionLogBytesWritten = 0;
+let sessionLogStream = null;
+try {
+  sessionLogStream = fs.createWriteStream(sessionLogPath, { flags: 'a' });
+} catch (_) {
+  sessionLogStream = null;
+}
+
+function getCurrentSessionLogPath() {
+  return sessionLogPath;
+}
+
+// ── Config del webhook de reporte de bugs (nunca commiteado al repo) ───────
+// Se busca primero en DATA_BASE (override local/dev, gitignored) y luego en
+// RESOURCE_BASE (empaquetado vía extraResources, o raíz del repo en dev).
+const WEBHOOK_CONFIG_CANDIDATES = [
+  path.join(DATA_BASE, 'webhook-config.json'),
+  path.join(RESOURCE_BASE, 'webhook-config.json'),
+];
+
+function getBugReportWebhookUrl() {
+  for (const candidate of WEBHOOK_CONFIG_CANDIDATES) {
+    try {
+      if (fs.existsSync(candidate)) {
+        const cfg = JSON.parse(fs.readFileSync(candidate, 'utf8'));
+        if (cfg && cfg.discordWebhookUrl) return cfg.discordWebhookUrl;
+      }
+    } catch (_) {}
+  }
+  return null;
+}
+
 function loadSounds() {
   try {
     return JSON.parse(fs.readFileSync(SOUNDS_CONFIG_PATH, 'utf8'));
@@ -187,15 +243,32 @@ function validateLocalMutation(req, res, next) {
   return next();
 }
 
+// Se registra una sola vez por sesión: interesa "¿usa el panel móvil?", no
+// cuántas peticiones hace el móvil (que son muchas, es una UI que refresca).
+let mobilePairedReported = false;
+
 function validateMobileRequest(req, res, next) {
   const clientIp = req.socket?.remoteAddress?.replace(/^::ffff:/, '');
   if (!isPrivateIP(clientIp) && !isLocalHostname(clientIp)) {
     return res.status(403).json({ error: 'Solo acceso desde red local' });
   }
+  if (!mobilePairedReported) {
+    mobilePairedReported = true;
+    telemetryBus.emit('mobile:paired');
+  }
   return next();
 }
 
 app.use(validateLocalMutation);
+
+// Overlays cargados en OBS. Se registra cuál se abre, no cuántas veces: OBS
+// recarga la fuente en cada cambio de escena.
+app.use((req, _res, next) => {
+  const m = /^\/overlay-([a-z-]+)\.html$/.exec(req.path);
+  if (m) telemetryBus.emit('overlay:opened', { overlay: m[1] });
+  next();
+});
+
 app.use(express.static(path.join(RESOURCE_BASE, 'public')));
 app.use('/gifts', express.static(path.join(RESOURCE_BASE, 'gifts')));
 app.use('/uploads', express.static(UPLOADS_DIR));
@@ -718,6 +791,9 @@ async function handleMusicRequest(query, user, userId, platform) {
   log('info', 'music', '!p recibido', { query, user, platform });
   if (!config.musicEnabled) { log('info', 'music', 'deshabilitado'); return; }
 
+  // Solo la plataforma de origen: ni la canción pedida ni quién la pidió.
+  telemetryBus.emit('music:request', { platform });
+
   const now = Date.now();
 
   // Dedup fijo, siempre activo (independiente del cooldown configurable,
@@ -898,7 +974,42 @@ function log(level, ctx, msg, data = null) {
   if (serverLogs.length > MAX_SERVER_LOGS) serverLogs.shift();
   const fn = level === 'error' ? console.error : console.log;
   fn(JSON.stringify(entry));
+
+  // Único punto por el que pasan todos los errores no fatales del servidor.
+  // El conector recorta y limita a 50 por sesión, así que un bucle de errores
+  // no se convierte en una inundación.
+  if (level === 'error') {
+    telemetryBus.emit('error:handled', {
+      where: ctx,
+      message: (data && data.error) ? `${msg}: ${data.error}` : msg,
+      stack: data && data.stack,
+    });
+  }
+
+  if (sessionLogStream && sessionLogBytesWritten < MAX_SESSION_LOG_BYTES) {
+    try {
+      const line = JSON.stringify(entry) + '\n';
+      sessionLogStream.write(line);
+      sessionLogBytesWritten += Buffer.byteLength(line);
+    } catch (_) {}
+  }
 }
+
+process.on('uncaughtException', (err) => {
+  log('error', 'server', 'uncaughtException', { error: err.message, stack: err.stack });
+  telemetryBus.emit('error:uncaught', { where: 'server', message: err.message, stack: err.stack });
+});
+process.on('unhandledRejection', (reason) => {
+  log('error', 'server', 'unhandledRejection', { error: reason?.message || String(reason) });
+  telemetryBus.emit('error:uncaught', {
+    where: 'server:rejection',
+    message: reason?.message || String(reason),
+    stack: reason?.stack,
+  });
+});
+process.on('exit', () => {
+  try { sessionLogStream && sessionLogStream.end(); } catch (_) {}
+});
 
 function extractFollowerCount(roomInfo) {
   try {
@@ -921,6 +1032,12 @@ function startFollowerRefresh() {
         if (newCount > 0 && newCount !== overlayState.followerBaseByChannel.get(username)) {
           setFollowerBaseForChannel(username, newCount);
           log('info', 'followers', 'Base follower count refreshed', { channel: username, count: newCount });
+        }
+        // Dato gratis: ya se está pidiendo para el overlay de seguidores.
+        if (newCount > 0) {
+          telemetryBus.emit('creator:stats', {
+            platform: 'tiktok', username, follower_count: newCount,
+          });
         }
       } catch (err) {
         log('warn', 'followers', 'Failed to refresh follower count', { channel: username, error: err.message });
@@ -1263,9 +1380,17 @@ function moderationStage(comment) {
 }
 
 function isSpam(comment, userKey) {
-  if (moderationStage(comment)) return true;
+  const stage = moderationStage(comment);
+  if (stage) {
+    // Solo el motivo, nunca el mensaje ni quién lo escribió.
+    telemetryBus.emit('moderation:message-filtered', { reason: stage.stage });
+    return true;
+  }
   const norm = normalizeAggressive(comment);
-  if (norm.length >= DUP_MIN_LEN && isDuplicateRecent(userKey, norm)) return true;
+  if (norm.length >= DUP_MIN_LEN && isDuplicateRecent(userKey, norm)) {
+    telemetryBus.emit('moderation:message-filtered', { reason: 'duplicate' });
+    return true;
+  }
   return false;
 }
 
@@ -1306,6 +1431,15 @@ function isTTSRateLimited() {
 
 // Broadcast to all connected browser clients
 function broadcast(data) {
+  // Todas las desconexiones pasan por aquí (11 puntos de llamada), así que se
+  // instrumentan en un solo sitio en vez de en cada uno.
+  if (data && data.type === 'channel-disconnected') {
+    telemetryBus.emit('platform:disconnected', { platform: data.platform });
+  } else if (data && data.type === 'disconnected') {
+    // Se fue el último canal de TikTok.
+    telemetryBus.emit('platform:disconnected', { platform: 'tiktok' });
+  }
+
   const msg = JSON.stringify(data);
   clients.forEach(client => {
     if (client.readyState === WebSocket.OPEN) {
@@ -1443,6 +1577,9 @@ function setupTikTokConnection(cleanUsername) {
       recomputeFollowerBase();
       broadcastChannels();
       cleanupAfterLastTikTokChannel();
+      telemetryBus.emit('platform:reconnect-failed', {
+        platform: 'tiktok', attempts: entry.attempts,
+      });
     }
   });
 
@@ -1575,10 +1712,13 @@ app.post('/api/tts', async (req, res) => {
   const { text, voice = 'es' } = req.body || {};
   if (!text) return res.status(400).json({ error: 'Texto requerido' });
   if (isTTSRateLimited()) {
+    telemetryBus.emit('tts:rate-limited', { lang: voice });
     return res.status(429).json({ error: 'Rate limit activo', retryAfter: config.TTS_RATE_WINDOW_MS });
   }
   const limitedText = sanitizeForTTS(text.substring(0, config.TTS_MAX_CHARS));
   log('info', 'tts', 'request', { voice, len: limitedText.length });
+  // Solo idioma y longitud: nunca el texto leído.
+  telemetryBus.emit('tts:spoken', { lang: voice, slow: !!config.ttsSlowSpeech });
 
   // ── Google TTS (online, múltiples idiomas) ─────────────────
   try {
@@ -1696,6 +1836,130 @@ app.get('/api/status', (req, res) => {
 app.get('/api/logs', (req, res) => {
   const limit = Math.max(1, Math.min(parseInt(req.query.limit || '100', 10) || 100, MAX_SERVER_LOGS));
   res.json({ logs: serverLogs.slice(-limit) });
+});
+
+// Errores capturados en el cliente (renderer) — se suman al log de sesión.
+app.post('/api/logs/client', (req, res) => {
+  const { message, stack, source } = req.body || {};
+  if (!message) return res.status(400).json({ error: 'message requerido' });
+  log('error', 'client', String(message).slice(0, 2000), stack ? { stack: String(stack).slice(0, 4000), source } : { source });
+  res.json({ ok: true });
+});
+
+const SESSION_LOG_READ_CAP = 20 * 1024 * 1024; // 20MB
+
+function readSessionLogEntries() {
+  try {
+    const stat = fs.statSync(sessionLogPath);
+    const start = Math.max(0, stat.size - SESSION_LOG_READ_CAP);
+    const raw = fs.readFileSync(sessionLogPath, 'utf8').slice(start > 0 ? start : 0);
+    return raw.split('\n').filter(Boolean).map(line => {
+      try { return JSON.parse(line); } catch (_) { return null; }
+    }).filter(Boolean);
+  } catch (_) {
+    return [];
+  }
+}
+
+function entriesToMarkdown(entries) {
+  const lines = ['# TikTok TTS — Log de sesión', ''];
+  for (const e of entries) {
+    lines.push(`- **${e.ts}** \`[${e.level}]\` \`${e.ctx}\` — ${e.msg}`);
+    if (e.data) lines.push('  ```json\n  ' + JSON.stringify(e.data) + '\n  ```');
+  }
+  return lines.join('\n');
+}
+
+app.get('/api/logs/session-file', (req, res) => {
+  const format = req.query.format === 'md' ? 'md' : 'json';
+  const entries = readSessionLogEntries();
+  if (format === 'md') {
+    res.type('text/markdown').send(entriesToMarkdown(entries));
+  } else {
+    res.type('application/json').send(JSON.stringify(entries, null, 2));
+  }
+});
+
+// ── Reporte de bug → Discord webhook ────────────────────────────────────
+let lastBugReportAt = 0;
+const BUG_REPORT_COOLDOWN_MS = 10000;
+const DISCORD_ATTACHMENT_CAP_BYTES = 9 * 1024 * 1024; // margen bajo el límite real (10MB, server free tier)
+
+function tailBuffer(buf, maxBytes) {
+  if (buf.length <= maxBytes) return buf;
+  return buf.subarray(buf.length - maxBytes);
+}
+
+async function postToDiscordWebhook(webhookUrl, embed, logFilePath) {
+  const form = new FormData();
+  form.append('payload_json', JSON.stringify({ embeds: [embed] }));
+  if (logFilePath && fs.existsSync(logFilePath)) {
+    try {
+      let fileBuf = fs.readFileSync(logFilePath);
+      if (fileBuf.length > DISCORD_ATTACHMENT_CAP_BYTES) {
+        fileBuf = tailBuffer(fileBuf, DISCORD_ATTACHMENT_CAP_BYTES);
+      }
+      form.append('files[0]', new Blob([fileBuf], { type: 'text/plain' }), path.basename(logFilePath));
+    } catch (_) {}
+  }
+  const resp = await fetch(webhookUrl, { method: 'POST', body: form });
+  if (!resp.ok) {
+    const bodyText = await resp.text().catch(() => '');
+    throw new Error(`Discord webhook HTTP ${resp.status}: ${bodyText.slice(0, 300)}`);
+  }
+}
+
+let appVersion = 'unknown';
+try { appVersion = require('./package.json').version; } catch (_) {}
+
+app.post('/api/report-bug', async (req, res) => {
+  const { discordNick, channelLink, description, extra } = req.body || {};
+  if (!discordNick || !channelLink || !description) {
+    return res.status(400).json({ error: 'Faltan campos requeridos' });
+  }
+  const now = Date.now();
+  if (now - lastBugReportAt < BUG_REPORT_COOLDOWN_MS) {
+    return res.status(429).json({ error: 'Espera unos segundos antes de enviar otro reporte' });
+  }
+
+  const webhookUrl = getBugReportWebhookUrl();
+  if (!webhookUrl) {
+    log('error', 'bug-report', 'webhook no configurado');
+    return res.status(503).json({ error: 'Reporte de bug no disponible temporalmente' });
+  }
+
+  const embed = {
+    title: '🐛 Nuevo reporte de bug',
+    color: 15158332,
+    fields: [
+      { name: 'Discord', value: String(discordNick).slice(0, 200), inline: true },
+      { name: 'Canal', value: String(channelLink).slice(0, 300), inline: true },
+      { name: 'Versión app', value: appVersion, inline: true },
+      { name: 'SO', value: `${os.platform()} ${os.release()}`, inline: true },
+      { name: 'Qué pasó', value: String(description).slice(0, 1000) },
+    ],
+    footer: { text: 'TikTok TTS — Reporte de bug' },
+    timestamp: new Date().toISOString(),
+  };
+  if (extra) embed.fields.push({ name: 'Info adicional', value: String(extra).slice(0, 1000) });
+
+  lastBugReportAt = now;
+
+  try {
+    try {
+      await postToDiscordWebhook(webhookUrl, embed, sessionLogPath);
+    } catch (attachErr) {
+      // Fallback: reintenta sin adjunto si Discord rechazó el archivo.
+      log('warn', 'bug-report', 'fallo con adjunto, reintentando sin log', { error: attachErr.message });
+      embed.fields.push({ name: 'Nota', value: 'Log demasiado grande para adjuntar, se guardó localmente.' });
+      await postToDiscordWebhook(webhookUrl, embed, null);
+    }
+    log('info', 'bug-report', 'Reporte enviado', { discordNick, channelLink });
+    res.json({ ok: true });
+  } catch (err) {
+    log('error', 'bug-report', 'Fallo enviando reporte', { error: err.message });
+    res.status(502).json({ error: 'No se pudo enviar el reporte' });
+  }
 });
 
 // Config dinámico
@@ -2151,6 +2415,64 @@ async function connectTwitch(channel, token = null, attempt = 0) {
   broadcast({ type: 'platform-connected', platform: 'twitch', channel });
   broadcastChannels();
   log('info', 'twitch', 'Twitch conectado', { channel });
+
+  const authed = !!(effectiveToken && authTokens.twitch?.login);
+  telemetryBus.emit('platform:connected', {
+    platform: 'twitch', channels: twitchChannels.size, authed,
+  });
+  telemetryBus.emit('creator:connected', {
+    platform: 'twitch',
+    username: channel,
+    // Sin OAuth no hay a quién preguntarle el perfil; se manda lo que se sabe.
+    resolve: async () => {
+      if (!authed) return { display_name: channel };
+      return fetchTwitchProfile(channel);
+    },
+  });
+}
+
+// Perfil publico de un canal de Twitch. Solo se llama las 2 veces que permite
+// la cache de creadores, nunca en cada conexion.
+async function fetchTwitchProfile(login) {
+  try {
+    const res = await undiciFetch(
+      `https://api.twitch.tv/helix/users?login=${encodeURIComponent(login)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${authTokens.twitch.accessToken}`,
+          'Client-Id': platformConfig.twitchClientId,
+        },
+        signal: AbortSignal.timeout(5000),
+      }
+    );
+    if (!res.ok) return { display_name: login };
+    const user = (await res.json()).data?.[0];
+    if (!user) return { display_name: login };
+
+    let followers = null;
+    try {
+      const fr = await undiciFetch(
+        `https://api.twitch.tv/helix/channels/followers?broadcaster_id=${user.id}&first=1`,
+        {
+          headers: {
+            Authorization: `Bearer ${authTokens.twitch.accessToken}`,
+            'Client-Id': platformConfig.twitchClientId,
+          },
+          signal: AbortSignal.timeout(5000),
+        }
+      );
+      // Requiere scope de moderación del canal propio; si no lo hay, se omite.
+      if (fr.ok) followers = (await fr.json()).total ?? null;
+    } catch (_) { /* seguidores opcionales */ }
+
+    return {
+      display_name: user.display_name || login,
+      avatar_url: user.profile_image_url || null,
+      follower_count: followers,
+    };
+  } catch (_) {
+    return { display_name: login };
+  }
 }
 
 async function connectYoutube(channelOrId, attempt = 0) {
@@ -2262,6 +2584,15 @@ async function connectYoutube(channelOrId, attempt = 0) {
   broadcast({ type: 'platform-connected', platform: 'youtube', channel: target.key });
   broadcastChannels();
   log('info', 'youtube', 'YouTube conectado', { channelOrId: target.key, opts: target.opts });
+
+  telemetryBus.emit('platform:connected', { platform: 'youtube', channels: youtubeChannels.size });
+  telemetryBus.emit('creator:connected', {
+    platform: 'youtube',
+    username: String(target.key).replace(/^@/, ''),
+    // youtube-chat no expone el perfil del canal; el servidor construye la URL
+    // canónica a partir del handle o el channelId.
+    resolve: async () => ({ display_name: String(target.key) }),
+  });
 }
 
 // ── PLATFORM ENDPOINTS ────────────────────────────────────────────────────────
@@ -2415,6 +2746,25 @@ async function connectTiktokChannel(channel) {
     entry.attempts = 0;
     broadcast({ type: 'connected', username: cleanUsername, isFirst: isFirstConnection });
     broadcastChannels();
+
+    telemetryBus.emit('platform:connected', { platform: 'tiktok', channels: tiktokChannels.size });
+    // `resolve` es perezosa: el conector solo la llama las 2 primeras veces
+    // que se conecta este canal. A partir de ahí no cuesta ninguna petición.
+    telemetryBus.emit('creator:connected', {
+      platform: 'tiktok',
+      username: cleanUsername,
+      resolve: async () => {
+        const owner = (state && state.roomInfo && (state.roomInfo.owner)) || null;
+        return {
+          display_name: (owner && (owner.nickname || owner.nick_name)) || null,
+          avatar_url: (owner && owner.avatar_thumb && Array.isArray(owner.avatar_thumb.url_list))
+            ? owner.avatar_thumb.url_list[0]
+            : null,
+          follower_count: extractFollowerCount(state && state.roomInfo) || null,
+        };
+      },
+    });
+
     return cleanUsername;
   } catch (err) {
     tiktokChannels.delete(cleanUsername);
@@ -2614,6 +2964,7 @@ app.post('/api/obs/connect', async (req, res) => {
 
   try {
     await connectObs(port, password);
+    telemetryBus.emit('obs:connected');
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -2640,6 +2991,7 @@ app.post('/api/obs/save-replay', (_req, res) => {
       op: 6,
       d: { requestType: 'SaveReplayBuffer', requestId: `replay-${Date.now()}` }
     }));
+    telemetryBus.emit('obs:clip-saved');
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -3148,6 +3500,12 @@ app.post('/api/mobile/command', validateMobileRequest, (req, res) => {
     return res.status(400).json({ error: 'Acción no válida' });
   }
 
+  // Solo el nombre de la acción, nunca sus parámetros.
+  telemetryBus.emit('mobile:command', { command: action });
+  if (action === 'soundpadPlay') telemetryBus.emit('soundpad:triggered', { via: 'mobile' });
+  if (action === 'musicSkip') telemetryBus.emit('music:skip');
+  if (action === 'markClip') telemetryBus.emit('obs:clip-saved');
+
   // Music actions are handled server-side directly — no desktop relay needed
   if (action === 'musicSkip') {
     currentTrack = null;
@@ -3239,6 +3597,7 @@ app.get('/api/music/queue', (_req, res) => {
 });
 
 app.post('/api/music/skip', (req, res) => {
+  telemetryBus.emit('music:skip');
   currentTrack = null;
   // music-skip solo detiene el audio local; el avance de la cola es server-side
   broadcast({ type: 'music-skip' });
@@ -3389,7 +3748,13 @@ server.listen(PORT, '0.0.0.0', () => {
   console.log(`\nTikTok Live TTS corriendo en http://127.0.0.1:${PORT}`);
   console.log(`Control mobile: http://${localIP}:${PORT}/mobile\n`);
   // Electron opens the BrowserWindow after detecting this port is up.
+
+  // Foto de la configuración: responde "¿alguien usa el filtro de idioma?" sin
+  // instrumentar cada interruptor. Solo booleanos y enumerados.
+  telemetryBus.emit('settings:snapshot', config);
 });
+
+module.exports.log = log;
 
 module.exports.shutdown = function shutdownServer() {
   for (const entry of tiktokChannels.values()) {

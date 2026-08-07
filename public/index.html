@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TikTok Live TTS</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="vendor/driver.css" />
   <style>
     :root {
       --bg: #171717;
@@ -790,6 +791,40 @@
     .cfg-field input[type="text"]:focus,
     .cfg-field input[type="number"]:focus { border-color: rgba(62, 207, 142, 0.4); }
 
+    .cfg-field textarea {
+      background: var(--bg-button);
+      border: 1px solid var(--border-strong);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 10px 11px;
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      resize: vertical;
+      transition: border-color 0.2s;
+    }
+
+    .cfg-field textarea:focus { border-color: rgba(62, 207, 142, 0.4); }
+    .cfg-field textarea::placeholder,
+    .cfg-field input::placeholder { color: var(--text-muted); opacity: 0.6; }
+
+    .bugreport-guide {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      background: rgba(62, 207, 142, 0.04);
+      border: 1px solid rgba(62, 207, 142, 0.2);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 22px;
+    }
+
+    .bugreport-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
     .cfg-field input[type="color"] {
       width: 100%;
       height: 38px;
@@ -943,6 +978,34 @@
     .btn-test:disabled { opacity: 0.4; cursor: not-allowed; }
 
     /* ── MODALS ──────────────────────────────────────────── */
+    /* ── DRIVER.JS (spotlight/tour) — tema oscuro acorde a la app ────── */
+    .driver-popover {
+      background-color: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border-strong);
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+      font-family: 'Inter', sans-serif;
+    }
+    .driver-popover-title { color: var(--text); font-size: 15px; font-weight: 600; }
+    .driver-popover-description { color: var(--text-secondary); font-size: 13px; }
+    .driver-popover-close-btn { color: var(--text-muted); }
+    .driver-popover-close-btn:hover, .driver-popover-close-btn:focus { color: var(--text); }
+    .driver-popover-footer-btn {
+      background-color: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      padding: 6px 14px;
+    }
+    .driver-popover-footer-btn:hover, .driver-popover-footer-btn:focus { opacity: 0.85; background-color: var(--accent); }
+    .driver-popover-arrow-side-left { border-right-color: var(--surface); }
+    .driver-popover-arrow-side-right { border-left-color: var(--surface); }
+    .driver-popover-arrow-side-top { border-bottom-color: var(--surface); }
+    .driver-popover-arrow-side-bottom { border-top-color: var(--surface); }
+
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -990,6 +1053,16 @@
     .modal-close:hover { color: var(--text); }
     .modal-content h2 { margin: 0 0 28px; font-size: 20px; color: var(--text); font-weight: 500; letter-spacing: -0.3px; }
     .modal-content h3 { margin: 0 0 8px; font-size: 14px; color: var(--text); font-weight: 500; }
+
+    .notice-icon-badge {
+      margin: 0 auto 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 44px;
+      line-height: 1;
+    }
+    .confetti-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2000000000; }
 
     .qr-card {
       background: rgba(62, 207, 142, 0.04);
@@ -1460,7 +1533,7 @@
         <img class="sidebar-icon icon-inline" src="icons/music_note.svg" alt="">
         <span>Bot</span>
       </button>
-      <button class="sidebar-item" data-view="settings" onclick="switchView('settings')">
+      <button id="navSettingsBtn" class="sidebar-item" data-view="settings" onclick="switchView('settings')">
         <img class="sidebar-icon icon-inline" src="icons/settings.svg" alt="">
         <span data-i18n="nav.settings">Configuración</span>
       </button>
@@ -1472,9 +1545,10 @@
     </a>
 
     <div class="sidebar-footer">
-      <button class="sidebar-footer-btn" onclick="openDonationsModal()"><img class="icon-inline" src="icons/favorite.svg" alt=""> <span data-i18n="footer.donate">Donar</span> <span id="donateNewBadge" class="badge-new" data-i18n="footer.newBadge">Nuevo</span></button>
+      <button class="sidebar-footer-btn" onclick="openDonationsModal()"><img class="icon-inline" src="icons/favorite-red.svg" alt=""> <span data-i18n="footer.donate">Donar</span> <span id="donateNewBadge" class="badge-new" data-i18n="footer.newBadge">Nuevo</span></button>
       <button class="sidebar-footer-btn" onclick="openSocialModal()"><img class="icon-inline" src="icons/smartphone.svg" alt=""> <span data-i18n="footer.channels">Canales</span></button>
       <a href="/advanced.html" class="sidebar-footer-btn"><img class="icon-inline" src="icons/build.svg" alt=""> <span data-i18n="footer.advanced">Avanzado</span></a>
+      <button id="sidebarBugReportBtn" class="sidebar-footer-btn" onclick="openBugReportModal()"><img class="icon-inline" src="icons/warning.svg" alt=""> <span data-i18n="footer.bugReport">Reportar Bug</span></button>
       <div class="lang-selector-row">
         <img class="icon-inline" src="icons/language.svg" alt="" style="opacity:0.6;flex-shrink:0;">
         <select id="langSelect" onchange="setLanguage(this.value)" title="UI Language">
@@ -2483,6 +2557,50 @@
   </div>
 </div>
 
+<!-- ══ MODAL: Elegir idioma (primera vez, antes que todo lo demás) ══ -->
+<div id="languagePickerModal" class="modal-overlay">
+  <div class="modal-content" style="text-align:center;">
+    <div class="notice-icon-badge">🌐</div>
+    <h2 id="langPickerTitle" style="justify-content:center;">Elegí tu idioma</h2>
+    <p id="langPickerSub" style="margin:0 auto 22px;max-width:340px;color:var(--text-secondary);">Así todo lo que te mostremos va a estar en el idioma que prefieras.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('es')">🇪🇸 Español</button>
+      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('en')">🇬🇧 English</button>
+      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('it')">🇮🇹 Italiano</button>
+      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('pt')">🇵🇹 Português</button>
+      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('fr')">🇫🇷 Français</button>
+      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('de')">🇩🇪 Deutsch</button>
+      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('zh')">🇨🇳 中文</button>
+      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('ja')">🇯🇵 日本語</button>
+      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('ko')">🇰🇷 한국어</button>
+      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('ru')">🇷🇺 Русский</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: Bienvenida / tutorial primer uso (one-time) ══ -->
+<div id="onboardingWelcomeModal" class="modal-overlay" onclick="closeOnboardingWelcome(event)">
+  <div class="modal-content" onclick="event.stopPropagation()" style="text-align:center;">
+    <button class="modal-close" onclick="closeOnboardingWelcome()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <div class="notice-icon-badge">👋</div>
+    <h2 style="justify-content:center;" data-i18n="notice.onboardingTitle">¡Bienvenido/a! ¿Te mostramos cómo conectar?</h2>
+    <p style="margin:0 auto 24px;max-width:340px;color:var(--text-secondary);" data-i18n="notice.onboardingBody">Te guiamos paso a paso: vincular tu canal y conectarte cuando estés en vivo. Te toma menos de un minuto.</p>
+    <button class="btn btn-connect" style="width:100%;" onclick="startOnboardingTour()"><span data-i18n="notice.onboardingCta">Empezar tutorial</span></button>
+    <button class="cfg-btn" style="width:100%;justify-content:center;margin-top:10px;" onclick="closeOnboardingWelcome()"><span data-i18n="notice.onboardingSkip">Ahora no</span></button>
+  </div>
+</div>
+
+<!-- ══ MODAL: Fin del tutorial (confeti + mensaje personal) ══ -->
+<div id="onboardingCompleteModal" class="modal-overlay" onclick="closeOnboardingComplete(event)">
+  <div class="modal-content" onclick="event.stopPropagation()" style="text-align:center;">
+    <button class="modal-close" onclick="closeOnboardingComplete()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <div class="notice-icon-badge">🎉</div>
+    <h2 style="justify-content:center;" data-i18n="notice.onboardingDoneTitle">¡Listo! Ya sabés cómo conectar</h2>
+    <p style="margin:0 auto 14px;max-width:340px;color:var(--text-secondary);" data-i18n="notice.onboardingDoneBody">Mucho éxito con tu stream — que se te dé todo bien ahí arriba. Esta app la hago solo, así que si en algún momento la mencionás en tu canal, ayuda un montón a que más streamers la conozcan. ¡Gracias por usarla!</p>
+    <button class="btn btn-connect" style="width:100%;" onclick="closeOnboardingComplete()"><span data-i18n="notice.onboardingDoneCta">¡Vamos!</span></button>
+  </div>
+</div>
+
 <!-- ══ MODAL: Aviso donaciones (one-time) ═══════════════ -->
 <div id="donationNoticeModal" class="modal-overlay" onclick="closeDonationNotice(event)">
   <div class="modal-content" onclick="event.stopPropagation()">
@@ -2490,6 +2608,21 @@
     <h2><img class="icon-inline" src="icons/favorite.svg" alt=""> <span data-i18n="notice.donationsTitle">Nuevas formas de apoyar el proyecto</span></h2>
     <p data-i18n="notice.donationsBody">Agregamos Ko-fi y PayPal como opciones de donación. La app seguirá siendo 100% gratis — si te sirve y quieres aportar al proyecto, ahora es más fácil que nunca.</p>
     <button class="btn-copy" onclick="openDonationsFromNotice()"><span data-i18n="notice.donationsCta">Ver opciones de donación</span></button>
+  </div>
+</div>
+
+<!-- ══ MODAL: Aviso reporte de bug (one-time) ════════════ -->
+<div id="bugReportNoticeModal" class="modal-overlay" onclick="closeBugReportNotice(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeBugReportNotice()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <h2><img class="icon-inline" src="icons/warning.svg" alt=""> <span data-i18n="notice.bugReportTitle">¿Tenés un problema? Avisame al toque</span></h2>
+    <p style="margin-bottom:14px;" data-i18n="notice.bugReportBody">Agregamos un botón de "Reportar Bug". Cada vez que algo falle, apretalo, contame en pocas palabras qué pasó y se me manda todo automáticamente — es como si viera tu computadora en el momento, así lo arreglo más rápido.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:20px;line-height:1.5;" data-i18n="notice.bugReportDevBody">Esta app está en desarrollo constante, así que es normal encontrarse de vez en cuando con algún error. Si querés ayudar a mejorarla, podés sumarte como developer o apoyar con una donación.</p>
+    <button class="btn-copy" onclick="openBugReportFromNotice()"><span data-i18n="notice.bugReportCta">Ver botón de Reportar Bug</span></button>
+    <div style="display:flex;gap:10px;margin-top:10px;">
+      <a href="https://github.com/iKhunsa/tiktok-tts" target="_blank" class="cfg-btn" style="flex:1;justify-content:center;" data-i18n="notice.bugReportDevCta">Sumate como developer</a>
+      <button class="cfg-btn" style="flex:1;justify-content:center;" onclick="closeBugReportNotice();openDonationsModal();" data-i18n="notice.bugReportDonateCta">Apoyar con una donación</button>
+    </div>
   </div>
 </div>
 
@@ -2523,6 +2656,49 @@
   </div>
 </div>
 
+<!-- ══ MODAL: Reportar Bug ═══════════════════════════════ -->
+<div id="bugReportModal" class="modal-overlay" onclick="closeBugReportModal(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeBugReportModal()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <h2><img class="icon-inline" src="icons/warning.svg" alt=""> <span data-i18n="bugReport.title">Reportar un problema</span></h2>
+
+    <div class="bugreport-guide" data-i18n="bugReport.guide">
+      ¿Tenés un problema? 1) Intentá reproducirlo de nuevo. 2) Completá este formulario contando qué pasó con tus propias palabras. 3) Al enviar, se manda automáticamente al equipo junto con el registro técnico de tu sesión (no incluye contraseñas ni datos sensibles).
+    </div>
+
+    <div class="bugreport-fields">
+      <div class="cfg-field">
+        <label data-i18n="bugReport.discordNickLabel">Tu nick de Discord</label>
+        <input type="text" id="bugReportDiscordNick" data-i18n-placeholder="bugReport.discordNickPlaceholder" placeholder="usuario#0000" />
+      </div>
+
+      <div class="cfg-field">
+        <label data-i18n="bugReport.channelLinkLabel">Link de tu canal (TikTok/Twitch/YouTube)</label>
+        <input type="text" id="bugReportChannelLink" data-i18n-placeholder="bugReport.channelLinkPlaceholder" placeholder="https://..." />
+      </div>
+
+      <div class="cfg-field">
+        <label data-i18n="bugReport.descriptionLabel">Contanos qué pasó</label>
+        <textarea id="bugReportDescription" rows="5" data-i18n-placeholder="bugReport.descriptionPlaceholder" placeholder="¿Qué estabas haciendo? ¿Qué esperabas que pasara? ¿Qué pasó en realidad?"></textarea>
+      </div>
+
+      <div class="cfg-field">
+        <label data-i18n="bugReport.extraLabel">¿Algo más que quieras agregar? (opcional)</label>
+        <textarea id="bugReportExtra" rows="3" data-i18n-placeholder="bugReport.extraPlaceholder" placeholder="Mensajes de error, cuándo pasó, etc."></textarea>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:center;margin-top:20px;">
+      <button class="btn btn-connect" id="bugReportSubmitBtn" onclick="submitBugReport()"><span data-i18n="bugReport.submit">Enviar reporte</span></button>
+    </div>
+
+    <p style="font-size:12px;color:var(--text-muted);margin-top:16px;text-align:center;">
+      <span data-i18n="bugReport.discordHint">¿Es solo una duda rápida? </span>
+      <a href="https://discord.com/invite/mwY859tcQK" target="_blank" style="color:var(--accent);" data-i18n="bugReport.discordLink">Únete a nuestro Discord</a>
+    </p>
+  </div>
+</div>
+
 <!-- ══ MODAL: Idiomas permitidos (filtro por palabras) ══ -->
 <div id="dictLangModal" class="modal-overlay" onclick="closeDictLangModal(event)">
   <div class="modal-content" onclick="event.stopPropagation()">
@@ -2534,6 +2710,8 @@
   </div>
 </div>
 
+<script src="vendor/driver.js"></script>
+<script src="vendor/confetti.js"></script>
 <script>
   // ─── I18N ─────────────────────────────────────────────────────
   const I18N_KEY = 'tikliveTTS_lang';
@@ -2559,6 +2737,10 @@
       const val = t(el.dataset.i18nHtml);
       if (val !== el.dataset.i18nHtml) el.innerHTML = val;
     });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const val = t(el.dataset.i18nPlaceholder);
+      if (val !== el.dataset.i18nPlaceholder) el.placeholder = val;
+    });
   }
 
   async function loadLanguage(lang) {
@@ -2580,15 +2762,63 @@
 
   function setLanguage(lang) {
     localStorage.setItem(I18N_KEY, lang);
-    loadLanguage(lang);
+    return loadLanguage(lang);
   }
 
+  // ─── Selector de idioma para usuarios nuevos ───────────────────
+  // Se muestra ANTES que cualquier otro popup (bienvenida, donación,
+  // reporte de bug) para que todo lo que sigue aparezca ya en el
+  // idioma elegido, en vez de forzar español por defecto.
+  const LANG_PICKER_COPY = {
+    es: { title: 'Elegí tu idioma', sub: 'Así todo lo que te mostremos va a estar en el idioma que prefieras.' },
+    en: { title: 'Choose your language', sub: "This way, everything we show you will be in the language you prefer." },
+    it: { title: 'Scegli la tua lingua', sub: 'Così tutto quello che ti mostreremo sarà nella lingua che preferisci.' },
+    pt: { title: 'Escolha seu idioma', sub: 'Assim, tudo que mostrarmos para você vai estar no idioma que preferir.' },
+    fr: { title: 'Choisissez votre langue', sub: 'Ainsi, tout ce que nous vous montrerons sera dans la langue de votre choix.' },
+    de: { title: 'Wähle deine Sprache', sub: 'So wird alles, was wir dir zeigen, in der Sprache sein, die du bevorzugst.' },
+    zh: { title: '选择你的语言', sub: '这样我们展示给你的一切都会是你喜欢的语言。' },
+    ja: { title: '言語を選んでください', sub: 'これで表示される内容がすべてご希望の言語になります。' },
+    ko: { title: '언어를 선택하세요', sub: '이렇게 하면 모든 내용이 원하시는 언어로 표시됩니다.' },
+    ru: { title: 'Выберите язык', sub: 'Тогда всё, что мы вам покажем, будет на выбранном языке.' },
+  };
+
+  function detectBrowserLang() {
+    const short = (navigator.language || 'en').toLowerCase().split('-')[0];
+    return LANG_PICKER_COPY[short] ? short : 'en';
+  }
+
+  window.__langReady = null;
+  window.__pickLanguage = null;
+
   (function initI18n() {
-    const saved = localStorage.getItem(I18N_KEY) || 'es';
-    const sel = document.getElementById('langSelect');
-    if (sel) sel.value = saved;
-    loadLanguage(saved);
+    const saved = localStorage.getItem(I18N_KEY);
+    let resolveReady;
+    window.__langReady = new Promise((r) => { resolveReady = r; });
+
+    if (saved) {
+      const sel = document.getElementById('langSelect');
+      if (sel) sel.value = saved;
+      loadLanguage(saved).then(resolveReady);
+      return;
+    }
+
+    // Usuario nuevo: mostrar selector con copy en su idioma de navegador detectado.
+    const detected = detectBrowserLang();
+    const copy = LANG_PICKER_COPY[detected];
+    const titleEl = document.getElementById('langPickerTitle');
+    const subEl = document.getElementById('langPickerSub');
+    if (titleEl) titleEl.textContent = copy.title;
+    if (subEl) subEl.textContent = copy.sub;
+
+    window.__pickLanguage = function pickLanguage(lang) {
+      document.getElementById('languagePickerModal').classList.remove('show');
+      setLanguage(lang).then(resolveReady);
+    };
+
+    document.getElementById('languagePickerModal').classList.add('show');
   })();
+
+  function pickLanguage(lang) { window.__pickLanguage(lang); }
 </script>
 
 <script>
@@ -3333,6 +3563,25 @@
   }
 
   const logStorage = new LogStorage(100);
+
+  // Captura errores no manejados del cliente y los manda al log de sesión del servidor.
+  window.addEventListener('error', (e) => {
+    logStorage.addLog('error', 'client', e.message || 'Error desconocido');
+    fetch('/api/logs/client', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: e.message, stack: e.error?.stack, source: e.filename }),
+    }).catch(() => {});
+  });
+  window.addEventListener('unhandledrejection', (e) => {
+    const message = e.reason?.message || String(e.reason);
+    logStorage.addLog('error', 'client', message);
+    fetch('/api/logs/client', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, stack: e.reason?.stack, source: 'unhandledrejection' }),
+    }).catch(() => {});
+  });
 
   const options = {
     readChat: true, readGifts: false, readJoins: false,
@@ -4317,6 +4566,53 @@
     document.getElementById('socialModal').classList.remove('show');
   }
 
+  function openBugReportModal() { document.getElementById('bugReportModal').classList.add('show'); }
+  function closeBugReportModal(e) {
+    if (e && e.target.id !== 'bugReportModal') return;
+    document.getElementById('bugReportModal').classList.remove('show');
+  }
+
+  let _bugReportSubmitting = false;
+  async function submitBugReport() {
+    if (_bugReportSubmitting) return;
+    const discordNick = document.getElementById('bugReportDiscordNick').value.trim();
+    const channelLink = document.getElementById('bugReportChannelLink').value.trim();
+    const description = document.getElementById('bugReportDescription').value.trim();
+    const extra = document.getElementById('bugReportExtra').value.trim();
+
+    if (!discordNick || !channelLink || !description) {
+      showToast(t('bugReport.errorRequired'));
+      return;
+    }
+
+    const btn = document.getElementById('bugReportSubmitBtn');
+    _bugReportSubmitting = true;
+    btn.disabled = true;
+    const originalText = btn.textContent;
+    btn.textContent = t('bugReport.sending');
+
+    try {
+      const res = await fetch('/api/report-bug', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ discordNick, channelLink, description, extra: extra || undefined }),
+      });
+      if (!res.ok) throw new Error('report-bug failed');
+      showToast(t('bugReport.sent'));
+      document.getElementById('bugReportDescription').value = '';
+      document.getElementById('bugReportExtra').value = '';
+      closeBugReportModal();
+    } catch (e) {
+      showToast(t('bugReport.errorSend'));
+    } finally {
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = originalText;
+        _bugReportSubmitting = false;
+      }, 3000);
+    }
+  }
+
   // Palabra conectora hablada entre el nombre de usuario y el comentario
   // (ej: "Usuario dice: comentario"). Independiente de VOICE_TO_DICT_LANG_UI:
   // aquí sí cubrimos ja/zh-CN/ru/ko porque es una palabra hablada, no un filtro de alfabeto.
@@ -4398,12 +4694,182 @@
     openDonationsModal();
   }
 
-  // Aviso one-time: nuevas opciones de donación (v1.5.2)
-  const DONATION_NOTICE_KEY = 'tikliveTTS_noticeDonations_v1';
-  if (!localStorage.getItem(DONATION_NOTICE_KEY)) {
-    localStorage.setItem(DONATION_NOTICE_KEY, '1');
-    setTimeout(() => document.getElementById('donationNoticeModal').classList.add('show'), 1200);
+  function closeBugReportNotice(e) {
+    if (e && e.target.id !== 'bugReportNoticeModal') return;
+    document.getElementById('bugReportNoticeModal').classList.remove('show');
+    maybeShowDonationNotice();
   }
+
+  function driverTourDefaults() {
+    return {
+      showProgress: true,
+      allowClose: true,
+      overlayOpacity: 0.65,
+      stagePadding: 6,
+      popoverOffset: 12,
+      nextBtnText: t('tour.next'),
+      prevBtnText: t('tour.prev'),
+      doneBtnText: t('tour.done'),
+      progressText: '{{current}}/{{total}}',
+    };
+  }
+
+  function openBugReportFromNotice() {
+    document.getElementById('bugReportNoticeModal').classList.remove('show');
+    maybeShowDonationNotice();
+    if (window.driver && window.driver.js) {
+      window.driver.js.driver({
+        ...driverTourDefaults(),
+        showProgress: false,
+        steps: [{
+          element: '#sidebarBugReportBtn',
+          popover: {
+            title: t('bugReport.tourTitle'),
+            description: t('bugReport.tourDesc'),
+            side: 'right',
+            align: 'start',
+          },
+        }],
+      }).drive();
+    } else {
+      openBugReportModal();
+    }
+  }
+
+  // ─── Onboarding: tutorial guiado para usuarios que nunca usaron la app ──
+  function closeOnboardingWelcome(e) {
+    if (e && e.target.id !== 'onboardingWelcomeModal') return;
+    document.getElementById('onboardingWelcomeModal').classList.remove('show');
+    maybeShowBugReportNotice();
+  }
+
+  function fireConfetti() {
+    if (!window.confetti) return;
+    const duration = 1800;
+    const end = Date.now() + duration;
+    (function frame() {
+      window.confetti({ particleCount: 4, angle: 60, spread: 60, origin: { x: 0 }, colors: ['#3ecf8e', '#00c573', '#ffffff'] });
+      window.confetti({ particleCount: 4, angle: 120, spread: 60, origin: { x: 1 }, colors: ['#3ecf8e', '#00c573', '#ffffff'] });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    })();
+    window.confetti({ particleCount: 90, spread: 100, origin: { y: 0.4 }, colors: ['#3ecf8e', '#00c573', '#ffffff'] });
+  }
+
+  function showOnboardingComplete() {
+    document.getElementById('onboardingCompleteModal').classList.add('show');
+    fireConfetti();
+  }
+
+  function closeOnboardingComplete(e) {
+    if (e && e.target.id !== 'onboardingCompleteModal') return;
+    document.getElementById('onboardingCompleteModal').classList.remove('show');
+    maybeShowBugReportNotice();
+  }
+
+  function startOnboardingTour() {
+    document.getElementById('onboardingWelcomeModal').classList.remove('show');
+    if (!(window.driver && window.driver.js)) { maybeShowDonationNotice(); return; }
+
+    const openChannelForm = () => {
+      switchView('settings');
+      const form = document.getElementById('add-channel-form');
+      if (form) form.style.display = 'flex';
+    };
+
+    window.driver.js.driver({
+      ...driverTourDefaults(),
+      onDestroyStarted: (element, step, opts) => {
+        opts.driver.destroy();
+        showOnboardingComplete();
+      },
+      steps: [
+        {
+          element: '#navSettingsBtn',
+          popover: {
+            title: t('onboarding.step1Title'),
+            description: t('onboarding.step1Desc'),
+            side: 'right', align: 'start',
+          },
+          onHighlightStarted: () => switchView('settings'),
+        },
+        {
+          element: '#btn-toggle-add-channel',
+          popover: {
+            title: t('onboarding.step2Title'),
+            description: t('onboarding.step2Desc'),
+            side: 'bottom', align: 'end',
+          },
+          onHighlightStarted: () => switchView('settings'),
+        },
+        {
+          element: '#platform-seg',
+          popover: {
+            title: t('onboarding.step3Title'),
+            description: t('onboarding.step3Desc'),
+            side: 'bottom', align: 'start',
+          },
+          onHighlightStarted: openChannelForm,
+        },
+        {
+          element: '#add-channel-input',
+          popover: {
+            title: t('onboarding.step4Title'),
+            description: t('onboarding.step4Desc'),
+            side: 'bottom', align: 'start',
+          },
+          onHighlightStarted: openChannelForm,
+        },
+        {
+          element: '#btn-add-channel',
+          popover: {
+            title: t('onboarding.step5Title'),
+            description: t('onboarding.step5Desc'),
+            side: 'bottom', align: 'start',
+          },
+          onHighlightStarted: openChannelForm,
+        },
+        {
+          element: '#btn-connect-all-chat',
+          popover: {
+            title: t('onboarding.step6Title'),
+            description: t('onboarding.step6Desc'),
+            side: 'top', align: 'end',
+          },
+          onHighlightStarted: () => switchView('chat'),
+        },
+      ],
+    }).drive();
+  }
+
+  // Aviso one-time: bienvenida y tutorial guiado (v1.6.0)
+  const ONBOARDING_KEY = 'tikliveTTS_onboardingSeen_v1';
+  function maybeShowOnboarding() {
+    if (localStorage.getItem(ONBOARDING_KEY)) { maybeShowDonationNotice(); return; }
+    localStorage.setItem(ONBOARDING_KEY, '1');
+    setTimeout(() => document.getElementById('onboardingWelcomeModal').classList.add('show'), 900);
+  }
+
+  // Aviso one-time: nuevas opciones de donación (v1.5.2)
+  // Va AL FINAL de toda la cadena de popups (onboarding → bug report → donación)
+  // para no competir visualmente con los tutoriales/avisos anteriores.
+  const DONATION_NOTICE_KEY = 'tikliveTTS_noticeDonations_v1';
+  function maybeShowDonationNotice() {
+    if (localStorage.getItem(DONATION_NOTICE_KEY)) return;
+    localStorage.setItem(DONATION_NOTICE_KEY, '1');
+    setTimeout(() => document.getElementById('donationNoticeModal').classList.add('show'), 900);
+  }
+
+  // Aviso one-time: botón de Reportar Bug (v1.6.0)
+  const BUG_REPORT_NOTICE_KEY = 'tikliveTTS_noticeBugReport_v1';
+  function maybeShowBugReportNotice() {
+    if (localStorage.getItem(BUG_REPORT_NOTICE_KEY)) { maybeShowDonationNotice(); return; }
+    localStorage.setItem(BUG_REPORT_NOTICE_KEY, '1');
+    setTimeout(() => document.getElementById('bugReportNoticeModal').classList.add('show'), 600);
+  }
+
+  // Espera a que el idioma esté definido (elegido o cargado) antes de
+  // mostrar cualquier popup, para que todo aparezca ya traducido.
+  Promise.resolve(window.__langReady).then(maybeShowOnboarding);
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
@@ -4411,6 +4877,10 @@
       document.getElementById('socialModal').classList.remove('show');
       document.getElementById('donationNoticeModal').classList.remove('show');
       document.getElementById('dictLangModal').classList.remove('show');
+      document.getElementById('bugReportModal').classList.remove('show');
+      document.getElementById('bugReportNoticeModal').classList.remove('show');
+      document.getElementById('onboardingWelcomeModal').classList.remove('show');
+      document.getElementById('onboardingCompleteModal').classList.remove('show');
     }
   });
 

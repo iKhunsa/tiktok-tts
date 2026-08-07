@@ -12,11 +12,34 @@
     "label": "TikLiveTTS Gemeinschaft",
     "desc": "Offizieller Discord · Feedback und Fragen willkommen"
   },
+  "bugReport": {
+    "title": "Problem melden",
+    "guide": "Hast du ein Problem? 1) Versuch, es erneut zu reproduzieren. 2) Fülle dieses Formular aus und beschreibe mit eigenen Worten, was passiert ist. 3) Beim Absenden wird es automatisch zusammen mit dem technischen Sitzungsprotokoll an das Team gesendet (keine Passwörter oder sensiblen Daten enthalten).",
+    "discordNickLabel": "Dein Discord-Nickname",
+    "discordNickPlaceholder": "benutzer#0000",
+    "channelLinkLabel": "Link zu deinem Kanal (TikTok/Twitch/YouTube)",
+    "channelLinkPlaceholder": "https://...",
+    "descriptionLabel": "Erzähl uns, was passiert ist",
+    "descriptionPlaceholder": "Was hast du gemacht? Was hast du erwartet? Was ist tatsächlich passiert?",
+    "extraLabel": "Möchtest du noch etwas hinzufügen? (optional)",
+    "extraPlaceholder": "Fehlermeldungen, wann es passiert ist, usw.",
+    "submit": "Bericht senden",
+    "sending": "Wird gesendet...",
+    "sent": "Bericht gesendet, danke!",
+    "errorRequired": "Gib deinen Nickname, deinen Kanal an und erzähl uns, was passiert ist",
+    "errorSend": "Bericht konnte nicht gesendet werden, versuch es erneut",
+    "discordHint": "Nur eine schnelle Frage? ",
+    "discordLink": "Tritt unserem Discord bei",
+    "tourTitle": "Hier ist er!",
+    "tourDesc": "Klicke jederzeit auf diesen Button, wenn du ein Problem hast, um es mir mitzuteilen.",
+    "tourDone": "Verstanden"
+  },
   "footer": {
     "donate": "Spenden",
     "newBadge": "Neu",
     "channels": "Kanäle",
-    "advanced": "Erweitert"
+    "advanced": "Erweitert",
+    "bugReport": "Bug melden"
   },
   "toggle": {
     "readChat": "Kommentare lesen",
@@ -92,7 +115,7 @@
     },
     "clips": {
       "title": "Clip-Markierungen",
-      "desc": "Stream-Momente aufzeichnen. Der globale Shortcut Ctrl+Shift+M funktioniert auch bei minimierter App."
+      "desc": "Markiere mit Strg+Umschalt+M genau den Moment, in dem etwas Gutes passiert (funktioniert auch minimiert). Nach dem Stream springst du direkt zu diesen Stellen in der Aufnahme, statt alles noch mal anzuschauen, um deine Clips zu finden."
     },
     "mobile": {
       "title": "Mobile Steuerung",
@@ -401,7 +424,20 @@
   "notice": {
     "donationsTitle": "Neue Wege, das Projekt zu unterstützen",
     "donationsBody": "Wir haben Ko-fi und PayPal als Spendenoptionen hinzugefügt. Die App bleibt 100 % kostenlos — wenn sie dir nützt und du das Projekt unterstützen möchtest, ist es jetzt einfacher denn je.",
-    "donationsCta": "Spendenoptionen ansehen"
+    "donationsCta": "Spendenoptionen ansehen",
+    "bugReportTitle": "Hast du ein Problem? Sag mir sofort Bescheid",
+    "bugReportBody": "Wir haben einen \"Bug melden\"-Button hinzugefügt. Wenn mal etwas nicht funktioniert, klick drauf, beschreib in wenigen Worten, was passiert ist, und alles wird automatisch an mich gesendet, als würde ich deinen Computer in dem Moment sehen, so kann ich es schneller reparieren.",
+    "bugReportCta": "Zeig mir den Bug melden-Button",
+    "bugReportDevBody": "Diese App wird ständig weiterentwickelt, daher ist es normal, hin und wieder auf einen Fehler zu stoßen. Wenn du helfen möchtest, sie zu verbessern, kannst du als Entwickler mitmachen oder mit einer Spende unterstützen.",
+    "bugReportDevCta": "Als Entwickler mitmachen",
+    "bugReportDonateCta": "Mit einer Spende unterstützen",
+    "onboardingTitle": "Willkommen! Sollen wir dir zeigen, wie man sich verbindet?",
+    "onboardingBody": "Wir führen dich Schritt für Schritt: Kanal verknüpfen und verbinden, sobald du live bist. Dauert weniger als eine Minute.",
+    "onboardingCta": "Tutorial starten",
+    "onboardingSkip": "Jetzt nicht",
+    "onboardingDoneTitle": "Fertig! Jetzt weißt du, wie man sich verbindet",
+    "onboardingDoneBody": "Viel Erfolg mit deinem Stream, möge alles gut laufen. Ich entwickle diese App allein, also wenn du sie irgendwann in deinem Kanal erwähnst, hilft das enorm dabei, dass mehr Streamer sie entdecken. Danke, dass du sie nutzt!",
+    "onboardingDoneCta": "Los geht's!"
   },
   "mobile3": {
     "connecting": "Verbinde…",
@@ -509,5 +545,24 @@
     "desc": "Zusätzlich zur Sprache der Stimme Nachrichten erlauben in:",
     "voiceAlways": "(Sprache der Stimme — immer erlaubt)",
     "notApplicable": "Dieser Filter gilt nur für Stimmen mit lateinischem Alphabet."
+  },
+  "tour": {
+    "next": "Weiter",
+    "prev": "Zurück",
+    "done": "Fertig"
+  },
+  "onboarding": {
+    "step1Title": "Geh zuerst zu Einstellungen",
+    "step1Desc": "Hier verknüpfst du deinen Kanal, bevor du dich verbindest.",
+    "step2Title": "Verknüpfte Kanäle",
+    "step2Desc": "Tippe auf \"Kanal hinzufügen\", um deinen TikTok-, Twitch- oder YouTube-Kanal hinzuzufügen.",
+    "step3Title": "Wähle die Plattform",
+    "step3Desc": "Wähle TikTok, Twitch oder YouTube aus.",
+    "step4Title": "Gib deinen Benutzernamen oder Kanal ein",
+    "step4Desc": "Gib je nach Plattform deinen @Benutzernamen, Kanalnamen oder Link ein.",
+    "step5Title": "Speichere den Kanal",
+    "step5Desc": "Das speichert ihn nur, es verbindet dich noch mit nichts.",
+    "step6Title": "Letzter Schritt! Geh zuerst live",
+    "step6Desc": "Bevor du hier klickst: Starte deinen Stream auf der Plattform (TikTok/Twitch/YouTube) und warte, bis du live bist. Erst dann komm zurück und klicke auf \"Alle verbinden\". Nicht bevor du live bist."
   }
 }
