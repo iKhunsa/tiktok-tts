@@ -4058,15 +4058,30 @@
   // se refleja el estado del interruptor.
   function applyReadNonFollowers(cfg) {
     const el = document.getElementById('ttsReadNonFollowersToggle');
-    if (el) el.checked = cfg.ttsReadNonFollowers !== false;
+    if (!el) return;
+    const on = cfg.ttsReadNonFollowers !== false;
+    el.checked = on;
+    // El input está oculto por CSS: lo que se ve encendido es la clase .active
+    // del chip, igual que en el resto de la fila.
+    document.getElementById('chip-nonfollowers')?.classList.toggle('active', on);
   }
 
   function setReadNonFollowers(value) {
+    // Pintar ya, sin esperar al PATCH: el servidor confirma por config-updated.
+    document.getElementById('chip-nonfollowers')?.classList.toggle('active', !!value);
     fetch('/api/config', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ttsReadNonFollowers: !!value }),
-    }).catch(() => {});
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('http');
+        showToast(t(value ? 'toast.readNonFollowersOn' : 'toast.readNonFollowersOff'));
+      })
+      .catch(() => {
+        showToast(t('mod.toast.error'));
+        loadRuntimeConfig();
+      });
   }
 
   function applyA11yConfig(cfg) {

@@ -550,7 +550,9 @@
     "platformDisconnected": "{platform} отключён",
     "allChannelsDisconnected": "Все каналы отключены",
     "youtubeAutoSaved": "YouTube сохранён; подключится когда начнётся эфир",
-    "youtubeTmpSaved": "YouTube сохранён как ручной канал"
+    "youtubeTmpSaved": "YouTube сохранён как ручной канал",
+    "readNonFollowersOn": "TTS читает всех",
+    "readNonFollowersOff": "TTS читает только подписчиков"
   },
   "dictLang": {
     "title": "Разрешённые языки",

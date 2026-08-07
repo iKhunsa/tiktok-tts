@@ -550,7 +550,9 @@
     "platformDisconnected": "{platform} getrennt",
     "allChannelsDisconnected": "Alle Kanäle getrennt",
     "youtubeAutoSaved": "YouTube gespeichert; verbindet sich wenn live",
-    "youtubeTmpSaved": "YouTube als manuellen Kanal gespeichert"
+    "youtubeTmpSaved": "YouTube als manuellen Kanal gespeichert",
+    "readNonFollowersOn": "TTS liest alle vor",
+    "readNonFollowersOff": "TTS liest nur Follower vor"
   },
   "dictLang": {
     "title": "Erlaubte Sprachen",
