@@ -934,29 +934,39 @@
     }
     .mod-filters input { min-width: 200px; }
     .mod-note { font-size: 11px; color: var(--text-muted); margin: 0 0 12px; line-height: 1.5; }
-    .mod-table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; }
-    .mod-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    .mod-table th {
-      text-align: left; padding: 10px 12px; font-size: 10px; text-transform: uppercase;
-      letter-spacing: .6px; color: var(--text-muted); border-bottom: 1px solid var(--border);
-      white-space: nowrap;
+    .mod-table-wrap {
+      overflow-x: auto; border: 1px solid var(--border); border-radius: 12px;
+      background: var(--surface); box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+      scrollbar-color: var(--border-strong) transparent; scrollbar-width: thin;
     }
-    .mod-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .mod-table-wrap::-webkit-scrollbar { height: 8px; }
+    .mod-table-wrap::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 8px; }
+    .mod-table-wrap::-webkit-scrollbar-track { background: transparent; }
+    .mod-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    .mod-table th {
+      text-align: left; padding: 12px 14px; font-size: 10px; text-transform: uppercase;
+      letter-spacing: .7px; color: var(--text-muted); font-weight: 700;
+      background: var(--bg-button); border-bottom: 1px solid var(--border);
+      white-space: nowrap; position: sticky; top: 0;
+    }
+    .mod-table td { padding: 11px 14px; border-bottom: 1px solid var(--border-subtle); vertical-align: middle; }
     .mod-table tr:last-child td { border-bottom: none; }
-    .mod-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .mod-table tbody tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+    .mod-table tr:hover td { background: rgba(62,207,142,0.05); }
     .mod-nick { font-weight: 600; color: var(--text); }
     .mod-weak-id { color: #eab308; cursor: help; margin-left: 5px; }
     .mod-pill {
-      display: inline-block; padding: 2px 8px; border-radius: 9999px;
-      font-size: 10px; font-weight: 600; white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 9999px;
+      font-size: 10px; font-weight: 700; white-space: nowrap; letter-spacing: .3px;
     }
-    .mod-pill.clean { color: var(--text-muted); border: 1px solid var(--border); }
-    .mod-pill.muted { color: #eab308; border: 1px solid rgba(234,179,8,0.45); }
-    .mod-pill.banned { color: #ef4444; border: 1px solid rgba(239,68,68,0.45); }
-    .mod-pill.follower { color: var(--accent); border: 1px solid var(--accent-border); }
-    .mod-actions { display: flex; gap: 5px; flex-wrap: nowrap; }
-    .mod-empty { padding: 26px; text-align: center; font-size: 12px; color: var(--text-muted); }
-    .mod-pager { display: flex; gap: 10px; align-items: center; justify-content: center; margin-top: 12px; font-size: 11px; color: var(--text-muted); }
+    .mod-pill.clean { color: var(--text-muted); background: rgba(255,255,255,0.05); }
+    .mod-pill.muted { color: #eab308; background: rgba(234,179,8,0.14); }
+    .mod-pill.banned { color: #ef4444; background: rgba(239,68,68,0.14); }
+    .mod-pill.follower { color: var(--accent); background: rgba(62,207,142,0.14); }
+    .mod-actions { display: flex; gap: 4px; flex-wrap: nowrap; }
+    .mod-actions .cfg-btn.small { padding: 4px 9px; flex-shrink: 0; }
+    .mod-empty { padding: 40px 26px; text-align: center; font-size: 13px; color: var(--text-muted); }
+    .mod-pager { display: flex; gap: 10px; align-items: center; justify-content: center; margin-top: 14px; font-size: 11px; color: var(--text-muted); }
 
     /* Nick clicable en el chat → menú de moderación */
     .msg-user-clickable { cursor: pointer; }
@@ -989,6 +999,9 @@
     .cfg-btn.small { padding: 5px 10px; font-size: 11px; }
     .cfg-btn.danger { border-color: rgba(239, 68, 68, 0.4); color: #ef4444; }
     .cfg-btn.danger:hover { border-color: rgba(239, 68, 68, 0.7); color: #f87171; }
+    .cfg-btn:disabled, .cfg-btn.danger:disabled {
+      opacity: 0.35; cursor: not-allowed; pointer-events: none;
+    }
 
     /* ── SETTINGS VIEW ───────────────────────────────────── */
     .settings-section { margin-bottom: 26px; }
@@ -1713,7 +1726,7 @@
         <button class="cfg-btn danger" onclick="clearTTSQueue()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="btn.clearQueue">Vaciar cola</span></button>
         <button class="cfg-btn" onclick="enableEmergencyTTSMode()"><img class="icon-inline" src="icons/warning.svg" alt=""> <span data-i18n="btn.emergency">Modo emergencia</span></button>
         <button class="cfg-btn" onclick="clearChat()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="btn.clearChat">Limpiar</span></button>
-        <a class="cfg-btn" href="/advanced.html#palabras-bloqueadas"><img class="icon-inline" src="icons/filter_none.svg" alt=""> <span data-i18n="btn.blockedWordsShortcut">Palabras bloqueadas</span></a>
+        <a class="cfg-btn" id="btnBlockedWordsShortcut" href="/advanced.html#palabras-bloqueadas"><img class="icon-inline" src="icons/filter_none.svg" alt=""> <span data-i18n="btn.blockedWordsShortcut">Palabras bloqueadas</span></a>
         <span style="font-size:11px;color:var(--text-muted);" data-i18n="emergencyHint">Emergencia deja activos regalos y follows, y silencia chat/likes/entradas/compartidos.</span>
       </div>
 
@@ -2644,16 +2657,14 @@
         </select>
         <select id="modSort" onchange="modReload(true)">
           <option value="last" data-i18n="mod.sort.activity">Actividad reciente</option>
-          <option value="msgs" data-i18n="mod.sort.messages">Mensajes</option>
-          <option value="gifts" data-i18n="mod.sort.gifts">Regalos</option>
-          <option value="likes" data-i18n="mod.sort.likes">Likes</option>
           <option value="nick" data-i18n="mod.sort.name">Nombre</option>
         </select>
         <button class="cfg-btn" onclick="modReload(true)"><img class="icon-inline" src="icons/refresh.svg" alt=""> <span data-i18n="mod.action.refresh">Actualizar</span></button>
+        <button class="cfg-btn" id="btnModTour" onclick="startModerationTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="mod.action.tour">Ver tutorial</span></button>
         <button class="cfg-btn danger" onclick="modWipe()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="mod.action.wipe">Vaciar registro</span></button>
       </div>
 
-      <p class="mod-note" data-i18n="mod.note">Los mensajes filtrados por spam o palabras bloqueadas no suman al contador. YouTube no envía eventos de follow: marcá a esos espectadores como seguidores a mano.</p>
+      <p class="mod-note" data-i18n="mod.note">YouTube no envía eventos de follow: a esos espectadores marcalos como seguidores a mano.</p>
 
       <div class="mod-table-wrap">
         <table class="mod-table" id="modTable">
@@ -2662,9 +2673,6 @@
               <th data-i18n="mod.col.user">Usuario</th>
               <th data-i18n="mod.col.platform">Plataforma</th>
               <th data-i18n="mod.col.state">Estado</th>
-              <th data-i18n="mod.col.messages">Mensajes</th>
-              <th data-i18n="mod.col.gifts">Regalos</th>
-              <th data-i18n="mod.col.likes">Likes</th>
               <th data-i18n="mod.col.lastSeen">Última vez</th>
               <th data-i18n="mod.col.actions">Acciones</th>
             </tr>
@@ -2740,6 +2748,28 @@
       <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('ko')">🇰🇷 한국어</button>
       <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('ru')">🇷🇺 Русский</button>
     </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: Confirmar vaciado del registro de moderación ══ -->
+<div id="modWipeConfirmModal" class="modal-overlay" onclick="closeModWipeConfirm(event)">
+  <div class="modal-content" onclick="event.stopPropagation()" style="text-align:center;">
+    <button class="modal-close" onclick="closeModWipeConfirm()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <div class="notice-icon-badge">⚠️</div>
+    <h2 style="justify-content:center;" data-i18n="mod.wipeModal.title">¿Estás seguro?</h2>
+    <div class="bugreport-guide" style="background:rgba(239,68,68,0.06);border-color:rgba(239,68,68,0.3);color:var(--text-secondary);text-align:left;" data-i18n="mod.wipeModal.body">Esta acción borra por completo la base de datos de espectadores: seguidores marcados, silencios y baneos. No se puede deshacer.</div>
+
+    <div class="cfg-field" style="text-align:left;">
+      <label>
+        <span data-i18n="mod.wipeModal.typeInstruction">Escribí</span>
+        <strong id="modWipeKeywordHint" style="color:#ef4444;letter-spacing:.5px;"></strong>
+        <span data-i18n="mod.wipeModal.typeInstructionSuffix">para confirmar</span>
+      </label>
+      <input type="text" id="modWipeConfirmInput" autocomplete="off" spellcheck="false" oninput="checkModWipeConfirmInput()" onkeydown="if(event.key==='Enter'&&!document.getElementById('modWipeConfirmBtn').disabled)confirmModWipe()" style="text-align:center;letter-spacing:1px;" />
+    </div>
+
+    <button class="cfg-btn danger" id="modWipeConfirmBtn" style="width:100%;justify-content:center;margin-top:16px;" onclick="confirmModWipe()" disabled><span data-i18n="mod.wipeModal.confirm">Sí, borrar todo</span></button>
+    <button class="cfg-btn" style="width:100%;justify-content:center;margin-top:10px;" onclick="closeModWipeConfirm()"><span data-i18n="mod.wipeModal.cancel">Cancelar</span></button>
   </div>
 </div>
 
@@ -3270,6 +3300,7 @@
     if (name === 'moderacion') {
       modReload(true);
       modStartAutoRefresh();
+      maybeShowModerationTour();
     } else {
       modStopAutoRefresh();
     }
@@ -3404,12 +3435,6 @@
       tdState.appendChild(modStatePill(v));
       tr.appendChild(tdState);
 
-      for (const n of [v.messages, v.gifts, v.likes]) {
-        const td = document.createElement('td');
-        td.textContent = n;
-        tr.appendChild(td);
-      }
-
       const tdSeen = document.createElement('td');
       tdSeen.textContent = modFormatAgo(v.lastSeen);
       tr.appendChild(tdSeen);
@@ -3492,8 +3517,33 @@
     } catch (_) { showToast(t('mod.toast.error')); }
   }
 
-  async function modWipe() {
-    if (!confirm(t('mod.action.wipeConfirm'))) return;
+  function modWipeKeyword() {
+    return (t('mod.wipeModal.keyword') || 'BORRAR').toUpperCase();
+  }
+
+  function modWipe() {
+    document.getElementById('modWipeKeywordHint').textContent = modWipeKeyword();
+    const input = document.getElementById('modWipeConfirmInput');
+    input.value = '';
+    document.getElementById('modWipeConfirmBtn').disabled = true;
+    document.getElementById('modWipeConfirmModal').classList.add('show');
+    setTimeout(() => input.focus(), 50);
+  }
+
+  function checkModWipeConfirmInput() {
+    const input = document.getElementById('modWipeConfirmInput');
+    const match = input.value.trim().toUpperCase() === modWipeKeyword();
+    document.getElementById('modWipeConfirmBtn').disabled = !match;
+  }
+
+  function closeModWipeConfirm(e) {
+    if (e && e.target.id !== 'modWipeConfirmModal') return;
+    document.getElementById('modWipeConfirmModal').classList.remove('show');
+  }
+
+  async function confirmModWipe() {
+    if (document.getElementById('modWipeConfirmInput').value.trim().toUpperCase() !== modWipeKeyword()) return;
+    document.getElementById('modWipeConfirmModal').classList.remove('show');
     try {
       await fetch('/api/moderation/viewers', {
         method: 'DELETE',
@@ -3621,6 +3671,76 @@
     const view = document.getElementById('view-moderacion');
     if (!view || !view.classList.contains('active')) return;
     modReload(false);
+  }
+
+  // ─── Tutorial de Moderación (driver.js) ───────────────────────
+  // Se dispara solo la primera vez que se abre la vista. Cubre las tres piezas
+  // que llegaron juntas: registro de espectadores, moderación desde el chat y
+  // el filtro de no seguidores — el usuario lo lee como una sola novedad.
+  const MODERATION_TOUR_KEY = 'tikliveTTS_moderationTourSeen_v1';
+
+  function maybeShowModerationTour() {
+    if (localStorage.getItem(MODERATION_TOUR_KEY)) return;
+    localStorage.setItem(MODERATION_TOUR_KEY, '1');
+    // Esperar a que la tabla esté pintada: driver.js mide el elemento real.
+    setTimeout(startModerationTour, 700);
+  }
+
+  function startModerationTour() {
+    if (!(window.driver && window.driver.js)) return;
+    const inModeration = () => switchView('moderacion');
+    const inChat = () => switchView('chat');
+
+    window.driver.js.driver({
+      ...driverTourDefaults(),
+      steps: [
+        {
+          element: '#view-moderacion .view-header',
+          popover: { title: t('modTour.introTitle'), description: t('modTour.introDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inModeration,
+        },
+        {
+          element: '.mod-tabs',
+          popover: { title: t('modTour.tabsTitle'), description: t('modTour.tabsDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inModeration,
+        },
+        {
+          element: '#modStats',
+          popover: { title: t('modTour.statsTitle'), description: t('modTour.statsDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inModeration,
+        },
+        {
+          element: '.mod-filters',
+          popover: { title: t('modTour.filtersTitle'), description: t('modTour.filtersDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inModeration,
+        },
+        {
+          element: '.mod-table-wrap',
+          popover: { title: t('modTour.tableTitle'), description: t('modTour.tableDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inModeration,
+        },
+        {
+          element: '#chatLog',
+          popover: { title: t('modTour.chatMenuTitle'), description: t('modTour.chatMenuDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inChat,
+        },
+        {
+          element: '.chat-header',
+          popover: { title: t('modTour.scrollTitle'), description: t('modTour.scrollDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inChat,
+        },
+        {
+          element: '#chip-nonfollowers',
+          popover: { title: t('modTour.toggleTitle'), description: t('modTour.toggleDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inChat,
+        },
+        {
+          element: '#btnBlockedWordsShortcut',
+          popover: { title: t('modTour.blockedTitle'), description: t('modTour.blockedDesc'), side: 'bottom', align: 'end' },
+          onHighlightStarted: inChat,
+        },
+      ],
+    }).drive();
   }
 
   function modStartAutoRefresh() {
@@ -5543,6 +5663,7 @@
       document.getElementById('bugReportNoticeModal').classList.remove('show');
       document.getElementById('onboardingWelcomeModal').classList.remove('show');
       document.getElementById('onboardingCompleteModal').classList.remove('show');
+      document.getElementById('modWipeConfirmModal').classList.remove('show');
     }
   });
 

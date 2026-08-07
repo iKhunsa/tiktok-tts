@@ -580,7 +580,7 @@
     "step6Desc": "Avant de cliquer ici : lancez votre diffusion sur la plateforme (TikTok/Twitch/YouTube) et attendez d'être en direct. C'est seulement à ce moment-là qu'il faut revenir et cliquer sur \"Tout connecter\". Pas avant d'être en direct."
   },
   "mod": {
-    "note": "Les messages filtrés comme spam ou par mots bloqués ne comptent pas ici. YouTube n'envoie pas d'événements de follow : marquez ces spectateurs comme abonnés à la main.",
+    "note": "YouTube n'envoie pas d'événements de follow : marquez ces spectateurs comme abonnés à la main.",
     "stats": {
       "total": "Enregistrés",
       "followers": "Abonnés",
@@ -631,7 +631,17 @@
       "clear": "Retirer les sanctions",
       "refresh": "Actualiser",
       "wipe": "Vider le registre",
-      "wipeConfirm": "Supprimer tout le registre des spectateurs ? Les mutes et bans sont perdus aussi."
+      "wipeConfirm": "Supprimer tout le registre des spectateurs ? Les mutes et bans sont perdus aussi.",
+      "tour": "Voir le tutoriel"
+    },
+    "wipeModal": {
+      "title": "Vous êtes sûr ?",
+      "body": "Cette action efface complètement la base de données des spectateurs : abonnés marqués, mutes et bans. C'est irréversible.",
+      "confirm": "Oui, tout supprimer",
+      "cancel": "Annuler",
+      "typeInstruction": "Tapez",
+      "typeInstructionSuffix": "pour confirmer",
+      "keyword": "SUPPRIMER"
     },
     "dur": {
       "15m": "15 minutes",
@@ -668,5 +678,25 @@
     "blockWordPrompt": "Mot à bloquer :",
     "blockWordDone": "« {word} » bloqué",
     "openModeration": "Voir dans Modération"
+  },
+  "modTour": {
+    "introTitle": "Nouveau : Modération",
+    "introDesc": "Tout spectateur qui interagit dans vos lives est enregistré ici. Depuis ce tableau vous contrôlez qui peut parler et qui le TTS lit. C'est de la modération dans l'app : ça ne bannit pas sur TikTok, Twitch ni YouTube.",
+    "tabsTitle": "Abonnés et non-abonnés",
+    "tabsDesc": "On devient Abonné de deux façons : la personne vous suit pendant que vous êtes connecté, ou vous la marquez à la main. L'app ne peut pas demander votre liste d'abonnés à la plateforme : ceux qui vous suivent depuis avant restent dans Non-abonnés jusqu'à ce que vous les marquiez.",
+    "statsTitle": "Vue d'ensemble",
+    "statsDesc": "Combien de personnes sont enregistrées, combien sont abonnées et combien ont une sanction active en ce moment.",
+    "filtersTitle": "Rechercher et filtrer",
+    "filtersDesc": "Cherchez par nom, filtrez par plateforme ou par état (muets, bannis, sans sanction) et triez par activité récente ou par nom.",
+    "tableTitle": "Actions par spectateur",
+    "tableDesc": "Sur chaque ligne : Rendre muet (toujours visible dans le chat, mais le TTS l'ignore), Bannir (ses messages n'apparaissent même pas), ★ pour le marquer abonné, Retirer les sanctions et ✕ pour le sortir du registre. Les sanctions temporaires expirent seules, même app fermée.",
+    "chatMenuTitle": "Modérer depuis le chat",
+    "chatMenuDesc": "Pas besoin de venir ici : cliquez sur le nom de n'importe qui dans le chat en direct et le même menu s'ouvre — rendre muet, bannir, marquer comme abonné ou bloquer un mot.",
+    "toggleTitle": "Lire les non-abonnés",
+    "toggleDesc": "Activé, le TTS lit tout le monde. Désactivé, il ne lit que les abonnés et ceux que vous avez marqués ; les autres restent visibles dans le chat, sans voix. Attention le premier jour : avec un registre vide vous faites taire presque tout votre public.",
+    "blockedTitle": "Mots bloqués",
+    "blockedDesc": "Raccourci direct vers le panneau des mots bloqués, sans le chercher dans Avancé. Les messages qui les contiennent sont totalement ignorés.",
+    "scrollTitle": "Le chat suit la lecture",
+    "scrollDesc": "Le chat ne poursuit plus le dernier message mais celui que le TTS est en train de lire, souvent plusieurs messages en arrière. Si vous remontez, il se fige pour vous laisser lire ; revenez en bas et il repart tout seul."
   }
 }

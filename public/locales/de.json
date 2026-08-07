@@ -580,7 +580,7 @@
     "step6Desc": "Bevor du hier klickst: Starte deinen Stream auf der Plattform (TikTok/Twitch/YouTube) und warte, bis du live bist. Erst dann komm zurück und klicke auf \"Alle verbinden\". Nicht bevor du live bist."
   },
   "mod": {
-    "note": "Als Spam oder durch gesperrte Wörter gefilterte Nachrichten zählen hier nicht. YouTube sendet keine Follow-Events: markiere diese Zuschauer manuell als Follower.",
+    "note": "YouTube sendet keine Follow-Events: markiere diese Zuschauer manuell als Follower.",
     "stats": {
       "total": "Erfasst",
       "followers": "Follower",
@@ -631,7 +631,17 @@
       "clear": "Strafen aufheben",
       "refresh": "Aktualisieren",
       "wipe": "Register leeren",
-      "wipeConfirm": "Das gesamte Zuschauerregister löschen? Stummschaltungen und Banns gehen ebenfalls verloren."
+      "wipeConfirm": "Das gesamte Zuschauerregister löschen? Stummschaltungen und Banns gehen ebenfalls verloren.",
+      "tour": "Tutorial ansehen"
+    },
+    "wipeModal": {
+      "title": "Bist du sicher?",
+      "body": "Diese Aktion löscht die Zuschauer-Datenbank komplett: markierte Follower, Stummschaltungen und Banns. Das kann nicht rückgängig gemacht werden.",
+      "confirm": "Ja, alles löschen",
+      "cancel": "Abbrechen",
+      "typeInstruction": "Gib",
+      "typeInstructionSuffix": "ein, um zu bestätigen",
+      "keyword": "LÖSCHEN"
     },
     "dur": {
       "15m": "15 Minuten",
@@ -668,5 +678,25 @@
     "blockWordPrompt": "Zu sperrendes Wort:",
     "blockWordDone": "„{word}“ gesperrt",
     "openModeration": "In Moderation ansehen"
+  },
+  "modTour": {
+    "introTitle": "Neu: Moderation",
+    "introDesc": "Hier wird jeder Zuschauer erfasst, der in deinen Streams interagiert. Über diese Tabelle steuerst du, wer schreiben darf und wen der TTS vorliest. Das ist Moderation innerhalb der App: es bannt nicht auf TikTok, Twitch oder YouTube.",
+    "tabsTitle": "Follower und Nicht-Follower",
+    "tabsDesc": "Follower wird man auf zwei Wegen: jemand folgt dir, während du verbunden bist, oder du markierst ihn manuell. Die App kann die Followerliste nicht bei der Plattform abfragen — wer dir schon vorher folgte, steht unter Nicht-Follower, bis du ihn markierst.",
+    "statsTitle": "Auf einen Blick",
+    "statsDesc": "Wie viele Personen erfasst sind, wie viele Follower sind und wie viele gerade eine aktive Strafe haben.",
+    "filtersTitle": "Suchen und filtern",
+    "filtersDesc": "Nach Namen suchen, nach Plattform oder Zustand filtern (stumm, gebannt, ohne Strafe) und nach letzter Aktivität oder Namen sortieren.",
+    "tableTitle": "Aktionen pro Zuschauer",
+    "tableDesc": "In jeder Zeile: Stummschalten (bleibt im Chat sichtbar, der TTS überspringt ihn), Bannen (seine Nachrichten erscheinen gar nicht), ★ als Follower markieren, Strafen aufheben und ✕ aus dem Register entfernen. Befristete Strafen laufen von selbst ab, auch bei geschlossener App.",
+    "chatMenuTitle": "Direkt im Chat moderieren",
+    "chatMenuDesc": "Du musst nicht hierher: klick im Live-Chat auf einen Namen und dasselbe Menü öffnet sich — stummschalten, bannen, als Follower markieren oder ein Wort sperren.",
+    "toggleTitle": "Nicht-Follower vorlesen",
+    "toggleDesc": "An liest der TTS alle vor. Aus liest er nur Follower und manuell Markierte; die anderen bleiben im Chat sichtbar, nur ohne Stimme. Vorsicht am ersten Tag: bei leerem Register schweigt fast dein ganzes Publikum.",
+    "blockedTitle": "Gesperrte Wörter",
+    "blockedDesc": "Direkter Sprung zum Panel der gesperrten Wörter, ohne in Erweitert zu suchen. Nachrichten mit diesen Wörtern werden komplett ignoriert.",
+    "scrollTitle": "Der Chat folgt dem Vorlesen",
+    "scrollDesc": "Der Chat springt nicht mehr zur neuesten Nachricht, sondern zu der, die der TTS gerade liest — meist ein paar Nachrichten weiter oben. Scrollst du hoch, bleibt er stehen, damit du in Ruhe lesen kannst; zurück nach unten und er läuft von selbst weiter."
   }
 }

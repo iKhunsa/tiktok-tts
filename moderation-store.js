@@ -261,13 +261,13 @@ function createModerationStore(opts = {}) {
     return { key: k, viewer: v };
   }
 
-  function touch({ platform, userId, nick, kind = 'chat', amount = 1 }) {
+  // No cuenta mensajes/regalos/likes por usuario a propósito — solo registra
+  // que el espectador interactuó (para "última vez visto"), sin acumular
+  // esos números por privacidad/simplicidad.
+  function touch({ platform, userId, nick }) {
     const { viewer } = ensure({ platform, userId, nick });
     viewer.last = nowMs();
     if (nick) viewer.nick = String(nick);
-    if (kind === 'chat') viewer.msgs += 1;
-    else if (kind === 'gift') viewer.gifts += Number(amount) || 1;
-    else if (kind === 'like') viewer.likes += Number(amount) || 1;
     markDirty();
     return viewer;
   }
