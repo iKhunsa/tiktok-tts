@@ -90,7 +90,8 @@
     "remove": "Entfernen",
     "useF8": "F8 verwenden",
     "usePlayPause": "Play/Pause-Taste verwenden",
-    "clearShortcut": "✕ Löschen"
+    "clearShortcut": "✕ Löschen",
+    "blockedWordsShortcut": "Gesperrte Wörter"
   },
   "chat": {
     "title": "Live-Chat",
