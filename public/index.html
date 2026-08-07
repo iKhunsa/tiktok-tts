@@ -3611,6 +3611,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     const chatLog = document.getElementById('chatLog');
     if (chatLog) chatLog.addEventListener('scroll', modCloseMenus);
+    initChatScrollFollow();
   });
 
   // Llega tras cualquier acción de moderación (también desde el menú del chat
@@ -4546,12 +4547,8 @@
     }
     currentMsgId = msgId;
     const msgEl = document.getElementById(msgId);
-    // Marcar el mensaje que se está leyendo no debe arrastrar la vista si el
-    // usuario subió a leer historial.
-    if (msgEl) {
-      msgEl.classList.add('speaking');
-      if (chatIsAtBottom()) msgEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
+    if (msgEl) msgEl.classList.add('speaking');
+    chatFollowSpeaking();
 
     showSpeakingIndicator(text);
     const glow = document.getElementById('appGlow');
@@ -5001,10 +4998,19 @@
     return colorMap[user];
   }
 
-  // ─── SCROLL PEGAJOSO DEL CHAT ─────────────────────────────────
-  // Si el usuario está mirando el fondo, el chat sigue bajando solo. Si subió
-  // a leer algo, se queda quieto hasta que vuelva a tocar el fondo.
+  // ─── SCROLL QUE SIGUE LA LECTURA ──────────────────────────────
+  // Con seguimiento activo el chat persigue al mensaje que el TTS está
+  // leyendo, no al último recibido: en un directo movido la cola va varios
+  // mensajes por detrás del fondo. Sin nada leyéndose, sigue al fondo.
+  // Scrollear hacia arriba lo pausa; volver al fondo lo reanuda.
   const CHAT_STICK_PX = 60;
+  // Ventana para descartar el evento de scroll que provoca el propio
+  // seguimiento. El scroll se hace instantáneo justamente para que esta
+  // ventana sea corta y no se trague un gesto real del usuario.
+  const CHAT_SELF_SCROLL_MS = 200;
+
+  let chatFollow = true;
+  let chatSelfScrollAt = 0;
 
   function chatIsAtBottom() {
     const log = document.getElementById('chatLog');
@@ -5012,14 +5018,53 @@
     return log.scrollHeight - log.scrollTop - log.clientHeight <= CHAT_STICK_PX;
   }
 
-  // Medir ANTES de insertar: al añadir el nodo cambia scrollHeight y ya no se
-  // podría saber si estábamos abajo.
+  function chatSpeakingEl() {
+    return currentMsgId ? document.getElementById(currentMsgId) : null;
+  }
+
+  function chatScrollTo(fn) {
+    chatSelfScrollAt = performance.now();
+    fn();
+  }
+
+  // Lleva la vista al mensaje en lectura. Se llama al empezar cada mensaje y
+  // al llegar mensajes nuevos (que empujan hacia abajo al que se está leyendo).
+  function chatFollowSpeaking() {
+    if (!chatFollow) return;
+    const el = chatSpeakingEl();
+    const log = document.getElementById('chatLog');
+    if (!log) return;
+    if (el) chatScrollTo(() => el.scrollIntoView({ block: 'center' }));
+    else chatScrollTo(() => { log.scrollTop = log.scrollHeight; });
+  }
+
   function appendChatNode(node) {
     const log = document.getElementById('chatLog');
     if (!log) return;
-    const stick = chatIsAtBottom();
     log.appendChild(node);
-    if (stick) log.scrollTop = log.scrollHeight;
+    chatFollowSpeaking();
+  }
+
+  function chatPauseFollow() {
+    chatFollow = false;
+  }
+
+  function initChatScrollFollow() {
+    const log = document.getElementById('chatLog');
+    if (!log) return;
+    let lastTop = log.scrollTop;
+    log.addEventListener('scroll', () => {
+      const top = log.scrollTop;
+      const wentUp = top < lastTop;
+      lastTop = top;
+      if (performance.now() - chatSelfScrollAt < CHAT_SELF_SCROLL_MS) return;
+      if (wentUp) chatPauseFollow();
+      // Tocar el fondo reanuda: es el gesto natural de "volver al directo".
+      else if (chatIsAtBottom()) chatFollow = true;
+    }, { passive: true });
+    // La rueda hacia arriba pausa al instante, sin esperar a que el scroll
+    // llegue al handler de arriba.
+    log.addEventListener('wheel', (e) => { if (e.deltaY < 0) chatPauseFollow(); }, { passive: true });
   }
 
   function addChatMsg(data, msgId) {
@@ -5146,6 +5191,7 @@
       </div>`;
     msgCount = 0;
     document.getElementById('msgCount').textContent = '0';
+    chatFollow = true;
     likeCooldownMap.clear();
     updateQueueBadge();
   }
