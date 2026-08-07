@@ -3771,6 +3771,7 @@
   function skipCurrentTTS() {
     const hadPending = activeAudio || ttsAbortController || isSpeaking;
     stopCurrentTTS({ clearQueue: false });
+    if (hadPending) window.electronAPI?.trackEvent('tts:skipped');
     showToast(hadPending ? t('toast.ttsSkipped') : t('toast.ttsNoActive'));
     if (!ttsPaused && ttsGlobalEnabled && speechQueue.length > 0) setTimeout(() => processQueue(), 50);
   }
@@ -3949,6 +3950,7 @@
     if (!ttsGlobalEnabled) return;
     if (speechQueue.length >= MAX_QUEUE_SIZE) {
       ttsDroppedCount++;
+      window.electronAPI?.trackEvent('tts:queue-overflow');
       updateQueueBadge();
       return;
     }

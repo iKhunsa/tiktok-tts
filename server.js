@@ -878,6 +878,7 @@ function advanceMusicQueue() {
     if (entry.videoId) {
       currentTrack = { ...entry, requestedBy: null, platform: 'playlist' };
       broadcast({ type: 'music-now-playing', track: currentTrack });
+      telemetryBus.emit('music:playlist-play');
     } else {
       // Resolve lazily then play
       resolveFullTrack(entry.raw).then(resolved => {
@@ -887,6 +888,7 @@ function advanceMusicQueue() {
         if (idx !== -1) Object.assign(playlistResolved[idx], resolved);
         currentTrack = { ...resolved, requestedBy: null, platform: 'playlist' };
         broadcast({ type: 'music-now-playing', track: currentTrack });
+        telemetryBus.emit('music:playlist-play');
         musicBroadcastState();
       }).catch(() => advanceMusicQueue());
       return;
@@ -1384,6 +1386,7 @@ function isSpam(comment, userKey) {
   if (stage) {
     // Solo el motivo, nunca el mensaje ni quién lo escribió.
     telemetryBus.emit('moderation:message-filtered', { reason: stage.stage });
+    if (stage.stage === 'blockedWord') telemetryBus.emit('moderation:word-blocked');
     return true;
   }
   const norm = normalizeAggressive(comment);
