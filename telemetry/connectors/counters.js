@@ -20,6 +20,7 @@ const COUNTED = [
   ['moderation:word-blocked',    'moderation', 'word_blocked'],
   ['moderation:user-muted',      'moderation', 'user_muted'],
   ['moderation:user-banned',     'moderation', 'user_banned'],
+  ['moderation:tts-skipped-nonfollower', 'moderation', 'tts_skipped_nonfollower'],
 ];
 
 function attach(bus, track) {

@@ -55,7 +55,8 @@
     "langFilter": "Filter characters from other languages",
     "langFilterHint": "Ignores chat messages with characters that don't match the active voice's language (e.g. blocks Chinese/Japanese if your voice is Spanish, and vice versa).",
     "dictFilter": "Filter by language (words)",
-    "dictFilterHint": "Only reads messages written in the active voice language or in the extra languages you allow. Unknown words (names, typos) never block."
+    "dictFilterHint": "Only reads messages written in the active voice language or in the extra languages you allow. Unknown words (names, typos) never block.",
+    "readNonFollowers": "Read non-followers"
   },
   "tts": {
     "on": "🔊 TTS On",

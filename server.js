@@ -626,6 +626,9 @@ const DEFAULT_CONFIG = {
   a11yUiFontScale: 1,
   a11yHighContrast: false,
   ttsSlowSpeech: false,
+  // true = el TTS lee a todo el mundo (comportamiento histórico).
+  // false = solo lee a seguidores y a la whitelist manual.
+  ttsReadNonFollowers: true,
 };
 
 const CONFIG_VALIDATORS = {
@@ -652,6 +655,7 @@ const CONFIG_VALIDATORS = {
   a11yUiFontScale: (v) => [1, 1.15, 1.3, 1.5].includes(v),
   a11yHighContrast: (v) => typeof v === 'boolean',
   ttsSlowSpeech: (v) => typeof v === 'boolean',
+  ttsReadNonFollowers: (v) => typeof v === 'boolean',
 };
 
 const config = { ...DEFAULT_CONFIG };
@@ -1477,8 +1481,10 @@ function emitChatMessage({ platform, channel, user, userId, comment, ttsComment,
   }
 
   const isFollower = eff.isFollower || eff.isWhitelisted;
-  const ttsBlocked = eff.isMuted;
+  const nonFollowerBlocked = !config.ttsReadNonFollowers && !isFollower;
+  const ttsBlocked = eff.isMuted || nonFollowerBlocked;
   if (eff.isMuted) telemetryBus.emit('moderation:message-filtered', { reason: 'user-muted' });
+  else if (nonFollowerBlocked) telemetryBus.emit('moderation:tts-skipped-nonfollower', {});
 
   broadcast({
     type: 'chat',

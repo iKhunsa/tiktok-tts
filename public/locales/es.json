@@ -74,7 +74,8 @@
     "langFilter": "Filtrar caracteres de otros idiomas",
     "langFilterHint": "Ignora mensajes de chat con caracteres que no correspondan al idioma de la voz activa (ej: bloquea chino/japonés si tu voz está en Español, y viceversa).",
     "dictFilter": "Filtrar por idioma (palabras)",
-    "dictFilterHint": "Solo lee mensajes escritos en el idioma de la voz activa o en los idiomas extra que permitas. Las palabras desconocidas (nombres, typos) no bloquean."
+    "dictFilterHint": "Solo lee mensajes escritos en el idioma de la voz activa o en los idiomas extra que permitas. Las palabras desconocidas (nombres, typos) no bloquean.",
+    "readNonFollowers": "Leer a no seguidores"
   },
   "tts": {
     "on": "🔊 TTS Encendido",
