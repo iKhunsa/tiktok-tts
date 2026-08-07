@@ -28,8 +28,15 @@ function once(channel, cb) {
   return () => off(channel, cb);
 }
 
+// Solo estos dos nacen en el renderer (cola TTS); el resto de la telemetria
+// vive en el proceso principal o en server.js y no necesita este canal.
+const TRACKABLE_EVENTS = new Set(['tts:skipped', 'tts:queue-overflow']);
+
 contextBridge.exposeInMainWorld('electronAPI', {
   getAppVersion: () => ipcRenderer.invoke('get-app-version'),
+  trackEvent: (name) => {
+    if (TRACKABLE_EVENTS.has(name)) ipcRenderer.send('telemetry:track', name);
+  },
   onMarkClip: (cb) => on('mark-clip', () => cb()),
   offMarkClip: (cb) => off('mark-clip', cb),
   onUpdateEvent: (cb) => on('update-event', (_e, data) => cb(data)),
