@@ -99,7 +99,8 @@
     "empty": "连接您的 TikTok 直播<br>在此查看聊天",
     "speaking": "正在朗读...",
     "queue": "队列：{n} 条消息",
-    "followerBadge": "关注者"
+    "followerBadge": "关注者",
+    "mutedBadge": "已静音：TTS 不朗读"
   },
   "emergencyHint": "紧急模式保持礼物和关注活跃，静音聊天/点赞/加入/分享。",
   "status": {
@@ -651,5 +652,18 @@
       "follower": "关注者列表已更新",
       "error": "无法执行该操作"
     }
+  },
+  "chatCtx": {
+    "hint": "点击管理该用户",
+    "mute15": "静音 15 分钟",
+    "muteForever": "无限期静音",
+    "ban15": "封禁 15 分钟",
+    "banForever": "无限期封禁",
+    "clear": "解除处罚",
+    "markFollower": "标记为关注者",
+    "blockWord": "屏蔽一个词...",
+    "blockWordPrompt": "要屏蔽的词：",
+    "blockWordDone": "已屏蔽“{word}”",
+    "openModeration": "在管理中查看"
   }
 }

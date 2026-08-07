@@ -99,7 +99,8 @@
     "empty": "Connect your TikTok Live<br>to see the chat here",
     "speaking": "Reading...",
     "queue": "Queue: {n} messages",
-    "followerBadge": "Follower"
+    "followerBadge": "Follower",
+    "mutedBadge": "Muted: TTS skips them"
   },
   "emergencyHint": "Emergency keeps gifts and follows active, silences chat/likes/joins/shares.",
   "status": {
@@ -651,5 +652,18 @@
       "follower": "Follower list updated",
       "error": "Could not apply the action"
     }
+  },
+  "chatCtx": {
+    "hint": "Click to moderate this user",
+    "mute15": "Mute for 15 minutes",
+    "muteForever": "Mute indefinitely",
+    "ban15": "Ban for 15 minutes",
+    "banForever": "Ban indefinitely",
+    "clear": "Clear penalties",
+    "markFollower": "Mark as follower",
+    "blockWord": "Block a word...",
+    "blockWordPrompt": "Word to block:",
+    "blockWordDone": "\"{word}\" blocked",
+    "openModeration": "View in Moderation"
   }
 }

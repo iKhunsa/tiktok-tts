@@ -99,7 +99,8 @@
     "empty": "Connetti il tuo TikTok Live<br>per vedere la chat qui",
     "speaking": "Leggendo...",
     "queue": "Coda: {n} messaggi",
-    "followerBadge": "Follower"
+    "followerBadge": "Follower",
+    "mutedBadge": "Silenziato: il TTS lo salta"
   },
   "emergencyHint": "L'emergenza mantiene attivi regali e follow, silenzia chat/like/entrate/condivisioni.",
   "status": {
@@ -651,5 +652,18 @@
       "follower": "Lista follower aggiornata",
       "error": "Impossibile applicare l'azione"
     }
+  },
+  "chatCtx": {
+    "hint": "Clicca per moderare questo utente",
+    "mute15": "Silenzia 15 minuti",
+    "muteForever": "Silenzia a tempo indeterminato",
+    "ban15": "Banna 15 minuti",
+    "banForever": "Banna a tempo indeterminato",
+    "clear": "Rimuovi sanzioni",
+    "markFollower": "Segna come follower",
+    "blockWord": "Blocca una parola...",
+    "blockWordPrompt": "Parola da bloccare:",
+    "blockWordDone": "\"{word}\" bloccata",
+    "openModeration": "Vedi in Moderazione"
   }
 }
