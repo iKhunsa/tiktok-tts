@@ -90,7 +90,8 @@
     "remove": "削除",
     "useF8": "F8 を使用",
     "usePlayPause": "再生/一時停止キーを使用",
-    "clearShortcut": "✕ クリア"
+    "clearShortcut": "✕ クリア",
+    "blockedWordsShortcut": "ブロック単語"
   },
   "chat": {
     "title": "ライブチャット",

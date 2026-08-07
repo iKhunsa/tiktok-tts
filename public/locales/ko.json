@@ -90,7 +90,8 @@
     "remove": "제거",
     "useF8": "F8 사용",
     "usePlayPause": "재생/일시정지 키 사용",
-    "clearShortcut": "✕ 지우기"
+    "clearShortcut": "✕ 지우기",
+    "blockedWordsShortcut": "차단 단어"
   },
   "chat": {
     "title": "라이브 채팅",

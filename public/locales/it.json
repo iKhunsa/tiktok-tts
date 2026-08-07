@@ -90,7 +90,8 @@
     "remove": "Rimuovi",
     "useF8": "Usa F8",
     "usePlayPause": "Usa tasto Play/Pausa",
-    "clearShortcut": "✕ Cancella"
+    "clearShortcut": "✕ Cancella",
+    "blockedWordsShortcut": "Parole bloccate"
   },
   "chat": {
     "title": "Chat in diretta",

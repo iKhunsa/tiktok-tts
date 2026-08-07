@@ -158,6 +158,13 @@
       position: relative;
     }
 
+    /* Resalte temporal al llegar por deep-link (#palabras-bloqueadas) */
+    .panel-highlight {
+      outline: 2px solid var(--accent);
+      box-shadow: 0 0 0 4px rgba(62, 207, 142, 0.15);
+      transition: box-shadow .3s ease, outline-color .3s ease;
+    }
+
     .panel-title {
       font-family: 'Source Code Pro', monospace;
       font-size: 11px;
@@ -889,7 +896,7 @@
   </div>
 
   <!-- ═══ PANEL 3: FILTROS DE MENSAJES ═══ -->
-  <div class="panel panel-filter">
+  <div class="panel panel-filter" id="palabras-bloqueadas">
     <div class="panel-title"><img class="icon-inline" src="icons/search.svg" alt=""> <span data-i18n="adv.filtersTitle">Filtros de Mensajes</span></div>
     <div class="panel-desc" data-i18n="adv.filtersDesc">Palabras prohibidas en el servidor</div>
 
@@ -1400,11 +1407,26 @@
     setTimeout(() => t.classList.remove('show'), 2500);
   }
 
+  // ─── Deep-link ──────────────────────────────────────────────────────
+  // Entrada directa desde el botón de la vista de Chat (index.html).
+  function focusHashPanel() {
+    const id = (location.hash || '').replace('#', '');
+    if (!id) return;
+    const el = document.getElementById(id);
+    if (!el || !el.classList.contains('panel')) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    el.classList.add('panel-highlight');
+    setTimeout(() => el.classList.remove('panel-highlight'), 2500);
+  }
+
   // ─── Init ───────────────────────────────────────────────────────────
   loadConfig().then(() => toggleRateLimit());
   loadBlockedWords();
   loadMdContent();
   refreshStatus();
+  focusHashPanel();
+  window.addEventListener('hashchange', focusHashPanel);
 
   let statusRefreshId = setInterval(() => {
     refreshStatus();

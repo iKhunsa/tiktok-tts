@@ -90,7 +90,8 @@
     "remove": "Удалить",
     "useF8": "Использовать F8",
     "usePlayPause": "Использовать Play/Pause",
-    "clearShortcut": "✕ Очистить"
+    "clearShortcut": "✕ Очистить",
+    "blockedWordsShortcut": "Запрещённые слова"
   },
   "chat": {
     "title": "Прямой чат",
