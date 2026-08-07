@@ -958,6 +958,12 @@
     .mod-empty { padding: 26px; text-align: center; font-size: 12px; color: var(--text-muted); }
     .mod-pager { display: flex; gap: 10px; align-items: center; justify-content: center; margin-top: 12px; font-size: 11px; color: var(--text-muted); }
 
+    /* Nick clicable en el chat → menú de moderación */
+    .msg-user-clickable { cursor: pointer; }
+    .msg-user-clickable:hover { text-decoration: underline; }
+    .chat-msg--muted { opacity: 0.55; }
+    .chat-muted-badge { margin-left: 5px; font-size: 10px; }
+
     /* Menú flotante compartido (duraciones y moderación por nick) */
     .ctx-menu {
       position: fixed; z-index: 1000; min-width: 190px; padding: 5px;
@@ -2671,8 +2677,9 @@
   </main>
 </div>
 
-<!-- Menú de duración compartido (mute/ban) — uno solo, reposicionado -->
+<!-- Menús flotantes compartidos — uno solo de cada tipo, reposicionado -->
 <div id="modDurMenu" class="ctx-menu" style="display:none"></div>
+<div id="userCtxMenu" class="ctx-menu" style="display:none"></div>
 
 <div class="app-glow" id="appGlow"></div>
 
@@ -3490,6 +3497,63 @@
     } catch (_) { showToast(t('mod.toast.error')); }
   }
 
+  // Menú de moderación al hacer clic en un nick del chat. Un único nodo
+  // reposicionado, nunca uno por mensaje.
+  function openUserMenu(evt, ds) {
+    evt.stopPropagation();
+    modCloseMenus();
+    const menu = document.getElementById('userCtxMenu');
+    menu.textContent = '';
+    // Sin id estable el servidor no manda modKey: se identifica por nick.
+    const target = ds.modKey ? { key: ds.modKey } : { platform: ds.platform, nick: ds.nick };
+
+    const title = document.createElement('div');
+    title.className = 'ctx-title';
+    title.textContent = `@${ds.nick}`;
+    menu.appendChild(title);
+
+    const add = (label, fn, cls) => {
+      const b = document.createElement('button');
+      b.textContent = label;
+      if (cls) b.className = cls;
+      b.onclick = async () => { modCloseMenus(); await fn(); };
+      menu.appendChild(b);
+    };
+
+    add(t('chatCtx.mute15'), () => modApi('mute', { ...target, durationMs: 15 * 60 * 1000 }));
+    add(t('chatCtx.muteForever'), () => modApi('mute', { ...target, durationMs: null }));
+    add(t('chatCtx.ban15'), () => modApi('ban', { ...target, durationMs: 15 * 60 * 1000 }), 'danger');
+    add(t('chatCtx.banForever'), () => modApi('ban', { ...target, durationMs: null }), 'danger');
+    menu.appendChild(document.createElement('hr'));
+    add(t('chatCtx.clear'), () => modApi('clear', target));
+    add(t('chatCtx.markFollower'), () => modApi('follower', { ...target, value: true }));
+    menu.appendChild(document.createElement('hr'));
+    add(t('chatCtx.blockWord'), () => blockWordFromChat());
+    add(t('chatCtx.openModeration'), () => {
+      document.getElementById('modSearch').value = ds.nick;
+      switchView('moderacion');
+    });
+
+    modPlaceMenu(menu, evt);
+  }
+
+  // Reutiliza el endpoint de palabras bloqueadas que ya usa el panel avanzado.
+  async function blockWordFromChat() {
+    const word = prompt(t('chatCtx.blockWordPrompt'));
+    if (!word || !word.trim()) return;
+    try {
+      const res = await fetch('/api/block-word', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ word: word.trim() }),
+      });
+      if (!res.ok) throw new Error('http');
+      showToast(t('chatCtx.blockWordDone', { word: word.trim() }));
+    } catch (_) {
+      showToast(t('mod.toast.error'));
+    }
+  }
+
   // Menú compartido de duraciones. Sirve tanto a la tabla como al menú
   // contextual del chat: un único nodo reposicionado, nunca uno por fila.
   function modDurationMenu(evt, kind, key) {
@@ -3527,12 +3591,20 @@
   }
 
   function modCloseMenus() {
-    const menu = document.getElementById('modDurMenu');
-    if (menu) menu.style.display = 'none';
+    for (const id of ['modDurMenu', 'userCtxMenu']) {
+      const menu = document.getElementById(id);
+      if (menu) menu.style.display = 'none';
+    }
   }
 
   document.addEventListener('click', modCloseMenus);
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') modCloseMenus(); });
+  // El chat scrollea solo con cada mensaje: el menú quedaría flotando lejos
+  // del nick que lo abrió.
+  document.addEventListener('DOMContentLoaded', () => {
+    const chatLog = document.getElementById('chatLog');
+    if (chatLog) chatLog.addEventListener('scroll', modCloseMenus);
+  });
 
   // Llega tras cualquier acción de moderación (también desde el menú del chat
   // o desde otra ventana). Un cambio de whitelist mueve la fila de pestaña, así
@@ -4896,7 +4968,7 @@
     const initials = user.substring(0, 2).toUpperCase();
 
     const div = document.createElement('div');
-    div.className = 'chat-msg';
+    div.className = data.muted ? 'chat-msg chat-msg--muted' : 'chat-msg';
     div.id = msgId;
 
     const avatar = document.createElement('div');
@@ -4909,9 +4981,24 @@
     body.className = 'msg-body';
 
     const userEl = document.createElement('div');
-    userEl.className = 'msg-user';
+    userEl.className = 'msg-user msg-user-clickable';
     userEl.style.color = color;
     userEl.append(document.createTextNode(`@${user}`));
+    // El menú de moderación necesita la identidad, no solo el nombre visible.
+    // `modKey` la calcula el servidor; si el usuario no tiene id estable la
+    // acción viaja como platform + nick y el store resuelve igual.
+    userEl.dataset.modKey = data.modKey || '';
+    userEl.dataset.nick = user;
+    userEl.dataset.platform = platform;
+    userEl.title = t('chatCtx.hint');
+    userEl.onclick = (e) => openUserMenu(e, userEl.dataset);
+    if (data.muted) {
+      const mutedBadge = document.createElement('span');
+      mutedBadge.className = 'chat-muted-badge';
+      mutedBadge.textContent = '🔇';
+      mutedBadge.title = t('chat.mutedBadge');
+      userEl.appendChild(mutedBadge);
+    }
     if (platform) {
       const badge = document.createElement('span');
       badge.className = `chat-platform-badge badge-${platform}`;

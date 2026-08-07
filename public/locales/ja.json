@@ -99,7 +99,8 @@
     "empty": "TikTok ライブに接続して<br>ここでチャットを確認",
     "speaking": "読み上げ中...",
     "queue": "キュー：{n} 件",
-    "followerBadge": "フォロワー"
+    "followerBadge": "フォロワー",
+    "mutedBadge": "ミュート中：TTSは読みません"
   },
   "emergencyHint": "緊急モードはギフトとフォローを維持し、チャット/いいね/参加/シェアを無音にします。",
   "status": {
@@ -651,5 +652,18 @@
       "follower": "フォロワーリストを更新しました",
       "error": "操作を適用できませんでした"
     }
+  },
+  "chatCtx": {
+    "hint": "クリックでこのユーザーを管理",
+    "mute15": "15分ミュート",
+    "muteForever": "無期限ミュート",
+    "ban15": "15分BAN",
+    "banForever": "無期限BAN",
+    "clear": "処罰を解除",
+    "markFollower": "フォロワーに設定",
+    "blockWord": "単語をブロック...",
+    "blockWordPrompt": "ブロックする単語：",
+    "blockWordDone": "「{word}」をブロックしました",
+    "openModeration": "モデレーションで表示"
   }
 }

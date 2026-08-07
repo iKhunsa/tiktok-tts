@@ -99,7 +99,8 @@
     "empty": "TikTok 라이브에 연결하여<br>여기서 채팅을 확인하세요",
     "speaking": "읽는 중...",
     "queue": "대기열: {n}개",
-    "followerBadge": "팔로워"
+    "followerBadge": "팔로워",
+    "mutedBadge": "음소거: TTS가 읽지 않음"
   },
   "emergencyHint": "비상 모드는 선물과 팔로우를 유지하고 채팅/좋아요/입장/공유를 음소거합니다.",
   "status": {
@@ -651,5 +652,18 @@
       "follower": "팔로워 목록을 업데이트했습니다",
       "error": "작업을 적용할 수 없습니다"
     }
+  },
+  "chatCtx": {
+    "hint": "클릭해서 이 사용자를 관리",
+    "mute15": "15분 음소거",
+    "muteForever": "무기한 음소거",
+    "ban15": "15분 차단",
+    "banForever": "무기한 차단",
+    "clear": "제재 해제",
+    "markFollower": "팔로워로 표시",
+    "blockWord": "단어 차단...",
+    "blockWordPrompt": "차단할 단어:",
+    "blockWordDone": "\"{word}\" 차단됨",
+    "openModeration": "모더레이션에서 보기"
   }
 }
