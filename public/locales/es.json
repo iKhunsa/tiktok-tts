@@ -679,8 +679,18 @@
     "toggleTitle": "Leer a no seguidores",
     "toggleDesc": "Encendido, el TTS lee a todos. Apagado, solo lee a seguidores y a quien marcaste a mano; los demás se siguen viendo en el chat pero sin voz. Ojo el primer día: si el registro está vacío, callás a casi todo tu público.",
     "blockedTitle": "Palabras bloqueadas",
-    "blockedDesc": "Atajo directo al panel de palabras bloqueadas, sin buscarlo dentro de Avanzado. Los mensajes que las contengan se ignoran por completo.",
+    "blockedDesc": "Copiás la palabra molesta del chat, apretás acá, la pegás y ya está bloqueada — sin salir de la vista ni reconectar. La ventana queda abierta para pegar varias seguidas. Los mensajes que la contengan se ignoran por completo.",
     "scrollTitle": "El chat sigue la lectura",
     "scrollDesc": "El chat ya no persigue al último mensaje sino al que el TTS está leyendo, que suele ir varios mensajes por detrás. Si scrolleás hacia arriba se queda quieto para que leas tranquilo; volvés al fondo y retoma solo."
+  },
+  "blockWord": {
+    "title": "Bloquear palabra",
+    "desc": "Pegá o escribí la palabra y listo: el servidor la aplica al instante, sin reconectar. Podés seguir agregando sin cerrar la ventana.",
+    "placeholder": "Escribí o pegá la palabra...",
+    "add": "Bloquear",
+    "count": "{n} palabras bloqueadas en total",
+    "sessionAdded": "Bloqueadas ahora",
+    "duplicate": "Ya la bloqueaste recién",
+    "manageAll": "Ver y editar todas"
   }
 }

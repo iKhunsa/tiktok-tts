@@ -1726,7 +1726,7 @@
         <button class="cfg-btn danger" onclick="clearTTSQueue()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="btn.clearQueue">Vaciar cola</span></button>
         <button class="cfg-btn" onclick="enableEmergencyTTSMode()"><img class="icon-inline" src="icons/warning.svg" alt=""> <span data-i18n="btn.emergency">Modo emergencia</span></button>
         <button class="cfg-btn" onclick="clearChat()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="btn.clearChat">Limpiar</span></button>
-        <a class="cfg-btn" id="btnBlockedWordsShortcut" href="/advanced.html#palabras-bloqueadas"><img class="icon-inline" src="icons/filter_none.svg" alt=""> <span data-i18n="btn.blockedWordsShortcut">Palabras bloqueadas</span></a>
+        <button class="cfg-btn" id="btnBlockedWordsShortcut" onclick="openBlockWordModal()"><img class="icon-inline" src="icons/filter_none.svg" alt=""> <span data-i18n="btn.blockedWordsShortcut">Palabras bloqueadas</span></button>
         <span style="font-size:11px;color:var(--text-muted);" data-i18n="emergencyHint">Emergencia deja activos regalos y follows, y silencia chat/likes/entradas/compartidos.</span>
       </div>
 
@@ -2773,6 +2773,33 @@
   </div>
 </div>
 
+<!-- ══ MODAL: Bloquear palabra al vuelo desde el chat ══════ -->
+<div id="blockWordModal" class="modal-overlay" onclick="closeBlockWordModal(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeBlockWordModal()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <h2><img class="icon-inline" src="icons/filter_none.svg" alt=""> <span data-i18n="blockWord.title">Bloquear palabra</span></h2>
+    <p style="color:var(--text-secondary);margin-bottom:14px;" data-i18n="blockWord.desc">Pegá o escribí la palabra y listo: el servidor la aplica al instante, sin reconectar. Podés seguir agregando sin cerrar la ventana.</p>
+
+    <div class="cfg-field">
+      <input type="text" id="blockWordInput" autocomplete="off" spellcheck="false"
+        data-i18n-placeholder="blockWord.placeholder" placeholder="Escribí o pegá la palabra..."
+        onkeydown="if(event.key==='Enter') submitBlockWord()" />
+    </div>
+
+    <button class="btn-copy" style="width:100%;justify-content:center;margin-top:12px;" onclick="submitBlockWord()"><span data-i18n="blockWord.add">Bloquear</span></button>
+
+    <div id="blockWordSession" style="display:none;margin-top:14px;">
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;" data-i18n="blockWord.sessionAdded">Bloqueadas ahora</div>
+      <div id="blockWordSessionTags" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px;">
+      <span id="blockWordCount" style="font-size:11px;color:var(--text-muted);"></span>
+      <a class="cfg-btn" href="/advanced.html#palabras-bloqueadas" data-i18n="blockWord.manageAll">Ver y editar todas</a>
+    </div>
+  </div>
+</div>
+
 <!-- ══ MODAL: Bienvenida / tutorial primer uso (one-time) ══ -->
 <div id="onboardingWelcomeModal" class="modal-overlay" onclick="closeOnboardingWelcome(event)">
   <div class="modal-content" onclick="event.stopPropagation()" style="text-align:center;">
@@ -3594,21 +3621,82 @@
     modPlaceMenu(menu, evt);
   }
 
-  // Reutiliza el endpoint de palabras bloqueadas que ya usa el panel avanzado.
-  async function blockWordFromChat() {
-    const word = prompt(t('chatCtx.blockWordPrompt'));
-    if (!word || !word.trim()) return;
+  // ─── Bloquear palabra al vuelo ────────────────────────────────
+  // El streamer copia la palabra del chat y la pega acá. La ventana no se
+  // cierra al agregar: en una racha de spam se pegan varias seguidas.
+  // Reutiliza /api/block-word, el mismo endpoint del panel avanzado.
+  let blockWordSessionList = [];
+
+  function openBlockWordModal(prefill) {
+    const input = document.getElementById('blockWordInput');
+    input.value = prefill || '';
+    document.getElementById('blockWordModal').classList.add('show');
+    refreshBlockWordCount();
+    setTimeout(() => { input.focus(); input.select(); }, 50);
+  }
+
+  function closeBlockWordModal(e) {
+    if (e && e.target.id !== 'blockWordModal') return;
+    document.getElementById('blockWordModal').classList.remove('show');
+    blockWordSessionList = [];
+    renderBlockWordSession();
+  }
+
+  async function refreshBlockWordCount() {
+    const el = document.getElementById('blockWordCount');
+    if (!el) return;
+    try {
+      const res = await fetch('/api/blocked-words');
+      const data = await res.json();
+      el.textContent = t('blockWord.count', { n: (data.words || []).length });
+    } catch (_) {
+      el.textContent = '';
+    }
+  }
+
+  function renderBlockWordSession() {
+    const wrap = document.getElementById('blockWordSession');
+    const tags = document.getElementById('blockWordSessionTags');
+    if (!wrap || !tags) return;
+    tags.textContent = '';
+    wrap.style.display = blockWordSessionList.length ? '' : 'none';
+    for (const w of blockWordSessionList) {
+      const tag = document.createElement('span');
+      tag.className = 'mod-pill banned';
+      tag.textContent = w;
+      tags.appendChild(tag);
+    }
+  }
+
+  async function submitBlockWord() {
+    const input = document.getElementById('blockWordInput');
+    const word = input.value.trim().toLowerCase();
+    if (!word) return;
+    if (blockWordSessionList.includes(word)) {
+      showToast(t('blockWord.duplicate'));
+      input.value = '';
+      return;
+    }
     try {
       const res = await fetch('/api/block-word', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ word: word.trim() }),
+        body: JSON.stringify({ word }),
       });
       if (!res.ok) throw new Error('http');
-      showToast(t('chatCtx.blockWordDone', { word: word.trim() }));
+      blockWordSessionList.push(word);
+      renderBlockWordSession();
+      showToast(t('chatCtx.blockWordDone', { word }));
+      input.value = '';
+      input.focus();
+      refreshBlockWordCount();
     } catch (_) {
       showToast(t('mod.toast.error'));
     }
+  }
+
+  function blockWordFromChat() {
+    openBlockWordModal();
   }
 
   // Menú compartido de duraciones. Sirve tanto a la tabla como al menú
@@ -3677,7 +3765,9 @@
   // Se dispara solo la primera vez que se abre la vista. Cubre las tres piezas
   // que llegaron juntas: registro de espectadores, moderación desde el chat y
   // el filtro de no seguidores — el usuario lo lee como una sola novedad.
-  const MODERATION_TOUR_KEY = 'tikliveTTS_moderationTourSeen_v1';
+  // v2: el atajo de palabras bloqueadas dejó de llevar a Avanzado y ahora abre
+  // una ventana para pegar la palabra. Se vuelve a mostrar el tour por eso.
+  const MODERATION_TOUR_KEY = 'tikliveTTS_moderationTourSeen_v2';
 
   function maybeShowModerationTour() {
     if (localStorage.getItem(MODERATION_TOUR_KEY)) return;

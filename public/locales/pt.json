@@ -695,8 +695,18 @@
     "toggleTitle": "Ler não seguidores",
     "toggleDesc": "Ligado, o TTS lê todo mundo. Desligado, lê só seguidores e quem você marcou; os demais continuam aparecendo no chat, mas sem voz. Cuidado no primeiro dia: com o registro vazio você cala quase todo o seu público.",
     "blockedTitle": "Palavras bloqueadas",
-    "blockedDesc": "Atalho direto para o painel de palavras bloqueadas, sem procurar dentro de Avançado. Mensagens que as contenham são ignoradas por completo.",
+    "blockedDesc": "Copie a palavra chata do chat, clique aqui, cole e pronto — sem sair da tela nem reconectar. A janela fica aberta para colar várias seguidas. Mensagens que a contenham são ignoradas por completo.",
     "scrollTitle": "O chat acompanha a leitura",
     "scrollDesc": "O chat não persegue mais a última mensagem, e sim a que o TTS está lendo, que costuma ficar algumas mensagens atrás. Se você rolar para cima ele para, para você ler com calma; volte ao fim e ele retoma sozinho."
+  },
+  "blockWord": {
+    "title": "Bloquear palavra",
+    "desc": "Cole ou digite a palavra e pronto: o servidor aplica na hora, sem reconectar. Você pode continuar adicionando sem fechar a janela.",
+    "placeholder": "Digite ou cole a palavra...",
+    "add": "Bloquear",
+    "count": "{n} palavras bloqueadas no total",
+    "sessionAdded": "Bloqueadas agora",
+    "duplicate": "Você acabou de bloquear essa",
+    "manageAll": "Ver e editar todas"
   }
 }

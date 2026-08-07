@@ -695,8 +695,18 @@
     "toggleTitle": "Lire les non-abonnés",
     "toggleDesc": "Activé, le TTS lit tout le monde. Désactivé, il ne lit que les abonnés et ceux que vous avez marqués ; les autres restent visibles dans le chat, sans voix. Attention le premier jour : avec un registre vide vous faites taire presque tout votre public.",
     "blockedTitle": "Mots bloqués",
-    "blockedDesc": "Raccourci direct vers le panneau des mots bloqués, sans le chercher dans Avancé. Les messages qui les contiennent sont totalement ignorés.",
+    "blockedDesc": "Copiez le mot gênant depuis le chat, cliquez ici, collez-le et il est bloqué — sans quitter la vue ni vous reconnecter. La fenêtre reste ouverte pour en coller plusieurs à la suite. Les messages qui le contiennent sont totalement ignorés.",
     "scrollTitle": "Le chat suit la lecture",
     "scrollDesc": "Le chat ne poursuit plus le dernier message mais celui que le TTS est en train de lire, souvent plusieurs messages en arrière. Si vous remontez, il se fige pour vous laisser lire ; revenez en bas et il repart tout seul."
+  },
+  "blockWord": {
+    "title": "Bloquer un mot",
+    "desc": "Collez ou tapez le mot, c'est tout : le serveur l'applique aussitôt, sans reconnexion. Vous pouvez continuer à en ajouter sans fermer la fenêtre.",
+    "placeholder": "Tapez ou collez le mot...",
+    "add": "Bloquer",
+    "count": "{n} mots bloqués au total",
+    "sessionAdded": "Bloqués à l'instant",
+    "duplicate": "Vous venez de le bloquer",
+    "manageAll": "Voir et modifier tout"
   }
 }
