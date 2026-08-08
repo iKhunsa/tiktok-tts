@@ -772,6 +772,14 @@
     "clearTitle": "Effacer",
     "clearDesc": "Efface le chat visuel à l'écran et vide la file TTS. N'affecte pas les messages déjà envoyés par les spectateurs.",
     "blockedTitle": "Mots bloqués",
-    "blockedDesc": "Ouvre l'éditeur de mots bloqués pour gérer quels termes sont filtrés avant d'être lus à voix haute."
+    "blockedDesc": "Ouvre l'éditeur de mots bloqués pour gérer quels termes sont filtrés avant d'être lus à voix haute.",
+    "togglesTitle": "Ce qui est lu à voix haute",
+    "togglesDesc": "Activez ou désactivez chaque événement séparément : commentaires, dons, entrées, abonnements, likes, partages, et si le nom de l'auteur est annoncé.",
+    "ttsTitle": "Activer ou désactiver le TTS",
+    "ttsDesc": "Désactivez-le pour couper la voix instantanément et vider la file. Réactivez-le quand vous voulez reprendre la lecture.",
+    "connectTitle": "Tout connecter",
+    "connectDesc": "C'est le vrai bouton qui connecte vos chaînes enregistrées (TikTok/Twitch/YouTube) au chat en direct. Sans ça, rien de ce qui précède n'a d'effet.",
+    "logTitle": "Chat en direct",
+    "logDesc": "Les messages apparaissent ici à leur arrivée, avec un badge de plateforme et un statut (lu, muet, etc.)."
   }
 }

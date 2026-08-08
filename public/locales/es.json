@@ -756,6 +756,14 @@
     "clearTitle": "Limpiar",
     "clearDesc": "Limpia el chat visual en pantalla y vacía la cola de TTS. No afecta los mensajes ya enviados por los espectadores.",
     "blockedTitle": "Palabras bloqueadas",
-    "blockedDesc": "Abre el editor de palabras bloqueadas para gestionar qué términos se filtran antes de leerse en voz alta."
+    "blockedDesc": "Abre el editor de palabras bloqueadas para gestionar qué términos se filtran antes de leerse en voz alta.",
+    "togglesTitle": "Qué se lee en voz alta",
+    "togglesDesc": "Activá o desactivá cada evento por separado: comentarios, regalos, entradas, follows, likes, compartidos, y si se dice el nombre de quien escribe.",
+    "ttsTitle": "Encender o apagar el TTS",
+    "ttsDesc": "Apagalo para silenciar la voz al instante y vaciar la cola. Volvé a prenderlo cuando quieras retomar la lectura.",
+    "connectTitle": "Conectar todo",
+    "connectDesc": "Este es el botón real que conecta tus canales guardados (TikTok/Twitch/YouTube) al chat en vivo. Sin esto, nada de lo de arriba hace efecto.",
+    "logTitle": "Chat en vivo",
+    "logDesc": "Acá aparecen los mensajes a medida que llegan, con badge de plataforma y estado (leído, silenciado, etc.)."
   }
 }
