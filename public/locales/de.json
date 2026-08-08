@@ -772,6 +772,14 @@
     "clearTitle": "Leeren",
     "clearDesc": "Leert den sichtbaren Chat und die TTS-Warteschlange. Betrifft nicht bereits von Zuschauern gesendete Nachrichten.",
     "blockedTitle": "Blockierte Wörter",
-    "blockedDesc": "Öffnet den Editor für blockierte Wörter, um zu verwalten, welche Begriffe vor dem Vorlesen gefiltert werden."
+    "blockedDesc": "Öffnet den Editor für blockierte Wörter, um zu verwalten, welche Begriffe vor dem Vorlesen gefiltert werden.",
+    "togglesTitle": "Was vorgelesen wird",
+    "togglesDesc": "Schalte jedes Ereignis einzeln ein oder aus: Kommentare, Geschenke, Beitritte, Follows, Likes, Shares, und ob der Name des Absenders angesagt wird.",
+    "ttsTitle": "TTS ein- oder ausschalten",
+    "ttsDesc": "Schalte es aus, um die Stimme sofort stummzuschalten und die Warteschlange zu leeren. Schalte es wieder ein, wenn du weiterlesen lassen willst.",
+    "connectTitle": "Alle verbinden",
+    "connectDesc": "Das ist der eigentliche Button, der deine gespeicherten Kanäle (TikTok/Twitch/YouTube) mit dem Live-Chat verbindet. Ohne das hat nichts oben irgendeine Wirkung.",
+    "logTitle": "Live-Chat",
+    "logDesc": "Nachrichten erscheinen hier, sobald sie eintreffen, mit Plattform-Badge und Status (gelesen, stumm, usw.)."
   }
 }

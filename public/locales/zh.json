@@ -772,6 +772,14 @@
     "clearTitle": "清除",
     "clearDesc": "清除屏幕上的聊天记录并清空TTS队列。不影响观众已经发送的消息。",
     "blockedTitle": "屏蔽词",
-    "blockedDesc": "打开屏蔽词编辑器，管理哪些词语会在朗读前被过滤。"
+    "blockedDesc": "打开屏蔽词编辑器，管理哪些词语会在朗读前被过滤。",
+    "togglesTitle": "朗读哪些内容",
+    "togglesDesc": "单独开关每种事件：评论、礼物、进场、关注、点赞、分享，以及是否播报发送者的名字。",
+    "ttsTitle": "开启或关闭TTS",
+    "ttsDesc": "关闭后立即静音并清空队列。想继续朗读时再打开。",
+    "connectTitle": "全部连接",
+    "connectDesc": "这才是真正把你保存的频道（TikTok/Twitch/YouTube）连接到直播聊天的按钮。不点这个，上面的设置都不会生效。",
+    "logTitle": "实时聊天",
+    "logDesc": "消息到达时会显示在这里，带有平台标识和状态（已读、静音等）。"
   }
 }

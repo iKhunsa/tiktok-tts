@@ -772,6 +772,14 @@
     "clearTitle": "Pulisci",
     "clearDesc": "Pulisce la chat visiva a schermo e svuota la coda TTS. Non influisce sui messaggi già inviati dagli spettatori.",
     "blockedTitle": "Parole bloccate",
-    "blockedDesc": "Apre l'editor delle parole bloccate per gestire quali termini vengono filtrati prima di essere letti ad alta voce."
+    "blockedDesc": "Apre l'editor delle parole bloccate per gestire quali termini vengono filtrati prima di essere letti ad alta voce.",
+    "togglesTitle": "Cosa viene letto ad alta voce",
+    "togglesDesc": "Attiva o disattiva ogni evento singolarmente: commenti, regali, ingressi, follow, like, condivisioni, e se dire il nome di chi scrive.",
+    "ttsTitle": "Accendi o spegni il TTS",
+    "ttsDesc": "Spegnilo per silenziare la voce all'istante e svuotare la coda. Riaccendilo quando vuoi riprendere la lettura.",
+    "connectTitle": "Connetti tutto",
+    "connectDesc": "Questo è il pulsante reale che collega i tuoi canali salvati (TikTok/Twitch/YouTube) alla chat in diretta. Senza questo, nulla sopra ha effetto.",
+    "logTitle": "Chat in diretta",
+    "logDesc": "I messaggi appaiono qui man mano che arrivano, con badge della piattaforma e stato (letto, silenziato, ecc.)."
   }
 }

@@ -772,6 +772,14 @@
     "clearTitle": "Clear",
     "clearDesc": "Clears the on-screen chat log and empties the TTS queue. It doesn't affect messages already sent by viewers.",
     "blockedTitle": "Blocked words",
-    "blockedDesc": "Opens the blocked words editor to manage which terms get filtered out before being read aloud."
+    "blockedDesc": "Opens the blocked words editor to manage which terms get filtered out before being read aloud.",
+    "togglesTitle": "What gets read aloud",
+    "togglesDesc": "Turn each event on or off individually: comments, gifts, joins, follows, likes, shares, and whether the sender's name gets announced.",
+    "ttsTitle": "Turn TTS on or off",
+    "ttsDesc": "Turn it off to instantly mute the voice and clear the queue. Turn it back on whenever you want reading to resume.",
+    "connectTitle": "Connect all",
+    "connectDesc": "This is the real button that connects your saved channels (TikTok/Twitch/YouTube) to the live chat. Without this, nothing above has any effect.",
+    "logTitle": "Live chat",
+    "logDesc": "Messages show up here as they arrive, with a platform badge and status (read, muted, etc.)."
   }
 }

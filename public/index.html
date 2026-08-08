@@ -3923,6 +3923,16 @@
       ...driverTourDefaults(),
       steps: [
         {
+          element: '.toggles-row',
+          popover: { title: t('chatActionsTour.togglesTitle'), description: t('chatActionsTour.togglesDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inChatActions,
+        },
+        {
+          element: '#btnTTSToggle',
+          popover: { title: t('chatActionsTour.ttsTitle'), description: t('chatActionsTour.ttsDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inChatActions,
+        },
+        {
           element: 'button[onclick="skipCurrentTTS()"]',
           popover: { title: t('chatActionsTour.skipTitle'), description: t('chatActionsTour.skipDesc'), side: 'bottom', align: 'start' },
           onHighlightStarted: inChatActions,
@@ -3945,6 +3955,16 @@
         {
           element: '#btnBlockedWordsShortcut',
           popover: { title: t('chatActionsTour.blockedTitle'), description: t('chatActionsTour.blockedDesc'), side: 'bottom', align: 'end' },
+          onHighlightStarted: inChatActions,
+        },
+        {
+          element: '#btn-connect-all-chat',
+          popover: { title: t('chatActionsTour.connectTitle'), description: t('chatActionsTour.connectDesc'), side: 'bottom', align: 'end' },
+          onHighlightStarted: inChatActions,
+        },
+        {
+          element: '#chatLog',
+          popover: { title: t('chatActionsTour.logTitle'), description: t('chatActionsTour.logDesc'), side: 'top', align: 'start' },
           onHighlightStarted: inChatActions,
         },
       ],
