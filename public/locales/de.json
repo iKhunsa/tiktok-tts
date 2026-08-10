@@ -433,6 +433,20 @@
     "kofiDesc": "Unterstütze mich mit einem Kaffee",
     "paypalDesc": "Direkte Spende über PayPal"
   },
+  "portfolio": {
+    "heroTitle": "Hallo, ich bin Khunsa 👋",
+    "heroDesc": "Ich baue Produkte rund um Bitcoin, Crypto-Fiat und Handel: Diese TTS-App ist eines von mehreren aktiven Projekten. Sieh dir die anderen unten an.",
+    "projectsTitle": "Meine Projekte",
+    "satoshiDesc": "Selbstgehostetes Bitcoin-Dashboard, verfügbar im Umbrel App Store. Betreibe deinen eigenen Node und behalte deine Daten auf deiner eigenen Hardware.",
+    "assetrockDesc": "Institutionelle Brücke zwischen Krypto und Fiat: Liquidität, sicheres Settlement und Compliance für Fonds und Treasuries in Lateinamerika.",
+    "zatoboxDesc": "Open-Source, modulares Kassensystem mit smartem Inventar, Automatisierungen und Zahlungen in Landeswährung oder Bitcoin.",
+    "visit": "Besuchen →",
+    "contactTitle": "Lass uns reden",
+    "tag101btc": "Bildung",
+    "btc101Desc": "Interaktiver Guide für deine ersten Schritte in Bitcoin, präsentiert von SatoshiDashboard.",
+    "tagStacker": "Community",
+    "stackerDesc": "Mein Stacker-News-Profil: Ich teile und diskutiere über Bitcoin mit der Community und verdiene Sats für guten Content."
+  },
   "notice": {
     "donationsTitle": "Neue Wege, das Projekt zu unterstützen",
     "donationsBody": "Wir haben Ko-fi und PayPal als Spendenoptionen hinzugefügt. Die App bleibt 100 % kostenlos — wenn sie dir nützt und du das Projekt unterstützen möchtest, ist es jetzt einfacher denn je.",
@@ -735,6 +749,52 @@
     "playlistDesc": "Füge hier deine eigene Liste hinzu (ein Song oder Link pro Zeile). Läuft in Schleife, wenn keine Chat-Anfragen da sind — aktivieren und speichern zum Starten.",
     "settingsTitle": "Bot-Einstellungen",
     "settingsDesc": "Stelle die Abklingzeit zwischen Anfragen pro Nutzer, die maximale Warteschlangenlänge ein und sperre Nutzer, die den !p-Befehl missbrauchen."
+  },
+  "voiceTour": {
+    "introTitle": "Stimme & Audio",
+    "introDesc": "Hier stellst du die Stimme ein, die den Chat vorliest: Sprache, Geschwindigkeit, Lautstärke und welche Nachrichten je nach Sprache vorgelesen werden.",
+    "voiceTitle": "Stimmenauswahl",
+    "voiceDesc": "Wähle Sprache und Akzent der TTS-Stimme. 13 Optionen (Spanisch, Englisch, Portugiesisch, Französisch, Deutsch, Italienisch, Japanisch, Chinesisch, Russisch, Koreanisch). Ein Wechsel wirkt sich auch auf die Sprachfilter unten aus.",
+    "testTitle": "Stimme testen",
+    "testDesc": "Gib beliebigen Text ein und klicke auf Testen, um die gewählte Stimme zu hören — ganz ohne verbundenen Chat.",
+    "rateTitle": "Geschwindigkeit",
+    "rateDesc": "Stelle ein, wie schnell die TTS spricht. Gilt in Echtzeit für die nächste vorgelesene Nachricht.",
+    "volTitle": "Lautstärke",
+    "volDesc": "Regelt die TTS-Lautstärke unabhängig von der Bot-Musiklautstärke.",
+    "charFilterTitle": "Zeichen anderer Sprachen filtern",
+    "charFilterDesc": "Wenn aktiv, werden Nachrichten mit Zeichen ignoriert, die nicht zur Sprache der aktiven Stimme passen (z. B. blockiert Chinesisch oder Japanisch, wenn deine Stimme Spanisch ist).",
+    "wordFilterTitle": "Nach Sprache filtern (Wörter)",
+    "wordFilterDesc": "Feinerer wörterbuchbasierter Filter: liest nur Nachrichten in der Sprache der aktiven Stimme, plus die zusätzlichen Sprachen, die du unten erlaubst. Namen oder Tippfehler blockieren die Nachricht nicht.",
+    "dictModalTitle": "Erlaubte Sprachen",
+    "dictModalDesc": "Wähle, welche zusätzlichen Sprachen neben deiner Stimme für die TTS erlaubt sind. Schließe dieses Fenster, um mit dem Tutorial fortzufahren."
+  },
+  "shortcutsTour": {
+    "introTitle": "Tastenkombinationen",
+    "introDesc": "Richte globale Tasten ein, um TTS und Bot-Musik zu steuern, ohne die App anzufassen — auch wenn ein anderes Fenster im Fokus ist.",
+    "pauseBtnTitle": "TTS pausieren",
+    "pauseBtnDesc": "Pausiere oder setze das Vorlesen des Chats mit einem Klick fort. Praktisch, um schnell stumm zu schalten, ohne etwas zu trennen.",
+    "pauseKeyTitle": "Pause-Kürzel",
+    "pauseKeyDesc": "Klicke auf das Feld und drücke die gewünschte Kombination (mit Strg/Alt/Umschalt), oder nutze die Vorgaben F8 / Play-Pause-Taste.",
+    "skipTitle": "Aktuelle Nachricht überspringen",
+    "skipDesc": "Weise eine Taste zu, um die gerade vorgelesene Nachricht zu überspringen (Standard F9).",
+    "clearTitle": "Warteschlange leeren",
+    "clearDesc": "Weise eine Taste zu, um die gesamte ausstehende TTS-Warteschlange auf einmal zu leeren (Standard F10).",
+    "musicPauseTitle": "Bot-Musik pausieren",
+    "musicPauseDesc": "Kürzel, um die vom Chat mit !p angeforderte Musik zu pausieren oder fortzusetzen (Standard F11).",
+    "musicSkipTitle": "Bot-Song überspringen",
+    "musicSkipDesc": "Kürzel, um den aktuell im Musik-Bot laufenden Song zu überspringen (Standard F12)."
+  },
+  "twitchTour": {
+    "introTitle": "Twitch — Live-Alerts",
+    "introDesc": "Richte Twitch-Alerts ein: Subs, Bits und Raids funktionieren ohne jede Verbindung; das Verbinden deines Kontos fügt nur Follows mit echtem Namen hinzu.",
+    "clientIdTitle": "Twitch-Client-ID",
+    "clientIdDesc": "Füge hier die Client-ID deiner unter dev.twitch.tv registrierten App ein. Du brauchst sie, bevor du dein Konto verbindest.",
+    "connectTitle": "Konto verbinden",
+    "connectDesc": "Verbinde dein Twitch-Konto, um Follows mit echtem Namen zu aktivieren. Der Verbindungsstatus wird neben den Buttons angezeigt.",
+    "togglesTitle": "Was angesagt wird",
+    "togglesDesc": "Schalte jeden Alert-Typ einzeln ein oder aus: Subs, Bits, Raids und Follows.",
+    "testTitle": "Alerts testen",
+    "testDesc": "Löse jeden Alert manuell aus, um zu sehen/hören, wie er aussieht — ohne zu warten, bis er wirklich im Stream passiert."
   },
   "clipsTour": {
     "introTitle": "Clip-Marker",
