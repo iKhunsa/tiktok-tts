@@ -51,7 +51,9 @@
       font-size: 16px;
       line-height: 1.5;
       min-height: 100vh;
+      scrollbar-width: none;
     }
+    body::-webkit-scrollbar { display: none; }
 
     /* ── LAYOUT ─────────────────────────────────────────── */
     .app-layout {
@@ -1142,6 +1144,159 @@
 
     .modal-close:hover { color: var(--text); }
     .modal-content h2 { margin: 0 0 28px; font-size: 20px; color: var(--text); font-weight: 500; letter-spacing: -0.3px; }
+
+    /* ── Landing modal (portafolio) — inspirado en landings tipo Duna ── */
+    .modal-content--landing {
+      max-width: 900px; width: 94%; max-height: 92vh; padding: 0; border-radius: 24px;
+      overflow-y: auto; overflow-x: hidden;
+      scrollbar-width: none;
+    }
+    .modal-content--landing::-webkit-scrollbar { display: none; }
+    .landing-topbar {
+      position: sticky; top: 0; z-index: 5;
+      display: flex; justify-content: flex-end;
+      padding: 18px 22px 0;
+      background: linear-gradient(to bottom, rgba(10,14,12,0.35) 40%, transparent);
+    }
+    .landing-topbar .modal-close {
+      position: static; background: rgba(255,255,255,0.08); backdrop-filter: blur(6px);
+    }
+    .landing-hero {
+      position: relative;
+      padding: 8px 40px 46px;
+      text-align: center;
+      overflow: hidden;
+    }
+    .landing-hero::before {
+      content: '';
+      position: absolute; inset: -40% -10% auto -10%; height: 320px;
+      background:
+        radial-gradient(closest-side at 20% 30%, rgba(62,207,142,0.35), transparent 70%),
+        radial-gradient(closest-side at 80% 20%, rgba(255,183,94,0.28), transparent 70%),
+        radial-gradient(closest-side at 50% 60%, rgba(147,130,255,0.24), transparent 70%);
+      filter: blur(10px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .landing-hero > * { position: relative; z-index: 1; }
+    .landing-avatar {
+      width: 104px; height: 104px; border-radius: 50%; margin: 0 auto 20px;
+      background: linear-gradient(135deg, var(--accent), #ffb75e 60%, #9382ff);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px; font-weight: 700; color: #06210f;
+      overflow: hidden;
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.06), 0 12px 30px -8px rgba(62,207,142,0.45);
+    }
+    .landing-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .landing-hero h1 { font-size: 30px; margin: 0 0 10px; color: var(--text); letter-spacing: -0.6px; font-weight: 700; }
+    .landing-hero p { color: var(--text-muted); font-size: 14px; max-width: 460px; margin: 0 auto; line-height: 1.65; }
+    .landing-section { padding: 0 40px 36px; }
+    .landing-section-title {
+      font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 16px; font-weight: 700;
+    }
+    .project-grid { display: flex; gap: 16px; align-items: stretch; }
+    @media (max-width: 640px) { .project-grid { flex-direction: column; } }
+    .project-card {
+      position: relative;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      flex: 1 1 0; min-width: 0;
+      min-height: 300px; padding: 20px;
+      border-radius: 20px; overflow: hidden;
+      text-decoration: none; color: #fff;
+      transition: flex-grow 0.4s ease, box-shadow 0.25s ease;
+      isolation: isolate;
+    }
+    .project-card--big { flex: 2.4 1 0; transition: flex 0.4s ease, box-shadow 0.25s ease; }
+    .project-card:hover {
+      flex-grow: 3.2;
+      box-shadow: 0 24px 48px -16px rgba(0,0,0,0.65);
+      z-index: 3;
+    }
+    /* Cuando se pasa el mouse por otra tarjeta del grid, la grande cede espacio y oculta su texto. */
+    .project-grid:hover .project-card--big:not(:hover) { flex: 1 1 0; }
+    .project-card:not(.project-card--big) p {
+      max-height: 0; opacity: 0; margin-top: 0; overflow: hidden;
+      transition: max-height 0.4s ease, opacity 0.25s ease, margin-top 0.4s ease;
+      white-space: nowrap;
+    }
+    .project-card:not(.project-card--big):hover p {
+      max-height: 220px; opacity: 1; margin-top: 8px; white-space: normal;
+    }
+    .project-card--big p {
+      max-height: 220px; opacity: 1; margin-top: 8px;
+      transition: max-height 0.4s ease, opacity 0.25s ease, margin-top 0.4s ease;
+      overflow: hidden;
+    }
+    .project-grid:hover .project-card--big:not(:hover) p {
+      max-height: 0; opacity: 0; margin-top: 0; white-space: nowrap;
+    }
+    .project-card::before {
+      content: ''; position: absolute; inset: 0; z-index: -2;
+    }
+    .project-card::after {
+      content: ''; position: absolute; inset: 0; z-index: -1;
+      background: linear-gradient(to top, rgba(4,8,6,0.92) 0%, rgba(4,8,6,0.55) 42%, rgba(4,8,6,0.05) 70%);
+    }
+    .project-card.art-bitcoin::before {
+      background:
+        radial-gradient(120% 60% at 15% 100%, rgba(255,183,94,0.55), transparent 60%),
+        radial-gradient(90% 50% at 85% 15%, rgba(255,140,60,0.4), transparent 65%),
+        linear-gradient(160deg, #1c3d2e 0%, #2f6b4f 45%, #7fb069 100%);
+    }
+    .project-card.art-fiat::before {
+      background:
+        radial-gradient(120% 60% at 85% 100%, rgba(147,130,255,0.5), transparent 60%),
+        radial-gradient(90% 50% at 15% 15%, rgba(94,163,255,0.4), transparent 65%),
+        linear-gradient(160deg, #16233d 0%, #2a4a7a 45%, #6f8fc9 100%);
+    }
+    .project-card.art-retail::before {
+      background:
+        radial-gradient(120% 60% at 15% 100%, rgba(62,207,142,0.55), transparent 60%),
+        radial-gradient(90% 50% at 85% 15%, rgba(255,214,110,0.35), transparent 65%),
+        linear-gradient(160deg, #123028 0%, #1f5f45 45%, #6bbf8e 100%);
+    }
+    .project-card.art-edu::before {
+      background:
+        radial-gradient(120% 60% at 85% 100%, rgba(255,214,110,0.5), transparent 60%),
+        radial-gradient(90% 50% at 15% 15%, rgba(62,207,142,0.35), transparent 65%),
+        linear-gradient(160deg, #2b2410 0%, #5c4a1f 45%, #d9b45e 100%);
+    }
+    .project-card.art-social::before {
+      background:
+        radial-gradient(120% 60% at 15% 100%, rgba(255,140,60,0.5), transparent 60%),
+        radial-gradient(90% 50% at 85% 15%, rgba(147,130,255,0.35), transparent 65%),
+        linear-gradient(160deg, #2b1a10 0%, #6b3a1f 45%, #d97e3e 100%);
+    }
+    .project-card .cta-top {
+      position: relative; align-self: flex-end;
+      font-size: 11px; font-weight: 700; color: #fff;
+      display: inline-flex; align-items: center; gap: 4px;
+      opacity: 0.85;
+    }
+    .project-card .tag {
+      position: relative;
+      display: inline-flex; align-self: flex-start;
+      font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px;
+      color: #fff; font-weight: 700; margin-top: auto;
+      padding: 4px 10px; border-radius: 9999px;
+      background: rgba(255,255,255,0.16); backdrop-filter: blur(4px);
+    }
+    .project-card h3 {
+      position: relative; margin: 12px 0 6px; font-size: 18px; color: #fff; font-weight: 700;
+      overflow-wrap: break-word; word-break: break-word; hyphens: auto;
+    }
+    .project-card p { position: relative; margin: 0; font-size: 12px; color: rgba(255,255,255,0.8); line-height: 1.55; }
+    .project-card .cta { position: relative; margin-top: 12px; font-size: 12px; color: #fff; font-weight: 700; }
+    .contact-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    .contact-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 18px; border-radius: 9999px;
+      border: 1px solid var(--border); background: rgba(255,255,255,0.03);
+      color: var(--text-secondary); text-decoration: none; font-size: 13px; font-weight: 500;
+      transition: border-color 0.2s, color 0.2s, transform 0.2s;
+    }
+    .contact-pill:hover { border-color: var(--border-strong); color: var(--text); transform: translateY(-2px); }
     .modal-content h3 { margin: 0 0 8px; font-size: 14px; color: var(--text); font-weight: 500; }
 
     .notice-icon-badge {
@@ -2271,10 +2426,13 @@
         </div>
       </div>
 
-      <div class="settings-section">
-        <div class="settings-section-title" data-i18n="settings.voice">Voz y audio</div>
+      <div class="settings-section" id="settingsSectionVoice">
+        <div class="settings-section-title" style="display:flex;justify-content:space-between;align-items:center;">
+          <span data-i18n="settings.voice">Voz y audio</span>
+          <button class="cfg-btn" id="btnVoiceTour" onclick="startVoiceTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
+        </div>
         <div class="settings-panel">
-          <div class="setting-group">
+          <div class="setting-group" id="voiceSelectGroup">
             <label><img class="icon-inline" src="icons/mic.svg" alt=""> <span data-i18n="label.voice">Voz</span></label>
             <div class="voice-dropdown" id="voiceDropdown">
               <div class="voice-dropdown-trigger" id="voiceDropdownTrigger" onclick="toggleVoiceDropdown()">
@@ -2286,36 +2444,36 @@
             </div>
             <input type="hidden" id="voiceSelect" />
           </div>
-          <div class="setting-group">
+          <div class="setting-group" id="voiceTestGroup">
             <label><img class="icon-inline" src="icons/science.svg" alt=""> <span data-i18n="label.testVoice">Probar voz</span></label>
             <div style="display:flex;gap:8px;align-items:center;">
               <input type="text" id="testVoiceInput" placeholder="Escribe algo para probar..." style="flex:1;" />
               <button id="btnTestVoice" class="btn-test" onclick="testVoice()">▶ Probar</button>
             </div>
           </div>
-          <div class="setting-group">
+          <div class="setting-group" id="voiceRateGroup">
             <label><img class="icon-inline" src="icons/flash_on.svg" alt=""> Velocidad — <span id="rateVal">1.0</span>x</label>
             <input type="range" id="rateRange" min="0.5" max="2" step="0.1" value="1" oninput="updateRate(this.value)" />
             <div class="range-labels"><span data-i18n="label.slow">Lento</span><span data-i18n="label.fast">Rápido</span></div>
           </div>
-          <div class="setting-group">
+          <div class="setting-group" id="voiceVolGroup">
             <label><img class="icon-inline" src="icons/volume_up.svg" alt=""> Volumen — <span id="volVal">100</span>%</label>
             <input type="range" id="volRange" min="0" max="1" step="0.05" value="1" oninput="updateVol(this.value)" />
             <div class="range-labels"><span data-i18n="label.mute">Mute</span><span data-i18n="label.max">Máx</span></div>
           </div>
-          <div class="setting-group">
+          <div class="setting-group" id="voiceLangFilterGroup">
             <label class="toggle-chip" style="width:max-content;">
               <input type="checkbox" id="langFilterToggle" onchange="toggleLangFilter(this)" />
               <span data-i18n="toggle.langFilter">Filtrar caracteres de otros idiomas</span>
             </label>
             <div style="font-size:11px;color:var(--text-muted);margin-top:4px;" data-i18n="toggle.langFilterHint">Ignora mensajes de chat con caracteres que no correspondan al idioma de la voz activa (ej: bloquea chino/japonés si tu voz está en Español, y viceversa).</div>
           </div>
-          <div class="setting-group">
+          <div class="setting-group" id="voiceDictFilterGroup">
             <label class="toggle-chip" style="width:max-content;">
               <input type="checkbox" id="dictFilterToggle" onchange="toggleDictFilter(this)" />
               <span data-i18n="toggle.dictFilter">Filtrar por idioma (palabras)</span>
             </label>
-            <button onclick="openDictLangModal()" style="margin-top:6px;display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.14);background:transparent;color:var(--text-muted);font-size:12px;cursor:pointer;width:max-content;">
+            <button onclick="openDictLangModal()" id="btnOpenDictLangModal" style="margin-top:6px;display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.14);background:transparent;color:var(--text-muted);font-size:12px;cursor:pointer;width:max-content;">
               <img class="icon-inline" src="icons/settings.svg" alt=""> <span data-i18n="dictLang.title">Idiomas permitidos</span>
             </button>
             <div style="font-size:11px;color:var(--text-muted);margin-top:4px;" data-i18n="toggle.dictFilterHint">Solo lee mensajes escritos en el idioma de la voz activa o en los idiomas extra que permitas. Las palabras desconocidas (nombres, typos) no bloquean.</div>
@@ -2324,10 +2482,13 @@
       </div>
 
       <!-- KEYBOARD SHORTCUTS SECTION -->
-      <div class="settings-section">
-        <div class="settings-section-title" data-i18n="settings.shortcuts">Atajos de teclado</div>
+      <div class="settings-section" id="settingsSectionShortcuts">
+        <div class="settings-section-title" style="display:flex;justify-content:space-between;align-items:center;">
+          <span data-i18n="settings.shortcuts">Atajos de teclado</span>
+          <button class="cfg-btn" id="btnShortcutsTour" onclick="startShortcutsTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
+        </div>
         <div class="settings-panel">
-          <div class="setting-group" style="gap:8px;">
+          <div class="setting-group" id="scGroupPauseBtn" style="gap:8px;">
             <label style="margin-bottom:2px;display:flex;align-items:center;gap:6px;">
               <img class="icon-inline" src="icons/volume_off.svg" alt="" onerror="this.style.display='none'">
               <span data-i18n="label.playbackControl">Control de reproducción</span>
@@ -2337,7 +2498,7 @@
               <span data-i18n="btn.pauseTTS">⏸ Pausar TTS</span>
             </button>
           </div>
-          <div class="setting-group">
+          <div class="setting-group" id="scGroupPause">
             <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
               <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
               <span data-i18n="label.pauseShortcut">Pausar / Reanudar TTS</span>
@@ -2365,7 +2526,7 @@
               <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
             </div>
           </div>
-          <div class="setting-group">
+          <div class="setting-group" id="scGroupSkip">
             <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
               <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
               <span data-i18n="label.skipShortcut">Saltar mensaje actual</span>
@@ -2389,7 +2550,7 @@
               <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
             </div>
           </div>
-          <div class="setting-group">
+          <div class="setting-group" id="scGroupClear">
             <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
               <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
               <span data-i18n="label.clearQueueShortcut">Limpiar cola</span>
@@ -2413,7 +2574,7 @@
               <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
             </div>
           </div>
-          <div class="setting-group">
+          <div class="setting-group" id="scGroupMusicPause">
             <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
               <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
               <span data-i18n="label.musicPauseShortcut">Pausar/Reanudar música del bot</span>
@@ -2437,7 +2598,7 @@
               <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
             </div>
           </div>
-          <div class="setting-group">
+          <div class="setting-group" id="scGroupMusicSkip">
             <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
               <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
               <span data-i18n="label.musicSkipShortcut">Saltar canción del bot</span>
@@ -2464,22 +2625,25 @@
         </div>
       </div>
 
-      <div class="settings-section">
-        <div class="settings-section-title" style="color:#9146FF;">💜 Twitch — alertas en vivo</div>
-        <div class="settings-panel" style="grid-template-columns:1fr;">
+      <div class="settings-section" id="settingsSectionTwitch">
+        <div class="settings-section-title" style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:#9146FF;">💜 Twitch — alertas en vivo</span>
+          <button class="cfg-btn" id="btnTwitchTour" onclick="startTwitchTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
+        </div>
+        <div class="settings-panel" id="twitchClientIdGroup" style="grid-template-columns:1fr;">
           <div class="setting-group">
             <label>Client ID de Twitch</label>
             <input type="text" id="twitchOAuthClientId" placeholder="Client ID de tu app en dev.twitch.tv" autocomplete="off"
                    onchange="saveTwitchClientId(this.value)" />
           </div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+        <div id="twitchConnectRow" style="display:flex;align-items:center;gap:10px;margin-top:10px;">
           <button class="btn btn-connect" id="btnConnectTwitchAuth" onclick="connectTwitchAuth()" style="font-size:13px;">Conectar Twitch</button>
           <button class="btn btn-disconnect" id="btnDisconnectTwitchAuth" onclick="disconnectTwitchAuth()" style="font-size:13px;display:none;">Desconectar</button>
           <span id="twitchAuthStatusText" style="font-size:12px;color:var(--text-muted);">Sin conectar — solo llegarán sub/bits/raids (sin follows con nombre)</span>
         </div>
         <p style="font-size:11px;color:var(--text-muted);margin-top:8px;">Sub, bits y raids ya funcionan sin conectar nada. Conectar solo habilita follows con nombre real.</p>
-        <div class="toggles-row" style="margin-top:12px;">
+        <div class="toggles-row" id="twitchTogglesRow" style="margin-top:12px;">
           <label class="toggle-chip" id="chip-twitch-sub">
             <input type="checkbox" onchange="toggleOption('readTwitchSub', this)" /> 🟣 Anunciar subs
           </label>
@@ -2493,7 +2657,7 @@
             <input type="checkbox" onchange="toggleOption('readTwitchFollow', this)" /> 💜 Anunciar follows
           </label>
         </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+        <div id="twitchTestRow" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
           <button class="cfg-btn" onclick="testAlertType('sub')">Test sub</button>
           <button class="cfg-btn" onclick="testAlertType('cheer')">Test bits</button>
           <button class="cfg-btn" onclick="testAlertType('raid')">Test raid</button>
@@ -2569,7 +2733,9 @@
     <!-- ── VIEW: Sound Pad ─────────────────────────────── -->
     <div class="view" id="view-soundpad">
       <div class="view-header">
-        <h2>🎵 <span data-i18n="nav.soundpad">Pad de Sonidos</span></h2>
+        <h2 style="display:flex;align-items:center;gap:10px;">🎵 <span data-i18n="nav.soundpad">Pad de Sonidos</span>
+          <button class="cfg-btn" id="btnSoundTour" onclick="startSoundpadTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
+        </h2>
         <p data-i18n="soundpad.desc">Sube sonidos y reprodúcelos con un clic o atajo de teclado (funciona en pantalla completa).</p>
       </div>
       <div class="cfg-card">
@@ -2584,7 +2750,6 @@
             ⬆ <span data-i18n="soundpad.upload">Subir sonido</span>
           </button>
           <input type="file" id="spFileInput" accept=".mp3,.wav,.ogg,.webm,.m4a" style="display:none" onchange="spHandleUpload(this)">
-          <button class="cfg-btn" id="btnSoundTour" onclick="startSoundpadTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
         </div>
         <div id="spDeck" class="soundpad-deck"></div>
         <div id="spEmpty" class="soundpad-empty" style="display:none">
@@ -2853,32 +3018,85 @@
   </div>
 </div>
 
-<!-- ══ MODAL: Social ════════════════════════════════════ -->
+<!-- ══ MODAL: Social / Portafolio ════════════════════════════════════ -->
 <div id="socialModal" class="modal-overlay" onclick="closeSocialModal(event)">
-  <div class="modal-content" onclick="event.stopPropagation()">
-    <button class="modal-close" onclick="closeSocialModal()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
-    <h2><img class="icon-inline" src="icons/smartphone.svg" alt=""> <span data-i18n="donations.socialTitle">Sigue mi contenido</span></h2>
-    <div class="social-grid">
-      <a href="https://www.youtube.com/@SpeedMucho" target="_blank" class="social-card">
-        <img style="width:32px;height:32px;" src="icons/tv.svg" alt="">
-        <h3>YouTube</h3>
-        <p>@SpeedMucho</p>
-      </a>
-      <a href="https://www.tiktok.com/@khunsauwu" target="_blank" class="social-card">
-        <img style="width:32px;height:32px;" src="icons/music_note.svg" alt="">
-        <h3>TikTok</h3>
-        <p>@khunsauwu</p>
-      </a>
-      <a href="https://www.twitch.tv/speedmucho" target="_blank" class="social-card">
-        <img style="width:32px;height:32px;" src="icons/sports_esports.svg" alt="">
-        <h3>Twitch</h3>
-        <p>speedmucho</p>
-      </a>
-      <a href="https://kick.com/speedmucho" target="_blank" class="social-card">
-        <img style="width:32px;height:32px;" src="icons/flash_on.svg" alt="">
-        <h3>Kick</h3>
-        <p>speedmucho</p>
-      </a>
+  <div class="modal-content modal-content--landing" onclick="event.stopPropagation()">
+    <div class="landing-topbar">
+      <button class="modal-close" onclick="closeSocialModal()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    </div>
+
+    <div class="landing-hero">
+      <div class="landing-avatar">
+        <img src="asset/khunsa.jpg" alt="Luis León" onerror="this.parentElement.textContent='LL'">
+      </div>
+      <h1 data-i18n="portfolio.heroTitle">Hola, soy Khunsa 👋</h1>
+      <p data-i18n="portfolio.heroDesc">Construyo productos en Bitcoin, crypto-fiat y comercio: esta app de TTS es uno de varios proyectos activos. Conocé el resto acá abajo.</p>
+    </div>
+
+    <div class="landing-section">
+      <div class="landing-section-title" data-i18n="portfolio.projectsTitle">Mis proyectos</div>
+      <div class="project-grid">
+        <a href="https://www.satoshidashboard.com/" target="_blank" class="project-card project-card--big art-bitcoin">
+          <span class="cta-top" data-i18n="portfolio.visit">Visitar →</span>
+          <span class="tag">Bitcoin</span>
+          <h3>SatoshiDashboard</h3>
+          <p data-i18n="portfolio.satoshiDesc">Dashboard de Bitcoin self-hosted, disponible en la Umbrel App Store. Corré tu propio nodo y guardá tus datos en tu hardware.</p>
+        </a>
+        <a href="https://www.assetrock.io/" target="_blank" class="project-card art-fiat">
+          <span class="cta-top" data-i18n="portfolio.visit">Visitar →</span>
+          <span class="tag">Crypto-Fiat OTC</span>
+          <h3>AssetRock</h3>
+          <p data-i18n="portfolio.assetrockDesc">Puente institucional entre crypto y fiat: liquidez, settlement seguro y compliance para fondos y tesorerías en LATAM.</p>
+        </a>
+        <a href="https://www.zatobox.io/" target="_blank" class="project-card art-retail">
+          <span class="cta-top" data-i18n="portfolio.visit">Visitar →</span>
+          <span class="tag">Retail / POS</span>
+          <h3>ZatoBox</h3>
+          <p data-i18n="portfolio.zatoboxDesc">Punto de venta open-source y modular con inventario inteligente, automatizaciones y pagos en moneda local o Bitcoin.</p>
+        </a>
+        <a href="https://101btc.satoshidashboard.com/" target="_blank" class="project-card art-edu">
+          <span class="cta-top" data-i18n="portfolio.visit">Visitar →</span>
+          <span class="tag" data-i18n="portfolio.tag101btc">Educación</span>
+          <h3>101BTC</h3>
+          <p data-i18n="portfolio.btc101Desc">Guía interactiva para dar tus primeros pasos en Bitcoin, de la mano de SatoshiDashboard.</p>
+        </a>
+      </div>
+    </div>
+
+    <div class="landing-section">
+      <div class="landing-section-title" data-i18n="portfolio.contactTitle">Hablemos</div>
+      <div class="contact-row">
+        <a href="https://t.me/ikhunsa" target="_blank" class="contact-pill">✈️ Telegram</a>
+        <a href="https://x.com/ikhunsaa" target="_blank" class="contact-pill">𝕏 X</a>
+        <a href="https://www.linkedin.com/in/ikhunsa/" target="_blank" class="contact-pill">💼 LinkedIn</a>
+        <a href="https://stacker.news/Khunsa" target="_blank" class="contact-pill">⚡ Stacker News</a>
+      </div>
+    </div>
+
+    <div class="landing-section" style="padding-top:0;">
+      <div class="landing-section-title" data-i18n="donations.socialTitle">Sigue mi contenido</div>
+      <div class="social-grid">
+        <a href="https://www.youtube.com/@br0k3ny" target="_blank" class="social-card">
+          <img style="width:32px;height:32px;" src="icons/tv.svg" alt="">
+          <h3>YouTube</h3>
+          <p>@br0k3ny</p>
+        </a>
+        <a href="https://www.tiktok.com/@soykurorai" target="_blank" class="social-card">
+          <img style="width:32px;height:32px;" src="icons/music_note.svg" alt="">
+          <h3>TikTok</h3>
+          <p>@soykurorai</p>
+        </a>
+        <a href="https://www.twitch.tv/soykurorai" target="_blank" class="social-card">
+          <img style="width:32px;height:32px;" src="icons/sports_esports.svg" alt="">
+          <h3>Twitch</h3>
+          <p>soykurorai</p>
+        </a>
+        <a href="https://kick.com/speedmucho" target="_blank" class="social-card">
+          <img style="width:32px;height:32px;" src="icons/flash_on.svg" alt="">
+          <h3>Kick</h3>
+          <p>speedmucho</p>
+        </a>
+      </div>
     </div>
   </div>
 </div>
@@ -4043,6 +4261,143 @@
           element: '[onclick="testGiftAlert()"]',
           popover: { title: t('overlaysTour.testTitle'), description: t('overlaysTour.testDesc'), side: 'top', align: 'end' },
           onHighlightStarted: inOverlays,
+        },
+      ],
+    }).drive();
+  }
+
+  function startVoiceTour() {
+    if (!(window.driver && window.driver.js)) return;
+    const inSettings = () => switchView('settings');
+
+    window.driver.js.driver({
+      ...driverTourDefaults(),
+      onDestroyStarted: (element, step, opts) => {
+        closeDictLangModal();
+        opts.driver.destroy();
+      },
+      steps: [
+        {
+          element: '#settingsSectionVoice .settings-section-title',
+          popover: { title: t('voiceTour.introTitle'), description: t('voiceTour.introDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#voiceSelectGroup',
+          popover: { title: t('voiceTour.voiceTitle'), description: t('voiceTour.voiceDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#voiceTestGroup',
+          popover: { title: t('voiceTour.testTitle'), description: t('voiceTour.testDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#voiceRateGroup',
+          popover: { title: t('voiceTour.rateTitle'), description: t('voiceTour.rateDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#voiceVolGroup',
+          popover: { title: t('voiceTour.volTitle'), description: t('voiceTour.volDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#voiceLangFilterGroup',
+          popover: { title: t('voiceTour.charFilterTitle'), description: t('voiceTour.charFilterDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#voiceDictFilterGroup',
+          popover: { title: t('voiceTour.wordFilterTitle'), description: t('voiceTour.wordFilterDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#dictLangModal .modal-content',
+          popover: { title: t('voiceTour.dictModalTitle'), description: t('voiceTour.dictModalDesc'), side: 'left', align: 'start' },
+          onHighlightStarted: () => { inSettings(); openDictLangModal(); },
+        },
+      ],
+    }).drive();
+  }
+
+  function startShortcutsTour() {
+    if (!(window.driver && window.driver.js)) return;
+    const inSettings = () => switchView('settings');
+
+    window.driver.js.driver({
+      ...driverTourDefaults(),
+      steps: [
+        {
+          element: '#settingsSectionShortcuts .settings-section-title',
+          popover: { title: t('shortcutsTour.introTitle'), description: t('shortcutsTour.introDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#scGroupPauseBtn',
+          popover: { title: t('shortcutsTour.pauseBtnTitle'), description: t('shortcutsTour.pauseBtnDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#scGroupPause',
+          popover: { title: t('shortcutsTour.pauseKeyTitle'), description: t('shortcutsTour.pauseKeyDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#scGroupSkip',
+          popover: { title: t('shortcutsTour.skipTitle'), description: t('shortcutsTour.skipDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#scGroupClear',
+          popover: { title: t('shortcutsTour.clearTitle'), description: t('shortcutsTour.clearDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#scGroupMusicPause',
+          popover: { title: t('shortcutsTour.musicPauseTitle'), description: t('shortcutsTour.musicPauseDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#scGroupMusicSkip',
+          popover: { title: t('shortcutsTour.musicSkipTitle'), description: t('shortcutsTour.musicSkipDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+      ],
+    }).drive();
+  }
+
+  function startTwitchTour() {
+    if (!(window.driver && window.driver.js)) return;
+    const inSettings = () => switchView('settings');
+
+    window.driver.js.driver({
+      ...driverTourDefaults(),
+      steps: [
+        {
+          element: '#settingsSectionTwitch .settings-section-title',
+          popover: { title: t('twitchTour.introTitle'), description: t('twitchTour.introDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#twitchClientIdGroup',
+          popover: { title: t('twitchTour.clientIdTitle'), description: t('twitchTour.clientIdDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#twitchConnectRow',
+          popover: { title: t('twitchTour.connectTitle'), description: t('twitchTour.connectDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#twitchTogglesRow',
+          popover: { title: t('twitchTour.togglesTitle'), description: t('twitchTour.togglesDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#twitchTestRow',
+          popover: { title: t('twitchTour.testTitle'), description: t('twitchTour.testDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inSettings,
         },
       ],
     }).drive();

@@ -433,6 +433,20 @@
     "kofiDesc": "Buy me a coffee",
     "paypalDesc": "Direct donation via PayPal"
   },
+  "portfolio": {
+    "heroTitle": "Hi, I'm Khunsa 👋",
+    "heroDesc": "I build products in Bitcoin, crypto-fiat and commerce: this TTS app is one of several active projects. Check out the rest below.",
+    "projectsTitle": "My projects",
+    "satoshiDesc": "Self-hosted Bitcoin dashboard, available on the Umbrel App Store. Run your own node and keep your data on your own hardware.",
+    "assetrockDesc": "Institutional bridge between crypto and fiat: liquidity, secure settlement and compliance for funds and treasuries across LATAM.",
+    "zatoboxDesc": "Open-source, modular point of sale with smart inventory, automations, and payments in local currency or Bitcoin.",
+    "visit": "Visit →",
+    "contactTitle": "Let's talk",
+    "tag101btc": "Education",
+    "btc101Desc": "An interactive guide for taking your first steps in Bitcoin, brought to you by SatoshiDashboard.",
+    "tagStacker": "Community",
+    "stackerDesc": "My Stacker News profile: I share and discuss Bitcoin with the community, earning sats for good content."
+  },
   "notice": {
     "donationsTitle": "New ways to support the project",
     "donationsBody": "We added Ko-fi and PayPal as donation options. The app will always be 100% free — if it's useful to you and you'd like to support the project, it's now easier than ever.",
@@ -735,6 +749,52 @@
     "playlistDesc": "Add your own list here (one song or link per line). It plays on loop when there are no chat requests — turn it on and save so it starts.",
     "settingsTitle": "Bot Settings",
     "settingsDesc": "Adjust the cooldown between requests per user, the max songs allowed in queue, and ban users who abuse the !p command."
+  },
+  "voiceTour": {
+    "introTitle": "Voice & Audio",
+    "introDesc": "Set up the voice that reads chat: language, speed, volume, and which messages get read based on their language.",
+    "voiceTitle": "Voice selector",
+    "voiceDesc": "Pick the language and accent for the TTS voice. 13 options (Spanish, English, Portuguese, French, German, Italian, Japanese, Chinese, Russian, Korean). Changing it also affects the language filters below.",
+    "testTitle": "Test voice",
+    "testDesc": "Type any text and hit Test to hear how the selected voice sounds, no chat connection needed.",
+    "rateTitle": "Speed",
+    "rateDesc": "Adjust how fast the TTS talks. Applies in real time to the next message read.",
+    "volTitle": "Volume",
+    "volDesc": "Controls TTS volume independently from the bot's music volume.",
+    "charFilterTitle": "Filter other-language characters",
+    "charFilterDesc": "When on, messages written with characters that don't match the active voice's language are ignored (e.g. blocks Chinese or Japanese if your voice is Spanish).",
+    "wordFilterTitle": "Filter by language (words)",
+    "wordFilterDesc": "Finer dictionary-based filter: only reads messages written in the active voice's language, plus any extra languages you allow below. Names or typos don't block the message.",
+    "dictModalTitle": "Allowed languages",
+    "dictModalDesc": "Choose which extra languages, besides your voice's, are allowed for the TTS to read. Close this window to continue the tutorial."
+  },
+  "shortcutsTour": {
+    "introTitle": "Keyboard shortcuts",
+    "introDesc": "Set up global keys to control TTS and the bot's music without touching the app, even with another window focused.",
+    "pauseBtnTitle": "Pause TTS",
+    "pauseBtnDesc": "Pause or resume reading chat with one click. Handy to mute quickly without disconnecting anything.",
+    "pauseKeyTitle": "Pause shortcut",
+    "pauseKeyDesc": "Click the field and press the combo you want (with Ctrl/Alt/Shift), or use the F8 / Play-Pause key presets.",
+    "skipTitle": "Skip current message",
+    "skipDesc": "Assign a key to skip the message currently being read (default F9).",
+    "clearTitle": "Clear queue",
+    "clearDesc": "Assign a key to wipe the whole pending TTS queue at once (default F10).",
+    "musicPauseTitle": "Pause bot music",
+    "musicPauseDesc": "Shortcut to pause or resume the music requested by chat via the !p command (default F11).",
+    "musicSkipTitle": "Skip bot song",
+    "musicSkipDesc": "Shortcut to skip the song currently playing in the music bot (default F12)."
+  },
+  "twitchTour": {
+    "introTitle": "Twitch — live alerts",
+    "introDesc": "Set up Twitch alerts: subs, bits and raids work without connecting anything; connecting your account only adds follows with real names.",
+    "clientIdTitle": "Twitch Client ID",
+    "clientIdDesc": "Paste the Client ID from your app registered at dev.twitch.tv. You need it before connecting your account.",
+    "connectTitle": "Connect account",
+    "connectDesc": "Connect your Twitch account to enable follows with real names. Connection status shows next to the buttons.",
+    "togglesTitle": "What to announce",
+    "togglesDesc": "Turn each alert type on or off separately: subs, bits, raids and follows.",
+    "testTitle": "Test alerts",
+    "testDesc": "Fire each alert manually to see/hear how it looks, without waiting for it to actually happen on stream."
   },
   "clipsTour": {
     "introTitle": "Clip Markers",

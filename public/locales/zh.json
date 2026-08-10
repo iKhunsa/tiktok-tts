@@ -433,6 +433,20 @@
     "kofiDesc": "请我喝杯咖啡来支持我",
     "paypalDesc": "通过 PayPal 直接捐赠"
   },
+  "portfolio": {
+    "heroTitle": "你好，我是 Khunsa 👋",
+    "heroDesc": "我在比特币、加密货币兑法币和商业领域打造产品：这个 TTS 应用只是我多个在运营项目之一。往下看看其他项目。",
+    "projectsTitle": "我的项目",
+    "satoshiDesc": "可自托管的比特币仪表盘，已上架 Umbrel 应用商店。运行你自己的节点，数据留在自己的硬件上。",
+    "assetrockDesc": "连接加密货币与法币的机构级桥梁：为拉美地区的基金和资金方提供流动性、安全结算与合规服务。",
+    "zatoboxDesc": "开源模块化收银系统，具备智能库存、自动化流程，支持本地货币或比特币支付。",
+    "visit": "访问 →",
+    "contactTitle": "联系我",
+    "tag101btc": "教育",
+    "btc101Desc": "由 SatoshiDashboard 打造的比特币入门互动指南，带你迈出第一步。",
+    "tagStacker": "社区",
+    "stackerDesc": "我的 Stacker News 个人主页：在社区里分享和讨论比特币话题，靠优质内容赚取 sats。"
+  },
   "notice": {
     "donationsTitle": "支持项目的新方式",
     "donationsBody": "我们新增了 Ko-fi 和 PayPal 捐赠方式。应用将始终 100% 免费——如果它对你有帮助并且你想支持这个项目，现在比以往任何时候都更方便。",
@@ -735,6 +749,52 @@
     "playlistDesc": "在这里添加你自己的列表（每行一首歌或链接）。没有观众点歌时会循环播放——开启并保存后生效。",
     "settingsTitle": "机器人设置",
     "settingsDesc": "调整每个用户点歌的冷却时间、队列最大数量，并封禁滥用 !p 命令的用户。"
+  },
+  "voiceTour": {
+    "introTitle": "语音与音频",
+    "introDesc": "在这里设置朗读聊天的语音：语言、语速、音量，以及根据消息语言决定是否朗读。",
+    "voiceTitle": "语音选择",
+    "voiceDesc": "选择 TTS 语音的语言和口音，共 13 种（西班牙语、英语、葡萄牙语、法语、德语、意大利语、日语、中文、俄语、韩语）。更改语音也会影响下方的语言过滤器。",
+    "testTitle": "测试语音",
+    "testDesc": "输入任意文字并点击“测试”即可听到所选语音的效果，无需连接聊天室。",
+    "rateTitle": "语速",
+    "rateDesc": "调整 TTS 说话的速度，实时应用到下一条朗读的消息。",
+    "volTitle": "音量",
+    "volDesc": "独立控制 TTS 音量，与机器人音乐音量互不影响。",
+    "charFilterTitle": "过滤其他语言字符",
+    "charFilterDesc": "开启后，会忽略字符与当前语音语言不符的消息（例如语音为西班牙语时会屏蔽中文或日文）。",
+    "wordFilterTitle": "按语言过滤（单词）",
+    "wordFilterDesc": "基于词典的更精细过滤：只朗读当前语音语言的消息，以及你在下方允许的其他语言。人名或拼写错误不会阻止朗读。",
+    "dictModalTitle": "允许的语言",
+    "dictModalDesc": "选择除你的语音语言外，还允许 TTS 朗读哪些语言。关闭此窗口继续教程。"
+  },
+  "shortcutsTour": {
+    "introTitle": "键盘快捷键",
+    "introDesc": "设置全局快捷键来控制 TTS 和机器人音乐，即使其他窗口处于焦点也无需切回本应用。",
+    "pauseBtnTitle": "暂停 TTS",
+    "pauseBtnDesc": "一键暂停或恢复聊天朗读，方便快速静音而不断开任何连接。",
+    "pauseKeyTitle": "暂停快捷键",
+    "pauseKeyDesc": "点击输入框后按下想要的组合键（配合 Ctrl/Alt/Shift），或使用 F8 / 播放暂停键预设。",
+    "skipTitle": "跳过当前消息",
+    "skipDesc": "分配一个按键来跳过正在朗读的消息（默认 F9）。",
+    "clearTitle": "清空队列",
+    "clearDesc": "分配一个按键一次性清空所有待朗读的 TTS 队列（默认 F10）。",
+    "musicPauseTitle": "暂停机器人音乐",
+    "musicPauseDesc": "用于暂停或恢复聊天通过 !p 命令点播的音乐（默认 F11）。",
+    "musicSkipTitle": "跳过机器人歌曲",
+    "musicSkipDesc": "用于跳过音乐机器人当前播放的歌曲（默认 F12）。"
+  },
+  "twitchTour": {
+    "introTitle": "Twitch — 直播提醒",
+    "introDesc": "设置 Twitch 提醒：订阅、比特币和突袭无需任何连接即可使用；连接账号只是为了获取带真实用户名的关注提醒。",
+    "clientIdTitle": "Twitch Client ID",
+    "clientIdDesc": "粘贴你在 dev.twitch.tv 注册应用的 Client ID，连接账号前需要它。",
+    "connectTitle": "连接账号",
+    "connectDesc": "连接你的 Twitch 账号以启用带真实用户名的关注提醒，连接状态显示在按钮旁边。",
+    "togglesTitle": "要播报的内容",
+    "togglesDesc": "分别开启或关闭每种提醒类型：订阅、比特币、突袭和关注。",
+    "testTitle": "测试提醒",
+    "testDesc": "手动触发每种提醒，查看/听效果，无需等待直播中真实发生。"
   },
   "clipsTour": {
     "introTitle": "剪辑标记",
