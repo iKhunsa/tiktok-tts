@@ -1167,17 +1167,6 @@
       text-align: center;
       overflow: hidden;
     }
-    .landing-hero::before {
-      content: '';
-      position: absolute; inset: -40% -10% auto -10%; height: 320px;
-      background:
-        radial-gradient(closest-side at 20% 30%, rgba(62,207,142,0.35), transparent 70%),
-        radial-gradient(closest-side at 80% 20%, rgba(255,183,94,0.28), transparent 70%),
-        radial-gradient(closest-side at 50% 60%, rgba(147,130,255,0.24), transparent 70%);
-      filter: blur(10px);
-      pointer-events: none;
-      z-index: 0;
-    }
     .landing-hero > * { position: relative; z-index: 1; }
     .landing-avatar {
       width: 104px; height: 104px; border-radius: 50%; margin: 0 auto 20px;
@@ -1240,27 +1229,27 @@
     }
     .project-card.art-bitcoin::before {
       background:
-        radial-gradient(120% 60% at 15% 100%, rgba(255,183,94,0.55), transparent 60%),
-        radial-gradient(90% 50% at 85% 15%, rgba(255,140,60,0.4), transparent 65%),
-        linear-gradient(160deg, #1c3d2e 0%, #2f6b4f 45%, #7fb069 100%);
+        radial-gradient(120% 60% at 15% 100%, rgba(255,183,94,0.35), transparent 60%),
+        radial-gradient(90% 50% at 85% 15%, rgba(255,140,60,0.25), transparent 65%),
+        url('/img/projects/satoshidashboard.jpg') center/cover no-repeat;
     }
     .project-card.art-fiat::before {
       background:
-        radial-gradient(120% 60% at 85% 100%, rgba(147,130,255,0.5), transparent 60%),
-        radial-gradient(90% 50% at 15% 15%, rgba(94,163,255,0.4), transparent 65%),
-        linear-gradient(160deg, #16233d 0%, #2a4a7a 45%, #6f8fc9 100%);
+        radial-gradient(120% 60% at 85% 100%, rgba(147,130,255,0.35), transparent 60%),
+        radial-gradient(90% 50% at 15% 15%, rgba(94,163,255,0.25), transparent 65%),
+        url('/img/projects/assetrock.jpg') center/cover no-repeat;
     }
     .project-card.art-retail::before {
       background:
-        radial-gradient(120% 60% at 15% 100%, rgba(62,207,142,0.55), transparent 60%),
-        radial-gradient(90% 50% at 85% 15%, rgba(255,214,110,0.35), transparent 65%),
-        linear-gradient(160deg, #123028 0%, #1f5f45 45%, #6bbf8e 100%);
+        radial-gradient(120% 60% at 15% 100%, rgba(62,207,142,0.35), transparent 60%),
+        radial-gradient(90% 50% at 85% 15%, rgba(255,214,110,0.25), transparent 65%),
+        url('/img/projects/zatobox.jpg') center/cover no-repeat;
     }
     .project-card.art-edu::before {
       background:
-        radial-gradient(120% 60% at 85% 100%, rgba(255,214,110,0.5), transparent 60%),
-        radial-gradient(90% 50% at 15% 15%, rgba(62,207,142,0.35), transparent 65%),
-        linear-gradient(160deg, #2b2410 0%, #5c4a1f 45%, #d9b45e 100%);
+        radial-gradient(120% 60% at 85% 100%, rgba(255,214,110,0.35), transparent 60%),
+        radial-gradient(90% 50% at 15% 15%, rgba(62,207,142,0.25), transparent 65%),
+        url('/img/projects/101btc.jpg') center/cover no-repeat;
     }
     .project-card.art-social::before {
       background:
@@ -1290,13 +1279,29 @@
     .project-card .cta { position: relative; margin-top: 12px; font-size: 12px; color: #fff; font-weight: 700; }
     .contact-row { display: flex; flex-wrap: wrap; gap: 10px; }
     .contact-pill {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 11px 18px; border-radius: 9999px;
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 8px 18px 8px 8px; border-radius: 9999px;
       border: 1px solid var(--border); background: rgba(255,255,255,0.03);
-      color: var(--text-secondary); text-decoration: none; font-size: 13px; font-weight: 500;
-      transition: border-color 0.2s, color 0.2s, transform 0.2s;
+      color: var(--text-secondary); text-decoration: none; font-size: 13px; font-weight: 600;
+      transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
     }
-    .contact-pill:hover { border-color: var(--border-strong); color: var(--text); transform: translateY(-2px); }
+    .contact-pill:hover {
+      border-color: var(--border-strong); color: var(--text);
+      transform: translateY(-2px); background: rgba(255,255,255,0.05);
+      box-shadow: 0 10px 24px -12px rgba(0,0,0,0.5);
+    }
+    .contact-pill:focus-visible { outline: 2px solid var(--border-strong); outline-offset: 2px; }
+    .contact-pill-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+      color: #fff; transition: transform 0.2s ease;
+    }
+    .contact-pill-icon svg { width: 15px; height: 15px; }
+    .contact-pill:hover .contact-pill-icon { transform: scale(1.08); }
+    .contact-pill--telegram .contact-pill-icon { background: radial-gradient(120% 120% at 30% 20%, #4fb3e8, #229ed9 60%); }
+    .contact-pill--x .contact-pill-icon { background: #0a0a0c; border: 1px solid rgba(255,255,255,0.14); }
+    .contact-pill--linkedin .contact-pill-icon { background: radial-gradient(120% 120% at 30% 20%, #3aa9e0, #0a66c2 60%); }
+    .contact-pill--stackernews .contact-pill-icon { background: radial-gradient(120% 120% at 30% 20%, #ffcf6b, #f6911e 60%); }
     .modal-content h3 { margin: 0 0 8px; font-size: 14px; color: var(--text); font-weight: 500; }
 
     .notice-icon-badge {
@@ -1396,25 +1401,73 @@
       50% { opacity: 0.55; }
     }
 
-    .social-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; margin-top: 20px; }
+    .social-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin-top: 20px; }
 
     .social-card {
+      position: relative;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      padding: 20px 16px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      justify-content: flex-end;
+      min-height: 190px;
+      padding: 14px;
+      border-radius: 22px;
+      overflow: hidden;
+      background: #0d0d0f;
+      border: 1px solid rgba(255,255,255,0.06);
       text-decoration: none;
-      color: var(--text-secondary);
-      transition: border-color 0.2s, color 0.2s;
-      text-align: center;
+      color: #fff;
+      isolation: isolate;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .social-card:hover { transform: translateY(-3px); box-shadow: 0 20px 40px -16px rgba(0,0,0,0.65); }
+
+    .social-card::before {
+      content: ''; position: absolute; inset: 0 0 48% 0; z-index: -2;
+    }
+    .social-card::after {
+      content: ''; position: absolute; inset: 0; z-index: -1;
+      background: linear-gradient(to top, #0d0d0f 40%, rgba(13,13,15,0.88) 58%, transparent 78%);
+    }
+    .social-card--yt::before {
+      background:
+        radial-gradient(120% 90% at 25% 15%, rgba(255,90,90,0.85), transparent 60%),
+        radial-gradient(100% 80% at 85% 0%, rgba(255,190,90,0.6), transparent 55%),
+        #5c1414;
+    }
+    .social-card--tiktok::before {
+      background:
+        radial-gradient(120% 90% at 20% 10%, rgba(255,70,130,0.75), transparent 60%),
+        radial-gradient(100% 80% at 85% 20%, rgba(70,220,230,0.6), transparent 55%),
+        #16151c;
+    }
+    .social-card--twitch::before {
+      background:
+        radial-gradient(120% 90% at 25% 10%, rgba(160,100,255,0.75), transparent 60%),
+        radial-gradient(100% 80% at 85% 15%, rgba(110,90,255,0.55), transparent 55%),
+        #241a3d;
+    }
+    .social-card--kick::before {
+      background:
+        radial-gradient(120% 90% at 25% 10%, rgba(120,230,110,0.75), transparent 60%),
+        radial-gradient(100% 80% at 85% 15%, rgba(210,255,90,0.5), transparent 55%),
+        #14301a;
     }
 
-    .social-card:hover { border-color: var(--border-strong); color: var(--text); }
-    .social-card h3 { margin: 10px 0 4px; font-size: 14px; color: inherit; font-weight: 500; }
-    .social-card p { font-size: 12px; color: var(--text-muted); margin: 0; }
+    .social-card-top {
+      position: absolute; top: 14px; right: 16px; z-index: 1;
+      font-size: 11px; font-weight: 700; color: #fff; opacity: 0.85;
+    }
+
+    .social-card-tab {
+      position: relative;
+      background: #131315;
+      border-radius: 14px 14px 14px 4px;
+      padding: 12px 14px;
+      box-shadow: 0 10px 24px -8px rgba(0,0,0,0.55);
+    }
+    .social-card-tab img { width: 22px; height: 22px; margin-bottom: 8px; filter: brightness(0) invert(1); opacity: 0.9; }
+    .social-card-tab h3 { margin: 0 0 2px; font-size: 15px; font-weight: 700; color: #fff; }
+    .social-card-tab p { margin: 0; font-size: 12px; color: rgba(255,255,255,0.5); }
 
     @keyframes fadeIn { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
     @keyframes slideUp {
@@ -3066,35 +3119,59 @@
     <div class="landing-section">
       <div class="landing-section-title" data-i18n="portfolio.contactTitle">Hablemos</div>
       <div class="contact-row">
-        <a href="https://t.me/ikhunsa" target="_blank" class="contact-pill">✈️ Telegram</a>
-        <a href="https://x.com/ikhunsaa" target="_blank" class="contact-pill">𝕏 X</a>
-        <a href="https://www.linkedin.com/in/ikhunsa/" target="_blank" class="contact-pill">💼 LinkedIn</a>
-        <a href="https://stacker.news/Khunsa" target="_blank" class="contact-pill">⚡ Stacker News</a>
+        <a href="https://t.me/ikhunsa" target="_blank" class="contact-pill contact-pill--telegram">
+          <span class="contact-pill-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.95 3.5 18.6 20.3c-.25 1.13-.9 1.4-1.83.87l-5.05-3.72-2.44 2.35c-.27.27-.5.5-1.02.5l.36-5.15L18.02 6c.4-.36-.09-.55-.63-.2L7.05 12.42l-4.97-1.55c-1.08-.34-1.1-1.08.23-1.6L20.6 2.44c.9-.33 1.68.2 1.35 1.06Z"/></svg></span>
+          <span>Telegram</span>
+        </a>
+        <a href="https://x.com/ikhunsaa" target="_blank" class="contact-pill contact-pill--x">
+          <span class="contact-pill-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 10.5 20.3 3h-1.9l-5.9 6.6L7.8 3H2.5l7.1 10.1L2.5 21h1.9l6.2-7 5 7h5.3l-7.4-10.5Zm-2.2 2.5-.7-1L4.9 4.3h2.4l4.6 6.5.7 1 6 8.5h-2.4l-4.9-7Z"/></svg></span>
+          <span>X</span>
+        </a>
+        <a href="https://www.linkedin.com/in/ikhunsa/" target="_blank" class="contact-pill contact-pill--linkedin">
+          <span class="contact-pill-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.94 8.5H3.56V20.4h3.38V8.5ZM5.25 3.1a1.96 1.96 0 1 0 0 3.92 1.96 1.96 0 0 0 0-3.92ZM20.44 20.4h-3.37v-6.05c0-1.44-.03-3.3-2.02-3.3-2.02 0-2.33 1.58-2.33 3.2v6.15H9.35V8.5h3.24v1.63h.05c.45-.86 1.56-1.77 3.2-1.77 3.42 0 4.6 2.25 4.6 5.18V20.4Z"/></svg></span>
+          <span>LinkedIn</span>
+        </a>
+        <a href="https://stacker.news/Khunsa" target="_blank" class="contact-pill contact-pill--stackernews">
+          <span class="contact-pill-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 3.5 14h6l-1 8L20.5 10h-6l-1.5-8Z"/></svg></span>
+          <span>Stacker News</span>
+        </a>
       </div>
     </div>
 
     <div class="landing-section" style="padding-top:0;">
       <div class="landing-section-title" data-i18n="donations.socialTitle">Sigue mi contenido</div>
       <div class="social-grid">
-        <a href="https://www.youtube.com/@br0k3ny" target="_blank" class="social-card">
-          <img style="width:32px;height:32px;" src="icons/tv.svg" alt="">
-          <h3>YouTube</h3>
-          <p>@br0k3ny</p>
+        <a href="https://www.youtube.com/@br0k3ny" target="_blank" class="social-card social-card--yt">
+          <span class="social-card-top">Ver →</span>
+          <div class="social-card-tab">
+            <img src="icons/tv.svg" alt="">
+            <h3>YouTube</h3>
+            <p>@br0k3ny</p>
+          </div>
         </a>
-        <a href="https://www.tiktok.com/@soykurorai" target="_blank" class="social-card">
-          <img style="width:32px;height:32px;" src="icons/music_note.svg" alt="">
-          <h3>TikTok</h3>
-          <p>@soykurorai</p>
+        <a href="https://www.tiktok.com/@soykurorai" target="_blank" class="social-card social-card--tiktok">
+          <span class="social-card-top">Ver →</span>
+          <div class="social-card-tab">
+            <img src="icons/music_note.svg" alt="">
+            <h3>TikTok</h3>
+            <p>@soykurorai</p>
+          </div>
         </a>
-        <a href="https://www.twitch.tv/soykurorai" target="_blank" class="social-card">
-          <img style="width:32px;height:32px;" src="icons/sports_esports.svg" alt="">
-          <h3>Twitch</h3>
-          <p>soykurorai</p>
+        <a href="https://www.twitch.tv/soykurorai" target="_blank" class="social-card social-card--twitch">
+          <span class="social-card-top">Ver →</span>
+          <div class="social-card-tab">
+            <img src="icons/sports_esports.svg" alt="">
+            <h3>Twitch</h3>
+            <p>soykurorai</p>
+          </div>
         </a>
-        <a href="https://kick.com/speedmucho" target="_blank" class="social-card">
-          <img style="width:32px;height:32px;" src="icons/flash_on.svg" alt="">
-          <h3>Kick</h3>
-          <p>speedmucho</p>
+        <a href="https://kick.com/speedmucho" target="_blank" class="social-card social-card--kick">
+          <span class="social-card-top">Ver →</span>
+          <div class="social-card-tab">
+            <img src="icons/flash_on.svg" alt="">
+            <h3>Kick</h3>
+            <p>speedmucho</p>
+          </div>
         </a>
       </div>
     </div>
