@@ -6,7 +6,8 @@
     "mobile": "Mobile",
     "settings": "Settings",
     "soundpad": "Sounds",
-    "bot": "Bot"
+    "bot": "Bot",
+    "moderation": "Moderation"
   },
   "community": {
     "label": "TikLiveTTS Community",
@@ -54,7 +55,8 @@
     "langFilter": "Filter characters from other languages",
     "langFilterHint": "Ignores chat messages with characters that don't match the active voice's language (e.g. blocks Chinese/Japanese if your voice is Spanish, and vice versa).",
     "dictFilter": "Filter by language (words)",
-    "dictFilterHint": "Only reads messages written in the active voice language or in the extra languages you allow. Unknown words (names, typos) never block."
+    "dictFilterHint": "Only reads messages written in the active voice language or in the extra languages you allow. Unknown words (names, typos) never block.",
+    "readNonFollowers": "Read non-followers"
   },
   "tts": {
     "on": "🔊 TTS On",
@@ -90,13 +92,16 @@
     "remove": "Remove",
     "useF8": "Use F8",
     "usePlayPause": "Use Play/Pause key",
-    "clearShortcut": "✕ Clear"
+    "clearShortcut": "✕ Clear",
+    "blockedWordsShortcut": "Blocked words"
   },
   "chat": {
     "title": "Live chat",
     "empty": "Connect your TikTok Live<br>to see the chat here",
     "speaking": "Reading...",
-    "queue": "Queue: {n} messages"
+    "queue": "Queue: {n} messages",
+    "followerBadge": "Follower",
+    "mutedBadge": "Muted: TTS skips them"
   },
   "emergencyHint": "Emergency keeps gifts and follows active, silences chat/likes/joins/shares.",
   "status": {
@@ -120,6 +125,10 @@
     "mobile": {
       "title": "Mobile Control",
       "desc": "Control TTS from your phone on the same WiFi network."
+    },
+    "moderation": {
+      "title": "Moderation",
+      "desc": "Every viewer who interacted, with their chat and TTS permissions."
     }
   },
   "settings": {
@@ -424,6 +433,20 @@
     "kofiDesc": "Buy me a coffee",
     "paypalDesc": "Direct donation via PayPal"
   },
+  "portfolio": {
+    "heroTitle": "Hi, I'm Khunsa 👋",
+    "heroDesc": "I build products in Bitcoin, crypto-fiat and commerce: this TTS app is one of several active projects. Check out the rest below.",
+    "projectsTitle": "My projects",
+    "satoshiDesc": "Self-hosted Bitcoin dashboard, available on the Umbrel App Store. Run your own node and keep your data on your own hardware.",
+    "assetrockDesc": "Institutional bridge between crypto and fiat: liquidity, secure settlement and compliance for funds and treasuries across LATAM.",
+    "zatoboxDesc": "Open-source, modular point of sale with smart inventory, automations, and payments in local currency or Bitcoin.",
+    "visit": "Visit →",
+    "contactTitle": "Let's talk",
+    "tag101btc": "Education",
+    "btc101Desc": "An interactive guide for taking your first steps in Bitcoin, brought to you by SatoshiDashboard.",
+    "tagStacker": "Community",
+    "stackerDesc": "My Stacker News profile: I share and discuss Bitcoin with the community, earning sats for good content."
+  },
   "notice": {
     "donationsTitle": "New ways to support the project",
     "donationsBody": "We added Ko-fi and PayPal as donation options. The app will always be 100% free — if it's useful to you and you'd like to support the project, it's now easier than ever.",
@@ -541,7 +564,9 @@
     "platformDisconnected": "{platform} disconnected",
     "allChannelsDisconnected": "All channels disconnected",
     "youtubeAutoSaved": "YouTube saved; will connect when live",
-    "youtubeTmpSaved": "YouTube saved as manual channel"
+    "youtubeTmpSaved": "YouTube saved as manual channel",
+    "readNonFollowersOn": "TTS reads everyone",
+    "readNonFollowersOff": "TTS only reads followers"
   },
   "dictLang": {
     "title": "Allowed languages",
@@ -552,7 +577,8 @@
   "tour": {
     "next": "Next",
     "prev": "Back",
-    "done": "Done"
+    "done": "Done",
+    "viewTutorial": "Show tutorial"
   },
   "onboarding": {
     "step1Title": "First, go to Settings",
@@ -567,5 +593,253 @@
     "step5Desc": "This only saves it. It doesn't connect you to anything yet.",
     "step6Title": "Last step! Go live first",
     "step6Desc": "Before tapping here: start your stream on the platform (TikTok/Twitch/YouTube) and wait until you're live. Only then come back and tap \"Connect all\". Not before you're live."
+  },
+  "mod": {
+    "note": "YouTube sends no follow events: mark those viewers as followers by hand.",
+    "stats": {
+      "total": "Registered",
+      "followers": "Followers",
+      "others": "Non-followers",
+      "muted": "Muted",
+      "banned": "Banned"
+    },
+    "tab": {
+      "followers": "Followers",
+      "others": "Non-followers"
+    },
+    "filter": {
+      "search": "Search by name...",
+      "allPlatforms": "All platforms",
+      "stateAll": "All states",
+      "stateClean": "No penalty",
+      "stateMuted": "Muted",
+      "stateBanned": "Banned"
+    },
+    "sort": {
+      "activity": "Recent activity",
+      "messages": "Messages",
+      "gifts": "Gifts",
+      "likes": "Likes",
+      "name": "Name"
+    },
+    "col": {
+      "user": "User",
+      "platform": "Platform",
+      "state": "State",
+      "messages": "Messages",
+      "gifts": "Gifts",
+      "likes": "Likes",
+      "lastSeen": "Last seen",
+      "actions": "Actions"
+    },
+    "state": {
+      "clean": "No penalty",
+      "muted": "Muted",
+      "banned": "Banned",
+      "mutedUntil": "Muted {time}",
+      "bannedUntil": "Banned {time}",
+      "weakId": "No stable ID: the penalty is lost if they change name."
+    },
+    "action": {
+      "mute": "Mute",
+      "ban": "Ban",
+      "clear": "Clear penalties",
+      "refresh": "Refresh",
+      "wipe": "Wipe registry",
+      "wipeConfirm": "Delete the whole viewer registry? Mutes and bans are lost too.",
+      "tour": "View tutorial"
+    },
+    "wipeModal": {
+      "title": "Are you sure?",
+      "body": "This completely erases the viewer database: marked followers, mutes and bans. This cannot be undone.",
+      "confirm": "Yes, delete everything",
+      "cancel": "Cancel",
+      "typeInstruction": "Type",
+      "typeInstructionSuffix": "to confirm",
+      "keyword": "DELETE"
+    },
+    "dur": {
+      "15m": "15 minutes",
+      "1h": "1 hour",
+      "forever": "Indefinite"
+    },
+    "empty": "No viewers registered here yet.",
+    "pager": "{from}–{to} of {total}",
+    "time": {
+      "now": "now",
+      "min": "{n} min ago",
+      "hour": "{n} h ago",
+      "day": "{n} d ago"
+    },
+    "toast": {
+      "mute": "User muted",
+      "unmute": "Mute removed",
+      "ban": "User banned",
+      "unban": "Ban removed",
+      "clear": "Penalties cleared",
+      "follower": "Follower list updated",
+      "error": "Could not apply the action"
+    }
+  },
+  "chatCtx": {
+    "hint": "Click to moderate this user",
+    "mute15": "Mute for 15 minutes",
+    "muteForever": "Mute indefinitely",
+    "ban15": "Ban for 15 minutes",
+    "banForever": "Ban indefinitely",
+    "clear": "Clear penalties",
+    "markFollower": "Mark as follower",
+    "blockWord": "Block a word...",
+    "blockWordPrompt": "Word to block:",
+    "blockWordDone": "\"{word}\" blocked",
+    "openModeration": "View in Moderation"
+  },
+  "modTour": {
+    "introTitle": "New: Moderation",
+    "introDesc": "Every viewer who interacts with your streams is registered here. From this table you control who can talk and who the TTS reads. This is in-app moderation: it does not ban on TikTok, Twitch or YouTube.",
+    "tabsTitle": "Followers and non-followers",
+    "tabsDesc": "Someone becomes a Follower in two ways: they follow you while you're connected, or you mark them by hand. The app can't ask the platform for your follower list, so anyone following you from before shows up under Non-followers until you mark them.",
+    "statsTitle": "At a glance",
+    "statsDesc": "How many people are registered, how many are followers, and how many have an active penalty right now.",
+    "filtersTitle": "Search and filter",
+    "filtersDesc": "Search by name, filter by platform or state (muted, banned, no penalty), and sort by recent activity or name.",
+    "tableTitle": "Per-viewer actions",
+    "tableDesc": "On each row: Mute (still visible in chat, but TTS skips them), Ban (their messages don't even show up), ★ to mark as follower, Clear penalties, and ✕ to drop them from the registry. Temporary penalties expire on their own, even with the app closed.",
+    "chatMenuTitle": "Moderate from the chat",
+    "chatMenuDesc": "You don't have to come here: click anyone's name in the live chat and the same menu opens — mute, ban, mark as follower or block a word.",
+    "toggleTitle": "Read non-followers",
+    "toggleDesc": "On, the TTS reads everyone. Off, it only reads followers and whoever you marked by hand; the rest still show up in chat, just without a voice. Careful on day one: with an empty registry you silence almost your whole audience.",
+    "blockedTitle": "Blocked words",
+    "blockedDesc": "Copy the annoying word from chat, hit this, paste it and it's blocked — without leaving the view or reconnecting. The window stays open so you can paste several in a row. Messages containing it are ignored entirely.",
+    "scrollTitle": "The chat follows the reading",
+    "scrollDesc": "The chat no longer chases the newest message but the one the TTS is reading, which usually lags a few messages behind. Scroll up and it stays put so you can read; return to the bottom and it resumes on its own."
+  },
+  "blockWord": {
+    "title": "Block a word",
+    "desc": "Paste or type the word and you're done: the server applies it instantly, no reconnecting. You can keep adding without closing the window.",
+    "placeholder": "Type or paste the word...",
+    "add": "Block",
+    "count": "{n} blocked words in total",
+    "sessionAdded": "Blocked just now",
+    "duplicate": "You just blocked that one",
+    "manageAll": "View and edit all"
+  },
+  "soundTour": {
+    "introTitle": "Sound Pad",
+    "introDesc": "Upload sound effects and play them with a click or a keyboard shortcut, even while the app is fullscreen.",
+    "uploadTitle": "Upload a sound",
+    "uploadDesc": "Click here to upload an audio file (mp3, wav, ogg, webm, or m4a). You can have up to 24 sounds in your pad.",
+    "testTitle": "Test your audio",
+    "testDesc": "Use this button to check that your system audio is working before playing your sound effects.",
+    "shortcutTitle": "Assign a keyboard shortcut",
+    "shortcutDesc": "Click a sound's shortcut and press a combination with Ctrl, Alt, or Shift plus a key. That lets you trigger it without opening the app.",
+    "deckTitle": "Your sound pad",
+    "deckDesc": "Each card is a sound: click to play it, rename it, recolor it, or delete it with the trash icon.",
+    "limitTitle": "Sound limit",
+    "limitDesc": "You can upload up to 24 sounds total. This counter shows how many you've used."
+  },
+  "botTour": {
+    "introTitle": "Music Bot",
+    "introDesc": "Your chat can request songs by typing <strong>!p song name</strong> or pasting a YouTube link. From here you control everything: what's playing, the queue, and who's allowed to request.",
+    "nowPlayingTitle": "Now Playing",
+    "nowPlayingDesc": "Turn on the !p command with this switch. From here you can also pause, skip the current song, and adjust the music volume (separate from the TTS volume).",
+    "queueTitle": "Request Queue",
+    "queueDesc": "Songs requested by chat pile up here in order. You can clear the queue anytime with the Clear button.",
+    "playlistTitle": "Your Background Playlist",
+    "playlistDesc": "Add your own list here (one song or link per line). It plays on loop when there are no chat requests — turn it on and save so it starts.",
+    "settingsTitle": "Bot Settings",
+    "settingsDesc": "Adjust the cooldown between requests per user, the max songs allowed in queue, and ban users who abuse the !p command."
+  },
+  "voiceTour": {
+    "introTitle": "Voice & Audio",
+    "introDesc": "Set up the voice that reads chat: language, speed, volume, and which messages get read based on their language.",
+    "voiceTitle": "Voice selector",
+    "voiceDesc": "Pick the language and accent for the TTS voice. 13 options (Spanish, English, Portuguese, French, German, Italian, Japanese, Chinese, Russian, Korean). Changing it also affects the language filters below.",
+    "testTitle": "Test voice",
+    "testDesc": "Type any text and hit Test to hear how the selected voice sounds, no chat connection needed.",
+    "rateTitle": "Speed",
+    "rateDesc": "Adjust how fast the TTS talks. Applies in real time to the next message read.",
+    "volTitle": "Volume",
+    "volDesc": "Controls TTS volume independently from the bot's music volume.",
+    "charFilterTitle": "Filter other-language characters",
+    "charFilterDesc": "When on, messages written with characters that don't match the active voice's language are ignored (e.g. blocks Chinese or Japanese if your voice is Spanish).",
+    "wordFilterTitle": "Filter by language (words)",
+    "wordFilterDesc": "Finer dictionary-based filter: only reads messages written in the active voice's language, plus any extra languages you allow below. Names or typos don't block the message.",
+    "dictModalTitle": "Allowed languages",
+    "dictModalDesc": "Choose which extra languages, besides your voice's, are allowed for the TTS to read. Close this window to continue the tutorial."
+  },
+  "shortcutsTour": {
+    "introTitle": "Keyboard shortcuts",
+    "introDesc": "Set up global keys to control TTS and the bot's music without touching the app, even with another window focused.",
+    "pauseBtnTitle": "Pause TTS",
+    "pauseBtnDesc": "Pause or resume reading chat with one click. Handy to mute quickly without disconnecting anything.",
+    "pauseKeyTitle": "Pause shortcut",
+    "pauseKeyDesc": "Click the field and press the combo you want (with Ctrl/Alt/Shift), or use the F8 / Play-Pause key presets.",
+    "skipTitle": "Skip current message",
+    "skipDesc": "Assign a key to skip the message currently being read (default F9).",
+    "clearTitle": "Clear queue",
+    "clearDesc": "Assign a key to wipe the whole pending TTS queue at once (default F10).",
+    "musicPauseTitle": "Pause bot music",
+    "musicPauseDesc": "Shortcut to pause or resume the music requested by chat via the !p command (default F11).",
+    "musicSkipTitle": "Skip bot song",
+    "musicSkipDesc": "Shortcut to skip the song currently playing in the music bot (default F12)."
+  },
+  "twitchTour": {
+    "introTitle": "Twitch — live alerts",
+    "introDesc": "Set up Twitch alerts: subs, bits and raids work without connecting anything; connecting your account only adds follows with real names.",
+    "clientIdTitle": "Twitch Client ID",
+    "clientIdDesc": "Paste the Client ID from your app registered at dev.twitch.tv. You need it before connecting your account.",
+    "connectTitle": "Connect account",
+    "connectDesc": "Connect your Twitch account to enable follows with real names. Connection status shows next to the buttons.",
+    "togglesTitle": "What to announce",
+    "togglesDesc": "Turn each alert type on or off separately: subs, bits, raids and follows.",
+    "testTitle": "Test alerts",
+    "testDesc": "Fire each alert manually to see/hear how it looks, without waiting for it to actually happen on stream."
+  },
+  "clipsTour": {
+    "introTitle": "Clip Markers",
+    "introDesc": "Mark the exact moment something fun or important happens while you're live, so you can find it later and cut the clip without scrubbing through the whole recording.",
+    "startTitle": "Step 1: start the stream",
+    "startDesc": "Before you can mark clips you need to start the timer here. It's the reference point for every marker (00:00:00 onward).",
+    "markTitle": "Step 2: mark the moment",
+    "markDesc": "Once the stream is running, this button activates. Click it at the right moment, or press Ctrl+Shift+M — the shortcut works anytime, even with the app minimized.",
+    "obsTitle": "OBS connection (optional)",
+    "obsDesc": "If you connect OBS via WebSocket here, every clip you mark also automatically saves the OBS replay buffer, in addition to the marker in the app.",
+    "historyTitle": "Marker history",
+    "historyDesc": "Every clip you mark is listed here with its elapsed time and real timestamp, so you can later find those moments in your recording or in OBS."
+  },
+  "overlaysTour": {
+    "introTitle": "Overlays for OBS",
+    "introDesc": "Each card generates a unique URL for a different overlay. Paste it into OBS as a Browser Source and it updates live on its own.",
+    "urlTitle": "Your overlay URL",
+    "urlDesc": "This is the address you'll copy and paste into OBS. It updates automatically whenever you change the color, opacity, or other card options.",
+    "copyTitle": "Copy the URL",
+    "copyDesc": "Click \"Copy\" to grab the URL. Then in OBS: Add Source → Browser → paste the URL → enable \"Enable transparent background\".",
+    "customizeTitle": "Customize the overlay",
+    "customizeDesc": "Adjust the accent color, background opacity, and other options. Changes apply instantly to the URL, no need to reload OBS.",
+    "bgTitle": "Custom background",
+    "bgDesc": "Want to replace the semi-transparent background with your own image? Upload it here (PNG, JPG, WebP, or GIF, max 8MB).",
+    "testTitle": "Test the overlay",
+    "testDesc": "Use the \"Test\" button to trigger a sample alert and preview it in OBS before going live."
+  },
+  "chatActionsTour": {
+    "skipTitle": "Skip current",
+    "skipDesc": "Cuts off the message being read right now and moves to the next one in the queue.",
+    "queueTitle": "Clear queue",
+    "queueDesc": "Deletes all pending messages waiting to be read. Useful when text has piled up and you want a fresh start.",
+    "emergencyTitle": "Emergency mode",
+    "emergencyDesc": "Instantly mutes chat, likes, joins, and shares. Keeps only gift alerts and new follower announcements active.",
+    "clearTitle": "Clear",
+    "clearDesc": "Clears the on-screen chat log and empties the TTS queue. It doesn't affect messages already sent by viewers.",
+    "blockedTitle": "Blocked words",
+    "blockedDesc": "Opens the blocked words editor to manage which terms get filtered out before being read aloud.",
+    "togglesTitle": "What gets read aloud",
+    "togglesDesc": "Turn each event on or off individually: comments, gifts, joins, follows, likes, shares, and whether the sender's name gets announced.",
+    "ttsTitle": "Turn TTS on or off",
+    "ttsDesc": "Turn it off to instantly mute the voice and clear the queue. Turn it back on whenever you want reading to resume.",
+    "connectTitle": "Connect all",
+    "connectDesc": "This is the real button that connects your saved channels (TikTok/Twitch/YouTube) to the live chat. Without this, nothing above has any effect.",
+    "logTitle": "Live chat",
+    "logDesc": "Messages show up here as they arrive, with a platform badge and status (read, muted, etc.)."
   }
 }

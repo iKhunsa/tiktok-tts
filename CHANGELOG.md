@@ -4,6 +4,16 @@ Todas las novedades relevantes de este proyecto se documentan aquí.
 
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.6.0] — 2026-08-07
+
+### Añadido
+- Módulo de **telemetría** (`telemetry/`): uso agregado y anónimo hacia un
+  servicio propio self-hosted (repo `telemetria-tts`, Docker), desactivado
+  por completo si no hay `TELEMETRY_URL` configurada. Conectores para app,
+  creadores, plataformas, contadores de alta frecuencia (TTS/música/
+  moderación), OBS, panel móvil, overlays, updates y errores.
+- Reporte de bugs con logging de sesión y onboarding guiado.
+
 ## [1.5.8] — 2026-07-25
 
 ### Añadido
@@ -58,7 +68,6 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y e
 ### Añadido
 - Motor del **bot de música** (song requests).
 - Herramientas de precios de regalos.
-- Backend de telemetría.
 
 ## [1.4.0] — 2026-06-28
 
@@ -135,6 +144,7 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y e
 - Overlays para OBS, lista de palabras bloqueadas.
 - Auto-update vía GitHub Releases y CI con GitHub Actions.
 
+[1.6.0]: https://github.com/iKhunsa/tiktok-tts/releases/tag/v1.6.0
 [1.5.5]: https://github.com/iKhunsa/tiktok-tts/releases/tag/v1.5.5
 [1.5.4]: https://github.com/iKhunsa/tiktok-tts/releases/tag/v1.5.4
 [1.5.3]: https://github.com/iKhunsa/tiktok-tts/releases/tag/v1.5.3

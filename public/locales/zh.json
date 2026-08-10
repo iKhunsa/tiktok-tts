@@ -6,7 +6,8 @@
     "mobile": "手机",
     "settings": "设置",
     "soundpad": "音效",
-    "bot": "Bot"
+    "bot": "Bot",
+    "moderation": "管理"
   },
   "community": {
     "label": "TikLiveTTS 社区",
@@ -54,7 +55,8 @@
     "langFilter": "过滤其他语言的字符",
     "langFilterHint": "忽略与当前语音语言不匹配字符的聊天消息（例如：语音为西班牙语时会屏蔽中文/日文，反之亦然）。",
     "dictFilter": "按语言过滤（单词）",
-    "dictFilterHint": "仅朗读使用当前语音语言或你允许的额外语言书写的消息。未知单词（名字、拼写错误）不会被屏蔽。"
+    "dictFilterHint": "仅朗读使用当前语音语言或你允许的额外语言书写的消息。未知单词（名字、拼写错误）不会被屏蔽。",
+    "readNonFollowers": "朗读非关注者"
   },
   "tts": {
     "on": "🔊 TTS 开启",
@@ -90,13 +92,16 @@
     "remove": "移除",
     "useF8": "使用 F8",
     "usePlayPause": "使用播放/暂停键",
-    "clearShortcut": "✕ 清除"
+    "clearShortcut": "✕ 清除",
+    "blockedWordsShortcut": "屏蔽词"
   },
   "chat": {
     "title": "实时聊天",
     "empty": "连接您的 TikTok 直播<br>在此查看聊天",
     "speaking": "正在朗读...",
-    "queue": "队列：{n} 条消息"
+    "queue": "队列：{n} 条消息",
+    "followerBadge": "关注者",
+    "mutedBadge": "已静音：TTS 不朗读"
   },
   "emergencyHint": "紧急模式保持礼物和关注活跃，静音聊天/点赞/加入/分享。",
   "status": {
@@ -120,6 +125,10 @@
     "mobile": {
       "title": "手机控制",
       "desc": "在同一 WiFi 网络中用手机控制 TTS。"
+    },
+    "moderation": {
+      "title": "管理",
+      "desc": "所有互动过的观众，以及他们的聊天和 TTS 权限。"
     }
   },
   "settings": {
@@ -424,6 +433,20 @@
     "kofiDesc": "请我喝杯咖啡来支持我",
     "paypalDesc": "通过 PayPal 直接捐赠"
   },
+  "portfolio": {
+    "heroTitle": "你好，我是 Khunsa 👋",
+    "heroDesc": "我在比特币、加密货币兑法币和商业领域打造产品：这个 TTS 应用只是我多个在运营项目之一。往下看看其他项目。",
+    "projectsTitle": "我的项目",
+    "satoshiDesc": "可自托管的比特币仪表盘，已上架 Umbrel 应用商店。运行你自己的节点，数据留在自己的硬件上。",
+    "assetrockDesc": "连接加密货币与法币的机构级桥梁：为拉美地区的基金和资金方提供流动性、安全结算与合规服务。",
+    "zatoboxDesc": "开源模块化收银系统，具备智能库存、自动化流程，支持本地货币或比特币支付。",
+    "visit": "访问 →",
+    "contactTitle": "联系我",
+    "tag101btc": "教育",
+    "btc101Desc": "由 SatoshiDashboard 打造的比特币入门互动指南，带你迈出第一步。",
+    "tagStacker": "社区",
+    "stackerDesc": "我的 Stacker News 个人主页：在社区里分享和讨论比特币话题，靠优质内容赚取 sats。"
+  },
   "notice": {
     "donationsTitle": "支持项目的新方式",
     "donationsBody": "我们新增了 Ko-fi 和 PayPal 捐赠方式。应用将始终 100% 免费——如果它对你有帮助并且你想支持这个项目，现在比以往任何时候都更方便。",
@@ -541,7 +564,9 @@
     "platformDisconnected": "{platform} 已断开",
     "allChannelsDisconnected": "所有频道已断开",
     "youtubeAutoSaved": "YouTube已保存；直播时将自动连接",
-    "youtubeTmpSaved": "YouTube已保存为手动频道"
+    "youtubeTmpSaved": "YouTube已保存为手动频道",
+    "readNonFollowersOn": "TTS 朗读所有人",
+    "readNonFollowersOff": "TTS 只朗读关注者"
   },
   "dictLang": {
     "title": "允许的语言",
@@ -552,7 +577,8 @@
   "tour": {
     "next": "下一步",
     "prev": "上一步",
-    "done": "完成"
+    "done": "完成",
+    "viewTutorial": "查看教程"
   },
   "onboarding": {
     "step1Title": "首先，前往设置",
@@ -567,5 +593,253 @@
     "step5Desc": "这只是保存，还不会连接任何东西。",
     "step6Title": "最后一步！先开始直播",
     "step6Desc": "点这里之前：先在平台（TikTok/Twitch/YouTube）开始直播，等到真正直播后，再回来点\"全部连接\"。不要在开播前点。"
+  },
+  "mod": {
+    "note": "YouTube 不发送关注事件：请手动把这些观众标记为关注者。",
+    "stats": {
+      "total": "已登记",
+      "followers": "关注者",
+      "others": "非关注者",
+      "muted": "已静音",
+      "banned": "已封禁"
+    },
+    "tab": {
+      "followers": "关注者",
+      "others": "非关注者"
+    },
+    "filter": {
+      "search": "按名称搜索...",
+      "allPlatforms": "所有平台",
+      "stateAll": "所有状态",
+      "stateClean": "无处罚",
+      "stateMuted": "已静音",
+      "stateBanned": "已封禁"
+    },
+    "sort": {
+      "activity": "最近活动",
+      "messages": "消息",
+      "gifts": "礼物",
+      "likes": "点赞",
+      "name": "名称"
+    },
+    "col": {
+      "user": "用户",
+      "platform": "平台",
+      "state": "状态",
+      "messages": "消息",
+      "gifts": "礼物",
+      "likes": "点赞",
+      "lastSeen": "最后活动",
+      "actions": "操作"
+    },
+    "state": {
+      "clean": "无处罚",
+      "muted": "静音",
+      "banned": "封禁",
+      "mutedUntil": "静音 {time}",
+      "bannedUntil": "封禁 {time}",
+      "weakId": "没有稳定 ID：改名后处罚会失效。"
+    },
+    "action": {
+      "mute": "静音",
+      "ban": "封禁",
+      "clear": "解除处罚",
+      "refresh": "刷新",
+      "wipe": "清空记录",
+      "wipeConfirm": "删除全部观众记录？静音和封禁也会一并丢失。",
+      "tour": "查看教程"
+    },
+    "wipeModal": {
+      "title": "确定吗？",
+      "body": "此操作会彻底删除观众数据库：已标记的粉丝、静音和封禁记录。此操作无法撤销。",
+      "confirm": "是的，全部删除",
+      "cancel": "取消",
+      "typeInstruction": "输入",
+      "typeInstructionSuffix": "以确认",
+      "keyword": "删除"
+    },
+    "dur": {
+      "15m": "15 分钟",
+      "1h": "1 小时",
+      "forever": "无限期"
+    },
+    "empty": "这里还没有登记的观众。",
+    "pager": "第 {from}–{to} 项，共 {total} 项",
+    "time": {
+      "now": "刚刚",
+      "min": "{n} 分钟前",
+      "hour": "{n} 小时前",
+      "day": "{n} 天前"
+    },
+    "toast": {
+      "mute": "已静音该用户",
+      "unmute": "已解除静音",
+      "ban": "已封禁该用户",
+      "unban": "已解除封禁",
+      "clear": "已解除处罚",
+      "follower": "关注者列表已更新",
+      "error": "无法执行该操作"
+    }
+  },
+  "chatCtx": {
+    "hint": "点击管理该用户",
+    "mute15": "静音 15 分钟",
+    "muteForever": "无限期静音",
+    "ban15": "封禁 15 分钟",
+    "banForever": "无限期封禁",
+    "clear": "解除处罚",
+    "markFollower": "标记为关注者",
+    "blockWord": "屏蔽一个词...",
+    "blockWordPrompt": "要屏蔽的词：",
+    "blockWordDone": "已屏蔽“{word}”",
+    "openModeration": "在管理中查看"
+  },
+  "modTour": {
+    "introTitle": "新功能：管理",
+    "introDesc": "每个在你直播中互动过的观众都会记录在这里。你可以从这张表控制谁能发言、TTS 朗读谁。这是应用内的管理，不会在 TikTok、Twitch 或 YouTube 上封禁。",
+    "tabsTitle": "关注者与非关注者",
+    "tabsDesc": "成为关注者只有两种方式：在你连线期间关注你，或者由你手动标记。应用无法向平台索取关注者名单，所以早就关注你的人会一直待在「非关注者」，直到你标记他们。",
+    "statsTitle": "一眼概览",
+    "statsDesc": "已登记多少人、其中多少是关注者，以及此刻有多少人处于处罚中。",
+    "filtersTitle": "搜索与筛选",
+    "filtersDesc": "按名称搜索，按平台或状态（静音、封禁、无处罚）筛选，并按最近活动或名称排序。",
+    "tableTitle": "针对每位观众的操作",
+    "tableDesc": "每一行都有：静音（聊天里仍可见，但 TTS 跳过）、封禁（消息根本不出现）、★ 标记为关注者、解除处罚，以及 ✕ 从记录中移除。限时处罚会自动到期，即使应用已关闭。",
+    "chatMenuTitle": "直接在聊天里管理",
+    "chatMenuDesc": "不必特地过来：在直播聊天中点击任何人的名字，就会打开同一个菜单——静音、封禁、标记为关注者或屏蔽某个词。",
+    "toggleTitle": "朗读非关注者",
+    "toggleDesc": "开启时 TTS 朗读所有人。关闭后只朗读关注者和你手动标记的人；其他人的消息仍会出现在聊天里，只是没有声音。第一天要注意：记录为空时，你会让几乎全部观众失声。",
+    "blockedTitle": "屏蔽词",
+    "blockedDesc": "从聊天里复制碍眼的词，点这里粘贴，立刻生效——不用离开画面，也不用重连。窗口会一直开着，方便你连续粘贴好几个。包含这些词的消息会被完全忽略。",
+    "scrollTitle": "聊天跟随朗读",
+    "scrollDesc": "聊天不再追着最新消息，而是跟随 TTS 正在朗读的那条，它通常落后几条。向上滚动就会停住，方便你阅读；回到底部它会自动继续。"
+  },
+  "blockWord": {
+    "title": "屏蔽词",
+    "desc": "粘贴或输入词语即可：服务器立刻生效，无需重连。窗口不用关，可以继续添加。",
+    "placeholder": "输入或粘贴词语...",
+    "add": "屏蔽",
+    "count": "共 {n} 个屏蔽词",
+    "sessionAdded": "刚刚屏蔽",
+    "duplicate": "你刚刚已经屏蔽过了",
+    "manageAll": "查看并编辑全部"
+  },
+  "soundTour": {
+    "introTitle": "音效板",
+    "introDesc": "上传音效，点击或用键盘快捷键播放，即使应用全屏也能用。",
+    "uploadTitle": "上传音效",
+    "uploadDesc": "点这里上传音频文件（mp3、wav、ogg、webm 或 m4a）。最多可以有 24 个音效。",
+    "testTitle": "测试音频",
+    "testDesc": "播放音效前，用这个按钮检查系统声音是否正常。",
+    "shortcutTitle": "设置快捷键",
+    "shortcutDesc": "点击某个音效的快捷键，然后按 Ctrl、Alt 或 Shift 加一个键的组合。这样不用打开应用也能触发。",
+    "deckTitle": "你的音效板",
+    "deckDesc": "每张卡片是一个音效：点击播放，改名字，改颜色，或用垃圾桶图标删除。",
+    "limitTitle": "音效数量上限",
+    "limitDesc": "总共最多可以上传 24 个音效。这个计数器显示你已经用了多少个。"
+  },
+  "botTour": {
+    "introTitle": "音乐机器人",
+    "introDesc": "你的观众可以输入 <strong>!p 歌曲名</strong> 或粘贴 YouTube 链接来点歌。这里可以控制一切：正在播放什么、队列，以及谁能点歌。",
+    "nowPlayingTitle": "正在播放",
+    "nowPlayingDesc": "用这个开关启用 !p 命令。这里还能暂停、跳过当前歌曲，调节音乐音量（和 TTS 音量分开）。",
+    "queueTitle": "点歌队列",
+    "queueDesc": "观众点的歌会按顺序堆积在这里。随时可以用清空按钮清空队列。",
+    "playlistTitle": "你的背景播放列表",
+    "playlistDesc": "在这里添加你自己的列表（每行一首歌或链接）。没有观众点歌时会循环播放——开启并保存后生效。",
+    "settingsTitle": "机器人设置",
+    "settingsDesc": "调整每个用户点歌的冷却时间、队列最大数量，并封禁滥用 !p 命令的用户。"
+  },
+  "voiceTour": {
+    "introTitle": "语音与音频",
+    "introDesc": "在这里设置朗读聊天的语音：语言、语速、音量，以及根据消息语言决定是否朗读。",
+    "voiceTitle": "语音选择",
+    "voiceDesc": "选择 TTS 语音的语言和口音，共 13 种（西班牙语、英语、葡萄牙语、法语、德语、意大利语、日语、中文、俄语、韩语）。更改语音也会影响下方的语言过滤器。",
+    "testTitle": "测试语音",
+    "testDesc": "输入任意文字并点击“测试”即可听到所选语音的效果，无需连接聊天室。",
+    "rateTitle": "语速",
+    "rateDesc": "调整 TTS 说话的速度，实时应用到下一条朗读的消息。",
+    "volTitle": "音量",
+    "volDesc": "独立控制 TTS 音量，与机器人音乐音量互不影响。",
+    "charFilterTitle": "过滤其他语言字符",
+    "charFilterDesc": "开启后，会忽略字符与当前语音语言不符的消息（例如语音为西班牙语时会屏蔽中文或日文）。",
+    "wordFilterTitle": "按语言过滤（单词）",
+    "wordFilterDesc": "基于词典的更精细过滤：只朗读当前语音语言的消息，以及你在下方允许的其他语言。人名或拼写错误不会阻止朗读。",
+    "dictModalTitle": "允许的语言",
+    "dictModalDesc": "选择除你的语音语言外，还允许 TTS 朗读哪些语言。关闭此窗口继续教程。"
+  },
+  "shortcutsTour": {
+    "introTitle": "键盘快捷键",
+    "introDesc": "设置全局快捷键来控制 TTS 和机器人音乐，即使其他窗口处于焦点也无需切回本应用。",
+    "pauseBtnTitle": "暂停 TTS",
+    "pauseBtnDesc": "一键暂停或恢复聊天朗读，方便快速静音而不断开任何连接。",
+    "pauseKeyTitle": "暂停快捷键",
+    "pauseKeyDesc": "点击输入框后按下想要的组合键（配合 Ctrl/Alt/Shift），或使用 F8 / 播放暂停键预设。",
+    "skipTitle": "跳过当前消息",
+    "skipDesc": "分配一个按键来跳过正在朗读的消息（默认 F9）。",
+    "clearTitle": "清空队列",
+    "clearDesc": "分配一个按键一次性清空所有待朗读的 TTS 队列（默认 F10）。",
+    "musicPauseTitle": "暂停机器人音乐",
+    "musicPauseDesc": "用于暂停或恢复聊天通过 !p 命令点播的音乐（默认 F11）。",
+    "musicSkipTitle": "跳过机器人歌曲",
+    "musicSkipDesc": "用于跳过音乐机器人当前播放的歌曲（默认 F12）。"
+  },
+  "twitchTour": {
+    "introTitle": "Twitch — 直播提醒",
+    "introDesc": "设置 Twitch 提醒：订阅、比特币和突袭无需任何连接即可使用；连接账号只是为了获取带真实用户名的关注提醒。",
+    "clientIdTitle": "Twitch Client ID",
+    "clientIdDesc": "粘贴你在 dev.twitch.tv 注册应用的 Client ID，连接账号前需要它。",
+    "connectTitle": "连接账号",
+    "connectDesc": "连接你的 Twitch 账号以启用带真实用户名的关注提醒，连接状态显示在按钮旁边。",
+    "togglesTitle": "要播报的内容",
+    "togglesDesc": "分别开启或关闭每种提醒类型：订阅、比特币、突袭和关注。",
+    "testTitle": "测试提醒",
+    "testDesc": "手动触发每种提醒，查看/听效果，无需等待直播中真实发生。"
+  },
+  "clipsTour": {
+    "introTitle": "剪辑标记",
+    "introDesc": "在直播中标记有趣或重要的瞬间，之后就能快速找到，不用翻看整个录像来剪辑。",
+    "startTitle": "第一步：开始直播",
+    "startDesc": "标记剪辑之前，先在这里启动计时器。它是每个标记的时间基准（从00:00:00开始）。",
+    "markTitle": "第二步：标记瞬间",
+    "markDesc": "直播开始后，这个按钮会被激活。在合适的时刻点击，或按 Ctrl+Shift+M——这个快捷键随时有效，即使应用最小化也能用。",
+    "obsTitle": "OBS连接（可选）",
+    "obsDesc": "如果在这里通过WebSocket连接OBS，每次标记剪辑时也会自动保存OBS的回放缓冲，除了应用内的标记。",
+    "historyTitle": "标记历史",
+    "historyDesc": "所有标记的剪辑都会列在这里，包含经过时间和真实时间戳，方便你之后在录像或OBS中找到这些瞬间。"
+  },
+  "overlaysTour": {
+    "introTitle": "OBS叠加层",
+    "introDesc": "每张卡片为不同的叠加层生成唯一的URL。把它粘贴到OBS的浏览器源里，会自动实时更新。",
+    "urlTitle": "你的叠加层URL",
+    "urlDesc": "这是你要复制粘贴到OBS里的地址。当你调整颜色、透明度或其他卡片选项时会自动更新。",
+    "copyTitle": "复制URL",
+    "copyDesc": "点击\"复制\"获取URL。然后在OBS中：添加来源 → 浏览器 → 粘贴URL → 启用\"Enable transparent background\"。",
+    "customizeTitle": "自定义叠加层",
+    "customizeDesc": "调整强调色、背景透明度和其他选项。更改会立即反映到URL上，无需重新加载OBS。",
+    "bgTitle": "自定义背景",
+    "bgDesc": "想用自己的图片替换半透明背景吗？在这里上传（PNG、JPG、WebP或GIF，最大8MB）。",
+    "testTitle": "测试叠加层",
+    "testDesc": "使用\"Test\"按钮触发一个示例提醒，在开播前预览OBS中的效果。"
+  },
+  "chatActionsTour": {
+    "skipTitle": "跳过当前",
+    "skipDesc": "中断当前正在朗读的消息，跳到队列中的下一条。",
+    "queueTitle": "清空队列",
+    "queueDesc": "删除所有等待朗读的消息。当积压了很多文字，想重新开始时很有用。",
+    "emergencyTitle": "紧急模式",
+    "emergencyDesc": "立即静音聊天、点赞、进场和分享。只保留礼物提醒和新粉丝通知。",
+    "clearTitle": "清除",
+    "clearDesc": "清除屏幕上的聊天记录并清空TTS队列。不影响观众已经发送的消息。",
+    "blockedTitle": "屏蔽词",
+    "blockedDesc": "打开屏蔽词编辑器，管理哪些词语会在朗读前被过滤。",
+    "togglesTitle": "朗读哪些内容",
+    "togglesDesc": "单独开关每种事件：评论、礼物、进场、关注、点赞、分享，以及是否播报发送者的名字。",
+    "ttsTitle": "开启或关闭TTS",
+    "ttsDesc": "关闭后立即静音并清空队列。想继续朗读时再打开。",
+    "connectTitle": "全部连接",
+    "connectDesc": "这才是真正把你保存的频道（TikTok/Twitch/YouTube）连接到直播聊天的按钮。不点这个，上面的设置都不会生效。",
+    "logTitle": "实时聊天",
+    "logDesc": "消息到达时会显示在这里，带有平台标识和状态（已读、静音等）。"
   }
 }

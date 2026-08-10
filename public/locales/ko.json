@@ -6,7 +6,8 @@
     "mobile": "모바일",
     "settings": "설정",
     "soundpad": "사운드",
-    "bot": "봇"
+    "bot": "봇",
+    "moderation": "모더레이션"
   },
   "community": {
     "label": "TikLiveTTS 커뮤니티",
@@ -54,7 +55,8 @@
     "langFilter": "다른 언어 문자 필터링",
     "langFilterHint": "활성 음성의 언어와 일치하지 않는 문자가 포함된 채팅 메시지를 무시합니다 (예: 음성이 스페인어면 중국어/일본어를 차단하며, 반대의 경우도 마찬가지입니다).",
     "dictFilter": "언어별 필터 (단어)",
-    "dictFilterHint": "활성 음성 언어 또는 허용한 추가 언어로 작성된 메시지만 읽습니다. 알 수 없는 단어(이름, 오타)는 차단되지 않습니다."
+    "dictFilterHint": "활성 음성 언어 또는 허용한 추가 언어로 작성된 메시지만 읽습니다. 알 수 없는 단어(이름, 오타)는 차단되지 않습니다.",
+    "readNonFollowers": "비팔로워도 읽기"
   },
   "tts": {
     "on": "🔊 TTS 켜짐",
@@ -90,13 +92,16 @@
     "remove": "제거",
     "useF8": "F8 사용",
     "usePlayPause": "재생/일시정지 키 사용",
-    "clearShortcut": "✕ 지우기"
+    "clearShortcut": "✕ 지우기",
+    "blockedWordsShortcut": "차단 단어"
   },
   "chat": {
     "title": "라이브 채팅",
     "empty": "TikTok 라이브에 연결하여<br>여기서 채팅을 확인하세요",
     "speaking": "읽는 중...",
-    "queue": "대기열: {n}개"
+    "queue": "대기열: {n}개",
+    "followerBadge": "팔로워",
+    "mutedBadge": "음소거: TTS가 읽지 않음"
   },
   "emergencyHint": "비상 모드는 선물과 팔로우를 유지하고 채팅/좋아요/입장/공유를 음소거합니다.",
   "status": {
@@ -120,6 +125,10 @@
     "mobile": {
       "title": "모바일 제어",
       "desc": "같은 WiFi 네트워크의 스마트폰으로 TTS를 제어하세요."
+    },
+    "moderation": {
+      "title": "모더레이션",
+      "desc": "상호작용한 모든 시청자와 채팅·TTS 권한."
     }
   },
   "settings": {
@@ -424,6 +433,20 @@
     "kofiDesc": "커피 한 잔으로 응원해주세요",
     "paypalDesc": "PayPal로 직접 기부"
   },
+  "portfolio": {
+    "heroTitle": "안녕하세요, Khunsa입니다 👋",
+    "heroDesc": "비트코인, 크립토-법정화폐, 커머스 분야에서 제품을 만들고 있습니다. 이 TTS 앱도 여러 진행 중인 프로젝트 중 하나예요. 아래에서 다른 프로젝트도 확인해 보세요.",
+    "projectsTitle": "내 프로젝트",
+    "satoshiDesc": "셀프호스팅 비트코인 대시보드, Umbrel 앱 스토어에서 이용 가능합니다. 직접 노드를 운영하고 데이터를 자신의 하드웨어에 보관하세요.",
+    "assetrockDesc": "크립토와 법정화폐를 잇는 기관용 브릿지: LATAM 지역 펀드와 자금 운용을 위한 유동성, 안전한 결제, 컴플라이언스를 제공합니다.",
+    "zatoboxDesc": "스마트 재고 관리, 자동화, 현지 통화 또는 비트코인 결제를 지원하는 오픈소스 모듈형 POS.",
+    "visit": "방문 →",
+    "contactTitle": "연락하기",
+    "tag101btc": "교육",
+    "btc101Desc": "SatoshiDashboard가 제공하는, 비트코인 첫걸음을 위한 인터랙티브 가이드입니다.",
+    "tagStacker": "커뮤니티",
+    "stackerDesc": "제 Stacker News 프로필입니다: 커뮤니티와 비트코인에 대해 공유하고 토론하며, 좋은 콘텐츠로 sats를 받습니다."
+  },
   "notice": {
     "donationsTitle": "프로젝트를 지원하는 새로운 방법",
     "donationsBody": "기부 옵션으로 Ko-fi와 PayPal을 추가했습니다. 앱은 앞으로도 100% 무료입니다. 앱이 유용하고 프로젝트를 지원하고 싶다면, 이제 그 어느 때보다 쉽게 기부할 수 있습니다.",
@@ -541,7 +564,9 @@
     "platformDisconnected": "{platform} 연결 해제됨",
     "allChannelsDisconnected": "모든 채널 연결 해제됨",
     "youtubeAutoSaved": "YouTube 저장됨; 라이브 시 연결됩니다",
-    "youtubeTmpSaved": "YouTube를 수동 채널로 저장했습니다"
+    "youtubeTmpSaved": "YouTube를 수동 채널로 저장했습니다",
+    "readNonFollowersOn": "TTS가 모두를 읽습니다",
+    "readNonFollowersOff": "TTS가 팔로워만 읽습니다"
   },
   "dictLang": {
     "title": "허용 언어",
@@ -552,7 +577,8 @@
   "tour": {
     "next": "다음",
     "prev": "이전",
-    "done": "완료"
+    "done": "완료",
+    "viewTutorial": "튜토리얼 보기"
   },
   "onboarding": {
     "step1Title": "먼저 설정으로 이동하세요",
@@ -567,5 +593,253 @@
     "step5Desc": "이건 저장만 할 뿐 아직 아무것도 연결하지 않습니다.",
     "step6Title": "마지막 단계! 먼저 라이브를 시작하세요",
     "step6Desc": "여기를 누르기 전에: 플랫폼(TikTok/Twitch/YouTube)에서 방송을 시작하고 라이브 상태가 될 때까지 기다리세요. 라이브가 된 후에 돌아와서 \"전체 연결\"을 누르세요. 라이브 전에는 누르지 마세요."
+  },
+  "mod": {
+    "note": "YouTube는 팔로우 이벤트를 보내지 않습니다. 해당 시청자는 직접 팔로워로 표시하세요.",
+    "stats": {
+      "total": "등록됨",
+      "followers": "팔로워",
+      "others": "비팔로워",
+      "muted": "음소거됨",
+      "banned": "차단됨"
+    },
+    "tab": {
+      "followers": "팔로워",
+      "others": "비팔로워"
+    },
+    "filter": {
+      "search": "이름으로 검색...",
+      "allPlatforms": "모든 플랫폼",
+      "stateAll": "모든 상태",
+      "stateClean": "제재 없음",
+      "stateMuted": "음소거됨",
+      "stateBanned": "차단됨"
+    },
+    "sort": {
+      "activity": "최근 활동",
+      "messages": "메시지",
+      "gifts": "선물",
+      "likes": "좋아요",
+      "name": "이름"
+    },
+    "col": {
+      "user": "사용자",
+      "platform": "플랫폼",
+      "state": "상태",
+      "messages": "메시지",
+      "gifts": "선물",
+      "likes": "좋아요",
+      "lastSeen": "마지막 활동",
+      "actions": "작업"
+    },
+    "state": {
+      "clean": "제재 없음",
+      "muted": "음소거",
+      "banned": "차단",
+      "mutedUntil": "음소거 {time}",
+      "bannedUntil": "차단 {time}",
+      "weakId": "안정적인 ID 없음: 이름을 바꾸면 제재가 사라집니다."
+    },
+    "action": {
+      "mute": "음소거",
+      "ban": "차단",
+      "clear": "제재 해제",
+      "refresh": "새로고침",
+      "wipe": "기록 비우기",
+      "wipeConfirm": "시청자 기록을 모두 삭제할까요? 음소거와 차단도 사라집니다.",
+      "tour": "튜토리얼 보기"
+    },
+    "wipeModal": {
+      "title": "정말 삭제할까요?",
+      "body": "이 작업은 시청자 데이터베이스 전체를 삭제합니다: 표시된 팔로워, 음소거, 차단 기록까지 모두. 되돌릴 수 없습니다.",
+      "confirm": "네, 전부 삭제",
+      "cancel": "취소",
+      "typeInstruction": "",
+      "typeInstructionSuffix": "을(를) 입력해 확인",
+      "keyword": "삭제"
+    },
+    "dur": {
+      "15m": "15분",
+      "1h": "1시간",
+      "forever": "무기한"
+    },
+    "empty": "아직 등록된 시청자가 없습니다.",
+    "pager": "{total}개 중 {from}–{to}",
+    "time": {
+      "now": "방금",
+      "min": "{n}분 전",
+      "hour": "{n}시간 전",
+      "day": "{n}일 전"
+    },
+    "toast": {
+      "mute": "사용자를 음소거했습니다",
+      "unmute": "음소거를 해제했습니다",
+      "ban": "사용자를 차단했습니다",
+      "unban": "차단을 해제했습니다",
+      "clear": "제재를 해제했습니다",
+      "follower": "팔로워 목록을 업데이트했습니다",
+      "error": "작업을 적용할 수 없습니다"
+    }
+  },
+  "chatCtx": {
+    "hint": "클릭해서 이 사용자를 관리",
+    "mute15": "15분 음소거",
+    "muteForever": "무기한 음소거",
+    "ban15": "15분 차단",
+    "banForever": "무기한 차단",
+    "clear": "제재 해제",
+    "markFollower": "팔로워로 표시",
+    "blockWord": "단어 차단...",
+    "blockWordPrompt": "차단할 단어:",
+    "blockWordDone": "\"{word}\" 차단됨",
+    "openModeration": "모더레이션에서 보기"
+  },
+  "modTour": {
+    "introTitle": "새 기능: 모더레이션",
+    "introDesc": "방송에서 상호작용한 모든 시청자가 여기에 기록됩니다. 이 표에서 누가 말할 수 있고 누구를 TTS가 읽을지 관리합니다. 앱 안에서의 관리이며, TikTok·Twitch·YouTube에서 차단하지는 않습니다.",
+    "tabsTitle": "팔로워와 비팔로워",
+    "tabsDesc": "팔로워가 되는 방법은 두 가지입니다. 접속 중에 팔로우하거나, 직접 표시하는 것. 앱은 플랫폼에 팔로워 목록을 요청할 수 없어서, 예전부터 팔로우하던 사람은 표시하기 전까지 비팔로워에 남습니다.",
+    "statsTitle": "한눈에 보기",
+    "statsDesc": "등록된 인원, 팔로워 수, 그리고 지금 제재가 걸린 인원.",
+    "filtersTitle": "검색과 필터",
+    "filtersDesc": "이름으로 검색하고, 플랫폼이나 상태(음소거·차단·제재 없음)로 거르고, 최근 활동이나 이름순으로 정렬하세요.",
+    "tableTitle": "시청자별 작업",
+    "tableDesc": "각 행에서: 음소거(채팅에는 보이지만 TTS가 건너뜀), 차단(메시지 자체가 안 뜸), ★로 팔로워 표시, 제재 해제, ✕로 기록에서 제거. 기간 제재는 앱을 닫아도 알아서 만료됩니다.",
+    "chatMenuTitle": "채팅에서 바로 관리",
+    "chatMenuDesc": "여기까지 올 필요 없습니다. 라이브 채팅에서 이름을 클릭하면 같은 메뉴가 열립니다 — 음소거, 차단, 팔로워 표시, 단어 차단.",
+    "toggleTitle": "비팔로워도 읽기",
+    "toggleDesc": "켜면 TTS가 모두를 읽습니다. 끄면 팔로워와 직접 표시한 사람만 읽습니다. 나머지는 채팅에 보이지만 목소리는 없습니다. 첫날엔 주의하세요: 기록이 비어 있으면 거의 모든 시청자가 조용해집니다.",
+    "blockedTitle": "차단 단어",
+    "blockedDesc": "채팅에서 거슬리는 단어를 복사해 여기를 누르고 붙여넣으면 바로 차단됩니다 — 화면을 떠나거나 재접속할 필요 없습니다. 창은 열린 채로 남아 여러 개를 연달아 붙여넣을 수 있습니다. 해당 단어가 든 메시지는 완전히 무시됩니다.",
+    "scrollTitle": "채팅이 낭독을 따라갑니다",
+    "scrollDesc": "이제 채팅은 최신 메시지가 아니라 TTS가 읽고 있는 메시지를 따라갑니다. 보통 몇 개 뒤처져 있죠. 위로 스크롤하면 멈춰서 편히 읽을 수 있고, 맨 아래로 돌아가면 알아서 다시 따라갑니다."
+  },
+  "blockWord": {
+    "title": "단어 차단",
+    "desc": "단어를 붙여넣거나 입력하면 끝입니다. 서버가 즉시 적용하며 재접속도 필요 없습니다. 창을 닫지 않고 계속 추가할 수 있습니다.",
+    "placeholder": "단어를 입력하거나 붙여넣기...",
+    "add": "차단",
+    "count": "차단 단어 총 {n}개",
+    "sessionAdded": "방금 차단함",
+    "duplicate": "방금 차단한 단어입니다",
+    "manageAll": "전체 보기·편집"
+  },
+  "soundTour": {
+    "introTitle": "사운드 패드",
+    "introDesc": "효과음을 업로드하고 클릭이나 키보드 단축키로 재생하세요. 앱이 전체화면이어도 작동합니다.",
+    "uploadTitle": "사운드 업로드",
+    "uploadDesc": "여기를 클릭해 오디오 파일(mp3, wav, ogg, webm, m4a)을 업로드하세요. 최대 24개까지 가능합니다.",
+    "testTitle": "오디오 테스트",
+    "testDesc": "효과음을 재생하기 전에 이 버튼으로 시스템 소리가 정상인지 확인하세요.",
+    "shortcutTitle": "단축키 지정",
+    "shortcutDesc": "사운드의 단축키를 클릭하고 Ctrl, Alt, Shift 중 하나와 키를 함께 누르세요. 앱을 열지 않아도 실행할 수 있습니다.",
+    "deckTitle": "내 사운드 패드",
+    "deckDesc": "카드마다 하나의 사운드입니다: 클릭해서 재생, 이름/색상 변경, 휴지통 아이콘으로 삭제할 수 있습니다.",
+    "limitTitle": "사운드 개수 제한",
+    "limitDesc": "총 24개까지 업로드할 수 있습니다. 이 숫자는 현재 사용한 개수를 보여줍니다."
+  },
+  "botTour": {
+    "introTitle": "음악 봇",
+    "introDesc": "채팅에서 <strong>!p 곡 이름</strong>을 입력하거나 유튜브 링크를 붙여넣어 신청할 수 있습니다. 여기서 재생 중인 곡, 대기열, 신청 권한을 모두 관리합니다.",
+    "nowPlayingTitle": "현재 재생 중",
+    "nowPlayingDesc": "이 스위치로 !p 명령을 켭니다. 여기서 일시정지, 현재 곡 건너뛰기, 음악 볼륨 조절(TTS 볼륨과 별도)도 할 수 있습니다.",
+    "queueTitle": "신청 대기열",
+    "queueDesc": "채팅에서 신청한 곡이 순서대로 여기 쌓입니다. 지우기 버튼으로 언제든 비울 수 있습니다.",
+    "playlistTitle": "배경 재생목록",
+    "playlistDesc": "여기에 직접 목록을 추가하세요 (한 줄에 곡 또는 링크 하나). 신청곡이 없을 때 반복 재생됩니다 — 켜고 저장하면 시작됩니다.",
+    "settingsTitle": "봇 설정",
+    "settingsDesc": "사용자별 신청 쿨다운, 대기열 최대 개수를 조정하고 !p 명령을 남용하는 사용자를 차단하세요."
+  },
+  "voiceTour": {
+    "introTitle": "음성 및 오디오",
+    "introDesc": "채팅을 읽어주는 음성을 설정합니다: 언어, 속도, 볼륨, 그리고 메시지 언어에 따라 읽을지 여부.",
+    "voiceTitle": "음성 선택",
+    "voiceDesc": "TTS 음성의 언어와 억양을 선택하세요. 13가지 옵션(스페인어, 영어, 포르투갈어, 프랑스어, 독일어, 이탈리아어, 일본어, 중국어, 러시아어, 한국어). 변경하면 아래 언어 필터에도 영향을 줍니다.",
+    "testTitle": "음성 테스트",
+    "testDesc": "아무 텍스트나 입력하고 테스트를 눌러 채팅 연결 없이도 선택한 음성을 들어볼 수 있습니다.",
+    "rateTitle": "속도",
+    "rateDesc": "TTS가 말하는 속도를 조절합니다. 다음에 읽히는 메시지부터 실시간으로 적용됩니다.",
+    "volTitle": "볼륨",
+    "volDesc": "봇 음악 볼륨과 별개로 TTS 볼륨을 조절합니다.",
+    "charFilterTitle": "다른 언어 문자 필터링",
+    "charFilterDesc": "켜면 현재 음성 언어와 맞지 않는 문자로 쓰인 메시지를 무시합니다(예: 음성이 스페인어면 중국어나 일본어를 차단).",
+    "wordFilterTitle": "언어별 필터링(단어)",
+    "wordFilterDesc": "사전 기반의 더 정밀한 필터: 현재 음성 언어로 쓰인 메시지와 아래에서 허용한 추가 언어만 읽습니다. 이름이나 오타는 메시지를 막지 않습니다.",
+    "dictModalTitle": "허용된 언어",
+    "dictModalDesc": "내 음성 언어 외에 TTS가 읽을 수 있도록 허용할 추가 언어를 선택하세요. 이 창을 닫으면 튜토리얼이 계속됩니다."
+  },
+  "shortcutsTour": {
+    "introTitle": "키보드 단축키",
+    "introDesc": "다른 창에 포커스가 있어도 앱을 건드리지 않고 TTS와 봇 음악을 제어할 전역 키를 설정합니다.",
+    "pauseBtnTitle": "TTS 일시정지",
+    "pauseBtnDesc": "클릭 한 번으로 채팅 읽기를 일시정지하거나 재개합니다. 아무것도 끊지 않고 빠르게 음소거할 때 유용합니다.",
+    "pauseKeyTitle": "일시정지 단축키",
+    "pauseKeyDesc": "필드를 클릭한 뒤 원하는 조합을 누르거나(Ctrl/Alt/Shift와 함께), F8 / 재생-일시정지 키 프리셋을 사용하세요.",
+    "skipTitle": "현재 메시지 건너뛰기",
+    "skipDesc": "지금 읽고 있는 메시지를 건너뛸 키를 지정합니다(기본값 F9).",
+    "clearTitle": "대기열 비우기",
+    "clearDesc": "대기 중인 TTS 대기열을 한 번에 비울 키를 지정합니다(기본값 F10).",
+    "musicPauseTitle": "봇 음악 일시정지",
+    "musicPauseDesc": "!p 명령으로 채팅이 요청한 음악을 일시정지하거나 재개하는 단축키(기본값 F11).",
+    "musicSkipTitle": "봇 노래 건너뛰기",
+    "musicSkipDesc": "음악 봇에서 현재 재생 중인 노래를 건너뛰는 단축키(기본값 F12)."
+  },
+  "twitchTour": {
+    "introTitle": "Twitch — 라이브 알림",
+    "introDesc": "Twitch 알림을 설정합니다: 구독, 비트, 레이드는 아무것도 연결하지 않아도 작동합니다. 계정을 연결하면 실명 팔로우 알림만 추가됩니다.",
+    "clientIdTitle": "Twitch Client ID",
+    "clientIdDesc": "dev.twitch.tv에 등록한 앱의 Client ID를 여기에 붙여넣으세요. 계정을 연결하기 전에 필요합니다.",
+    "connectTitle": "계정 연결",
+    "connectDesc": "Twitch 계정을 연결해 실명 팔로우를 활성화하세요. 연결 상태는 버튼 옆에 표시됩니다.",
+    "togglesTitle": "무엇을 알릴지",
+    "togglesDesc": "구독, 비트, 레이드, 팔로우를 각각 개별적으로 켜고 끌 수 있습니다.",
+    "testTitle": "알림 테스트",
+    "testDesc": "실제 방송에서 일어나길 기다리지 않고 각 알림을 수동으로 발생시켜 모습과 소리를 확인하세요."
+  },
+  "clipsTour": {
+    "introTitle": "클립 마커",
+    "introDesc": "라이브 중 재미있거나 중요한 순간을 정확히 표시해두면, 나중에 전체 녹화본을 다시 보지 않고도 그 순간을 찾아 클립으로 만들 수 있습니다.",
+    "startTitle": "1단계: 방송 시작",
+    "startDesc": "클립을 표시하려면 먼저 여기서 타이머를 시작해야 합니다. 이것이 각 마커의 기준 시간(00:00:00부터)이 됩니다.",
+    "markTitle": "2단계: 순간 표시",
+    "markDesc": "방송이 시작되면 이 버튼이 활성화됩니다. 적절한 순간에 클릭하거나 Ctrl+Shift+M을 누르세요 — 이 단축키는 앱이 최소화되어 있어도 언제든 작동합니다.",
+    "obsTitle": "OBS 연결 (선택)",
+    "obsDesc": "여기서 OBS를 WebSocket으로 연결하면, 클립을 표시할 때마다 앱 내 마커뿐 아니라 OBS 리플레이 버퍼도 자동으로 저장됩니다.",
+    "historyTitle": "마커 기록",
+    "historyDesc": "표시한 모든 클립이 경과 시간과 실제 타임스탬프와 함께 여기에 나열되어, 나중에 녹화본이나 OBS에서 그 순간들을 찾을 수 있습니다."
+  },
+  "overlaysTour": {
+    "introTitle": "OBS용 오버레이",
+    "introDesc": "각 카드는 서로 다른 오버레이를 위한 고유 URL을 생성합니다. OBS에 브라우저 소스로 붙여넣으면 자동으로 실시간 업데이트됩니다.",
+    "urlTitle": "오버레이 URL",
+    "urlDesc": "OBS에 복사해서 붙여넣을 주소입니다. 색상, 투명도 등 카드 설정을 바꾸면 자동으로 업데이트됩니다.",
+    "copyTitle": "URL 복사",
+    "copyDesc": "\"복사\"를 클릭해 URL을 가져오세요. 그다음 OBS에서: Add Source → Browser → URL 붙여넣기 → \"Enable transparent background\" 활성화.",
+    "customizeTitle": "오버레이 꾸미기",
+    "customizeDesc": "강조 색상, 배경 투명도 등을 조정하세요. 변경 사항은 즉시 URL에 반영되며 OBS를 다시 불러올 필요가 없습니다.",
+    "bgTitle": "커스텀 배경",
+    "bgDesc": "반투명 배경을 직접 이미지로 바꾸고 싶으신가요? 여기서 업로드하세요 (PNG, JPG, WebP, GIF, 최대 8MB).",
+    "testTitle": "오버레이 테스트",
+    "testDesc": "\"Test\" 버튼으로 샘플 알림을 실행해 방송 전에 OBS에서 미리 확인하세요."
+  },
+  "chatActionsTour": {
+    "skipTitle": "현재 건너뛰기",
+    "skipDesc": "지금 읽고 있는 메시지를 중단하고 대기열의 다음 메시지로 넘어갑니다.",
+    "queueTitle": "대기열 비우기",
+    "queueDesc": "읽기를 기다리는 모든 메시지를 삭제합니다. 텍스트가 많이 쌓여서 처음부터 다시 시작하고 싶을 때 유용합니다.",
+    "emergencyTitle": "긴급 모드",
+    "emergencyDesc": "채팅, 좋아요, 입장, 공유를 즉시 음소거합니다. 선물 알림과 신규 팔로워 알림만 유지됩니다.",
+    "clearTitle": "지우기",
+    "clearDesc": "화면의 채팅 로그를 지우고 TTS 대기열을 비웁니다. 시청자가 이미 보낸 메시지에는 영향을 주지 않습니다.",
+    "blockedTitle": "차단된 단어",
+    "blockedDesc": "읽기 전에 필터링할 단어를 관리하는 편집기를 엽니다.",
+    "togglesTitle": "무엇을 읽어줄지",
+    "togglesDesc": "댓글, 선물, 입장, 팔로우, 좋아요, 공유, 그리고 작성자 이름을 읽을지 여부를 각각 켜고 끌 수 있습니다.",
+    "ttsTitle": "TTS 켜기/끄기",
+    "ttsDesc": "끄면 즉시 음성이 멈추고 대기열이 비워집니다. 다시 읽어주길 원하면 다시 켜세요.",
+    "connectTitle": "전체 연결",
+    "connectDesc": "저장된 채널(TikTok/Twitch/YouTube)을 실제로 실시간 채팅에 연결하는 버튼입니다. 이걸 누르지 않으면 위의 설정은 아무 효과가 없습니다.",
+    "logTitle": "실시간 채팅",
+    "logDesc": "메시지가 도착하면 여기에 표시되며, 플랫폼 배지와 상태(읽음, 음소거 등)가 함께 나옵니다."
   }
 }
