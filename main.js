@@ -451,6 +451,14 @@ ipcMain.on('install-update', () => {
   autoUpdater.quitAndInstall(false, true);
 });
 
+// Puente para los pocos eventos de telemetria que nacen en el renderer (cola
+// TTS). Lista blanca por seguridad: el renderer no puede mandar cualquier
+// nombre de evento al bus.
+const RENDERER_TELEMETRY_EVENTS = new Set(['tts:skipped', 'tts:queue-overflow']);
+ipcMain.on('telemetry:track', (_event, name) => {
+  if (RENDERER_TELEMETRY_EVENTS.has(name)) telemetry.bus.emit(name);
+});
+
 const FORBIDDEN_SHORTCUTS = new Set(['Alt+F4', 'Ctrl+C', 'Cmd+C', 'Ctrl+V', 'Cmd+V', 'Ctrl+Alt+Del', 'Ctrl+Shift+Esc', 'Cmd+Shift+Esc']);
 const SPECIAL_PAUSE_SHORTCUTS = new Set(['MediaPlayPause', 'F8', 'F9', 'F10', 'F11', 'F12']);
 

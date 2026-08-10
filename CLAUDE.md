@@ -39,8 +39,61 @@ server.js (Express en puerto 3000)
   ├── PATCH /api/config            ← ajusta config en runtime
   ├── GET  /api/platforms/status   ← estado twitch/youtube
   ├── POST /api/platforms/connect  ← conecta twitch o youtube
-  └── POST /api/platforms/disconnect
+  ├── POST /api/platforms/disconnect
+  ├── GET  /api/moderation/viewers ← registro de espectadores (filtros/paginado)
+  └── POST /api/moderation/{mute,unmute,ban,unban,clear,follower}
 ```
+
+## Moderación de espectadores (`moderation-store.js`)
+
+Registro persistente de todo espectador que interactúa, más los seguidores, con
+moderación **local** por usuario (no se toca la plataforma). Único dueño de
+`moderation.json` (en `DATA_BASE`, o sea `app.getPath('userData')`).
+
+- Clave por usuario: `` `${platform}:${id}` ``; sin id estable cae a
+  `` `${platform}:name:${nick}` `` y se marca `idk:'name'` (castigo frágil: se
+  pierde si el usuario cambia de nombre). Las dos formas nunca se fusionan.
+- Dos ejes ortogonales: `mute` (el mensaje se ve, el TTS no lo lee) y `ban`
+  (el mensaje ni se emite). Valores `0` / `-1` (indefinido) / epoch ms.
+- Expiración perezosa (comparación contra `Date.now()`), nunca un `setTimeout`
+  por usuario: sobrevive a la app cerrada y al equipo suspendido.
+- Escritura con debounce de 15 s (techo de 60 s) para la ingesta de alta
+  frecuencia; las acciones de moderación hacen flush inmediato. `writeFileSync`
+  a `.tmp` + `rename`. JSON corrupto → se aparta como `.corrupt-<ts>` y se
+  arranca vacío; **nunca lanza**, porque el require corre al arrancar la app.
+- Cap de 5.000 espectadores con purga LRU a 4.000 que jamás descarta
+  seguidores, whitelisted ni usuarios con castigo vivo.
+- `emitChatMessage()` en `server.js` es el **único** punto por el que salen los
+  mensajes de las 3 plataformas: registra, aplica moderación y decide TTS. Los
+  handlers de plataforma y el cliente no repiten ninguna de esas reglas.
+- UI: vista "Moderación" en el menú izquierdo, con pestañas Seguidores / No
+  seguidores sobre la misma tabla.
+
+## Telemetría (`telemetry/`)
+
+Módulo aparte que reporta uso agregado y anónimo a un servicio propio
+(`telemetria-tts`, repo separado, self-hosted en Docker — no Vercel). Sin
+`TELEMETRY_URL` configurada, el módulo es un no-op: cero peticiones de red.
+
+- `telemetry/index.js` — API pública (`bus`, `init`, `track`, `flush`,
+  `shutdown`). `main.js` la inicializa tras `waitForServer` y emite eventos
+  de app/errores/updates/soundpad directo sobre `telemetry.bus`.
+- `telemetry/transport.js` — envía batches por `fetch` nativo a
+  `TELEMETRY_URL` (o al `url` de `telemetry.json`), con cola en disco
+  (`telemetry/buffer.js`) y reintentos.
+- `telemetry/connectors/*.js` — un conector por área (app, creators,
+  platforms, counters, obs, mobile, overlays, updates, errors, settings).
+  `counters.js` agrega eventos de alta frecuencia (TTS, música, moderación)
+  en un contador por latido de 5 min en vez de uno por mensaje.
+- La URL sale de `TELEMETRY_URL` (env, inyectada en build) o de
+  `%APPDATA%\tiktok-live-tts\telemetry.json` — archivo separado de
+  `config.json` a propósito, porque `server.js` descarta claves que no
+  reconoce y lo borraría en el primer guardado.
+- Casi todos los eventos se emiten directo desde `server.js` o `main.js`.
+  Solo `tts:skipped` y `tts:queue-overflow` nacen en el renderer
+  (`public/index.html`, cola TTS) y llegan al bus vía IPC:
+  `window.electronAPI.trackEvent(name)` → `preload.js` → `ipcMain.on('telemetry:track', ...)`
+  en `main.js`, con lista blanca de esos dos nombres.
 
 ## Variables de entorno clave
 

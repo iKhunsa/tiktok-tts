@@ -16,5 +16,8 @@
       "Bash(powershell -Command \"Stop-Process -Id 8268 -Force\")",
       "Bash(powershell -Command \"Start-Process 'C:\\\\Users\\\\liber\\\\OneDrive\\\\Documentos\\\\tiktok-tts\\\\Iniciar TikTok TTS.bat'\")"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "supabase"
+  ]
 }

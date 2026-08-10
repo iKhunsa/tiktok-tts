@@ -6,7 +6,8 @@
     "mobile": "Móvil",
     "settings": "Configuración",
     "soundpad": "Sonidos",
-    "bot": "Bot"
+    "bot": "Bot",
+    "moderation": "Moderación"
   },
   "community": {
     "label": "Comunidad TikLiveTTS",
@@ -44,7 +45,8 @@
   "tour": {
     "next": "Siguiente",
     "prev": "Atrás",
-    "done": "Listo"
+    "done": "Listo",
+    "viewTutorial": "Ver tutorial"
   },
   "onboarding": {
     "step1Title": "Primero, andá a Configuración",
@@ -73,7 +75,8 @@
     "langFilter": "Filtrar caracteres de otros idiomas",
     "langFilterHint": "Ignora mensajes de chat con caracteres que no correspondan al idioma de la voz activa (ej: bloquea chino/japonés si tu voz está en Español, y viceversa).",
     "dictFilter": "Filtrar por idioma (palabras)",
-    "dictFilterHint": "Solo lee mensajes escritos en el idioma de la voz activa o en los idiomas extra que permitas. Las palabras desconocidas (nombres, typos) no bloquean."
+    "dictFilterHint": "Solo lee mensajes escritos en el idioma de la voz activa o en los idiomas extra que permitas. Las palabras desconocidas (nombres, typos) no bloquean.",
+    "readNonFollowers": "Leer a no seguidores"
   },
   "tts": {
     "on": "🔊 TTS Encendido",
@@ -109,13 +112,16 @@
     "remove": "Quitar",
     "useF8": "Usar F8",
     "usePlayPause": "Usar tecla Play/Pausa",
-    "clearShortcut": "✕ Limpiar"
+    "clearShortcut": "✕ Limpiar",
+    "blockedWordsShortcut": "Palabras bloqueadas"
   },
   "chat": {
     "title": "Chat en vivo",
     "empty": "Conecta tu TikTok Live<br>para ver el chat aquí",
     "speaking": "Leyendo...",
-    "queue": "Cola: {n} mensajes"
+    "queue": "Cola: {n} mensajes",
+    "followerBadge": "Seguidor",
+    "mutedBadge": "Silenciado: el TTS no lo lee"
   },
   "emergencyHint": "Emergencia deja activos regalos y follows, y silencia chat/likes/entradas/compartidos.",
   "status": {
@@ -139,6 +145,10 @@
     "mobile": {
       "title": "Control Móvil",
       "desc": "Controla el TTS desde tu celular en la misma red WiFi."
+    },
+    "moderation": {
+      "title": "Moderación",
+      "desc": "Todos los espectadores que interactuaron, con sus permisos de chat y TTS."
     }
   },
   "settings": {
@@ -427,6 +437,20 @@
     "kofiDesc": "Apóyame con un cafecito",
     "paypalDesc": "Donación directa vía PayPal"
   },
+  "portfolio": {
+    "heroTitle": "Hola, soy Khunsa 👋",
+    "heroDesc": "Construyo productos en Bitcoin, crypto-fiat y comercio: esta app de TTS es uno de varios proyectos activos. Conocé el resto acá abajo.",
+    "projectsTitle": "Mis proyectos",
+    "satoshiDesc": "Dashboard de Bitcoin self-hosted, disponible en la Umbrel App Store. Corré tu propio nodo y guardá tus datos en tu hardware.",
+    "assetrockDesc": "Puente institucional entre crypto y fiat: liquidez, settlement seguro y compliance para fondos y tesorerías en LATAM.",
+    "zatoboxDesc": "Punto de venta open-source y modular con inventario inteligente, automatizaciones y pagos en moneda local o Bitcoin.",
+    "visit": "Visitar →",
+    "contactTitle": "Hablemos",
+    "tag101btc": "Educación",
+    "btc101Desc": "Guía interactiva para dar tus primeros pasos en Bitcoin, de la mano de SatoshiDashboard.",
+    "tagStacker": "Comunidad",
+    "stackerDesc": "Mi perfil en Stacker News: comparto y debato sobre Bitcoin con la comunidad, ganando sats por el buen contenido."
+  },
   "notice": {
     "donationsTitle": "Nuevas formas de apoyar el proyecto",
     "donationsBody": "Agregamos Ko-fi y PayPal como opciones de donación. La app seguirá siendo 100% gratis — si te sirve y quieres aportar al proyecto, ahora es más fácil que nunca.",
@@ -544,12 +568,262 @@
     "platformDisconnected": "{platform} desconectado",
     "allChannelsDisconnected": "Todos los canales desconectados",
     "youtubeAutoSaved": "YouTube guardado; se conectará cuando haya live",
-    "youtubeTmpSaved": "YouTube temporal guardado como manual"
+    "youtubeTmpSaved": "YouTube temporal guardado como manual",
+    "readNonFollowersOn": "El TTS lee a todos",
+    "readNonFollowersOff": "El TTS solo lee a seguidores"
   },
   "dictLang": {
     "title": "Idiomas permitidos",
     "desc": "Además del idioma de la voz, permitir mensajes en:",
     "voiceAlways": "(idioma de la voz — siempre permitido)",
     "notApplicable": "Este filtro solo aplica a voces con alfabeto latino."
+  },
+  "mod": {
+    "note": "YouTube no envía eventos de follow: a esos espectadores marcalos como seguidores a mano.",
+    "stats": {
+      "total": "Registrados",
+      "followers": "Seguidores",
+      "others": "No seguidores",
+      "muted": "Silenciados",
+      "banned": "Baneados"
+    },
+    "tab": {
+      "followers": "Seguidores",
+      "others": "No seguidores"
+    },
+    "filter": {
+      "search": "Buscar por nombre...",
+      "allPlatforms": "Todas las plataformas",
+      "stateAll": "Todos los estados",
+      "stateClean": "Sin castigo",
+      "stateMuted": "Silenciados",
+      "stateBanned": "Baneados"
+    },
+    "sort": {
+      "activity": "Actividad reciente",
+      "messages": "Mensajes",
+      "gifts": "Regalos",
+      "likes": "Likes",
+      "name": "Nombre"
+    },
+    "col": {
+      "user": "Usuario",
+      "platform": "Plataforma",
+      "state": "Estado",
+      "messages": "Mensajes",
+      "gifts": "Regalos",
+      "likes": "Likes",
+      "lastSeen": "Última vez",
+      "actions": "Acciones"
+    },
+    "state": {
+      "clean": "Sin castigo",
+      "muted": "Silenciado",
+      "banned": "Baneado",
+      "mutedUntil": "Silenciado {time}",
+      "bannedUntil": "Baneado {time}",
+      "weakId": "Sin ID estable: el castigo se pierde si cambia de nombre."
+    },
+    "action": {
+      "mute": "Silenciar",
+      "ban": "Banear",
+      "clear": "Quitar castigos",
+      "refresh": "Actualizar",
+      "wipe": "Vaciar registro",
+      "wipeConfirm": "¿Borrar todo el registro de espectadores? También se pierden los silencios y baneos.",
+      "tour": "Ver tutorial"
+    },
+    "wipeModal": {
+      "title": "¿Estás seguro?",
+      "body": "Esta acción borra por completo la base de datos de espectadores: seguidores marcados, silencios y baneos. No se puede deshacer.",
+      "confirm": "Sí, borrar todo",
+      "cancel": "Cancelar",
+      "typeInstruction": "Escribí",
+      "typeInstructionSuffix": "para confirmar",
+      "keyword": "BORRAR"
+    },
+    "dur": {
+      "15m": "15 minutos",
+      "1h": "1 hora",
+      "forever": "Indefinido"
+    },
+    "empty": "Todavía no hay espectadores registrados aquí.",
+    "pager": "{from}–{to} de {total}",
+    "time": {
+      "now": "ahora",
+      "min": "hace {n} min",
+      "hour": "hace {n} h",
+      "day": "hace {n} d"
+    },
+    "toast": {
+      "mute": "Usuario silenciado",
+      "unmute": "Silencio quitado",
+      "ban": "Usuario baneado",
+      "unban": "Baneo quitado",
+      "clear": "Castigos quitados",
+      "follower": "Lista de seguidores actualizada",
+      "error": "No se pudo aplicar la acción"
+    }
+  },
+  "chatCtx": {
+    "hint": "Clic para moderar a este usuario",
+    "mute15": "Silenciar 15 minutos",
+    "muteForever": "Silenciar indefinidamente",
+    "ban15": "Banear 15 minutos",
+    "banForever": "Banear indefinidamente",
+    "clear": "Quitar castigos",
+    "markFollower": "Marcar como seguidor",
+    "blockWord": "Bloquear una palabra...",
+    "blockWordPrompt": "Palabra a bloquear:",
+    "blockWordDone": "\"{word}\" bloqueada",
+    "openModeration": "Ver en Moderación"
+  },
+  "modTour": {
+    "introTitle": "Nuevo: Moderación",
+    "introDesc": "Acá queda registrado todo espectador que interactúa en tus directos. Desde esta tabla controlás quién puede hablar y a quién lee el TTS. Es moderación dentro de la app: no banea en TikTok, Twitch ni YouTube.",
+    "tabsTitle": "Seguidores y no seguidores",
+    "tabsDesc": "Alguien pasa a Seguidores de dos formas: te da follow mientras estás conectado, o lo marcás vos a mano. La app no puede pedirle la lista de seguidores a la plataforma, así que quien te sigue desde antes aparece en No seguidores hasta que lo marques.",
+    "statsTitle": "Resumen de un vistazo",
+    "statsDesc": "Cuánta gente hay registrada, cuántos son seguidores y cuántos tienen un castigo activo ahora mismo.",
+    "filtersTitle": "Buscar y filtrar",
+    "filtersDesc": "Buscá por nombre, filtrá por plataforma o por estado (silenciados, baneados, sin castigo) y ordená por actividad reciente o por nombre.",
+    "tableTitle": "Acciones por espectador",
+    "tableDesc": "En cada fila: Silenciar (sigue viéndose en el chat, pero el TTS no lo lee), Banear (sus mensajes ni aparecen), ★ para marcarlo como seguidor, Quitar castigos y ✕ para sacarlo del registro. Los castigos temporales vencen solos, aunque cierres la app.",
+    "chatMenuTitle": "Moderar desde el chat",
+    "chatMenuDesc": "No hace falta venir hasta acá: hacé clic en el nombre de cualquiera en el chat en vivo y se abre el mismo menú — silenciar, banear, marcarlo como seguidor o bloquear una palabra.",
+    "toggleTitle": "Leer a no seguidores",
+    "toggleDesc": "Encendido, el TTS lee a todos. Apagado, solo lee a seguidores y a quien marcaste a mano; los demás se siguen viendo en el chat pero sin voz. Ojo el primer día: si el registro está vacío, callás a casi todo tu público.",
+    "blockedTitle": "Palabras bloqueadas",
+    "blockedDesc": "Copiás la palabra molesta del chat, apretás acá, la pegás y ya está bloqueada — sin salir de la vista ni reconectar. La ventana queda abierta para pegar varias seguidas. Los mensajes que la contengan se ignoran por completo.",
+    "scrollTitle": "El chat sigue la lectura",
+    "scrollDesc": "El chat ya no persigue al último mensaje sino al que el TTS está leyendo, que suele ir varios mensajes por detrás. Si scrolleás hacia arriba se queda quieto para que leas tranquilo; volvés al fondo y retoma solo."
+  },
+  "blockWord": {
+    "title": "Bloquear palabra",
+    "desc": "Pegá o escribí la palabra y listo: el servidor la aplica al instante, sin reconectar. Podés seguir agregando sin cerrar la ventana.",
+    "placeholder": "Escribí o pegá la palabra...",
+    "add": "Bloquear",
+    "count": "{n} palabras bloqueadas en total",
+    "sessionAdded": "Bloqueadas ahora",
+    "duplicate": "Ya la bloqueaste recién",
+    "manageAll": "Ver y editar todas"
+  },
+  "soundTour": {
+    "introTitle": "Pad de Sonidos",
+    "introDesc": "Subí efectos de sonido y reproducilos con un clic o un atajo de teclado, incluso con la app en pantalla completa.",
+    "uploadTitle": "Subir un sonido",
+    "uploadDesc": "Hacé clic acá para subir un archivo de audio (mp3, wav, ogg, webm o m4a). Podés tener hasta 24 sonidos en tu pad.",
+    "testTitle": "Probar el audio",
+    "testDesc": "Usá este botón para verificar que el sonido de tu sistema funciona correctamente antes de reproducir tus efectos.",
+    "shortcutTitle": "Asignar un atajo de teclado",
+    "shortcutDesc": "Hacé clic en el atajo de cada sonido y presioná una combinación con Ctrl, Alt o Shift más una tecla. Así podés dispararlo sin abrir la app.",
+    "deckTitle": "Tu pad de sonidos",
+    "deckDesc": "Cada tarjeta representa un sonido: hacé clic para reproducirlo, cambiale el nombre, el color, o eliminalo con el ícono de basura.",
+    "limitTitle": "Límite de sonidos",
+    "limitDesc": "Podés subir hasta 24 sonidos en total. Este contador te muestra cuántos llevás usados."
+  },
+  "botTour": {
+    "introTitle": "Bot de Música",
+    "introDesc": "Tu chat puede pedir canciones escribiendo <strong>!p nombre de la canción</strong> o pegando un link de YouTube. Acá controlás todo: qué suena, la cola y quién puede pedir.",
+    "nowPlayingTitle": "Reproduciendo ahora",
+    "nowPlayingDesc": "Activá el comando !p con este switch. Desde acá también pausás, saltás la canción actual y ajustás el volumen de la música (independiente del volumen del TTS).",
+    "queueTitle": "Cola de peticiones",
+    "queueDesc": "Las canciones pedidas por el chat se acumulan acá en orden. Podés vaciarla en cualquier momento con el botón Limpiar.",
+    "playlistTitle": "Tu playlist de fondo",
+    "playlistDesc": "Cargá acá tu propia lista (una canción o link por línea). Suena en bucle cuando no hay pedidos del chat — activala y guardá para que arranque.",
+    "settingsTitle": "Configuración del bot",
+    "settingsDesc": "Ajustá el cooldown entre pedidos por usuario, el máximo de canciones en cola, y baneá usuarios que abusen del comando !p."
+  },
+  "voiceTour": {
+    "introTitle": "Voz y audio",
+    "introDesc": "Acá configurás la voz que lee el chat: idioma, velocidad, volumen y qué mensajes se leen según el idioma en que están escritos.",
+    "voiceTitle": "Selector de voz",
+    "voiceDesc": "Elegí el idioma y acento de la voz TTS. Hay 13 opciones (español, inglés, portugués, francés, alemán, italiano, japonés, chino, ruso, coreano). Cambiarla también afecta los filtros de idioma de abajo.",
+    "testTitle": "Probar voz",
+    "testDesc": "Escribí cualquier texto y presioná Probar para escuchar cómo suena la voz elegida, sin necesidad de tener el chat conectado.",
+    "rateTitle": "Velocidad",
+    "rateDesc": "Ajustá qué tan rápido habla el TTS. Se aplica en tiempo real al próximo mensaje que se lea.",
+    "volTitle": "Volumen",
+    "volDesc": "Controla el volumen del TTS de forma independiente del volumen de la música del bot.",
+    "charFilterTitle": "Filtrar caracteres de otros idiomas",
+    "charFilterDesc": "Si lo activás, se ignoran mensajes escritos con caracteres que no correspondan al idioma de la voz activa (ej: bloquea chino o japonés si tu voz está en español).",
+    "wordFilterTitle": "Filtrar por idioma (palabras)",
+    "wordFilterDesc": "Filtro más fino basado en diccionario: solo lee mensajes escritos en el idioma de la voz activa, más los idiomas extra que elijas acá abajo. Nombres o typos no bloquean el mensaje.",
+    "dictModalTitle": "Idiomas permitidos",
+    "dictModalDesc": "Elegí qué idiomas extra, además del de tu voz, están permitidos para que el TTS los lea. Cerrá esta ventana para seguir con el tutorial."
+  },
+  "shortcutsTour": {
+    "introTitle": "Atajos de teclado",
+    "introDesc": "Configurá teclas globales para controlar el TTS y la música del bot sin tocar la app, incluso con otra ventana en foco.",
+    "pauseBtnTitle": "Pausar TTS",
+    "pauseBtnDesc": "Pausa o reanuda la lectura del chat con un clic. Útil para silenciar rápido sin desconectar nada.",
+    "pauseKeyTitle": "Atajo de pausa",
+    "pauseKeyDesc": "Hacé clic en el campo y presioná la combinación que quieras usar (con Ctrl/Alt/Shift), o usá los presets F8 / tecla Play-Pausa.",
+    "skipTitle": "Saltar mensaje actual",
+    "skipDesc": "Asigná una tecla para saltar el mensaje que se está leyendo en este momento (por defecto F9).",
+    "clearTitle": "Limpiar cola",
+    "clearDesc": "Asigná una tecla para vaciar toda la cola de TTS pendiente de una sola vez (por defecto F10).",
+    "musicPauseTitle": "Pausar música del bot",
+    "musicPauseDesc": "Atajo para pausar o reanudar la música que pide el chat con el comando !p (por defecto F11).",
+    "musicSkipTitle": "Saltar canción del bot",
+    "musicSkipDesc": "Atajo para saltar la canción que está sonando ahora en el bot de música (por defecto F12)."
+  },
+  "twitchTour": {
+    "introTitle": "Twitch — alertas en vivo",
+    "introDesc": "Configurá las alertas de Twitch: subs, bits y raids funcionan sin conectar nada; conectar tu cuenta solo agrega follows con nombre real.",
+    "clientIdTitle": "Client ID de Twitch",
+    "clientIdDesc": "Pegá acá el Client ID de tu app registrada en dev.twitch.tv. Lo necesitás antes de conectar tu cuenta.",
+    "connectTitle": "Conectar cuenta",
+    "connectDesc": "Conectá tu cuenta de Twitch para habilitar follows con nombre real. El estado de la conexión se muestra al lado de los botones.",
+    "togglesTitle": "Qué anunciar",
+    "togglesDesc": "Activá o desactivá cada tipo de alerta por separado: subs, bits, raids y follows.",
+    "testTitle": "Probar alertas",
+    "testDesc": "Dispará cada alerta manualmente para ver cómo se ve/lee, sin esperar a que pase de verdad en el stream."
+  },
+  "clipsTour": {
+    "introTitle": "Marcadores de Clip",
+    "introDesc": "Marcá el momento exacto de algo divertido o importante mientras estás en vivo, para encontrarlo después y cortar el clip sin tener que revisar toda la grabación.",
+    "startTitle": "Paso 1: iniciá el stream",
+    "startDesc": "Antes de poder marcar clips tenés que arrancar el temporizador acá. Es el que le da la referencia de tiempo a cada marcador (00:00:00 en adelante).",
+    "markTitle": "Paso 2: marcá el momento",
+    "markDesc": "Con el stream iniciado, este botón se activa. Usalo en el momento justo, o apretá Ctrl+Shift+M — el atajo funciona en cualquier momento, incluso con la app minimizada.",
+    "obsTitle": "Conexión OBS (opcional)",
+    "obsDesc": "Si conectás OBS por WebSocket acá, cada vez que marques un clip también se guarda automáticamente el replay buffer de OBS, además del marcador en la app.",
+    "historyTitle": "Historial de marcadores",
+    "historyDesc": "Todos los clips marcados quedan listados acá con su tiempo transcurrido y hora real, para que después busques esos momentos en tu grabación u OBS."
+  },
+  "overlaysTour": {
+    "introTitle": "Overlays para OBS",
+    "introDesc": "Cada tarjeta genera una URL única para un overlay distinto. La pegas en OBS como Browser Source y se actualiza sola en vivo.",
+    "urlTitle": "Tu URL de overlay",
+    "urlDesc": "Esta es la dirección que vas a copiar y pegar en OBS. Cambia automáticamente si ajustas el color, la opacidad u otras opciones de la tarjeta.",
+    "copyTitle": "Copiar la URL",
+    "copyDesc": "Hacé clic en \"Copiar\" para llevarte la URL al portapapeles. Luego en OBS: Add Source → Browser → pegá la URL → activá \"Enable transparent background\".",
+    "customizeTitle": "Personalizá el overlay",
+    "customizeDesc": "Ajustá el color de acento, la opacidad del fondo y otras opciones. Los cambios se reflejan al instante en la URL, sin necesidad de recargar OBS.",
+    "bgTitle": "Fondo personalizado",
+    "bgDesc": "Si querés reemplazar el fondo semitransparente por una imagen propia, subila acá (PNG, JPG, WebP o GIF, máx 8MB).",
+    "testTitle": "Probar el overlay",
+    "testDesc": "Usá el botón \"Test\" para disparar una alerta de prueba y ver cómo se ve en OBS antes de salir en vivo."
+  },
+  "chatActionsTour": {
+    "skipTitle": "Saltar actual",
+    "skipDesc": "Corta la lectura del mensaje que se está narrando ahora mismo y pasa al siguiente en la cola.",
+    "queueTitle": "Vaciar cola",
+    "queueDesc": "Borra todos los mensajes pendientes de leer. Útil si se acumuló mucho texto y querés arrancar de cero.",
+    "emergencyTitle": "Modo emergencia",
+    "emergencyDesc": "Silencia chat, likes, entradas y compartidos al instante. Deja activos solo los avisos de regalos y nuevos seguidores.",
+    "clearTitle": "Limpiar",
+    "clearDesc": "Limpia el chat visual en pantalla y vacía la cola de TTS. No afecta los mensajes ya enviados por los espectadores.",
+    "blockedTitle": "Palabras bloqueadas",
+    "blockedDesc": "Abre el editor de palabras bloqueadas para gestionar qué términos se filtran antes de leerse en voz alta.",
+    "togglesTitle": "Qué se lee en voz alta",
+    "togglesDesc": "Activá o desactivá cada evento por separado: comentarios, regalos, entradas, follows, likes, compartidos, y si se dice el nombre de quien escribe.",
+    "ttsTitle": "Encender o apagar el TTS",
+    "ttsDesc": "Apagalo para silenciar la voz al instante y vaciar la cola. Volvé a prenderlo cuando quieras retomar la lectura.",
+    "connectTitle": "Conectar todo",
+    "connectDesc": "Este es el botón real que conecta tus canales guardados (TikTok/Twitch/YouTube) al chat en vivo. Sin esto, nada de lo de arriba hace efecto.",
+    "logTitle": "Chat en vivo",
+    "logDesc": "Acá aparecen los mensajes a medida que llegan, con badge de plataforma y estado (leído, silenciado, etc.)."
   }
 }

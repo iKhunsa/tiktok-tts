@@ -51,7 +51,9 @@
       font-size: 16px;
       line-height: 1.5;
       min-height: 100vh;
+      scrollbar-width: none;
     }
+    body::-webkit-scrollbar { display: none; }
 
     /* ── LAYOUT ─────────────────────────────────────────── */
     .app-layout {
@@ -909,9 +911,99 @@
     }
 
     .bg-preview.visible { display: block; }
+    /* ── Vista Moderación ───────────────────────────────────────── */
+    .mod-stats { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+    .mod-stat {
+      display: flex; flex-direction: column; gap: 2px;
+      padding: 8px 14px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--surface);
+      font-size: 11px; color: var(--text-muted); min-width: 92px;
+    }
+    .mod-stat-num { font-size: 18px; font-weight: 700; color: var(--text); }
+    .mod-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+    .mod-tab {
+      padding: 7px 16px; border-radius: 9999px; cursor: pointer;
+      border: 1px solid var(--border-strong); background: transparent;
+      color: var(--text-secondary); font-size: 12px; font-weight: 600;
+      font-family: 'Inter', sans-serif;
+    }
+    .mod-tab.active { border-color: var(--accent); color: var(--accent); background: rgba(62,207,142,0.10); }
+    .mod-filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+    .mod-filters input, .mod-filters select {
+      padding: 6px 10px; border-radius: 8px; font-size: 12px;
+      border: 1px solid var(--border); background: var(--surface); color: var(--text);
+      font-family: 'Inter', sans-serif;
+    }
+    .mod-filters input { min-width: 200px; }
+    .mod-note { font-size: 11px; color: var(--text-muted); margin: 0 0 12px; line-height: 1.5; }
+    .mod-table-wrap {
+      overflow-x: auto; border: 1px solid var(--border); border-radius: 12px;
+      background: var(--surface); box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+      scrollbar-color: var(--border-strong) transparent; scrollbar-width: thin;
+    }
+    .mod-table-wrap::-webkit-scrollbar { height: 8px; }
+    .mod-table-wrap::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 8px; }
+    .mod-table-wrap::-webkit-scrollbar-track { background: transparent; }
+    .mod-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    .mod-table th {
+      text-align: left; padding: 12px 14px; font-size: 10px; text-transform: uppercase;
+      letter-spacing: .7px; color: var(--text-muted); font-weight: 700;
+      background: var(--bg-button); border-bottom: 1px solid var(--border);
+      white-space: nowrap; position: sticky; top: 0;
+    }
+    .mod-table td { padding: 11px 14px; border-bottom: 1px solid var(--border-subtle); vertical-align: middle; }
+    .mod-table tr:last-child td { border-bottom: none; }
+    .mod-table tbody tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+    .mod-table tr:hover td { background: rgba(62,207,142,0.05); }
+    .mod-nick { font-weight: 600; color: var(--text); }
+    .mod-weak-id { color: #eab308; cursor: help; margin-left: 5px; }
+    .mod-pill {
+      display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 9999px;
+      font-size: 10px; font-weight: 700; white-space: nowrap; letter-spacing: .3px;
+    }
+    .mod-pill.clean { color: var(--text-muted); background: rgba(255,255,255,0.05); }
+    .mod-pill.muted { color: #eab308; background: rgba(234,179,8,0.14); }
+    .mod-pill.banned { color: #ef4444; background: rgba(239,68,68,0.14); }
+    .mod-pill.follower { color: var(--accent); background: rgba(62,207,142,0.14); }
+    .mod-actions { display: flex; gap: 4px; flex-wrap: nowrap; }
+    .mod-actions .cfg-btn.small { padding: 4px 9px; flex-shrink: 0; }
+    .mod-empty { padding: 40px 26px; text-align: center; font-size: 13px; color: var(--text-muted); }
+    .mod-pager { display: flex; gap: 10px; align-items: center; justify-content: center; margin-top: 14px; font-size: 11px; color: var(--text-muted); }
+
+    /* Nick clicable en el chat → menú de moderación */
+    .msg-user-clickable { cursor: pointer; }
+    .msg-user-clickable:hover { text-decoration: underline; }
+    .chat-msg--muted { opacity: 0.55; }
+    .chat-muted-badge { margin-left: 5px; font-size: 10px; }
+    .chat-follower-badge { margin-left: 5px; font-size: 10px; color: var(--accent); }
+
+    /* Menú flotante compartido (duraciones y moderación por nick) */
+    .ctx-menu {
+      position: fixed; z-index: 1000; min-width: 190px; padding: 5px;
+      border-radius: 10px; border: 1px solid var(--border-strong);
+      background: var(--surface); box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+    }
+    .ctx-menu button {
+      display: flex; align-items: center; gap: 8px; width: 100%;
+      padding: 7px 10px; border: none; border-radius: 7px; background: transparent;
+      color: var(--text-secondary); font-size: 12px; text-align: left; cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+    .ctx-menu button:hover { background: rgba(255,255,255,0.06); color: var(--text); }
+    .ctx-menu button.danger:hover { color: #f87171; }
+    .ctx-menu .ctx-title {
+      padding: 6px 10px 8px; font-size: 11px; font-weight: 700; color: var(--text);
+      border-bottom: 1px solid var(--border); margin-bottom: 4px;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .ctx-menu hr { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
+
     .cfg-btn.small { padding: 5px 10px; font-size: 11px; }
     .cfg-btn.danger { border-color: rgba(239, 68, 68, 0.4); color: #ef4444; }
     .cfg-btn.danger:hover { border-color: rgba(239, 68, 68, 0.7); color: #f87171; }
+    .cfg-btn:disabled, .cfg-btn.danger:disabled {
+      opacity: 0.35; cursor: not-allowed; pointer-events: none;
+    }
 
     /* ── SETTINGS VIEW ───────────────────────────────────── */
     .settings-section { margin-bottom: 26px; }
@@ -1052,6 +1144,164 @@
 
     .modal-close:hover { color: var(--text); }
     .modal-content h2 { margin: 0 0 28px; font-size: 20px; color: var(--text); font-weight: 500; letter-spacing: -0.3px; }
+
+    /* ── Landing modal (portafolio) — inspirado en landings tipo Duna ── */
+    .modal-content--landing {
+      max-width: 900px; width: 94%; max-height: 92vh; padding: 0; border-radius: 24px;
+      overflow-y: auto; overflow-x: hidden;
+      scrollbar-width: none;
+    }
+    .modal-content--landing::-webkit-scrollbar { display: none; }
+    .landing-topbar {
+      position: sticky; top: 0; z-index: 5;
+      display: flex; justify-content: flex-end;
+      padding: 18px 22px 0;
+      background: linear-gradient(to bottom, rgba(10,14,12,0.35) 40%, transparent);
+    }
+    .landing-topbar .modal-close {
+      position: static; background: rgba(255,255,255,0.08); backdrop-filter: blur(6px);
+    }
+    .landing-hero {
+      position: relative;
+      padding: 8px 40px 46px;
+      text-align: center;
+      overflow: hidden;
+    }
+    .landing-hero > * { position: relative; z-index: 1; }
+    .landing-avatar {
+      width: 104px; height: 104px; border-radius: 50%; margin: 0 auto 20px;
+      background: linear-gradient(135deg, var(--accent), #ffb75e 60%, #9382ff);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px; font-weight: 700; color: #06210f;
+      overflow: hidden;
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.06), 0 12px 30px -8px rgba(62,207,142,0.45);
+    }
+    .landing-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .landing-hero h1 { font-size: 30px; margin: 0 0 10px; color: var(--text); letter-spacing: -0.6px; font-weight: 700; }
+    .landing-hero p { color: var(--text-muted); font-size: 14px; max-width: 460px; margin: 0 auto; line-height: 1.65; }
+    .landing-section { padding: 0 40px 36px; }
+    .landing-section-title {
+      font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 16px; font-weight: 700;
+    }
+    .project-grid { display: flex; gap: 16px; align-items: stretch; }
+    @media (max-width: 640px) { .project-grid { flex-direction: column; } }
+    .project-card {
+      position: relative;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      flex: 1 1 0; min-width: 0;
+      min-height: 300px; padding: 20px;
+      border-radius: 20px; overflow: hidden;
+      text-decoration: none; color: #fff;
+      transition: flex-grow 0.4s ease, box-shadow 0.25s ease;
+      isolation: isolate;
+    }
+    .project-card--big { flex: 2.4 1 0; transition: flex 0.4s ease, box-shadow 0.25s ease; }
+    .project-card:hover {
+      flex-grow: 3.2;
+      box-shadow: 0 24px 48px -16px rgba(0,0,0,0.65);
+      z-index: 3;
+    }
+    /* Cuando se pasa el mouse por otra tarjeta del grid, la grande cede espacio y oculta su texto. */
+    .project-grid:hover .project-card--big:not(:hover) { flex: 1 1 0; }
+    .project-card:not(.project-card--big) p {
+      max-height: 0; opacity: 0; margin-top: 0; overflow: hidden;
+      transition: max-height 0.4s ease, opacity 0.25s ease, margin-top 0.4s ease;
+      white-space: nowrap;
+    }
+    .project-card:not(.project-card--big):hover p {
+      max-height: 220px; opacity: 1; margin-top: 8px; white-space: normal;
+    }
+    .project-card--big p {
+      max-height: 220px; opacity: 1; margin-top: 8px;
+      transition: max-height 0.4s ease, opacity 0.25s ease, margin-top 0.4s ease;
+      overflow: hidden;
+    }
+    .project-grid:hover .project-card--big:not(:hover) p {
+      max-height: 0; opacity: 0; margin-top: 0; white-space: nowrap;
+    }
+    .project-card::before {
+      content: ''; position: absolute; inset: 0; z-index: -2;
+    }
+    .project-card::after {
+      content: ''; position: absolute; inset: 0; z-index: -1;
+      background: linear-gradient(to top, rgba(4,8,6,0.92) 0%, rgba(4,8,6,0.55) 42%, rgba(4,8,6,0.05) 70%);
+    }
+    .project-card.art-bitcoin::before {
+      background:
+        radial-gradient(120% 60% at 15% 100%, rgba(255,183,94,0.35), transparent 60%),
+        radial-gradient(90% 50% at 85% 15%, rgba(255,140,60,0.25), transparent 65%),
+        url('/img/projects/satoshidashboard.jpg') center/cover no-repeat;
+    }
+    .project-card.art-fiat::before {
+      background:
+        radial-gradient(120% 60% at 85% 100%, rgba(147,130,255,0.35), transparent 60%),
+        radial-gradient(90% 50% at 15% 15%, rgba(94,163,255,0.25), transparent 65%),
+        url('/img/projects/assetrock.jpg') center/cover no-repeat;
+    }
+    .project-card.art-retail::before {
+      background:
+        radial-gradient(120% 60% at 15% 100%, rgba(62,207,142,0.35), transparent 60%),
+        radial-gradient(90% 50% at 85% 15%, rgba(255,214,110,0.25), transparent 65%),
+        url('/img/projects/zatobox.jpg') center/cover no-repeat;
+    }
+    .project-card.art-edu::before {
+      background:
+        radial-gradient(120% 60% at 85% 100%, rgba(255,214,110,0.35), transparent 60%),
+        radial-gradient(90% 50% at 15% 15%, rgba(62,207,142,0.25), transparent 65%),
+        url('/img/projects/101btc.jpg') center/cover no-repeat;
+    }
+    .project-card.art-social::before {
+      background:
+        radial-gradient(120% 60% at 15% 100%, rgba(255,140,60,0.5), transparent 60%),
+        radial-gradient(90% 50% at 85% 15%, rgba(147,130,255,0.35), transparent 65%),
+        linear-gradient(160deg, #2b1a10 0%, #6b3a1f 45%, #d97e3e 100%);
+    }
+    .project-card .cta-top {
+      position: relative; align-self: flex-end;
+      font-size: 11px; font-weight: 700; color: #fff;
+      display: inline-flex; align-items: center; gap: 4px;
+      opacity: 0.85;
+    }
+    .project-card .tag {
+      position: relative;
+      display: inline-flex; align-self: flex-start;
+      font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px;
+      color: #fff; font-weight: 700; margin-top: auto;
+      padding: 4px 10px; border-radius: 9999px;
+      background: rgba(255,255,255,0.16); backdrop-filter: blur(4px);
+    }
+    .project-card h3 {
+      position: relative; margin: 12px 0 6px; font-size: 18px; color: #fff; font-weight: 700;
+      overflow-wrap: break-word; word-break: break-word; hyphens: auto;
+    }
+    .project-card p { position: relative; margin: 0; font-size: 12px; color: rgba(255,255,255,0.8); line-height: 1.55; }
+    .project-card .cta { position: relative; margin-top: 12px; font-size: 12px; color: #fff; font-weight: 700; }
+    .contact-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    .contact-pill {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 8px 18px 8px 8px; border-radius: 9999px;
+      border: 1px solid var(--border); background: rgba(255,255,255,0.03);
+      color: var(--text-secondary); text-decoration: none; font-size: 13px; font-weight: 600;
+      transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+    .contact-pill:hover {
+      border-color: var(--border-strong); color: var(--text);
+      transform: translateY(-2px); background: rgba(255,255,255,0.05);
+      box-shadow: 0 10px 24px -12px rgba(0,0,0,0.5);
+    }
+    .contact-pill:focus-visible { outline: 2px solid var(--border-strong); outline-offset: 2px; }
+    .contact-pill-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+      color: #fff; transition: transform 0.2s ease;
+    }
+    .contact-pill-icon svg { width: 15px; height: 15px; }
+    .contact-pill:hover .contact-pill-icon { transform: scale(1.08); }
+    .contact-pill--telegram .contact-pill-icon { background: radial-gradient(120% 120% at 30% 20%, #4fb3e8, #229ed9 60%); }
+    .contact-pill--x .contact-pill-icon { background: #0a0a0c; border: 1px solid rgba(255,255,255,0.14); }
+    .contact-pill--linkedin .contact-pill-icon { background: radial-gradient(120% 120% at 30% 20%, #3aa9e0, #0a66c2 60%); }
+    .contact-pill--stackernews .contact-pill-icon { background: radial-gradient(120% 120% at 30% 20%, #ffcf6b, #f6911e 60%); }
     .modal-content h3 { margin: 0 0 8px; font-size: 14px; color: var(--text); font-weight: 500; }
 
     .notice-icon-badge {
@@ -1151,25 +1401,73 @@
       50% { opacity: 0.55; }
     }
 
-    .social-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; margin-top: 20px; }
+    .social-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin-top: 20px; }
 
     .social-card {
+      position: relative;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      padding: 20px 16px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      justify-content: flex-end;
+      min-height: 190px;
+      padding: 14px;
+      border-radius: 22px;
+      overflow: hidden;
+      background: #0d0d0f;
+      border: 1px solid rgba(255,255,255,0.06);
       text-decoration: none;
-      color: var(--text-secondary);
-      transition: border-color 0.2s, color 0.2s;
-      text-align: center;
+      color: #fff;
+      isolation: isolate;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .social-card:hover { transform: translateY(-3px); box-shadow: 0 20px 40px -16px rgba(0,0,0,0.65); }
+
+    .social-card::before {
+      content: ''; position: absolute; inset: 0 0 48% 0; z-index: -2;
+    }
+    .social-card::after {
+      content: ''; position: absolute; inset: 0; z-index: -1;
+      background: linear-gradient(to top, #0d0d0f 40%, rgba(13,13,15,0.88) 58%, transparent 78%);
+    }
+    .social-card--yt::before {
+      background:
+        radial-gradient(120% 90% at 25% 15%, rgba(255,90,90,0.85), transparent 60%),
+        radial-gradient(100% 80% at 85% 0%, rgba(255,190,90,0.6), transparent 55%),
+        #5c1414;
+    }
+    .social-card--tiktok::before {
+      background:
+        radial-gradient(120% 90% at 20% 10%, rgba(255,70,130,0.75), transparent 60%),
+        radial-gradient(100% 80% at 85% 20%, rgba(70,220,230,0.6), transparent 55%),
+        #16151c;
+    }
+    .social-card--twitch::before {
+      background:
+        radial-gradient(120% 90% at 25% 10%, rgba(160,100,255,0.75), transparent 60%),
+        radial-gradient(100% 80% at 85% 15%, rgba(110,90,255,0.55), transparent 55%),
+        #241a3d;
+    }
+    .social-card--kick::before {
+      background:
+        radial-gradient(120% 90% at 25% 10%, rgba(120,230,110,0.75), transparent 60%),
+        radial-gradient(100% 80% at 85% 15%, rgba(210,255,90,0.5), transparent 55%),
+        #14301a;
     }
 
-    .social-card:hover { border-color: var(--border-strong); color: var(--text); }
-    .social-card h3 { margin: 10px 0 4px; font-size: 14px; color: inherit; font-weight: 500; }
-    .social-card p { font-size: 12px; color: var(--text-muted); margin: 0; }
+    .social-card-top {
+      position: absolute; top: 14px; right: 16px; z-index: 1;
+      font-size: 11px; font-weight: 700; color: #fff; opacity: 0.85;
+    }
+
+    .social-card-tab {
+      position: relative;
+      background: #131315;
+      border-radius: 14px 14px 14px 4px;
+      padding: 12px 14px;
+      box-shadow: 0 10px 24px -8px rgba(0,0,0,0.55);
+    }
+    .social-card-tab img { width: 22px; height: 22px; margin-bottom: 8px; filter: brightness(0) invert(1); opacity: 0.9; }
+    .social-card-tab h3 { margin: 0 0 2px; font-size: 15px; font-weight: 700; color: #fff; }
+    .social-card-tab p { margin: 0; font-size: 12px; color: rgba(255,255,255,0.5); }
 
     @keyframes fadeIn { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
     @keyframes slideUp {
@@ -1533,6 +1831,10 @@
         <img class="sidebar-icon icon-inline" src="icons/music_note.svg" alt="">
         <span>Bot</span>
       </button>
+      <button class="sidebar-item" data-view="moderacion" onclick="switchView('moderacion')">
+        <img class="sidebar-icon icon-inline" src="icons/people.svg" alt="">
+        <span data-i18n="nav.moderation">Moderación</span>
+      </button>
       <button id="navSettingsBtn" class="sidebar-item" data-view="settings" onclick="switchView('settings')">
         <img class="sidebar-icon icon-inline" src="icons/settings.svg" alt="">
         <span data-i18n="nav.settings">Configuración</span>
@@ -1607,6 +1909,12 @@
           <input type="checkbox" onchange="toggleOption('sayUsername', this)" />
           <img class="icon-inline" src="icons/label.svg" alt=""> <span data-i18n="toggle.sayUsername">Decir nombre</span>
         </label>
+        <!-- Único chip cuyo estado vive en el servidor (config.json) y no en
+             appSettings: el filtro se aplica server-side antes del broadcast. -->
+        <label class="toggle-chip" id="chip-nonfollowers">
+          <input type="checkbox" id="ttsReadNonFollowersToggle" onchange="setReadNonFollowers(this.checked)" />
+          <img class="icon-inline" src="icons/person_add.svg" alt=""> <span data-i18n="toggle.readNonFollowers">Leer a no seguidores</span>
+        </label>
         <label class="toggle-chip" id="chip-username-connector" style="width:max-content;">
           <input type="checkbox" id="sayUsernameConnectorToggle" onchange="toggleSayUsernameConnector(this)" />
           <span data-i18n="toggle.sayUsernameConnector">+ "dice"</span>
@@ -1626,6 +1934,8 @@
         <button class="cfg-btn danger" onclick="clearTTSQueue()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="btn.clearQueue">Vaciar cola</span></button>
         <button class="cfg-btn" onclick="enableEmergencyTTSMode()"><img class="icon-inline" src="icons/warning.svg" alt=""> <span data-i18n="btn.emergency">Modo emergencia</span></button>
         <button class="cfg-btn" onclick="clearChat()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="btn.clearChat">Limpiar</span></button>
+        <button class="cfg-btn" id="btnBlockedWordsShortcut" onclick="openBlockWordModal()"><img class="icon-inline" src="icons/filter_none.svg" alt=""> <span data-i18n="btn.blockedWordsShortcut">Palabras bloqueadas</span></button>
+        <button class="cfg-btn" id="btnChatActionsTour" onclick="startChatActionsTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
         <span style="font-size:11px;color:var(--text-muted);" data-i18n="emergencyHint">Emergencia deja activos regalos y follows, y silencia chat/likes/entradas/compartidos.</span>
       </div>
 
@@ -1659,6 +1969,7 @@
       <div class="view-header">
         <h2><img class="icon-inline" src="icons/tv.svg" alt=""> <span data-i18n="view.overlays.title">Overlays para OBS</span></h2>
         <p data-i18n="view.overlays.desc">Personaliza cada overlay y copia la URL → OBS → Add Source → Browser → Enable transparent background.</p>
+        <button class="cfg-btn" id="btnOverlaysTour" onclick="startOverlaysTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
       </div>
 
       <!-- Chat Unificado -->
@@ -2012,6 +2323,7 @@
       <div class="view-header">
         <h2><img class="icon-inline" src="icons/music_note.svg" alt=""> <span data-i18n="bot.title">Bot de Música</span></h2>
         <p data-i18n-html="bot.desc">El chat puede pedir canciones con <strong>!p nombre</strong> o <strong>!p link de YouTube</strong>. Tu playlist suena de fondo cuando no hay peticiones.</p>
+        <button class="cfg-btn" id="btnBotTour" onclick="startBotTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
       </div>
 
       <!-- Now Playing -->
@@ -2167,10 +2479,13 @@
         </div>
       </div>
 
-      <div class="settings-section">
-        <div class="settings-section-title" data-i18n="settings.voice">Voz y audio</div>
+      <div class="settings-section" id="settingsSectionVoice">
+        <div class="settings-section-title" style="display:flex;justify-content:space-between;align-items:center;">
+          <span data-i18n="settings.voice">Voz y audio</span>
+          <button class="cfg-btn" id="btnVoiceTour" onclick="startVoiceTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
+        </div>
         <div class="settings-panel">
-          <div class="setting-group">
+          <div class="setting-group" id="voiceSelectGroup">
             <label><img class="icon-inline" src="icons/mic.svg" alt=""> <span data-i18n="label.voice">Voz</span></label>
             <div class="voice-dropdown" id="voiceDropdown">
               <div class="voice-dropdown-trigger" id="voiceDropdownTrigger" onclick="toggleVoiceDropdown()">
@@ -2182,36 +2497,36 @@
             </div>
             <input type="hidden" id="voiceSelect" />
           </div>
-          <div class="setting-group">
+          <div class="setting-group" id="voiceTestGroup">
             <label><img class="icon-inline" src="icons/science.svg" alt=""> <span data-i18n="label.testVoice">Probar voz</span></label>
             <div style="display:flex;gap:8px;align-items:center;">
               <input type="text" id="testVoiceInput" placeholder="Escribe algo para probar..." style="flex:1;" />
               <button id="btnTestVoice" class="btn-test" onclick="testVoice()">▶ Probar</button>
             </div>
           </div>
-          <div class="setting-group">
+          <div class="setting-group" id="voiceRateGroup">
             <label><img class="icon-inline" src="icons/flash_on.svg" alt=""> Velocidad — <span id="rateVal">1.0</span>x</label>
             <input type="range" id="rateRange" min="0.5" max="2" step="0.1" value="1" oninput="updateRate(this.value)" />
             <div class="range-labels"><span data-i18n="label.slow">Lento</span><span data-i18n="label.fast">Rápido</span></div>
           </div>
-          <div class="setting-group">
+          <div class="setting-group" id="voiceVolGroup">
             <label><img class="icon-inline" src="icons/volume_up.svg" alt=""> Volumen — <span id="volVal">100</span>%</label>
             <input type="range" id="volRange" min="0" max="1" step="0.05" value="1" oninput="updateVol(this.value)" />
             <div class="range-labels"><span data-i18n="label.mute">Mute</span><span data-i18n="label.max">Máx</span></div>
           </div>
-          <div class="setting-group">
+          <div class="setting-group" id="voiceLangFilterGroup">
             <label class="toggle-chip" style="width:max-content;">
               <input type="checkbox" id="langFilterToggle" onchange="toggleLangFilter(this)" />
               <span data-i18n="toggle.langFilter">Filtrar caracteres de otros idiomas</span>
             </label>
             <div style="font-size:11px;color:var(--text-muted);margin-top:4px;" data-i18n="toggle.langFilterHint">Ignora mensajes de chat con caracteres que no correspondan al idioma de la voz activa (ej: bloquea chino/japonés si tu voz está en Español, y viceversa).</div>
           </div>
-          <div class="setting-group">
+          <div class="setting-group" id="voiceDictFilterGroup">
             <label class="toggle-chip" style="width:max-content;">
               <input type="checkbox" id="dictFilterToggle" onchange="toggleDictFilter(this)" />
               <span data-i18n="toggle.dictFilter">Filtrar por idioma (palabras)</span>
             </label>
-            <button onclick="openDictLangModal()" style="margin-top:6px;display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.14);background:transparent;color:var(--text-muted);font-size:12px;cursor:pointer;width:max-content;">
+            <button onclick="openDictLangModal()" id="btnOpenDictLangModal" style="margin-top:6px;display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.14);background:transparent;color:var(--text-muted);font-size:12px;cursor:pointer;width:max-content;">
               <img class="icon-inline" src="icons/settings.svg" alt=""> <span data-i18n="dictLang.title">Idiomas permitidos</span>
             </button>
             <div style="font-size:11px;color:var(--text-muted);margin-top:4px;" data-i18n="toggle.dictFilterHint">Solo lee mensajes escritos en el idioma de la voz activa o en los idiomas extra que permitas. Las palabras desconocidas (nombres, typos) no bloquean.</div>
@@ -2220,10 +2535,13 @@
       </div>
 
       <!-- KEYBOARD SHORTCUTS SECTION -->
-      <div class="settings-section">
-        <div class="settings-section-title" data-i18n="settings.shortcuts">Atajos de teclado</div>
+      <div class="settings-section" id="settingsSectionShortcuts">
+        <div class="settings-section-title" style="display:flex;justify-content:space-between;align-items:center;">
+          <span data-i18n="settings.shortcuts">Atajos de teclado</span>
+          <button class="cfg-btn" id="btnShortcutsTour" onclick="startShortcutsTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
+        </div>
         <div class="settings-panel">
-          <div class="setting-group" style="gap:8px;">
+          <div class="setting-group" id="scGroupPauseBtn" style="gap:8px;">
             <label style="margin-bottom:2px;display:flex;align-items:center;gap:6px;">
               <img class="icon-inline" src="icons/volume_off.svg" alt="" onerror="this.style.display='none'">
               <span data-i18n="label.playbackControl">Control de reproducción</span>
@@ -2233,7 +2551,7 @@
               <span data-i18n="btn.pauseTTS">⏸ Pausar TTS</span>
             </button>
           </div>
-          <div class="setting-group">
+          <div class="setting-group" id="scGroupPause">
             <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
               <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
               <span data-i18n="label.pauseShortcut">Pausar / Reanudar TTS</span>
@@ -2261,7 +2579,7 @@
               <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
             </div>
           </div>
-          <div class="setting-group">
+          <div class="setting-group" id="scGroupSkip">
             <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
               <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
               <span data-i18n="label.skipShortcut">Saltar mensaje actual</span>
@@ -2285,7 +2603,7 @@
               <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
             </div>
           </div>
-          <div class="setting-group">
+          <div class="setting-group" id="scGroupClear">
             <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
               <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
               <span data-i18n="label.clearQueueShortcut">Limpiar cola</span>
@@ -2309,7 +2627,7 @@
               <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
             </div>
           </div>
-          <div class="setting-group">
+          <div class="setting-group" id="scGroupMusicPause">
             <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
               <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
               <span data-i18n="label.musicPauseShortcut">Pausar/Reanudar música del bot</span>
@@ -2333,7 +2651,7 @@
               <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
             </div>
           </div>
-          <div class="setting-group">
+          <div class="setting-group" id="scGroupMusicSkip">
             <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
               <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
               <span data-i18n="label.musicSkipShortcut">Saltar canción del bot</span>
@@ -2360,22 +2678,25 @@
         </div>
       </div>
 
-      <div class="settings-section">
-        <div class="settings-section-title" style="color:#9146FF;">💜 Twitch — alertas en vivo</div>
-        <div class="settings-panel" style="grid-template-columns:1fr;">
+      <div class="settings-section" id="settingsSectionTwitch">
+        <div class="settings-section-title" style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:#9146FF;">💜 Twitch — alertas en vivo</span>
+          <button class="cfg-btn" id="btnTwitchTour" onclick="startTwitchTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
+        </div>
+        <div class="settings-panel" id="twitchClientIdGroup" style="grid-template-columns:1fr;">
           <div class="setting-group">
             <label>Client ID de Twitch</label>
             <input type="text" id="twitchOAuthClientId" placeholder="Client ID de tu app en dev.twitch.tv" autocomplete="off"
                    onchange="saveTwitchClientId(this.value)" />
           </div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+        <div id="twitchConnectRow" style="display:flex;align-items:center;gap:10px;margin-top:10px;">
           <button class="btn btn-connect" id="btnConnectTwitchAuth" onclick="connectTwitchAuth()" style="font-size:13px;">Conectar Twitch</button>
           <button class="btn btn-disconnect" id="btnDisconnectTwitchAuth" onclick="disconnectTwitchAuth()" style="font-size:13px;display:none;">Desconectar</button>
           <span id="twitchAuthStatusText" style="font-size:12px;color:var(--text-muted);">Sin conectar — solo llegarán sub/bits/raids (sin follows con nombre)</span>
         </div>
         <p style="font-size:11px;color:var(--text-muted);margin-top:8px;">Sub, bits y raids ya funcionan sin conectar nada. Conectar solo habilita follows con nombre real.</p>
-        <div class="toggles-row" style="margin-top:12px;">
+        <div class="toggles-row" id="twitchTogglesRow" style="margin-top:12px;">
           <label class="toggle-chip" id="chip-twitch-sub">
             <input type="checkbox" onchange="toggleOption('readTwitchSub', this)" /> 🟣 Anunciar subs
           </label>
@@ -2389,7 +2710,7 @@
             <input type="checkbox" onchange="toggleOption('readTwitchFollow', this)" /> 💜 Anunciar follows
           </label>
         </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+        <div id="twitchTestRow" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
           <button class="cfg-btn" onclick="testAlertType('sub')">Test sub</button>
           <button class="cfg-btn" onclick="testAlertType('cheer')">Test bits</button>
           <button class="cfg-btn" onclick="testAlertType('raid')">Test raid</button>
@@ -2408,6 +2729,7 @@
       <div class="view-header">
         <h2><img class="icon-inline" src="icons/play_arrow.svg" alt=""> <span data-i18n="view.clips.title">Marcadores de Clip</span></h2>
         <p data-i18n="view.clips.desc">Marca momentos del stream para sacar clips después.</p>
+        <button class="cfg-btn" id="btnClipsTour" onclick="startClipsTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
       </div>
 
       <div class="connect-panel">
@@ -2464,7 +2786,9 @@
     <!-- ── VIEW: Sound Pad ─────────────────────────────── -->
     <div class="view" id="view-soundpad">
       <div class="view-header">
-        <h2>🎵 <span data-i18n="nav.soundpad">Pad de Sonidos</span></h2>
+        <h2 style="display:flex;align-items:center;gap:10px;">🎵 <span data-i18n="nav.soundpad">Pad de Sonidos</span>
+          <button class="cfg-btn" id="btnSoundTour" onclick="startSoundpadTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
+        </h2>
         <p data-i18n="soundpad.desc">Sube sonidos y reprodúcelos con un clic o atajo de teclado (funciona en pantalla completa).</p>
       </div>
       <div class="cfg-card">
@@ -2520,8 +2844,80 @@
       </div>
     </div>
 
+    <!-- ── VIEW: Moderación ────────────────────────────── -->
+    <div class="view" id="view-moderacion">
+      <div class="view-header">
+        <h2><img class="icon-inline" src="icons/people.svg" alt=""> <span data-i18n="view.moderation.title">Moderación</span></h2>
+        <p data-i18n="view.moderation.desc">Todos los espectadores que interactuaron, con sus permisos de chat y TTS.</p>
+      </div>
+
+      <div class="mod-stats" id="modStats">
+        <div class="mod-stat"><span class="mod-stat-num" id="modStatTotal">0</span><span data-i18n="mod.stats.total">Registrados</span></div>
+        <div class="mod-stat"><span class="mod-stat-num" id="modStatFollowers">0</span><span data-i18n="mod.stats.followers">Seguidores</span></div>
+        <div class="mod-stat"><span class="mod-stat-num" id="modStatOthers">0</span><span data-i18n="mod.stats.others">No seguidores</span></div>
+        <div class="mod-stat"><span class="mod-stat-num" id="modStatMuted">0</span><span data-i18n="mod.stats.muted">Silenciados</span></div>
+        <div class="mod-stat"><span class="mod-stat-num" id="modStatBanned">0</span><span data-i18n="mod.stats.banned">Baneados</span></div>
+      </div>
+
+      <div class="mod-tabs">
+        <button class="mod-tab active" data-tab="followers" onclick="modSetTab('followers')" data-i18n="mod.tab.followers">Seguidores</button>
+        <button class="mod-tab" data-tab="others" onclick="modSetTab('others')" data-i18n="mod.tab.others">No seguidores</button>
+      </div>
+
+      <div class="mod-filters">
+        <input type="text" id="modSearch" oninput="modOnSearch()" data-i18n-placeholder="mod.filter.search" placeholder="Buscar por nombre..." />
+        <select id="modPlatform" onchange="modReload(true)">
+          <option value="all" data-i18n="mod.filter.allPlatforms">Todas las plataformas</option>
+          <option value="tiktok">TikTok</option>
+          <option value="twitch">Twitch</option>
+          <option value="youtube">YouTube</option>
+        </select>
+        <select id="modState" onchange="modReload(true)">
+          <option value="all" data-i18n="mod.filter.stateAll">Todos los estados</option>
+          <option value="clean" data-i18n="mod.filter.stateClean">Sin castigo</option>
+          <option value="muted" data-i18n="mod.filter.stateMuted">Silenciados</option>
+          <option value="banned" data-i18n="mod.filter.stateBanned">Baneados</option>
+        </select>
+        <select id="modSort" onchange="modReload(true)">
+          <option value="last" data-i18n="mod.sort.activity">Actividad reciente</option>
+          <option value="nick" data-i18n="mod.sort.name">Nombre</option>
+        </select>
+        <button class="cfg-btn" onclick="modReload(true)"><img class="icon-inline" src="icons/refresh.svg" alt=""> <span data-i18n="mod.action.refresh">Actualizar</span></button>
+        <button class="cfg-btn" id="btnModTour" onclick="startModerationTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="mod.action.tour">Ver tutorial</span></button>
+        <button class="cfg-btn danger" onclick="modWipe()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="mod.action.wipe">Vaciar registro</span></button>
+      </div>
+
+      <p class="mod-note" data-i18n="mod.note">YouTube no envía eventos de follow: a esos espectadores marcalos como seguidores a mano.</p>
+
+      <div class="mod-table-wrap">
+        <table class="mod-table" id="modTable">
+          <thead>
+            <tr>
+              <th data-i18n="mod.col.user">Usuario</th>
+              <th data-i18n="mod.col.platform">Plataforma</th>
+              <th data-i18n="mod.col.state">Estado</th>
+              <th data-i18n="mod.col.lastSeen">Última vez</th>
+              <th data-i18n="mod.col.actions">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="modTableBody"></tbody>
+        </table>
+        <div class="mod-empty" id="modEmpty" data-i18n="mod.empty">Todavía no hay espectadores registrados aquí.</div>
+      </div>
+
+      <div class="mod-pager">
+        <button class="cfg-btn" id="modPrev" onclick="modPage(-1)">←</button>
+        <span id="modPagerLabel"></span>
+        <button class="cfg-btn" id="modNext" onclick="modPage(1)">→</button>
+      </div>
+    </div>
+
   </main>
 </div>
+
+<!-- Menús flotantes compartidos — uno solo de cada tipo, reposicionado -->
+<div id="modDurMenu" class="ctx-menu" style="display:none"></div>
+<div id="userCtxMenu" class="ctx-menu" style="display:none"></div>
 
 <div class="app-glow" id="appGlow"></div>
 
@@ -2578,6 +2974,55 @@
   </div>
 </div>
 
+<!-- ══ MODAL: Confirmar vaciado del registro de moderación ══ -->
+<div id="modWipeConfirmModal" class="modal-overlay" onclick="closeModWipeConfirm(event)">
+  <div class="modal-content" onclick="event.stopPropagation()" style="text-align:center;">
+    <button class="modal-close" onclick="closeModWipeConfirm()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <div class="notice-icon-badge">⚠️</div>
+    <h2 style="justify-content:center;" data-i18n="mod.wipeModal.title">¿Estás seguro?</h2>
+    <div class="bugreport-guide" style="background:rgba(239,68,68,0.06);border-color:rgba(239,68,68,0.3);color:var(--text-secondary);text-align:left;" data-i18n="mod.wipeModal.body">Esta acción borra por completo la base de datos de espectadores: seguidores marcados, silencios y baneos. No se puede deshacer.</div>
+
+    <div class="cfg-field" style="text-align:left;">
+      <label>
+        <span data-i18n="mod.wipeModal.typeInstruction">Escribí</span>
+        <strong id="modWipeKeywordHint" style="color:#ef4444;letter-spacing:.5px;"></strong>
+        <span data-i18n="mod.wipeModal.typeInstructionSuffix">para confirmar</span>
+      </label>
+      <input type="text" id="modWipeConfirmInput" autocomplete="off" spellcheck="false" oninput="checkModWipeConfirmInput()" onkeydown="if(event.key==='Enter'&&!document.getElementById('modWipeConfirmBtn').disabled)confirmModWipe()" style="text-align:center;letter-spacing:1px;" />
+    </div>
+
+    <button class="cfg-btn danger" id="modWipeConfirmBtn" style="width:100%;justify-content:center;margin-top:16px;" onclick="confirmModWipe()" disabled><span data-i18n="mod.wipeModal.confirm">Sí, borrar todo</span></button>
+    <button class="cfg-btn" style="width:100%;justify-content:center;margin-top:10px;" onclick="closeModWipeConfirm()"><span data-i18n="mod.wipeModal.cancel">Cancelar</span></button>
+  </div>
+</div>
+
+<!-- ══ MODAL: Bloquear palabra al vuelo desde el chat ══════ -->
+<div id="blockWordModal" class="modal-overlay" onclick="closeBlockWordModal(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeBlockWordModal()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <h2><img class="icon-inline" src="icons/filter_none.svg" alt=""> <span data-i18n="blockWord.title">Bloquear palabra</span></h2>
+    <p style="color:var(--text-secondary);margin-bottom:14px;" data-i18n="blockWord.desc">Pegá o escribí la palabra y listo: el servidor la aplica al instante, sin reconectar. Podés seguir agregando sin cerrar la ventana.</p>
+
+    <div class="cfg-field">
+      <input type="text" id="blockWordInput" autocomplete="off" spellcheck="false"
+        data-i18n-placeholder="blockWord.placeholder" placeholder="Escribí o pegá la palabra..."
+        onkeydown="if(event.key==='Enter') submitBlockWord()" />
+    </div>
+
+    <button class="btn-copy" style="width:100%;justify-content:center;margin-top:12px;" onclick="submitBlockWord()"><span data-i18n="blockWord.add">Bloquear</span></button>
+
+    <div id="blockWordSession" style="display:none;margin-top:14px;">
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;" data-i18n="blockWord.sessionAdded">Bloqueadas ahora</div>
+      <div id="blockWordSessionTags" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px;">
+      <span id="blockWordCount" style="font-size:11px;color:var(--text-muted);"></span>
+      <a class="cfg-btn" href="/advanced.html#palabras-bloqueadas" data-i18n="blockWord.manageAll">Ver y editar todas</a>
+    </div>
+  </div>
+</div>
+
 <!-- ══ MODAL: Bienvenida / tutorial primer uso (one-time) ══ -->
 <div id="onboardingWelcomeModal" class="modal-overlay" onclick="closeOnboardingWelcome(event)">
   <div class="modal-content" onclick="event.stopPropagation()" style="text-align:center;">
@@ -2626,32 +3071,109 @@
   </div>
 </div>
 
-<!-- ══ MODAL: Social ════════════════════════════════════ -->
+<!-- ══ MODAL: Social / Portafolio ════════════════════════════════════ -->
 <div id="socialModal" class="modal-overlay" onclick="closeSocialModal(event)">
-  <div class="modal-content" onclick="event.stopPropagation()">
-    <button class="modal-close" onclick="closeSocialModal()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
-    <h2><img class="icon-inline" src="icons/smartphone.svg" alt=""> <span data-i18n="donations.socialTitle">Sigue mi contenido</span></h2>
-    <div class="social-grid">
-      <a href="https://www.youtube.com/@SpeedMucho" target="_blank" class="social-card">
-        <img style="width:32px;height:32px;" src="icons/tv.svg" alt="">
-        <h3>YouTube</h3>
-        <p>@SpeedMucho</p>
-      </a>
-      <a href="https://www.tiktok.com/@khunsauwu" target="_blank" class="social-card">
-        <img style="width:32px;height:32px;" src="icons/music_note.svg" alt="">
-        <h3>TikTok</h3>
-        <p>@khunsauwu</p>
-      </a>
-      <a href="https://www.twitch.tv/speedmucho" target="_blank" class="social-card">
-        <img style="width:32px;height:32px;" src="icons/sports_esports.svg" alt="">
-        <h3>Twitch</h3>
-        <p>speedmucho</p>
-      </a>
-      <a href="https://kick.com/speedmucho" target="_blank" class="social-card">
-        <img style="width:32px;height:32px;" src="icons/flash_on.svg" alt="">
-        <h3>Kick</h3>
-        <p>speedmucho</p>
-      </a>
+  <div class="modal-content modal-content--landing" onclick="event.stopPropagation()">
+    <div class="landing-topbar">
+      <button class="modal-close" onclick="closeSocialModal()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    </div>
+
+    <div class="landing-hero">
+      <div class="landing-avatar">
+        <img src="asset/khunsa.jpg" alt="Luis León" onerror="this.parentElement.textContent='LL'">
+      </div>
+      <h1 data-i18n="portfolio.heroTitle">Hola, soy Khunsa 👋</h1>
+      <p data-i18n="portfolio.heroDesc">Construyo productos en Bitcoin, crypto-fiat y comercio: esta app de TTS es uno de varios proyectos activos. Conocé el resto acá abajo.</p>
+    </div>
+
+    <div class="landing-section">
+      <div class="landing-section-title" data-i18n="portfolio.projectsTitle">Mis proyectos</div>
+      <div class="project-grid">
+        <a href="https://www.satoshidashboard.com/" target="_blank" class="project-card project-card--big art-bitcoin">
+          <span class="cta-top" data-i18n="portfolio.visit">Visitar →</span>
+          <span class="tag">Bitcoin</span>
+          <h3>SatoshiDashboard</h3>
+          <p data-i18n="portfolio.satoshiDesc">Dashboard de Bitcoin self-hosted, disponible en la Umbrel App Store. Corré tu propio nodo y guardá tus datos en tu hardware.</p>
+        </a>
+        <a href="https://www.assetrock.io/" target="_blank" class="project-card art-fiat">
+          <span class="cta-top" data-i18n="portfolio.visit">Visitar →</span>
+          <span class="tag">Crypto-Fiat OTC</span>
+          <h3>AssetRock</h3>
+          <p data-i18n="portfolio.assetrockDesc">Puente institucional entre crypto y fiat: liquidez, settlement seguro y compliance para fondos y tesorerías en LATAM.</p>
+        </a>
+        <a href="https://www.zatobox.io/" target="_blank" class="project-card art-retail">
+          <span class="cta-top" data-i18n="portfolio.visit">Visitar →</span>
+          <span class="tag">Retail / POS</span>
+          <h3>ZatoBox</h3>
+          <p data-i18n="portfolio.zatoboxDesc">Punto de venta open-source y modular con inventario inteligente, automatizaciones y pagos en moneda local o Bitcoin.</p>
+        </a>
+        <a href="https://101btc.satoshidashboard.com/" target="_blank" class="project-card art-edu">
+          <span class="cta-top" data-i18n="portfolio.visit">Visitar →</span>
+          <span class="tag" data-i18n="portfolio.tag101btc">Educación</span>
+          <h3>101BTC</h3>
+          <p data-i18n="portfolio.btc101Desc">Guía interactiva para dar tus primeros pasos en Bitcoin, de la mano de SatoshiDashboard.</p>
+        </a>
+      </div>
+    </div>
+
+    <div class="landing-section">
+      <div class="landing-section-title" data-i18n="portfolio.contactTitle">Hablemos</div>
+      <div class="contact-row">
+        <a href="https://t.me/ikhunsa" target="_blank" class="contact-pill contact-pill--telegram">
+          <span class="contact-pill-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.95 3.5 18.6 20.3c-.25 1.13-.9 1.4-1.83.87l-5.05-3.72-2.44 2.35c-.27.27-.5.5-1.02.5l.36-5.15L18.02 6c.4-.36-.09-.55-.63-.2L7.05 12.42l-4.97-1.55c-1.08-.34-1.1-1.08.23-1.6L20.6 2.44c.9-.33 1.68.2 1.35 1.06Z"/></svg></span>
+          <span>Telegram</span>
+        </a>
+        <a href="https://x.com/ikhunsaa" target="_blank" class="contact-pill contact-pill--x">
+          <span class="contact-pill-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 10.5 20.3 3h-1.9l-5.9 6.6L7.8 3H2.5l7.1 10.1L2.5 21h1.9l6.2-7 5 7h5.3l-7.4-10.5Zm-2.2 2.5-.7-1L4.9 4.3h2.4l4.6 6.5.7 1 6 8.5h-2.4l-4.9-7Z"/></svg></span>
+          <span>X</span>
+        </a>
+        <a href="https://www.linkedin.com/in/ikhunsa/" target="_blank" class="contact-pill contact-pill--linkedin">
+          <span class="contact-pill-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.94 8.5H3.56V20.4h3.38V8.5ZM5.25 3.1a1.96 1.96 0 1 0 0 3.92 1.96 1.96 0 0 0 0-3.92ZM20.44 20.4h-3.37v-6.05c0-1.44-.03-3.3-2.02-3.3-2.02 0-2.33 1.58-2.33 3.2v6.15H9.35V8.5h3.24v1.63h.05c.45-.86 1.56-1.77 3.2-1.77 3.42 0 4.6 2.25 4.6 5.18V20.4Z"/></svg></span>
+          <span>LinkedIn</span>
+        </a>
+        <a href="https://stacker.news/Khunsa" target="_blank" class="contact-pill contact-pill--stackernews">
+          <span class="contact-pill-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 3.5 14h6l-1 8L20.5 10h-6l-1.5-8Z"/></svg></span>
+          <span>Stacker News</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="landing-section" style="padding-top:0;">
+      <div class="landing-section-title" data-i18n="donations.socialTitle">Sigue mi contenido</div>
+      <div class="social-grid">
+        <a href="https://www.youtube.com/@br0k3ny" target="_blank" class="social-card social-card--yt">
+          <span class="social-card-top">Ver →</span>
+          <div class="social-card-tab">
+            <img src="icons/tv.svg" alt="">
+            <h3>YouTube</h3>
+            <p>@br0k3ny</p>
+          </div>
+        </a>
+        <a href="https://www.tiktok.com/@soykurorai" target="_blank" class="social-card social-card--tiktok">
+          <span class="social-card-top">Ver →</span>
+          <div class="social-card-tab">
+            <img src="icons/music_note.svg" alt="">
+            <h3>TikTok</h3>
+            <p>@soykurorai</p>
+          </div>
+        </a>
+        <a href="https://www.twitch.tv/soykurorai" target="_blank" class="social-card social-card--twitch">
+          <span class="social-card-top">Ver →</span>
+          <div class="social-card-tab">
+            <img src="icons/sports_esports.svg" alt="">
+            <h3>Twitch</h3>
+            <p>soykurorai</p>
+          </div>
+        </a>
+        <a href="https://kick.com/speedmucho" target="_blank" class="social-card social-card--kick">
+          <span class="social-card-top">Ver →</span>
+          <div class="social-card-tab">
+            <img src="icons/flash_on.svg" alt="">
+            <h3>Kick</h3>
+            <p>speedmucho</p>
+          </div>
+        </a>
+      </div>
     </div>
   </div>
 </div>
@@ -3101,6 +3623,871 @@
     if (view) view.classList.add('active');
     const btn = document.querySelector(`.sidebar-item[data-view="${name}"]`);
     if (btn) btn.classList.add('active');
+    // El refresco de la tabla de moderación solo corre con la vista visible.
+    if (name === 'moderacion') {
+      modReload(true);
+      modStartAutoRefresh();
+      maybeShowModerationTour();
+    } else {
+      modStopAutoRefresh();
+    }
+  }
+
+  // ─── MODERACIÓN: registro de espectadores ─────────────────────
+  // La tabla se hidrata por fetch al entrar en la vista y al cambiar filtros.
+  // Las acciones puntuales llegan por WS (`moderation-updated`), así que no
+  // hace falta polling: solo un refresco lento para que los contadores de
+  // mensajes no se queden congelados mientras se mira la tabla.
+  const MOD_PAGE_SIZE = 100;
+  const MOD_REFRESH_MS = 15000;
+  let modTab = 'followers';
+  let modOffset = 0;
+  let modTotal = 0;
+  let modSearchTimer = null;
+  let modRefreshTimer = null;
+
+  function modQuery() {
+    const p = new URLSearchParams({
+      tab: modTab,
+      platform: document.getElementById('modPlatform').value,
+      state: document.getElementById('modState').value,
+      sort: document.getElementById('modSort').value,
+      limit: String(MOD_PAGE_SIZE),
+      offset: String(modOffset),
+    });
+    const q = document.getElementById('modSearch').value.trim();
+    if (q) p.set('q', q);
+    return p.toString();
+  }
+
+  async function modReload(resetPage) {
+    if (resetPage) modOffset = 0;
+    let data;
+    try {
+      const res = await fetch(`/api/moderation/viewers?${modQuery()}`);
+      data = await res.json();
+    } catch (_) {
+      showToast(t('mod.toast.error'));
+      return;
+    }
+    modTotal = data.total || 0;
+    modRenderStats(data.counts || {});
+    modRenderRows(data.items || []);
+    modRenderPager();
+  }
+
+  function modRenderStats(counts) {
+    const total = (counts.followers || 0) + (counts.others || 0);
+    document.getElementById('modStatTotal').textContent = total;
+    document.getElementById('modStatFollowers').textContent = counts.followers || 0;
+    document.getElementById('modStatOthers').textContent = counts.others || 0;
+    document.getElementById('modStatMuted').textContent = counts.muted || 0;
+    document.getElementById('modStatBanned').textContent = counts.banned || 0;
+  }
+
+  function modFormatAgo(ts) {
+    if (!ts) return '—';
+    const diff = Math.max(0, Date.now() - ts);
+    const min = Math.floor(diff / 60000);
+    if (min < 1) return t('mod.time.now');
+    if (min < 60) return t('mod.time.min', { n: min });
+    const h = Math.floor(min / 60);
+    if (h < 24) return t('mod.time.hour', { n: h });
+    return t('mod.time.day', { n: Math.floor(h / 24) });
+  }
+
+  function modStatePill(v) {
+    const span = document.createElement('span');
+    if (v.isBanned) {
+      span.className = 'mod-pill banned';
+      span.textContent = v.banUntil === -1 ? t('mod.state.banned') : t('mod.state.bannedUntil', { time: modFormatUntil(v.banUntil) });
+    } else if (v.isMuted) {
+      span.className = 'mod-pill muted';
+      span.textContent = v.muteUntil === -1 ? t('mod.state.muted') : t('mod.state.mutedUntil', { time: modFormatUntil(v.muteUntil) });
+    } else {
+      span.className = 'mod-pill clean';
+      span.textContent = t('mod.state.clean');
+    }
+    return span;
+  }
+
+  function modFormatUntil(ts) {
+    const min = Math.max(1, Math.round((ts - Date.now()) / 60000));
+    return min < 60 ? `${min}m` : `${Math.round(min / 60)}h`;
+  }
+
+  // Todo el render usa createElement/textContent: los nombres vienen de
+  // plataformas externas y no se inyectan nunca como HTML.
+  function modRenderRows(items) {
+    const body = document.getElementById('modTableBody');
+    body.textContent = '';
+    document.getElementById('modEmpty').style.display = items.length ? 'none' : '';
+    document.getElementById('modTable').style.display = items.length ? '' : 'none';
+
+    for (const v of items) {
+      const tr = document.createElement('tr');
+      tr.dataset.key = v.key;
+
+      const tdUser = document.createElement('td');
+      const nick = document.createElement('span');
+      nick.className = 'mod-nick';
+      nick.textContent = v.nick || v.userId;
+      tdUser.appendChild(nick);
+      if (v.isFollower) {
+        const star = document.createElement('span');
+        star.className = 'mod-pill follower';
+        star.style.marginLeft = '6px';
+        star.textContent = '★';
+        star.title = t('chat.followerBadge');
+        tdUser.appendChild(star);
+      }
+      if (v.idKind === 'name') {
+        // Sin id estable: el castigo se pierde si cambia de nombre.
+        const warn = document.createElement('span');
+        warn.className = 'mod-weak-id';
+        warn.textContent = '⚠';
+        warn.title = t('mod.state.weakId');
+        tdUser.appendChild(warn);
+      }
+      tr.appendChild(tdUser);
+
+      const tdPlat = document.createElement('td');
+      const badge = document.createElement('span');
+      badge.className = `chat-platform-badge badge-${v.platform}`;
+      badge.textContent = v.platform;
+      tdPlat.appendChild(badge);
+      tr.appendChild(tdPlat);
+
+      const tdState = document.createElement('td');
+      tdState.appendChild(modStatePill(v));
+      tr.appendChild(tdState);
+
+      const tdSeen = document.createElement('td');
+      tdSeen.textContent = modFormatAgo(v.lastSeen);
+      tr.appendChild(tdSeen);
+
+      const tdAct = document.createElement('td');
+      const wrap = document.createElement('div');
+      wrap.className = 'mod-actions';
+      wrap.appendChild(modActionBtn(t('mod.action.mute'), (e) => modDurationMenu(e, 'mute', v.key)));
+      wrap.appendChild(modActionBtn(t('mod.action.ban'), (e) => modDurationMenu(e, 'ban', v.key), 'danger'));
+      wrap.appendChild(modActionBtn(v.isFollower ? '★' : '☆', () => modApi('follower', { key: v.key, value: !v.isFollower })));
+      wrap.appendChild(modActionBtn(t('mod.action.clear'), () => modApi('clear', { key: v.key })));
+      wrap.appendChild(modActionBtn('✕', () => modRemove(v.key), 'danger'));
+      tdAct.appendChild(wrap);
+      tr.appendChild(tdAct);
+
+      body.appendChild(tr);
+    }
+  }
+
+  function modActionBtn(label, onClick, extra) {
+    const b = document.createElement('button');
+    b.className = `cfg-btn small${extra ? ' ' + extra : ''}`;
+    b.textContent = label;
+    b.onclick = onClick;
+    return b;
+  }
+
+  function modRenderPager() {
+    const from = modTotal === 0 ? 0 : modOffset + 1;
+    const to = Math.min(modOffset + MOD_PAGE_SIZE, modTotal);
+    document.getElementById('modPagerLabel').textContent = t('mod.pager', { from, to, total: modTotal });
+    document.getElementById('modPrev').disabled = modOffset === 0;
+    document.getElementById('modNext').disabled = to >= modTotal;
+  }
+
+  function modPage(delta) {
+    const next = modOffset + delta * MOD_PAGE_SIZE;
+    if (next < 0 || next >= modTotal) return;
+    modOffset = next;
+    modReload(false);
+  }
+
+  function modSetTab(tab) {
+    modTab = tab;
+    document.querySelectorAll('.mod-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+    modReload(true);
+  }
+
+  function modOnSearch() {
+    clearTimeout(modSearchTimer);
+    modSearchTimer = setTimeout(() => modReload(true), 300);
+  }
+
+  // action ∈ mute | unmute | ban | unban | clear | follower
+  async function modApi(action, body) {
+    try {
+      const res = await fetch(`/api/moderation/${action}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) throw new Error('http');
+      const data = await res.json();
+      showToast(t(`mod.toast.${action}`));
+      return data.viewer;
+    } catch (_) {
+      showToast(t('mod.toast.error'));
+      return null;
+    }
+  }
+
+  async function modRemove(key) {
+    try {
+      await fetch('/api/moderation/viewer', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key }),
+      });
+      modReload(false);
+    } catch (_) { showToast(t('mod.toast.error')); }
+  }
+
+  function modWipeKeyword() {
+    return (t('mod.wipeModal.keyword') || 'BORRAR').toUpperCase();
+  }
+
+  function modWipe() {
+    document.getElementById('modWipeKeywordHint').textContent = modWipeKeyword();
+    const input = document.getElementById('modWipeConfirmInput');
+    input.value = '';
+    document.getElementById('modWipeConfirmBtn').disabled = true;
+    document.getElementById('modWipeConfirmModal').classList.add('show');
+    setTimeout(() => input.focus(), 50);
+  }
+
+  function checkModWipeConfirmInput() {
+    const input = document.getElementById('modWipeConfirmInput');
+    const match = input.value.trim().toUpperCase() === modWipeKeyword();
+    document.getElementById('modWipeConfirmBtn').disabled = !match;
+  }
+
+  function closeModWipeConfirm(e) {
+    if (e && e.target.id !== 'modWipeConfirmModal') return;
+    document.getElementById('modWipeConfirmModal').classList.remove('show');
+  }
+
+  async function confirmModWipe() {
+    if (document.getElementById('modWipeConfirmInput').value.trim().toUpperCase() !== modWipeKeyword()) return;
+    document.getElementById('modWipeConfirmModal').classList.remove('show');
+    try {
+      await fetch('/api/moderation/viewers', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ confirm: true }),
+      });
+      modReload(true);
+    } catch (_) { showToast(t('mod.toast.error')); }
+  }
+
+  // Menú de moderación al hacer clic en un nick del chat. Un único nodo
+  // reposicionado, nunca uno por mensaje.
+  function openUserMenu(evt, ds) {
+    evt.stopPropagation();
+    modCloseMenus();
+    const menu = document.getElementById('userCtxMenu');
+    menu.textContent = '';
+    // Sin id estable el servidor no manda modKey: se identifica por nick.
+    const target = ds.modKey ? { key: ds.modKey } : { platform: ds.platform, nick: ds.nick };
+
+    const title = document.createElement('div');
+    title.className = 'ctx-title';
+    title.textContent = `@${ds.nick}`;
+    menu.appendChild(title);
+
+    const add = (label, fn, cls) => {
+      const b = document.createElement('button');
+      b.textContent = label;
+      if (cls) b.className = cls;
+      b.onclick = async () => { modCloseMenus(); await fn(); };
+      menu.appendChild(b);
+    };
+
+    add(t('chatCtx.mute15'), () => modApi('mute', { ...target, durationMs: 15 * 60 * 1000 }));
+    add(t('chatCtx.muteForever'), () => modApi('mute', { ...target, durationMs: null }));
+    add(t('chatCtx.ban15'), () => modApi('ban', { ...target, durationMs: 15 * 60 * 1000 }), 'danger');
+    add(t('chatCtx.banForever'), () => modApi('ban', { ...target, durationMs: null }), 'danger');
+    menu.appendChild(document.createElement('hr'));
+    add(t('chatCtx.clear'), () => modApi('clear', target));
+    add(t('chatCtx.markFollower'), () => modApi('follower', { ...target, value: true }));
+    menu.appendChild(document.createElement('hr'));
+    add(t('chatCtx.blockWord'), () => blockWordFromChat());
+    add(t('chatCtx.openModeration'), () => {
+      document.getElementById('modSearch').value = ds.nick;
+      switchView('moderacion');
+    });
+
+    modPlaceMenu(menu, evt);
+  }
+
+  // ─── Bloquear palabra al vuelo ────────────────────────────────
+  // El streamer copia la palabra del chat y la pega acá. La ventana no se
+  // cierra al agregar: en una racha de spam se pegan varias seguidas.
+  // Reutiliza /api/block-word, el mismo endpoint del panel avanzado.
+  let blockWordSessionList = [];
+
+  function openBlockWordModal(prefill) {
+    const input = document.getElementById('blockWordInput');
+    input.value = prefill || '';
+    document.getElementById('blockWordModal').classList.add('show');
+    refreshBlockWordCount();
+    setTimeout(() => { input.focus(); input.select(); }, 50);
+  }
+
+  function closeBlockWordModal(e) {
+    if (e && e.target.id !== 'blockWordModal') return;
+    document.getElementById('blockWordModal').classList.remove('show');
+    blockWordSessionList = [];
+    renderBlockWordSession();
+  }
+
+  async function refreshBlockWordCount() {
+    const el = document.getElementById('blockWordCount');
+    if (!el) return;
+    try {
+      const res = await fetch('/api/blocked-words');
+      const data = await res.json();
+      el.textContent = t('blockWord.count', { n: (data.words || []).length });
+    } catch (_) {
+      el.textContent = '';
+    }
+  }
+
+  function renderBlockWordSession() {
+    const wrap = document.getElementById('blockWordSession');
+    const tags = document.getElementById('blockWordSessionTags');
+    if (!wrap || !tags) return;
+    tags.textContent = '';
+    wrap.style.display = blockWordSessionList.length ? '' : 'none';
+    for (const w of blockWordSessionList) {
+      const tag = document.createElement('span');
+      tag.className = 'mod-pill banned';
+      tag.textContent = w;
+      tags.appendChild(tag);
+    }
+  }
+
+  async function submitBlockWord() {
+    const input = document.getElementById('blockWordInput');
+    const word = input.value.trim().toLowerCase();
+    if (!word) return;
+    if (blockWordSessionList.includes(word)) {
+      showToast(t('blockWord.duplicate'));
+      input.value = '';
+      return;
+    }
+    try {
+      const res = await fetch('/api/block-word', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ word }),
+      });
+      if (!res.ok) throw new Error('http');
+      blockWordSessionList.push(word);
+      renderBlockWordSession();
+      showToast(t('chatCtx.blockWordDone', { word }));
+      input.value = '';
+      input.focus();
+      refreshBlockWordCount();
+    } catch (_) {
+      showToast(t('mod.toast.error'));
+    }
+  }
+
+  function blockWordFromChat() {
+    openBlockWordModal();
+  }
+
+  // Menú compartido de duraciones. Sirve tanto a la tabla como al menú
+  // contextual del chat: un único nodo reposicionado, nunca uno por fila.
+  function modDurationMenu(evt, kind, key) {
+    evt.stopPropagation();
+    const menu = document.getElementById('modDurMenu');
+    menu.textContent = '';
+    const options = [
+      [t('mod.dur.15m'), 15 * 60 * 1000],
+      [t('mod.dur.1h'), 60 * 60 * 1000],
+      [t('mod.dur.forever'), null],
+    ];
+    for (const [label, durationMs] of options) {
+      const b = document.createElement('button');
+      b.textContent = label;
+      b.onclick = async () => {
+        modCloseMenus();
+        await modApi(kind, { key, durationMs });
+      };
+      menu.appendChild(b);
+    }
+    modPlaceMenu(menu, evt);
+  }
+
+  function modPlaceMenu(menu, evt) {
+    menu.style.display = '';
+    menu.style.visibility = 'hidden';
+    menu.style.left = '0px';
+    menu.style.top = '0px';
+    const rect = menu.getBoundingClientRect();
+    const x = Math.min(evt.clientX, window.innerWidth - rect.width - 8);
+    const y = Math.min(evt.clientY, window.innerHeight - rect.height - 8);
+    menu.style.left = `${Math.max(8, x)}px`;
+    menu.style.top = `${Math.max(8, y)}px`;
+    menu.style.visibility = '';
+  }
+
+  function modCloseMenus() {
+    for (const id of ['modDurMenu', 'userCtxMenu']) {
+      const menu = document.getElementById(id);
+      if (menu) menu.style.display = 'none';
+    }
+  }
+
+  document.addEventListener('click', modCloseMenus);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') modCloseMenus(); });
+  // El chat scrollea solo con cada mensaje: el menú quedaría flotando lejos
+  // del nick que lo abrió.
+  document.addEventListener('DOMContentLoaded', () => {
+    const chatLog = document.getElementById('chatLog');
+    if (chatLog) chatLog.addEventListener('scroll', modCloseMenus);
+    initChatScrollFollow();
+  });
+
+  // Llega tras cualquier acción de moderación (también desde el menú del chat
+  // o desde otra ventana). Un cambio de whitelist mueve la fila de pestaña, así
+  // que se recarga la página actual en vez de parchear la celda.
+  function modOnViewerUpdated() {
+    const view = document.getElementById('view-moderacion');
+    if (!view || !view.classList.contains('active')) return;
+    modReload(false);
+  }
+
+  // ─── Tutorial de Moderación (driver.js) ───────────────────────
+  // Se dispara solo la primera vez que se abre la vista. Cubre las tres piezas
+  // que llegaron juntas: registro de espectadores, moderación desde el chat y
+  // el filtro de no seguidores — el usuario lo lee como una sola novedad.
+  // v2: el atajo de palabras bloqueadas dejó de llevar a Avanzado y ahora abre
+  // una ventana para pegar la palabra. Se vuelve a mostrar el tour por eso.
+  const MODERATION_TOUR_KEY = 'tikliveTTS_moderationTourSeen_v2';
+
+  function maybeShowModerationTour() {
+    if (localStorage.getItem(MODERATION_TOUR_KEY)) return;
+    localStorage.setItem(MODERATION_TOUR_KEY, '1');
+    // Esperar a que la tabla esté pintada: driver.js mide el elemento real.
+    setTimeout(startModerationTour, 700);
+  }
+
+  function startModerationTour() {
+    if (!(window.driver && window.driver.js)) return;
+    const inModeration = () => switchView('moderacion');
+    const inChat = () => switchView('chat');
+
+    window.driver.js.driver({
+      ...driverTourDefaults(),
+      steps: [
+        {
+          element: '#view-moderacion .view-header',
+          popover: { title: t('modTour.introTitle'), description: t('modTour.introDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inModeration,
+        },
+        {
+          element: '.mod-tabs',
+          popover: { title: t('modTour.tabsTitle'), description: t('modTour.tabsDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inModeration,
+        },
+        {
+          element: '#modStats',
+          popover: { title: t('modTour.statsTitle'), description: t('modTour.statsDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inModeration,
+        },
+        {
+          element: '.mod-filters',
+          popover: { title: t('modTour.filtersTitle'), description: t('modTour.filtersDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inModeration,
+        },
+        {
+          element: '.mod-table-wrap',
+          popover: { title: t('modTour.tableTitle'), description: t('modTour.tableDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inModeration,
+        },
+        {
+          element: '#chatLog',
+          popover: { title: t('modTour.chatMenuTitle'), description: t('modTour.chatMenuDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inChat,
+        },
+        {
+          element: '.chat-header',
+          popover: { title: t('modTour.scrollTitle'), description: t('modTour.scrollDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inChat,
+        },
+        {
+          element: '#chip-nonfollowers',
+          popover: { title: t('modTour.toggleTitle'), description: t('modTour.toggleDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inChat,
+        },
+        {
+          element: '#btnBlockedWordsShortcut',
+          popover: { title: t('modTour.blockedTitle'), description: t('modTour.blockedDesc'), side: 'bottom', align: 'end' },
+          onHighlightStarted: inChat,
+        },
+      ],
+    }).drive();
+  }
+
+  function startSoundpadTour() {
+    if (!(window.driver && window.driver.js)) return;
+    const inSoundpad = () => switchView('soundpad');
+
+    window.driver.js.driver({
+      ...driverTourDefaults(),
+      steps: [
+        {
+          element: '#view-soundpad .view-header',
+          popover: { title: t('soundTour.introTitle'), description: t('soundTour.introDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSoundpad,
+        },
+        {
+          element: '#spUploadBtn',
+          popover: { title: t('soundTour.uploadTitle'), description: t('soundTour.uploadDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSoundpad,
+        },
+        {
+          element: '.btn-test',
+          popover: { title: t('soundTour.testTitle'), description: t('soundTour.testDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSoundpad,
+        },
+        {
+          element: '.cfg-subtitle',
+          popover: { title: t('soundTour.shortcutTitle'), description: t('soundTour.shortcutDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSoundpad,
+        },
+        {
+          element: '#spDeck',
+          popover: { title: t('soundTour.deckTitle'), description: t('soundTour.deckDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inSoundpad,
+        },
+        {
+          element: '#spCount',
+          popover: { title: t('soundTour.limitTitle'), description: t('soundTour.limitDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSoundpad,
+        },
+      ],
+    }).drive();
+  }
+
+  function startBotTour() {
+    if (!(window.driver && window.driver.js)) return;
+    const inBot = () => switchView('bot');
+
+    window.driver.js.driver({
+      ...driverTourDefaults(),
+      steps: [
+        {
+          element: '#view-bot .view-header',
+          popover: { title: t('botTour.introTitle'), description: t('botTour.introDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inBot,
+        },
+        {
+          element: '#music-now-playing-card',
+          popover: { title: t('botTour.nowPlayingTitle'), description: t('botTour.nowPlayingDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inBot,
+        },
+        {
+          element: '#music-queue-list',
+          popover: { title: t('botTour.queueTitle'), description: t('botTour.queueDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inBot,
+        },
+        {
+          element: '#playlistTextarea',
+          popover: { title: t('botTour.playlistTitle'), description: t('botTour.playlistDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inBot,
+        },
+        {
+          element: '#musicBanInput',
+          popover: { title: t('botTour.settingsTitle'), description: t('botTour.settingsDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inBot,
+        },
+      ],
+    }).drive();
+  }
+
+  function startChatActionsTour() {
+    if (!(window.driver && window.driver.js)) return;
+    const inChatActions = () => switchView('chat');
+
+    window.driver.js.driver({
+      ...driverTourDefaults(),
+      steps: [
+        {
+          element: '.toggles-row',
+          popover: { title: t('chatActionsTour.togglesTitle'), description: t('chatActionsTour.togglesDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inChatActions,
+        },
+        {
+          element: '#btnTTSToggle',
+          popover: { title: t('chatActionsTour.ttsTitle'), description: t('chatActionsTour.ttsDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inChatActions,
+        },
+        {
+          element: 'button[onclick="skipCurrentTTS()"]',
+          popover: { title: t('chatActionsTour.skipTitle'), description: t('chatActionsTour.skipDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inChatActions,
+        },
+        {
+          element: 'button[onclick="clearTTSQueue()"]',
+          popover: { title: t('chatActionsTour.queueTitle'), description: t('chatActionsTour.queueDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inChatActions,
+        },
+        {
+          element: 'button[onclick="enableEmergencyTTSMode()"]',
+          popover: { title: t('chatActionsTour.emergencyTitle'), description: t('chatActionsTour.emergencyDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inChatActions,
+        },
+        {
+          element: 'button[onclick="clearChat()"]',
+          popover: { title: t('chatActionsTour.clearTitle'), description: t('chatActionsTour.clearDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inChatActions,
+        },
+        {
+          element: '#btnBlockedWordsShortcut',
+          popover: { title: t('chatActionsTour.blockedTitle'), description: t('chatActionsTour.blockedDesc'), side: 'bottom', align: 'end' },
+          onHighlightStarted: inChatActions,
+        },
+        {
+          element: '#btn-connect-all-chat',
+          popover: { title: t('chatActionsTour.connectTitle'), description: t('chatActionsTour.connectDesc'), side: 'bottom', align: 'end' },
+          onHighlightStarted: inChatActions,
+        },
+        {
+          element: '#chatLog',
+          popover: { title: t('chatActionsTour.logTitle'), description: t('chatActionsTour.logDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inChatActions,
+        },
+      ],
+    }).drive();
+  }
+
+  function startClipsTour() {
+    if (!(window.driver && window.driver.js)) return;
+    const inClips = () => switchView('clips');
+
+    window.driver.js.driver({
+      ...driverTourDefaults(),
+      steps: [
+        {
+          element: '#view-clips .view-header',
+          popover: { title: t('clipsTour.introTitle'), description: t('clipsTour.introDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inClips,
+        },
+        {
+          element: '#btnStartStream',
+          popover: { title: t('clipsTour.startTitle'), description: t('clipsTour.startDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inClips,
+        },
+        {
+          element: '#btnMarkClip',
+          popover: { title: t('clipsTour.markTitle'), description: t('clipsTour.markDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inClips,
+        },
+        {
+          element: '#obsStatusDot',
+          popover: { title: t('clipsTour.obsTitle'), description: t('clipsTour.obsDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inClips,
+        },
+        {
+          element: '#clipsHistory',
+          popover: { title: t('clipsTour.historyTitle'), description: t('clipsTour.historyDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inClips,
+        },
+      ],
+    }).drive();
+  }
+
+  function startOverlaysTour() {
+    if (!(window.driver && window.driver.js)) return;
+    const inOverlays = () => switchView('overlays');
+
+    window.driver.js.driver({
+      ...driverTourDefaults(),
+      steps: [
+        {
+          element: '#view-overlays .view-header',
+          popover: { title: t('overlaysTour.introTitle'), description: t('overlaysTour.introDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inOverlays,
+        },
+        {
+          element: '#cfg-url-chat',
+          popover: { title: t('overlaysTour.urlTitle'), description: t('overlaysTour.urlDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inOverlays,
+        },
+        {
+          element: '[onclick="copyCfgUrl(\'chat\')"]',
+          popover: { title: t('overlaysTour.copyTitle'), description: t('overlaysTour.copyDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inOverlays,
+        },
+        {
+          element: '#view-overlays .cfg-card:nth-of-type(1) .cfg-fields',
+          popover: { title: t('overlaysTour.customizeTitle'), description: t('overlaysTour.customizeDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inOverlays,
+        },
+        {
+          element: '#view-overlays .cfg-card:nth-of-type(1) .bg-upload-row',
+          popover: { title: t('overlaysTour.bgTitle'), description: t('overlaysTour.bgDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inOverlays,
+        },
+        {
+          element: '[onclick="testGiftAlert()"]',
+          popover: { title: t('overlaysTour.testTitle'), description: t('overlaysTour.testDesc'), side: 'top', align: 'end' },
+          onHighlightStarted: inOverlays,
+        },
+      ],
+    }).drive();
+  }
+
+  function startVoiceTour() {
+    if (!(window.driver && window.driver.js)) return;
+    const inSettings = () => switchView('settings');
+
+    window.driver.js.driver({
+      ...driverTourDefaults(),
+      onDestroyStarted: (element, step, opts) => {
+        closeDictLangModal();
+        opts.driver.destroy();
+      },
+      steps: [
+        {
+          element: '#settingsSectionVoice .settings-section-title',
+          popover: { title: t('voiceTour.introTitle'), description: t('voiceTour.introDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#voiceSelectGroup',
+          popover: { title: t('voiceTour.voiceTitle'), description: t('voiceTour.voiceDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#voiceTestGroup',
+          popover: { title: t('voiceTour.testTitle'), description: t('voiceTour.testDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#voiceRateGroup',
+          popover: { title: t('voiceTour.rateTitle'), description: t('voiceTour.rateDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#voiceVolGroup',
+          popover: { title: t('voiceTour.volTitle'), description: t('voiceTour.volDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#voiceLangFilterGroup',
+          popover: { title: t('voiceTour.charFilterTitle'), description: t('voiceTour.charFilterDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#voiceDictFilterGroup',
+          popover: { title: t('voiceTour.wordFilterTitle'), description: t('voiceTour.wordFilterDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#dictLangModal .modal-content',
+          popover: { title: t('voiceTour.dictModalTitle'), description: t('voiceTour.dictModalDesc'), side: 'left', align: 'start' },
+          onHighlightStarted: () => { inSettings(); openDictLangModal(); },
+        },
+      ],
+    }).drive();
+  }
+
+  function startShortcutsTour() {
+    if (!(window.driver && window.driver.js)) return;
+    const inSettings = () => switchView('settings');
+
+    window.driver.js.driver({
+      ...driverTourDefaults(),
+      steps: [
+        {
+          element: '#settingsSectionShortcuts .settings-section-title',
+          popover: { title: t('shortcutsTour.introTitle'), description: t('shortcutsTour.introDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#scGroupPauseBtn',
+          popover: { title: t('shortcutsTour.pauseBtnTitle'), description: t('shortcutsTour.pauseBtnDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#scGroupPause',
+          popover: { title: t('shortcutsTour.pauseKeyTitle'), description: t('shortcutsTour.pauseKeyDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#scGroupSkip',
+          popover: { title: t('shortcutsTour.skipTitle'), description: t('shortcutsTour.skipDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#scGroupClear',
+          popover: { title: t('shortcutsTour.clearTitle'), description: t('shortcutsTour.clearDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#scGroupMusicPause',
+          popover: { title: t('shortcutsTour.musicPauseTitle'), description: t('shortcutsTour.musicPauseDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#scGroupMusicSkip',
+          popover: { title: t('shortcutsTour.musicSkipTitle'), description: t('shortcutsTour.musicSkipDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+      ],
+    }).drive();
+  }
+
+  function startTwitchTour() {
+    if (!(window.driver && window.driver.js)) return;
+    const inSettings = () => switchView('settings');
+
+    window.driver.js.driver({
+      ...driverTourDefaults(),
+      steps: [
+        {
+          element: '#settingsSectionTwitch .settings-section-title',
+          popover: { title: t('twitchTour.introTitle'), description: t('twitchTour.introDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#twitchClientIdGroup',
+          popover: { title: t('twitchTour.clientIdTitle'), description: t('twitchTour.clientIdDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#twitchConnectRow',
+          popover: { title: t('twitchTour.connectTitle'), description: t('twitchTour.connectDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#twitchTogglesRow',
+          popover: { title: t('twitchTour.togglesTitle'), description: t('twitchTour.togglesDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+        {
+          element: '#twitchTestRow',
+          popover: { title: t('twitchTour.testTitle'), description: t('twitchTour.testDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inSettings,
+        },
+      ],
+    }).drive();
+  }
+
+  function modStartAutoRefresh() {
+    modStopAutoRefresh();
+    modRefreshTimer = setInterval(() => modReload(false), MOD_REFRESH_MS);
+  }
+
+  function modStopAutoRefresh() {
+    if (modRefreshTimer) clearInterval(modRefreshTimer);
+    modRefreshTimer = null;
   }
 
   // ─── OVERLAY CONFIGURADOR ─────────────────────────────────────
@@ -3521,7 +4908,38 @@
       if (Number.isInteger(cfg.TTS_MAX_CHARS) && cfg.TTS_MAX_CHARS > 0) CHAT_TTS_MAX_LEN = cfg.TTS_MAX_CHARS;
       if (Number.isInteger(cfg.MAX_QUEUE_MSG) && cfg.MAX_QUEUE_MSG > 0) MAX_QUEUE_SIZE = cfg.MAX_QUEUE_MSG;
       applyA11yConfig(cfg);
+      applyReadNonFollowers(cfg);
     } catch (e) {}
+  }
+
+  // El servidor decide qué mensajes puede leer el TTS (`ttsBlocked`); aquí solo
+  // se refleja el estado del interruptor.
+  function applyReadNonFollowers(cfg) {
+    const el = document.getElementById('ttsReadNonFollowersToggle');
+    if (!el) return;
+    const on = cfg.ttsReadNonFollowers !== false;
+    el.checked = on;
+    // El input está oculto por CSS: lo que se ve encendido es la clase .active
+    // del chip, igual que en el resto de la fila.
+    document.getElementById('chip-nonfollowers')?.classList.toggle('active', on);
+  }
+
+  function setReadNonFollowers(value) {
+    // Pintar ya, sin esperar al PATCH: el servidor confirma por config-updated.
+    document.getElementById('chip-nonfollowers')?.classList.toggle('active', !!value);
+    fetch('/api/config', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ttsReadNonFollowers: !!value }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('http');
+        showToast(t(value ? 'toast.readNonFollowersOn' : 'toast.readNonFollowersOff'));
+      })
+      .catch(() => {
+        showToast(t('mod.toast.error'));
+        loadRuntimeConfig();
+      });
   }
 
   function applyA11yConfig(cfg) {
@@ -3771,6 +5189,7 @@
   function skipCurrentTTS() {
     const hadPending = activeAudio || ttsAbortController || isSpeaking;
     stopCurrentTTS({ clearQueue: false });
+    if (hadPending) window.electronAPI?.trackEvent('tts:skipped');
     showToast(hadPending ? t('toast.ttsSkipped') : t('toast.ttsNoActive'));
     if (!ttsPaused && ttsGlobalEnabled && speechQueue.length > 0) setTimeout(() => processQueue(), 50);
   }
@@ -3949,6 +5368,7 @@
     if (!ttsGlobalEnabled) return;
     if (speechQueue.length >= MAX_QUEUE_SIZE) {
       ttsDroppedCount++;
+      window.electronAPI?.trackEvent('tts:queue-overflow');
       updateQueueBadge();
       return;
     }
@@ -3984,7 +5404,8 @@
     }
     currentMsgId = msgId;
     const msgEl = document.getElementById(msgId);
-    if (msgEl) { msgEl.classList.add('speaking'); msgEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+    if (msgEl) msgEl.classList.add('speaking');
+    chatFollowSpeaking();
 
     showSpeakingIndicator(text);
     const glow = document.getElementById('appGlow');
@@ -4375,6 +5796,11 @@
         break;
       case 'config-updated':
         applyA11yConfig(data.config || {});
+        applyReadNonFollowers(data.config || {});
+        break;
+      case 'moderation-updated':
+      case 'moderation-reset':
+        modOnViewerUpdated();
         break;
     }
   }
@@ -4382,7 +5808,9 @@
   // ─── CHAT HANDLER ─────────────────────────────────────────────
   function handleChatData(data, chatId) {
     addChatMsg(data, chatId);
-    if (options.readChat) {
+    // `ttsBlocked` lo decide el servidor: usuario silenciado, o no seguidor con
+    // el filtro de seguidores activo.
+    if (options.readChat && !data.ttsBlocked) {
       const ttsBase = data.ttsComment || data.comment;
       let raw;
       if (!options.sayUsername) {
@@ -4427,6 +5855,75 @@
     return colorMap[user];
   }
 
+  // ─── SCROLL QUE SIGUE LA LECTURA ──────────────────────────────
+  // Con seguimiento activo el chat persigue al mensaje que el TTS está
+  // leyendo, no al último recibido: en un directo movido la cola va varios
+  // mensajes por detrás del fondo. Sin nada leyéndose, sigue al fondo.
+  // Scrollear hacia arriba lo pausa; volver al fondo lo reanuda.
+  const CHAT_STICK_PX = 60;
+  // Ventana para descartar el evento de scroll que provoca el propio
+  // seguimiento. El scroll se hace instantáneo justamente para que esta
+  // ventana sea corta y no se trague un gesto real del usuario.
+  const CHAT_SELF_SCROLL_MS = 200;
+
+  let chatFollow = true;
+  let chatSelfScrollAt = 0;
+
+  function chatIsAtBottom() {
+    const log = document.getElementById('chatLog');
+    if (!log) return true;
+    return log.scrollHeight - log.scrollTop - log.clientHeight <= CHAT_STICK_PX;
+  }
+
+  function chatSpeakingEl() {
+    return currentMsgId ? document.getElementById(currentMsgId) : null;
+  }
+
+  function chatScrollTo(fn) {
+    chatSelfScrollAt = performance.now();
+    fn();
+  }
+
+  // Lleva la vista al mensaje en lectura. Se llama al empezar cada mensaje y
+  // al llegar mensajes nuevos (que empujan hacia abajo al que se está leyendo).
+  function chatFollowSpeaking() {
+    if (!chatFollow) return;
+    const el = chatSpeakingEl();
+    const log = document.getElementById('chatLog');
+    if (!log) return;
+    if (el) chatScrollTo(() => el.scrollIntoView({ block: 'center' }));
+    else chatScrollTo(() => { log.scrollTop = log.scrollHeight; });
+  }
+
+  function appendChatNode(node) {
+    const log = document.getElementById('chatLog');
+    if (!log) return;
+    log.appendChild(node);
+    chatFollowSpeaking();
+  }
+
+  function chatPauseFollow() {
+    chatFollow = false;
+  }
+
+  function initChatScrollFollow() {
+    const log = document.getElementById('chatLog');
+    if (!log) return;
+    let lastTop = log.scrollTop;
+    log.addEventListener('scroll', () => {
+      const top = log.scrollTop;
+      const wentUp = top < lastTop;
+      lastTop = top;
+      if (performance.now() - chatSelfScrollAt < CHAT_SELF_SCROLL_MS) return;
+      if (wentUp) chatPauseFollow();
+      // Tocar el fondo reanuda: es el gesto natural de "volver al directo".
+      else if (chatIsAtBottom()) chatFollow = true;
+    }, { passive: true });
+    // La rueda hacia arriba pausa al instante, sin esperar a que el scroll
+    // llegue al handler de arriba.
+    log.addEventListener('wheel', (e) => { if (e.deltaY < 0) chatPauseFollow(); }, { passive: true });
+  }
+
   function addChatMsg(data, msgId) {
     const empty = document.getElementById('emptyState');
     if (empty) empty.remove();
@@ -4440,7 +5937,7 @@
     const initials = user.substring(0, 2).toUpperCase();
 
     const div = document.createElement('div');
-    div.className = 'chat-msg';
+    div.className = data.muted ? 'chat-msg chat-msg--muted' : 'chat-msg';
     div.id = msgId;
 
     const avatar = document.createElement('div');
@@ -4453,9 +5950,31 @@
     body.className = 'msg-body';
 
     const userEl = document.createElement('div');
-    userEl.className = 'msg-user';
+    userEl.className = 'msg-user msg-user-clickable';
     userEl.style.color = color;
     userEl.append(document.createTextNode(`@${user}`));
+    // El menú de moderación necesita la identidad, no solo el nombre visible.
+    // `modKey` la calcula el servidor; si el usuario no tiene id estable la
+    // acción viaja como platform + nick y el store resuelve igual.
+    userEl.dataset.modKey = data.modKey || '';
+    userEl.dataset.nick = user;
+    userEl.dataset.platform = platform;
+    userEl.title = t('chatCtx.hint');
+    userEl.onclick = (e) => openUserMenu(e, userEl.dataset);
+    if (data.isFollower) {
+      const star = document.createElement('span');
+      star.className = 'chat-follower-badge';
+      star.textContent = '★';
+      star.title = t('chat.followerBadge');
+      userEl.appendChild(star);
+    }
+    if (data.muted) {
+      const mutedBadge = document.createElement('span');
+      mutedBadge.className = 'chat-muted-badge';
+      mutedBadge.textContent = '🔇';
+      mutedBadge.title = t('chat.mutedBadge');
+      userEl.appendChild(mutedBadge);
+    }
     if (platform) {
       const badge = document.createElement('span');
       badge.className = `chat-platform-badge badge-${platform}`;
@@ -4477,9 +5996,7 @@
     div.appendChild(body);
     div.appendChild(timeEl);
 
-    const log = document.getElementById('chatLog');
-    log.appendChild(div);
-    log.scrollTop = log.scrollHeight;
+    appendChatNode(div);
   }
 
   function addSystemMsg(text, type, msgId, { iconSrc = '', accentText = '' } = {}) {
@@ -4515,9 +6032,7 @@
     body.appendChild(txt);
     div.appendChild(body);
 
-    const log = document.getElementById('chatLog');
-    log.appendChild(div);
-    log.scrollTop = log.scrollHeight;
+    appendChatNode(div);
   }
 
   let ttsAbortController = null;
@@ -4533,6 +6048,7 @@
       </div>`;
     msgCount = 0;
     document.getElementById('msgCount').textContent = '0';
+    chatFollow = true;
     likeCooldownMap.clear();
     updateQueueBadge();
   }
@@ -4884,6 +6400,7 @@
       document.getElementById('bugReportNoticeModal').classList.remove('show');
       document.getElementById('onboardingWelcomeModal').classList.remove('show');
       document.getElementById('onboardingCompleteModal').classList.remove('show');
+      document.getElementById('modWipeConfirmModal').classList.remove('show');
     }
   });
 
