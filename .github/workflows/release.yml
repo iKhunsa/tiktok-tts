@@ -28,6 +28,12 @@ jobs:
           $config = @{ discordWebhookUrl = "${{ secrets.DISCORD_BUG_REPORT_WEBHOOK }}" } | ConvertTo-Json
           Set-Content -Path webhook-config.generated.json -Value $config
 
+      - name: Write telemetry config
+        shell: pwsh
+        run: |
+          $config = @{ url = "https://telemetria.tiklivetts.es/api/ingest"; token = "${{ secrets.INGEST_TOKEN }}" } | ConvertTo-Json
+          Set-Content -Path telemetry-config.generated.json -Value $config
+
       - name: Build & publish installer
         run: npm run build:electron -- --publish always
         env:

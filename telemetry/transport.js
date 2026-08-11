@@ -9,8 +9,9 @@ const BATCH_SIZE = 50;
 const RETRY_DELAYS = [1000, 4000, 15000];
 
 class Transport {
-  constructor({ url, buffer, identity, appVersion, onDirectives }) {
+  constructor({ url, token, buffer, identity, appVersion, onDirectives }) {
     this.url = url;
+    this.token = token;
     this.buffer = buffer;
     this.identity = identity;
     this.appVersion = appVersion;
@@ -46,7 +47,9 @@ class Transport {
       try {
         const res = await fetch(this.url, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: this.token
+            ? { 'Content-Type': 'application/json', 'X-Ingest-Token': this.token }
+            : { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             schema: 2,
             machine_id: this.identity.machineId,

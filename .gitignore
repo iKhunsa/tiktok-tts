@@ -13,5 +13,7 @@ config.json
 sounds-config.json
 webhook-config.json
 webhook-config.generated.json
+telemetry-config.json
+telemetry-config.generated.json
 logs/
 moderation.json
