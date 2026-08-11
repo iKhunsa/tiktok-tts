@@ -65,7 +65,7 @@ function sessionMinutes() {
   return Math.round((Date.now() - runtime.startedAt) / 60000);
 }
 
-function init({ url, appVersion, dataDir }) {
+function init({ url, token, appVersion, dataDir }) {
   if (runtime.enabled) return true;
   if (!url) return false; // sin servidor configurado: telemetria desactivada
 
@@ -79,6 +79,7 @@ function init({ url, appVersion, dataDir }) {
     runtime.creators = new CreatorCache(dataDir);
     runtime.transport = new Transport({
       url,
+      token,
       buffer: runtime.buffer,
       identity: runtime.identity,
       appVersion,

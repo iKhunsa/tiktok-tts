@@ -8,23 +8,48 @@ const http = require('http');
 // El módulo vive en telemetry/. Si no hay URL configurada no hace nada: cero
 // peticiones de red.
 //
-// La URL sale de TELEMETRY_URL (inyectada en el build) o de un telemetry.json
-// en userData. Archivo aparte a propósito: config.json lo gestiona server.js,
-// que descarta las claves que no conoce y borraría esta en el primer guardado.
+// La URL/token salen de TELEMETRY_URL+TELEMETRY_TOKEN (override de dev), de un
+// telemetry.json en userData (override manual del usuario), o del
+// telemetry-config.json bakeado en el build (extraResources, ver package.json
+// build.extraResources y scripts/ensure-telemetry-config.js). Archivo aparte a
+// proposito: config.json lo gestiona server.js, que descarta las claves que no
+// conoce y borraria esta en el primer guardado.
 const telemetry = require('./telemetry');
 
-function resolveTelemetryUrl() {
-  if (process.env.TELEMETRY_URL) return process.env.TELEMETRY_URL.trim();
+function readJsonField(file, field, validate) {
   try {
     const fs = require('fs');
-    const file = path.join(app.getPath('userData'), 'telemetry.json');
     if (!fs.existsSync(file)) return null;
-    const url = JSON.parse(fs.readFileSync(file, 'utf8')).url;
-    if (typeof url !== 'string' || !/^https?:\/\//i.test(url.trim())) return null;
-    return url.trim();
+    const value = JSON.parse(fs.readFileSync(file, 'utf8'))[field];
+    if (typeof value !== 'string' || !value.trim()) return null;
+    if (validate && !validate(value.trim())) return null;
+    return value.trim();
   } catch (_) {
     return null;
   }
+}
+
+function resolveTelemetryUrl() {
+  if (process.env.TELEMETRY_URL) return process.env.TELEMETRY_URL.trim();
+
+  const userFile = path.join(app.getPath('userData'), 'telemetry.json');
+  const isHttpUrl = (v) => /^https?:\/\//i.test(v);
+  const fromUser = readJsonField(userFile, 'url', isHttpUrl);
+  if (fromUser) return fromUser;
+
+  const bundledFile = path.join(process.env.TIKTOK_RESOURCES_PATH || __dirname, 'telemetry-config.json');
+  return readJsonField(bundledFile, 'url', isHttpUrl);
+}
+
+function resolveIngestToken() {
+  if (process.env.TELEMETRY_TOKEN) return process.env.TELEMETRY_TOKEN.trim();
+
+  const userFile = path.join(app.getPath('userData'), 'telemetry.json');
+  const fromUser = readJsonField(userFile, 'token');
+  if (fromUser) return fromUser;
+
+  const bundledFile = path.join(process.env.TIKTOK_RESOURCES_PATH || __dirname, 'telemetry-config.json');
+  return readJsonField(bundledFile, 'token');
 }
 // ─────────────────────────────────────────────────────────────────────────
 
@@ -329,6 +354,7 @@ app.whenReady().then(() => {
 
     telemetry.init({
       url: resolveTelemetryUrl(),
+      token: resolveIngestToken(),
       appVersion: app.getVersion(),
       dataDir: app.getPath('userData'),
     });

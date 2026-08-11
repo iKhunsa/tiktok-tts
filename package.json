@@ -8,7 +8,7 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "electron": "electron .",
-    "prebuild:electron": "node scripts/ensure-webhook-config.js",
+    "prebuild:electron": "node scripts/ensure-webhook-config.js && node scripts/ensure-telemetry-config.js",
     "build:electron": "electron-builder --win"
   },
   "build": {
@@ -58,6 +58,10 @@
       {
         "from": "webhook-config.generated.json",
         "to": "webhook-config.json"
+      },
+      {
+        "from": "telemetry-config.generated.json",
+        "to": "telemetry-config.json"
       }
     ],
     "npmRebuild": false,
