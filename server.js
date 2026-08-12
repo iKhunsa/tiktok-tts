@@ -3033,13 +3033,14 @@ async function connectTiktokChannel(channel) {
       platform: 'tiktok',
       username: cleanUsername,
       resolve: async () => {
-        const owner = (state && state.roomInfo && (state.roomInfo.owner)) || null;
+        const roomData = (state && state.roomInfo && state.roomInfo.data) || null;
+        const owner = (roomData && roomData.owner) || null;
         return {
           display_name: (owner && (owner.nickname || owner.nick_name)) || null,
           avatar_url: (owner && owner.avatar_thumb && Array.isArray(owner.avatar_thumb.url_list))
             ? owner.avatar_thumb.url_list[0]
             : null,
-          follower_count: extractFollowerCount(state && state.roomInfo) || null,
+          follower_count: extractFollowerCount(roomData) || null,
         };
       },
     });
