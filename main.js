@@ -258,13 +258,11 @@ function createWindow() {
 
   mainWindow.once('ready-to-show', () => mainWindow.show());
 
-  // Close → minimize to tray instead of quitting.
-  // If the app is quitting, or the tray failed to create (no way to reopen
-  // a hidden window), allow the close to proceed normally.
-  mainWindow.on('close', (e) => {
-    if (isQuitting || !tray) return;
-    e.preventDefault();
-    mainWindow.hide();
+  // Close (X) → apaga todo, no minimiza a tray.
+  mainWindow.on('close', () => {
+    if (isQuitting) return;
+    isQuitting = true;
+    app.quit();
   });
 }
 
