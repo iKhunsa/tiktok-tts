@@ -115,6 +115,11 @@ function createLogger({ logsDir, cap = DEFAULT_CAP } = {}) {
       });
     }
 
+    // Espejo de TODO log al bus, no solo errores — /telemetria (Fase 12) lo
+    // usa para instrumentar eventos de alta frecuencia (TTS, musica,
+    // moderacion) sin que cada dominio anterior tenga que conocer telemetria.
+    if (bus) bus.emit('log:entry', entry);
+
     // Fallback de ultima instancia: solo si el archivo de sesion no esta disponible.
     if (!stream) {
       const consoleFn = isErrorLevel ? console.error : console.log;

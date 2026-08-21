@@ -5,10 +5,23 @@ const express = require('express');
 
 /**
  * Crea la instancia Express base con los middlewares globales del kernel.
+ * `bus` es opcional (Fase 1 la crea sin bus; server.js la pasa desde la
+ * Fase 12 para instrumentar que overlays de OBS se abren).
  */
-function createApp() {
+function createApp(bus) {
   const app = express();
   app.use(express.json());
+
+  if (bus) {
+    // Overlays cargados en OBS. Se registra cual se abre, no cuantas veces:
+    // OBS recarga la fuente en cada cambio de escena.
+    app.use((req, _res, next) => {
+      const m = /^\/overlay-([a-z-]+)\.html$/.exec(req.path);
+      if (m) bus.emit('overlay:opened', { overlay: m[1] });
+      next();
+    });
+  }
+
   app.use(express.static(path.join(__dirname, '..', 'public')));
 
   return app;
