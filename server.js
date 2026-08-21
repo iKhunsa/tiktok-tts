@@ -629,6 +629,11 @@ const DEFAULT_CONFIG = {
   // true = el TTS lee a todo el mundo (comportamiento histórico).
   // false = solo lee a seguidores y a la whitelist manual.
   ttsReadNonFollowers: true,
+  adminIdentities: {
+    tiktok: ['ikhunsa_tiklivetts', 'soykurorai'],
+    twitch: ['soykurorai'],
+    youtube: ['br0k3ny'],
+  },
 };
 
 const CONFIG_VALIDATORS = {
@@ -656,6 +661,8 @@ const CONFIG_VALIDATORS = {
   a11yHighContrast: (v) => typeof v === 'boolean',
   ttsSlowSpeech: (v) => typeof v === 'boolean',
   ttsReadNonFollowers: (v) => typeof v === 'boolean',
+  adminIdentities: (v) => v && typeof v === 'object'
+    && ['tiktok', 'twitch', 'youtube'].every((p) => Array.isArray(v[p]) && v[p].every((x) => typeof x === 'string')),
 };
 
 const config = { ...DEFAULT_CONFIG };
@@ -1465,14 +1472,26 @@ function broadcast(data) {
   });
 }
 
+function isAdminIdentity(platform, ...candidates) {
+  const list = config.adminIdentities?.[platform];
+  if (!Array.isArray(list) || !list.length) return false;
+  const wanted = list.map((s) => String(s).trim().toLowerCase());
+  return candidates.some((c) => c && wanted.includes(String(c).trim().toLowerCase()));
+}
+
+const ADMIN_ANNOUNCE_TEXT = 'Aviso del sistema: el creador de TikLive TTS acaba de ingresar.';
+const adminAnnouncedSessions = new Set();
+
 // Punto único por el que salen los mensajes de chat de las 3 plataformas.
 // Registra al espectador, aplica la moderación por usuario y decide si el
 // mensaje puede leerse por TTS. Ninguna de esas reglas se duplica en los
 // handlers de plataforma ni en el cliente.
-function emitChatMessage({ platform, channel, user, userId, comment, ttsComment, emotes, ytMsgId }) {
+function emitChatMessage({ platform, channel, user, userId, comment, ttsComment, emotes, ytMsgId, isAdmin }) {
   const key = moderationStore.keyFor(platform, userId, user);
   moderationStore.touch({ platform, userId, nick: user, kind: 'chat' });
-  const eff = moderationStore.getEffective(key);
+  const eff = isAdmin
+    ? { isFollower: true, isWhitelisted: true, isMuted: false, isBanned: false }
+    : moderationStore.getEffective(key);
 
   if (eff.isBanned) {
     log('info', 'moderation', 'mensaje descartado por ban de usuario', { platform });
@@ -1500,8 +1519,15 @@ function emitChatMessage({ platform, channel, user, userId, comment, ttsComment,
     isFollower,
     muted: eff.isMuted,
     ttsBlocked,
+    isAdmin: !!isAdmin,
     timestamp: Date.now(),
   });
+
+  if (isAdmin && !adminAnnouncedSessions.has(platform)) {
+    adminAnnouncedSessions.add(platform);
+    broadcast({ type: 'admin-announce', text: ADMIN_ANNOUNCE_TEXT, timestamp: Date.now() });
+  }
+
   return true;
 }
 
@@ -1517,6 +1543,7 @@ function broadcastChannels() {
 
 // Create TikTok connection + attach event handlers (per-channel)
 function setupTikTokConnection(cleanUsername) {
+  adminAnnouncedSessions.delete('tiktok');
   const existing = tiktokChannels.get(cleanUsername);
   if (existing && existing.conn) existing.conn.removeAllListeners();
 
@@ -1545,6 +1572,7 @@ function setupTikTokConnection(cleanUsername) {
       userId: data.uniqueId || null,
       comment,
       ttsComment: sanitizeForTTS(comment),
+      isAdmin: isAdminIdentity('tiktok', data.uniqueId),
     });
   });
 
@@ -2165,9 +2193,17 @@ function resolveUntil(durationMs) {
   return Date.now() + ms;
 }
 
-function applyModAction(req, res, fn) {
+function isAdminTarget(target) {
+  if (!target) return false;
+  return isAdminIdentity(target.platform, target.userId, target.nick);
+}
+
+function applyModAction(req, res, fn, { blockAdmin = false } = {}) {
   const target = resolveModTarget(req.body || {});
   if (!target) return res.status(400).json({ error: 'Se requiere key o platform + (userId|nick)' });
+  if (blockAdmin && isAdminTarget(target)) {
+    return res.status(403).json({ error: 'Este usuario es admin de la app; no se le puede aplicar moderación' });
+  }
   const viewer = fn(target);
   moderationStore.flush();
   broadcast({ type: 'moderation-updated', viewer });
@@ -2195,7 +2231,7 @@ app.post('/api/moderation/mute', (req, res) => {
   const until = resolveUntil((req.body || {}).durationMs);
   if (until === null) return res.status(400).json({ error: 'durationMs invalido' });
   telemetryBus.emit('moderation:user-muted', { permanent: until === -1 });
-  applyModAction(req, res, (t) => moderationStore.setMute(t, until));
+  applyModAction(req, res, (t) => moderationStore.setMute(t, until), { blockAdmin: true });
 });
 
 app.post('/api/moderation/unmute', (req, res) => {
@@ -2206,7 +2242,7 @@ app.post('/api/moderation/ban', (req, res) => {
   const until = resolveUntil((req.body || {}).durationMs);
   if (until === null) return res.status(400).json({ error: 'durationMs invalido' });
   telemetryBus.emit('moderation:user-banned', { permanent: until === -1 });
-  applyModAction(req, res, (t) => moderationStore.setBan(t, until));
+  applyModAction(req, res, (t) => moderationStore.setBan(t, until), { blockAdmin: true });
 });
 
 app.post('/api/moderation/unban', (req, res) => {
@@ -2417,6 +2453,7 @@ app.post('/api/test/chat', (req, res) => {
     userId: b.userId || null,
     comment: sanitizeForTTS(comment),
     ttsComment: sanitizeForTTS(comment),
+    isAdmin: isAdminIdentity(platform, b.userId, user),
   });
   res.json({ success: true, emitted, user, platform });
 });
@@ -2554,6 +2591,7 @@ function stopYoutubeChat(chat, reason = 'stop') {
 }
 
 async function connectTwitch(channel, token = null, attempt = 0) {
+  adminAnnouncedSessions.delete('twitch');
   const tmi = require('tmi.js');
   channel = cleanTwitchChannel(channel);
   if (!channel) throw new Error('Se requiere canal Twitch');
@@ -2610,6 +2648,7 @@ async function connectTwitch(channel, token = null, attempt = 0) {
       comment: sanitizeForTTS(message.trim()),
       ttsComment: sanitizeForTTS(message.trim()),
       emotes: Object.keys(emotes).length > 0 ? emotes : undefined,
+      isAdmin: isAdminIdentity('twitch', tags.username, tags['user-id']),
     });
   });
 
@@ -2756,6 +2795,7 @@ async function fetchTwitchProfile(login) {
 }
 
 async function connectYoutube(channelOrId, attempt = 0) {
+  adminAnnouncedSessions.delete('youtube');
   const { LiveChat } = require('youtube-chat');
   const target = parseYoutubeTarget(channelOrId);
   if (!target) throw new Error('YouTube: ingresa @handle, URL del live/video o Channel ID UC...');
@@ -2831,6 +2871,7 @@ async function connectYoutube(channelOrId, attempt = 0) {
       ttsComment: ttsText ? sanitizeForTTS(ttsText) : undefined,
       emotes: Object.keys(emotes).length > 0 ? emotes : undefined,
       ytMsgId: msgId || undefined,
+      isAdmin: isAdminIdentity('youtube', item.author?.channelId, ytUser),
     });
   });
 
