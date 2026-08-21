@@ -11,6 +11,7 @@ function createChannelState() {
     twitchReconnectTimers: new Map(),
     youtubeChannels: new Map(), // channelOrId -> LiveChat
     youtubeReconnectTimers: new Map(),
+    youtubeWatchdogTimers: new Map(), // channelKey -> Timeout (watchdog de chat 'silencioso')
     youtubeSeenIds: new Map(), // channelKey -> Set<msgId>
     authTokens: { twitch: null },
     obs: {
