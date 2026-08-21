@@ -4768,6 +4768,9 @@
     if (!ttsGlobalEnabled && isSpeaking) {
       stopCurrentTTS({ clearQueue: true });
     }
+    if (ttsGlobalEnabled && !ttsPaused && !isSpeaking && speechQueue.length > 0) {
+      processQueue();
+    }
   }
 
   // ─── PAUSE TTS / KEYBOARD SHORTCUTS ───────────────────────────
