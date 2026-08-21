@@ -67,6 +67,23 @@ module.exports = {
       }
     }, 'canales');
 
+    // /overlay (Fase 8) pide refrescar el conteo de followers periodicamente
+    // sin tocar los `conn` de TikTok directo (son privados de este dominio).
+    bus.on('canales:refrescar-followers', () => {
+      for (const [username, entry] of state.tiktokChannels) {
+        entry.conn.fetchRoomInfo()
+          .then((roomInfo) => {
+            bus.emit('canal:estado', { platform: 'tiktok', channel: username, state: 'followers-refrescado', roomInfo });
+          })
+          .catch((error) => {
+            logger.log(
+              'warn', 'canales', 'canales/index.js#register', 'canales.tiktok.refresco_followers_fallido',
+              `No se pudo refrescar followers de ${username}: ${error.message}`, { channel: username, error: error.message, stack: error.stack }
+            );
+          });
+      }
+    }, 'canales');
+
     // Reanudar sesion OAuth persistida al arrancar (best-effort).
     setTimeout(async () => {
       if (!state.authTokens.twitch) return;
@@ -81,7 +98,7 @@ module.exports = {
       }
     }, 1000);
 
-    return { rutas: 14, listeners: 1 };
+    return { rutas: 14, listeners: 2 };
   },
 
   shutdown() {
