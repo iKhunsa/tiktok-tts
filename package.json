@@ -8,7 +8,7 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "electron": "electron .",
-    "prebuild:electron": "node scripts/ensure-webhook-config.js && node scripts/ensure-telemetry-config.js",
+    "prebuild:electron": "node backend-viejo/scripts/ensure-webhook-config.js && node backend-viejo/scripts/ensure-telemetry-config.js",
     "build:electron": "electron-builder --win"
   },
   "build": {
@@ -24,7 +24,7 @@
     },
     "win": {
       "target": "nsis",
-      "icon": "tray-icon.ico",
+      "icon": "backend-viejo/tray-icon.ico",
       "verifyUpdateCodeSignature": false
     },
     "nsis": {
@@ -37,23 +37,8 @@
     },
     "extraResources": [
       {
-        "from": "gifts/",
-        "to": "gifts",
-        "filter": [
-          "**/*.png"
-        ]
-      },
-      {
         "from": "public/",
         "to": "public"
-      },
-      {
-        "from": "blocked-words.md",
-        "to": "blocked-words.md"
-      },
-      {
-        "from": "tray-icon.ico",
-        "to": "tray-icon.ico"
       },
       {
         "from": "webhook-config.generated.json",
@@ -69,9 +54,6 @@
       "main.js",
       "preload.js",
       "server.js",
-      "music-engine.js",
-      "moderation-store.js",
-      "telemetry/**/*",
       "node_modules/**/*",
       "!node_modules/.cache",
       "!node_modules/**/test{s,}/**",
