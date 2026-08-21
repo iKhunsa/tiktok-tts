@@ -63,8 +63,13 @@ module.exports = {
     app.post('/api/tts', generate({ bus, logger, rateLimiterState: ttsRateLimiterState }));
     app.get('/api/voices', voices());
 
-    // ── Bot musical: consume bot:comando de /bot (Fase 10, aun no existe) ──
-    bus.on('bot:comando', handleMusicRequest(deps), 'sonido');
+    // ── Bot musical: consume bot:comando de /bot (Fase 10) — la deteccion
+    // de !p ya no vive aca, solo la ejecucion.
+    const runMusicRequest = handleMusicRequest(deps);
+    bus.on('bot:comando', (cmd) => {
+      if (!cmd || cmd.cmd !== 'play') return;
+      runMusicRequest({ query: cmd.args, user: cmd.user, userId: cmd.userId, platform: cmd.platform });
+    }, 'sonido');
 
     // ── chat:mensaje-permitido: expone el gancho de habla (el front decide
     // via el campo ttsBlocked que ya viaja en el WS de /chat — este evento
