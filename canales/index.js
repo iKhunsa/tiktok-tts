@@ -6,6 +6,7 @@ const { loadAuthTokens } = require('./twitch/oauth/auth-tokens-store');
 const { ensureTwitchAccessToken } = require('./twitch/oauth/ensure-access-token');
 const { startTwitchEventSub } = require('./twitch/eventsub/start');
 const { saveReplay } = require('./obs/save-replay');
+const obsReplayContract = require('../core/contracts/obs-replay');
 
 const { connect } = require('./routes/connect');
 const { disconnect } = require('./routes/disconnect');
@@ -54,7 +55,11 @@ module.exports = {
     app.get('/api/oauth/status', oauthStatus(state));
     app.post('/api/auth/twitch/disconnect', oauthDisconnect(deps));
 
-    // /clips (Fase 11) dispara el guardado de replay via bus, sin conocer el
+    // Contrato sincrono: /clips (Fase 11) necesita saber exito/fallo para
+    // responder al usuario que disparo el atajo de teclado.
+    obsReplayContract.saveReplay = () => saveReplay(deps);
+
+    // /clips tambien puede pedirlo via bus (fire-and-forget), sin conocer el
     // protocolo OBS WS — /canales/obs lo ejecuta.
     bus.on('canal:obs:guardar-replay', () => {
       try {
