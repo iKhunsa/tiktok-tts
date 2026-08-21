@@ -25,7 +25,8 @@ attachBroadcast(bus, wss, logger);
 const deps = { app, wss, bus, logger };
 
 registerDomain(deps, require('./configuracion'));
-// Mas dominios se agregan aca a partir de la Fase 3 en adelante.
+registerDomain(deps, require('./idioma'));
+// Mas dominios se agregan aca a partir de la Fase 4 en adelante.
 
 // Va al final: si algun dominio ya registro GET /api/status, ese gana
 // (Express usa el primer handler que responde en la misma ruta).
