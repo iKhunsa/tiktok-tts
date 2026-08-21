@@ -46,12 +46,12 @@ module.exports = {
     // core/contracts/moderacion-policy.js sin importar moderacion/ directo.
     moderacionPolicyContract.evaluate = policy.evaluate;
 
-    // Ingesta: /canales (Fase 6) emitira estos eventos. Se registran desde
-    // ya para que el pipeline quede completo cuando esa fase aterrice.
-    bus.on('canal:mensaje-crudo', (msg) => {
-      if (!msg) return;
-      store.touch({ platform: msg.platform, userId: msg.userId, nick: msg.nick || msg.user });
-    }, 'moderacion');
+    // canal:mensaje-crudo (Fase 6) trae el dato crudo por plataforma
+    // (nombres de campo distintos en TikTok/Twitch/YouTube) — parsearlo
+    // aca acoplaria /moderacion a /canales. /chat (Fase 7) ya normaliza el
+    // mensaje a {platform, userId, nick, text} para llamar a policy.evaluate();
+    // el store.touch() de "registrar interaccion" se hace ahi, con el dato
+    // ya limpio, en vez de acá.
     bus.on('canal:follow', (payload) => {
       if (!payload) return;
       store.markFollower({ platform: payload.platform, userId: payload.userId, nick: payload.nick || payload.user });
@@ -77,7 +77,7 @@ module.exports = {
     app.post('/api/block-word', blockWord(deps));
     app.delete('/api/block-word', unblockWord(deps));
 
-    return { rutas: 16, listeners: 2 };
+    return { rutas: 16, listeners: 1 };
   },
 
   shutdown() {
