@@ -41,6 +41,13 @@
         "to": "public"
       },
       {
+        "from": "gifts/",
+        "to": "gifts",
+        "filter": [
+          "**/*.png"
+        ]
+      },
+      {
         "from": "webhook-config.generated.json",
         "to": "webhook-config.json"
       },
