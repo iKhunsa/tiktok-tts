@@ -32,7 +32,8 @@ registerDomain(deps, require('./canales'));
 registerDomain(deps, require('./chat'));
 registerDomain(deps, require('./overlay'));
 registerDomain(deps, require('./movil'));
-// Mas dominios se agregan aca a partir de la Fase 9 en adelante.
+registerDomain(deps, require('./sonido'));
+// Mas dominios se agregan aca a partir de la Fase 10 en adelante.
 
 // Va al final: si algun dominio ya registro GET /api/status, ese gana
 // (Express usa el primer handler que responde en la misma ruta).
