@@ -1,6 +1,7 @@
 'use strict';
 
 const { parseCommand } = require('./parse-command');
+const { FEATURES } = require('../avanzado/feature-flags');
 
 function getConfigSnapshot(bus) {
   let snapshot = null;
@@ -13,7 +14,7 @@ module.exports = {
 
   register({ bus, logger }) {
     bus.on('chat:mensaje-permitido', (payload) => {
-      if (!payload) return;
+      if (!payload || !FEATURES.musicBot) return;
       const parsed = parseCommand(payload.comment);
 
       if (!parsed) {

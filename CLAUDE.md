@@ -20,35 +20,74 @@ App de escritorio Electron que lee en voz alta el chat de TikTok Live, Twitch y 
 
 ## Arquitectura
 
+Backend reconstruido por dominios (rebuild completo, ver `plan-fases/` para
+el historial de las 14 fases y `arquitectura-propuesta.md` para el
+documento de diseño vivo). Ya no es un monolito: `main.js`/`server.js` son
+orquestadores delgados, toda la lógica de negocio vive repartida en
+carpetas por dominio en la raíz del repo.
+
 ```
 main.js (Electron main process)
-  ├── require('./server.js')   ← Express + WS arranca aquí
-  ├── BrowserWindow           ← carga http://localhost:3000
-  ├── Tray                    ← ícono bandeja, menu open/exit
-  └── autoUpdater             ← chequea GitHub Releases al init
+  ├── require('./server.js')       ← arranca /core + registra los 14 dominios
+  ├── electron-shell/window.js     ← BrowserWindow, carga http://localhost:3000
+  ├── electron-shell/tray.js       ← ícono bandeja, menú open/exit
+  ├── electron-shell/updater.js    ← autoUpdater, chequea GitHub Releases
+  ├── electron-shell/uiohook.js    ← atajos globales (fullscreen-safe)
+  ├── electron-shell/ipc-bridge.js ← IPC con el renderer (atajos, soundpad, telemetría)
+  └── electron-shell/single-instance.js
 
-server.js (Express en puerto 3000)
-  ├── GET  /                       ← index.html (UI principal)
-  ├── GET  /advanced.html          ← configuración avanzada
-  ├── GET  /overlay-*.html         ← overlays para OBS
-  ├── POST /api/connect            ← conecta a TikTok Live
-  ├── POST /api/tts                ← Google TTS → stream MP3
-  ├── WS   /                       ← broadcast eventos al browser
-  ├── GET  /api/gifts-list         ← lista PNGs de regalos
-  ├── POST /api/upload-bg          ← sube imagen fondo overlay
-  ├── PATCH /api/config            ← ajusta config en runtime
-  ├── GET  /api/platforms/status   ← estado twitch/youtube
-  ├── POST /api/platforms/connect  ← conecta twitch o youtube
-  ├── POST /api/platforms/disconnect
-  ├── GET  /api/moderation/viewers ← registro de espectadores (filtros/paginado)
-  └── POST /api/moderation/{mute,unmute,ban,unban,clear,follower}
+server.js (Express + WS en puerto 3000)
+  ├── core/                ← kernel: bus de eventos, logger, http/ws server, register-domain
+  ├── configuracion/       ← único dueño de config.json y platform-config.json
+  ├── idioma/              ← filtro de idioma/script de voz (puro)
+  ├── reporte-bug/         ← webhook de Discord, retención de logs
+  ├── moderacion/          ← moderation.json, blocked-words.md, policy.evaluate()
+  ├── canales/             ← TikTok/Twitch/YouTube + OBS — único productor de eventos crudos
+  ├── chat/                ← orquesta: crudo → moderación → chat:mensaje-permitido
+  ├── overlay/             ← estado visual (gifts, followers, likes) para OBS
+  ├── movil/               ← panel remoto (espejo de estado + comandos)
+  ├── sonido/               ← TTS (Google), bot musical (yt-dlp), soundpad
+  ├── bot/                 ← detección de comandos de chat (!p)
+  ├── clips/                ← marca clip en OBS (atajo o comando móvil)
+  ├── avanzado/ + donar/   ← feature flags, UI avanzada; donar es no-op documentado
+  └── telemetria/           ← uso agregado anónimo, self-hosted (ver sección propia)
 ```
 
-## Moderación de espectadores (`moderation-store.js`)
+**Contrato entre dominios:** un dominio nunca importa el módulo interno de
+otro (`require('../otro-dominio/...')`). Toda comunicación cruzada pasa por
+`core/event-bus.js` (`bus.emit`/`bus.on`) o por un contrato síncrono
+inyectado en `core/contracts/*.js` (ej. `moderacion-policy.js`,
+`idioma-filtrar.js`, `obs-replay.js`) cuando el orden de ejecución importa
+y no alcanza con un evento fire-and-forget. `core/register-domain.js`
+monta cada dominio en su propio try/catch — un dominio que falla al
+arrancar no tumba a los demás.
+
+Endpoints HTTP relevantes (repartidos por dominio, ver cada carpeta para
+el resto):
+```
+GET  /                       ← index.html (UI principal)
+GET  /advanced.html          ← configuración avanzada
+GET  /overlay-*.html         ← overlays para OBS
+POST /api/connect            ← conecta a TikTok Live (canales/)
+POST /api/tts                ← Google TTS → stream MP3 (sonido/)
+WS   /                       ← broadcast eventos al browser (core/broadcast.js)
+GET  /api/gifts-list         ← lista PNGs de regalos (overlay/)
+POST /api/upload-bg          ← sube imagen fondo overlay (overlay/)
+PATCH /api/config            ← ajusta config en runtime (configuracion/)
+GET  /api/platforms/status   ← estado twitch/youtube (canales/)
+POST /api/platforms/connect  ← conecta twitch o youtube (canales/)
+POST /api/platforms/disconnect
+GET  /api/moderation/viewers ← registro de espectadores (moderacion/)
+POST /api/moderation/{mute,unmute,ban,unban,clear,follower}
+```
+
+## Moderación de espectadores (`moderacion/store/`)
 
 Registro persistente de todo espectador que interactúa, más los seguidores, con
 moderación **local** por usuario (no se toca la plataforma). Único dueño de
-`moderation.json` (en `DATA_BASE`, o sea `app.getPath('userData')`).
+`moderation.json` (en `DATA_BASE`, o sea `app.getPath('userData')`). El store
+está migrado un archivo por función (`moderacion/store/*.js`) sobre un
+`state` compartido en vez de un closure — ver `moderacion/store/create-store.js`.
 
 - Clave por usuario: `` `${platform}:${id}` ``; sin id estable cae a
   `` `${platform}:name:${nick}` `` y se marca `idk:'name'` (castigo frágil: se
@@ -63,42 +102,53 @@ moderación **local** por usuario (no se toca la plataforma). Único dueño de
   arranca vacío; **nunca lanza**, porque el require corre al arrancar la app.
 - Cap de 5.000 espectadores con purga LRU a 4.000 que jamás descarta
   seguidores, whitelisted ni usuarios con castigo vivo.
-- `emitChatMessage()` en `server.js` es el **único** punto por el que salen los
-  mensajes de las 3 plataformas: registra, aplica moderación y decide TTS. Los
-  handlers de plataforma y el cliente no repiten ninguna de esas reglas.
+- `chat/emit-chat-message.js` es el **único** punto por el que salen los
+  mensajes de las 3 plataformas: llega crudo de `canales/` vía el bus
+  (`canal:mensaje-crudo`), llama sincrónicamente a `moderacionPolicy.evaluate()`
+  (contrato inyectado por `moderacion/`, fail-open si lanza) y publica
+  `chat:mensaje-permitido`/`chat:mensaje-bloqueado`. Los handlers de plataforma
+  y el cliente no repiten ninguna de esas reglas.
 - UI: vista "Moderación" en el menú izquierdo, con pestañas Seguidores / No
   seguidores sobre la misma tabla.
 
-## Telemetría (`telemetry/`)
+## Telemetría (`telemetria/`)
 
-Módulo aparte que reporta uso agregado y anónimo a un servicio propio
+Dominio aparte que reporta uso agregado y anónimo a un servicio propio
 (`telemetria-tts`, repo separado, self-hosted en Docker — no Vercel). Sin
 `TELEMETRY_URL` configurada, el módulo es un no-op: cero peticiones de red.
 
-- `telemetry/index.js` — API pública (`bus`, `init`, `track`, `flush`,
-  `shutdown`). `main.js` la inicializa tras `waitForServer` y emite eventos
-  de app/errores/updates/soundpad directo sobre `telemetry.bus`.
-- `telemetry/transport.js` — envía batches por `fetch` nativo a
+- `telemetria/index.js` — dominio registrado normal (`register({bus, logger})`):
+  engancha los conectores al bus de inmediato, aunque `runtime.init()` todavía
+  no haya corrido (`track()` es no-op mientras no esté habilitada).
+- `telemetria/runtime.js` — el ciclo de vida real (`init`, `track`, `flush`,
+  `shutdown`). Separado de `index.js` porque `init()` necesita datos que solo
+  Electron tiene (`app.getVersion()`, `app.getPath('userData')`) — lo llama
+  `main.js` tras `waitForServer`.
+- `telemetria/transport.js` — envía batches por `fetch` nativo a
   `TELEMETRY_URL` (o al `url` de `telemetry.json`), con cola en disco
-  (`telemetry/buffer.js`) y reintentos.
-- `telemetry/connectors/*.js` — un conector por área (app, creators,
-  platforms, counters, obs, mobile, overlays, updates, errors, settings).
+  (`telemetria/buffer.js`) y reintentos. 4xx ya no se trata como éxito
+  silencioso: todo fallo de red queda logueado (`telemetria.envio.*`).
+- `telemetria/connectors/*.js` — un conector por área (creators, platforms,
+  counters, obs, mobile, overlays, updates, errors, settings). Cada uno
+  escucha el bus de dominios (`canal:estado`, `movil:comando`, etc.) o el
+  espejo de logs (`core/logger.js` emite **todo** log como `log:entry` al
+  bus) en vez de que cada dominio de negocio tenga que conocer telemetría.
   `counters.js` agrega eventos de alta frecuencia (TTS, música, moderación)
   en un contador por latido de 5 min en vez de uno por mensaje.
 - La URL sale de `TELEMETRY_URL` (env, inyectada en build) o de
   `%APPDATA%\tiktok-live-tts\telemetry.json` — archivo separado de
-  `config.json` a propósito, porque `server.js` descarta claves que no
+  `config.json` a propósito, porque `configuracion/` descarta claves que no
   reconoce y lo borraría en el primer guardado.
-- Casi todos los eventos se emiten directo desde `server.js` o `main.js`.
-  Solo `tts:skipped` y `tts:queue-overflow` nacen en el renderer
-  (`public/index.html`, cola TTS) y llegan al bus vía IPC:
+- Casi todos los eventos se emiten directo desde los conectores. Solo
+  `tts:skipped` y `tts:queue-overflow` nacen en el renderer (`public/index.html`,
+  cola TTS) y llegan al bus vía IPC:
   `window.electronAPI.trackEvent(name)` → `preload.js` → `ipcMain.on('telemetry:track', ...)`
-  en `main.js`, con lista blanca de esos dos nombres.
+  en `electron-shell/ipc-bridge.js`, con lista blanca de esos dos nombres.
 
 ## Variables de entorno clave
 
-- `TIKTOK_RESOURCES_PATH` — set por `main.js` en modo packaged para que `server.js` encuentre `gifts/`, `public/`, `asset/`, `blocked-words.md` en `process.resourcesPath` (fuera del asar)
-- `IS_PKG` — legado del approach anterior con pkg (aún presente en server.js, no afecta Electron)
+- `TIKTOK_RESOURCES_PATH` — set por `main.js` en modo packaged para que `core/paths.js` (`RESOURCE_BASE`) resuelva `gifts/`, `public/`, `asset/`, `blocked-words.md` en `process.resourcesPath` (fuera del asar)
+- `TIKTOK_USER_DATA_PATH` — set por `main.js` a `app.getPath('userData')`; `core/paths.js` (`DATA_BASE`) lo usa para `config.json`, `moderation.json`, `logs/`, etc.
 
 ## Paths críticos en producción (packaged)
 
@@ -106,7 +156,7 @@ Módulo aparte que reporta uso agregado y anónimo a un servicio propio
 %LOCALAPPDATA%\TikTok TTS\
   TikTok TTS.exe
   resources\
-    app.asar              ← main.js + server.js + node_modules
+    app.asar              ← main.js + server.js + los 14 dominios + electron-shell/ + telemetria/ + node_modules
     gifts\                ← 810 PNGs de regalos TikTok (188 MB)
     public\               ← HTML/CSS/JS de la UI y overlays
     asset\                ← flags SVG, iconos
@@ -196,3 +246,15 @@ git push origin main --tags
 
 - GitHub: https://github.com/iKhunsa/tiktok-tts
 - Releases: https://github.com/iKhunsa/tiktok-tts/releases
+
+## Documentación del rebuild por dominios
+
+El backend actual es el resultado de un rebuild completo ejecutado en 14
+fases (Fase 0 a Fase 13). Documentos de diseño y ejecución, útiles como
+referencia histórica y para entender decisiones de arquitectura:
+
+- `plan-fases/00-EJECUCION-PROMPTS.md` — prompts usados para ejecutar cada fase.
+- `plan-fases/fase-NN-*.md` — spec de cada fase (alcance, contratos, criterios de aceptación).
+- `arquitectura-propuesta.md` — documento de diseño de la arquitectura por dominios.
+- `logging-errores-propuesta.md` — spec de logging (esquema de evento, eventos por dominio).
+- `mapa-funciones-actual.md` — inventario función-por-función del backend monolítico original (usado como checklist de paridad en la Fase 13 de cierre).

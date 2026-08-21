@@ -72,6 +72,12 @@ module.exports = {
       }
     }, 'canales');
 
+    // /configuracion (Fase 2) pide esto para GET /api/status ("connected"),
+    // consumido por advanced.html — sin tocar el Map de canales directo.
+    bus.on('canales:tiktok-conectado', (respond) => {
+      if (typeof respond === 'function') respond(state.tiktokChannels.size > 0);
+    }, 'canales');
+
     // /overlay (Fase 8) pide refrescar el conteo de followers periodicamente
     // sin tocar los `conn` de TikTok directo (son privados de este dominio).
     bus.on('canales:refrescar-followers', () => {
@@ -103,7 +109,7 @@ module.exports = {
       }
     }, 1000);
 
-    return { rutas: 14, listeners: 2 };
+    return { rutas: 14, listeners: 3 };
   },
 
   shutdown() {

@@ -63,7 +63,7 @@ module.exports = {
     app.patch('/api/config', patchConfig(configStore, bus, logger));
     app.get('/api/platform-config', getPlatformConfig(platformConfigStore));
     app.patch('/api/platform-config', patchPlatformConfig(platformConfigStore));
-    app.get('/api/status', getStatus(configStore, { wss }));
+    app.get('/api/status', getStatus(configStore, { wss, bus }));
     app.get('/api/logs', getLogs(logger));
     app.post('/api/logs/client', postClientLog(logger));
     app.get('/api/logs/session-file', getSessionLogFile(logger));
