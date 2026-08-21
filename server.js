@@ -17,7 +17,7 @@ const logger = createLogger({ logsDir: path.join(DATA_BASE, 'logs') });
 const bus = createEventBus(logger);
 logger.attachBus(bus);
 
-const app = createApp();
+const app = createApp(bus);
 const server = startHttpServer(app, PORT, logger);
 const { wss } = createWsServer(server, bus, logger);
 attachBroadcast(bus, wss, logger);
@@ -35,7 +35,11 @@ registerDomain(deps, require('./movil'));
 registerDomain(deps, require('./sonido'));
 registerDomain(deps, require('./bot'));
 registerDomain(deps, require('./clips'));
-// Mas dominios se agregan aca a partir de la Fase 12 en adelante.
+registerDomain(deps, require('./avanzado'));
+registerDomain(deps, require('./donar'));
+registerDomain(deps, require('./telemetria'));
+// Los 16 dominios de negocio ya estan registrados. /electron-shell y
+// /telemetria/runtime.js se conectan desde main.js (no son rutas Express).
 
 // Va al final: si algun dominio ya registro GET /api/status, ese gana
 // (Express usa el primer handler que responde en la misma ruta).

@@ -1,60 +1,221 @@
-// PLACEHOLDER TEMPORAL — reemplazado fase a fase, ver /plan-fases
 'use strict';
 
+const { app, globalShortcut } = require('electron');
 const path = require('path');
-const http = require('http');
-const { app, BrowserWindow } = require('electron');
+const fs = require('fs');
 
-require('./server.js');
+const { ensureSingleInstance } = require('./electron-shell/single-instance');
+const { createWindow, showMainWindow, waitForServer, PORT } = require('./electron-shell/window');
+const { createTray, buildTrayMenu, showStartupError } = require('./electron-shell/tray');
+const { setupAutoUpdater, installUpdate } = require('./electron-shell/updater');
+const { attachIpcBridge } = require('./electron-shell/ipc-bridge');
+const { startUiohook, stopUiohook, isUiohookActive, registerUiohookShortcut } = require('./electron-shell/uiohook');
+const { GLOBAL_SHORTCUT } = require('./clips/global-shortcut');
+const telemetryRuntime = require('./telemetria/runtime');
 
-const PORT = process.env.PORT || 3000;
+// Cuando empaquetado, apunta server.js a extraResources para los assets.
+if (app.isPackaged) {
+  process.env.TIKTOK_RESOURCES_PATH = process.resourcesPath;
+}
+process.env.TIKTOK_USER_DATA_PATH = app.getPath('userData');
 
-function waitForServer(cb, attempts = 0) {
-  http
-    .get(`http://127.0.0.1:${PORT}/api/status`, (res) => {
-      if (res.statusCode === 200) {
-        res.resume();
-        cb();
-        return;
-      }
-      res.resume();
-      retry(cb, attempts);
-    })
-    .on('error', () => retry(cb, attempts));
+let mainWindow = null;
+let tray = null;
+let isQuitting = false;
+let pendingUpdateVersion = null;
+let quitTasksDone = false;
+let ipcHandles = null;
+
+ensureSingleInstance(app, () => showMainWindow(mainWindow));
+
+// Arranca /core + los 16 dominios de negocio (server.js ya no tiene logica
+// propia desde la Fase 1). Envuelto para mostrar un dialogo recuperable en
+// vez de una excepcion sin manejar que bloquee al auto-updater.
+let serverLoadError = null;
+let serverModule = null;
+try {
+  serverModule = require('./server');
+} catch (error) {
+  serverLoadError = error;
+  if (!app.isPackaged) throw error;
 }
 
-function retry(cb, attempts) {
-  if (attempts < 30) {
-    setTimeout(() => waitForServer(cb, attempts + 1), 200);
+const bus = serverModule && serverModule.bus;
+const logger = serverModule && serverModule.logger;
+
+if (bus && logger) {
+  process.on('uncaughtException', (error) => {
+    logger.log(
+      'fatal', 'electron-shell', 'main.js#uncaughtException', 'core.boundary.excepcion_capturada',
+      `Excepcion no capturada en el proceso main: ${error.message}`, { error: error.message, stack: error.stack }
+    );
+  });
+  process.on('unhandledRejection', (reason) => {
+    const error = reason instanceof Error ? reason : new Error(String(reason));
+    logger.log(
+      'fatal', 'electron-shell', 'main.js#unhandledRejection', 'core.boundary.excepcion_capturada',
+      `Promesa rechazada sin manejar en main: ${error.message}`, { error: error.message, stack: error.stack }
+    );
+  });
+}
+
+const ICON_PATH = app.isPackaged
+  ? path.join(process.resourcesPath, 'tray-icon.ico')
+  : path.join(__dirname, 'tray-icon.ico');
+
+function getMainWindow() { return mainWindow; }
+function getTray() { return tray; }
+
+function readJsonField(file, field, validate) {
+  try {
+    if (!fs.existsSync(file)) return null;
+    const value = JSON.parse(fs.readFileSync(file, 'utf8'))[field];
+    if (typeof value !== 'string' || !value.trim()) return null;
+    if (validate && !validate(value.trim())) return null;
+    return value.trim();
+  } catch (_) {
+    return null;
   }
 }
 
-function createWindow() {
-  const win = new BrowserWindow({
-    width: 1280,
-    height: 800,
-    minWidth: 900,
-    minHeight: 600,
-    title: 'TikTok TTS',
-    show: false,
-    webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
-      sandbox: true,
-      webSecurity: true,
-      preload: path.join(__dirname, 'preload.js'),
-    },
-  });
+// La URL/token de telemetria salen de TELEMETRY_URL+TELEMETRY_TOKEN (override
+// de dev), de telemetry.json en userData (override manual), o de
+// telemetry-config.json bakeado en el build. Archivo aparte a proposito:
+// config.json lo gestiona /configuracion, que descarta claves desconocidas y
+// borraria esta en el primer guardado.
+function resolveTelemetryUrl() {
+  if (process.env.TELEMETRY_URL) return process.env.TELEMETRY_URL.trim();
+  const userFile = path.join(app.getPath('userData'), 'telemetry.json');
+  const isHttpUrl = (v) => /^https?:\/\//i.test(v);
+  const fromUser = readJsonField(userFile, 'url', isHttpUrl);
+  if (fromUser) return fromUser;
+  const bundledFile = path.join(process.env.TIKTOK_RESOURCES_PATH || __dirname, 'telemetry-config.json');
+  return readJsonField(bundledFile, 'url', isHttpUrl);
+}
 
-  win.loadURL(`http://127.0.0.1:${PORT}`);
-  win.removeMenu();
-  win.once('ready-to-show', () => win.show());
+function resolveIngestToken() {
+  if (process.env.TELEMETRY_TOKEN) return process.env.TELEMETRY_TOKEN.trim();
+  const userFile = path.join(app.getPath('userData'), 'telemetry.json');
+  const fromUser = readJsonField(userFile, 'token');
+  if (fromUser) return fromUser;
+  const bundledFile = path.join(process.env.TIKTOK_RESOURCES_PATH || __dirname, 'telemetry-config.json');
+  return readJsonField(bundledFile, 'token');
+}
+
+function trayCallbacks() {
+  return {
+    onOpen: () => showMainWindow(mainWindow),
+    onInstallUpdate: installUpdate,
+    onQuit: () => app.quit(),
+  };
 }
 
 app.whenReady().then(() => {
-  waitForServer(createWindow);
+  if (serverLoadError) {
+    // Intenta actualizar primero — si hay un fix disponible, se descarga e
+    // instala automaticamente sin que el usuario tenga que reinstalar a mano.
+    if (app.isPackaged) {
+      try {
+        const { autoUpdater } = require('electron-updater');
+        autoUpdater.autoDownload = true;
+        autoUpdater.autoInstallOnAppQuit = false;
+        autoUpdater.on('update-downloaded', () => autoUpdater.quitAndInstall(false, true));
+        autoUpdater.checkForUpdates().catch(() => { /* best-effort */ });
+      } catch (_) { /* best-effort */ }
+    }
+    showStartupError(serverLoadError);
+    return;
+  }
+
+  waitForServer(() => {
+    mainWindow = createWindow({
+      iconPath: ICON_PATH,
+      onClose: () => {
+        if (isQuitting) return;
+        isQuitting = true;
+        app.quit();
+      },
+    });
+
+    tray = createTray({ iconPath: ICON_PATH, logger, ...trayCallbacks() });
+
+    if (app.isPackaged) {
+      setupAutoUpdater({
+        app,
+        bus,
+        logger,
+        getMainWindow,
+        getTray,
+        buildTrayMenu: (version) => buildTrayMenu(trayCallbacks(), version),
+        onPendingVersion: (version) => { pendingUpdateVersion = version; },
+      });
+    }
+
+    telemetryRuntime.init({
+      url: resolveTelemetryUrl(),
+      token: resolveIngestToken(),
+      appVersion: app.getVersion(),
+      dataDir: app.getPath('userData'),
+      bus,
+      logger,
+    });
+
+    startUiohook(logger);
+
+    ipcHandles = attachIpcBridge({ app, bus, logger, getMainWindow, globalShortcut });
+
+    // Atajo de clip (Ctrl+Shift+M): manda IPC al renderer, que hace su
+    // propio bookmark local (elapsed/toast) y llama POST /api/obs/save-replay
+    // (front sin cambios). /clips (Fase 11) sirve al comando movil markClip,
+    // que no tiene renderer del que colgar un bookmark local — ese camino
+    // pasa por bus.emit('clips:marcar') en vez de IPC.
+    const clipCallback = () => {
+      if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('mark-clip');
+    };
+    if (isUiohookActive()) {
+      registerUiohookShortcut('clip', GLOBAL_SHORTCUT, clipCallback);
+    } else {
+      globalShortcut.register(GLOBAL_SHORTCUT, clipCallback);
+    }
+  }, () => {
+    showStartupError(new Error(`El servidor local no respondio en http://127.0.0.1:${PORT}`));
+  });
 });
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
+app.on('before-quit', (event) => {
+  isQuitting = true;
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.removeAllListeners('close');
+  }
+
+  // El handler se vuelve a disparar tras el app.quit() de abajo; la segunda
+  // vez solo tiene que dejar pasar el cierre.
+  if (quitTasksDone) return;
+  quitTasksDone = true;
+
+  // El shutdown ordenado de los dominios de negocio ya corre en
+  // process.on('exit') dentro de server.js (Fase 1) — aca solo se pospone
+  // el quit lo justo para que la telemetria alcance a mandar el evento de
+  // cierre (en 'will-quit' el proceso ya murio antes de que la peticion salga).
+  if (telemetryRuntime.enabled) {
+    event.preventDefault();
+    telemetryRuntime.shutdown({ timeoutMs: 1500 }).finally(() => app.quit());
+  }
+});
+
+app.on('will-quit', () => {
+  globalShortcut.unregisterAll();
+  if (ipcHandles) ipcHandles.clearSoundpadShortcuts();
+  stopUiohook();
+});
+
+// Mantiene la app viva en la tray solo cuando la tray realmente existe y no
+// se esta cerrando; si no, deja que Electron cierre normal para no dejar un
+// proceso huerfano corriendo sin ventana visible.
+app.on('window-all-closed', (e) => {
+  if (tray && !isQuitting) {
+    e.preventDefault();
+  } else {
+    app.quit();
+  }
 });

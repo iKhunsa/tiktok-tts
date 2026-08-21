@@ -8,7 +8,7 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "electron": "electron .",
-    "prebuild:electron": "node backend-viejo/scripts/ensure-webhook-config.js && node backend-viejo/scripts/ensure-telemetry-config.js",
+    "prebuild:electron": "node scripts/ensure-webhook-config.js && node scripts/ensure-telemetry-config.js",
     "build:electron": "electron-builder --win"
   },
   "build": {
@@ -24,7 +24,7 @@
     },
     "win": {
       "target": "nsis",
-      "icon": "backend-viejo/tray-icon.ico",
+      "icon": "tray-icon.ico",
       "verifyUpdateCodeSignature": false
     },
     "nsis": {
@@ -48,6 +48,14 @@
         ]
       },
       {
+        "from": "blocked-words.md",
+        "to": "blocked-words.md"
+      },
+      {
+        "from": "tray-icon.ico",
+        "to": "tray-icon.ico"
+      },
+      {
         "from": "webhook-config.generated.json",
         "to": "webhook-config.json"
       },
@@ -61,6 +69,22 @@
       "main.js",
       "preload.js",
       "server.js",
+      "core/**/*",
+      "configuracion/**/*",
+      "idioma/**/*",
+      "reporte-bug/**/*",
+      "moderacion/**/*",
+      "canales/**/*",
+      "chat/**/*",
+      "overlay/**/*",
+      "movil/**/*",
+      "sonido/**/*",
+      "bot/**/*",
+      "clips/**/*",
+      "avanzado/**/*",
+      "donar/**/*",
+      "electron-shell/**/*",
+      "telemetria/**/*",
       "node_modules/**/*",
       "!node_modules/.cache",
       "!node_modules/**/test{s,}/**",
