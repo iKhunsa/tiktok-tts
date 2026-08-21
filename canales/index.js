@@ -128,6 +128,9 @@ module.exports = {
     }
     state.twitchChannels.clear();
 
+    for (const timer of state.youtubeWatchdogTimers.values()) clearTimeout(timer);
+    state.youtubeWatchdogTimers.clear();
+
     for (const c of state.youtubeChannels.values()) {
       try { c.stop('shutdown'); c.removeAllListeners(); } catch (_) { /* best-effort */ }
     }
