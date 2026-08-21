@@ -46,15 +46,18 @@ module.exports = {
     // core/contracts/moderacion-policy.js sin importar moderacion/ directo.
     moderacionPolicyContract.evaluate = policy.evaluate;
 
-    // canal:mensaje-crudo (Fase 6) trae el dato crudo por plataforma
-    // (nombres de campo distintos en TikTok/Twitch/YouTube) — parsearlo
-    // aca acoplaria /moderacion a /canales. /chat (Fase 7) ya normaliza el
-    // mensaje a {platform, userId, nick, text} para llamar a policy.evaluate();
-    // el store.touch() de "registrar interaccion" se hace ahi, con el dato
-    // ya limpio, en vez de acá.
     bus.on('canal:follow', (payload) => {
       if (!payload) return;
       store.markFollower({ platform: payload.platform, userId: payload.userId, nick: payload.nick || payload.user });
+    }, 'moderacion');
+
+    // /chat (Fase 7) emite esto ya con el dato limpio {platform, userId, nick}
+    // — canal:mensaje-crudo trae el dato crudo por plataforma (nombres de
+    // campo distintos en TikTok/Twitch/YouTube) y parsearlo aca acoplaria
+    // /moderacion a /canales.
+    bus.on('chat:mensaje-recibido', (payload) => {
+      if (!payload) return;
+      store.touch({ platform: payload.platform, userId: payload.userId, nick: payload.nick });
     }, 'moderacion');
 
     const dupSweepTimer = setInterval(() => sweepDuplicateTracker(dupState), DUP_SWEEP_MS);
@@ -77,7 +80,7 @@ module.exports = {
     app.post('/api/block-word', blockWord(deps));
     app.delete('/api/block-word', unblockWord(deps));
 
-    return { rutas: 16, listeners: 1 };
+    return { rutas: 16, listeners: 2 };
   },
 
   shutdown() {
