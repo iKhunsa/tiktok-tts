@@ -974,6 +974,8 @@
     .msg-user-clickable { cursor: pointer; }
     .msg-user-clickable:hover { text-decoration: underline; }
     .chat-msg--muted { opacity: 0.55; }
+    .chat-msg--admin { background: rgba(255,204,0,0.10); box-shadow: inset 2px 0 0 #ffcc00; }
+    .chat-msg--admin.speaking { background: rgba(255,204,0,0.22); }
     .chat-muted-badge { margin-left: 5px; font-size: 10px; }
     .chat-follower-badge { margin-left: 5px; font-size: 10px; color: var(--accent); }
 
@@ -1682,6 +1684,7 @@
     .badge-tiktok  { background: rgba(254,44,85,0.15);  color: #fe2c55; }
     .badge-twitch  { background: rgba(145,70,255,0.15); color: #9146ff; }
     .badge-youtube { background: rgba(255,0,0,0.15);    color: #ff4444; }
+    .badge-admin   { background: rgba(255,204,0,0.18);  color: #ffcc00; font-weight: 800; }
 
     /* Supabase-style primary button */
     .btn-supabase-primary {
@@ -5543,6 +5546,15 @@
         handleChatData(data, chatId);
         break;
 
+      case 'admin-announce': {
+        msgCount++;
+        document.getElementById('msgCount').textContent = msgCount;
+        const adminMsgId = `msg-${msgCount}`;
+        addSystemMsg(data.text, 'admin', adminMsgId, { iconSrc: 'icons/check_circle.svg' });
+        speak(data.text, adminMsgId, data.timestamp);
+        break;
+      }
+
       case 'gift':
         if (options.readGifts) {
           msgCount++;
@@ -5937,7 +5949,11 @@
     const initials = user.substring(0, 2).toUpperCase();
 
     const div = document.createElement('div');
-    div.className = data.muted ? 'chat-msg chat-msg--muted' : 'chat-msg';
+    div.className = [
+      'chat-msg',
+      data.muted && 'chat-msg--muted',
+      data.isAdmin && 'chat-msg--admin',
+    ].filter(Boolean).join(' ');
     div.id = msgId;
 
     const avatar = document.createElement('div');
@@ -5980,6 +5996,12 @@
       badge.className = `chat-platform-badge badge-${platform}`;
       badge.textContent = platform;
       userEl.appendChild(badge);
+    }
+    if (data.isAdmin) {
+      const adminBadge = document.createElement('span');
+      adminBadge.className = 'chat-platform-badge badge-admin';
+      adminBadge.textContent = 'ADMIN';
+      userEl.appendChild(adminBadge);
     }
 
     const textEl = document.createElement('div');
