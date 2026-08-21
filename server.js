@@ -27,7 +27,8 @@ const deps = { app, wss, bus, logger };
 registerDomain(deps, require('./configuracion'));
 registerDomain(deps, require('./idioma'));
 registerDomain(deps, require('./reporte-bug'));
-// Mas dominios se agregan aca a partir de la Fase 5 en adelante.
+registerDomain(deps, require('./moderacion'));
+// Mas dominios se agregan aca a partir de la Fase 6 en adelante.
 
 // Va al final: si algun dominio ya registro GET /api/status, ese gana
 // (Express usa el primer handler que responde en la misma ruta).
