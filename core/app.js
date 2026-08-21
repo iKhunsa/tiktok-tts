@@ -2,6 +2,39 @@
 
 const path = require('path');
 const express = require('express');
+const { getRequestHostname, isLocalHostname } = require('./security/is-local-request');
+
+/**
+ * Bloquea mutaciones (POST/PATCH/DELETE/PUT) que no vengan de localhost —
+ * protege TODAS las rutas de escritura de todos los dominios contra CSRF/
+ * acceso desde otra maquina de la red. /api/mobile/* y /mobile quedan
+ * afuera a proposito: esas rutas ya validan IP privada por su cuenta
+ * (movil/validate-request.js, Fase 8) porque el panel movil necesita
+ * mutar desde otro dispositivo de la LAN.
+ * Migracion de validateLocalMutation (backend-viejo/server.js:222).
+ */
+function validateLocalMutation(req, res, next) {
+  if (req.path.startsWith('/api/mobile') || req.path === '/mobile') return next();
+  if (!['POST', 'PATCH', 'DELETE', 'PUT'].includes(req.method)) return next();
+
+  const host = getRequestHostname(req.headers.host);
+  if (!isLocalHostname(host)) {
+    return res.status(403).json({ error: 'Host no permitido' });
+  }
+
+  const source = req.headers.origin || req.headers.referer;
+  if (source) {
+    try {
+      if (!isLocalHostname(new URL(source).hostname)) {
+        return res.status(403).json({ error: 'Origen no permitido' });
+      }
+    } catch (_) {
+      return res.status(403).json({ error: 'Origen no permitido' });
+    }
+  }
+
+  return next();
+}
 
 /**
  * Crea la instancia Express base con los middlewares globales del kernel.
@@ -11,6 +44,7 @@ const express = require('express');
 function createApp(bus) {
   const app = express();
   app.use(express.json());
+  app.use(validateLocalMutation);
 
   if (bus) {
     // Overlays cargados en OBS. Se registra cual se abre, no cuantas veces:

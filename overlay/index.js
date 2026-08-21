@@ -134,7 +134,16 @@ module.exports = {
       if (payload.state === 'desconectado' || payload.state === 'sin-canales') {
         if (payload.channel) state.activeTiktokChannels.delete(payload.channel);
         recomputeFollowerBase(deps);
-        if (state.activeTiktokChannels.size === 0) stopFollowerRefresh(deps);
+        if (state.activeTiktokChannels.size === 0) {
+          stopFollowerRefresh(deps);
+          // Migracion de clearLikePendingTimers (backend-viejo/server.js:599) —
+          // sin esto, timers de debounce de likes pendientes de un canal ya
+          // desconectado podian disparar un broadcast de likes fantasma.
+          for (const pending of state.likePendingTimers.values()) {
+            if (pending && pending.timer) clearTimeout(pending.timer);
+          }
+          state.likePendingTimers.clear();
+        }
       }
     }, 'overlay');
 

@@ -28,6 +28,13 @@ function command(deps) {
       `Comando movil recibido: ${action}`, { action }
     );
 
+    // markClip ya lo resuelve /clips (Fase 11) server-side via movil:comando
+    // -> clips:marcar -> el contrato de OBS. Relayarlo tambien al desktop
+    // como remote-cmd disparia el guardado de replay dos veces.
+    if (action === 'markClip') {
+      return res.json({ ok: true });
+    }
+
     if (!hasDesktopClient(wss)) {
       logger.log(
         'warn', 'movil', 'movil/routes/command.js#command', 'movil.comando.sin_desktop',
