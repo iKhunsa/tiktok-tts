@@ -1,7 +1,7 @@
 'use strict';
 
 const path = require('path');
-const { createApp } = require('./core/app');
+const { createApp, attachFallbackStatus } = require('./core/app');
 const { startHttpServer } = require('./core/http-server');
 const { createWsServer } = require('./core/ws-server');
 const { createEventBus } = require('./core/event-bus');
@@ -22,8 +22,14 @@ const server = startHttpServer(app, PORT, logger);
 const { wss } = createWsServer(server, bus, logger);
 attachBroadcast(bus, wss, logger);
 
-// Dominios se agregan aca a partir de la Fase 2 en adelante:
-// registerDomain({ app, wss, bus, logger, config }, require('./configuracion'));
+const deps = { app, wss, bus, logger };
+
+registerDomain(deps, require('./configuracion'));
+// Mas dominios se agregan aca a partir de la Fase 3 en adelante.
+
+// Va al final: si algun dominio ya registro GET /api/status, ese gana
+// (Express usa el primer handler que responde en la misma ruta).
+attachFallbackStatus(app);
 
 process.on('uncaughtException', (error) => {
   logger.log(
