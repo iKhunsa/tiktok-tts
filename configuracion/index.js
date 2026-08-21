@@ -31,6 +31,12 @@ module.exports = {
       if (typeof respond === 'function') respond(configStore.config);
     }, 'configuracion');
 
+    // Mismo patron para platform-config.json (clientId de Twitch) —
+    // /canales (Fase 6) lo necesita para el flujo OAuth device-code.
+    bus.on('platform-config:get', (respond) => {
+      if (typeof respond === 'function') respond(platformConfigStore.platformConfig);
+    }, 'configuracion');
+
     app.get('/api/config', getConfig(configStore));
     app.patch('/api/config', patchConfig(configStore, bus, logger));
     app.get('/api/platform-config', getPlatformConfig(platformConfigStore));
