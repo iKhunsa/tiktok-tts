@@ -76,7 +76,10 @@
       top: 0;
       height: 100vh;
       overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
     }
+    .sidebar::-webkit-scrollbar { display: none; }
 
     .sidebar-brand {
       display: flex;
@@ -100,7 +103,7 @@
     .brand-sub  { font-size: 10px; color: var(--text-muted); }
 
     .sidebar-nav {
-      flex: 1;
+      flex: 0 0 auto;
       display: flex;
       flex-direction: column;
       gap: 2px;
@@ -154,6 +157,12 @@
       transition: background 0.15s, color 0.15s;
     }
     .sidebar-footer-btn:hover { background: var(--surface); color: var(--text-secondary); }
+
+    .ad-slot { display: block; margin: 4px 12px; border-radius: 8px; overflow: hidden; line-height: 0; }
+    .ad-slot--lateral { flex: 1 1 auto; min-height: 48px; max-height: 461px; }
+    .ad-slot img { width: 100%; height: auto; display: block; object-fit: contain; }
+    .ad-slot--lateral img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+    .ad-slot--banner { margin: 16px 0 0; border-radius: 12px; }
 
     .community-banner {
       display: block;
@@ -1844,6 +1853,10 @@
       </button>
     </nav>
 
+    <div class="ad-slot ad-slot--lateral" id="sidebarAdSlot">
+      <img src="asset/ads/lateral.png" alt="Publicidad">
+    </div>
+
     <a href="https://discord.com/invite/mwY859tcQK" target="_blank" class="community-banner">
       💬 <span data-i18n="community.label">Comunidad TikLiveTTS</span>
       <span class="community-desc" data-i18n="community.desc">Discord oficial · feedback y preguntas bienvenidos</span>
@@ -1964,6 +1977,9 @@
           <span id="speakingText">Leyendo...</span>
         </div>
         <div class="queue-badge" id="queueBadge">Cola: 0 mensajes</div>
+        <div class="ad-slot ad-slot--banner" id="chatAdSlot">
+          <img src="asset/ads/banner.png" alt="Publicidad">
+        </div>
       </div>
     </div>
 
