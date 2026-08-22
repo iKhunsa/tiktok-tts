@@ -5,7 +5,7 @@ const { cleanupAfterLastTikTokChannel } = require('../tiktok/cleanup-after-last-
 const { cleanTwitchChannel } = require('../twitch/clean-channel');
 const { clearReconnectTimer: clearTwitchReconnectTimer } = require('../twitch/connect-twitch');
 const { normalizeYoutubeInput } = require('../youtube/parse-target');
-const { clearReconnectTimer: clearYoutubeReconnectTimer } = require('../youtube/connect-youtube');
+const { clearReconnectTimer: clearYoutubeReconnectTimer, clearWatchdogTimer: clearYoutubeWatchdogTimer } = require('../youtube/connect-youtube');
 const { stopYoutubeChat } = require('../youtube/stop-chat');
 const { broadcastChannels } = require('../broadcast-channels');
 
@@ -51,11 +51,13 @@ function platformsDisconnect(deps) {
         if (channel) {
           const ytChannel = normalizeYoutubeInput(channel);
           clearYoutubeReconnectTimer(state.youtubeReconnectTimers, ytChannel);
+          clearYoutubeWatchdogTimer(state.youtubeWatchdogTimers, ytChannel);
           const c = state.youtubeChannels.get(ytChannel);
           if (c) { stopYoutubeChat(c, 'disconnect'); state.youtubeChannels.delete(ytChannel); }
           state.youtubeSeenIds.delete(ytChannel);
         } else {
           for (const ch of state.youtubeReconnectTimers.keys()) clearYoutubeReconnectTimer(state.youtubeReconnectTimers, ch);
+          for (const ch of state.youtubeWatchdogTimers.keys()) clearYoutubeWatchdogTimer(state.youtubeWatchdogTimers, ch);
           for (const c of state.youtubeChannels.values()) stopYoutubeChat(c, 'disconnect');
           state.youtubeChannels.clear();
           state.youtubeSeenIds.clear();
