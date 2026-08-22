@@ -4768,6 +4768,9 @@
     if (!ttsGlobalEnabled && isSpeaking) {
       stopCurrentTTS({ clearQueue: true });
     }
+    if (ttsGlobalEnabled && !ttsPaused && !isSpeaking && speechQueue.length > 0) {
+      processQueue();
+    }
   }
 
   // ─── PAUSE TTS / KEYBOARD SHORTCUTS ───────────────────────────
@@ -5391,8 +5394,11 @@
       updateQueueBadge();
       return;
     }
-    // FIFO puro: el orden de llegada al cliente es el orden natural percibido
+    // Orden por timestamp, no por llegada al cliente: la moderacion agrega
+    // latencia variable a los mensajes de chat, mientras que joins/gifts/alertas
+    // no pasan por ese filtro y pueden llegar antes aunque hayan ocurrido despues.
     speechQueue.push({ text, msgId, timestamp: timestamp || Date.now() });
+    speechQueue.sort((a, b) => a.timestamp - b.timestamp);
     updateQueueBadge();
     if (!isSpeaking) processQueue();
   }
