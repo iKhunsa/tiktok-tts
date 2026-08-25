@@ -3581,6 +3581,7 @@
   // ─── BACKGROUND IMAGE UPLOAD ──────────────────────────────────
   async function uploadBg(type, file) {
     if (!file) return;
+    const oldUrl = appSettings.overlays[type].bgimg;
     const formData = new FormData();
     formData.append('image', file);
     try {
@@ -3593,6 +3594,14 @@
         else updateOverlayUrl(type);
         saveSettings();
         showToast(t('toast.bgUploaded'));
+        if (oldUrl && oldUrl !== data.url) {
+          const oldFilename = oldUrl.split('/').pop();
+          fetch('/api/upload-bg', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ filename: oldFilename })
+          }).catch(() => { /* ignore cleanup errors */ });
+        }
       } else {
         showToast(data.error || t('toast.bgUploadError'));
       }

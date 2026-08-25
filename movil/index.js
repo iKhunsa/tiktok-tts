@@ -20,9 +20,9 @@ module.exports = {
 
     // Espejo de solo lectura: el desktop es la unica fuente de verdad, este
     // dominio solo refleja lo que el desktop confirma via state-sync.
-    bus.on('ws:mensaje-entrante', ({ ws, data }) => {
+    bus.on('ws:mensaje-entrante', ({ data, markDesktop }) => {
       if (!data || data.type !== 'state-sync' || !data.state || typeof data.state !== 'object') return;
-      ws.isDesktop = true;
+      markDesktop();
       const s = data.state;
       if (typeof s.ttsGlobalEnabled === 'boolean') mobileState.ttsGlobalEnabled = s.ttsGlobalEnabled;
       if (typeof s.ttsPaused === 'boolean') mobileState.ttsPaused = s.ttsPaused;

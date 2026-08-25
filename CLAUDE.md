@@ -236,6 +236,19 @@ git push origin main --tags
 
 **Por qué extraResources y no asar:** `gifts/` tiene 188 MB de PNGs. Meterlos en el asar los haría parte del bundle comprimido pero el asar tiene límites prácticos de tamaño y acceso. `extraResources` los deja en el sistema de archivos real, accesibles via `process.resourcesPath`.
 
+**Secrets embebidos en el instalador (webhook Discord, token telemetría) — riesgo aceptado:**
+`webhook-config.generated.json` / `telemetry-config.generated.json` se inyectan
+en build time (desde secrets de CI) y viajan dentro de `extraResources` —
+extraíbles por cualquiera que descompacte el instalador. Se evaluó moverlos
+detrás de un proxy/backend propio y se descartó: agrega infraestructura
+hosteada 24/7 solo para ocultar un webhook de baja severidad (spam de bug
+reports, no acceso a datos de usuarios). Mitigación real: rotación barata.
+Si se filtra el webhook — regenerar en Discord (Server Settings → Integrations
+→ Webhooks), actualizar el secret `DISCORD_BUG_REPORT_WEBHOOK` en GitHub
+Actions, cortar un nuevo release (`git tag vX.Y.Z && git push --tags`); el
+build viejo filtrado queda inútil apenas se rota. Igual para el token de
+telemetría vía `TELEMETRY_URL`/su secret correspondiente.
+
 **Por qué se descartó Kick:** Kick.com usa Cloudflare que bloquea cualquier request HTTP/WS desde Node.js (403). Requeriría mantener un BrowserWindow de Electron abierto permanentemente (~200MB RAM), y su infraestructura WS cambió de Pusher a `websockets.kick.com` con tokens dinámicos. Complejidad vs beneficio no justificada actualmente.
 
 **bufferutil/utf-8-validate:** Dependencias opcionales de `ws`. Se incluyen en el build con sus binarios precompilados para Node.js (NAPI, compatibles con Electron sin rebuilding). Se excluyen solo los `.pdb` (debug symbols, innecesarios en producción).

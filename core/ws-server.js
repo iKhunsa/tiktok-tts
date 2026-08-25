@@ -5,6 +5,11 @@ const WebSocket = require('ws');
 const { getRequestHostname, isLocalHostname } = require('./security/is-local-request');
 const { isPrivateIP } = require('./security/is-private-ip');
 
+const MAX_MESSAGE_BYTES = 64 * 1024; // 64 KB — sobra para comandos moviles/state-sync
+const RATE_LIMIT_WINDOW_MS = 1000;
+const RATE_LIMIT_MAX_MESSAGES = 30; // por cliente por segundo
+const RATE_LIMIT_MAX_VIOLATIONS = 5; // ventanas seguidas por encima del limite -> se cierra la conexion
+
 function isAllowedWsClient(info) {
   const host = getRequestHostname(info.req.headers.host);
   const clientIp = info.req.socket && info.req.socket.remoteAddress
@@ -30,6 +35,7 @@ function isAllowedWsClient(info) {
 function createWsServer(server, bus, logger) {
   const wss = new WebSocket.Server({
     server,
+    maxPayload: MAX_MESSAGE_BYTES,
     verifyClient: (info, cb) => {
       const allowed = isAllowedWsClient(info);
       if (!allowed) {
@@ -55,6 +61,10 @@ function createWsServer(server, bus, logger) {
     const esDesktop = isLocalHostname(getRequestHostname(req.headers.host));
     ws.clientId = clientId;
 
+    let windowStart = Date.now();
+    let windowCount = 0;
+    let violations = 0;
+
     logger.log(
       'info',
       'core',
@@ -65,6 +75,26 @@ function createWsServer(server, bus, logger) {
     );
 
     ws.on('message', (raw) => {
+      const now = Date.now();
+      if (now - windowStart >= RATE_LIMIT_WINDOW_MS) {
+        windowStart = now;
+        windowCount = 0;
+      }
+      windowCount++;
+      if (windowCount > RATE_LIMIT_MAX_MESSAGES) {
+        violations++;
+        logger.log(
+          'warn',
+          'core',
+          'core/ws-server.js#onMessage',
+          'core.ws.rate_limit_excedido',
+          `Cliente WS ${clientId} excedio el limite de mensajes/seg (violacion ${violations})`,
+          { clientId, violations }
+        );
+        if (violations >= RATE_LIMIT_MAX_VIOLATIONS) ws.close(1008, 'rate limit excedido');
+        return;
+      }
+
       const rawStr = raw.toString();
       let parsed;
       try {
@@ -80,7 +110,11 @@ function createWsServer(server, bus, logger) {
         );
         return;
       }
-      bus.emit('ws:mensaje-entrante', { clientId, ws, data: parsed });
+      bus.emit('ws:mensaje-entrante', {
+        clientId,
+        data: parsed,
+        markDesktop: () => { ws.isDesktop = true; },
+      });
     });
 
     ws.on('close', () => {

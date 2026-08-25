@@ -1,8 +1,10 @@
 'use strict';
 
+const { treeKill } = require('./tree-kill');
+
 function shutdown(state) {
   for (const child of state.liveChildren) {
-    try { child.kill(); } catch (_) { /* best-effort */ }
+    treeKill(child);
   }
   state.liveChildren.clear();
 }
