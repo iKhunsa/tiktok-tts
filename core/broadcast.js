@@ -14,7 +14,14 @@ function attachBroadcast(bus, wss, logger) {
       const msg = JSON.stringify(data);
       wss.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
-          client.send(msg);
+          client.send(msg, (error) => {
+            if (error) {
+              logger.log(
+                'warn', 'core', 'core/broadcast.js#attachBroadcast', 'core.broadcast.envio_fallido',
+                `No se pudo enviar mensaje a un cliente WS: ${error.message}`, { error: error.message }
+              );
+            }
+          });
         }
       });
     },

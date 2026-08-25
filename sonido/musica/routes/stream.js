@@ -1,5 +1,7 @@
 'use strict';
 
+const { treeKill } = require('../engine/tree-kill');
+
 function stream(deps) {
   return async (req, res) => {
     const { engine, logger } = deps;
@@ -43,7 +45,7 @@ function stream(deps) {
     });
     res.on('close', () => {
       if (!res.writableEnded) aborted = true;
-      try { child.kill(); } catch (_) { /* best-effort */ }
+      treeKill(child);
     });
   };
 }

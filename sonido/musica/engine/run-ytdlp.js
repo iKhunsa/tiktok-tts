@@ -1,6 +1,7 @@
 'use strict';
 
 const { spawnChild } = require('./spawn-child');
+const { treeKill } = require('./tree-kill');
 
 const STDERR_TAIL_MAX = 4096;
 
@@ -17,7 +18,7 @@ function runYtdlp(state, args, { timeoutMs = 25000 } = {}) {
     let done = false;
     const finish = (result) => { if (!done) { done = true; clearTimeout(timer); resolve(result); } };
     const timer = setTimeout(() => {
-      try { child.kill(); } catch (_) { /* best-effort */ }
+      treeKill(child);
       finish({ code: -1, stdout, stderr: `timeout tras ${timeoutMs}ms` });
     }, timeoutMs);
     child.stdout.on('data', (d) => { stdout += d; });

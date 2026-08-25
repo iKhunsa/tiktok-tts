@@ -7,13 +7,15 @@ const { DEFAULT_CONFIG } = require('./default-config');
 const { applyConfigPatch } = require('./apply-patch');
 
 const CONFIG_FILE = path.join(DATA_BASE, 'config.json');
+const CONFIG_TMP_FILE = `${CONFIG_FILE}.tmp`;
 
 function createConfigStore(logger) {
   const config = { ...DEFAULT_CONFIG };
 
   function save() {
     try {
-      fs.writeFileSync(CONFIG_FILE, `${JSON.stringify(config, null, 2)}\n`, 'utf8');
+      fs.writeFileSync(CONFIG_TMP_FILE, `${JSON.stringify(config, null, 2)}\n`, 'utf8');
+      fs.renameSync(CONFIG_TMP_FILE, CONFIG_FILE);
       logger.log(
         'info', 'configuracion', 'configuracion/store.js#save', 'configuracion.store.guardado',
         `config.json guardado en ${CONFIG_FILE}`, { path: CONFIG_FILE }
