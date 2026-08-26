@@ -7,7 +7,8 @@
     "settings": "Paramètres",
     "soundpad": "Sons",
     "bot": "Bot",
-    "moderation": "Modération"
+    "moderation": "Modération",
+    "moreTools": "More tools"
   },
   "community": {
     "label": "Communauté TikLiveTTS",
@@ -841,5 +842,28 @@
     "connectDesc": "C'est le vrai bouton qui connecte vos chaînes enregistrées (TikTok/Twitch/YouTube) au chat en direct. Sans ça, rien de ce qui précède n'a d'effet.",
     "logTitle": "Chat en direct",
     "logDesc": "Les messages apparaissent ici à leur arrivée, avec un badge de plateforme et un statut (lu, muet, etc.)."
+  },
+  "store": {
+    "title": "Plugin Store",
+    "subtitle": "Choose which tools to show in the sidebar and in what order. Chat and Settings are always available.",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "alwaysVisible": "Always visible",
+    "desc": {
+      "overlays": "Gift alerts, like and follower counters for OBS.",
+      "clips": "Bookmark stream highlights with a shortcut.",
+      "soundpad": "Play sound effects with keyboard shortcuts.",
+      "mobile": "Remote panel to control the TTS from your phone.",
+      "bot": "Music bot: chat requests songs with !p.",
+      "moderacion": "Viewer history, mute/ban, followers."
+    },
+    "backToGrid": "Back to store",
+    "hiddenBadge": "Hidden",
+    "visibleBadge": "Visible",
+    "addToMenu": "Add to sidebar",
+    "removeFromMenu": "Remove from sidebar",
+    "metaStatus": "Status",
+    "metaPosition": "Position",
+    "reorderLabel": "Reorder:"
   }
 }

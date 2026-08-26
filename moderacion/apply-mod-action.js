@@ -8,7 +8,7 @@ function resolveModTarget(store, body = {}) {
     const parsed = store.parseKey(body.key);
     return { key: body.key, platform: parsed.platform, userId: body.userId || null, nick: body.nick || null };
   }
-  const platform = ['tiktok', 'twitch', 'youtube'].includes(body.platform) ? body.platform : null;
+  const platform = ['tiktok', 'twitch', 'youtube', 'kick'].includes(body.platform) ? body.platform : null;
   if (!platform) return null;
   if (!body.userId && !body.nick) return null;
   return { platform, userId: body.userId || null, nick: body.nick || null };

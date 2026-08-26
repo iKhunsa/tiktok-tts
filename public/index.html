@@ -6,6 +6,8 @@
   <title>TikTok Live TTS</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="vendor/driver.css" />
+  <link rel="stylesheet" href="plugin-store/grid.css" />
+  <link rel="stylesheet" href="plugin-store/detail.css" />
   <style>
     :root {
       --bg: #171717;
@@ -1846,11 +1848,16 @@
       </button>
       <button class="sidebar-item" data-view="bot" onclick="switchView('bot')">
         <img class="sidebar-icon icon-inline" src="icons/music_note.svg" alt="">
-        <span>Bot</span>
+        <span data-i18n="nav.bot">Bot</span>
       </button>
       <button class="sidebar-item" data-view="moderacion" onclick="switchView('moderacion')">
         <img class="sidebar-icon icon-inline" src="icons/people.svg" alt="">
         <span data-i18n="nav.moderation">Moderación</span>
+      </button>
+      <button id="navMoreToolsBtn" class="sidebar-item" data-view="tools" onclick="switchView('tools')">
+        <img class="sidebar-icon icon-inline" src="icons/build.svg" alt="">
+        <span data-i18n="nav.moreTools">Más herramientas</span>
+        <span id="moreToolsNewBadge" class="badge-new" data-i18n="footer.newBadge">Nuevo</span>
       </button>
       <button id="navSettingsBtn" class="sidebar-item" data-view="settings" onclick="switchView('settings')">
         <img class="sidebar-icon icon-inline" src="icons/settings.svg" alt="">
@@ -2941,6 +2948,20 @@
       </div>
     </div>
 
+    <!-- ══ VIEW: Tienda de plugins ═══════════════════════════ -->
+    <div class="view" id="view-tools">
+      <div class="view-header">
+        <h2><img class="icon-inline" src="icons/build.svg" alt=""> <span data-i18n="store.title">Tienda de plugins</span></h2>
+        <p data-i18n="store.subtitle">Elegí qué herramientas ver en la barra lateral y en qué orden. Chat y Configuración siempre están disponibles.</p>
+      </div>
+      <div id="pluginStoreGrid" class="store-grid"><!-- grid.js la llena --></div>
+
+      <div id="pluginStoreDetail" class="store-detail" style="display:none;">
+        <button class="store-back-btn" onclick="showPluginGrid()">← <span data-i18n="store.backToGrid">Volver a la tienda</span></button>
+        <div id="pluginStoreDetailBody"><!-- detail.js la llena --></div>
+      </div>
+    </div>
+
   </main>
 </div>
 
@@ -3662,6 +3683,9 @@
     if (view) view.classList.add('active');
     const btn = document.querySelector(`.sidebar-item[data-view="${name}"]`);
     if (btn) btn.classList.add('active');
+    // La tienda de plugins se re-renderiza al entrar, por si el usuario tocó
+    // localStorage desde otra pestaña/ventana o volvió después de un rato.
+    if (name === 'tools') renderPluginStore();
     // El refresco de la tabla de moderación solo corre con la vista visible.
     if (name === 'moderacion') {
       modReload(true);
@@ -5597,6 +5621,15 @@
         break;
       }
 
+      case 'promo-announce': {
+        msgCount++;
+        document.getElementById('msgCount').textContent = msgCount;
+        const promoMsgId = `msg-${msgCount}`;
+        addSystemMsg(data.text, 'promo', promoMsgId, { iconSrc: 'icons/flash_on.svg' });
+        speak(data.text, promoMsgId, data.timestamp);
+        break;
+      }
+
       case 'gift':
         if (options.readGifts) {
           msgCount++;
@@ -5865,7 +5898,11 @@
     // `ttsBlocked` lo decide el servidor: usuario silenciado, o no seguidor con
     // el filtro de seguidores activo.
     if (options.readChat && !data.ttsBlocked) {
-      const ttsBase = data.ttsComment || data.comment;
+      // ttsComment ya viene sin emojis/emotes (server los filtra) — si el
+      // servidor no lo mando (undefined), cae a comment; si vino vacio
+      // (mensaje que era solo emoji/emote), no hay nada que leer.
+      const ttsBase = typeof data.ttsComment === 'string' ? data.ttsComment : data.comment;
+      if (!ttsBase || !ttsBase.trim()) return;
       let raw;
       if (!options.sayUsername) {
         raw = ttsBase;
@@ -7711,5 +7748,11 @@
   musicInit();
   // ─────────────────────────────────────────────────────────────────────────────
 </script>
+<script src="plugin-store/registry.js"></script>
+<script src="plugin-store/prefs.js"></script>
+<script src="plugin-store/sidebar-render.js"></script>
+<script src="plugin-store/grid.js"></script>
+<script src="plugin-store/detail.js"></script>
+<script src="plugin-store/init.js"></script>
 </body>
 </html>

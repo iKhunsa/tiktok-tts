@@ -38,6 +38,7 @@ const DEFAULT_CONFIG = {
     tiktok: ['ikhunsa_tiklivetts', 'soykurorai'],
     twitch: ['soykurorai'],
     youtube: ['br0k3ny'],
+    kick: ['speedmucho'],
   },
 };
 

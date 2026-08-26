@@ -7,7 +7,8 @@
     "settings": "設定",
     "soundpad": "サウンド",
     "bot": "Bot",
-    "moderation": "モデレーション"
+    "moderation": "モデレーション",
+    "moreTools": "More tools"
   },
   "community": {
     "label": "TikLiveTTS コミュニティ",
@@ -841,5 +842,28 @@
     "connectDesc": "これが保存したチャンネル（TikTok/Twitch/YouTube）を実際にライブチャットへ接続するボタンです。これを押さないと上の設定は何も反映されません。",
     "logTitle": "ライブチャット",
     "logDesc": "メッセージが届くとここに表示され、プラットフォームバッジとステータス（読み上げ済み、ミュートなど）が付きます。"
+  },
+  "store": {
+    "title": "Plugin Store",
+    "subtitle": "Choose which tools to show in the sidebar and in what order. Chat and Settings are always available.",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "alwaysVisible": "Always visible",
+    "desc": {
+      "overlays": "Gift alerts, like and follower counters for OBS.",
+      "clips": "Bookmark stream highlights with a shortcut.",
+      "soundpad": "Play sound effects with keyboard shortcuts.",
+      "mobile": "Remote panel to control the TTS from your phone.",
+      "bot": "Music bot: chat requests songs with !p.",
+      "moderacion": "Viewer history, mute/ban, followers."
+    },
+    "backToGrid": "Back to store",
+    "hiddenBadge": "Hidden",
+    "visibleBadge": "Visible",
+    "addToMenu": "Add to sidebar",
+    "removeFromMenu": "Remove from sidebar",
+    "metaStatus": "Status",
+    "metaPosition": "Position",
+    "reorderLabel": "Reorder:"
   }
 }

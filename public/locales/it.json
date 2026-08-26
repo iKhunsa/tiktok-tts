@@ -7,7 +7,8 @@
     "settings": "Impostazioni",
     "soundpad": "Suoni",
     "bot": "Bot",
-    "moderation": "Moderazione"
+    "moderation": "Moderazione",
+    "moreTools": "More tools"
   },
   "community": {
     "label": "Comunità TikLiveTTS",
@@ -841,5 +842,28 @@
     "connectDesc": "Questo è il pulsante reale che collega i tuoi canali salvati (TikTok/Twitch/YouTube) alla chat in diretta. Senza questo, nulla sopra ha effetto.",
     "logTitle": "Chat in diretta",
     "logDesc": "I messaggi appaiono qui man mano che arrivano, con badge della piattaforma e stato (letto, silenziato, ecc.)."
+  },
+  "store": {
+    "title": "Plugin Store",
+    "subtitle": "Choose which tools to show in the sidebar and in what order. Chat and Settings are always available.",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "alwaysVisible": "Always visible",
+    "desc": {
+      "overlays": "Gift alerts, like and follower counters for OBS.",
+      "clips": "Bookmark stream highlights with a shortcut.",
+      "soundpad": "Play sound effects with keyboard shortcuts.",
+      "mobile": "Remote panel to control the TTS from your phone.",
+      "bot": "Music bot: chat requests songs with !p.",
+      "moderacion": "Viewer history, mute/ban, followers."
+    },
+    "backToGrid": "Back to store",
+    "hiddenBadge": "Hidden",
+    "visibleBadge": "Visible",
+    "addToMenu": "Add to sidebar",
+    "removeFromMenu": "Remove from sidebar",
+    "metaStatus": "Status",
+    "metaPosition": "Position",
+    "reorderLabel": "Reorder:"
   }
 }

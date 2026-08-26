@@ -30,6 +30,7 @@ registerDomain(deps, require('./reporte-bug'));
 registerDomain(deps, require('./moderacion'));
 registerDomain(deps, require('./canales'));
 registerDomain(deps, require('./chat'));
+registerDomain(deps, require('./promo'));
 registerDomain(deps, require('./overlay'));
 registerDomain(deps, require('./movil'));
 registerDomain(deps, require('./sonido'));
