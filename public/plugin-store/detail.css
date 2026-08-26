@@ -1,0 +1,29 @@
+/* ── Detalle de una tool ──────────────────────────────────────────────── */
+.store-back-btn {
+  background: none; border: none; color: var(--text-muted);
+  font-size: 13px; cursor: pointer; padding: 0 0 18px; display: flex; align-items: center; gap: 6px;
+}
+.store-back-btn:hover { color: var(--text); }
+
+.store-detail-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+.store-detail-icon {
+  width: 56px; height: 56px; border-radius: 14px;
+  background: var(--surface); border: 1px solid var(--border);
+  padding: 14px;
+}
+.store-detail-header h3 { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.store-detail-header p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+.store-detail-meta {
+  display: flex; gap: 28px; padding: 16px 0; margin-bottom: 20px;
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+}
+.store-detail-meta > div { display: flex; flex-direction: column; gap: 4px; }
+.store-detail-meta-label { font-size: 10.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); }
+
+.store-detail-cta { margin-bottom: 16px; }
+
+.store-detail-order { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-muted); }
+.store-order-btn { background: transparent; border: 1px solid var(--border); border-radius: 4px; color: var(--text-muted); cursor: pointer; font-size: 10px; line-height: 1; padding: 3px 6px; }
+.store-order-btn:hover:not(:disabled) { background: var(--bg); color: var(--text); }
+.store-order-btn:disabled { opacity: 0.25; cursor: default; }

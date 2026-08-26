@@ -8,7 +8,17 @@ const { isAdminIdentity } = require('./is-admin-identity');
 const moderacionPolicyContract = require('../core/contracts/moderacion-policy');
 
 const ADMIN_ANNOUNCE_TEXT = 'Aviso del sistema: el creador de TikLive TTS acaba de ingresar.';
-const adminAnnouncedSessions = new Set();
+// Global (no por plataforma): si el creador transmite simultaneo en 4
+// plataformas y escribe en todas, el aviso debe sonar una sola vez, no una
+// por cada plataforma donde se detecto su identidad admin. Se resetea al
+// desconectar un canal (ver chat/index.js#register, listener de
+// canal:estado) para que una desconexion + reconexion cuente como sesion
+// nueva y vuelva a anunciar.
+let adminAnnounced = false;
+
+function resetAdminAnnounce() {
+  adminAnnounced = false;
+}
 
 function extractTiktokMessage(raw) {
   const comment = String(raw.comment || '').trim();
@@ -28,24 +38,43 @@ function extractTwitchMessage(raw) {
   const text = String(raw.message || '').trim();
   if (!text) return null;
 
-  const emotes = {};
+  // tags.emotes: { emoteId: ['start-end', ...] } (o string "start-end/start-end"
+  // sin parsear). Se recolectan TODAS las apariciones de TODOS los emotes y se
+  // reemplaza cada rango por un token `:nombre:` — mismo formato que YouTube/Kick,
+  // para que el renderer de chat las pinte como imagen y sanitizeForTTS pueda
+  // quitarlas del texto que lee el TTS (antes quedaban como palabra suelta).
+  const occurrences = [];
   if (tags.emotes) {
     for (const [emoteId, positions] of Object.entries(tags.emotes)) {
-      const range = Array.isArray(positions) ? positions[0] : String(positions).split('/')[0];
-      const [start, end] = String(range || '').split('-').map(Number);
-      if (!Number.isInteger(start) || !Number.isInteger(end)) continue;
-      if (start < 0 || end < start || end >= text.length) continue;
-      const name = text.substring(start, end + 1);
-      if (name) emotes[name] = { url: `https://static-cdn.jtvnw.net/emoticons/v2/${emoteId}/default/dark/1.0` };
+      const ranges = Array.isArray(positions) ? positions : String(positions).split('/');
+      for (const range of ranges) {
+        const [start, end] = String(range || '').split('-').map(Number);
+        if (!Number.isInteger(start) || !Number.isInteger(end)) continue;
+        if (start < 0 || end < start || end >= text.length) continue;
+        occurrences.push({ start, end, emoteId, name: text.substring(start, end + 1) });
+      }
     }
   }
+  occurrences.sort((a, b) => a.start - b.start);
 
-  const sanitized = sanitizeForTTS(text);
+  const emotes = {};
+  let displayText = '';
+  let cursor = 0;
+  for (const occ of occurrences) {
+    if (occ.start < cursor || !occ.name) continue; // rango solapado/invalido, se ignora
+    const safeName = occ.name.replace(/[^a-zA-Z0-9_-]/g, '_');
+    displayText += text.slice(cursor, occ.start) + `:${safeName}:`;
+    emotes[safeName] = { url: `https://static-cdn.jtvnw.net/emoticons/v2/${occ.emoteId}/default/dark/1.0` };
+    cursor = occ.end + 1;
+  }
+  displayText += text.slice(cursor);
+
+  const ttsText = displayText.replace(/:[\w-]+:/g, '').trim();
   return {
     user: cleanName(tags['display-name'] || tags.username || 'Anónimo'),
     userId: tags['user-id'] || null,
-    comment: sanitized,
-    ttsComment: sanitized,
+    comment: sanitizeForTTS(displayText),
+    ttsComment: sanitizeForTTS(ttsText),
     emotes: Object.keys(emotes).length > 0 ? emotes : undefined,
     ytMsgId: undefined,
   };
@@ -73,7 +102,10 @@ function extractYoutubeMessage(item) {
     user: cleanName((item.author && item.author.name) || 'Anónimo'),
     userId: (item.author && item.author.channelId) || null,
     comment: sanitizeForTTS(displayText),
-    ttsComment: ttsText ? sanitizeForTTS(ttsText) : undefined,
+    // Siempre string (aunque quede vacio si el mensaje es solo emojis/stickers) —
+    // nunca undefined, para que el front no caiga de vuelta a `comment` y termine
+    // leyendo el token crudo `:nombre:` en voz alta.
+    ttsComment: sanitizeForTTS(ttsText),
     emotes: Object.keys(emotes).length > 0 ? emotes : undefined,
     ytMsgId: item.id || undefined,
   };
@@ -95,7 +127,10 @@ function extractKickMessage(raw) {
     // estable que en realidad puede cambiar si el usuario se renombra.
     userId: null,
     comment: sanitizeForTTS(text),
-    ttsComment: ttsText ? sanitizeForTTS(ttsText) : undefined,
+    // Siempre string (aunque quede vacio si el mensaje es solo emotes/emoji) —
+    // nunca undefined, para que el front no caiga de vuelta a `comment` y
+    // termine leyendo el token crudo `:emote_id:` o el emoji en voz alta.
+    ttsComment: sanitizeForTTS(ttsText),
     emotes: raw.emotes && Object.keys(raw.emotes).length > 0 ? raw.emotes : undefined,
     ytMsgId: undefined,
   };
@@ -204,11 +239,11 @@ function emitChatMessage(deps) {
       `Mensaje emitido de ${user} (${platform})`, { platform, userId, nick: user, msgId }
     );
 
-    if (isAdmin && !adminAnnouncedSessions.has(platform)) {
-      adminAnnouncedSessions.add(platform);
+    if (isAdmin && !adminAnnounced) {
+      adminAnnounced = true;
       bus.emit('ws:broadcast', { type: 'admin-announce', text: ADMIN_ANNOUNCE_TEXT, timestamp: Date.now() });
     }
   };
 }
 
-module.exports = { emitChatMessage };
+module.exports = { emitChatMessage, resetAdminAnnounce };

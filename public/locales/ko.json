@@ -7,7 +7,8 @@
     "settings": "설정",
     "soundpad": "사운드",
     "bot": "봇",
-    "moderation": "모더레이션"
+    "moderation": "모더레이션",
+    "moreTools": "More tools"
   },
   "community": {
     "label": "TikLiveTTS 커뮤니티",
@@ -841,5 +842,28 @@
     "connectDesc": "저장된 채널(TikTok/Twitch/YouTube)을 실제로 실시간 채팅에 연결하는 버튼입니다. 이걸 누르지 않으면 위의 설정은 아무 효과가 없습니다.",
     "logTitle": "실시간 채팅",
     "logDesc": "메시지가 도착하면 여기에 표시되며, 플랫폼 배지와 상태(읽음, 음소거 등)가 함께 나옵니다."
+  },
+  "store": {
+    "title": "Plugin Store",
+    "subtitle": "Choose which tools to show in the sidebar and in what order. Chat and Settings are always available.",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "alwaysVisible": "Always visible",
+    "desc": {
+      "overlays": "Gift alerts, like and follower counters for OBS.",
+      "clips": "Bookmark stream highlights with a shortcut.",
+      "soundpad": "Play sound effects with keyboard shortcuts.",
+      "mobile": "Remote panel to control the TTS from your phone.",
+      "bot": "Music bot: chat requests songs with !p.",
+      "moderacion": "Viewer history, mute/ban, followers."
+    },
+    "backToGrid": "Back to store",
+    "hiddenBadge": "Hidden",
+    "visibleBadge": "Visible",
+    "addToMenu": "Add to sidebar",
+    "removeFromMenu": "Remove from sidebar",
+    "metaStatus": "Status",
+    "metaPosition": "Position",
+    "reorderLabel": "Reorder:"
   }
 }

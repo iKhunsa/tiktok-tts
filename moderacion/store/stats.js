@@ -9,7 +9,7 @@ function stats(state) {
     others: 0,
     muted: 0,
     banned: 0,
-    byPlatform: { tiktok: 0, twitch: 0, youtube: 0 },
+    byPlatform: { tiktok: 0, twitch: 0, youtube: 0, kick: 0 },
   };
   for (const v of state.viewers.values()) {
     if (v.fol || v.wl) out.followers++; else out.others++;

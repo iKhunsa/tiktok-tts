@@ -30,7 +30,7 @@ const CONFIG_VALIDATORS = {
   ttsSlowSpeech: (v) => typeof v === 'boolean',
   ttsReadNonFollowers: (v) => typeof v === 'boolean',
   adminIdentities: (v) => v && typeof v === 'object'
-    && ['tiktok', 'twitch', 'youtube'].every((p) => Array.isArray(v[p]) && v[p].every((x) => typeof x === 'string')),
+    && ['tiktok', 'twitch', 'youtube', 'kick'].every((p) => Array.isArray(v[p]) && v[p].every((x) => typeof x === 'string')),
 };
 
 module.exports = { CONFIG_VALIDATORS };

@@ -7,7 +7,8 @@
     "settings": "设置",
     "soundpad": "音效",
     "bot": "Bot",
-    "moderation": "管理"
+    "moderation": "管理",
+    "moreTools": "More tools"
   },
   "community": {
     "label": "TikLiveTTS 社区",
@@ -841,5 +842,28 @@
     "connectDesc": "这才是真正把你保存的频道（TikTok/Twitch/YouTube）连接到直播聊天的按钮。不点这个，上面的设置都不会生效。",
     "logTitle": "实时聊天",
     "logDesc": "消息到达时会显示在这里，带有平台标识和状态（已读、静音等）。"
+  },
+  "store": {
+    "title": "Plugin Store",
+    "subtitle": "Choose which tools to show in the sidebar and in what order. Chat and Settings are always available.",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "alwaysVisible": "Always visible",
+    "desc": {
+      "overlays": "Gift alerts, like and follower counters for OBS.",
+      "clips": "Bookmark stream highlights with a shortcut.",
+      "soundpad": "Play sound effects with keyboard shortcuts.",
+      "mobile": "Remote panel to control the TTS from your phone.",
+      "bot": "Music bot: chat requests songs with !p.",
+      "moderacion": "Viewer history, mute/ban, followers."
+    },
+    "backToGrid": "Back to store",
+    "hiddenBadge": "Hidden",
+    "visibleBadge": "Visible",
+    "addToMenu": "Add to sidebar",
+    "removeFromMenu": "Remove from sidebar",
+    "metaStatus": "Status",
+    "metaPosition": "Position",
+    "reorderLabel": "Reorder:"
   }
 }

@@ -11,7 +11,7 @@ const DEBOUNCE_MS = 15000;
 const MAX_DELAY_MS = 60000;
 const SWEEP_MS = 15 * 60 * 1000;
 
-const PLATFORMS = ['tiktok', 'twitch', 'youtube'];
+const PLATFORMS = ['tiktok', 'twitch', 'youtube', 'kick'];
 
 function createState({ dataDir, logger, maxViewers = 5000, purgeTarget = 4000 }) {
   const filePath = path.join(dataDir, FILE_NAME);
