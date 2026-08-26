@@ -7,6 +7,8 @@ const { ensureTwitchAccessToken } = require('./twitch/oauth/ensure-access-token'
 const { startTwitchEventSub } = require('./twitch/eventsub/start');
 const { saveReplay } = require('./obs/save-replay');
 const obsReplayContract = require('../core/contracts/obs-replay');
+const kickBrowserContract = require('../core/contracts/kick-browser');
+const { registerKickWindowListeners } = require('./kick/connect-kick');
 
 const { connect } = require('./routes/connect');
 const { disconnect } = require('./routes/disconnect');
@@ -35,6 +37,7 @@ module.exports = {
     const deps = { state, bus, logger };
 
     loadAuthTokens(deps);
+    registerKickWindowListeners(deps);
 
     const rateLimit = connectRateLimiter(rateLimiterState, logger);
 
@@ -145,5 +148,11 @@ module.exports = {
     if (state.eventsub.ws) {
       try { state.eventsub.ws.removeAllListeners(); state.eventsub.ws.close(); } catch (_) { /* best-effort */ }
     }
+
+    for (const timer of state.kickWatchdogTimers.values()) clearTimeout(timer);
+    state.kickWatchdogTimers.clear();
+    state.kickChannels.clear();
+    state.kickSeenIds.clear();
+    try { kickBrowserContract.closeAll(); } catch (_) { /* best-effort */ }
   },
 };

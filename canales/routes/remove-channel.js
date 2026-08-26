@@ -7,6 +7,8 @@ const { clearReconnectTimer: clearTwitchReconnectTimer } = require('../twitch/co
 const { normalizeYoutubeInput } = require('../youtube/parse-target');
 const { clearReconnectTimer: clearYoutubeReconnectTimer, clearWatchdogTimer: clearYoutubeWatchdogTimer } = require('../youtube/connect-youtube');
 const { stopYoutubeChat } = require('../youtube/stop-chat');
+const { cleanKickSlug } = require('../kick/clean-slug');
+const { disconnectKick } = require('../kick/connect-kick');
 const { broadcastChannels } = require('../broadcast-channels');
 
 function removeChannel(deps) {
@@ -40,6 +42,10 @@ function removeChannel(deps) {
         if (c) { stopYoutubeChat(c, 'disconnect'); state.youtubeChannels.delete(ytChannel); }
         state.youtubeSeenIds.delete(ytChannel);
         bus.emit('canal:estado', { platform: 'youtube', channel: ytChannel, state: 'desconectado' });
+      } else if (platform === 'kick') {
+        const slug = cleanKickSlug(channel);
+        disconnectKick(deps, slug);
+        bus.emit('canal:estado', { platform: 'kick', channel: slug, state: 'desconectado' });
       }
       broadcastChannels(deps);
       res.json({ success: true });

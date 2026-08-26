@@ -7,6 +7,8 @@ const { clearReconnectTimer: clearTwitchReconnectTimer } = require('../twitch/co
 const { normalizeYoutubeInput } = require('../youtube/parse-target');
 const { clearReconnectTimer: clearYoutubeReconnectTimer, clearWatchdogTimer: clearYoutubeWatchdogTimer } = require('../youtube/connect-youtube');
 const { stopYoutubeChat } = require('../youtube/stop-chat');
+const { cleanKickSlug } = require('../kick/clean-slug');
+const { disconnectKick } = require('../kick/connect-kick');
 const { broadcastChannels } = require('../broadcast-channels');
 
 function platformsDisconnect(deps) {
@@ -63,6 +65,14 @@ function platformsDisconnect(deps) {
           state.youtubeSeenIds.clear();
         }
         bus.emit('canal:estado', { platform: 'youtube', channel: channel ? normalizeYoutubeInput(channel) : null, state: 'desconectado' });
+      } else if (platform === 'kick') {
+        if (channel) {
+          const slug = cleanKickSlug(channel);
+          disconnectKick(deps, slug);
+        } else {
+          for (const slug of Array.from(state.kickChannels)) disconnectKick(deps, slug);
+        }
+        bus.emit('canal:estado', { platform: 'kick', channel: channel ? cleanKickSlug(channel) : null, state: 'desconectado' });
       }
       broadcastChannels(deps);
       res.json({ success: true });

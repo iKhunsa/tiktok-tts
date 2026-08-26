@@ -57,6 +57,18 @@ function attachIpcBridge({ app, bus, logger, getMainWindow, globalShortcut }) {
     if (RENDERER_TELEMETRY_EVENTS.has(name)) bus.emit(name);
   });
 
+  // Puente Kick: la ventana oculta (kick-capture-window.js) manda por acá lo
+  // que su preload raspa del DOM de corard.tv. Mismo patron que telemetry:track.
+  // Emite un evento propio (no canal:mensaje-crudo directo) para que
+  // canales/kick/connect-kick.js pueda dedupear/watchdog ANTES de que
+  // /chat vea el mensaje.
+  ipcMain.on('kick:mensaje-crudo', (_event, { slug, payload }) => {
+    bus.emit('canales:kick:ventana-mensaje', { slug, payload });
+  });
+  ipcMain.on('kick:estado', (_event, { slug, state }) => {
+    bus.emit('canales:kick:ventana-estado', { slug, state });
+  });
+
   // ── TTS shortcuts (pause / skip / clear) ────────────────────────────────
   const ttsShortcuts = new Map(); // action -> normalizedShortcut
 

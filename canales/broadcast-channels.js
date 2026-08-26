@@ -10,6 +10,7 @@ function broadcastChannels(deps) {
     tiktok: Array.from(state.tiktokChannels.keys()),
     twitch: Array.from(state.twitchChannels.keys()),
     youtube: Array.from(state.youtubeChannels.keys()),
+    kick: Array.from(state.kickChannels),
   });
 }
 

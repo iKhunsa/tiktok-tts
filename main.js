@@ -10,6 +10,8 @@ const { createTray, buildTrayMenu, showStartupError } = require('./electron-shel
 const { setupAutoUpdater, installUpdate } = require('./electron-shell/updater');
 const { attachIpcBridge } = require('./electron-shell/ipc-bridge');
 const { startUiohook, stopUiohook, isUiohookActive, registerUiohookShortcut } = require('./electron-shell/uiohook');
+const { openKickCaptureWindow, closeKickCaptureWindow, closeAllKickCaptureWindows } = require('./electron-shell/kick-capture-window');
+const kickBrowserContract = require('./core/contracts/kick-browser');
 const { GLOBAL_SHORTCUT } = require('./clips/global-shortcut');
 const telemetryRuntime = require('./telemetria/runtime');
 
@@ -164,6 +166,10 @@ app.whenReady().then(() => {
 
     ipcHandles = attachIpcBridge({ app, bus, logger, getMainWindow, globalShortcut });
 
+    kickBrowserContract.openCapture = (slug) => openKickCaptureWindow({ slug, bus, logger });
+    kickBrowserContract.closeCapture = (slug) => closeKickCaptureWindow(slug);
+    kickBrowserContract.closeAll = () => closeAllKickCaptureWindows();
+
     // Atajo de clip (Ctrl+Shift+M): manda IPC al renderer, que hace su
     // propio bookmark local (elapsed/toast) y llama POST /api/obs/save-replay
     // (front sin cambios). /clips (Fase 11) sirve al comando movil markClip,
@@ -207,6 +213,7 @@ app.on('will-quit', () => {
   globalShortcut.unregisterAll();
   if (ipcHandles) ipcHandles.clearSoundpadShortcuts();
   stopUiohook();
+  closeAllKickCaptureWindows();
 });
 
 // Mantiene la app viva en la tray solo cuando la tray realmente existe y no
