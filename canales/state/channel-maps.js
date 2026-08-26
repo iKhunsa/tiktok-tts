@@ -13,6 +13,9 @@ function createChannelState() {
     youtubeReconnectTimers: new Map(),
     youtubeWatchdogTimers: new Map(), // channelKey -> Timeout (watchdog de chat 'silencioso')
     youtubeSeenIds: new Map(), // channelKey -> Set<msgId>
+    kickChannels: new Set(), // slugs con ventana de captura oculta abierta
+    kickSeenIds: new Map(), // slug -> Set<msgId>
+    kickWatchdogTimers: new Map(), // slug -> Timeout (watchdog de captura 'silenciosa')
     authTokens: { twitch: null },
     obs: {
       ws: null,

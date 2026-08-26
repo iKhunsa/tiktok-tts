@@ -12,6 +12,7 @@
       --tiktok:  #fe2c55;
       --twitch:  #9146ff;
       --youtube: #ff0000;
+      --kick: #53fc18;
       --bg-img: none;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -76,6 +77,7 @@
     .dot-tiktok  { background: var(--tiktok); }
     .dot-twitch  { background: var(--twitch); }
     .dot-youtube { background: var(--youtube); }
+    .dot-kick    { background: var(--kick); }
     body.reduce-motion .msg { animation: none; }
     @media (prefers-reduced-motion: reduce) {
       .msg { animation: none; }
@@ -105,7 +107,7 @@
 <body>
   <div id="chat-container"></div>
   <script>
-    const PLATFORM_LABEL = { tiktok: 'T', twitch: 'W', youtube: 'Y' };
+    const PLATFORM_LABEL = { tiktok: 'T', twitch: 'W', youtube: 'Y', kick: 'K' };
     const params    = new URLSearchParams(location.search);
     const _c = params.get('color');   if (_c) document.documentElement.style.setProperty('--accent', '#' + _c);
     const _b = params.get('bg');      if (_b) document.documentElement.style.setProperty('--bg-alpha', _b);
@@ -117,7 +119,7 @@
     function intParam(name, def) { const n = parseInt(params.get(name), 10); return Number.isFinite(n) && n > 0 ? n : def; }
     const maxMsgs   = intParam('maxmsgs', 30);
     const showUsers = params.get('usernames') !== '0';
-    const filterRaw = params.get('platforms') || 'tiktok,twitch,youtube';
+    const filterRaw = params.get('platforms') || 'tiktok,twitch,youtube,kick';
     const allowedPlatforms = new Set(filterRaw.split(',').map(s => s.trim().toLowerCase()));
 
     const container = document.getElementById('chat-container');

@@ -5,6 +5,8 @@ const { cleanTwitchChannel } = require('../twitch/clean-channel');
 const { connectTwitch } = require('../twitch/connect-twitch');
 const { normalizeYoutubeInput } = require('../youtube/parse-target');
 const { connectYoutube } = require('../youtube/connect-youtube');
+const { cleanKickSlug } = require('../kick/clean-slug');
+const { connectKick } = require('../kick/connect-kick');
 const { broadcastChannels } = require('../broadcast-channels');
 
 function addChannel(deps) {
@@ -28,6 +30,11 @@ function addChannel(deps) {
         await connectYoutube(deps, ytInput);
         broadcastChannels(deps);
         return res.json({ success: true, channel: ytInput });
+      }
+      if (platform === 'kick') {
+        const slug = await connectKick(deps, cleanKickSlug(channel));
+        broadcastChannels(deps);
+        return res.json({ success: true, channel: slug });
       }
       return res.status(400).json({ error: 'Plataforma no soportada' });
     } catch (err) {

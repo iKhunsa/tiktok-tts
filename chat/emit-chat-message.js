@@ -79,6 +79,28 @@ function extractYoutubeMessage(item) {
   };
 }
 
+function extractKickMessage(raw) {
+  // raw viene de electron-shell/kick-capture-preload.js: { id, username, content, emotes }
+  // content ya trae los emotes como tokens `:nombre:` (custom de Kick) o el
+  // caracter unicode nativo (twemoji), igual que YouTube arma su ttsComment.
+  const text = String(raw.content || '').trim();
+  if (!text) return null;
+
+  const ttsText = text.replace(/:[\w-]+:/g, '').trim();
+  return {
+    user: cleanName(raw.username || 'Anónimo'),
+    // corard.tv no expone el id numerico estable de Kick, solo el username
+    // visible — se deja null a proposito para que /moderacion caiga en la
+    // clave por-nombre (idk:'name', ver CLAUDE.md), en vez de fingir un id
+    // estable que en realidad puede cambiar si el usuario se renombra.
+    userId: null,
+    comment: sanitizeForTTS(text),
+    ttsComment: ttsText ? sanitizeForTTS(ttsText) : undefined,
+    emotes: raw.emotes && Object.keys(raw.emotes).length > 0 ? raw.emotes : undefined,
+    ytMsgId: undefined,
+  };
+}
+
 /**
  * Orquestador central: llega crudo de /canales, pasa por el veredicto de
  * /moderacion, decide si dispara TTS, publica ya enriquecido. Reemplaza
@@ -102,6 +124,8 @@ function emitChatMessage(deps) {
         bus.emit('canal:evento-especial', { platform: 'youtube', channel, kind: 'superchat', raw: { ...raw.superchat, author: raw.author } });
       }
       extracted = extractYoutubeMessage(raw);
+    } else if (platform === 'kick') {
+      extracted = extractKickMessage(raw);
     }
     if (!extracted) return;
 

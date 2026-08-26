@@ -1693,6 +1693,7 @@
     .badge-tiktok  { background: rgba(254,44,85,0.15);  color: #fe2c55; }
     .badge-twitch  { background: rgba(145,70,255,0.15); color: #9146ff; }
     .badge-youtube { background: rgba(255,0,0,0.15);    color: #ff4444; }
+    .badge-kick    { background: rgba(83,252,24,0.15);  color: #53fc18; }
     .badge-admin   { background: rgba(255,204,0,0.18);  color: #ffcc00; font-weight: 800; }
 
     /* Supabase-style primary button */
@@ -1761,6 +1762,10 @@
     .channel-chip.youtube {
       border-color: rgba(255, 0, 0, 0.42);
       background: rgba(255, 0, 0, 0.09);
+    }
+    .channel-chip.kick {
+      border-color: rgba(83, 252, 24, 0.42);
+      background: rgba(83, 252, 24, 0.09);
     }
     .channel-platform-label {
       font-size: 10px;
@@ -2035,6 +2040,7 @@
               <label class="toggle-chip" style="padding:6px 9px;"><input type="checkbox" id="cfg-chat-platform-tiktok" checked onchange="onChatPlatformChange('tiktok', this.checked)" /> TikTok</label>
               <label class="toggle-chip" style="padding:6px 9px;"><input type="checkbox" id="cfg-chat-platform-twitch" checked onchange="onChatPlatformChange('twitch', this.checked)" /> Twitch</label>
               <label class="toggle-chip" style="padding:6px 9px;"><input type="checkbox" id="cfg-chat-platform-youtube" checked onchange="onChatPlatformChange('youtube', this.checked)" /> YouTube</label>
+              <label class="toggle-chip" style="padding:6px 9px;"><input type="checkbox" id="cfg-chat-platform-kick" checked onchange="onChatPlatformChange('kick', this.checked)" /> Kick</label>
             </div>
           </div>
           <div class="cfg-field full">
@@ -2482,6 +2488,9 @@
             <button class="seg-btn" id="seg-youtube" onclick="selectAddPlatform('youtube')">
               <img style="width:13px;height:13px;vertical-align:middle;" src="icons/tv.svg" alt=""> YouTube
             </button>
+            <button class="seg-btn" id="seg-kick" onclick="selectAddPlatform('kick')">
+              <img style="width:13px;height:13px;vertical-align:middle;" src="icons/kick.svg" alt=""> Kick
+            </button>
           </div>
           <div style="display:flex;gap:8px;align-items:center;">
             <div class="input-wrapper" style="flex:1;">
@@ -2890,6 +2899,7 @@
           <option value="tiktok">TikTok</option>
           <option value="twitch">Twitch</option>
           <option value="youtube">YouTube</option>
+          <option value="kick">Kick</option>
         </select>
         <select id="modState" onchange="modReload(true)">
           <option value="all" data-i18n="mod.filter.stateAll">Todos los estados</option>
@@ -3406,7 +3416,7 @@
         maxmsgs: 30,
         size: 14,
         usernames: true,
-        platforms: { tiktok: true, twitch: true, youtube: true }
+        platforms: { tiktok: true, twitch: true, youtube: true, kick: true }
       }
     }
   };
@@ -3504,6 +3514,7 @@
       setChecked('cfg-chat-platform-tiktok', chat.platforms?.tiktok !== false);
       setChecked('cfg-chat-platform-twitch', chat.platforms?.twitch !== false);
       setChecked('cfg-chat-platform-youtube', chat.platforms?.youtube !== false);
+      setChecked('cfg-chat-platform-kick', chat.platforms?.kick !== false);
       const cbValEl = document.getElementById('cfg-chat-bg-val');
       if (cbValEl) cbValEl.textContent = Math.round(chat.bg * 100);
       const sizeValEl = document.getElementById('cfg-chat-size-val');
@@ -4551,8 +4562,8 @@
       if (cfg.size && cfg.size !== 14) p.set('size', cfg.size);
       if (cfg.usernames === false) p.set('usernames', '0');
       const platforms = cfg.platforms || {};
-      const visible = ['tiktok', 'twitch', 'youtube'].filter((name) => platforms[name] !== false);
-      if (visible.length > 0 && visible.length < 3) p.set('platforms', visible.join(','));
+      const visible = ['tiktok', 'twitch', 'youtube', 'kick'].filter((name) => platforms[name] !== false);
+      if (visible.length > 0 && visible.length < PLATFORMS.length) p.set('platforms', visible.join(','));
     } else if (type === 'alertas-social') {
       if (cfg.color && cfg.color !== '#3ecf8e') p.set('color', cfg.color.replace('#', ''));
       if (cfg.bg !== 0.90) p.set('bg', cfg.bg);
@@ -4580,7 +4591,7 @@
 
   function onChatPlatformChange(platform, checked) {
     const chatCfg = appSettings.overlays.chat;
-    chatCfg.platforms = chatCfg.platforms || { tiktok: true, twitch: true, youtube: true };
+    chatCfg.platforms = chatCfg.platforms || { tiktok: true, twitch: true, youtube: true, kick: true };
     chatCfg.platforms[platform] = checked;
     if (!Object.values(chatCfg.platforms).some(Boolean)) {
       chatCfg.platforms[platform] = true;
@@ -5972,7 +5983,7 @@
     if (empty) empty.remove();
 
     const user     = String(data.user || 'Usuario');
-    const platform = ['tiktok', 'twitch', 'youtube'].includes(String(data.platform || '').toLowerCase())
+    const platform = ['tiktok', 'twitch', 'youtube', 'kick'].includes(String(data.platform || '').toLowerCase())
       ? String(data.platform).toLowerCase()
       : '';
     const color    = getUserColor(user);
@@ -6957,9 +6968,9 @@
 
   // ─── PLATFORMS ────────────────────────────────────────────────
   const PLATFORM_CHANNELS_KEY = 'tikliveTTS_platforms_v1';
-  const PLATFORMS = ['tiktok', 'twitch', 'youtube'];
-  const PLATFORM_LABELS = { tiktok: 'TikTok', twitch: 'Twitch', youtube: 'YouTube' };
-  const PLATFORM_ICONS = { tiktok: 'icons/tiktok.svg', twitch: 'icons/sports_esports.svg', youtube: 'icons/tv.svg' };
+  const PLATFORMS = ['tiktok', 'twitch', 'youtube', 'kick'];
+  const PLATFORM_LABELS = { tiktok: 'TikTok', twitch: 'Twitch', youtube: 'YouTube', kick: 'Kick' };
+  const PLATFORM_ICONS = { tiktok: 'icons/tiktok.svg', twitch: 'icons/sports_esports.svg', youtube: 'icons/tv.svg', kick: 'icons/kick.svg' };
 
   function loadPlatformChannels() {
     try {
@@ -6977,7 +6988,7 @@
   }
 
   function normalizeSavedChannels(data = {}) {
-    const output = { tiktok: [], twitch: [], youtube: [] };
+    const output = { tiktok: [], twitch: [], youtube: [], kick: [] };
     PLATFORMS.forEach(platform => {
       const value = data?.[platform];
       const items = Array.isArray(value) ? value : (value ? [{ channel: value }] : []);
@@ -7006,6 +7017,16 @@
     if (platform === 'twitch') {
       const channel = raw
         .replace(/^https?:\/\/(www\.)?twitch\.tv\//i, '')
+        .replace(/^[@#]+/, '')
+        .split(/[/?#]/)[0]
+        .trim()
+        .toLowerCase();
+      return channel ? { channel, autoConnect: true, mode: 'savedTarget' } : null;
+    }
+
+    if (platform === 'kick') {
+      const channel = raw
+        .replace(/^https?:\/\/(www\.)?kick\.com\//i, '')
         .replace(/^[@#]+/, '')
         .split(/[/?#]/)[0]
         .trim()
@@ -7092,7 +7113,7 @@
       const btn = document.getElementById(`seg-${p}`);
       if (btn) btn.classList.toggle('active', p === platform);
     });
-    const placeholders = { tiktok: '@usuario', twitch: 'nombre_del_canal', youtube: '@canal, Channel ID o link live' };
+    const placeholders = { tiktok: '@usuario', twitch: 'nombre_del_canal', youtube: '@canal, Channel ID o link live', kick: 'nombre_del_canal' };
     const input = document.getElementById('add-channel-input');
     if (input) { input.placeholder = placeholders[platform] || '@usuario'; input.focus(); }
     const hint = document.getElementById('youtube-channel-hint');
@@ -7195,7 +7216,7 @@
       chatBtn.disabled = true;
       const prevText = chatBtn.textContent;
       chatBtn.textContent = t('conn.connecting');
-      let channels = { tiktok: [], twitch: [], youtube: [] };
+      let channels = { tiktok: [], twitch: [], youtube: [], kick: [] };
       try {
         const res = await fetch('/api/channels');
         if (res.ok) channels = await res.json();
@@ -7230,7 +7251,7 @@
     if (!chatBtn) return;
     let channels = preloadedChannels;
     if (!channels) {
-      channels = { tiktok: [], twitch: [], youtube: [] };
+      channels = { tiktok: [], twitch: [], youtube: [], kick: [] };
       try {
         const res = await fetch('/api/channels');
         if (res.ok) channels = await res.json();
@@ -7251,7 +7272,7 @@
     const el = document.getElementById('settings-channels-list');
     if (!el) return;
 
-    let channels = { tiktok: [], twitch: [], youtube: [] };
+    let channels = { tiktok: [], twitch: [], youtube: [], kick: [] };
     try {
       const res = await fetch('/api/channels');
       if (res.ok) channels = await res.json();
