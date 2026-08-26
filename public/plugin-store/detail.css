@@ -5,12 +5,24 @@
 }
 .store-back-btn:hover { color: var(--text); }
 
-.store-detail-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+.store-detail-media {
+  width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden;
+  background: var(--surface); border: 1px solid var(--border); margin-bottom: 20px;
+}
+.store-detail-media > img:not(.store-detail-media-icon), .store-detail-media > video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.store-detail-media-empty {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  color: var(--text-muted); font-size: 12.5px;
+}
+.store-detail-media-icon { width: 40px; height: 40px; opacity: .5; }
+
+.store-detail-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
 .store-detail-icon {
   width: 56px; height: 56px; border-radius: 14px;
   background: var(--surface); border: 1px solid var(--border);
-  padding: 14px;
+  padding: 14px; flex-shrink: 0;
 }
+.store-detail-header-meta { flex: 1; min-width: 160px; }
 .store-detail-header h3 { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
 .store-detail-header p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
 
@@ -21,7 +33,18 @@
 .store-detail-meta > div { display: flex; flex-direction: column; gap: 4px; }
 .store-detail-meta-label { font-size: 10.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); }
 
-.store-detail-cta { margin-bottom: 16px; }
+.store-detail-about { margin-bottom: 20px; }
+.store-detail-about-label { font-size: 10.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); }
+.store-detail-about p { font-size: 13px; color: var(--text); line-height: 1.6; margin-top: 6px; }
+
+.store-detail-actions { display: flex; gap: 10px; flex-shrink: 0; }
+.store-detail-cta { margin-bottom: 0; }
+.store-detail-open {
+  background: transparent; border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text); font-size: 12px; font-weight: 700; padding: 8px 14px;
+  cursor: pointer; font-family: inherit; white-space: nowrap;
+}
+.store-detail-open:hover { border-color: var(--accent-border); color: var(--accent); }
 
 .store-detail-order { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-muted); }
 .store-order-btn { background: transparent; border: 1px solid var(--border); border-radius: 4px; color: var(--text-muted); cursor: pointer; font-size: 10px; line-height: 1; padding: 3px 6px; }

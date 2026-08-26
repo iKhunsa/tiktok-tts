@@ -8,7 +8,7 @@
     "soundpad": "サウンド",
     "bot": "Bot",
     "moderation": "モデレーション",
-    "moreTools": "More tools"
+    "moreTools": "プラグインストア"
   },
   "community": {
     "label": "TikLiveTTS コミュニティ",
@@ -231,6 +231,7 @@
     "title": "ミュージックBot",
     "desc": "チャットで !p 曲名 または !p YouTubeリンク でリクエストできます。リクエストがないときはプレイリストが流れます。",
     "nowPlaying": "再生中",
+    "nowPlayingSubtitle": "現在再生中の曲。一時停止・スキップ操作ができます。",
     "enableCmd": "!p を有効化",
     "skipSong": "⏭ スキップ",
     "pauseSong": "⏸ 一時停止",
@@ -238,6 +239,7 @@
     "noMusic": "音楽が再生されていません。",
     "musicVol": "音楽音量",
     "requestQueue": "リクエストキュー",
+    "requestQueueSubtitle": "チャットが !p でリクエストした曲を、届いた順に表示します。",
     "clearQueue": "🗑 クリア",
     "queueEmpty": "キューは空です。",
     "myPlaylist": "マイプレイリスト（バックグラウンド）",
@@ -247,6 +249,7 @@
     "playlistActive": "▶ プレイリストから再生中：",
     "savePlaylist": "💾 プレイリスト保存",
     "botSettings": "Bot設定",
+    "botSettingsSubtitle": "音楽Botの制限: リクエスト間のクールダウンとキューの最大数。",
     "cooldown": "ユーザーごとのクールダウン（秒）",
     "maxQueue": "キュー最大曲数",
     "bannedUsers": "!pからBANされたユーザー",
@@ -516,6 +519,22 @@
     "emergencyMode": "緊急モード",
     "onlyChatActivated": "チャットのみモード有効",
     "connectionError": "接続エラー"
+  },
+  "announce": {
+    "gift": "{user}さんが{gift}を{count}個送りました",
+    "giftUsd": "{user}さんが{gift}を{count}個送りました（約{amount}ドル相当）",
+    "join": "{user}さんが配信に参加しました",
+    "followTwitch": "{user}さんがTwitchでフォローしています",
+    "follow": "{user}さんがフォローしました",
+    "subResub": "{user}さんが再登録しました（{months}ヶ月）",
+    "subGift": "{user}さんが{recipient}さんにサブスクをギフトしました",
+    "subMysteryGift": "{user}さんがチャットに{count}件のサブスクをギフトしました",
+    "subUpgrade": "{user}さんがサブスクをアップグレードしました",
+    "subNew": "{user}さんがTwitchでサブスクしました",
+    "cheer": "{user}さんが{bits}ビットを送りました",
+    "raid": "{user}さんが{viewers}人と一緒にレイドしました",
+    "like": "{user}さんが{count}件のいいねをしました",
+    "share": "{user}さんが配信をシェアしています"
   },
   "toast": {
     "bgUploaded": "背景が正常にアップロードされました",
@@ -809,6 +828,22 @@
     "historyTitle": "マーカー履歴",
     "historyDesc": "マークしたすべてのクリップが経過時間と実際のタイムスタンプとともにここに一覧表示され、後で録画やOBSでその瞬間を見つけられます。"
   },
+  "pluginStoreTour": {
+    "introTitle": "プラグインストア",
+    "introDesc": "ここでサイドバーに表示するツールと順序を選べます。チャットと設定は常に利用可能で、それ以外は自由に選べます。",
+    "gridTitle": "各カードは1つのツール",
+    "gridDesc": "バッジはサイドバーで表示中か非表示かを示します。カードをクリックすると詳細が見られます。",
+    "dragTitle": "ドラッグで並べ替え",
+    "dragDesc": "カードを別のカードにドラッグ＆ドロップするとTrelloのように並び替えられます。新しい順序はサイドバーにすぐ反映されます。",
+    "mediaTitle": "プレビュー",
+    "mediaDesc": "利用可能になり次第、ツールのサンプル画像や動画がここに表示されます。",
+    "headerTitle": "名前と説明",
+    "headerDesc": "ツールの名前と機能の簡単な説明です。",
+    "actionsTitle": "開く・有効化",
+    "actionsDesc": "「開く」は非表示でも直接そのセクションへ移動します。緑のボタンでサイドバーへの追加・削除ができます。",
+    "aboutTitle": "概要",
+    "aboutDesc": "ツールの動作についてのより詳しい説明です。"
+  },
   "overlaysTour": {
     "introTitle": "OBS用オーバーレイ",
     "introDesc": "各カードは異なるオーバーレイの一意のURLを生成します。OBSのブラウザソースとして貼り付ければ、自動でライブ更新されます。",
@@ -844,26 +879,39 @@
     "logDesc": "メッセージが届くとここに表示され、プラットフォームバッジとステータス（読み上げ済み、ミュートなど）が付きます。"
   },
   "store": {
-    "title": "Plugin Store",
-    "subtitle": "Choose which tools to show in the sidebar and in what order. Chat and Settings are always available.",
-    "moveUp": "Move up",
-    "moveDown": "Move down",
-    "alwaysVisible": "Always visible",
+    "title": "プラグインストア",
+    "subtitle": "サイドバーに表示するツールと順序を選択してください。チャットと設定は常に利用できます。",
+    "moveUp": "上に移動",
+    "moveDown": "下に移動",
+    "alwaysVisible": "常に表示",
     "desc": {
-      "overlays": "Gift alerts, like and follower counters for OBS.",
-      "clips": "Bookmark stream highlights with a shortcut.",
-      "soundpad": "Play sound effects with keyboard shortcuts.",
-      "mobile": "Remote panel to control the TTS from your phone.",
-      "bot": "Music bot: chat requests songs with !p.",
-      "moderacion": "Viewer history, mute/ban, followers."
+      "overlays": "OBS用のギフト通知、いいね・フォロワーカウンター。",
+      "clips": "ショートカットでストリームのハイライトをマークします。",
+      "soundpad": "キーボードショートカットで効果音を再生します。",
+      "mobile": "携帯電話からTTSを操作するリモートパネル。",
+      "bot": "音楽ボット: チャットで !p を使って曲をリクエスト。",
+      "moderacion": "視聴者履歴、ミュート/BAN、フォロワー。"
     },
-    "backToGrid": "Back to store",
-    "hiddenBadge": "Hidden",
-    "visibleBadge": "Visible",
-    "addToMenu": "Add to sidebar",
-    "removeFromMenu": "Remove from sidebar",
-    "metaStatus": "Status",
-    "metaPosition": "Position",
-    "reorderLabel": "Reorder:"
+    "aboutLabel": "概要",
+    "about": {
+      "overlays": "オーバーレイはOBSにBrowser Sourceとして貼り付け、ギフト・いいね・新しいフォロワーをリアルタイムで表示します。それぞれ専用URLがあり、色やサイズ、アニメーションを自由にカスタマイズできます。",
+      "clips": "配信中にショートカットキーでハイライトの瞬間を配信を止めずにマークできます。あとでマーク一覧を見て、どこを切り抜くかすぐに確認できます。",
+      "soundpad": "自分の効果音をアップロードし、キーボードショートカット（Ctrl/Alt/Shiftの組み合わせ）を割り当てて、フルスクリーンのゲーム中でも即再生できます。",
+      "mobile": "PCと同じWi-Fiで携帯から開ける軽量パネルです。TTSの一時停止やメッセージのスキップなど、基本操作をPCに戻らず行えます。",
+      "bot": "チャットは !p の後に曲名かYouTubeリンクを書いてリクエストします。リクエストがない間は自分のプレイリストがBGMとして流れます。クールダウンやキュー上限も設定可能です。",
+      "moderacion": "コメントまたはフォローした視聴者ごとにローカルの履歴を保持し、ミュート（メッセージは表示されるが読み上げない）やBAN（メッセージ自体が表示されない）が可能です。実際のプラットフォームのアカウントには影響しません。"
+    },
+    "backToGrid": "ストアに戻る",
+    "hiddenBadge": "非表示",
+    "visibleBadge": "表示中",
+    "open": "開く",
+    "addToMenu": "サイドバーに追加",
+    "removeFromMenu": "サイドバーから削除",
+    "metaStatus": "状態",
+    "metaPosition": "位置",
+    "reorderLabel": "並べ替え:",
+    "mediaPlaceholder": "プレビューは近日公開",
+    "comingSoon": "近日追加予定",
+    "comingSoonDesc": "新しいツールを開発中です。"
   }
 }

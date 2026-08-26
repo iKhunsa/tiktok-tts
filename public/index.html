@@ -164,7 +164,7 @@
     .ad-slot--lateral { flex: 1 1 auto; min-height: 48px; max-height: 461px; }
     .ad-slot img { width: 100%; height: auto; display: block; object-fit: contain; }
     .ad-slot--lateral img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
-    .ad-slot--banner { margin: 16px 0 0; border-radius: 12px; }
+    .ad-slot--banner { margin: 22px 0 0; border-radius: 12px; }
 
     .community-banner {
       display: block;
@@ -1855,7 +1855,7 @@
         <span data-i18n="nav.moderation">Moderación</span>
       </button>
       <button id="navMoreToolsBtn" class="sidebar-item" data-view="tools" onclick="switchView('tools')">
-        <img class="sidebar-icon icon-inline" src="icons/build.svg" alt="">
+        <img class="sidebar-icon icon-inline" src="icons/inventory.svg" alt="">
         <span data-i18n="nav.moreTools">Más herramientas</span>
         <span id="moreToolsNewBadge" class="badge-new" data-i18n="footer.newBadge">Nuevo</span>
       </button>
@@ -1989,9 +1989,13 @@
           <span id="speakingText">Leyendo...</span>
         </div>
         <div class="queue-badge" id="queueBadge">Cola: 0 mensajes</div>
-        <div class="ad-slot ad-slot--banner" id="chatAdSlot">
-          <img src="asset/ads/banner.png" alt="Publicidad">
-        </div>
+      </div>
+
+      <!-- Fuera de .chat-section a propósito: es un espacio de publicidad,
+           no parte del chat, y necesita su propio margen para no leerse
+           como si fuera una fila más de esa tarjeta. -->
+      <div class="ad-slot ad-slot--banner" id="chatAdSlot">
+        <img src="asset/ads/banner.png" alt="Publicidad">
       </div>
     </div>
 
@@ -2364,6 +2368,7 @@
           <div class="cfg-icon"><img class="icon-inline" src="icons/play_arrow.svg" alt=""></div>
           <div class="cfg-meta">
             <div class="cfg-title" data-i18n="bot.nowPlaying">Reproduciendo ahora</div>
+            <div class="cfg-subtitle" data-i18n="bot.nowPlayingSubtitle">La canción que está sonando en este momento, con control de pausa y skip.</div>
           </div>
           <label class="toggle-chip">
             <input type="checkbox" id="musicEnabledToggle" onchange="musicSetEnabled(this.checked)">
@@ -2401,6 +2406,7 @@
           <div class="cfg-icon"><img class="icon-inline" src="icons/filter_none.svg" alt=""></div>
           <div class="cfg-meta">
             <div class="cfg-title"><span data-i18n="bot.requestQueue">Cola de peticiones</span> <span id="music-queue-count" style="font-size:11px;color:var(--text-muted);font-weight:500;">(0)</span></div>
+            <div class="cfg-subtitle" data-i18n="bot.requestQueueSubtitle">Canciones pedidas por el chat con !p, en orden de llegada.</div>
           </div>
           <button class="btn-test" onclick="musicClearQueue()" title="Limpiar cola" data-i18n="bot.clearQueue">🗑 Limpiar</button>
         </div>
@@ -2440,6 +2446,7 @@
           <div class="cfg-icon"><img class="icon-inline" src="icons/settings.svg" alt=""></div>
           <div class="cfg-meta">
             <div class="cfg-title" data-i18n="bot.botSettings">Configuración del bot</div>
+            <div class="cfg-subtitle" data-i18n="bot.botSettingsSubtitle">Límites del bot musical: tiempo de espera entre pedidos y tamaño máximo de la cola.</div>
           </div>
         </div>
         <div class="cfg-fields">
@@ -2950,9 +2957,10 @@
 
     <!-- ══ VIEW: Tienda de plugins ═══════════════════════════ -->
     <div class="view" id="view-tools">
-      <div class="view-header">
-        <h2><img class="icon-inline" src="icons/build.svg" alt=""> <span data-i18n="store.title">Tienda de plugins</span></h2>
+      <div class="view-header" id="pluginStoreHeader">
+        <h2><img class="icon-inline" src="icons/inventory.svg" alt=""> <span data-i18n="store.title">Tienda de plugins</span></h2>
         <p data-i18n="store.subtitle">Elegí qué herramientas ver en la barra lateral y en qué orden. Chat y Configuración siempre están disponibles.</p>
+        <button class="cfg-btn" id="btnPluginStoreTour" onclick="startPluginStoreTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
       </div>
       <div id="pluginStoreGrid" class="store-grid"><!-- grid.js la llena --></div>
 
@@ -3327,6 +3335,7 @@
       }
     }
     applyTranslations();
+    if (typeof refreshPluginStoreTexts === 'function') refreshPluginStoreTexts();
     const sel = document.getElementById('langSelect');
     if (sel) sel.value = lang;
     document.documentElement.lang = lang;
@@ -4270,6 +4279,78 @@
           onHighlightStarted: inBot,
         },
       ],
+    }).drive();
+  }
+
+  function startPluginStoreTour() {
+    if (!(window.driver && window.driver.js)) return;
+
+    // driver.js resuelve el elemento del paso ANTES de llamar a
+    // onHighlightStarted y posiciona el popover con esa referencia. Si el
+    // callback reconstruye el innerHTML del panel (como hacen
+    // renderPluginGrid/renderPluginDetail), el nodo que ya midió queda
+    // desanclado del DOM y el popover se descoloca. Por eso acá los pasos
+    // solo togglean display en los contenedores — el contenido de ambos
+    // paneles se renderiza una única vez, antes de arrancar el tour.
+    const showGridPanel = () => {
+      const grid = document.getElementById('pluginStoreGrid');
+      const detail = document.getElementById('pluginStoreDetail');
+      const header = document.getElementById('pluginStoreHeader');
+      if (detail) detail.style.display = 'none';
+      if (grid) grid.style.display = '';
+      if (header) header.style.display = '';
+    };
+    const showDetailPanel = () => {
+      const grid = document.getElementById('pluginStoreGrid');
+      const detail = document.getElementById('pluginStoreDetail');
+      const header = document.getElementById('pluginStoreHeader');
+      if (grid) grid.style.display = 'none';
+      if (detail) detail.style.display = '';
+      if (header) header.style.display = 'none';
+    };
+    showPluginGrid();
+    renderPluginDetail('overlays');
+
+    window.driver.js.driver({
+      ...driverTourDefaults(),
+      steps: [
+        {
+          element: '#pluginStoreHeader',
+          popover: { title: t('pluginStoreTour.introTitle'), description: t('pluginStoreTour.introDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: showGridPanel,
+        },
+        {
+          element: '#pluginStoreGrid',
+          popover: { title: t('pluginStoreTour.gridTitle'), description: t('pluginStoreTour.gridDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: showGridPanel,
+        },
+        {
+          element: '.store-card[data-tool-id="overlays"]',
+          popover: { title: t('pluginStoreTour.dragTitle'), description: t('pluginStoreTour.dragDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: showGridPanel,
+        },
+        {
+          element: '.store-detail-media',
+          popover: { title: t('pluginStoreTour.mediaTitle'), description: t('pluginStoreTour.mediaDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: showDetailPanel,
+        },
+        {
+          element: '.store-detail-header',
+          popover: { title: t('pluginStoreTour.headerTitle'), description: t('pluginStoreTour.headerDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: showDetailPanel,
+        },
+        {
+          element: '.store-detail-actions',
+          popover: { title: t('pluginStoreTour.actionsTitle'), description: t('pluginStoreTour.actionsDesc'), side: 'bottom', align: 'start' },
+          onHighlightStarted: showDetailPanel,
+        },
+        {
+          element: '.store-detail-about',
+          popover: { title: t('pluginStoreTour.aboutTitle'), description: t('pluginStoreTour.aboutDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: showDetailPanel,
+        },
+      ],
+      onDestroyed: showGridPanel,
     }).drive();
   }
 
@@ -5635,9 +5716,11 @@
           msgCount++;
           document.getElementById('msgCount').textContent = msgCount;
           const giftId   = `msg-${msgCount}`;
-          const usdSuffix = (options.readGiftAmount && data.usdValue) ? `, equivale a $${data.usdValue} dólares` : '';
-          const giftText = `${data.user} envió ${data.repeatCount} ${data.giftName}${usdSuffix}`;
-          addSystemMsg(`${data.user} envió ${data.repeatCount} ${data.giftName}`, 'gift', giftId, {
+          const giftVars = { user: data.user, count: data.repeatCount, gift: data.giftName, amount: data.usdValue };
+          const giftText = (options.readGiftAmount && data.usdValue)
+            ? t('announce.giftUsd', giftVars)
+            : t('announce.gift', giftVars);
+          addSystemMsg(t('announce.gift', giftVars), 'gift', giftId, {
             iconSrc: 'icons/card_giftcard.svg',
             accentText: data.usdValue ? `≈ $${data.usdValue} USD` : ''
           });
@@ -5650,7 +5733,7 @@
           msgCount++;
           document.getElementById('msgCount').textContent = msgCount;
           const joinId   = `msg-${msgCount}`;
-          const joinText = `${data.user} entró al live`;
+          const joinText = t('announce.join', { user: data.user });
           addSystemMsg(joinText, 'join', joinId, { iconSrc: 'icons/emoji_people.svg' });
           speak(joinText, joinId, data.timestamp);
         }
@@ -5664,8 +5747,8 @@
           document.getElementById('msgCount').textContent = msgCount;
           const followId   = `msg-${msgCount}`;
           const followText = isTwitchFollow
-            ? `${data.user} te sigue en Twitch`
-            : `${data.user} te acaba de seguir`;
+            ? t('announce.followTwitch', { user: data.user })
+            : t('announce.follow', { user: data.user });
           addSystemMsg(followText, 'join', followId, { iconSrc: 'icons/person_add.svg' });
           speak(followText, followId, data.timestamp);
         }
@@ -5677,12 +5760,13 @@
           msgCount++;
           document.getElementById('msgCount').textContent = msgCount;
           const subId = `msg-${msgCount}`;
+          const subVars = { user: data.user, months: data.months || 0, recipient: data.recipient, count: data.giftCount };
           let subText;
-          if (data.subType === 'resub') subText = `${data.user} se resuscribió, ${data.months || 0} meses`;
-          else if (data.subType === 'gift') subText = `${data.user} regaló una sub a ${data.recipient}`;
-          else if (data.subType === 'mysterygift') subText = `${data.user} regaló ${data.giftCount} subs al chat`;
-          else if (data.subType === 'upgrade') subText = `${data.user} mejoró su sub`;
-          else subText = `${data.user} se suscribió en Twitch`;
+          if (data.subType === 'resub') subText = t('announce.subResub', subVars);
+          else if (data.subType === 'gift') subText = t('announce.subGift', subVars);
+          else if (data.subType === 'mysterygift') subText = t('announce.subMysteryGift', subVars);
+          else if (data.subType === 'upgrade') subText = t('announce.subUpgrade', subVars);
+          else subText = t('announce.subNew', subVars);
           addSystemMsg(subText, 'gift', subId, { iconSrc: 'icons/card_giftcard.svg' });
           speak(subText, subId, data.timestamp);
         }
@@ -5694,7 +5778,7 @@
           msgCount++;
           document.getElementById('msgCount').textContent = msgCount;
           const cheerId   = `msg-${msgCount}`;
-          const cheerText = `${data.user} envió ${data.bits} bits`;
+          const cheerText = t('announce.cheer', { user: data.user, bits: data.bits });
           addSystemMsg(cheerText, 'gift', cheerId, { iconSrc: 'icons/card_giftcard.svg' });
           speak(cheerText, cheerId, data.timestamp);
         }
@@ -5705,7 +5789,7 @@
           msgCount++;
           document.getElementById('msgCount').textContent = msgCount;
           const raidId   = `msg-${msgCount}`;
-          const raidText = `${data.user} hizo un raid con ${data.viewers} viewers`;
+          const raidText = t('announce.raid', { user: data.user, viewers: data.viewers });
           addSystemMsg(raidText, 'join', raidId, { iconSrc: 'icons/emoji_people.svg' });
           speak(raidText, raidId, data.timestamp);
         }
@@ -5724,7 +5808,7 @@
             msgCount++;
             document.getElementById('msgCount').textContent = msgCount;
             const likeId   = `msg-${msgCount}`;
-            const likeText = `${data.user} dio ${data.likeCount} likes`;
+            const likeText = t('announce.like', { user: data.user, count: data.likeCount });
             addSystemMsg(likeText, 'join', likeId, { iconSrc: 'icons/thumb_up.svg' });
             speak(likeText, likeId, data.timestamp);
           }
@@ -5736,7 +5820,7 @@
           msgCount++;
           document.getElementById('msgCount').textContent = msgCount;
           const shareId   = `msg-${msgCount}`;
-          const shareText = `${data.user} está compartiendo el live`;
+          const shareText = t('announce.share', { user: data.user });
           addSystemMsg(shareText, 'join', shareId, { iconSrc: 'icons/public.svg' });
           speak(shareText, shareId, data.timestamp);
         }

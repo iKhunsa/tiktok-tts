@@ -1,8 +1,7 @@
 'use strict';
 
 const { createSessionScheduler } = require('./session-scheduler');
-
-const PROMO_ANNOUNCE_TEXT = '¿Haces stream y quieres una voz que lea el chat? Descarga TikLive TTS: tu live también puede sonar así.';
+const { PROMO_ANNOUNCE_TEXT, pickAnnounceText } = require('../core/announce-texts');
 
 let scheduler = null;
 
@@ -20,7 +19,10 @@ module.exports = {
   register({ bus, logger }) {
     scheduler = createSessionScheduler({
       onMilestone: () => {
-        bus.emit('ws:broadcast', { type: 'promo-announce', text: PROMO_ANNOUNCE_TEXT, timestamp: Date.now() });
+        let config = null;
+        bus.emit('config:get', (c) => { config = c; });
+        const text = pickAnnounceText(PROMO_ANNOUNCE_TEXT, config && config.ttsVoiceLang);
+        bus.emit('ws:broadcast', { type: 'promo-announce', text, timestamp: Date.now() });
         logger.log(
           'info', 'promo', 'promo/index.js#register', 'promo.autopromocion.disparada',
           'Alerta de autopromocion por tiempo de sesion disparada', {}

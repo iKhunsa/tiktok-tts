@@ -8,7 +8,7 @@
     "soundpad": "Sonidos",
     "bot": "Bot",
     "moderation": "Moderación",
-    "moreTools": "Más herramientas"
+    "moreTools": "Tienda de Plugins"
   },
   "community": {
     "label": "Comunidad TikLiveTTS",
@@ -251,6 +251,7 @@
     "title": "Bot de Música",
     "desc": "El chat puede pedir canciones con !p nombre o !p link de YouTube. Tu playlist suena de fondo cuando no hay peticiones.",
     "nowPlaying": "Reproduciendo ahora",
+    "nowPlayingSubtitle": "La canción que está sonando en este momento, con control de pausa y skip.",
     "enableCmd": "Activar !p",
     "skipSong": "⏭ Skip",
     "pauseSong": "⏸ Pausa",
@@ -258,6 +259,7 @@
     "noMusic": "Sin música reproduciéndose.",
     "musicVol": "Vol. Música",
     "requestQueue": "Cola de peticiones",
+    "requestQueueSubtitle": "Canciones pedidas por el chat con !p, en orden de llegada.",
     "clearQueue": "🗑 Limpiar",
     "queueEmpty": "La cola está vacía.",
     "myPlaylist": "Mi Playlist (fondo)",
@@ -267,6 +269,7 @@
     "playlistActive": "▶ Sonando de playlist:",
     "savePlaylist": "💾 Guardar playlist",
     "botSettings": "Configuración del bot",
+    "botSettingsSubtitle": "Límites del bot musical: tiempo de espera entre pedidos y tamaño máximo de la cola.",
     "cooldown": "Cooldown por usuario (seg)",
     "maxQueue": "Máx canciones en cola",
     "bannedUsers": "Usuarios baneados del !p",
@@ -520,6 +523,22 @@
     "emergencyMode": "Modo emergencia",
     "onlyChatActivated": "Solo chat activado",
     "connectionError": "Error de conexión"
+  },
+  "announce": {
+    "gift": "{user} envió {count} {gift}",
+    "giftUsd": "{user} envió {count} {gift}, equivale a ${amount} dólares",
+    "join": "{user} entró al live",
+    "followTwitch": "{user} te sigue en Twitch",
+    "follow": "{user} te acaba de seguir",
+    "subResub": "{user} se resuscribió, {months} meses",
+    "subGift": "{user} regaló una sub a {recipient}",
+    "subMysteryGift": "{user} regaló {count} subs al chat",
+    "subUpgrade": "{user} mejoró su sub",
+    "subNew": "{user} se suscribió en Twitch",
+    "cheer": "{user} envió {bits} bits",
+    "raid": "{user} hizo un raid con {viewers} viewers",
+    "like": "{user} dio {count} likes",
+    "share": "{user} está compartiendo el live"
   },
   "toast": {
     "bgUploaded": "Fondo subido correctamente",
@@ -793,6 +812,22 @@
     "historyTitle": "Historial de marcadores",
     "historyDesc": "Todos los clips marcados quedan listados acá con su tiempo transcurrido y hora real, para que después busques esos momentos en tu grabación u OBS."
   },
+  "pluginStoreTour": {
+    "introTitle": "Tienda de Plugins",
+    "introDesc": "Acá elegís qué herramientas mostrar en la barra lateral y en qué orden. Chat y Configuración siempre están disponibles, el resto lo activás vos.",
+    "gridTitle": "Cada tarjeta es una herramienta",
+    "gridDesc": "El badge te dice si está Visible u Oculta en la barra lateral. Hacé clic en una tarjeta para ver los detalles.",
+    "dragTitle": "Reordená arrastrando",
+    "dragDesc": "Agarrá cualquier tarjeta y soltala sobre otra para reordenarlas, como en Trello. El nuevo orden se refleja al instante en la barra lateral.",
+    "mediaTitle": "Vista previa",
+    "mediaDesc": "Acá va una imagen o video de ejemplo de la herramienta, cuando esté disponible.",
+    "headerTitle": "Nombre y descripción",
+    "headerDesc": "El nombre y una descripción corta de qué hace la herramienta.",
+    "actionsTitle": "Abrir o activar",
+    "actionsDesc": "\"Abrir\" te lleva directo a la sección aunque esté oculta. El botón verde la agrega o la quita de la barra lateral.",
+    "aboutTitle": "Acerca de",
+    "aboutDesc": "Una explicación más completa de cómo funciona la herramienta."
+  },
   "overlaysTour": {
     "introTitle": "Overlays para OBS",
     "introDesc": "Cada tarjeta genera una URL única para un overlay distinto. La pegas en OBS como Browser Source y se actualiza sola en vivo.",
@@ -841,13 +876,26 @@
       "bot": "Bot musical: el chat pide canciones con !p.",
       "moderacion": "Historial de espectadores, silenciar/banear, seguidores."
     },
+    "aboutLabel": "Acerca de",
+    "about": {
+      "overlays": "Los overlays se pegan en OBS como Browser Source y muestran en tiempo real los regalos, likes y nuevos seguidores de tu stream. Cada uno tiene su propia URL para copiar y personalizar colores, tamaños y animaciones.",
+      "clips": "Marca el momento exacto de un highlight con un atajo de teclado mientras estás en vivo, sin cortar el stream. Después revisás la lista de marcas para encontrar rápido dónde cortar el clip.",
+      "soundpad": "Subí tus propios efectos de sonido y asignales un atajo de teclado (con modificador Ctrl/Alt/Shift) para reproducirlos al toque, incluso con el juego en pantalla completa.",
+      "mobile": "Un panel liviano que se abre desde el celular, en la misma red WiFi que la PC. Permite pausar el TTS, saltar mensajes y controlar lo esencial sin volver a la computadora.",
+      "bot": "El chat pide canciones escribiendo !p seguido del nombre o un link de YouTube. Mientras no hay pedidos, suena tu propia playlist de fondo. Configurable con cooldown y límite de cola.",
+      "moderacion": "Guarda un historial local de cada espectador que escribió o te siguió, con la posibilidad de silenciarlo (el mensaje se ve pero no se lee) o banearlo (ni se muestra). No afecta la cuenta en la plataforma real."
+    },
     "backToGrid": "Volver a la tienda",
     "hiddenBadge": "Oculta",
     "visibleBadge": "Visible",
+    "open": "Abrir",
     "addToMenu": "Agregar al menú lateral",
     "removeFromMenu": "Quitar del menú lateral",
     "metaStatus": "Estado",
     "metaPosition": "Posición",
-    "reorderLabel": "Reordenar:"
+    "reorderLabel": "Reordenar:",
+    "mediaPlaceholder": "Vista previa próximamente",
+    "comingSoon": "Más próximamente",
+    "comingSoonDesc": "Estamos trabajando en nuevas herramientas."
   }
 }

@@ -8,7 +8,7 @@
     "soundpad": "Sounds",
     "bot": "Bot",
     "moderation": "Moderation",
-    "moreTools": "More tools"
+    "moreTools": "Plugin Store"
   },
   "community": {
     "label": "TikLiveTTS Community",
@@ -231,6 +231,7 @@
     "title": "Music Bot",
     "desc": "Chat can request songs with !p name or !p YouTube link. Your playlist plays in the background when there are no requests.",
     "nowPlaying": "Now Playing",
+    "nowPlayingSubtitle": "The song currently playing, with pause and skip controls.",
     "enableCmd": "Enable !p",
     "skipSong": "⏭ Skip",
     "pauseSong": "⏸ Pause",
@@ -238,6 +239,7 @@
     "noMusic": "No music playing.",
     "musicVol": "Music Vol.",
     "requestQueue": "Request queue",
+    "requestQueueSubtitle": "Songs requested by chat with !p, in arrival order.",
     "clearQueue": "🗑 Clear",
     "queueEmpty": "Queue is empty.",
     "myPlaylist": "My Playlist (background)",
@@ -247,6 +249,7 @@
     "playlistActive": "▶ Playing from playlist:",
     "savePlaylist": "💾 Save playlist",
     "botSettings": "Bot settings",
+    "botSettingsSubtitle": "Music bot limits: cooldown between requests and maximum queue size.",
     "cooldown": "Cooldown per user (sec)",
     "maxQueue": "Max songs in queue",
     "bannedUsers": "Banned from !p",
@@ -516,6 +519,22 @@
     "emergencyMode": "Emergency mode",
     "onlyChatActivated": "Chat only activated",
     "connectionError": "Connection error"
+  },
+  "announce": {
+    "gift": "{user} sent {count} {gift}",
+    "giftUsd": "{user} sent {count} {gift}, worth ${amount} dollars",
+    "join": "{user} joined the live",
+    "followTwitch": "{user} follows you on Twitch",
+    "follow": "{user} just followed you",
+    "subResub": "{user} resubscribed, {months} months",
+    "subGift": "{user} gifted a sub to {recipient}",
+    "subMysteryGift": "{user} gifted {count} subs to chat",
+    "subUpgrade": "{user} upgraded their sub",
+    "subNew": "{user} subscribed on Twitch",
+    "cheer": "{user} sent {bits} bits",
+    "raid": "{user} raided with {viewers} viewers",
+    "like": "{user} gave {count} likes",
+    "share": "{user} is sharing the live"
   },
   "toast": {
     "bgUploaded": "Background uploaded successfully",
@@ -809,6 +828,22 @@
     "historyTitle": "Marker history",
     "historyDesc": "Every clip you mark is listed here with its elapsed time and real timestamp, so you can later find those moments in your recording or in OBS."
   },
+  "pluginStoreTour": {
+    "introTitle": "Plugin Store",
+    "introDesc": "Here you choose which tools to show in the sidebar and in what order. Chat and Settings are always available, everything else is up to you.",
+    "gridTitle": "Each card is a tool",
+    "gridDesc": "The badge tells you if it's Visible or Hidden in the sidebar. Click a card to see its details.",
+    "dragTitle": "Drag to reorder",
+    "dragDesc": "Grab any card and drop it on another to reorder them, Trello-style. The new order updates the sidebar instantly.",
+    "mediaTitle": "Preview",
+    "mediaDesc": "A sample image or video of the tool goes here, once available.",
+    "headerTitle": "Name and description",
+    "headerDesc": "The tool's name and a short description of what it does.",
+    "actionsTitle": "Open or enable",
+    "actionsDesc": "\"Open\" takes you straight to the section even if it's hidden. The green button adds or removes it from the sidebar.",
+    "aboutTitle": "About",
+    "aboutDesc": "A fuller explanation of how the tool works."
+  },
   "overlaysTour": {
     "introTitle": "Overlays for OBS",
     "introDesc": "Each card generates a unique URL for a different overlay. Paste it into OBS as a Browser Source and it updates live on its own.",
@@ -857,13 +892,26 @@
       "bot": "Music bot: chat requests songs with !p.",
       "moderacion": "Viewer history, mute/ban, followers."
     },
+    "aboutLabel": "About",
+    "about": {
+      "overlays": "Overlays are pasted into OBS as a Browser Source and show gifts, likes and new followers from your stream in real time. Each one has its own URL you can copy and customize colors, sizes and animations.",
+      "clips": "Bookmark the exact moment of a highlight with a keyboard shortcut while you're live, without cutting the stream. Review the bookmark list afterward to quickly find where to cut the clip.",
+      "soundpad": "Upload your own sound effects and assign a keyboard shortcut (with a Ctrl/Alt/Shift modifier) to play them instantly, even with the game in fullscreen.",
+      "mobile": "A lightweight panel you open from your phone on the same WiFi network as your PC. Pause the TTS, skip messages and control the essentials without going back to the computer.",
+      "bot": "Chat requests songs by typing !p followed by a name or a YouTube link. Your own playlist plays in the background when there are no requests. Configurable with a cooldown and queue limit.",
+      "moderacion": "Keeps a local history of every viewer who chatted or followed you, with the option to mute them (message shows but isn't read aloud) or ban them (message never shows). It doesn't touch their account on the real platform."
+    },
     "backToGrid": "Back to store",
     "hiddenBadge": "Hidden",
     "visibleBadge": "Visible",
+    "open": "Open",
     "addToMenu": "Add to sidebar",
     "removeFromMenu": "Remove from sidebar",
     "metaStatus": "Status",
     "metaPosition": "Position",
-    "reorderLabel": "Reorder:"
+    "reorderLabel": "Reorder:",
+    "mediaPlaceholder": "Preview coming soon",
+    "comingSoon": "More coming soon",
+    "comingSoonDesc": "We're working on new tools."
   }
 }

@@ -7,8 +7,10 @@ function showPluginDetail(id) {
   _pluginStoreDetailId = id;
   const grid = document.getElementById('pluginStoreGrid');
   const detail = document.getElementById('pluginStoreDetail');
+  const header = document.getElementById('pluginStoreHeader');
   if (grid) grid.style.display = 'none';
   if (detail) detail.style.display = '';
+  if (header) header.style.display = 'none';
   renderPluginDetail(id);
 }
 
@@ -19,6 +21,7 @@ function renderPluginDetail(id) {
 
   if (tool.pinned) {
     body.innerHTML = `
+      ${renderPluginMedia(tool)}
       <div class="store-detail-header">
         <img class="store-detail-icon" src="${tool.icon}" alt="">
         <div>
@@ -37,11 +40,20 @@ function renderPluginDetail(id) {
   const isLast = idx === visibleOrdered.length - 1;
 
   body.innerHTML = `
+    ${renderPluginMedia(tool)}
     <div class="store-detail-header">
       <img class="store-detail-icon" src="${tool.icon}" alt="">
-      <div>
+      <div class="store-detail-header-meta">
         <h3>${t(tool.labelKey)}</h3>
         <p>${t(tool.descKey)}</p>
+      </div>
+      <div class="store-detail-actions">
+        <button class="store-detail-open" onclick="switchView('${id}')">
+          ${t('store.open')}
+        </button>
+        <button class="btn-supabase-primary store-detail-cta" onclick="toggleSidebarTool('${id}', ${isHidden})">
+          ${isHidden ? t('store.addToMenu') : t('store.removeFromMenu')}
+        </button>
       </div>
     </div>
     <div class="store-detail-meta">
@@ -54,15 +66,35 @@ function renderPluginDetail(id) {
         <span>${isHidden ? '—' : `${idx + 1} / ${visibleOrdered.length}`}</span>
       </div>
     </div>
-    <button class="btn-supabase-primary store-detail-cta" onclick="toggleSidebarTool('${id}', ${isHidden})">
-      ${isHidden ? t('store.addToMenu') : t('store.removeFromMenu')}
-    </button>
+    ${tool.aboutKey ? `
+    <div class="store-detail-about">
+      <span class="store-detail-about-label">${t('store.aboutLabel')}</span>
+      <p>${t(tool.aboutKey)}</p>
+    </div>` : ''}
     ${isHidden ? '' : `
     <div class="store-detail-order">
       <span>${t('store.reorderLabel')}</span>
       <button class="store-order-btn" ${isFirst ? 'disabled' : ''} onclick="moveSidebarTool('${id}', -1)" title="${t('store.moveUp')}">▲</button>
       <button class="store-order-btn" ${isLast ? 'disabled' : ''} onclick="moveSidebarTool('${id}', 1)" title="${t('store.moveDown')}">▼</button>
     </div>`}`;
+}
+
+function renderPluginMedia(tool) {
+  const src = tool.media || '';
+  const isVideo = /\.(mp4|webm|mov)$/i.test(src);
+  if (!src) {
+    return `
+    <div class="store-detail-media store-detail-media-empty">
+      <img class="store-detail-media-icon" src="${tool.icon}" alt="">
+      <span>${t('store.mediaPlaceholder')}</span>
+    </div>`;
+  }
+  return `
+    <div class="store-detail-media">
+      ${isVideo
+        ? `<video src="${src}" controls playsinline></video>`
+        : `<img src="${src}" alt="${t(tool.labelKey)}">`}
+    </div>`;
 }
 
 function toggleSidebarTool(id, visible) {

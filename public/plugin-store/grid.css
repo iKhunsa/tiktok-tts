@@ -37,3 +37,11 @@
 .store-card-badge.visible { background: rgba(62,207,142,0.15); color: var(--accent); }
 .store-card-badge.hidden  { background: rgba(255,255,255,0.06); color: var(--text-muted); }
 .store-card-badge.pinned  { background: rgba(255,204,0,0.15); color: #ffcc00; }
+
+.store-card-soon { cursor: default; opacity: .55; border-style: dashed; }
+.store-card-soon:hover { border-color: var(--border); transform: none; box-shadow: none; }
+
+.store-card { cursor: grab; }
+.store-card.dragging { opacity: .4; cursor: grabbing; }
+.store-card.drag-over-before { box-shadow: inset 3px 0 0 var(--accent); }
+.store-card.drag-over-after { box-shadow: inset -3px 0 0 var(--accent); }
