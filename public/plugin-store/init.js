@@ -17,3 +17,16 @@ if (localStorage.getItem(MORE_TOOLS_NOTICE_KEY)) {
   if (b) b.style.display = 'none';
 }
 renderSidebar();
+
+// Llamado desde setLanguage() (index.html) al cambiar idioma: la grilla y
+// el detalle se arman con innerHTML + t() en el momento del render, así
+// que sin este refresh quedan en el idioma viejo hasta salir/reentrar.
+function refreshPluginStoreTexts() {
+  renderSidebar();
+  const detail = document.getElementById('pluginStoreDetail');
+  if (detail && detail.style.display !== 'none' && _pluginStoreDetailId) {
+    renderPluginDetail(_pluginStoreDetailId);
+  } else {
+    renderPluginGrid();
+  }
+}

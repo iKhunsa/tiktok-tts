@@ -8,7 +8,7 @@
     "soundpad": "사운드",
     "bot": "봇",
     "moderation": "모더레이션",
-    "moreTools": "More tools"
+    "moreTools": "플러그인 스토어"
   },
   "community": {
     "label": "TikLiveTTS 커뮤니티",
@@ -231,6 +231,7 @@
     "title": "뮤직 봇",
     "desc": "채팅에서 !p 노래명 또는 !p 유튜브링크 로 신청할 수 있습니다. 신청이 없을 때 플레이리스트가 배경으로 재생됩니다.",
     "nowPlaying": "재생 중",
+    "nowPlayingSubtitle": "현재 재생 중인 곡, 일시정지 및 건너뛰기 제어 가능.",
     "enableCmd": "!p 활성화",
     "skipSong": "⏭ 건너뛰기",
     "pauseSong": "⏸ 일시정지",
@@ -238,6 +239,7 @@
     "noMusic": "재생 중인 음악이 없습니다.",
     "musicVol": "음악 볼륨",
     "requestQueue": "신청 대기열",
+    "requestQueueSubtitle": "채팅에서 !p로 신청한 곡, 도착한 순서대로.",
     "clearQueue": "🗑 지우기",
     "queueEmpty": "대기열이 비어 있습니다.",
     "myPlaylist": "내 플레이리스트 (배경)",
@@ -247,6 +249,7 @@
     "playlistActive": "▶ 플레이리스트에서 재생 중:",
     "savePlaylist": "💾 플레이리스트 저장",
     "botSettings": "봇 설정",
+    "botSettingsSubtitle": "음악 봇 제한: 신청 간 대기시간과 대기열 최대 크기.",
     "cooldown": "사용자당 쿨다운 (초)",
     "maxQueue": "대기열 최대 곡 수",
     "bannedUsers": "!p 차단된 사용자",
@@ -516,6 +519,22 @@
     "emergencyMode": "긴급 모드",
     "onlyChatActivated": "채팅만 모드 활성화",
     "connectionError": "연결 오류"
+  },
+  "announce": {
+    "gift": "{user}님이 {gift}을(를) {count}개 보냈습니다",
+    "giftUsd": "{user}님이 {gift}을(를) {count}개 보냈습니다 (약 {amount}달러)",
+    "join": "{user}님이 방송에 입장했습니다",
+    "followTwitch": "{user}님이 Twitch에서 팔로우합니다",
+    "follow": "{user}님이 방금 팔로우했습니다",
+    "subResub": "{user}님이 재구독했습니다, {months}개월",
+    "subGift": "{user}님이 {recipient}님에게 구독을 선물했습니다",
+    "subMysteryGift": "{user}님이 채팅에 구독 {count}개를 선물했습니다",
+    "subUpgrade": "{user}님이 구독을 업그레이드했습니다",
+    "subNew": "{user}님이 Twitch에서 구독했습니다",
+    "cheer": "{user}님이 {bits} 비트를 보냈습니다",
+    "raid": "{user}님이 시청자 {viewers}명과 함께 레이드했습니다",
+    "like": "{user}님이 좋아요 {count}개를 눌렀습니다",
+    "share": "{user}님이 방송을 공유하고 있습니다"
   },
   "toast": {
     "bgUploaded": "배경이 성공적으로 업로드되었습니다",
@@ -809,6 +828,22 @@
     "historyTitle": "마커 기록",
     "historyDesc": "표시한 모든 클립이 경과 시간과 실제 타임스탬프와 함께 여기에 나열되어, 나중에 녹화본이나 OBS에서 그 순간들을 찾을 수 있습니다."
   },
+  "pluginStoreTour": {
+    "introTitle": "플러그인 스토어",
+    "introDesc": "여기서 사이드바에 표시할 도구와 순서를 선택합니다. 채팅과 설정은 항상 사용 가능하고, 나머지는 직접 선택하세요.",
+    "gridTitle": "각 카드는 하나의 도구입니다",
+    "gridDesc": "배지는 사이드바에서 표시 중인지 숨김인지 알려줍니다. 카드를 클릭하면 자세한 정보를 볼 수 있습니다.",
+    "dragTitle": "드래그로 순서 변경",
+    "dragDesc": "카드를 다른 카드 위에 끌어다 놓으면 Trello처럼 순서를 바꿀 수 있습니다. 새 순서는 즉시 사이드바에 반영됩니다.",
+    "mediaTitle": "미리보기",
+    "mediaDesc": "제공되면 여기에 도구의 예시 이미지나 영상이 표시됩니다.",
+    "headerTitle": "이름과 설명",
+    "headerDesc": "도구의 이름과 기능에 대한 짧은 설명입니다.",
+    "actionsTitle": "열기 또는 활성화",
+    "actionsDesc": "\"열기\"는 숨겨져 있어도 바로 해당 섹션으로 이동합니다. 초록색 버튼은 사이드바에 추가하거나 제거합니다.",
+    "aboutTitle": "소개",
+    "aboutDesc": "도구가 어떻게 작동하는지에 대한 더 자세한 설명입니다."
+  },
   "overlaysTour": {
     "introTitle": "OBS용 오버레이",
     "introDesc": "각 카드는 서로 다른 오버레이를 위한 고유 URL을 생성합니다. OBS에 브라우저 소스로 붙여넣으면 자동으로 실시간 업데이트됩니다.",
@@ -844,26 +879,39 @@
     "logDesc": "메시지가 도착하면 여기에 표시되며, 플랫폼 배지와 상태(읽음, 음소거 등)가 함께 나옵니다."
   },
   "store": {
-    "title": "Plugin Store",
-    "subtitle": "Choose which tools to show in the sidebar and in what order. Chat and Settings are always available.",
-    "moveUp": "Move up",
-    "moveDown": "Move down",
-    "alwaysVisible": "Always visible",
+    "title": "플러그인 스토어",
+    "subtitle": "사이드바에 표시할 도구와 순서를 선택하세요. 채팅과 설정은 항상 사용할 수 있습니다.",
+    "moveUp": "위로 이동",
+    "moveDown": "아래로 이동",
+    "alwaysVisible": "항상 표시",
     "desc": {
-      "overlays": "Gift alerts, like and follower counters for OBS.",
-      "clips": "Bookmark stream highlights with a shortcut.",
-      "soundpad": "Play sound effects with keyboard shortcuts.",
-      "mobile": "Remote panel to control the TTS from your phone.",
-      "bot": "Music bot: chat requests songs with !p.",
-      "moderacion": "Viewer history, mute/ban, followers."
+      "overlays": "OBS용 선물 알림, 좋아요·팔로워 카운터.",
+      "clips": "단축키로 스트림 하이라이트를 표시하세요.",
+      "soundpad": "키보드 단축키로 효과음을 재생하세요.",
+      "mobile": "휴대폰에서 TTS를 제어하는 원격 패널.",
+      "bot": "음악 봇: 채팅에서 !p로 노래를 요청합니다.",
+      "moderacion": "시청자 기록, 음소거/차단, 팔로워."
     },
-    "backToGrid": "Back to store",
-    "hiddenBadge": "Hidden",
-    "visibleBadge": "Visible",
-    "addToMenu": "Add to sidebar",
-    "removeFromMenu": "Remove from sidebar",
-    "metaStatus": "Status",
-    "metaPosition": "Position",
-    "reorderLabel": "Reorder:"
+    "aboutLabel": "소개",
+    "about": {
+      "overlays": "오버레이는 OBS에 브라우저 소스로 붙여 넣으며, 선물·좋아요·신규 팔로워를 실시간으로 보여줍니다. 각각 고유 URL이 있어 색상, 크기, 애니메이션을 자유롭게 커스터마이즈할 수 있습니다.",
+      "clips": "방송 중 단축키로 하이라이트 순간을 방송 중단 없이 표시할 수 있습니다. 이후 마크 목록을 확인해 어디를 잘라야 할지 빠르게 찾을 수 있습니다.",
+      "soundpad": "효과음을 직접 업로드하고 키보드 단축키(Ctrl/Alt/Shift 조합)를 지정해 전체 화면 게임 중에도 즉시 재생할 수 있습니다.",
+      "mobile": "PC와 같은 Wi-Fi에서 휴대폰으로 여는 가벼운 패널입니다. TTS 일시정지, 메시지 건너뛰기 등 핵심 기능을 PC로 돌아가지 않고 제어할 수 있습니다.",
+      "bot": "채팅은 !p 뒤에 곡명이나 유튜브 링크를 붙여 노래를 신청합니다. 신청이 없을 때는 자신의 플레이리스트가 배경으로 재생됩니다. 대기시간과 대기열 제한도 설정 가능합니다.",
+      "moderacion": "채팅했거나 팔로우한 모든 시청자의 로컬 기록을 보관하며, 음소거(메시지는 보이지만 읽지 않음)하거나 차단(메시지 자체가 표시되지 않음)할 수 있습니다. 실제 플랫폼 계정에는 영향을 주지 않습니다."
+    },
+    "backToGrid": "스토어로 돌아가기",
+    "hiddenBadge": "숨김",
+    "visibleBadge": "표시됨",
+    "open": "열기",
+    "addToMenu": "사이드바에 추가",
+    "removeFromMenu": "사이드바에서 제거",
+    "metaStatus": "상태",
+    "metaPosition": "위치",
+    "reorderLabel": "순서 변경:",
+    "mediaPlaceholder": "미리보기 준비 중",
+    "comingSoon": "더 많은 기능 준비 중",
+    "comingSoonDesc": "새로운 도구를 준비하고 있습니다."
   }
 }

@@ -8,7 +8,7 @@
     "soundpad": "Töne",
     "bot": "Bot",
     "moderation": "Moderation",
-    "moreTools": "More tools"
+    "moreTools": "Plugin-Store"
   },
   "community": {
     "label": "TikLiveTTS Gemeinschaft",
@@ -231,6 +231,7 @@
     "title": "Musik-Bot",
     "desc": "Der Chat kann Songs mit !p Name oder !p YouTube-Link anfragen. Deine Playlist läuft im Hintergrund wenn keine Anfragen vorliegen.",
     "nowPlaying": "Wird abgespielt",
+    "nowPlayingSubtitle": "Der Song, der gerade läuft, mit Pause- und Skip-Steuerung.",
     "enableCmd": "!p aktivieren",
     "skipSong": "⏭ Überspringen",
     "pauseSong": "⏸ Pause",
@@ -238,6 +239,7 @@
     "noMusic": "Keine Musik läuft.",
     "musicVol": "Musik-Lautstärke",
     "requestQueue": "Anfrage-Warteschlange",
+    "requestQueueSubtitle": "Vom Chat mit !p angefragte Songs, in Ankunftsreihenfolge.",
     "clearQueue": "🗑 Leeren",
     "queueEmpty": "Warteschlange ist leer.",
     "myPlaylist": "Meine Playlist (Hintergrund)",
@@ -247,6 +249,7 @@
     "playlistActive": "▶ Spielt aus Playlist:",
     "savePlaylist": "💾 Playlist speichern",
     "botSettings": "Bot-Einstellungen",
+    "botSettingsSubtitle": "Grenzwerte des Musik-Bots: Abklingzeit zwischen Anfragen und maximale Warteschlangengröße.",
     "cooldown": "Abklingzeit pro Nutzer (Sek)",
     "maxQueue": "Max. Songs in Warteschlange",
     "bannedUsers": "Von !p gesperrte Nutzer",
@@ -516,6 +519,22 @@
     "emergencyMode": "Notfallmodus",
     "onlyChatActivated": "Nur-Chat-Modus aktiviert",
     "connectionError": "Verbindungsfehler"
+  },
+  "announce": {
+    "gift": "{user} hat {count} {gift} gesendet",
+    "giftUsd": "{user} hat {count} {gift} gesendet, im Wert von ${amount} Dollar",
+    "join": "{user} ist dem Live beigetreten",
+    "followTwitch": "{user} folgt dir auf Twitch",
+    "follow": "{user} folgt dir gerade",
+    "subResub": "{user} hat erneut abonniert, {months} Monate",
+    "subGift": "{user} hat ein Abo an {recipient} verschenkt",
+    "subMysteryGift": "{user} hat {count} Abos an den Chat verschenkt",
+    "subUpgrade": "{user} hat sein Abo aufgewertet",
+    "subNew": "{user} hat auf Twitch abonniert",
+    "cheer": "{user} hat {bits} Bits gesendet",
+    "raid": "{user} hat mit {viewers} Zuschauern geraidet",
+    "like": "{user} hat {count} Likes gegeben",
+    "share": "{user} teilt den Live-Stream"
   },
   "toast": {
     "bgUploaded": "Hintergrund erfolgreich hochgeladen",
@@ -809,6 +828,22 @@
     "historyTitle": "Marker-Verlauf",
     "historyDesc": "Alle markierten Clips werden hier mit verstrichener Zeit und echtem Zeitstempel aufgelistet, damit du diese Momente später in deiner Aufnahme oder in OBS findest."
   },
+  "pluginStoreTour": {
+    "introTitle": "Plugin-Store",
+    "introDesc": "Hier wählst du, welche Tools in der Seitenleiste angezeigt werden und in welcher Reihenfolge. Chat und Einstellungen sind immer verfügbar, den Rest bestimmst du.",
+    "gridTitle": "Jede Karte ist ein Tool",
+    "gridDesc": "Das Abzeichen zeigt, ob es in der Seitenleiste sichtbar oder ausgeblendet ist. Klicke auf eine Karte für die Details.",
+    "dragTitle": "Zum Umordnen ziehen",
+    "dragDesc": "Ziehe eine Karte auf eine andere, um sie neu anzuordnen — wie bei Trello. Die neue Reihenfolge erscheint sofort in der Seitenleiste.",
+    "mediaTitle": "Vorschau",
+    "mediaDesc": "Hier steht ein Beispielbild oder -video des Tools, sobald verfügbar.",
+    "headerTitle": "Name und Beschreibung",
+    "headerDesc": "Der Name des Tools und eine kurze Beschreibung, was es macht.",
+    "actionsTitle": "Öffnen oder aktivieren",
+    "actionsDesc": "\"Öffnen\" bringt dich direkt zum Bereich, auch wenn er ausgeblendet ist. Der grüne Button fügt ihn zur Seitenleiste hinzu oder entfernt ihn.",
+    "aboutTitle": "Über",
+    "aboutDesc": "Eine ausführlichere Erklärung, wie das Tool funktioniert."
+  },
   "overlaysTour": {
     "introTitle": "Overlays für OBS",
     "introDesc": "Jede Karte erzeugt eine eindeutige URL für ein anderes Overlay. Füge sie in OBS als Browser Source ein — sie aktualisiert sich live von selbst.",
@@ -844,26 +879,39 @@
     "logDesc": "Nachrichten erscheinen hier, sobald sie eintreffen, mit Plattform-Badge und Status (gelesen, stumm, usw.)."
   },
   "store": {
-    "title": "Plugin Store",
-    "subtitle": "Choose which tools to show in the sidebar and in what order. Chat and Settings are always available.",
-    "moveUp": "Move up",
-    "moveDown": "Move down",
-    "alwaysVisible": "Always visible",
+    "title": "Plugin-Store",
+    "subtitle": "Wähle, welche Tools in der Seitenleiste angezeigt werden und in welcher Reihenfolge. Chat und Einstellungen sind immer verfügbar.",
+    "moveUp": "Nach oben",
+    "moveDown": "Nach unten",
+    "alwaysVisible": "Immer sichtbar",
     "desc": {
-      "overlays": "Gift alerts, like and follower counters for OBS.",
-      "clips": "Bookmark stream highlights with a shortcut.",
-      "soundpad": "Play sound effects with keyboard shortcuts.",
-      "mobile": "Remote panel to control the TTS from your phone.",
-      "bot": "Music bot: chat requests songs with !p.",
-      "moderacion": "Viewer history, mute/ban, followers."
+      "overlays": "Geschenk-Benachrichtigungen, Like- und Follower-Zähler für OBS.",
+      "clips": "Markiere Stream-Highlights mit einem Tastenkürzel.",
+      "soundpad": "Spiele Soundeffekte mit Tastenkürzeln ab.",
+      "mobile": "Fernbedienung, um die TTS vom Handy aus zu steuern.",
+      "bot": "Musik-Bot: Der Chat fordert Songs mit !p an.",
+      "moderacion": "Zuschauerverlauf, Stummschalten/Bannen, Follower."
     },
-    "backToGrid": "Back to store",
-    "hiddenBadge": "Hidden",
-    "visibleBadge": "Visible",
-    "addToMenu": "Add to sidebar",
-    "removeFromMenu": "Remove from sidebar",
+    "aboutLabel": "Über",
+    "about": {
+      "overlays": "Overlays werden als Browser-Quelle in OBS eingefügt und zeigen Geschenke, Likes und neue Follower deines Streams in Echtzeit. Jedes hat eine eigene URL, die du kopieren und in Farben, Größe und Animation anpassen kannst.",
+      "clips": "Markiere den genauen Moment eines Highlights mit einem Tastenkürzel, während du live bist, ohne den Stream zu unterbrechen. Danach durchsiehst du die Markierungsliste, um schnell zu finden, wo geschnitten werden soll.",
+      "soundpad": "Lade eigene Soundeffekte hoch und weise ihnen ein Tastenkürzel (mit Strg/Alt/Umschalt) zu, um sie sofort abzuspielen — auch im Vollbildmodus des Spiels.",
+      "mobile": "Ein schlankes Panel, das du vom Handy aus im selben WLAN wie dein PC öffnest. Pausiere die TTS, überspringe Nachrichten und steuere das Wichtigste, ohne zum Computer zurückzukehren.",
+      "bot": "Der Chat fordert Songs an, indem er !p gefolgt von einem Namen oder YouTube-Link schreibt. Ohne Anfragen läuft deine eigene Playlist im Hintergrund. Konfigurierbar mit Abklingzeit und Warteschlangenlimit.",
+      "moderacion": "Speichert einen lokalen Verlauf jedes Zuschauers, der geschrieben oder dir gefolgt ist, mit der Möglichkeit, ihn stummzuschalten (Nachricht sichtbar, aber nicht vorgelesen) oder zu bannen (Nachricht erscheint nie). Der echte Plattform-Account bleibt unberührt."
+    },
+    "backToGrid": "Zurück zum Store",
+    "hiddenBadge": "Ausgeblendet",
+    "visibleBadge": "Sichtbar",
+    "open": "Öffnen",
+    "addToMenu": "Zur Seitenleiste hinzufügen",
+    "removeFromMenu": "Aus Seitenleiste entfernen",
     "metaStatus": "Status",
     "metaPosition": "Position",
-    "reorderLabel": "Reorder:"
+    "reorderLabel": "Neu anordnen:",
+    "mediaPlaceholder": "Vorschau folgt in Kürze",
+    "comingSoon": "Bald mehr",
+    "comingSoonDesc": "Wir arbeiten an neuen Tools."
   }
 }

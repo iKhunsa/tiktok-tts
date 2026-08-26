@@ -6,8 +6,8 @@ const { sanitizeForTTS } = require('./sanitize-for-tts');
 const { normalizeForModeration } = require('./normalize-for-moderation');
 const { isAdminIdentity } = require('./is-admin-identity');
 const moderacionPolicyContract = require('../core/contracts/moderacion-policy');
+const { ADMIN_ANNOUNCE_TEXT, pickAnnounceText } = require('../core/announce-texts');
 
-const ADMIN_ANNOUNCE_TEXT = 'Aviso del sistema: el creador de TikLive TTS acaba de ingresar.';
 // Global (no por plataforma): si el creador transmite simultaneo en 4
 // plataformas y escribe en todas, el aviso debe sonar una sola vez, no una
 // por cada plataforma donde se detecto su identidad admin. Se resetea al
@@ -241,7 +241,8 @@ function emitChatMessage(deps) {
 
     if (isAdmin && !adminAnnounced) {
       adminAnnounced = true;
-      bus.emit('ws:broadcast', { type: 'admin-announce', text: ADMIN_ANNOUNCE_TEXT, timestamp: Date.now() });
+      const text = pickAnnounceText(ADMIN_ANNOUNCE_TEXT, config && config.ttsVoiceLang);
+      bus.emit('ws:broadcast', { type: 'admin-announce', text, timestamp: Date.now() });
     }
   };
 }
