@@ -6,6 +6,7 @@ const { getStatus } = require('./get-status');
 const { checkForUpdates } = require('./check-for-updates');
 const { search } = require('./search');
 const { getInfo } = require('./get-info');
+const { expandPlaylist } = require('./expand-playlist');
 const { createStream } = require('./create-stream');
 const { shutdown } = require('./shutdown');
 
@@ -35,6 +36,7 @@ function createMusicEngine({ dataDir, logger, onStatus }) {
     checkForUpdates: () => checkForUpdates(state),
     search: (query) => search(state, query),
     getInfo: (videoId) => getInfo(state, videoId),
+    expandPlaylist: (url) => expandPlaylist(state, url),
     createStream: (videoId) => createStream(state, videoId),
     shutdown: () => shutdown(state),
   };

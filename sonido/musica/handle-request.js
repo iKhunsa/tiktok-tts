@@ -6,6 +6,11 @@ const { musicBroadcastState } = require('./broadcast-state');
 const { getConfigSnapshot } = require('../config-bridge');
 const { MUSIC_DEDUP_WINDOW_MS } = require('./state');
 
+// Secuencia monotona para identificar cada peticion !p mientras se resuelve.
+// El front la usa para mostrar un item "buscando…" en la cola y luego
+// reemplazarlo por el track real (o quitarlo si falla).
+let musicRequestSeq = 0;
+
 /**
  * Consume bot:comando de /bot (Fase 10) en vez de detectar !p directo — esa
  * deteccion se movio a /bot. Migracion de handleMusicRequest.
@@ -78,6 +83,16 @@ function handleMusicRequest(deps) {
     // duplicado llegando mientras esto resuelve sea bloqueado, no procesado dos veces.
     musicState.userLastRequest[userId] = now;
 
+    // Anunciar la peticion apenas pasa los filtros: el front pinta un item
+    // "buscando…" en la cola aunque yt-dlp todavia este descargandose /
+    // extrayendose (primer !p puede tardar bastante).
+    const requestId = `mr${now.toString(36)}${(++musicRequestSeq).toString(36)}`;
+    bus.emit('ws:broadcast', { type: 'music-request-pending', requestId, user, platform, query });
+
+    const failRequest = (reason) => {
+      bus.emit('ws:broadcast', { type: 'music-request-failed', requestId, query, reason });
+    };
+
     try {
       await engine.ensureReady();
     } catch (error) {
@@ -85,6 +100,7 @@ function handleMusicRequest(deps) {
         'warn', 'sonido', 'sonido/musica/handle-request.js#handleMusicRequest', 'sonido.musica.motor_no_disponible',
         `Motor de musica no disponible: ${error.message}`, { error: error.message }
       );
+      failRequest('engine');
       return;
     }
 
@@ -96,6 +112,7 @@ function handleMusicRequest(deps) {
         'warn', 'sonido', 'sonido/musica/handle-request.js#handleMusicRequest', 'sonido.musica.track_no_encontrado',
         `Error resolviendo track para "${query}": ${error.message}`, { query, error: error.message }
       );
+      failRequest('resolve');
       return;
     }
     if (!track) {
@@ -103,6 +120,7 @@ function handleMusicRequest(deps) {
         'warn', 'sonido', 'sonido/musica/handle-request.js#handleMusicRequest', 'sonido.musica.track_no_encontrado',
         `No se encontro track para "${query}"`, { query }
       );
+      failRequest('notfound');
       return;
     }
     logger.log(
@@ -115,7 +133,7 @@ function handleMusicRequest(deps) {
 
     const wasEmpty = musicState.queue.length === 0 && !musicState.currentTrack;
     musicState.queue.push(track);
-    bus.emit('ws:broadcast', { type: 'music-queued', track, queue: [...musicState.queue], queueLength: musicState.queue.length });
+    bus.emit('ws:broadcast', { type: 'music-queued', requestId, track, queue: [...musicState.queue], queueLength: musicState.queue.length });
 
     if (wasEmpty && !musicState.currentTrack) advanceMusicQueue(deps);
     musicBroadcastState(deps);

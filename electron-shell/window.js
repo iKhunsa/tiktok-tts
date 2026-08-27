@@ -67,7 +67,26 @@ function createWindow({ iconPath, onClose }) {
   // URLs localhost (overlays) abren en una ventana Electron nueva; URLs
   // externas van al navegador del sistema.
   win.webContents.setWindowOpenHandler(({ url }) => {
-    if (isAppUrl(url)) return { action: 'allow' };
+    if (isAppUrl(url)) {
+      return {
+        action: 'allow',
+        overrideBrowserWindowOptions: {
+          width: 1100,
+          height: 800,
+          minWidth: 800,
+          minHeight: 600,
+          icon: iconPath,
+          autoHideMenuBar: true,
+          webPreferences: {
+            nodeIntegration: false,
+            contextIsolation: true,
+            sandbox: true,
+            webSecurity: true,
+            preload: path.join(__dirname, '..', 'preload.js'),
+          },
+        },
+      };
+    }
     shell.openExternal(url);
     return { action: 'deny' };
   });

@@ -21,8 +21,10 @@ module.exports = {
       onMilestone: () => {
         let config = null;
         bus.emit('config:get', (c) => { config = c; });
+        // `text` = fallback para clientes viejos; `texts` = mapa completo, el
+        // cliente elige contra su voz TTS real (ver chat/emit-chat-message.js).
         const text = pickAnnounceText(PROMO_ANNOUNCE_TEXT, config && config.ttsVoiceLang);
-        bus.emit('ws:broadcast', { type: 'promo-announce', text, timestamp: Date.now() });
+        bus.emit('ws:broadcast', { type: 'promo-announce', text, texts: PROMO_ANNOUNCE_TEXT, timestamp: Date.now() });
         logger.log(
           'info', 'promo', 'promo/index.js#register', 'promo.autopromocion.disparada',
           'Alerta de autopromocion por tiempo de sesion disparada', {}

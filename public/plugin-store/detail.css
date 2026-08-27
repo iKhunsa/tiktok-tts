@@ -1,4 +1,13 @@
 /* ── Detalle de una tool ──────────────────────────────────────────────── */
+#pluginStoreDetail { animation: storeDetailEnter .22s cubic-bezier(.22,.61,.36,1); }
+@keyframes storeDetailEnter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #pluginStoreDetail { animation: none; }
+}
+
 .store-back-btn {
   background: none; border: none; color: var(--text-muted);
   font-size: 13px; cursor: pointer; padding: 0 0 18px; display: flex; align-items: center; gap: 6px;

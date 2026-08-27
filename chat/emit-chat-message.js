@@ -10,14 +10,25 @@ const { ADMIN_ANNOUNCE_TEXT, pickAnnounceText } = require('../core/announce-text
 
 // Global (no por plataforma): si el creador transmite simultaneo en 4
 // plataformas y escribe en todas, el aviso debe sonar una sola vez, no una
-// por cada plataforma donde se detecto su identidad admin. Se resetea al
-// desconectar un canal (ver chat/index.js#register, listener de
-// canal:estado) para que una desconexion + reconexion cuente como sesion
-// nueva y vuelva a anunciar.
+// por cada plataforma donde se detecto su identidad admin. Se resetea cuando
+// se cae el ultimo canal conectado (ver chat/index.js#register, listener de
+// canal:estado) para que una desconexion total + reconexion cuente como
+// sesion nueva y vuelva a anunciar.
 let adminAnnounced = false;
 
 function resetAdminAnnounce() {
   adminAnnounced = false;
+}
+
+// Los "emojis de TikTok" (set propio: [Happy], [Smile], [Loveface]...) llegan
+// dentro de `comment` como palabras entre corchetes, no como emoji unicode —
+// sanitizeForTTS no los toca porque son letras. Se quitan del texto que lee el
+// TTS (no del que se muestra en el chat, ahi el corchete es el fallback que
+// usa la propia app de TikTok). El emoji unicode nativo si lo filtra sanitize.
+const TIKTOK_EMOTE_TOKEN = /\[[A-Za-z]{1,20}\]/g;
+
+function stripTiktokEmoteTokens(text) {
+  return text.replace(TIKTOK_EMOTE_TOKEN, ' ');
 }
 
 function extractTiktokMessage(raw) {
@@ -27,7 +38,10 @@ function extractTiktokMessage(raw) {
     user: resolveDisplayName(raw.nickname, raw.uniqueId),
     userId: raw.uniqueId || null,
     comment,
-    ttsComment: sanitizeForTTS(comment),
+    // Siempre string (aunque quede vacio si el mensaje era solo emojis de
+    // TikTok) — nunca undefined, para que el front no caiga de vuelta a
+    // `comment` y termine leyendo `[Happy]` en voz alta.
+    ttsComment: sanitizeForTTS(stripTiktokEmoteTokens(comment)),
     emotes: undefined,
     ytMsgId: undefined,
   };
@@ -241,8 +255,12 @@ function emitChatMessage(deps) {
 
     if (isAdmin && !adminAnnounced) {
       adminAnnounced = true;
+      // `text` = pick del backend segun config.ttsVoiceLang (fallback para
+      // clientes viejos). `texts` = mapa completo: el cliente resuelve contra
+      // su voz TTS real (voiceSelect.value), que es quien lo habla — asi nunca
+      // hay desincronizacion config<->voz visible.
       const text = pickAnnounceText(ADMIN_ANNOUNCE_TEXT, config && config.ttsVoiceLang);
-      bus.emit('ws:broadcast', { type: 'admin-announce', text, timestamp: Date.now() });
+      bus.emit('ws:broadcast', { type: 'admin-announce', text, texts: ADMIN_ANNOUNCE_TEXT, timestamp: Date.now() });
     }
   };
 }

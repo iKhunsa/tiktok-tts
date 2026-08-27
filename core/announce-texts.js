@@ -38,9 +38,14 @@ const PROMO_ANNOUNCE_TEXT = {
 };
 
 // `voiceId` es config.ttsVoiceLang (GOOGLE_TTS_LANGS en configuracion/default-config.js).
-// Sin match o config ausente, cae a 'es-MX' (default histórico de la app).
+// Sin match exacto se prueba la lang base (`en-US` -> `en`, `es-ES` -> `es-MX`);
+// sin nada, cae a 'es-MX' (default histórico de la app).
 function pickAnnounceText(map, voiceId) {
-  return map[voiceId] || map['es-MX'];
+  if (voiceId && map[voiceId]) return map[voiceId];
+  const base = String(voiceId || '').split('-')[0];
+  if (base && map[base]) return map[base];
+  if (base === 'es') return map['es-MX'];
+  return map[base] || map['es-MX'];
 }
 
 module.exports = { ADMIN_ANNOUNCE_TEXT, PROMO_ANNOUNCE_TEXT, pickAnnounceText };

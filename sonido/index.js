@@ -26,6 +26,7 @@ const { unban } = require('./musica/routes/unban');
 const { playlistGet } = require('./musica/routes/playlist-get');
 const { playlistPut } = require('./musica/routes/playlist-put');
 const { playlistToggle } = require('./musica/routes/playlist-toggle');
+const { playlistPlay } = require('./musica/routes/playlist-play');
 const { playlistShuffle } = require('./musica/routes/playlist-shuffle');
 
 const { list } = require('./soundpad/routes/list');
@@ -51,6 +52,8 @@ module.exports = {
       logger,
       onStatus: (s) => {
         if (s.state === 'downloading') bus.emit('ws:broadcast', { type: 'music-engine', status: 'downloading' });
+        else if (s.state === 'preparing') bus.emit('ws:broadcast', { type: 'music-engine', status: 'preparing' });
+        else if (s.state === 'ready') bus.emit('ws:broadcast', { type: 'music-engine', status: 'ready' });
         else if (s.state === 'error') bus.emit('ws:broadcast', { type: 'music-engine', status: 'error', error: s.error });
       },
     });
@@ -93,6 +96,7 @@ module.exports = {
     app.get('/api/music/playlist', playlistGet(deps));
     app.put('/api/music/playlist', playlistPut(deps));
     app.post('/api/music/playlist/toggle', playlistToggle(deps));
+    app.post('/api/music/playlist/play', playlistPlay(deps));
     app.post('/api/music/playlist/shuffle', playlistShuffle(deps));
 
     // ── Soundpad ─────────────────────────────────────────────────────────
@@ -105,10 +109,12 @@ module.exports = {
     // Inicializar playlist desde config persistida.
     const config = getConfigSnapshot(bus);
     if (Array.isArray(config.streamerPlaylist) && config.streamerPlaylist.length > 0) {
-      resolveAndSavePlaylist(deps, config.streamerPlaylist);
+      // Fire-and-forget: la expansion de playlists de YouTube es async y no
+      // debe bloquear el registro del dominio.
+      Promise.resolve(resolveAndSavePlaylist(deps, config.streamerPlaylist)).catch(() => {});
     }
 
-    return { rutas: 20, listeners: 2 };
+    return { rutas: 21, listeners: 2 };
   },
 
   shutdown() {

@@ -81,7 +81,14 @@ header {
   -webkit-overflow-scrolling: touch;
   display: none;
 }
-.tab-panel.active { display: flex; flex-direction: column; }
+.tab-panel.active { display: flex; flex-direction: column; animation: tabEnter .24s cubic-bezier(.22,.61,.36,1); }
+@keyframes tabEnter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tab-panel.active { animation: none; }
+}
 
 /* ── BOTTOM TAB BAR ── */
 nav {
@@ -149,6 +156,8 @@ nav::-webkit-scrollbar { display: none; }
   flex-shrink: 0;
 }
 @keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1} }
+.m-queue-spinner { width:13px; height:13px; min-width:13px; border-radius:50%; border:2px solid var(--border); border-top-color:var(--accent,#fff); animation:queue-spin .8s linear infinite; }
+@keyframes queue-spin { to { transform: rotate(360deg); } }
 
 .plat-badge {
   font-size: 9px; font-weight: 800; padding: 2px 5px;
@@ -636,9 +645,11 @@ function dispatch(d) {
       if (d.state) applyState(d.state);
       break;
     case 'music-now-playing':
+      mDropPending(d.requestId);
       mRenderNowPlaying(d.track);
       break;
     case 'music-idle':
+      mPending = [];
       mRenderNowPlaying(null);
       break;
     case 'music-skip':
@@ -648,6 +659,23 @@ function dispatch(d) {
       mApplyMusicState(d);
       break;
     case 'music-queued':
+      mDropPending(d.requestId);
+      mFetchQueue();
+      break;
+    case 'music-request-pending':
+      if (d.requestId && !mPending.some(p => p.id === d.requestId)) {
+        mPending.push({ id: d.requestId, user: d.user, query: d.query, ts: Date.now() });
+        mFetchQueue();
+      }
+      break;
+    case 'music-request-failed':
+      mDropPending(d.requestId);
+      mFetchQueue();
+      break;
+    case 'music-engine':
+      if (d.status === 'ready') mEngineStatus = null;
+      else if (d.status === 'error') { mEngineStatus = 'error'; clearTimeout(mEngineErrTimer); mEngineErrTimer = setTimeout(() => { mEngineStatus = null; mFetchQueue(); }, 20000); }
+      else if (d.status === 'downloading' || d.status === 'preparing') mEngineStatus = d.status;
       mFetchQueue();
       break;
     case 'music-volume':
@@ -894,6 +922,13 @@ document.getElementById('tabChat').addEventListener('scroll', () => {
 // ── MUSIC BOT (mobile) ────────────────────────────────────────────────────
 let mMusicEnabled = true;
 let mPlaylistEnabled = false;
+// Peticiones !p aceptadas por el server, aun resolviendose (yt-dlp descarga
+// la primera vez -> puede tardar). [{ id, user, query, ts }]
+let mPending = [];
+function mDropPending(id) { if (id) mPending = mPending.filter(p => p.id !== id); }
+// Estado del motor yt-dlp: 'preparing' | 'downloading' | 'error' | null.
+let mEngineStatus = null;
+let mEngineErrTimer = null;
 
 function mRenderNowPlaying(track) {
   const idle = document.getElementById('m-music-idle');
@@ -922,10 +957,29 @@ function mFetchQueue() {
     const list  = document.getElementById('m-queue-list');
     const count = document.getElementById('m-queue-count');
     const q = d.queue || [];
-    if (count) count.textContent = `(${q.length})`;
+    const cutoff = Date.now() - 120000;
+    mPending = mPending.filter(p => p.ts > cutoff);
+    if (count) count.textContent = `(${q.length + mPending.length})`;
     if (!list) return;
-    if (!q.length) { list.innerHTML = `<div style="color:var(--muted);font-size:13px;">${t('mobile3.queueEmpty')}</div>`; return; }
-    list.innerHTML = q.slice(0, 5).map((t, i) => `
+    let engineHtml = '';
+    if (mEngineStatus === 'downloading' || mEngineStatus === 'preparing') {
+      engineHtml = `<div style="display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);opacity:.9;">
+        <span class="m-queue-spinner"></span>
+        <div style="flex:1;min-width:0;font-size:13px;">${esc(t('toast.musicEngineDownloading'))}</div></div>`;
+    } else if (mEngineStatus === 'error') {
+      engineHtml = `<div style="display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);color:#e5484d;">
+        <span>⚠</span><div style="flex:1;min-width:0;font-size:13px;">${esc(t('toast.musicEngineError'))}</div></div>`;
+    }
+    if (!q.length && !mPending.length && !engineHtml) { list.innerHTML = `<div style="color:var(--muted);font-size:13px;">${t('mobile3.queueEmpty')}</div>`; return; }
+    const pendHtml = mPending.map(p => `
+      <div style="display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);opacity:.9;">
+        <span class="m-queue-spinner"></span>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t('bot.requestResolving').replace('{query}', esc(p.query || ''))}</div>
+          <div style="font-size:11px;color:var(--muted);">${esc(p.user || '')}</div>
+        </div>
+      </div>`).join('');
+    list.innerHTML = engineHtml + pendHtml + q.slice(0, 5).map((t, i) => `
       <div style="display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);">
         <span style="font-size:11px;color:var(--muted);min-width:14px;">${i+1}</span>
         <div style="flex:1;min-width:0;">

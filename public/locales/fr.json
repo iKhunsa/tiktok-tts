@@ -60,9 +60,14 @@
     "readNonFollowers": "Lire les non-abonnés"
   },
   "tts": {
-    "on": "🔊 TTS Activé",
-    "off": "🔇 TTS Désactivé",
-    "offHint": "Désactiver le TTS arrête la voix et vide la file."
+    "on": "TTS Activé",
+    "off": "TTS Désactivé"
+  },
+  "chatToggles": {
+    "summaryPrefix": "Lit :",
+    "adjust": "Ajuster",
+    "hide": "Masquer",
+    "none": "rien d'actif"
   },
   "btn": {
     "skipCurrent": "Passer actuel",
@@ -106,7 +111,6 @@
     "mutedBadge": "Muet : le TTS l'ignore",
     "cleared": "Chat effacé"
   },
-  "emergencyHint": "L'urgence garde actifs cadeaux et follows, silence chat/likes/entrées/partages.",
   "status": {
     "waiting": "En attente de connexion...",
     "connected": "Connecté",
@@ -114,6 +118,10 @@
     "connectedAs": "Connecté à @{username}"
   },
   "view": {
+    "chat": {
+      "title": "Chat en direct",
+      "desc": "Lit à voix haute le chat TikTok, Twitch et YouTube en temps réel."
+    },
     "overlays": {
       "title": "Overlays pour OBS",
       "desc": "Personnalisez chaque overlay et copiez l'URL → OBS → Ajouter source → Navigateur → Activer fond transparent."
@@ -249,6 +257,7 @@
     "requestQueueSubtitle": "Chansons demandées par le chat avec !p, dans l'ordre d'arrivée.",
     "clearQueue": "Effacer",
     "queueEmpty": "La file est vide.",
+    "requestResolving": "Recherche de « {query} »…",
     "myPlaylist": "Ma Playlist (fond)",
     "enable": "Activer",
     "shuffle": "Aléatoire",
@@ -265,7 +274,9 @@
     "cmdActive": "!p actif",
     "songSingular": "chanson",
     "songPlural": "chansons",
-    "playlistSavedHint": "enregistrée dans le dossier de l'appli"
+    "playlistSavedHint": "enregistrée dans le dossier de l'appli",
+    "playlistUnsaved": "non enregistrée",
+    "playlistPlayNow": "Lire maintenant"
   },
   "overlay2": {
     "giftsTitle": "Alerte Cadeau",
@@ -430,6 +441,8 @@
     "configRejected": "Config rejetée"
   },
   "overlayStr": {
+    "knownBugs": "Problèmes connus",
+    "knownBugsMsg": "Certaines sections ont des bugs connus. Ils seront corrigés bientôt.",
     "newFollowers": "Nouveaux abonnés",
     "waitingLikes": "En attente de likes...",
     "giftReceived": "Cadeau reçu",
@@ -607,6 +620,10 @@
     "songError": "❌ Erreur lors de la lecture de la chanson",
     "musicEngineDownloading": "⬇️ Téléchargement du moteur musical (~20 Mo, première fois uniquement)…",
     "musicEngineError": "❌ Moteur musical indisponible — vérifie ta connexion",
+    "musicRequestReceived": "🎵 Demande de {user} reçue — recherche du morceau…",
+    "musicRequestFailed": "❌ Impossible d'ajouter « {query} »",
+    "playlistEmpty": "Ajoutez des morceaux à votre playlist avant de l'activer",
+    "playlistQueuedAfterRequest": "▶️ La playlist reprend à la fin du morceau demandé",
     "playlistSaved": "✅ Playlist sauvegardée",
     "deleteSoundConfirm": "Supprimer ce son?",
     "ttsSkipped": "Message TTS ignoré",
@@ -964,6 +981,7 @@
     "noImageFile": "Aucune image reçue",
     "contentRequired": "Contenu requis",
     "invalidConfig": "Configuration invalide",
+    "playlistEmpty": "Votre playlist est vide",
     "twitchAuthStartFailed": "Impossible de démarrer l'autorisation Twitch",
     "obsConnectFailed": "Impossible de se connecter à OBS"
   }

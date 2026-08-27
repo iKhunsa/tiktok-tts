@@ -357,7 +357,14 @@
 
     /* ── VIEWS ───────────────────────────────────────────── */
     .view { display: none; }
-    .view.active { display: block; }
+    .view.active { display: block; animation: viewEnter .24s cubic-bezier(.22,.61,.36,1); }
+    @keyframes viewEnter {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .view.active { animation: none; }
+    }
 
     .view-header { margin-bottom: 22px; }
     .view-header h2 { font-size: 19px; font-weight: 600; color: var(--text); letter-spacing: -0.4px; margin-bottom: 4px; }
@@ -522,6 +529,45 @@
       margin-bottom: 16px;
     }
 
+    /* Caja colapsable de los 10 toggle chips de "qué se lee".
+       Misma superficie que .chat-section (fondo + borde), ancho completo del
+       área de trabajo. El resumen de texto queda visible también expandido. */
+    .chat-toggles-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 18px;
+      margin-bottom: 16px;
+    }
+    .chat-toggles-box .toggles-row { display: none; margin-bottom: 0; }
+    .chat-toggles-box.expanded .toggles-row {
+      display: flex;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    /* Una sola línea siempre: el largo del resumen varía mucho entre idiomas,
+       así que el texto no envuelve ni empuja el botón — se corta con un
+       desvanecido a la derecha (clase .is-truncated que pone updateChatTogglesSummary
+       solo cuando de verdad hay overflow). */
+    .chat-toggles-summary {
+      display: flex; align-items: center; gap: 8px; flex-wrap: nowrap;
+      font-size: 12px; color: var(--text-muted);
+    }
+    .chat-toggles-summary .eyebrow { flex-shrink: 0; }
+    #chatTogglesSummaryText {
+      color: var(--text-secondary);
+      flex: 1 1 auto; min-width: 0;
+      white-space: nowrap; overflow: hidden;
+    }
+    #chatTogglesSummary.is-truncated #chatTogglesSummaryText {
+      -webkit-mask-image: linear-gradient(to right, #000 72%, transparent 100%);
+      mask-image: linear-gradient(to right, #000 72%, transparent 100%);
+    }
+    #btnChatTogglesAdjust { margin-left: auto; flex-shrink: 0; }
+    #btnChatTogglesAdjust img { transition: transform 0.2s; }
+    .chat-toggles-box.expanded #btnChatTogglesAdjust img { transform: rotate(180deg); }
+
     .toggle-chip {
       display: flex;
       align-items: center;
@@ -565,6 +611,9 @@
 
     .queue-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
     .queue-item:last-child { border-bottom: none; }
+    .queue-item.pending { opacity: .9; }
+    .queue-spinner { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--border); border-top-color: var(--accent, var(--text)); animation: queue-spin .8s linear infinite; flex-shrink: 0; }
+    @keyframes queue-spin { to { transform: rotate(360deg); } }
     .queue-item-remove { background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 15px; line-height: 1; padding: 4px; flex-shrink: 0; }
     .queue-item-remove:hover { color: var(--text); }
 
@@ -1037,6 +1086,8 @@
     .ctx-menu hr { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
 
     .cfg-btn.small { padding: 5px 10px; font-size: 11px; }
+    /* Solo icono, sin label — el texto vive en title (data-i18n-title). */
+    .cfg-btn.icon-only { padding: 6px 9px; }
     .cfg-btn.danger { border-color: rgba(239, 68, 68, 0.4); color: #ef4444; }
     .cfg-btn.danger:hover { border-color: rgba(239, 68, 68, 0.7); color: #f87171; }
     .cfg-btn:disabled, .cfg-btn.danger:disabled {
@@ -1904,7 +1955,7 @@
     <div class="sidebar-footer">
       <button class="sidebar-footer-btn" onclick="openDonationsModal()"><img class="icon-inline" src="icons/favorite-red.svg" alt=""> <span data-i18n="footer.donate">Donar</span> <span id="donateNewBadge" class="badge-new" data-i18n="footer.newBadge">Nuevo</span></button>
       <button class="sidebar-footer-btn" onclick="openSocialModal()"><img class="icon-inline" src="icons/smartphone.svg" alt=""> <span data-i18n="footer.channels">Canales</span></button>
-      <a href="/advanced.html" class="sidebar-footer-btn"><img class="icon-inline" src="icons/build.svg" alt=""> <span data-i18n="footer.advanced">Avanzado</span></a>
+      <a href="/advanced.html?popup=1" target="_blank" rel="noopener" class="sidebar-footer-btn"><img class="icon-inline" src="icons/build.svg" alt=""> <span data-i18n="footer.advanced">Avanzado</span></a>
       <button id="sidebarBugReportBtn" class="sidebar-footer-btn" onclick="openBugReportModal()"><img class="icon-inline" src="icons/warning.svg" alt=""> <span data-i18n="footer.bugReport">Reportar Bug</span></button>
       <div class="lang-selector-row">
         <img class="icon-inline" src="icons/language.svg" alt="" style="opacity:0.6;flex-shrink:0;">
@@ -1930,7 +1981,38 @@
     <!-- ── VIEW: Chat ──────────────────────────────────── -->
     <div class="view active" id="view-chat">
 
-      <!-- TOGGLES -->
+      <div class="view-header">
+        <h2><img class="icon-inline" src="icons/chat.svg" alt=""> <span data-i18n="view.chat.title">Chat en vivo</span></h2>
+        <p data-i18n="view.chat.desc">Lee en voz alta el chat de TikTok, Twitch y YouTube en tiempo real.</p>
+        <button class="cfg-btn" id="btnChatActionsTour" onclick="startChatActionsTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
+      </div>
+
+      <!-- ACCIONES TTS — toggle global + acciones rápidas en una sola fila -->
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0 4px;">
+        <button id="btnTTSToggle" onclick="toggleGlobalTTS()"
+          style="display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--accent);background:rgba(62,207,142,0.12);color:var(--accent);transition:all .2s;margin-right:4px;">
+          <img id="ttsBtnIcon" class="icon-inline" src="icons/volume_up.svg" alt="">
+          <span id="ttsBtnLabel" data-i18n="tts.on">TTS Encendido</span>
+        </button>
+        <button class="cfg-btn" onclick="skipCurrentTTS()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> <span data-i18n="btn.skipCurrent">Saltar actual</span></button>
+        <button class="cfg-btn danger" onclick="clearTTSQueue()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="btn.clearQueue">Vaciar cola</span></button>
+        <button class="cfg-btn icon-only" onclick="enableEmergencyTTSMode()" data-i18n-title="btn.emergency" title="Modo emergencia"><img class="icon-inline" src="icons/warning.svg" alt=""></button>
+        <button class="cfg-btn icon-only" onclick="clearChat()" data-i18n-title="btn.clearChat" title="Limpiar"><img class="icon-inline" src="icons/delete.svg" alt=""></button>
+        <button class="cfg-btn icon-only" id="btnBlockedWordsShortcut" onclick="openBlockWordModal()" data-i18n-title="btn.blockedWordsShortcut" title="Palabras bloqueadas"><img class="icon-inline" src="icons/filter_none.svg" alt=""></button>
+      </div>
+
+      <!-- TOGGLES — colapsados por defecto (appSettings.chatTogglesCollapsed).
+           Colapsado se ve solo el resumen + "Ajustar"; expandido, los 10 chips.
+           Va debajo de las acciones rápidas, encima del chat. -->
+      <div class="chat-toggles-box" id="chatTogglesBox">
+      <div class="chat-toggles-summary" id="chatTogglesSummary">
+        <span class="eyebrow" data-i18n="chatToggles.summaryPrefix">Se lee:</span>
+        <span id="chatTogglesSummaryText"></span>
+        <button class="cfg-btn small" id="btnChatTogglesAdjust" onclick="toggleChatToggles()">
+          <img class="icon-inline" src="icons/expand_more.svg" alt="">
+          <span id="chatTogglesAdjustLabel" data-i18n="chatToggles.adjust">Ajustar</span>
+        </button>
+      </div>
       <div class="toggles-row">
         <label class="toggle-chip" id="chip-chat">
           <input type="checkbox" onchange="toggleOption('readChat', this)" />
@@ -1972,26 +2054,9 @@
         </label>
         <label class="toggle-chip" id="chip-username-connector" style="width:max-content;">
           <input type="checkbox" id="sayUsernameConnectorToggle" onchange="toggleSayUsernameConnector(this)" />
-          <span data-i18n="toggle.sayUsernameConnector">+ "dice"</span>
+          <img class="icon-inline" src="icons/record_voice_over.svg" alt=""> <span data-i18n="toggle.sayUsernameConnector">+ "dice"</span>
         </label>
       </div>
-
-      <!-- GLOBAL TTS TOGGLE -->
-      <div style="display:flex;align-items:center;gap:10px;margin:8px 0 4px;">
-        <button id="btnTTSToggle" onclick="toggleGlobalTTS()"
-          style="padding:6px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--accent);background:rgba(62,207,142,0.12);color:var(--accent);transition:all .2s;">
-          <span id="ttsBtnLabel" data-i18n="tts.on">🔊 TTS Encendido</span>
-        </button>
-        <span style="font-size:11px;color:var(--text-muted);" data-i18n="tts.offHint">Apagar TTS detiene la voz y vacía la cola.</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0 4px;">
-        <button class="cfg-btn" onclick="skipCurrentTTS()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> <span data-i18n="btn.skipCurrent">Saltar actual</span></button>
-        <button class="cfg-btn danger" onclick="clearTTSQueue()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="btn.clearQueue">Vaciar cola</span></button>
-        <button class="cfg-btn" onclick="enableEmergencyTTSMode()"><img class="icon-inline" src="icons/warning.svg" alt=""> <span data-i18n="btn.emergency">Modo emergencia</span></button>
-        <button class="cfg-btn" onclick="clearChat()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="btn.clearChat">Limpiar</span></button>
-        <button class="cfg-btn" id="btnBlockedWordsShortcut" onclick="openBlockWordModal()"><img class="icon-inline" src="icons/filter_none.svg" alt=""> <span data-i18n="btn.blockedWordsShortcut">Palabras bloqueadas</span></button>
-        <button class="cfg-btn" id="btnChatActionsTour" onclick="startChatActionsTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
-        <span style="font-size:11px;color:var(--text-muted);" data-i18n="emergencyHint">Emergencia deja activos regalos y follows, y silencia chat/likes/entradas/compartidos.</span>
       </div>
 
       <!-- CHAT LOG -->
@@ -2032,6 +2097,7 @@
         <h2><img class="icon-inline" src="icons/tv.svg" alt=""> <span data-i18n="view.overlays.title">Overlays para OBS</span></h2>
         <p data-i18n="view.overlays.desc">Personaliza cada overlay y copia la URL → OBS → Add Source → Browser → Enable transparent background.</p>
         <button class="cfg-btn" id="btnOverlaysTour" onclick="startOverlaysTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
+        <button class="cfg-btn" onclick="showKnownIssuesNotice()" data-i18n-title="overlayStr.knownBugsMsg" title="Algunas secciones tienen errores conocidos. Se arreglarán próximamente."><img class="icon-inline" src="icons/warning-yellow.svg" alt=""> <span data-i18n="overlayStr.knownBugs">Fallos conocidos</span></button>
       </div>
 
       <!-- Chat Unificado -->
@@ -2503,9 +2569,14 @@
           placeholder="Bohemian Rhapsody Queen&#10;https://www.youtube.com/watch?v=fJ9rUzIMcZQ&#10;Lose Yourself Eminem"></textarea>
         <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
           <span id="playlist-info" style="font-size:12px;color:var(--text-muted);"></span>
-          <button class="btn btn-connect" onclick="playlistSave()">
-            <img class="icon-inline" src="icons/save-dark.svg" alt=""> <span data-i18n="bot.savePlaylist">Guardar playlist</span>
-          </button>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <button class="btn-test" onclick="playlistPlay()">
+              <img class="icon-inline" src="icons/play_arrow.svg" alt=""> <span data-i18n="bot.playlistPlayNow">Reproducir ahora</span>
+            </button>
+            <button class="btn btn-connect" onclick="playlistSave()">
+              <img class="icon-inline" src="icons/save-dark.svg" alt=""> <span data-i18n="bot.savePlaylist">Guardar playlist</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -2799,7 +2870,7 @@
 
       <div class="settings-section">
         <div class="settings-section-title" data-i18n="settings.advanced">Configuración avanzada</div>
-        <a href="/advanced.html" class="btn-nav" data-i18n="btn.openAdvanced"><img class="icon-inline" src="icons/build.svg" alt=""> Abrir panel avanzado (filtros, rate limit, logs) →</a>
+        <a href="/advanced.html?popup=1" target="_blank" rel="noopener" class="btn-nav" data-i18n="btn.openAdvanced"><img class="icon-inline" src="icons/build.svg" alt=""> Abrir panel avanzado (filtros, rate limit, logs) →</a>
       </div>
     </div>
 
@@ -3115,7 +3186,7 @@
 
     <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px;">
       <span id="blockWordCount" style="font-size:11px;color:var(--text-muted);"></span>
-      <a class="cfg-btn" href="/advanced.html#palabras-bloqueadas" data-i18n="blockWord.manageAll">Ver y editar todas</a>
+      <a class="cfg-btn" href="/advanced.html?popup=1#palabras-bloqueadas" target="_blank" rel="noopener" data-i18n="blockWord.manageAll">Ver y editar todas</a>
     </div>
   </div>
 </div>
@@ -3372,6 +3443,12 @@
       const val = t(el.dataset.i18nPlaceholder);
       if (val !== el.dataset.i18nPlaceholder) el.placeholder = val;
     });
+    document.querySelectorAll('[data-i18n-title]').forEach(el => {
+      const val = t(el.dataset.i18nTitle);
+      if (val !== el.dataset.i18nTitle) el.title = val;
+    });
+    // Resumen dinámico de toggle chips: no tiene data-i18n, reconstruir aparte.
+    if (typeof updateChatTogglesSummary === 'function') updateChatTogglesSummary();
   }
 
   async function loadLanguage(lang) {
@@ -3387,9 +3464,37 @@
     }
     applyTranslations();
     if (typeof refreshPluginStoreTexts === 'function') refreshPluginStoreTexts();
+    retranslateDynamic();
     const sel = document.getElementById('langSelect');
     if (sel) sel.value = lang;
     document.documentElement.lang = lang;
+  }
+
+  // applyTranslations() solo toca el markup estático con data-i18n. Cada vista
+  // arma contenido en JS con t() al entrar (tabla de moderación, cola de música,
+  // soundpad, historial de clips, canales guardados, botones de atajo…) y ese
+  // texto queda en el idioma viejo hasta salir y volver a entrar. Re-render de
+  // todo lo que se pinta con estado ya cacheado en cliente, guardado por si
+  // alguna función todavía no está definida.
+  function retranslateDynamic() {
+    const call = (fn, ...args) => { try { if (typeof window[fn] === 'function') window[fn](...args); } catch (e) { console.warn('retranslateDynamic', fn, e); } };
+    // Moderación: la tabla se rehidrata por fetch, igual que al entrar en la vista.
+    const modView = document.getElementById('view-moderacion');
+    if (modView && modView.classList.contains('active')) call('modReload', false);
+    call('spRender');
+    call('renderClipsHistory');
+    call('renderSettingsChannels');
+    call('renderGlobalTTSButton');
+    call('renderChatTogglesState');
+    call('renderShortcutDisplay');
+    call('renderBlockWordSession');
+    call('updatePlaylistInfo');
+    if (typeof musicRenderNowPlaying === 'function') call('musicRenderNowPlaying', typeof musicCurrentTrack !== 'undefined' ? musicCurrentTrack : null);
+    call('musicRenderQueue');
+    if (typeof togglePauseTts === 'undefined') { /* noop */ }
+    // Botón pausa TTS: su label se setea sin data-i18n; refrescar según estado.
+    const pb = document.getElementById('btnPauseTTS');
+    if (pb && typeof ttsPaused !== 'undefined') pb.textContent = ttsPaused ? t('btn.resumeTTS') : t('btn.pauseTTS');
   }
 
   function setLanguage(lang) {
@@ -3474,6 +3579,7 @@
     readTwitchFollow: false,
     sayUsername: true,
     sayUsernameConnector: true,
+    chatTogglesCollapsed: true,
     langFilterEnabled: false,
     dictFilterEnabled: false,
     allowedExtraLangs: [],
@@ -3562,6 +3668,9 @@
       connCb.closest('.toggle-chip')?.classList.toggle('active', !!appSettings.sayUsernameConnector);
     }
     updateConnectorChipState();
+
+    // Estado colapsado/expandido de la caja de toggle chips + resumen
+    renderChatTogglesState();
 
     // Lang filter toggle
     const langFilterCb = document.getElementById('langFilterToggle');
@@ -4202,7 +4311,7 @@
   function startModerationTour() {
     if (!(window.driver && window.driver.js)) return;
     const inModeration = () => switchView('moderacion');
-    const inChat = () => switchView('chat');
+    const inChat = () => { switchView('chat'); expandChatToggles(); };
 
     window.driver.js.driver({
       ...driverTourDefaults(),
@@ -4407,7 +4516,7 @@
 
   function startChatActionsTour() {
     if (!(window.driver && window.driver.js)) return;
-    const inChatActions = () => switchView('chat');
+    const inChatActions = () => { switchView('chat'); expandChatToggles(); };
 
     window.driver.js.driver({
       ...driverTourDefaults(),
@@ -4931,16 +5040,27 @@
   let currentMsgId = null;
   let ttsGlobalEnabled = true;
 
+  // Refresca ícono + label + estilos del botón TTS global según ttsGlobalEnabled.
+  // Actualiza data-i18n del label para que un cambio de idioma respete el estado.
+  function renderGlobalTTSButton() {
+    const btn = document.getElementById('btnTTSToggle');
+    if (!btn) return;
+    const lbl = document.getElementById('ttsBtnLabel');
+    const ic  = document.getElementById('ttsBtnIcon');
+    if (lbl) {
+      lbl.dataset.i18n = ttsGlobalEnabled ? 'tts.on' : 'tts.off';
+      lbl.textContent  = ttsGlobalEnabled ? t('tts.on') : t('tts.off');
+    }
+    if (ic) ic.src = ttsGlobalEnabled ? 'icons/volume_up.svg' : 'icons/volume_off.svg';
+    btn.style.borderColor = ttsGlobalEnabled ? 'var(--accent)' : 'var(--text-muted)';
+    btn.style.background  = ttsGlobalEnabled ? 'rgba(62,207,142,0.12)' : 'rgba(255,255,255,0.04)';
+    btn.style.color       = ttsGlobalEnabled ? 'var(--accent)' : 'var(--text-muted)';
+  }
+
   function toggleGlobalTTS() {
     ttsGlobalEnabled = !ttsGlobalEnabled;
     sendStateSync();
-    const btn = document.getElementById('btnTTSToggle');
-    if (btn) {
-      btn.textContent = ttsGlobalEnabled ? t('tts.on') : t('tts.off');
-      btn.style.borderColor   = ttsGlobalEnabled ? 'var(--accent)' : 'var(--text-muted)';
-      btn.style.background    = ttsGlobalEnabled ? 'rgba(62,207,142,0.12)' : 'rgba(255,255,255,0.04)';
-      btn.style.color         = ttsGlobalEnabled ? 'var(--accent)' : 'var(--text-muted)';
-    }
+    renderGlobalTTSButton();
     if (!ttsGlobalEnabled && isSpeaking) {
       stopCurrentTTS({ clearQueue: true });
     }
@@ -4948,6 +5068,73 @@
       processQueue();
     }
   }
+
+  // ─── CAJA COLAPSABLE DE TOGGLE CHIPS ("qué se lee") ───────────
+  const CHAT_TOGGLE_CHIP_IDS = [
+    'chip-chat', 'chip-gifts', 'chip-gift-amount', 'chip-joins', 'chip-follows',
+    'chip-likes', 'chip-shares', 'chip-username', 'chip-nonfollowers', 'chip-username-connector',
+  ];
+
+  // Reconstruye el resumen de texto a partir del estado .active de cada chip,
+  // reusando el <span> ya traducido de cada uno. Sin activos → chatToggles.none.
+  function updateChatTogglesSummary() {
+    const out = document.getElementById('chatTogglesSummaryText');
+    if (!out) return;
+    const labels = CHAT_TOGGLE_CHIP_IDS
+      .map(id => document.getElementById(id))
+      .filter(chip => chip && chip.classList.contains('active'))
+      .map(chip => chip.querySelector('span[data-i18n]')?.textContent?.trim())
+      .filter(Boolean);
+    out.textContent = labels.length ? labels.join(' · ') : t('chatToggles.none');
+    // Desvanecido a la derecha solo si el texto no entra en una línea.
+    const wrap = document.getElementById('chatTogglesSummary');
+    if (wrap) wrap.classList.toggle('is-truncated', out.scrollWidth > out.clientWidth + 1);
+  }
+
+  function renderChatTogglesState() {
+    const box = document.getElementById('chatTogglesBox');
+    const lbl = document.getElementById('chatTogglesAdjustLabel');
+    if (!box) return;
+    const expanded = !appSettings.chatTogglesCollapsed;
+    box.classList.toggle('expanded', expanded);
+    if (lbl) {
+      lbl.dataset.i18n = expanded ? 'chatToggles.hide' : 'chatToggles.adjust';
+      lbl.textContent  = expanded ? t('chatToggles.hide') : t('chatToggles.adjust');
+    }
+    updateChatTogglesSummary();
+  }
+
+  function toggleChatToggles() {
+    appSettings.chatTogglesCollapsed = !appSettings.chatTogglesCollapsed;
+    saveSettings();
+    renderChatTogglesState();
+  }
+
+  // Fuerza el panel expandido (lo usan los tours: driver.js no puede
+  // posicionar un popover sobre un elemento con display:none).
+  function expandChatToggles() {
+    if (!appSettings.chatTogglesCollapsed) return;
+    appSettings.chatTogglesCollapsed = false;
+    saveSettings();
+    renderChatTogglesState();
+  }
+
+  // Un solo enganche: cualquier cambio de .active en los chips (toggleOption,
+  // setReadNonFollowers, applySettings, setSoloChatMode, emergencia, remote-cmd)
+  // refresca el resumen sin tocar esas funciones.
+  (function observeChatToggles() {
+    const start = () => {
+      const row = document.querySelector('#chatTogglesBox .toggles-row');
+      if (!row) return;
+      let raf = 0;
+      new MutationObserver(() => {
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(updateChatTogglesSummary);
+      }).observe(row, { subtree: true, attributes: true, attributeFilter: ['class'] });
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+    else start();
+  })();
 
   // ─── PAUSE TTS / KEYBOARD SHORTCUTS ───────────────────────────
   let ttsPaused = false;
@@ -5105,6 +5292,12 @@
       const cfg = await res.json();
       if (Number.isInteger(cfg.TTS_MAX_CHARS) && cfg.TTS_MAX_CHARS > 0) CHAT_TTS_MAX_LEN = cfg.TTS_MAX_CHARS;
       if (Number.isInteger(cfg.MAX_QUEUE_MSG) && cfg.MAX_QUEUE_MSG > 0) MAX_QUEUE_SIZE = cfg.MAX_QUEUE_MSG;
+      // El cliente es la autoridad de su voz TTS: si el backend quedó con otro
+      // ttsVoiceLang (patch viejo perdido, carrera de arranque), lo corrige.
+      // Mantiene config.json honesto para el fallback de promo en clientes viejos.
+      if (appSettings.voice && cfg.ttsVoiceLang !== appSettings.voice) {
+        syncTtsVoiceLang(appSettings.voice);
+      }
       applyA11yConfig(cfg);
       applyReadNonFollowers(cfg);
     } catch (e) {}
@@ -5748,8 +5941,12 @@
         msgCount++;
         document.getElementById('msgCount').textContent = msgCount;
         const adminMsgId = `msg-${msgCount}`;
-        addSystemMsg(data.text, 'admin', adminMsgId, { iconSrc: 'icons/check_circle.svg' });
-        speak(data.text, adminMsgId, data.timestamp);
+        // El aviso lo habla el TTS con la voz seleccionada — el texto debe
+        // seguir esa voz, no el config.ttsVoiceLang del backend (puede estar
+        // desincronizado). `data.texts` es el mapa completo por idioma.
+        const adminTxt = (data.texts && data.texts[voiceSelect.value]) || data.text;
+        addSystemMsg(adminTxt, 'admin', adminMsgId, { iconSrc: 'icons/check_circle.svg' });
+        speak(adminTxt, adminMsgId, data.timestamp);
         break;
       }
 
@@ -5757,8 +5954,9 @@
         msgCount++;
         document.getElementById('msgCount').textContent = msgCount;
         const promoMsgId = `msg-${msgCount}`;
-        addSystemMsg(data.text, 'promo', promoMsgId, { iconSrc: 'icons/flash_on.svg' });
-        speak(data.text, promoMsgId, data.timestamp);
+        const promoTxt = (data.texts && data.texts[voiceSelect.value]) || data.text;
+        addSystemMsg(promoTxt, 'promo', promoMsgId, { iconSrc: 'icons/flash_on.svg' });
+        speak(promoTxt, promoMsgId, data.timestamp);
         break;
       }
 
@@ -5948,8 +6146,7 @@
           saveSettings();
         } else if (data.action === 'globalTTS') {
           ttsGlobalEnabled = !!data.value;
-          const btn = document.getElementById('btnTTSToggle');
-          if (btn) btn.textContent = ttsGlobalEnabled ? t('tts.on') : t('tts.off');
+          renderGlobalTTSButton();
         } else if (data.action === 'pause') {
           if (ttsPaused !== !!data.value) togglePauseTts();
         } else if (data.action === 'skip') {
@@ -5981,12 +6178,28 @@
         sendStateSync();
         break;
 
+      case 'music-request-pending':
+        if (data.requestId && !musicPending.some(p => p.id === data.requestId)) {
+          musicPending.push({ id: data.requestId, user: data.user, query: data.query, ts: Date.now() });
+          musicRenderQueue();
+          showToast(t('toast.musicRequestReceived', { user: data.user || '' }));
+        }
+        break;
+      case 'music-request-failed':
+        musicDropPending(data.requestId);
+        musicRenderQueue();
+        showToast(t('toast.musicRequestFailed', { query: data.query || '' }));
+        break;
       case 'music-now-playing':
-        if (Array.isArray(data.queue)) { musicQueue = data.queue; musicRenderQueue(); }
+        musicDropPending(data.requestId);
+        if (Array.isArray(data.queue)) { musicQueue = data.queue; }
+        musicRenderQueue();
         musicOnNowPlaying(data.track);
         break;
       case 'music-queued':
-        if (Array.isArray(data.queue)) { musicQueue = data.queue; musicRenderQueue(); }
+        musicDropPending(data.requestId);
+        if (Array.isArray(data.queue)) { musicQueue = data.queue; }
+        musicRenderQueue();
         break;
       case 'music-skip':
         // Solo detener audio local: el servidor ya avanza la cola y emite
@@ -6013,8 +6226,7 @@
         musicOnPlaylistUpdate(data);
         break;
       case 'music-engine':
-        if (data.status === 'downloading') showToast(t('toast.musicEngineDownloading'));
-        else if (data.status === 'error') showToast(t('toast.musicEngineError'));
+        musicOnEngineStatus(data.status);
         break;
       case 'config-updated':
         applyA11yConfig(data.config || {});
@@ -6675,6 +6887,11 @@
     toast.textContent = message;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 2200);
+  }
+
+  // Aviso: algunas secciones tienen bugs conocidos, arreglo en camino.
+  function showKnownIssuesNotice() {
+    showToast(t('overlayStr.knownBugsMsg'));
   }
 
   // ─── CLIPS ────────────────────────────────────────────────────
@@ -7555,6 +7772,62 @@
   let musicCurrentTrack = null;
   let musicProgressInterval = null;
   let musicQueue = [];
+  // Peticiones !p que el server ya acepto pero todavia esta resolviendo
+  // (yt-dlp descargando/extrayendo la primera vez, o buscando el video).
+  // [{ id, user, query, ts }]
+  let musicPending = [];
+  // Estado del motor yt-dlp: 'preparing' | 'downloading' | 'error' | null.
+  // Se pinta como cartel arriba de la cola de peticiones (la primera vez
+  // baja ~20 MB + extrae, puede tardar).
+  let musicEngineStatus = null;
+  let musicEngineErrorTimer = null;
+
+  function musicOnEngineStatus(status) {
+    clearTimeout(musicEngineErrorTimer);
+    if (status === 'ready') {
+      musicEngineStatus = null;
+    } else if (status === 'error') {
+      musicEngineStatus = 'error';
+      showToast(t('toast.musicEngineError'));
+      // El error se limpia solo: el proximo !p reintenta el motor.
+      musicEngineErrorTimer = setTimeout(() => { musicEngineStatus = null; musicRenderQueue(); }, 20000);
+    } else if (status === 'downloading' || status === 'preparing') {
+      if (musicEngineStatus == null) showToast(t('toast.musicEngineDownloading'));
+      musicEngineStatus = status;
+    }
+    musicRenderQueue();
+  }
+
+  function musicEngineBannerHtml() {
+    if (musicEngineStatus === 'downloading' || musicEngineStatus === 'preparing') {
+      return `
+      <div class="queue-item pending">
+        <span class="queue-spinner"></span>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:500;">${escHtml(t('toast.musicEngineDownloading'))}</div>
+        </div>
+      </div>`;
+    }
+    if (musicEngineStatus === 'error') {
+      return `
+      <div class="queue-item" style="color:var(--danger,#e5484d);">
+        <span style="flex-shrink:0;">⚠</span>
+        <div style="flex:1;min-width:0;font-size:13px;">${escHtml(t('toast.musicEngineError'))}</div>
+      </div>`;
+    }
+    return '';
+  }
+
+  function musicPrunePending() {
+    const cutoff = Date.now() - 120000; // 2 min: si no llego queued/failed, soltar el spinner
+    const before = musicPending.length;
+    musicPending = musicPending.filter(p => p.ts > cutoff);
+    return musicPending.length !== before;
+  }
+  function musicDropPending(id) {
+    if (!id) return;
+    musicPending = musicPending.filter(p => p.id !== id);
+  }
 
   // Desecha el Audio activo sin disparar sus handlers: asignar src='' lanza el
   // load algorithm contra la URL de la página → evento error fantasma que
@@ -7683,12 +7956,22 @@
     const list = document.getElementById('music-queue-list');
     const count = document.getElementById('music-queue-count');
     if (!list) return;
-    if (count) count.textContent = `(${musicQueue.length})`;
-    if (musicQueue.length === 0) {
+    musicPrunePending();
+    if (count) count.textContent = `(${musicQueue.length + musicPending.length})`;
+    const engineHtml = musicEngineBannerHtml();
+    if (musicQueue.length === 0 && musicPending.length === 0 && !engineHtml) {
       list.innerHTML = `<div style="color:var(--text-muted);font-size:13px;">${t('bot.queueEmpty')}</div>`;
       return;
     }
-    list.innerHTML = musicQueue.map((track, i) => `
+    const pendingHtml = musicPending.map((p) => `
+      <div class="queue-item pending">
+        <span class="queue-spinner"></span>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t('bot.requestResolving', { query: escHtml(p.query || '') })}</div>
+          <div style="font-size:11px;color:var(--text-muted);">${escHtml(p.user || '')}</div>
+        </div>
+      </div>`).join('');
+    list.innerHTML = engineHtml + pendingHtml + musicQueue.map((track, i) => `
       <div class="queue-item">
         <span style="font-size:11px;color:var(--text-muted);min-width:16px;">${i + 1}</span>
         <div style="flex:1;min-width:0;">
@@ -7726,6 +8009,7 @@
   function musicOnIdle() {
     musicStop();
     musicQueue = [];
+    musicPending = [];
     musicRenderQueue();
   }
 
@@ -7746,12 +8030,27 @@
     }
   }
 
+  // Ultimo contenido de playlist confirmado por el server — para detectar
+  // ediciones sin guardar antes de activar el toggle.
+  let playlistSavedValue = '';
+  // Canciones reales tras expandir URLs de playlist (puede ser >> que líneas).
+  let playlistResolvedCount = null;
+
   function musicOnPlaylistUpdate(data) {
+    if (Array.isArray(data.playlist)) playlistResolvedCount = data.playlist.length;
     // Reload textarea if on bot view
     if (data.raw) {
+      playlistSavedValue = data.raw.join('\n');
       const ta = document.getElementById('playlistTextarea');
-      if (ta && !ta.dataset.dirty) { ta.value = data.raw.join('\n'); updatePlaylistInfo(); }
+      if (ta && !ta.dataset.dirty) { ta.value = playlistSavedValue; updatePlaylistInfo(); }
     }
+  }
+
+  function playlistLines(ta) {
+    return (ta ? ta.value : '').split('\n').map(l => l.trim()).filter(Boolean);
+  }
+  function playlistIsUnsaved(ta) {
+    return playlistLines(ta).join('\n') !== playlistSavedValue.split('\n').map(l => l.trim()).filter(Boolean).join('\n');
   }
 
   function musicSkip() {
@@ -7829,6 +8128,7 @@
 
   function musicClearQueue() {
     musicQueue = [];
+    musicPending = [];
     musicRenderQueue();
     // No server endpoint needed — queue will naturally empty
   }
@@ -7867,17 +8167,34 @@
 
   function playlistSave() {
     const ta = document.getElementById('playlistTextarea');
-    if (!ta) return;
-    const lines = ta.value.split('\n').map(l => l.trim()).filter(Boolean);
+    if (!ta) return Promise.resolve();
+    const lines = playlistLines(ta);
     ta.dataset.dirty = '';
-    fetch('/api/music/playlist', {
+    return fetch('/api/music/playlist', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ lines })
-    }).then(() => { delete ta.dataset.dirty; showToast(t('toast.playlistSaved')); }).catch(() => {});
+    }).then(r => r.json().catch(() => ({}))).then(d => {
+      delete ta.dataset.dirty;
+      playlistSavedValue = lines.join('\n');
+      if (typeof d.count === 'number') playlistResolvedCount = d.count;
+      updatePlaylistInfo();
+      showToast(t('toast.playlistSaved'));
+    }).catch(() => {});
   }
 
-  function playlistSetEnabled(val) {
+  async function playlistSetEnabled(val) {
+    const ta = document.getElementById('playlistTextarea');
+    if (val) {
+      // Activar sin canciones = toggle encendido y en silencio. Guardar
+      // primero las ediciones pendientes; si no hay ninguna, avisar y revertir.
+      if (playlistLines(ta).length === 0) {
+        showToast(t('toast.playlistEmpty'));
+        syncMusicChip('playlistEnabledToggle', false);
+        return;
+      }
+      if (playlistIsUnsaved(ta)) await playlistSave();
+    }
     syncMusicChip('playlistEnabledToggle', val);
     // Estado explícito: evita que un flip ciego desincronice el checkbox si
     // otro cliente (móvil) también toglea
@@ -7891,6 +8208,21 @@
   function playlistSetShuffle(val) {
     syncMusicChip('playlistShuffleToggle', val);
     fetch('/api/music/playlist/shuffle', { method: 'POST' }).catch(() => {});
+  }
+
+  // Botón "Reproducir ahora": guarda pendientes, activa la playlist y fuerza
+  // el arranque desde el primer tema (no corta un !p del chat en curso).
+  async function playlistPlay() {
+    const ta = document.getElementById('playlistTextarea');
+    if (playlistLines(ta).length === 0) { showToast(t('toast.playlistEmpty')); return; }
+    if (playlistIsUnsaved(ta)) await playlistSave();
+    syncMusicChip('playlistEnabledToggle', true);
+    try {
+      const r = await fetch('/api/music/playlist/play', { method: 'POST' });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) showToast(tErr(d, 'errors.playlistEmpty'));
+      else if (d.deferred) showToast(t('toast.playlistQueuedAfterRequest'));
+    } catch (_) { /* red caída: el WS reconciliará el estado */ }
   }
 
   // Init music state from server on load
@@ -7915,7 +8247,9 @@
     }).catch(() => {});
     fetch('/api/music/playlist').then(r => r.json()).then(d => {
       const ta = document.getElementById('playlistTextarea');
-      if (ta && d.raw) ta.value = d.raw.join('\n');
+      playlistSavedValue = (d.raw || []).join('\n');
+      if (Array.isArray(d.playlist)) playlistResolvedCount = d.playlist.length;
+      if (ta && d.raw) ta.value = playlistSavedValue;
       syncMusicChip('playlistEnabledToggle', !!d.enabled);
       syncMusicChip('playlistShuffleToggle', !!d.shuffle);
       updatePlaylistInfo();
@@ -7929,9 +8263,14 @@
     const ta = document.getElementById('playlistTextarea');
     const info = document.getElementById('playlist-info');
     if (!ta || !info) return;
-    const count = ta.value.split('\n').map(l => l.trim()).filter(Boolean).length;
+    const lineCount = playlistLines(ta).length;
+    const unsaved = playlistIsUnsaved(ta);
+    // Guardada y con expansión conocida → mostrar canciones reales (una URL de
+    // playlist son muchas). Sin guardar → contar líneas del textarea.
+    const count = (!unsaved && playlistResolvedCount != null) ? playlistResolvedCount : lineCount;
     const songWord = count === 1 ? t('bot.songSingular') : t('bot.songPlural');
-    info.textContent = `${count} ${songWord} · ${t('bot.playlistSavedHint')}`;
+    const tail = unsaved ? t('bot.playlistUnsaved') : t('bot.playlistSavedHint');
+    info.textContent = `${count} ${songWord} · ${tail}`;
   }
 
   musicInit();
