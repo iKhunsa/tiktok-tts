@@ -94,7 +94,8 @@
     "useF8": "Use F8",
     "usePlayPause": "Use Play/Pause key",
     "clearShortcut": "✕ Clear",
-    "blockedWordsShortcut": "Blocked words"
+    "blockedWordsShortcut": "Blocked words",
+    "delete": "Delete"
   },
   "chat": {
     "title": "Live chat",
@@ -102,13 +103,15 @@
     "speaking": "Reading...",
     "queue": "Queue: {n} messages",
     "followerBadge": "Follower",
-    "mutedBadge": "Muted: TTS skips them"
+    "mutedBadge": "Muted: TTS skips them",
+    "cleared": "Chat cleared"
   },
   "emergencyHint": "Emergency keeps gifts and follows active, silences chat/likes/joins/shares.",
   "status": {
     "waiting": "Waiting for connection...",
     "connected": "Connected",
-    "disconnected": "Disconnected"
+    "disconnected": "Disconnected",
+    "connectedAs": "Connected as @{username}"
   },
   "view": {
     "overlays": {
@@ -170,7 +173,9 @@
     "accessUrl": "Access URL",
     "activeShortcut": "Active shortcut",
     "users": "Users",
-    "connectToGet": "Connect to get"
+    "connectToGet": "Connect to get",
+    "color": "Color",
+    "testVoicePlaceholder": "Type something to test..."
   },
   "overlay": {
     "chat": {
@@ -217,7 +222,8 @@
     "empty": "Upload your first sound to get started",
     "noShortcut": "No shortcut",
     "pressKey": "Press a key…",
-    "clickToAssign": "Click to assign shortcut (Ctrl/Alt/Shift + key)"
+    "clickToAssign": "Click to assign shortcut (Ctrl/Alt/Shift + key)",
+    "test": "Test"
   },
   "update": {
     "checking": "Checking for updates...",
@@ -225,7 +231,8 @@
     "later": "Later",
     "installing": "Installing...",
     "available": "New version available: v{version}",
-    "downloading": "Downloading v{version}..."
+    "downloading": "Downloading v{version}...",
+    "readyToInstall": "v{version} ready to install."
   },
   "bot": {
     "title": "Music Bot",
@@ -233,28 +240,32 @@
     "nowPlaying": "Now Playing",
     "nowPlayingSubtitle": "The song currently playing, with pause and skip controls.",
     "enableCmd": "Enable !p",
-    "skipSong": "⏭ Skip",
-    "pauseSong": "⏸ Pause",
-    "resumeSong": "▶ Resume",
+    "skipSong": "Skip",
+    "pauseSong": "Pause",
+    "resumeSong": "Resume",
     "noMusic": "No music playing.",
     "musicVol": "Music Vol.",
     "requestQueue": "Request queue",
     "requestQueueSubtitle": "Songs requested by chat with !p, in arrival order.",
-    "clearQueue": "🗑 Clear",
+    "clearQueue": "Clear",
     "queueEmpty": "Queue is empty.",
     "myPlaylist": "My Playlist (background)",
     "enable": "Enable",
     "shuffle": "Shuffle",
     "playlistHint": "One song per line: name or YouTube URL. Plays when chat has no requests.",
-    "playlistActive": "▶ Playing from playlist:",
-    "savePlaylist": "💾 Save playlist",
+    "playlistActive": "Playing from playlist:",
+    "savePlaylist": "Save playlist",
     "botSettings": "Bot settings",
     "botSettingsSubtitle": "Music bot limits: cooldown between requests and maximum queue size.",
     "cooldown": "Cooldown per user (sec)",
     "maxQueue": "Max songs in queue",
     "bannedUsers": "Banned from !p",
     "banPlaceholder": "@user or ID",
-    "ban": "Ban"
+    "ban": "Ban",
+    "cmdActive": "!p active",
+    "songSingular": "song",
+    "songPlural": "songs",
+    "playlistSavedHint": "saved to your app folder"
   },
   "overlay2": {
     "giftsTitle": "Gift Alert",
@@ -279,7 +290,9 @@
     "deleteDay": "Delete day",
     "confirmClearAll": "Delete all clip markers? This action cannot be undone.",
     "confirmClearDay": "Delete all markers for",
-    "noMarkers": "No markers yet. Start the stream and press Ctrl+Shift+M to mark."
+    "noMarkers": "No markers yet. Start the stream and press Ctrl+Shift+M to mark.",
+    "mark": "mark",
+    "marks": "marks"
   },
   "conn": {
     "connecting": "Connecting...",
@@ -292,7 +305,13 @@
     "noSavedChannels": "No saved channels. Add TikTok/Twitch/YouTube and use Connect all.",
     "connectAllMsg": "Connect all: {parts}",
     "onlyManualChannels": "Only manual channels saved",
-    "connectionLost": "Connection lost. Reload the app."
+    "connectionLost": "Connection lost. Reload the app.",
+    "twitchWaitingCode": "Waiting for browser authorization (code {code})...",
+    "shortcutNotRegisteredPrefix": "Shortcut not registered:",
+    "shortcutTryAnother": "Try another shortcut.",
+    "stateManual": "Manual",
+    "stateError": "Error",
+    "stateSaved": "Saved"
   },
   "mobile2": {
     "loading": "Loading...",
@@ -427,7 +446,22 @@
     "followers": "Followers",
     "noFollowers": "No followers yet",
     "sharedList": "Shared",
-    "noShared": "No shares yet"
+    "noShared": "No shares yet",
+    "tierPrime": "Prime",
+    "tierGeneric": "Sub",
+    "tierLabel": "Tier {tier}",
+    "subResub": "RESUBSCRIPTION",
+    "subMonths": "{months} months subbed",
+    "subGifted": "GIFTED SUB",
+    "subGiftedTo": "to @{recipient}",
+    "subsGifted": "GIFTED SUBS",
+    "subsGiftedCount": "{count} subs for the chat",
+    "subUpgrade": "SUB UPGRADE",
+    "subNew": "NEW SUBSCRIPTION",
+    "raidJoined": "is raiding with their community",
+    "anonymous": "Anonymous",
+    "giftFrom": "from @{user}",
+    "topLikers": "Top Likers"
   },
   "donations": {
     "title": "Support my content",
@@ -586,7 +620,26 @@
     "youtubeAutoSaved": "YouTube saved; will connect when live",
     "youtubeTmpSaved": "YouTube saved as manual channel",
     "readNonFollowersOn": "TTS reads everyone",
-    "readNonFollowersOff": "TTS only reads followers"
+    "readNonFollowersOff": "TTS only reads followers",
+    "twitchAuthorizeInBrowser": "Authorize in the browser — code {code}",
+    "twitchAuthorizeWindow": "Authorize in the window that opened and come back here",
+    "twitchAuthError": "Twitch authorization error"
+  },
+  "errors": {
+    "textRequired": "Text required",
+    "ttsRateLimited": "Rate limit active",
+    "ttsServiceError": "There was a problem with the voice service (Google TTS)",
+    "unsupportedAudioType": "Only MP3, WAV, OGG, WEBM or M4A files are allowed",
+    "audioUploadFailed": "Error uploading audio",
+    "noAudioFile": "No audio file received",
+    "maxSoundsReached": "Maximum 24 sounds allowed",
+    "imageTooLarge": "Image can't exceed 8 MB",
+    "imageUploadFailed": "Error uploading image",
+    "noImageFile": "No image received",
+    "contentRequired": "Content required",
+    "invalidConfig": "Invalid configuration",
+    "twitchAuthStartFailed": "Could not start Twitch authorization",
+    "obsConnectFailed": "Could not connect to OBS"
   },
   "dictLang": {
     "title": "Allowed languages",

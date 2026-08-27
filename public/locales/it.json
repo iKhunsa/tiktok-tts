@@ -94,7 +94,8 @@
     "useF8": "Usa F8",
     "usePlayPause": "Usa tasto Play/Pausa",
     "clearShortcut": "✕ Cancella",
-    "blockedWordsShortcut": "Parole bloccate"
+    "blockedWordsShortcut": "Parole bloccate",
+    "delete": "Elimina"
   },
   "chat": {
     "title": "Chat in diretta",
@@ -102,13 +103,15 @@
     "speaking": "Leggendo...",
     "queue": "Coda: {n} messaggi",
     "followerBadge": "Follower",
-    "mutedBadge": "Silenziato: il TTS lo salta"
+    "mutedBadge": "Silenziato: il TTS lo salta",
+    "cleared": "Chat cancellata"
   },
   "emergencyHint": "L'emergenza mantiene attivi regali e follow, silenzia chat/like/entrate/condivisioni.",
   "status": {
     "waiting": "In attesa di connessione...",
     "connected": "Connesso",
-    "disconnected": "Disconnesso"
+    "disconnected": "Disconnesso",
+    "connectedAs": "Connesso a @{username}"
   },
   "view": {
     "overlays": {
@@ -170,7 +173,9 @@
     "accessUrl": "URL di accesso",
     "activeShortcut": "Scorciatoia attiva",
     "users": "Utenti",
-    "connectToGet": "Connetti per ottenere"
+    "connectToGet": "Connetti per ottenere",
+    "color": "Colore",
+    "testVoicePlaceholder": "Scrivi qualcosa per testare..."
   },
   "overlay": {
     "chat": {
@@ -217,7 +222,8 @@
     "empty": "Carica il primo suono per iniziare",
     "noShortcut": "Nessuna scorciatoia",
     "pressKey": "Premi un tasto…",
-    "clickToAssign": "Clic per assegnare scorciatoia (Ctrl/Alt/Shift + tasto)"
+    "clickToAssign": "Clic per assegnare scorciatoia (Ctrl/Alt/Shift + tasto)",
+    "test": "Prova"
   },
   "update": {
     "checking": "Ricerca aggiornamenti...",
@@ -225,7 +231,8 @@
     "later": "Dopo",
     "installing": "Installazione...",
     "available": "Nuova versione disponibile: v{version}",
-    "downloading": "Download v{version}..."
+    "downloading": "Download v{version}...",
+    "readyToInstall": "v{version} pronta per l'installazione."
   },
   "bot": {
     "title": "Bot musicale",
@@ -233,28 +240,32 @@
     "nowPlaying": "In riproduzione",
     "nowPlayingSubtitle": "Il brano in riproduzione in questo momento, con controlli di pausa e skip.",
     "enableCmd": "Attiva !p",
-    "skipSong": "⏭ Salta",
-    "pauseSong": "⏸ Pausa",
-    "resumeSong": "▶ Riprendi",
+    "skipSong": "Salta",
+    "pauseSong": "Pausa",
+    "resumeSong": "Riprendi",
     "noMusic": "Nessuna musica in riproduzione.",
     "musicVol": "Vol. musica",
     "requestQueue": "Coda richieste",
     "requestQueueSubtitle": "Canzoni richieste dalla chat con !p, in ordine di arrivo.",
-    "clearQueue": "🗑 Svuota",
+    "clearQueue": "Svuota",
     "queueEmpty": "La coda è vuota.",
     "myPlaylist": "La mia Playlist (sfondo)",
     "enable": "Attiva",
     "shuffle": "Casuale",
     "playlistHint": "Una canzone per riga: nome o URL YouTube. Suona quando la chat non ha richieste.",
-    "playlistActive": "▶ Riproduzione da playlist:",
-    "savePlaylist": "💾 Salva playlist",
+    "playlistActive": "Riproduzione da playlist:",
+    "savePlaylist": "Salva playlist",
     "botSettings": "Impostazioni bot",
     "botSettingsSubtitle": "Limiti del bot musicale: tempo di attesa tra richieste e dimensione massima della coda.",
     "cooldown": "Cooldown per utente (sec)",
     "maxQueue": "Canzoni max in coda",
     "bannedUsers": "Bannati dal !p",
     "banPlaceholder": "@utente o ID",
-    "ban": "Banna"
+    "ban": "Banna",
+    "cmdActive": "!p attivo",
+    "songSingular": "canzone",
+    "songPlural": "canzoni",
+    "playlistSavedHint": "salvata nella cartella dell'app"
   },
   "overlay2": {
     "giftsTitle": "Avviso Regalo",
@@ -279,7 +290,9 @@
     "deleteDay": "Elimina giorno",
     "confirmClearAll": "Eliminare tutti i marcatori clip? Questa azione non può essere annullata.",
     "confirmClearDay": "Eliminare tutti i marcatori del",
-    "noMarkers": "Nessun marcatore ancora. Avvia lo stream e premi Ctrl+Shift+M per marcare."
+    "noMarkers": "Nessun marcatore ancora. Avvia lo stream e premi Ctrl+Shift+M per marcare.",
+    "mark": "segno",
+    "marks": "segni"
   },
   "conn": {
     "connecting": "Connessione...",
@@ -292,7 +305,13 @@
     "noSavedChannels": "Nessun canale salvato. Aggiungi TikTok/Twitch/YouTube e usa Connetti tutto.",
     "connectAllMsg": "Connetti tutto: {parts}",
     "onlyManualChannels": "Solo canali manuali salvati",
-    "connectionLost": "Connessione persa. Ricarica l'app."
+    "connectionLost": "Connessione persa. Ricarica l'app.",
+    "twitchWaitingCode": "In attesa di autorizzazione nel browser (codice {code})...",
+    "shortcutNotRegisteredPrefix": "Scorciatoia non registrata:",
+    "shortcutTryAnother": "Prova un'altra scorciatoia.",
+    "stateManual": "Manuale",
+    "stateError": "Errore",
+    "stateSaved": "Salvato"
   },
   "mobile2": {
     "loading": "Caricamento...",
@@ -427,7 +446,22 @@
     "followers": "Follower",
     "noFollowers": "Nessun follower ancora",
     "sharedList": "Condivisi",
-    "noShared": "Nessuna condivisione ancora"
+    "noShared": "Nessuna condivisione ancora",
+    "tierPrime": "Prime",
+    "tierGeneric": "Sub",
+    "tierLabel": "Tier {tier}",
+    "subResub": "RINNOVO ABBONAMENTO",
+    "subMonths": "{months} mesi di abbonamento",
+    "subGifted": "ABBONAMENTO REGALATO",
+    "subGiftedTo": "per @{recipient}",
+    "subsGifted": "ABBONAMENTI REGALATI",
+    "subsGiftedCount": "{count} abbonamenti per la chat",
+    "subUpgrade": "MIGLIORAMENTO ABBONAMENTO",
+    "subNew": "NUOVO ABBONAMENTO",
+    "raidJoined": "arriva con la sua community",
+    "anonymous": "Anonimo",
+    "giftFrom": "da @{user}",
+    "topLikers": "Top Likers"
   },
   "donations": {
     "title": "Supporta il mio contenuto",
@@ -586,7 +620,10 @@
     "youtubeAutoSaved": "YouTube salvato; si connetterà quando in diretta",
     "youtubeTmpSaved": "YouTube salvato come canale manuale",
     "readNonFollowersOn": "Il TTS legge tutti",
-    "readNonFollowersOff": "Il TTS legge solo i follower"
+    "readNonFollowersOff": "Il TTS legge solo i follower",
+    "twitchAuthorizeInBrowser": "Autorizza nel browser — codice {code}",
+    "twitchAuthorizeWindow": "Autorizza nella finestra che si è aperta e torna qui",
+    "twitchAuthError": "Errore nell'autorizzazione di Twitch"
   },
   "dictLang": {
     "title": "Lingue consentite",
@@ -913,5 +950,21 @@
     "mediaPlaceholder": "Anteprima in arrivo",
     "comingSoon": "Presto altri strumenti",
     "comingSoonDesc": "Stiamo lavorando a nuovi strumenti."
+  },
+  "errors": {
+    "textRequired": "Testo richiesto",
+    "ttsRateLimited": "Rate limit attivo",
+    "ttsServiceError": "Si è verificato un problema con il servizio vocale (Google TTS)",
+    "unsupportedAudioType": "Sono ammessi solo file MP3, WAV, OGG, WEBM o M4A",
+    "audioUploadFailed": "Errore durante il caricamento dell'audio",
+    "noAudioFile": "Nessun file audio ricevuto",
+    "maxSoundsReached": "Massimo 24 suoni consentiti",
+    "imageTooLarge": "L'immagine non può superare 8 MB",
+    "imageUploadFailed": "Errore durante il caricamento dell'immagine",
+    "noImageFile": "Nessuna immagine ricevuta",
+    "contentRequired": "Contenuto richiesto",
+    "invalidConfig": "Configurazione non valida",
+    "twitchAuthStartFailed": "Impossibile avviare l'autorizzazione di Twitch",
+    "obsConnectFailed": "Impossibile connettersi a OBS"
   }
 }

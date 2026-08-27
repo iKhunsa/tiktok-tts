@@ -33,10 +33,11 @@ function uploadBg(logger) {
   return (req, res) => {
     upload.single('image')(req, res, (err) => {
       if (err) {
-        const message = err.code === 'LIMIT_FILE_SIZE' ? 'La imagen no puede superar 8 MB' : err.message || 'Error al subir imagen';
-        return res.status(400).json({ error: message });
+        const tooBig = err.code === 'LIMIT_FILE_SIZE';
+        const message = tooBig ? 'La imagen no puede superar 8 MB' : err.message || 'Error al subir imagen';
+        return res.status(400).json({ error: message, errorKey: tooBig ? 'errors.imageTooLarge' : 'errors.imageUploadFailed' });
       }
-      if (!req.file) return res.status(400).json({ error: 'No se recibio ninguna imagen' });
+      if (!req.file) return res.status(400).json({ error: 'No se recibio ninguna imagen', errorKey: 'errors.noImageFile' });
       const url = `/uploads/${req.file.filename}`;
       logger.log(
         'info', 'overlay', 'overlay/routes/upload-bg.js#uploadBg', 'overlay.fondo.subido',

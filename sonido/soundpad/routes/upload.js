@@ -32,8 +32,14 @@ function upload(deps) {
   const uploadMiddleware = createUploadMiddleware(deps.soundsDir);
   return (req, res) => {
     uploadMiddleware.single('audio')(req, res, (err) => {
-      if (err) return res.status(400).json({ error: err.message || 'Error al subir audio' });
-      if (!req.file) return res.status(400).json({ error: 'No se recibió archivo de audio' });
+      if (err) {
+        const isUnsupportedType = /MP3, WAV, OGG, WEBM/.test(err.message || '');
+        return res.status(400).json({
+          error: err.message || 'Error al subir audio',
+          errorKey: isUnsupportedType ? 'errors.unsupportedAudioType' : 'errors.audioUploadFailed',
+        });
+      }
+      if (!req.file) return res.status(400).json({ error: 'No se recibió archivo de audio', errorKey: 'errors.noAudioFile' });
 
       const sounds = loadSounds(deps.soundsConfigPath);
       if (sounds.length >= 24) {
@@ -45,7 +51,7 @@ function upload(deps) {
             );
           }
         });
-        return res.status(400).json({ error: 'Máximo 24 sonidos permitidos' });
+        return res.status(400).json({ error: 'Máximo 24 sonidos permitidos', errorKey: 'errors.maxSoundsReached' });
       }
 
       const id = crypto.randomBytes(8).toString('hex');

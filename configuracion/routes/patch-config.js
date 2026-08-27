@@ -9,7 +9,7 @@ function patchConfig(configStore, bus, logger) {
         'warn', 'configuracion', 'configuracion/routes/patch-config.js#patchConfig', 'configuracion.patch.rechazado',
         `PATCH /api/config rechazo ${rejected.length} clave(s) invalida(s)`, { rejected }
       );
-      return res.status(400).json({ error: 'Config invalida', rejected, config: configStore.config });
+      return res.status(400).json({ error: 'Config invalida', errorKey: 'errors.invalidConfig', rejected, config: configStore.config });
     }
 
     if (changed) {

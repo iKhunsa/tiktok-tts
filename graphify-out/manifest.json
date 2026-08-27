@@ -25,9 +25,9 @@
     "semantic_hash": "94d93c8747671b01859aa6d6ae04b4b6"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\bot\\index.js": {
-    "mtime": 1787361022.7197845,
-    "ast_hash": "1d4a071ab4c676f30ff8fd27f79fc913",
-    "semantic_hash": "1d4a071ab4c676f30ff8fd27f79fc913"
+    "mtime": 1787775241.9857495,
+    "ast_hash": "051c47454426a10bd197f55ce3b6108c",
+    "semantic_hash": "051c47454426a10bd197f55ce3b6108c"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\bot\\parse-command.js": {
     "mtime": 1787361022.7203043,
@@ -35,14 +35,14 @@
     "semantic_hash": "32757c84502a8cbac0cd955d466288a8"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\canales\\broadcast-channels.js": {
-    "mtime": 1787361022.7203043,
-    "ast_hash": "797e81e67d649110ebc59055f0d9ba18",
-    "semantic_hash": "797e81e67d649110ebc59055f0d9ba18"
+    "mtime": 1787772302.727444,
+    "ast_hash": "524c07ca94d3ee9b48d82228bfdf85b2",
+    "semantic_hash": "524c07ca94d3ee9b48d82228bfdf85b2"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\canales\\index.js": {
-    "mtime": 1787361022.7203043,
-    "ast_hash": "dcff9c4a237286ee39e78dbaead4d199",
-    "semantic_hash": "dcff9c4a237286ee39e78dbaead4d199"
+    "mtime": 1787772302.727444,
+    "ast_hash": "e92614edf8c9ea2a9b264419215cf27c",
+    "semantic_hash": "e92614edf8c9ea2a9b264419215cf27c"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\canales\\obs\\connect.js": {
     "mtime": 1787361022.7379992,
@@ -70,9 +70,9 @@
     "semantic_hash": "97712aab512c7e570e43ecefcb4b67fe"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\canales\\routes\\add-channel.js": {
-    "mtime": 1787361022.7490392,
-    "ast_hash": "c9523118b6ebc1fc0addc0d84ea44e4f",
-    "semantic_hash": "c9523118b6ebc1fc0addc0d84ea44e4f"
+    "mtime": 1787772302.7307897,
+    "ast_hash": "84a4a1122fdd52633de38ac16eb560bd",
+    "semantic_hash": "84a4a1122fdd52633de38ac16eb560bd"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\canales\\routes\\connect.js": {
     "mtime": 1787361022.7516856,
@@ -85,9 +85,9 @@
     "semantic_hash": "b94a82d8dba4739745d2c62b96a6088f"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\canales\\routes\\list-channels.js": {
-    "mtime": 1787361022.754676,
-    "ast_hash": "d74f4d839825f87ece30cc7e4ed9930c",
-    "semantic_hash": "d74f4d839825f87ece30cc7e4ed9930c"
+    "mtime": 1787772302.7307897,
+    "ast_hash": "c294bc308b764b309968c35b73cda57b",
+    "semantic_hash": "c294bc308b764b309968c35b73cda57b"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\canales\\routes\\oauth-disconnect.js": {
     "mtime": 1787361022.754676,
@@ -120,29 +120,29 @@
     "semantic_hash": "baa677107558d6b1fec77cf15b8b32b4"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\canales\\routes\\platforms-connect.js": {
-    "mtime": 1787361022.7683692,
-    "ast_hash": "a113c48994be1bd459f07c3a6a129e79",
-    "semantic_hash": "a113c48994be1bd459f07c3a6a129e79"
+    "mtime": 1787772302.7307897,
+    "ast_hash": "b40945d447c8543110313a2d66dd5425",
+    "semantic_hash": "b40945d447c8543110313a2d66dd5425"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\canales\\routes\\platforms-disconnect.js": {
-    "mtime": 1787361022.7683692,
-    "ast_hash": "00363d3e1e2edc40ccfba1975b65ed43",
-    "semantic_hash": "00363d3e1e2edc40ccfba1975b65ed43"
+    "mtime": 1787772302.7307897,
+    "ast_hash": "8b8c5a6ceabafd65f282983709cb8c5a",
+    "semantic_hash": "8b8c5a6ceabafd65f282983709cb8c5a"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\canales\\routes\\platforms-status.js": {
-    "mtime": 1787361022.7693472,
-    "ast_hash": "1a4e21dadf19208efea539f410c675b6",
-    "semantic_hash": "1a4e21dadf19208efea539f410c675b6"
+    "mtime": 1787772302.732507,
+    "ast_hash": "2a49dbc9b54e93ea51025b32dce65b44",
+    "semantic_hash": "2a49dbc9b54e93ea51025b32dce65b44"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\canales\\routes\\remove-channel.js": {
-    "mtime": 1787361022.7693472,
-    "ast_hash": "048cc47b00e770bbeb637279bb9640a3",
-    "semantic_hash": "048cc47b00e770bbeb637279bb9640a3"
+    "mtime": 1787772302.732507,
+    "ast_hash": "4226827bd662083e7f55f7dfe3450338",
+    "semantic_hash": "4226827bd662083e7f55f7dfe3450338"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\canales\\state\\channel-maps.js": {
-    "mtime": 1787361022.770324,
-    "ast_hash": "d71c48e47cf7dbb8ab50f76cb58e5b93",
-    "semantic_hash": "d71c48e47cf7dbb8ab50f76cb58e5b93"
+    "mtime": 1787772302.7335105,
+    "ast_hash": "7735ee724266588fcfd13c4f7916e70f",
+    "semantic_hash": "7735ee724266588fcfd13c4f7916e70f"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\canales\\tiktok\\clean-username.js": {
     "mtime": 1787361022.770324,
@@ -270,14 +270,14 @@
     "semantic_hash": "98600b117f3763ffd7b652e207d7ef44"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\chat\\emit-chat-message.js": {
-    "mtime": 1787361022.8913834,
-    "ast_hash": "6a66063cf413c5084e8ba36c4d16bd39",
-    "semantic_hash": "6a66063cf413c5084e8ba36c4d16bd39"
+    "mtime": 1787784490.8060188,
+    "ast_hash": "0ca4e0f1ef73259300a012051daca41e",
+    "semantic_hash": "0ca4e0f1ef73259300a012051daca41e"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\chat\\index.js": {
-    "mtime": 1787361022.8913834,
-    "ast_hash": "3fcc17a369a012310c91e527a904bbcf",
-    "semantic_hash": "3fcc17a369a012310c91e527a904bbcf"
+    "mtime": 1787775497.6030211,
+    "ast_hash": "de6c3af2bbd8c89bf49bcf9c3a4b599c",
+    "semantic_hash": "de6c3af2bbd8c89bf49bcf9c3a4b599c"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\chat\\is-admin-identity.js": {
     "mtime": 1787361022.8913834,
@@ -340,9 +340,9 @@
     "semantic_hash": "16a7a9c65d7ec446acf0998de3fc3901"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\configuracion\\default-config.js": {
-    "mtime": 1787361022.917514,
-    "ast_hash": "05733d6a608770b95d7f717afa3272e7",
-    "semantic_hash": "05733d6a608770b95d7f717afa3272e7"
+    "mtime": 1787773497.1357193,
+    "ast_hash": "c46463efa79a607dba49c0ec8177cf52",
+    "semantic_hash": "c46463efa79a607dba49c0ec8177cf52"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\configuracion\\index.js": {
     "mtime": 1787361022.917514,
@@ -405,9 +405,9 @@
     "semantic_hash": "521b5a7d7d1de2d257a61cc4b5d0db78"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\configuracion\\validators.js": {
-    "mtime": 1787361023.2014813,
-    "ast_hash": "c6e4926be489cb52c7cf58a8698c628f",
-    "semantic_hash": "c6e4926be489cb52c7cf58a8698c628f"
+    "mtime": 1787773488.937598,
+    "ast_hash": "ce7d81a987efa9028976235fee8e5288",
+    "semantic_hash": "ce7d81a987efa9028976235fee8e5288"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\core\\app.js": {
     "mtime": 1787361023.2031336,
@@ -490,9 +490,9 @@
     "semantic_hash": "4805452720be7712af0d948c20736be1"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\electron-shell\\ipc-bridge.js": {
-    "mtime": 1787361023.4496756,
-    "ast_hash": "1c7ff26afb1e6eeff693efd9d2e4478f",
-    "semantic_hash": "1c7ff26afb1e6eeff693efd9d2e4478f"
+    "mtime": 1787772302.7345102,
+    "ast_hash": "c3b31c069c77e1722415fa81f9b8a6c2",
+    "semantic_hash": "c3b31c069c77e1722415fa81f9b8a6c2"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\electron-shell\\single-instance.js": {
     "mtime": 1787361023.4496756,
@@ -590,14 +590,14 @@
     "semantic_hash": "9989407e6c7fd93c410f457c8d44d4ee"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\main.js": {
-    "mtime": 1787361023.506806,
-    "ast_hash": "cf0ab615783f247dd6cf9f5b1c50bb4b",
-    "semantic_hash": "cf0ab615783f247dd6cf9f5b1c50bb4b"
+    "mtime": 1787772302.7355103,
+    "ast_hash": "f7122539e2abefc5c277d89551171e7e",
+    "semantic_hash": "f7122539e2abefc5c277d89551171e7e"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\moderacion\\apply-mod-action.js": {
-    "mtime": 1787361023.509727,
-    "ast_hash": "31cb947076ee3e17a69e1a5bb5443f95",
-    "semantic_hash": "31cb947076ee3e17a69e1a5bb5443f95"
+    "mtime": 1787774872.5821419,
+    "ast_hash": "d4cf36f9c95e9d95f89bd1ee324781ed",
+    "semantic_hash": "d4cf36f9c95e9d95f89bd1ee324781ed"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\moderacion\\filters\\blocked-matchers.js": {
     "mtime": 1787361023.5167766,
@@ -715,9 +715,9 @@
     "semantic_hash": "3bc75cd31a1ea86274363d06b9225a81"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\moderacion\\routes\\viewers.js": {
-    "mtime": 1787361023.6320858,
-    "ast_hash": "411a2209aa09a089386c9980b553e8c7",
-    "semantic_hash": "411a2209aa09a089386c9980b553e8c7"
+    "mtime": 1787774877.52334,
+    "ast_hash": "f22f1e65bbb457367768f9785b0c28f4",
+    "semantic_hash": "f22f1e65bbb457367768f9785b0c28f4"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\moderacion\\store\\backup-and-reset.js": {
     "mtime": 1787361023.6330624,
@@ -830,14 +830,14 @@
     "semantic_hash": "ec3839452eb4917bb9b2642a27a5df61"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\moderacion\\store\\state.js": {
-    "mtime": 1787361023.6582358,
-    "ast_hash": "50e80ddc4737d50b2e4384c78af50eea",
-    "semantic_hash": "50e80ddc4737d50b2e4384c78af50eea"
+    "mtime": 1787774866.5614889,
+    "ast_hash": "b9730de82deb37fb1c9f4cb8a1ef1eeb",
+    "semantic_hash": "b9730de82deb37fb1c9f4cb8a1ef1eeb"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\moderacion\\store\\stats.js": {
-    "mtime": 1787361023.6582358,
-    "ast_hash": "c1ac938bb2c3a99a36521d0de3c53352",
-    "semantic_hash": "c1ac938bb2c3a99a36521d0de3c53352"
+    "mtime": 1787774881.94074,
+    "ast_hash": "5cac1dcfec4fbb588ed7243d74419fb3",
+    "semantic_hash": "5cac1dcfec4fbb588ed7243d74419fb3"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\moderacion\\store\\sweep-expired.js": {
     "mtime": 1787361023.6592164,
@@ -1060,54 +1060,54 @@
     "semantic_hash": "160aed04ed2c49e23aa6838990e9d92f"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\public\\locales\\de.json": {
-    "mtime": 1787160685.1178672,
-    "ast_hash": "55060e73890768d004b3f216ca957c11",
-    "semantic_hash": "55060e73890768d004b3f216ca957c11"
+    "mtime": 1787784043.3235915,
+    "ast_hash": "ecc5c3a62844a21500b7e900b5a68c7e",
+    "semantic_hash": "ecc5c3a62844a21500b7e900b5a68c7e"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\public\\locales\\en.json": {
-    "mtime": 1787160685.1188674,
-    "ast_hash": "bcc35ca28cbc464e0f6374c3dd58393d",
-    "semantic_hash": "bcc35ca28cbc464e0f6374c3dd58393d"
+    "mtime": 1787784039.5105405,
+    "ast_hash": "b1de05968e2d3a868a8eb57e60c6092c",
+    "semantic_hash": "b1de05968e2d3a868a8eb57e60c6092c"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\public\\locales\\es.json": {
-    "mtime": 1787160685.119867,
-    "ast_hash": "f5fb822c83ec03fe173f9bed12f61a90",
-    "semantic_hash": "f5fb822c83ec03fe173f9bed12f61a90"
+    "mtime": 1787783994.7089171,
+    "ast_hash": "ba7bd09585339ea52753fd7ed12a7cb2",
+    "semantic_hash": "ba7bd09585339ea52753fd7ed12a7cb2"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\public\\locales\\fr.json": {
-    "mtime": 1787160685.119867,
-    "ast_hash": "a084bcee9967a66dea0f85bcc6c1dbd0",
-    "semantic_hash": "a084bcee9967a66dea0f85bcc6c1dbd0"
+    "mtime": 1787784046.6039822,
+    "ast_hash": "c58c6eef187f425c1317a817218ed38c",
+    "semantic_hash": "c58c6eef187f425c1317a817218ed38c"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\public\\locales\\it.json": {
-    "mtime": 1787160685.1208673,
-    "ast_hash": "a844c0e22727575d2ab8158bd3ae2a63",
-    "semantic_hash": "a844c0e22727575d2ab8158bd3ae2a63"
+    "mtime": 1787784049.8883395,
+    "ast_hash": "cb878f9f5005afd7f3197332b20376eb",
+    "semantic_hash": "cb878f9f5005afd7f3197332b20376eb"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\public\\locales\\ja.json": {
-    "mtime": 1787160685.1218672,
-    "ast_hash": "1b468cf477a8fb7ff277a17e81484ac1",
-    "semantic_hash": "1b468cf477a8fb7ff277a17e81484ac1"
+    "mtime": 1787784054.285558,
+    "ast_hash": "ac57439c1bb4d716729ef81010ec5fc0",
+    "semantic_hash": "ac57439c1bb4d716729ef81010ec5fc0"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\public\\locales\\ko.json": {
-    "mtime": 1787160685.1218672,
-    "ast_hash": "ddf0e133f54d9edc00d1fdb68d92c3fa",
-    "semantic_hash": "ddf0e133f54d9edc00d1fdb68d92c3fa"
+    "mtime": 1787784058.6466794,
+    "ast_hash": "8c4ca04efb6b0c137206a2208ea168fa",
+    "semantic_hash": "8c4ca04efb6b0c137206a2208ea168fa"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\public\\locales\\pt.json": {
-    "mtime": 1787160685.122867,
-    "ast_hash": "7e0390990be7b1e63581bdcdc9c527d5",
-    "semantic_hash": "7e0390990be7b1e63581bdcdc9c527d5"
+    "mtime": 1787784062.4625516,
+    "ast_hash": "c4af5633d067ee0a9f25b2c14960d398",
+    "semantic_hash": "c4af5633d067ee0a9f25b2c14960d398"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\public\\locales\\ru.json": {
-    "mtime": 1787160685.123868,
-    "ast_hash": "609c46a3d95bf42c73a7beed73d3837c",
-    "semantic_hash": "609c46a3d95bf42c73a7beed73d3837c"
+    "mtime": 1787784066.2800896,
+    "ast_hash": "a677a9fa1ae5ac7e06508f48c75c38f8",
+    "semantic_hash": "a677a9fa1ae5ac7e06508f48c75c38f8"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\public\\locales\\zh.json": {
-    "mtime": 1787160685.1248713,
-    "ast_hash": "d671bcd941e2e43453a271a07105124b",
-    "semantic_hash": "d671bcd941e2e43453a271a07105124b"
+    "mtime": 1787784069.6351867,
+    "ast_hash": "509c7019c245aef95a7b07572fe2ff26",
+    "semantic_hash": "509c7019c245aef95a7b07572fe2ff26"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\public\\vendor\\confetti.js": {
     "mtime": 1786800750.0672388,
@@ -1180,9 +1180,9 @@
     "semantic_hash": "4267d05429a7c4b41bdff04f85d9d999"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\server.js": {
-    "mtime": 1787361023.7663555,
-    "ast_hash": "6b95a52e479c20db224443a38ed1b52c",
-    "semantic_hash": "6b95a52e479c20db224443a38ed1b52c"
+    "mtime": 1787776895.8491766,
+    "ast_hash": "3828831145c2471a5c9d944de4063c4b",
+    "semantic_hash": "3828831145c2471a5c9d944de4063c4b"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\sonido\\config-bridge.js": {
     "mtime": 1787361023.7673726,
@@ -1690,14 +1690,14 @@
     "semantic_hash": "f88b614a10eac52c9cfa872ada1e4a81"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\public\\index.html": {
-    "mtime": 1787669067.8750927,
-    "ast_hash": "2b4d3c4c086ee1996c0dcf22563eaf87",
-    "semantic_hash": "2b4d3c4c086ee1996c0dcf22563eaf87"
+    "mtime": 1787784565.6028268,
+    "ast_hash": "2ee9dafe64266e5681da98e0d32d5379",
+    "semantic_hash": "2ee9dafe64266e5681da98e0d32d5379"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\public\\mobile.html": {
-    "mtime": 1786114540.5288486,
-    "ast_hash": "801a0fb626056e77cc3633b7bdfad542",
-    "semantic_hash": "801a0fb626056e77cc3633b7bdfad542"
+    "mtime": 1787772302.7391322,
+    "ast_hash": "4f74c4bddb90a57b48024a9497a4f78b",
+    "semantic_hash": "4f74c4bddb90a57b48024a9497a4f78b"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\public\\overlay-alertas-social.html": {
     "mtime": 1787160685.1248713,
@@ -1710,9 +1710,9 @@
     "semantic_hash": "8d4f48647430c1b6e233c49597e28896"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\public\\overlay-chat.html": {
-    "mtime": 1787160685.1263754,
-    "ast_hash": "0f900ce53330cdc11328023c55d9dd32",
-    "semantic_hash": "0f900ce53330cdc11328023c55d9dd32"
+    "mtime": 1787772302.7391322,
+    "ast_hash": "0532468b7f0b4d53d721552fb6a15ebb",
+    "semantic_hash": "0532468b7f0b4d53d721552fb6a15ebb"
   },
   "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\public\\overlay-creditos.html": {
     "mtime": 1787160685.1263754,
@@ -13828,5 +13828,95 @@
     "mtime": 1787669273.5159273,
     "ast_hash": "5e6345975db2e3df80f12189f7b006ba",
     "semantic_hash": "5e6345975db2e3df80f12189f7b006ba"
+  },
+  "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\canales\\kick\\clean-slug.js": {
+    "mtime": 1787772302.7287805,
+    "ast_hash": "87afad46f6c3328636d22c57cf062800",
+    "semantic_hash": "87afad46f6c3328636d22c57cf062800"
+  },
+  "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\canales\\kick\\connect-kick.js": {
+    "mtime": 1787772302.7292852,
+    "ast_hash": "5152f1d85e37dff336041c82d8d28e60",
+    "semantic_hash": "5152f1d85e37dff336041c82d8d28e60"
+  },
+  "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\canales\\kick\\handle-event.js": {
+    "mtime": 1787772302.7292852,
+    "ast_hash": "450a6f45413823e59e1340a0464c4e22",
+    "semantic_hash": "450a6f45413823e59e1340a0464c4e22"
+  },
+  "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\canales\\kick\\stale-watchdog.js": {
+    "mtime": 1787772302.7292852,
+    "ast_hash": "dcae437104111ce26a353924ff2a3857",
+    "semantic_hash": "dcae437104111ce26a353924ff2a3857"
+  },
+  "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\core\\announce-texts.js": {
+    "mtime": 1787784479.3230486,
+    "ast_hash": "0298b92e08fcd0de89dad44485e6d633",
+    "semantic_hash": "0298b92e08fcd0de89dad44485e6d633"
+  },
+  "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\core\\contracts\\kick-browser.js": {
+    "mtime": 1787772302.7345102,
+    "ast_hash": "e27833dc7d19ccf6d0aba1b8a0ff1907",
+    "semantic_hash": "e27833dc7d19ccf6d0aba1b8a0ff1907"
+  },
+  "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\electron-shell\\kick-capture-preload.js": {
+    "mtime": 1787772302.7345102,
+    "ast_hash": "09d34085c357f4996600d091eec2288b",
+    "semantic_hash": "09d34085c357f4996600d091eec2288b"
+  },
+  "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\electron-shell\\kick-capture-window.js": {
+    "mtime": 1787772302.7355103,
+    "ast_hash": "1d439ed22244888bef0cb6354138d40a",
+    "semantic_hash": "1d439ed22244888bef0cb6354138d40a"
+  },
+  "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\promo\\index.js": {
+    "mtime": 1787784501.688038,
+    "ast_hash": "66ae75899bdc8339251cdb92b03b0819",
+    "semantic_hash": "66ae75899bdc8339251cdb92b03b0819"
+  },
+  "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\promo\\session-scheduler.js": {
+    "mtime": 1787777193.8384078,
+    "ast_hash": "95c699680437f15b7a6345e6ec7a327d",
+    "semantic_hash": "95c699680437f15b7a6345e6ec7a327d"
+  },
+  "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\public\\plugin-store\\detail.js": {
+    "mtime": 1787782148.467846,
+    "ast_hash": "17aca2ebcd64452f9f0b1f1ea6d50f70",
+    "semantic_hash": "17aca2ebcd64452f9f0b1f1ea6d50f70"
+  },
+  "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\public\\plugin-store\\grid.js": {
+    "mtime": 1787782722.0090814,
+    "ast_hash": "2c5f1a286c5265ef73e75f0c927c6cfd",
+    "semantic_hash": "2c5f1a286c5265ef73e75f0c927c6cfd"
+  },
+  "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\public\\plugin-store\\init.js": {
+    "mtime": 1787781431.7216988,
+    "ast_hash": "3358c5fd4c0e11441832512b31c2f1fb",
+    "semantic_hash": "3358c5fd4c0e11441832512b31c2f1fb"
+  },
+  "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\public\\plugin-store\\prefs.js": {
+    "mtime": 1787780359.3443189,
+    "ast_hash": "dac2350c6f10e40d4c75f646a9457938",
+    "semantic_hash": "dac2350c6f10e40d4c75f646a9457938"
+  },
+  "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\public\\plugin-store\\registry.js": {
+    "mtime": 1787782510.1621218,
+    "ast_hash": "de69f82703ee7827847b3619afc3df3e",
+    "semantic_hash": "de69f82703ee7827847b3619afc3df3e"
+  },
+  "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\public\\plugin-store\\sidebar-render.js": {
+    "mtime": 1787780367.5090594,
+    "ast_hash": "25ce485b89f2bee325d6c06f7641bdfb",
+    "semantic_hash": "25ce485b89f2bee325d6c06f7641bdfb"
+  },
+  "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\public\\icons\\inventory.svg": {
+    "mtime": 1787781649.1608994,
+    "ast_hash": "e2c23d29fd2fd8a513e189d5603152b7",
+    "semantic_hash": "e2c23d29fd2fd8a513e189d5603152b7"
+  },
+  "C:\\Users\\liber\\OneDrive\\Documentos\\tiktok-tts\\public\\icons\\kick.svg": {
+    "mtime": 1787772302.7365105,
+    "ast_hash": "78f43b17c877fc052f6d51f86133d96c",
+    "semantic_hash": "78f43b17c877fc052f6d51f86133d96c"
   }
 }

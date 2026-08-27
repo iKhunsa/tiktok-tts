@@ -194,6 +194,73 @@ git push origin main --tags
 
 `electron-updater` chequea `https://github.com/iKhunsa/tiktok-tts/releases/latest/download/latest.yml` al arrancar. Si hay versión nueva → descarga en background → diálogo "Instalar ahora / Después" → `autoUpdater.quitAndInstall()`. Solo activo en modo packaged (`app.isPackaged`).
 
+## i18n de la UI — obligatorio para todo texto nuevo visible al usuario
+
+La app tiene un sistema de traducción funcionando en 10 idiomas
+(`es, en, it, pt, fr, de, zh, ja, ko, ru`). **Cualquier código nuevo (o
+modificado) que agregue texto visible al usuario final tiene que pasar por
+este sistema — nunca hardcodear un string en español (ni en ningún idioma)
+directo en HTML/JS/backend.**
+
+- Frontend (`public/*.html`, 8 de 9 archivos lo reimplementan
+  copy-paste — todos menos `overlay-chat.html`): función `t(key, vars)` +
+  objeto `_locale` cargado desde `fetch('/locales/${lang}.json')` (fallback a
+  `es.json`). Interpolación de variables con `{var}` dentro del string.
+  - Markup estático → atributo `data-i18n="seccion.clave"` (aplica a
+    `textContent`), `data-i18n-html` (a `innerHTML`), `data-i18n-placeholder`
+    (a `placeholder`). `advanced.html` además soporta `data-i18n-title`.
+  - Texto armado en JS → `t('seccion.clave', { var: valor })`, nunca template
+    literal con la frase en español embebida.
+  - Idioma elegido persiste en `localStorage['tikliveTTS_lang']` — no hay
+    equivalente server-side, es puramente client-side.
+- Diccionario: `public/locales/{es,en,it,pt,fr,de,zh,ja,ko,ru}.json`.
+  **`es.json` es la fuente de verdad** — agregar la clave ahí primero, después
+  propagar la traducción a los otros 9 (no dejar ningún idioma sin la clave
+  nueva; la paridad de claves entre los 10 archivos es lo que se valida).
+  Nombrar las claves seccion.claveDescriptiva, reusando una sección existente
+  cuando el texto encaja ahí (`toast.*`, `conn.*`, `overlayStr.*`, etc.) en vez
+  de crear secciones nuevas sin necesidad.
+- Backend: si una ruta HTTP devuelve un mensaje de error que el frontend
+  muestra al usuario (`res.status(N).json({ error: '...' })` seguido en el
+  cliente por un `showToast(data.error...)` o similar), sumarle también
+  `errorKey: 'errors.claveDescriptiva'` — nunca reemplazar `error` (mantiene
+  compat con builds viejos), solo agregar la clave. El frontend prefiere
+  `errorKey` traducido vía el helper `tErr(data, fallbackKey)` (definido
+  junto a `t()` en `index.html` y `advanced.html`) y cae al texto crudo si no
+  hay `errorKey` o no resuelve.
+- Excepciones legítimas — no traducir: nombres de marca/plataforma
+  (`TIKTOK`, `TWITCH`, `YOUTUBE`, `BITS`, `RAID`, `SUPERCHAT`), `<title>` de
+  los overlays (solo los ve el streamer armando OBS, nunca el espectador),
+  contenido dinámico que viene del usuario (nombre de usuario, texto del
+  chat).
+- `core/announce-texts.js` (avisos TTS de admin/promo) y `idioma/` (filtro de
+  idioma/script de voz) son sistemas **aparte**, ya cubren sus propios
+  idiomas — no tocar ni confundir con el i18n de UI de arriba.
+- Antes de dar por terminada una función con texto nuevo: correr un
+  script rápido que cuente claves hoja de los 10 JSON y confirme que
+  coinciden en cantidad — un idioma con menos claves que el resto es señal
+  de que faltó propagar algo.
+
+## Íconos — nunca emojis en UI nueva
+
+Los emojis que ya están en el código (`🎁`, `💾`, `🔴`, etc.) se quedan tal
+cual — no hay que salir a limpiarlos. Pero **de acá en adelante, código
+nuevo o modificado nunca usa emoji como ícono de UI** (botones, labels,
+badges, títulos de card). En su lugar:
+
+1. Buscar el ícono que mejor encaje en `asset/icons/` (catálogo Material
+   Icons completo, ~1300 SVGs — es solo fuente, la app no lo sirve).
+2. Copiarlo a `public/icons/` (carpeta que sí sirve Express y que
+   referencia el HTML como `icons/nombre.svg`, con `class="icon-inline"`).
+3. Usarlo con `<img class="icon-inline" src="icons/nombre.svg" alt="">`,
+   mismo patrón que el resto de la app.
+
+Los SVG de `asset/icons/` vienen en un solo color (negro/currentColor). Si
+el ícono necesita otro color para calzar con el diseño (ej. un ícono de
+estado en rojo/verde), está permitido copiarlo con otro nombre y editar el
+`fill`/`stroke` directo en el XML del SVG — son archivos de texto planos,
+no binarios, se editan igual que cualquier código.
+
 ## Funcionalidades actuales
 
 - TTS en 13 idiomas via Google Translate (es, es-MX, es-AR, en, en-GB, pt, pt-PT, fr, de, it, ja, zh-CN, ru, ko)

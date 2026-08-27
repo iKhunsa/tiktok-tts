@@ -12,7 +12,7 @@ function generate(deps) {
   return (req, res) => {
     const { bus, logger, rateLimiterState } = deps;
     const { text, voice = 'es' } = req.body || {};
-    if (!text) return res.status(400).json({ error: 'Texto requerido' });
+    if (!text) return res.status(400).json({ error: 'Texto requerido', errorKey: 'errors.textRequired' });
 
     const config = getConfigSnapshot(bus);
 
@@ -21,7 +21,7 @@ function generate(deps) {
         'warn', 'sonido', 'sonido/tts/routes/generate.js#generate', 'sonido.tts.rate_limitado',
         `TTS rate limitado para voz ${voice}`, { voice }
       );
-      return res.status(429).json({ error: 'Rate limit activo', retryAfter: config.TTS_RATE_WINDOW_MS });
+      return res.status(429).json({ error: 'Rate limit activo', errorKey: 'errors.ttsRateLimited', retryAfter: config.TTS_RATE_WINDOW_MS });
     }
 
     const limitedText = sanitizeForTTS(text.substring(0, config.TTS_MAX_CHARS));
@@ -50,7 +50,7 @@ function generate(deps) {
               'error', 'sonido', 'sonido/tts/routes/generate.js#generate', 'sonido.tts.error_google_http',
               `Google TTS respondio HTTP ${audioRes.statusCode}`, { status: audioRes.statusCode, contentType, errorBody }
             );
-            res.status(500).json({ error: `Google TTS error: HTTP ${audioRes.statusCode}` });
+            res.status(500).json({ error: `Google TTS error: HTTP ${audioRes.statusCode}`, errorKey: 'errors.ttsServiceError' });
           });
           return;
         }
@@ -60,7 +60,7 @@ function generate(deps) {
             'error', 'sonido', 'sonido/tts/routes/generate.js#generate', 'sonido.tts.error_google_http',
             'Content-Type invalido en respuesta de Google TTS', { contentType, len: contentLen }
           );
-          return res.status(500).json({ error: 'Invalid audio format from TTS service' });
+          return res.status(500).json({ error: 'Invalid audio format from TTS service', errorKey: 'errors.ttsServiceError' });
         }
 
         if (contentLen < 1000) {
@@ -86,7 +86,7 @@ function generate(deps) {
           'error', 'sonido', 'sonido/tts/routes/generate.js#generate', 'sonido.tts.error_google_timeout',
           'Timeout (15s) esperando a Google TTS', { voice, textLen: limitedText.length }
         );
-        if (!res.headersSent) res.status(500).json({ error: 'TTS service timeout' });
+        if (!res.headersSent) res.status(500).json({ error: 'TTS service timeout', errorKey: 'errors.ttsServiceError' });
       });
 
       reqTts.on('error', (err) => {
@@ -94,7 +94,7 @@ function generate(deps) {
           'error', 'sonido', 'sonido/tts/routes/generate.js#generate', 'sonido.tts.error_google_red',
           `Error de red hacia Google TTS: ${err.message}`, { error: err.message, stack: err.stack, voice }
         );
-        if (!res.headersSent) res.status(500).json({ error: err.message });
+        if (!res.headersSent) res.status(500).json({ error: err.message, errorKey: 'errors.ttsServiceError' });
       });
     } catch (err) {
       logger.log(
