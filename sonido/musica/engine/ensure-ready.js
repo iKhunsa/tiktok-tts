@@ -12,6 +12,11 @@ function ensureReady(state) {
 
   state.readyPromise = (async () => {
     try {
+      // Aviso temprano: el front pinta un cartel "instalando motor…" en la
+      // cola de peticiones. downloadBinary luego pisa con 'downloading' si
+      // hace falta bajar el binario; la extraccion del PyInstaller en el
+      // primer --version tambien cae bajo este estado.
+      emitStatus(state, 'preparing');
       if (!fs.existsSync(state.ytdlpPath)) await downloadBinary(state);
       // Primer arranque puede tardar (PyInstaller extrae a temp) -> timeout generoso
       let ver = await runYtdlp(state, ['--version'], { timeoutMs: 60000 });

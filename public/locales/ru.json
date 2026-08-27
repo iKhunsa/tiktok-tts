@@ -60,9 +60,14 @@
     "readNonFollowers": "Читать не подписчиков"
   },
   "tts": {
-    "on": "🔊 TTS Включён",
-    "off": "🔇 TTS Выключен",
-    "offHint": "Выключение TTS останавливает голос и очищает очередь."
+    "on": "TTS Включён",
+    "off": "TTS Выключен"
+  },
+  "chatToggles": {
+    "summaryPrefix": "Читает:",
+    "adjust": "Настроить",
+    "hide": "Скрыть",
+    "none": "ничего не выбрано"
   },
   "btn": {
     "skipCurrent": "Пропустить текущий",
@@ -106,7 +111,6 @@
     "mutedBadge": "Заглушён: TTS его не читает",
     "cleared": "Чат очищен"
   },
-  "emergencyHint": "Аварийный режим сохраняет подарки и подписки, заглушает чат/лайки/входы/репосты.",
   "status": {
     "waiting": "Ожидание подключения...",
     "connected": "Подключён",
@@ -114,6 +118,10 @@
     "connectedAs": "Подключён к @{username}"
   },
   "view": {
+    "chat": {
+      "title": "Чат в прямом эфире",
+      "desc": "Читает вслух чат TikTok, Twitch и YouTube в реальном времени."
+    },
     "overlays": {
       "title": "Оверлеи для OBS",
       "desc": "Настройте каждый оверлей и скопируйте URL → OBS → Добавить источник → Браузер → Включить прозрачный фон."
@@ -249,6 +257,7 @@
     "requestQueueSubtitle": "Песни, заказанные в чате командой !p, в порядке поступления.",
     "clearQueue": "Очистить",
     "queueEmpty": "Очередь пуста.",
+    "requestResolving": "Поиск «{query}»…",
     "myPlaylist": "Мой плейлист (фон)",
     "enable": "Включить",
     "shuffle": "Случайный порядок",
@@ -265,7 +274,9 @@
     "cmdActive": "!p активен",
     "songSingular": "песня",
     "songPlural": "песни",
-    "playlistSavedHint": "сохраняется в папке приложения"
+    "playlistSavedHint": "сохраняется в папке приложения",
+    "playlistUnsaved": "не сохранено",
+    "playlistPlayNow": "Воспроизвести"
   },
   "overlay2": {
     "giftsTitle": "Уведомление о подарке",
@@ -430,6 +441,8 @@
     "configRejected": "Конфигурация отклонена"
   },
   "overlayStr": {
+    "knownBugs": "Известные проблемы",
+    "knownBugsMsg": "В некоторых разделах есть известные ошибки. Скоро будут исправлены.",
     "newFollowers": "Новые подписчики",
     "waitingLikes": "Ожидание лайков...",
     "giftReceived": "Получен подарок",
@@ -607,6 +620,10 @@
     "songError": "❌ Ошибка воспроизведения песни",
     "musicEngineDownloading": "⬇️ Загрузка музыкального движка (~20 МБ, только в первый раз)…",
     "musicEngineError": "❌ Музыкальный движок недоступен — проверьте подключение",
+    "musicRequestReceived": "🎵 Запрос от {user} принят — ищем песню…",
+    "musicRequestFailed": "❌ Не удалось добавить «{query}»",
+    "playlistEmpty": "Добавьте песни в плейлист перед его включением",
+    "playlistQueuedAfterRequest": "▶️ Плейлист продолжится после запрошенной песни",
     "playlistSaved": "✅ Плейлист сохранён",
     "deleteSoundConfirm": "Удалить этот звук?",
     "ttsSkipped": "Сообщение TTS пропущено",
@@ -964,6 +981,7 @@
     "noImageFile": "Изображение не получено",
     "contentRequired": "Требуется содержимое",
     "invalidConfig": "Недопустимая конфигурация",
+    "playlistEmpty": "Ваш плейлист пуст",
     "twitchAuthStartFailed": "Не удалось запустить авторизацию Twitch",
     "obsConnectFailed": "Не удалось подключиться к OBS"
   }

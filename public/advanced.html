@@ -739,7 +739,7 @@
     </a>
     <nav class="nav">
       <a href="/" class="nav-link" data-i18n="adv.navBack">← Chat Live</a>
-      <a href="/advanced.html" class="nav-link active"><img class="icon-inline" src="icons/settings.svg" alt=""> <span data-i18n="adv.navSettings">Configuración</span></a>
+      <a href="/advanced.html" class="nav-link active" aria-current="page"><img class="icon-inline" src="icons/settings.svg" alt=""> <span data-i18n="adv.navSettings">Configuración</span></a>
     </nav>
   </header>
 
@@ -1428,6 +1428,19 @@
     el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
     el.classList.add('panel-highlight');
     setTimeout(() => el.classList.remove('panel-highlight'), 2500);
+  }
+
+  // ─── Modo popup ─────────────────────────────────────────────────────
+  // Abierto en ventana aparte desde index.html (?popup=1) para no descargar
+  // el renderer del chat y cortar el TTS. Los enlaces "volver al chat"
+  // cierran la ventana en vez de navegar (evita un 2do chat / 2do narrador).
+  if (new URLSearchParams(location.search).has('popup')) {
+    document.querySelectorAll('header a[href="/"]').forEach((a) => {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.close();
+      });
+    });
   }
 
   // ─── Init ───────────────────────────────────────────────────────────

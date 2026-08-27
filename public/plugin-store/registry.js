@@ -11,12 +11,12 @@
 // Estado/Posición. Solo aplica a tools no fijas (las fijas no tienen ese bloque).
 const SIDEBAR_TOOLS = [
   { id: 'chat',       icon: 'icons/chat.svg',       labelKey: 'nav.chat',       descKey: 'store.desc.chat',       pinned: true,  media: null },
-  { id: 'overlays',   icon: 'icons/tv.svg',         labelKey: 'nav.overlays',   descKey: 'store.desc.overlays',   pinned: false, media: null, aboutKey: 'store.about.overlays' },
-  { id: 'clips',      icon: 'icons/play_arrow.svg', labelKey: 'nav.clips',      descKey: 'store.desc.clips',      pinned: false, media: null, aboutKey: 'store.about.clips' },
-  { id: 'soundpad',   icon: 'icons/volume_up.svg',  labelKey: 'nav.soundpad',   descKey: 'store.desc.soundpad',   pinned: false, media: null, aboutKey: 'store.about.soundpad' },
-  { id: 'mobile',     icon: 'icons/smartphone.svg', labelKey: 'nav.mobile',     descKey: 'store.desc.mobile',     pinned: false, media: null, aboutKey: 'store.about.mobile' },
-  { id: 'bot',        icon: 'icons/music_note.svg', labelKey: 'nav.bot',        descKey: 'store.desc.bot',        pinned: false, media: null, aboutKey: 'store.about.bot' },
-  { id: 'moderacion', icon: 'icons/people.svg',     labelKey: 'nav.moderation', descKey: 'store.desc.moderacion', pinned: false, media: null, aboutKey: 'store.about.moderacion' },
+  { id: 'overlays',   icon: 'icons/tv.svg',         labelKey: 'nav.overlays',   descKey: 'store.desc.overlays',   pinned: false, media: 'plugin-store/media/overlays.jpg',   aboutKey: 'store.about.overlays' },
+  { id: 'clips',      icon: 'icons/play_arrow.svg', labelKey: 'nav.clips',      descKey: 'store.desc.clips',      pinned: false, media: 'plugin-store/media/clips.jpg',      aboutKey: 'store.about.clips' },
+  { id: 'soundpad',   icon: 'icons/volume_up.svg',  labelKey: 'nav.soundpad',   descKey: 'store.desc.soundpad',   pinned: false, media: 'plugin-store/media/soundpad.jpg',   aboutKey: 'store.about.soundpad' },
+  { id: 'mobile',     icon: 'icons/smartphone.svg', labelKey: 'nav.mobile',     descKey: 'store.desc.mobile',     pinned: false, media: 'plugin-store/media/mobile.jpg',     aboutKey: 'store.about.mobile' },
+  { id: 'bot',        icon: 'icons/music_note.svg', labelKey: 'nav.bot',        descKey: 'store.desc.bot',        pinned: false, media: 'plugin-store/media/bot.jpg',        aboutKey: 'store.about.bot' },
+  { id: 'moderacion', icon: 'icons/people.svg',     labelKey: 'nav.moderation', descKey: 'store.desc.moderacion', pinned: false, media: 'plugin-store/media/moderacion.jpg', aboutKey: 'store.about.moderacion' },
   { id: 'settings',   icon: 'icons/settings.svg',   labelKey: 'nav.settings',   descKey: 'store.desc.settings',   pinned: true,  media: null },
 ];
 // Tools visibles por defecto la primera vez que arranca la app (sin prefs

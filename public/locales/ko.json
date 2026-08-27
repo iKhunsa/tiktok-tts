@@ -60,9 +60,14 @@
     "readNonFollowers": "비팔로워도 읽기"
   },
   "tts": {
-    "on": "🔊 TTS 켜짐",
-    "off": "🔇 TTS 꺼짐",
-    "offHint": "TTS를 끄면 음성이 중지되고 대기열이 초기화됩니다."
+    "on": "TTS 켜짐",
+    "off": "TTS 꺼짐"
+  },
+  "chatToggles": {
+    "summaryPrefix": "읽기:",
+    "adjust": "조정",
+    "hide": "숨기기",
+    "none": "활성 항목 없음"
   },
   "btn": {
     "skipCurrent": "현재 건너뛰기",
@@ -106,7 +111,6 @@
     "mutedBadge": "음소거: TTS가 읽지 않음",
     "cleared": "채팅 지워짐"
   },
-  "emergencyHint": "비상 모드는 선물과 팔로우를 유지하고 채팅/좋아요/입장/공유를 음소거합니다.",
   "status": {
     "waiting": "연결 대기 중...",
     "connected": "연결됨",
@@ -114,6 +118,10 @@
     "connectedAs": "@{username}에 연결됨"
   },
   "view": {
+    "chat": {
+      "title": "라이브 채팅",
+      "desc": "TikTok, Twitch, YouTube 채팅을 실시간으로 읽어 줍니다."
+    },
     "overlays": {
       "title": "OBS 오버레이",
       "desc": "각 오버레이를 커스터마이즈하고 URL 복사 → OBS → 소스 추가 → 브라우저 → 투명 배경 활성화."
@@ -249,6 +257,7 @@
     "requestQueueSubtitle": "채팅에서 !p로 신청한 곡, 도착한 순서대로.",
     "clearQueue": "지우기",
     "queueEmpty": "대기열이 비어 있습니다.",
+    "requestResolving": "«{query}» 검색 중…",
     "myPlaylist": "내 플레이리스트 (배경)",
     "enable": "활성화",
     "shuffle": "셔플",
@@ -265,7 +274,9 @@
     "cmdActive": "!p 활성",
     "songSingular": "곡",
     "songPlural": "곡",
-    "playlistSavedHint": "앱 폴더에 저장됩니다"
+    "playlistSavedHint": "앱 폴더에 저장됩니다",
+    "playlistUnsaved": "저장 안 됨",
+    "playlistPlayNow": "지금 재생"
   },
   "overlay2": {
     "giftsTitle": "선물 알림",
@@ -430,6 +441,8 @@
     "configRejected": "설정이 거부되었습니다"
   },
   "overlayStr": {
+    "knownBugs": "알려진 문제",
+    "knownBugsMsg": "일부 섹션에 알려진 버그가 있습니다. 곧 수정될 예정입니다.",
     "newFollowers": "새 팔로워",
     "waitingLikes": "좋아요를 기다리는 중...",
     "giftReceived": "선물 받음",
@@ -607,6 +620,10 @@
     "songError": "❌ 노래 재생 오류",
     "musicEngineDownloading": "⬇️ 음악 엔진 다운로드 중 (~20MB, 최초 1회만)…",
     "musicEngineError": "❌ 음악 엔진을 사용할 수 없습니다 — 연결을 확인하세요",
+    "musicRequestReceived": "🎵 {user} 님의 신청곡 접수 — 곡 찾는 중…",
+    "musicRequestFailed": "❌ «{query}» 추가 실패",
+    "playlistEmpty": "활성화하기 전에 재생목록에 곡을 추가하세요",
+    "playlistQueuedAfterRequest": "▶️ 신청곡이 끝나면 재생목록이 이어집니다",
     "playlistSaved": "✅ 재생목록 저장됨",
     "deleteSoundConfirm": "이 소리를 삭제하시겠습니까?",
     "ttsSkipped": "TTS 메시지 건너뜀",
@@ -964,6 +981,7 @@
     "noImageFile": "이미지를 받지 못했습니다",
     "contentRequired": "콘텐츠가 필요합니다",
     "invalidConfig": "잘못된 설정입니다",
+    "playlistEmpty": "재생목록이 비어 있습니다",
     "twitchAuthStartFailed": "Twitch 인증을 시작할 수 없습니다",
     "obsConnectFailed": "OBS에 연결할 수 없습니다"
   }

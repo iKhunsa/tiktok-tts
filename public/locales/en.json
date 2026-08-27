@@ -60,9 +60,14 @@
     "readNonFollowers": "Read non-followers"
   },
   "tts": {
-    "on": "🔊 TTS On",
-    "off": "🔇 TTS Off",
-    "offHint": "Turning off TTS stops the voice and clears the queue."
+    "on": "TTS On",
+    "off": "TTS Off"
+  },
+  "chatToggles": {
+    "summaryPrefix": "Reading:",
+    "adjust": "Adjust",
+    "hide": "Hide",
+    "none": "nothing active"
   },
   "btn": {
     "skipCurrent": "Skip current",
@@ -106,7 +111,6 @@
     "mutedBadge": "Muted: TTS skips them",
     "cleared": "Chat cleared"
   },
-  "emergencyHint": "Emergency keeps gifts and follows active, silences chat/likes/joins/shares.",
   "status": {
     "waiting": "Waiting for connection...",
     "connected": "Connected",
@@ -114,6 +118,10 @@
     "connectedAs": "Connected as @{username}"
   },
   "view": {
+    "chat": {
+      "title": "Live chat",
+      "desc": "Reads the TikTok, Twitch and YouTube chat aloud in real time."
+    },
     "overlays": {
       "title": "OBS Overlays",
       "desc": "Customize each overlay and copy the URL → OBS → Add Source → Browser → Enable transparent background."
@@ -249,6 +257,7 @@
     "requestQueueSubtitle": "Songs requested by chat with !p, in arrival order.",
     "clearQueue": "Clear",
     "queueEmpty": "Queue is empty.",
+    "requestResolving": "Searching «{query}»…",
     "myPlaylist": "My Playlist (background)",
     "enable": "Enable",
     "shuffle": "Shuffle",
@@ -265,7 +274,9 @@
     "cmdActive": "!p active",
     "songSingular": "song",
     "songPlural": "songs",
-    "playlistSavedHint": "saved to your app folder"
+    "playlistSavedHint": "saved to your app folder",
+    "playlistUnsaved": "unsaved",
+    "playlistPlayNow": "Play now"
   },
   "overlay2": {
     "giftsTitle": "Gift Alert",
@@ -430,6 +441,8 @@
     "configRejected": "Config rejected"
   },
   "overlayStr": {
+    "knownBugs": "Known issues",
+    "knownBugsMsg": "Some sections have known bugs. They'll be fixed soon.",
     "newFollowers": "New followers",
     "waitingLikes": "Waiting for likes...",
     "giftReceived": "Gift received",
@@ -607,6 +620,10 @@
     "songError": "❌ Error playing song",
     "musicEngineDownloading": "⬇️ Downloading music engine (~20 MB, first time only)…",
     "musicEngineError": "❌ Music engine unavailable — check your connection",
+    "musicRequestReceived": "🎵 Request from {user} received — finding the song…",
+    "musicRequestFailed": "❌ Couldn't add «{query}»",
+    "playlistEmpty": "Add songs to your playlist before enabling it",
+    "playlistQueuedAfterRequest": "▶️ The playlist resumes when the requested song ends",
     "playlistSaved": "✅ Playlist saved",
     "deleteSoundConfirm": "Delete this sound?",
     "ttsSkipped": "TTS message skipped",
@@ -638,6 +655,7 @@
     "noImageFile": "No image received",
     "contentRequired": "Content required",
     "invalidConfig": "Invalid configuration",
+    "playlistEmpty": "Your playlist is empty",
     "twitchAuthStartFailed": "Could not start Twitch authorization",
     "obsConnectFailed": "Could not connect to OBS"
   },

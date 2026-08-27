@@ -60,9 +60,14 @@
     "readNonFollowers": "朗读非关注者"
   },
   "tts": {
-    "on": "🔊 TTS 开启",
-    "off": "🔇 TTS 关闭",
-    "offHint": "关闭 TTS 会停止语音并清空队列。"
+    "on": "TTS 开启",
+    "off": "TTS 关闭"
+  },
+  "chatToggles": {
+    "summaryPrefix": "朗读：",
+    "adjust": "调整",
+    "hide": "隐藏",
+    "none": "无启用项"
   },
   "btn": {
     "skipCurrent": "跳过当前",
@@ -106,7 +111,6 @@
     "mutedBadge": "已静音：TTS 不朗读",
     "cleared": "聊天已清除"
   },
-  "emergencyHint": "紧急模式保持礼物和关注活跃，静音聊天/点赞/加入/分享。",
   "status": {
     "waiting": "等待连接...",
     "connected": "已连接",
@@ -114,6 +118,10 @@
     "connectedAs": "已连接到 @{username}"
   },
   "view": {
+    "chat": {
+      "title": "直播聊天",
+      "desc": "实时朗读 TikTok、Twitch 和 YouTube 的聊天消息。"
+    },
     "overlays": {
       "title": "OBS 叠加层",
       "desc": "自定义每个叠加层并复制 URL → OBS → 添加来源 → 浏览器 → 启用透明背景。"
@@ -249,6 +257,7 @@
     "requestQueueSubtitle": "聊天用 !p 点的歌，按到达顺序排列。",
     "clearQueue": "清空",
     "queueEmpty": "队列为空。",
+    "requestResolving": "正在搜索「{query}」…",
     "myPlaylist": "我的播放列表（背景）",
     "enable": "启用",
     "shuffle": "随机",
@@ -265,7 +274,9 @@
     "cmdActive": "!p 已启用",
     "songSingular": "首歌曲",
     "songPlural": "首歌曲",
-    "playlistSavedHint": "保存在应用文件夹中"
+    "playlistSavedHint": "保存在应用文件夹中",
+    "playlistUnsaved": "未保存",
+    "playlistPlayNow": "立即播放"
   },
   "overlay2": {
     "giftsTitle": "礼物提醒",
@@ -430,6 +441,8 @@
     "configRejected": "配置被拒绝"
   },
   "overlayStr": {
+    "knownBugs": "已知问题",
+    "knownBugsMsg": "部分板块存在已知问题，即将修复。",
     "newFollowers": "新粉丝",
     "waitingLikes": "等待点赞...",
     "giftReceived": "收到礼物",
@@ -607,6 +620,10 @@
     "songError": "❌ 播放歌曲时出错",
     "musicEngineDownloading": "⬇️ 正在下载音乐引擎（约20MB，仅首次）…",
     "musicEngineError": "❌ 音乐引擎不可用——请检查网络连接",
+    "musicRequestReceived": "🎵 已收到 {user} 的点歌 — 正在查找…",
+    "musicRequestFailed": "❌ 无法添加「{query}」",
+    "playlistEmpty": "启用播放列表前请先添加歌曲",
+    "playlistQueuedAfterRequest": "▶️ 点歌播放结束后将继续播放列表",
     "playlistSaved": "✅ 播放列表已保存",
     "deleteSoundConfirm": "删除此音效?",
     "ttsSkipped": "TTS消息已跳过",
@@ -964,6 +981,7 @@
     "noImageFile": "未收到任何图片",
     "contentRequired": "需要内容",
     "invalidConfig": "配置无效",
+    "playlistEmpty": "你的播放列表是空的",
     "twitchAuthStartFailed": "无法启动 Twitch 授权",
     "obsConnectFailed": "无法连接到 OBS"
   }

@@ -60,9 +60,14 @@
     "readNonFollowers": "非フォロワーも読む"
   },
   "tts": {
-    "on": "🔊 TTS オン",
-    "off": "🔇 TTS オフ",
-    "offHint": "TTS をオフにすると音声が停止しキューがクリアされます。"
+    "on": "TTS オン",
+    "off": "TTS オフ"
+  },
+  "chatToggles": {
+    "summaryPrefix": "読み上げ:",
+    "adjust": "調整",
+    "hide": "非表示",
+    "none": "有効な項目なし"
   },
   "btn": {
     "skipCurrent": "現在をスキップ",
@@ -106,7 +111,6 @@
     "mutedBadge": "ミュート中：TTSは読みません",
     "cleared": "チャットをクリアしました"
   },
-  "emergencyHint": "緊急モードはギフトとフォローを維持し、チャット/いいね/参加/シェアを無音にします。",
   "status": {
     "waiting": "接続を待っています...",
     "connected": "接続済み",
@@ -114,6 +118,10 @@
     "connectedAs": "@{username} に接続済み"
   },
   "view": {
+    "chat": {
+      "title": "ライブチャット",
+      "desc": "TikTok・Twitch・YouTube のチャットをリアルタイムで読み上げます。"
+    },
     "overlays": {
       "title": "OBS オーバーレイ",
       "desc": "各オーバーレイをカスタマイズしてURLをコピー → OBS → ソース追加 → ブラウザ → 透明背景を有効化。"
@@ -249,6 +257,7 @@
     "requestQueueSubtitle": "チャットが !p でリクエストした曲を、届いた順に表示します。",
     "clearQueue": "クリア",
     "queueEmpty": "キューは空です。",
+    "requestResolving": "「{query}」を検索中…",
     "myPlaylist": "マイプレイリスト（バックグラウンド）",
     "enable": "有効化",
     "shuffle": "シャッフル",
@@ -265,7 +274,9 @@
     "cmdActive": "!p 有効",
     "songSingular": "曲",
     "songPlural": "曲",
-    "playlistSavedHint": "アプリのフォルダに保存されます"
+    "playlistSavedHint": "アプリのフォルダに保存されます",
+    "playlistUnsaved": "未保存",
+    "playlistPlayNow": "今すぐ再生"
   },
   "overlay2": {
     "giftsTitle": "ギフトアラート",
@@ -430,6 +441,8 @@
     "configRejected": "設定が拒否されました"
   },
   "overlayStr": {
+    "knownBugs": "既知の不具合",
+    "knownBugsMsg": "一部のセクションに既知の不具合があります。近日中に修正されます。",
     "newFollowers": "新しいフォロワー",
     "waitingLikes": "いいねを待っています...",
     "giftReceived": "ギフト受信",
@@ -607,6 +620,10 @@
     "songError": "❌ 曲の再生中にエラーが発生しました",
     "musicEngineDownloading": "⬇️ 音楽エンジンをダウンロード中（約20MB、初回のみ）…",
     "musicEngineError": "❌ 音楽エンジンを利用できません — 接続を確認してください",
+    "musicRequestReceived": "🎵 {user} のリクエストを受信 — 曲を検索中…",
+    "musicRequestFailed": "❌ 「{query}」を追加できませんでした",
+    "playlistEmpty": "有効にする前にプレイリストに曲を追加してください",
+    "playlistQueuedAfterRequest": "▶️ リクエスト曲の再生後にプレイリストが再開します",
     "playlistSaved": "✅ プレイリストを保存しました",
     "deleteSoundConfirm": "この音声を削除しますか？",
     "ttsSkipped": "TTSメッセージをスキップしました",
@@ -964,6 +981,7 @@
     "noImageFile": "画像を受信できませんでした",
     "contentRequired": "内容を入力してください",
     "invalidConfig": "設定が無効です",
+    "playlistEmpty": "プレイリストが空です",
     "twitchAuthStartFailed": "Twitch認証を開始できませんでした",
     "obsConnectFailed": "OBSに接続できませんでした"
   }

@@ -60,9 +60,14 @@
     "readNonFollowers": "Leggi i non follower"
   },
   "tts": {
-    "on": "🔊 TTS Attivo",
-    "off": "🔇 TTS Disattivo",
-    "offHint": "Disattivare il TTS ferma la voce e svuota la coda."
+    "on": "TTS Attivo",
+    "off": "TTS Disattivo"
+  },
+  "chatToggles": {
+    "summaryPrefix": "Legge:",
+    "adjust": "Regola",
+    "hide": "Nascondi",
+    "none": "niente attivo"
   },
   "btn": {
     "skipCurrent": "Salta attuale",
@@ -106,7 +111,6 @@
     "mutedBadge": "Silenziato: il TTS lo salta",
     "cleared": "Chat cancellata"
   },
-  "emergencyHint": "L'emergenza mantiene attivi regali e follow, silenzia chat/like/entrate/condivisioni.",
   "status": {
     "waiting": "In attesa di connessione...",
     "connected": "Connesso",
@@ -114,6 +118,10 @@
     "connectedAs": "Connesso a @{username}"
   },
   "view": {
+    "chat": {
+      "title": "Chat dal vivo",
+      "desc": "Legge ad alta voce la chat di TikTok, Twitch e YouTube in tempo reale."
+    },
     "overlays": {
       "title": "Overlay per OBS",
       "desc": "Personalizza ogni overlay e copia l'URL → OBS → Aggiungi sorgente → Browser → Abilita sfondo trasparente."
@@ -249,6 +257,7 @@
     "requestQueueSubtitle": "Canzoni richieste dalla chat con !p, in ordine di arrivo.",
     "clearQueue": "Svuota",
     "queueEmpty": "La coda è vuota.",
+    "requestResolving": "Ricerca di «{query}»…",
     "myPlaylist": "La mia Playlist (sfondo)",
     "enable": "Attiva",
     "shuffle": "Casuale",
@@ -265,7 +274,9 @@
     "cmdActive": "!p attivo",
     "songSingular": "canzone",
     "songPlural": "canzoni",
-    "playlistSavedHint": "salvata nella cartella dell'app"
+    "playlistSavedHint": "salvata nella cartella dell'app",
+    "playlistUnsaved": "non salvata",
+    "playlistPlayNow": "Riproduci ora"
   },
   "overlay2": {
     "giftsTitle": "Avviso Regalo",
@@ -430,6 +441,8 @@
     "configRejected": "Config rifiutata"
   },
   "overlayStr": {
+    "knownBugs": "Problemi noti",
+    "knownBugsMsg": "Alcune sezioni hanno bug noti. Verranno risolti a breve.",
     "newFollowers": "Nuovi follower",
     "waitingLikes": "In attesa di like...",
     "giftReceived": "Regalo ricevuto",
@@ -607,6 +620,10 @@
     "songError": "❌ Errore nella riproduzione della canzone",
     "musicEngineDownloading": "⬇️ Download del motore musicale (~20 MB, solo la prima volta)…",
     "musicEngineError": "❌ Motore musicale non disponibile — controlla la connessione",
+    "musicRequestReceived": "🎵 Richiesta di {user} ricevuta — ricerca del brano…",
+    "musicRequestFailed": "❌ Impossibile aggiungere «{query}»",
+    "playlistEmpty": "Aggiungi brani alla tua playlist prima di attivarla",
+    "playlistQueuedAfterRequest": "▶️ La playlist riprende al termine del brano richiesto",
     "playlistSaved": "✅ Playlist salvata",
     "deleteSoundConfirm": "Eliminare questo suono?",
     "ttsSkipped": "Messaggio TTS saltato",
@@ -964,6 +981,7 @@
     "noImageFile": "Nessuna immagine ricevuta",
     "contentRequired": "Contenuto richiesto",
     "invalidConfig": "Configurazione non valida",
+    "playlistEmpty": "La tua playlist è vuota",
     "twitchAuthStartFailed": "Impossibile avviare l'autorizzazione di Twitch",
     "obsConnectFailed": "Impossibile connettersi a OBS"
   }
