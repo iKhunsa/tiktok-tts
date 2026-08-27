@@ -117,9 +117,10 @@
 
   <script>
     let _locale = {};
+    let _lang = 'es';
     async function loadLocale() {
-      const lang = localStorage.getItem('tikliveTTS_lang') || 'es';
-      try { _locale = await (await fetch(`/locales/${lang}.json`)).json(); }
+      _lang = localStorage.getItem('tikliveTTS_lang') || 'es';
+      try { _locale = await (await fetch(`/locales/${_lang}.json`)).json(); }
       catch(_) { try { _locale = await (await fetch('/locales/es.json')).json(); } catch(__) {} }
       applyI18n();
       connectWS();
@@ -150,14 +151,14 @@
       if (goal > 0) {
         document.getElementById('divider').style.display = '';
         document.getElementById('goalSection').style.display = '';
-        document.getElementById('goalTarget').textContent = (baseFollowerCount + goal).toLocaleString('es');
+        document.getElementById('goalTarget').textContent = (baseFollowerCount + goal).toLocaleString(_lang);
       }
     }
 
     function render() {
       const el = document.getElementById('count');
       const total = baseFollowerCount + sessionFollows;
-      el.textContent = total.toLocaleString('es');
+      el.textContent = total.toLocaleString(_lang);
       el.classList.remove('bump');
       void el.offsetWidth;
       el.classList.add('bump');
@@ -165,7 +166,7 @@
       if (goal > 0) {
         const pct = Math.min((sessionFollows / goal) * 100, 100);
         document.getElementById('goalBar').style.width = pct + '%';
-        document.getElementById('goalCurrent').textContent = total.toLocaleString('es');
+        document.getElementById('goalCurrent').textContent = total.toLocaleString(_lang);
       }
     }
 

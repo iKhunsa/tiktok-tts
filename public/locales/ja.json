@@ -94,7 +94,8 @@
     "useF8": "F8 を使用",
     "usePlayPause": "再生/一時停止キーを使用",
     "clearShortcut": "✕ クリア",
-    "blockedWordsShortcut": "ブロック単語"
+    "blockedWordsShortcut": "ブロック単語",
+    "delete": "削除"
   },
   "chat": {
     "title": "ライブチャット",
@@ -102,13 +103,15 @@
     "speaking": "読み上げ中...",
     "queue": "キュー：{n} 件",
     "followerBadge": "フォロワー",
-    "mutedBadge": "ミュート中：TTSは読みません"
+    "mutedBadge": "ミュート中：TTSは読みません",
+    "cleared": "チャットをクリアしました"
   },
   "emergencyHint": "緊急モードはギフトとフォローを維持し、チャット/いいね/参加/シェアを無音にします。",
   "status": {
     "waiting": "接続を待っています...",
     "connected": "接続済み",
-    "disconnected": "切断済み"
+    "disconnected": "切断済み",
+    "connectedAs": "@{username} に接続済み"
   },
   "view": {
     "overlays": {
@@ -170,7 +173,9 @@
     "accessUrl": "アクセスURL",
     "activeShortcut": "有効なショートカット",
     "users": "ユーザー",
-    "connectToGet": "接続して取得"
+    "connectToGet": "接続して取得",
+    "color": "カラー",
+    "testVoicePlaceholder": "テストする文章を入力..."
   },
   "overlay": {
     "chat": {
@@ -217,7 +222,8 @@
     "empty": "最初のサウンドをアップロードしてください",
     "noShortcut": "ショートカットなし",
     "pressKey": "キーを押してください…",
-    "clickToAssign": "クリックでショートカット割り当て (Ctrl/Alt/Shift + キー)"
+    "clickToAssign": "クリックでショートカット割り当て (Ctrl/Alt/Shift + キー)",
+    "test": "テスト"
   },
   "update": {
     "checking": "アップデートを確認中...",
@@ -225,7 +231,8 @@
     "later": "後で",
     "installing": "インストール中...",
     "available": "新しいバージョンが利用可能: v{version}",
-    "downloading": "v{version} をダウンロード中..."
+    "downloading": "v{version} をダウンロード中...",
+    "readyToInstall": "v{version} のインストール準備ができました。"
   },
   "bot": {
     "title": "ミュージックBot",
@@ -233,28 +240,32 @@
     "nowPlaying": "再生中",
     "nowPlayingSubtitle": "現在再生中の曲。一時停止・スキップ操作ができます。",
     "enableCmd": "!p を有効化",
-    "skipSong": "⏭ スキップ",
-    "pauseSong": "⏸ 一時停止",
-    "resumeSong": "▶ 再開",
+    "skipSong": "スキップ",
+    "pauseSong": "一時停止",
+    "resumeSong": "再開",
     "noMusic": "音楽が再生されていません。",
     "musicVol": "音楽音量",
     "requestQueue": "リクエストキュー",
     "requestQueueSubtitle": "チャットが !p でリクエストした曲を、届いた順に表示します。",
-    "clearQueue": "🗑 クリア",
+    "clearQueue": "クリア",
     "queueEmpty": "キューは空です。",
     "myPlaylist": "マイプレイリスト（バックグラウンド）",
     "enable": "有効化",
     "shuffle": "シャッフル",
     "playlistHint": "1行1曲：曲名またはYouTube URL。チャットのリクエストがないときに再生。",
-    "playlistActive": "▶ プレイリストから再生中：",
-    "savePlaylist": "💾 プレイリスト保存",
+    "playlistActive": "プレイリストから再生中：",
+    "savePlaylist": "プレイリスト保存",
     "botSettings": "Bot設定",
     "botSettingsSubtitle": "音楽Botの制限: リクエスト間のクールダウンとキューの最大数。",
     "cooldown": "ユーザーごとのクールダウン（秒）",
     "maxQueue": "キュー最大曲数",
     "bannedUsers": "!pからBANされたユーザー",
     "banPlaceholder": "@ユーザー または ID",
-    "ban": "BAN"
+    "ban": "BAN",
+    "cmdActive": "!p 有効",
+    "songSingular": "曲",
+    "songPlural": "曲",
+    "playlistSavedHint": "アプリのフォルダに保存されます"
   },
   "overlay2": {
     "giftsTitle": "ギフトアラート",
@@ -279,7 +290,9 @@
     "deleteDay": "この日を削除",
     "confirmClearAll": "全てのクリップマーカーを削除しますか？この操作は元に戻せません。",
     "confirmClearDay": "この日の全マーカーを削除しますか？",
-    "noMarkers": "マーカーはまだありません。ストリームを開始してCtrl+Shift+Mで記録してください。"
+    "noMarkers": "マーカーはまだありません。ストリームを開始してCtrl+Shift+Mで記録してください。",
+    "mark": "マーク",
+    "marks": "マーク"
   },
   "conn": {
     "connecting": "接続中...",
@@ -292,7 +305,13 @@
     "noSavedChannels": "保存されたチャンネルがありません。TikTok/Twitch/YouTubeを追加して全て接続を使ってください。",
     "connectAllMsg": "全て接続: {parts}",
     "onlyManualChannels": "手動チャンネルのみ保存されています",
-    "connectionLost": "接続が切断されました。アプリをリロードしてください。"
+    "connectionLost": "接続が切断されました。アプリをリロードしてください。",
+    "twitchWaitingCode": "ブラウザでの認証を待っています（コード {code}）...",
+    "shortcutNotRegisteredPrefix": "ショートカット未登録:",
+    "shortcutTryAnother": "別のショートカットを試してください。",
+    "stateManual": "手動",
+    "stateError": "エラー",
+    "stateSaved": "保存済み"
   },
   "mobile2": {
     "loading": "読み込み中...",
@@ -427,7 +446,22 @@
     "followers": "フォロワー",
     "noFollowers": "まだフォロワーがいません",
     "sharedList": "シェア",
-    "noShared": "まだシェアがありません"
+    "noShared": "まだシェアがありません",
+    "tierPrime": "Prime",
+    "tierGeneric": "サブ",
+    "tierLabel": "ティア {tier}",
+    "subResub": "リサブ",
+    "subMonths": "{months}ヶ月継続",
+    "subGifted": "ギフトサブ",
+    "subGiftedTo": "@{recipient} へ",
+    "subsGifted": "複数ギフトサブ",
+    "subsGiftedCount": "チャットに{count}件のサブ",
+    "subUpgrade": "サブアップグレード",
+    "subNew": "新規サブスク",
+    "raidJoined": "コミュニティと一緒に参加",
+    "anonymous": "匿名",
+    "giftFrom": "@{user} から",
+    "topLikers": "トップいいね"
   },
   "donations": {
     "title": "コンテンツを支援する",
@@ -586,7 +620,10 @@
     "youtubeAutoSaved": "YouTubeを保存しました；ライブ時に接続します",
     "youtubeTmpSaved": "YouTubeを手動チャンネルとして保存しました",
     "readNonFollowersOn": "TTSは全員を読みます",
-    "readNonFollowersOff": "TTSはフォロワーのみ読みます"
+    "readNonFollowersOff": "TTSはフォロワーのみ読みます",
+    "twitchAuthorizeInBrowser": "ブラウザで認証してください — コード {code}",
+    "twitchAuthorizeWindow": "開いたウィンドウで認証してから、こちらに戻ってください",
+    "twitchAuthError": "Twitch認証でエラーが発生しました"
   },
   "dictLang": {
     "title": "許可する言語",
@@ -913,5 +950,21 @@
     "mediaPlaceholder": "プレビューは近日公開",
     "comingSoon": "近日追加予定",
     "comingSoonDesc": "新しいツールを開発中です。"
+  },
+  "errors": {
+    "textRequired": "テキストを入力してください",
+    "ttsRateLimited": "レート制限が有効です",
+    "ttsServiceError": "音声サービス（Google TTS）で問題が発生しました",
+    "unsupportedAudioType": "MP3、WAV、OGG、WEBM、M4Aファイルのみ使用できます",
+    "audioUploadFailed": "音声のアップロードに失敗しました",
+    "noAudioFile": "音声ファイルを受信できませんでした",
+    "maxSoundsReached": "サウンドは最大24個までです",
+    "imageTooLarge": "画像は8MBを超えることはできません",
+    "imageUploadFailed": "画像のアップロードに失敗しました",
+    "noImageFile": "画像を受信できませんでした",
+    "contentRequired": "内容を入力してください",
+    "invalidConfig": "設定が無効です",
+    "twitchAuthStartFailed": "Twitch認証を開始できませんでした",
+    "obsConnectFailed": "OBSに接続できませんでした"
   }
 }

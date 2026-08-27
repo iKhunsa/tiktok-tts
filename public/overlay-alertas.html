@@ -145,11 +145,13 @@
       catch(_) { try { _locale = await (await fetch('/locales/es.json')).json(); } catch(__) {} }
       connectWS();
     }
-    function t(key) {
+    function t(key, vars) {
       const parts = key.split('.');
       let val = _locale;
       for (const p of parts) { val = val?.[p]; if (val === undefined) break; }
-      return typeof val === 'string' ? val : key;
+      if (typeof val !== 'string') return key;
+      if (!vars) return val;
+      return val.replace(/\{(\w+)\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : `{${k}}`));
     }
     const params   = new URLSearchParams(location.search);
     const _c = params.get('color'); if (_c) document.documentElement.style.setProperty('--accent', '#' + _c);
@@ -265,19 +267,22 @@
     const userSetColor = !!_c; // si el usuario fijó ?color=, respetarlo siempre
 
     function describeEvent(d) {
+      // action: 'BITS'/'RAID'/'SUPERCHAT' y PLATFORM_META (arriba) son nombres
+      // de función/marca de la plataforma (como "Live") — se dejan sin traducir
+      // a propósito, no es un olvido de i18n.
       switch (d.type) {
         case 'sub': {
-          const tierTxt = d.isPrime ? 'Prime' : (d.tierLabel || (d.tier ? `Tier ${d.tier}` : 'Sub'));
-          if (d.subType === 'resub') return { emoji: '🟣', action: 'RESUSCRIPCIÓN', title: d.user, sub: d.months ? `${d.months} meses de sub` : tierTxt, badge: d.months ? `x${d.months}` : null };
-          if (d.subType === 'gift') return { emoji: '🎁', action: 'SUB REGALADA', title: d.user, sub: d.recipient ? `para @${d.recipient}` : tierTxt, badge: null };
-          if (d.subType === 'mysterygift') return { emoji: '🎁', action: 'SUBS REGALADAS', title: d.user, sub: `${d.giftCount || 1} subs para el chat`, badge: `x${d.giftCount || 1}` };
-          if (d.subType === 'upgrade') return { emoji: '⬆️', action: 'MEJORA DE SUB', title: d.user, sub: tierTxt, badge: null };
-          return { emoji: '🟣', action: 'NUEVA SUSCRIPCIÓN', title: d.user, sub: tierTxt, badge: null };
+          const tierTxt = d.isPrime ? t('overlayStr.tierPrime') : (d.tierLabel || (d.tier ? t('overlayStr.tierLabel', { tier: d.tier }) : t('overlayStr.tierGeneric')));
+          if (d.subType === 'resub') return { emoji: '🟣', action: t('overlayStr.subResub'), title: d.user, sub: d.months ? t('overlayStr.subMonths', { months: d.months }) : tierTxt, badge: d.months ? `x${d.months}` : null };
+          if (d.subType === 'gift') return { emoji: '🎁', action: t('overlayStr.subGifted'), title: d.user, sub: d.recipient ? t('overlayStr.subGiftedTo', { recipient: d.recipient }) : tierTxt, badge: null };
+          if (d.subType === 'mysterygift') return { emoji: '🎁', action: t('overlayStr.subsGifted'), title: d.user, sub: t('overlayStr.subsGiftedCount', { count: d.giftCount || 1 }), badge: `x${d.giftCount || 1}` };
+          if (d.subType === 'upgrade') return { emoji: '⬆️', action: t('overlayStr.subUpgrade'), title: d.user, sub: tierTxt, badge: null };
+          return { emoji: '🟣', action: t('overlayStr.subNew'), title: d.user, sub: tierTxt, badge: null };
         }
         case 'cheer':
           return { emoji: '💎', action: 'BITS', title: d.user, sub: d.message || '', badge: `${d.bits || 0} bits` };
         case 'raid':
-          return { emoji: '🚀', action: 'RAID', title: d.user, sub: 'llega con su comunidad', badge: `${d.viewers || 0} viewers` };
+          return { emoji: '🚀', action: 'RAID', title: d.user, sub: t('overlayStr.raidJoined'), badge: `${d.viewers || 0} viewers` };
         case 'superchat':
           return { emoji: '💰', action: 'SUPERCHAT', title: d.user, sub: d.comment || '', badge: d.amount || null };
         default:
@@ -302,7 +307,7 @@
       info.className = 'info';
       info.innerHTML = `
         <div class="action-label">${meta.label} · ${desc.action}</div>
-        <div class="gift-name">${escapeHtml(desc.title || 'Anónimo')}</div>
+        <div class="gift-name">${escapeHtml(desc.title || t('overlayStr.anonymous'))}</div>
         ${desc.sub ? `<div class="username">${escapeHtml(desc.sub)}</div>` : ''}
       `;
       card.appendChild(info);
@@ -352,7 +357,7 @@
       info.innerHTML = `
         <div class="action-label">${t('overlayStr.giftReceived')}</div>
         <div class="gift-name">${escapeHtml(gift.giftName)}</div>
-        <div class="username">de @${escapeHtml(gift.user)}</div>
+        <div class="username">${t('overlayStr.giftFrom', { user: escapeHtml(gift.user) })}</div>
         ${gift.usdValue ? `<div class="usd-value">≈ $${escapeHtml(String(gift.usdValue))} USD</div>` : ''}
       `;
       card.appendChild(info);

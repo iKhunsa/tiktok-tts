@@ -94,7 +94,8 @@
     "useF8": "Использовать F8",
     "usePlayPause": "Использовать Play/Pause",
     "clearShortcut": "✕ Очистить",
-    "blockedWordsShortcut": "Запрещённые слова"
+    "blockedWordsShortcut": "Запрещённые слова",
+    "delete": "Удалить"
   },
   "chat": {
     "title": "Прямой чат",
@@ -102,13 +103,15 @@
     "speaking": "Читает...",
     "queue": "Очередь: {n} сообщений",
     "followerBadge": "Подписчик",
-    "mutedBadge": "Заглушён: TTS его не читает"
+    "mutedBadge": "Заглушён: TTS его не читает",
+    "cleared": "Чат очищен"
   },
   "emergencyHint": "Аварийный режим сохраняет подарки и подписки, заглушает чат/лайки/входы/репосты.",
   "status": {
     "waiting": "Ожидание подключения...",
     "connected": "Подключён",
-    "disconnected": "Отключён"
+    "disconnected": "Отключён",
+    "connectedAs": "Подключён к @{username}"
   },
   "view": {
     "overlays": {
@@ -170,7 +173,9 @@
     "accessUrl": "URL доступа",
     "activeShortcut": "Активный ярлык",
     "users": "Пользователи",
-    "connectToGet": "Подключитесь для получения"
+    "connectToGet": "Подключитесь для получения",
+    "color": "Цвет",
+    "testVoicePlaceholder": "Напишите что-нибудь для теста..."
   },
   "overlay": {
     "chat": {
@@ -217,7 +222,8 @@
     "empty": "Загрузите первый звук для начала",
     "noShortcut": "Без ярлыка",
     "pressKey": "Нажмите клавишу…",
-    "clickToAssign": "Нажмите для назначения ярлыка (Ctrl/Alt/Shift + клавиша)"
+    "clickToAssign": "Нажмите для назначения ярлыка (Ctrl/Alt/Shift + клавиша)",
+    "test": "Тест"
   },
   "update": {
     "checking": "Проверка обновлений...",
@@ -225,7 +231,8 @@
     "later": "Позже",
     "installing": "Установка...",
     "available": "Доступна новая версия: v{version}",
-    "downloading": "Загрузка v{version}..."
+    "downloading": "Загрузка v{version}...",
+    "readyToInstall": "v{version} готова к установке."
   },
   "bot": {
     "title": "Музыкальный бот",
@@ -233,28 +240,32 @@
     "nowPlaying": "Сейчас играет",
     "nowPlayingSubtitle": "Трек, который играет прямо сейчас, с управлением паузой и пропуском.",
     "enableCmd": "Включить !p",
-    "skipSong": "⏭ Пропустить",
-    "pauseSong": "⏸ Пауза",
-    "resumeSong": "▶ Продолжить",
+    "skipSong": "Пропустить",
+    "pauseSong": "Пауза",
+    "resumeSong": "Продолжить",
     "noMusic": "Музыка не воспроизводится.",
     "musicVol": "Громкость музыки",
     "requestQueue": "Очередь запросов",
     "requestQueueSubtitle": "Песни, заказанные в чате командой !p, в порядке поступления.",
-    "clearQueue": "🗑 Очистить",
+    "clearQueue": "Очистить",
     "queueEmpty": "Очередь пуста.",
     "myPlaylist": "Мой плейлист (фон)",
     "enable": "Включить",
     "shuffle": "Случайный порядок",
     "playlistHint": "Одна песня в строке: название или URL YouTube. Воспроизводится при отсутствии запросов.",
-    "playlistActive": "▶ Воспроизводится из плейлиста:",
-    "savePlaylist": "💾 Сохранить плейлист",
+    "playlistActive": "Воспроизводится из плейлиста:",
+    "savePlaylist": "Сохранить плейлист",
     "botSettings": "Настройки бота",
     "botSettingsSubtitle": "Ограничения музыкального бота: задержка между запросами и максимальный размер очереди.",
     "cooldown": "Кулдаун на пользователя (сек)",
     "maxQueue": "Макс. песен в очереди",
     "bannedUsers": "Заблокированные для !p",
     "banPlaceholder": "@пользователь или ID",
-    "ban": "Заблокировать"
+    "ban": "Заблокировать",
+    "cmdActive": "!p активен",
+    "songSingular": "песня",
+    "songPlural": "песни",
+    "playlistSavedHint": "сохраняется в папке приложения"
   },
   "overlay2": {
     "giftsTitle": "Уведомление о подарке",
@@ -279,7 +290,9 @@
     "deleteDay": "Удалить день",
     "confirmClearAll": "Удалить все маркеры клипов? Это действие нельзя отменить.",
     "confirmClearDay": "Удалить все маркеры за",
-    "noMarkers": "Маркеров пока нет. Начните трансляцию и нажмите Ctrl+Shift+M для отметки."
+    "noMarkers": "Маркеров пока нет. Начните трансляцию и нажмите Ctrl+Shift+M для отметки.",
+    "mark": "метка",
+    "marks": "метки"
   },
   "conn": {
     "connecting": "Подключение...",
@@ -292,7 +305,13 @@
     "noSavedChannels": "Нет сохранённых каналов. Добавьте TikTok/Twitch/YouTube и используйте Подключить всё.",
     "connectAllMsg": "Подключить всё: {parts}",
     "onlyManualChannels": "Сохранены только ручные каналы",
-    "connectionLost": "Соединение потеряно. Перезагрузите приложение."
+    "connectionLost": "Соединение потеряно. Перезагрузите приложение.",
+    "twitchWaitingCode": "Ожидание авторизации в браузере (код {code})...",
+    "shortcutNotRegisteredPrefix": "Ярлык не зарегистрирован:",
+    "shortcutTryAnother": "Попробуйте другой ярлык.",
+    "stateManual": "Ручной",
+    "stateError": "Ошибка",
+    "stateSaved": "Сохранено"
   },
   "mobile2": {
     "loading": "Загрузка...",
@@ -427,7 +446,22 @@
     "followers": "Подписчики",
     "noFollowers": "Пока нет подписчиков",
     "sharedList": "Поделились",
-    "noShared": "Пока нет репостов"
+    "noShared": "Пока нет репостов",
+    "tierPrime": "Prime",
+    "tierGeneric": "Саб",
+    "tierLabel": "Уровень {tier}",
+    "subResub": "ПРОДЛЕНИЕ",
+    "subMonths": "{months} мес. подписки",
+    "subGifted": "ПОДАРЕННЫЙ САБ",
+    "subGiftedTo": "для @{recipient}",
+    "subsGifted": "ПОДАРЕННЫЕ САБЫ",
+    "subsGiftedCount": "{count} сабов для чата",
+    "subUpgrade": "УЛУЧШЕНИЕ САБА",
+    "subNew": "НОВАЯ ПОДПИСКА",
+    "raidJoined": "приходит со своим сообществом",
+    "anonymous": "Аноним",
+    "giftFrom": "от @{user}",
+    "topLikers": "Топ лайкеров"
   },
   "donations": {
     "title": "Поддержи мой контент",
@@ -586,7 +620,10 @@
     "youtubeAutoSaved": "YouTube сохранён; подключится когда начнётся эфир",
     "youtubeTmpSaved": "YouTube сохранён как ручной канал",
     "readNonFollowersOn": "TTS читает всех",
-    "readNonFollowersOff": "TTS читает только подписчиков"
+    "readNonFollowersOff": "TTS читает только подписчиков",
+    "twitchAuthorizeInBrowser": "Авторизуйтесь в браузере — код {code}",
+    "twitchAuthorizeWindow": "Авторизуйтесь в открывшемся окне и вернитесь сюда",
+    "twitchAuthError": "Ошибка авторизации Twitch"
   },
   "dictLang": {
     "title": "Разрешённые языки",
@@ -913,5 +950,21 @@
     "mediaPlaceholder": "Превью скоро появится",
     "comingSoon": "Скоро больше",
     "comingSoonDesc": "Мы работаем над новыми инструментами."
+  },
+  "errors": {
+    "textRequired": "Требуется текст",
+    "ttsRateLimited": "Достигнут лимит запросов",
+    "ttsServiceError": "Ошибка сервиса голоса Google TTS",
+    "unsupportedAudioType": "Разрешены только файлы MP3, WAV, OGG, WEBM или M4A",
+    "audioUploadFailed": "Ошибка загрузки аудио",
+    "noAudioFile": "Аудиофайл не получен",
+    "maxSoundsReached": "Достигнут максимум — 24 звука",
+    "imageTooLarge": "Изображение не может превышать 8 МБ",
+    "imageUploadFailed": "Ошибка загрузки изображения",
+    "noImageFile": "Изображение не получено",
+    "contentRequired": "Требуется содержимое",
+    "invalidConfig": "Недопустимая конфигурация",
+    "twitchAuthStartFailed": "Не удалось запустить авторизацию Twitch",
+    "obsConnectFailed": "Не удалось подключиться к OBS"
   }
 }

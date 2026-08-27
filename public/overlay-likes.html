@@ -98,7 +98,7 @@
 </head>
 <body>
   <div class="card">
-    <div class="title"><img class="icon-inline" src="icons/favorite.svg" alt=""> Top Likers</div>
+    <div class="title"><img class="icon-inline" src="icons/favorite.svg" alt=""> <span data-i18n="overlayStr.topLikers">Top Likers</span></div>
     <div id="leaderboard">
       <div class="empty-msg" data-i18n="overlayStr.waitingLikes">Esperando likes...</div>
     </div>
@@ -106,9 +106,10 @@
 
   <script>
     let _locale = {};
+    let _lang = 'es';
     async function loadLocale() {
-      const lang = localStorage.getItem('tikliveTTS_lang') || 'es';
-      try { _locale = await (await fetch(`/locales/${lang}.json`)).json(); }
+      _lang = localStorage.getItem('tikliveTTS_lang') || 'es';
+      try { _locale = await (await fetch(`/locales/${_lang}.json`)).json(); }
       catch(_) { try { _locale = await (await fetch('/locales/es.json')).json(); } catch(__) {} }
       applyI18n();
       connectWS();
@@ -178,7 +179,7 @@
 
         const likeEl = document.createElement('span');
         likeEl.className = 'likes';
-        likeEl.innerHTML = '<img class="icon-inline" src="icons/favorite.svg" alt=""> ' + entry.totalLikes.toLocaleString('es');
+        likeEl.innerHTML = '<img class="icon-inline" src="icons/favorite.svg" alt=""> ' + entry.totalLikes.toLocaleString(_lang);
 
         row.appendChild(rankEl);
         row.appendChild(nameEl);

@@ -543,6 +543,31 @@
     .toggle-chip.active { background: rgba(62, 207, 142, 0.1); border-color: rgba(62, 207, 142, 0.3); color: var(--accent); }
     /* chip-dot removido — usado por toggle chips antiguos */
 
+    /* Switch estilo iOS — mismo componente de advanced.html, para toggles
+       on/off donde el chip pill queda demasiado ancho (Bot de Música). */
+    .switch { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+    .switch input { display: none; }
+    .switch-track {
+      position: absolute; inset: 0; background: var(--border);
+      border-radius: 12px; cursor: pointer; transition: background 0.2s, border-color 0.2s;
+    }
+    .switch-track::after {
+      content: ''; position: absolute; top: 2px; left: 2px;
+      width: 18px; height: 18px; background: var(--text-muted); border-radius: 50%;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .switch input:checked + .switch-track { background: rgba(62, 207, 142, 0.15); border: 1px solid rgba(62, 207, 142, 0.4); }
+    .switch input:checked + .switch-track::after { transform: translateX(18px); background: var(--accent); }
+
+    /* Label "eyebrow": título chico en mayúsculas para agrupar secciones
+       sin el peso visual de un cfg-header completo (icono+título+subtítulo). */
+    .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+
+    .queue-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .queue-item:last-child { border-bottom: none; }
+    .queue-item-remove { background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 15px; line-height: 1; padding: 4px; flex-shrink: 0; }
+    .queue-item-remove:hover { color: var(--text); }
+
     /* ── CHAT LOG ────────────────────────────────────────── */
     .chat-section {
       background: var(--bg);
@@ -1199,6 +1224,8 @@
     }
     .project-grid { display: flex; gap: 16px; align-items: stretch; }
     @media (max-width: 640px) { .project-grid { flex-direction: column; } }
+    .bot-2col-grid { margin-bottom: 14px; }
+    @media (max-width: 720px) { .bot-2col-grid { grid-template-columns: 1fr !important; } }
     .project-card {
       position: relative;
       display: flex; flex-direction: column; justify-content: flex-end;
@@ -2364,34 +2391,40 @@
 
       <!-- Now Playing -->
       <div class="cfg-card" id="music-now-playing-card">
-        <div class="cfg-header">
-          <div class="cfg-icon"><img class="icon-inline" src="icons/play_arrow.svg" alt=""></div>
-          <div class="cfg-meta">
-            <div class="cfg-title" data-i18n="bot.nowPlaying">Reproduciendo ahora</div>
-            <div class="cfg-subtitle" data-i18n="bot.nowPlayingSubtitle">La canción que está sonando en este momento, con control de pausa y skip.</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px;">
+          <span class="eyebrow" data-i18n="bot.nowPlaying">Reproduciendo ahora</span>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <label class="switch">
+              <input type="checkbox" id="musicEnabledToggle" onchange="musicSetEnabled(this.checked)">
+              <span class="switch-track"></span>
+            </label>
+            <span id="musicEnabledLabel" style="font-size:12px;font-weight:600;color:var(--text-secondary);white-space:nowrap;" data-i18n="bot.enableCmd">Activar !p</span>
+            <button class="btn-test" id="btnMusicPause" onclick="musicTogglePause()" title="Pausar/Reanudar">
+              <img class="icon-inline" id="musicPauseIcon" src="icons/pause.svg" alt=""> <span id="musicPauseLabel" data-i18n="bot.pauseSong">Pausa</span>
+            </button>
+            <button class="btn-test" onclick="musicSkip()" title="Saltar canción">
+              <img class="icon-inline" src="icons/skip_next.svg" alt=""> <span data-i18n="bot.skipSong">Saltar</span>
+            </button>
           </div>
-          <label class="toggle-chip">
-            <input type="checkbox" id="musicEnabledToggle" onchange="musicSetEnabled(this.checked)">
-            <span data-i18n="bot.enableCmd">Activar !p</span>
-          </label>
-          <button class="btn-test" id="btnMusicPause" onclick="musicTogglePause()" title="Pausar/Reanudar" data-i18n="bot.pauseSong">⏸ Pausa</button>
-          <button class="btn-test" onclick="musicSkip()" title="Saltar canción" data-i18n="bot.skipSong">⏭ Skip</button>
         </div>
         <div id="music-idle-msg" style="color:var(--text-muted);font-size:13px;padding:8px 0;" data-i18n="bot.noMusic">Sin música reproduciéndose.</div>
-        <div id="music-track-info" style="display:none;gap:12px;align-items:center;">
-          <img id="music-thumb" src="" alt="" style="width:60px;height:60px;object-fit:cover;border-radius:6px;flex-shrink:0;">
+        <div id="music-track-info" style="display:none;gap:14px;align-items:center;">
+          <img id="music-thumb" src="" alt="" style="width:64px;height:64px;object-fit:cover;border-radius:8px;flex-shrink:0;">
           <div style="flex:1;min-width:0;">
-            <div id="music-title" style="font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
-            <div id="music-channel" style="font-size:12px;color:var(--text-muted);"></div>
-            <div id="music-req" style="font-size:11px;color:var(--text-muted);margin-top:2px;"></div>
-            <div style="margin-top:6px;background:var(--surface);border-radius:4px;height:4px;overflow:hidden;">
-              <div id="music-progress-bar" style="height:100%;background:var(--accent);width:0%;transition:width 1s linear;"></div>
+            <div id="music-title" style="font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+            <div id="music-channel" style="font-size:12px;color:var(--text-muted);margin-top:1px;"></div>
+            <div id="music-req" style="font-size:12px;color:var(--accent);margin-top:3px;font-weight:500;"></div>
+            <div style="margin-top:8px;display:flex;align-items:center;gap:8px;">
+              <div style="flex:1;background:var(--surface);border-radius:4px;height:4px;overflow:hidden;">
+                <div id="music-progress-bar" style="height:100%;background:var(--accent);width:0%;transition:width 1s linear;"></div>
+              </div>
+              <span id="music-time" style="font-size:11px;color:var(--text-muted);white-space:nowrap;font-variant-numeric:tabular-nums;"></span>
             </div>
           </div>
         </div>
 
         <!-- Volume -->
-        <div style="margin-top:12px;display:flex;align-items:center;gap:10px;">
+        <div style="margin-top:14px;display:flex;align-items:center;gap:10px;">
           <img src="icons/volume_up.svg" class="icon-inline" alt="" style="opacity:.7;">
           <span style="font-size:12px;font-weight:500;color:var(--text-secondary);white-space:nowrap;" data-i18n="bot.musicVol">Vol. Música</span>
           <input type="range" id="musicVolRange" min="0" max="1" step="0.05" value="0.5"
@@ -2400,18 +2433,45 @@
         </div>
       </div>
 
-      <!-- Queue -->
-      <div class="cfg-card">
-        <div class="cfg-header">
-          <div class="cfg-icon"><img class="icon-inline" src="icons/filter_none.svg" alt=""></div>
-          <div class="cfg-meta">
-            <div class="cfg-title"><span data-i18n="bot.requestQueue">Cola de peticiones</span> <span id="music-queue-count" style="font-size:11px;color:var(--text-muted);font-weight:500;">(0)</span></div>
-            <div class="cfg-subtitle" data-i18n="bot.requestQueueSubtitle">Canciones pedidas por el chat con !p, en orden de llegada.</div>
+      <!-- Queue + Reglas del bot -->
+      <div class="bot-2col-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- Queue -->
+        <div class="cfg-card" style="margin:0;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;">
+            <span class="eyebrow"><span data-i18n="bot.requestQueue">Cola de peticiones</span> <span id="music-queue-count">(0)</span></span>
+            <button class="btn-test" onclick="musicClearQueue()" title="Limpiar cola">
+            <img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="bot.clearQueue">Limpiar</span>
+          </button>
           </div>
-          <button class="btn-test" onclick="musicClearQueue()" title="Limpiar cola" data-i18n="bot.clearQueue">🗑 Limpiar</button>
+          <div id="music-queue-list" style="display:flex;flex-direction:column;max-height:260px;overflow-y:auto;">
+            <div style="color:var(--text-muted);font-size:13px;" data-i18n="bot.queueEmpty">La cola está vacía.</div>
+          </div>
         </div>
-        <div id="music-queue-list" style="display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;">
-          <div style="color:var(--text-muted);font-size:13px;" data-i18n="bot.queueEmpty">La cola está vacía.</div>
+
+        <!-- Bot rules -->
+        <div class="cfg-card" style="margin:0;">
+          <span class="eyebrow" style="display:block;margin-bottom:14px;" data-i18n="bot.botSettings">Configuración del bot</span>
+          <div class="cfg-fields">
+            <div class="cfg-field">
+              <label data-i18n="bot.cooldown">Cooldown por usuario (seg)</label>
+              <input type="number" id="musicCooldownInput" min="0" max="3600" value="60"
+                onchange="musicSaveCooldown(this.value)">
+            </div>
+            <div class="cfg-field">
+              <label data-i18n="bot.maxQueue">Máx canciones en cola</label>
+              <input type="number" id="musicMaxQueueInput" min="1" max="50" value="10"
+                onchange="musicSaveMaxQueue(this.value)">
+            </div>
+            <div class="cfg-field full">
+              <label data-i18n="bot.bannedUsers">Usuarios baneados del !p</label>
+              <div style="display:flex;gap:8px;">
+                <input type="text" id="musicBanInput" data-i18n-placeholder="bot.banPlaceholder" placeholder="@usuario o ID"
+                  style="flex:1;" onkeydown="if(event.key==='Enter')musicBanUser()">
+                <button class="btn-test" onclick="musicBanUser()" data-i18n="bot.ban">Banear</button>
+              </div>
+              <div id="music-banned-list" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;"></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -2423,52 +2483,29 @@
             <div class="cfg-title" data-i18n="bot.myPlaylist">Mi Playlist (fondo)</div>
             <div class="cfg-subtitle" data-i18n="bot.playlistHint">Una canción por línea: nombre o URL de YouTube. Suena cuando no hay peticiones del chat.</div>
           </div>
-          <label class="toggle-chip">
-            <input type="checkbox" id="playlistEnabledToggle" onchange="playlistSetEnabled(this.checked)">
-            <span data-i18n="bot.enable">Activar</span>
-          </label>
-          <label class="toggle-chip">
-            <input type="checkbox" id="playlistShuffleToggle" onchange="playlistSetShuffle(this.checked)">
-            <span data-i18n="bot.shuffle">Aleatorio</span>
-          </label>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:12px;font-weight:600;color:var(--text-secondary);white-space:nowrap;" data-i18n="bot.enable">Activar</span>
+            <label class="switch">
+              <input type="checkbox" id="playlistEnabledToggle" onchange="playlistSetEnabled(this.checked)">
+              <span class="switch-track"></span>
+            </label>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:12px;font-weight:600;color:var(--text-secondary);white-space:nowrap;" data-i18n="bot.shuffle">Aleatorio</span>
+            <label class="switch">
+              <input type="checkbox" id="playlistShuffleToggle" onchange="playlistSetShuffle(this.checked)">
+              <span class="switch-track"></span>
+            </label>
+          </div>
         </div>
-        <div id="music-playlist-active" style="display:none;font-size:12px;color:var(--accent);margin-bottom:6px;"><span data-i18n="bot.playlistActive">▶ Sonando de playlist:</span> <span id="playlist-now-title"></span></div>
-        <textarea id="playlistTextarea" rows="6" style="width:100%;box-sizing:border-box;background:var(--bg-button);border:1px solid var(--border-strong);border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;resize:vertical;outline:none;"
+        <div id="music-playlist-active" style="display:none;font-size:12px;color:var(--accent);margin-bottom:6px;"><img class="icon-inline" src="icons/play_arrow.svg" alt="" style="width:12px;height:12px;"> <span data-i18n="bot.playlistActive">Sonando de playlist:</span> <span id="playlist-now-title"></span></div>
+        <textarea id="playlistTextarea" rows="6" oninput="updatePlaylistInfo()" style="width:100%;box-sizing:border-box;background:var(--bg-button);border:1px solid var(--border-strong);border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;resize:vertical;outline:none;"
           placeholder="Bohemian Rhapsody Queen&#10;https://www.youtube.com/watch?v=fJ9rUzIMcZQ&#10;Lose Yourself Eminem"></textarea>
-        <div style="margin-top:10px;display:flex;justify-content:flex-end;">
-          <button class="btn btn-connect" onclick="playlistSave()" data-i18n="bot.savePlaylist">💾 Guardar playlist</button>
-        </div>
-      </div>
-
-      <!-- Bot Settings -->
-      <div class="cfg-card">
-        <div class="cfg-header">
-          <div class="cfg-icon"><img class="icon-inline" src="icons/settings.svg" alt=""></div>
-          <div class="cfg-meta">
-            <div class="cfg-title" data-i18n="bot.botSettings">Configuración del bot</div>
-            <div class="cfg-subtitle" data-i18n="bot.botSettingsSubtitle">Límites del bot musical: tiempo de espera entre pedidos y tamaño máximo de la cola.</div>
-          </div>
-        </div>
-        <div class="cfg-fields">
-          <div class="cfg-field">
-            <label data-i18n="bot.cooldown">Cooldown por usuario (seg)</label>
-            <input type="number" id="musicCooldownInput" min="0" max="3600" value="60"
-              onchange="musicSaveCooldown(this.value)">
-          </div>
-          <div class="cfg-field">
-            <label data-i18n="bot.maxQueue">Máx canciones en cola</label>
-            <input type="number" id="musicMaxQueueInput" min="1" max="50" value="10"
-              onchange="musicSaveMaxQueue(this.value)">
-          </div>
-          <div class="cfg-field full">
-            <label data-i18n="bot.bannedUsers">Usuarios baneados del !p</label>
-            <div style="display:flex;gap:8px;">
-              <input type="text" id="musicBanInput" data-i18n-placeholder="bot.banPlaceholder" placeholder="@usuario o ID"
-                style="flex:1;" onkeydown="if(event.key==='Enter')musicBanUser()">
-              <button class="btn-test" onclick="musicBanUser()" data-i18n="bot.ban">Banear</button>
-            </div>
-            <div id="music-banned-list" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;"></div>
-          </div>
+        <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span id="playlist-info" style="font-size:12px;color:var(--text-muted);"></span>
+          <button class="btn btn-connect" onclick="playlistSave()">
+            <img class="icon-inline" src="icons/save-dark.svg" alt=""> <span data-i18n="bot.savePlaylist">Guardar playlist</span>
+          </button>
         </div>
       </div>
     </div>
@@ -2542,7 +2579,7 @@
           <div class="setting-group" id="voiceTestGroup">
             <label><img class="icon-inline" src="icons/science.svg" alt=""> <span data-i18n="label.testVoice">Probar voz</span></label>
             <div style="display:flex;gap:8px;align-items:center;">
-              <input type="text" id="testVoiceInput" placeholder="Escribe algo para probar..." style="flex:1;" />
+              <input type="text" id="testVoiceInput" data-i18n-placeholder="label.testVoicePlaceholder" placeholder="Escribe algo para probar..." style="flex:1;" />
               <button id="btnTestVoice" class="btn-test" onclick="testVoice()">▶ Probar</button>
             </div>
           </div>
@@ -2599,7 +2636,7 @@
               <span data-i18n="label.pauseShortcut">Pausar / Reanudar TTS</span>
             </label>
             <div style="display:flex;gap:8px;align-items:center;">
-              <input id="pauseShortcutInput" readonly placeholder="Clic aquí y presiona teclas..."
+              <input id="pauseShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" placeholder="Clic aquí y presiona teclas..."
   onclick="startCapturingShortcut('pause')"
                 style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
               <button onclick="clearTtsShortcut('pause')"
@@ -2627,7 +2664,7 @@
               <span data-i18n="label.skipShortcut">Saltar mensaje actual</span>
             </label>
             <div style="display:flex;gap:8px;align-items:center;">
-              <input id="skipShortcutInput" readonly placeholder="Clic aquí y presiona teclas..."
+              <input id="skipShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" placeholder="Clic aquí y presiona teclas..."
   onclick="startCapturingShortcut('skip')"
                 style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
               <button onclick="clearTtsShortcut('skip')"
@@ -2651,7 +2688,7 @@
               <span data-i18n="label.clearQueueShortcut">Limpiar cola</span>
             </label>
             <div style="display:flex;gap:8px;align-items:center;">
-              <input id="clearShortcutInput" readonly placeholder="Clic aquí y presiona teclas..."
+              <input id="clearShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" placeholder="Clic aquí y presiona teclas..."
   onclick="startCapturingShortcut('clear')"
                 style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
               <button onclick="clearTtsShortcut('clear')"
@@ -2675,7 +2712,7 @@
               <span data-i18n="label.musicPauseShortcut">Pausar/Reanudar música del bot</span>
             </label>
             <div style="display:flex;gap:8px;align-items:center;">
-              <input id="musicPauseShortcutInput" readonly placeholder="Clic aquí y presiona teclas..."
+              <input id="musicPauseShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" placeholder="Clic aquí y presiona teclas..."
   onclick="startCapturingShortcut('musicPause')"
                 style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
               <button onclick="clearTtsShortcut('musicPause')"
@@ -2699,7 +2736,7 @@
               <span data-i18n="label.musicSkipShortcut">Saltar canción del bot</span>
             </label>
             <div style="display:flex;gap:8px;align-items:center;">
-              <input id="musicSkipShortcutInput" readonly placeholder="Clic aquí y presiona teclas..."
+              <input id="musicSkipShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" placeholder="Clic aquí y presiona teclas..."
   onclick="startCapturingShortcut('musicSkip')"
                 style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
               <button onclick="clearTtsShortcut('musicSkip')"
@@ -2828,7 +2865,7 @@
     <!-- ── VIEW: Sound Pad ─────────────────────────────── -->
     <div class="view" id="view-soundpad">
       <div class="view-header">
-        <h2 style="display:flex;align-items:center;gap:10px;">🎵 <span data-i18n="nav.soundpad">Pad de Sonidos</span>
+        <h2 style="display:flex;align-items:center;gap:10px;"><img class="icon-inline" src="icons/music_note.svg" alt=""> <span data-i18n="nav.soundpad">Pad de Sonidos</span>
           <button class="cfg-btn" id="btnSoundTour" onclick="startSoundpadTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
         </h2>
         <p data-i18n="soundpad.desc">Sube sonidos y reprodúcelos con un clic o atajo de teclado (funciona en pantalla completa).</p>
@@ -2840,15 +2877,17 @@
             <div class="cfg-title"><span data-i18n="nav.soundpad">Sonidos</span> <span class="soundpad-count" id="spCount"></span></div>
             <div class="cfg-subtitle" data-i18n="soundpad.clickToAssign">Clic para asignar atajo de teclado (requiere modificador: Ctrl/Alt/Shift)</div>
           </div>
-          <button class="btn-test" onclick="spPlayTestSound()" title="Reproducir sonido de prueba">🔊 Test</button>
+          <button class="btn-test" onclick="spPlayTestSound()" title="Reproducir sonido de prueba">
+            <img class="icon-inline" src="icons/volume_up.svg" alt=""> <span data-i18n="soundpad.test">Test</span>
+          </button>
           <button class="btn btn-connect" onclick="spUploadTrigger()" id="spUploadBtn" style="padding:9px 18px;font-size:13px;">
-            ⬆ <span data-i18n="soundpad.upload">Subir sonido</span>
+            <img class="icon-inline" src="icons/upload-dark.svg" alt=""> <span data-i18n="soundpad.upload">Subir sonido</span>
           </button>
           <input type="file" id="spFileInput" accept=".mp3,.wav,.ogg,.webm,.m4a" style="display:none" onchange="spHandleUpload(this)">
         </div>
         <div id="spDeck" class="soundpad-deck"></div>
         <div id="spEmpty" class="soundpad-empty" style="display:none">
-          🎵 <span data-i18n="soundpad.empty">Sube tu primer sonido para empezar</span>
+          <img class="icon-inline" src="icons/music_note.svg" alt=""> <span data-i18n="soundpad.empty">Sube tu primer sonido para empezar</span>
         </div>
       </div>
     </div>
@@ -3308,6 +3347,18 @@
     return val.replace(/\{(\w+)\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : `{${k}}`));
   }
 
+  // Backend errors: si el servidor manda `errorKey` (clave del diccionario en
+  // vez de texto literal), se prefiere esa traducción — `error` sigue viajando
+  // para compatibilidad con builds viejos que no lo lean.
+  function tErr(data, fallbackKey) {
+    const key = data && data.errorKey;
+    if (key) {
+      const translated = t(key);
+      if (translated !== key) return translated;
+    }
+    return (data && data.error) || (fallbackKey ? t(fallbackKey) : '');
+  }
+
   function applyTranslations() {
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const val = t(el.dataset.i18n);
@@ -3644,7 +3695,7 @@
           }).catch(() => { /* ignore cleanup errors */ });
         }
       } else {
-        showToast(data.error || t('toast.bgUploadError'));
+        showToast(tErr(data, 'toast.bgUploadError'));
       }
     } catch (e) {
       showToast(t('toast.bgUploadError'));
@@ -4788,13 +4839,13 @@
     try {
       const res = await fetch(`/api/auth/${provider}/start`);
       const data = await res.json();
-      if (!res.ok || !data.url) { if (popup) popup.close(); showToast(data.error || t('toast.testError')); return; }
+      if (!res.ok || !data.url) { if (popup) popup.close(); showToast(tErr(data, 'toast.testError')); return; }
       showToast(data.userCode
-        ? `Autorizá en el navegador — código ${data.userCode}`
-        : 'Autorizá en la ventana que se abrió y volvé acá');
+        ? t('toast.twitchAuthorizeInBrowser', { code: data.userCode })
+        : t('toast.twitchAuthorizeWindow'));
       if (provider === 'twitch' && data.userCode) {
         const twText = document.getElementById('twitchAuthStatusText');
-        if (twText) twText.textContent = `Esperando autorización en el navegador (código ${data.userCode})...`;
+        if (twText) twText.textContent = t('conn.twitchWaitingCode', { code: data.userCode });
       }
       if (popup) popup.location.href = data.url;
       else if (isElectron) window.open(data.url, '_blank'); // windowOpenHandler → shell.openExternal
@@ -4966,7 +5017,7 @@
     if (hint) {
       if (status && status.ok === false) {
         hint.style.color = '#ff6b6b';
-        hint.innerHTML = `Atajo no registrado: <span style="font-family:monospace;font-weight:600;">${escapeHtml(status.shortcut || shortcut || '')}</span>. ${escapeHtml(status.error || 'Prueba otro atajo.')}`;
+        hint.innerHTML = `${escapeHtml(t('conn.shortcutNotRegisteredPrefix'))} <span style="font-family:monospace;font-weight:600;">${escapeHtml(status.shortcut || shortcut || '')}</span>. ${escapeHtml(status.error || t('conn.shortcutTryAnother'))}`;
       } else {
         hint.style.color = 'var(--text-muted)';
         hint.innerHTML = `<span data-i18n="conn.shortcutHint">${t('conn.shortcutHint')}</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">${escapeHtml(shortcut || '—')}</span>`;
@@ -5423,7 +5474,7 @@
       });
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
-        const msg = errData.error || `Error ${res.status}`;
+        const msg = tErr(errData, null) || `Error ${res.status}`;
         showToast(`TTS: ${msg}`);
         done(); return;
       }
@@ -5677,12 +5728,12 @@
   function handleMessage(data) {
     switch (data.type) {
       case 'connected':
-        setStatus('online', 'Conectado a @' + data.username);
+        setStatus('online', t('status.connectedAs', { username: data.username }));
         logStorage.addLog('info', 'server', `Conectado a @${data.username}`);
         break;
 
       case 'disconnected':
-        setStatus('', 'Desconectado');
+        setStatus('', t('status.disconnected'));
         logStorage.addLog('info', 'server', 'Desconectado');
         break;
 
@@ -5845,7 +5896,7 @@
         break;
 
       case 'twitch-auth-error':
-        showToast(data.error || 'Error en la autorización de Twitch');
+        showToast(data.error || t('toast.twitchAuthError'));
         loadOAuthStatusUI();
         break;
 
@@ -6229,7 +6280,7 @@
     document.getElementById('chatLog').innerHTML = `
       <div class="empty-state" id="emptyState">
         <div class="empty-icon"><img class="icon-inline" src="icons/mic.svg" alt=""></div>
-        <div class="empty-text">Chat limpiado</div>
+        <div class="empty-text">${t('chat.cleared')}</div>
       </div>`;
     msgCount = 0;
     document.getElementById('msgCount').textContent = '0';
@@ -6756,7 +6807,7 @@
       countLabel.style.color = 'var(--text-muted)';
       countLabel.style.fontSize = '11px';
       countLabel.style.fontWeight = '400';
-      countLabel.textContent = `${count} marca${count !== 1 ? 's' : ''} ▾`;
+      countLabel.textContent = `${count} ${count !== 1 ? t('clips2.marks') : t('clips2.mark')} ▾`;
       header.append(dateLabel, countLabel);
       const body = document.createElement('div');
       body.className = 'clips-day-body' + (idx === 0 ? ' open' : '');
@@ -6826,7 +6877,7 @@
         if (btn)    { btn.style.display = 'none'; btn.disabled = false; btn.textContent = t('btn.connectOBS'); }
         if (btnDis) btnDis.style.display = 'inline-block';
       } else {
-        showToast(t('toast.obsError').replace('{error}', d.error || 'desconocido'));
+        showToast(t('toast.obsError').replace('{error}', tErr(d, null) || 'desconocido'));
         if (btn) { btn.disabled = false; btn.textContent = t('btn.connectOBS'); }
       }
     } catch (e) {
@@ -6882,7 +6933,7 @@
             break;
           case 'ready':
             banner.classList.add('visible');
-            if (text) text.textContent = `v${ev.version} lista para instalar.`;
+            if (text) text.textContent = t('update.readyToInstall', { version: ev.version });
             if (barWrap) barWrap.style.display = 'none';
             if (pct) pct.style.display = 'none';
             if (spd) spd.style.display = 'none';
@@ -6940,9 +6991,9 @@
           title="${t('soundpad.clickToAssign')||'Clic para asignar atajo de teclado (requiere modificador: Ctrl/Alt/Shift)'}">${sc}</span>
         <div class="sp-footer">
           <input type="color" class="sp-color-btn" value="${escapeHtml(s.color)}"
-            title="Color" onchange="spSaveColor('${id}',this.value)"
+            title="${t('label.color')}" onchange="spSaveColor('${id}',this.value)"
             onclick="event.stopPropagation()">
-          <button class="sp-delete-btn" onclick="event.stopPropagation();spDelete('${id}')" title="Eliminar">🗑</button>
+          <button class="sp-delete-btn" onclick="event.stopPropagation();spDelete('${id}')" title="${t('btn.delete')}">🗑</button>
         </div>
       </div>`;
     }).join('');
@@ -6994,7 +7045,7 @@
     fd.append('audio', file);
     try {
       const r = await fetch('/api/soundpad/upload', { method: 'POST', body: fd });
-      if (!r.ok) { const e = await r.json(); showToast(e.error || t('toast.soundUploadError')); return; }
+      if (!r.ok) { const e = await r.json(); showToast(tErr(e, 'toast.soundUploadError')); return; }
       const entry = await r.json();
       _spSounds.push(entry);
       spRender();
@@ -7207,10 +7258,10 @@
   }
 
   function stateLabel(state) {
-    if (state === 'connected') return 'Conectado';
-    if (state === 'manual') return 'Manual';
-    if (state === 'error') return 'Error';
-    return 'Guardado';
+    if (state === 'connected') return t('status.connected');
+    if (state === 'manual') return t('conn.stateManual');
+    if (state === 'error') return t('conn.stateError');
+    return t('conn.stateSaved');
   }
 
   let selectedAddPlatform = 'tiktok';
@@ -7537,15 +7588,21 @@
     };
     // Progress bar (estimated from duration string "m:ss")
     const durSecs = parseDurationSecs(track.duration);
+    const timeEl = document.getElementById('music-time');
     if (durSecs > 0) {
       const started = Date.now();
-      musicProgressInterval = setInterval(() => {
-        const elapsed = (Date.now() - started) / 1000;
+      const tick = () => {
+        const elapsed = Math.min(durSecs, (Date.now() - started) / 1000);
         const pct = Math.min(100, (elapsed / durSecs) * 100);
         const bar = document.getElementById('music-progress-bar');
         if (bar) bar.style.width = pct + '%';
+        if (timeEl) timeEl.textContent = `${formatSecs(elapsed)} / ${formatSecs(durSecs)}`;
         if (pct >= 100) clearInterval(musicProgressInterval);
-      }, 1000);
+      };
+      tick();
+      musicProgressInterval = setInterval(tick, 1000);
+    } else if (timeEl) {
+      timeEl.textContent = '';
     }
   }
 
@@ -7555,6 +7612,13 @@
     if (parts.length === 2) return parts[0] * 60 + parts[1];
     if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
     return 0;
+  }
+
+  function formatSecs(secs) {
+    secs = Math.max(0, Math.floor(secs));
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m}:${String(s).padStart(2, '0')}`;
   }
 
   function musicStop() {
@@ -7573,6 +7637,8 @@
       if (idle) idle.style.display = '';
       if (info) info.style.display = 'none';
       if (bar) bar.style.width = '0%';
+      const timeEl = document.getElementById('music-time');
+      if (timeEl) timeEl.textContent = '';
       const playlistActive = document.getElementById('music-playlist-active');
       if (playlistActive) playlistActive.style.display = 'none';
       return;
@@ -7588,7 +7654,7 @@
     if (channel) channel.textContent = track.channelName || '';
     if (req) {
       if (track.platform === 'playlist') {
-        req.textContent = '🎵 Playlist del streamer';
+        req.textContent = t('mobile3.streamerPlaylist');
         const pa = document.getElementById('music-playlist-active');
         const pt = document.getElementById('playlist-now-title');
         if (pa) pa.style.display = '';
@@ -7599,7 +7665,18 @@
         if (pa) pa.style.display = 'none';
       }
     }
-    if (bar) bar.style.width = '0%';
+    // Si hay un audio local reproduciendo, musicPlayTrack() ya pone barra y
+    // tiempo (tick inmediato + interval) — no pisarlo. Si no (ej: reload de
+    // página con una canción ya sonando server-side, sin Audio local acá),
+    // mostrar 0:00 / total como mejor esfuerzo.
+    if (!musicProgressInterval) {
+      if (bar) bar.style.width = '0%';
+      const timeEl = document.getElementById('music-time');
+      if (timeEl) {
+        const durSecs = parseDurationSecs(track.duration);
+        timeEl.textContent = durSecs > 0 ? `0:00 / ${formatSecs(durSecs)}` : '';
+      }
+    }
   }
 
   function musicRenderQueue() {
@@ -7611,15 +7688,22 @@
       list.innerHTML = `<div style="color:var(--text-muted);font-size:13px;">${t('bot.queueEmpty')}</div>`;
       return;
     }
-    list.innerHTML = musicQueue.map((t, i) => `
-      <div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--border);">
+    list.innerHTML = musicQueue.map((track, i) => `
+      <div class="queue-item">
         <span style="font-size:11px;color:var(--text-muted);min-width:16px;">${i + 1}</span>
-        ${t.thumbnail ? `<img src="${t.thumbnail}" style="width:32px;height:32px;object-fit:cover;border-radius:4px;">` : ''}
         <div style="flex:1;min-width:0;">
-          <div style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(t.title || '')}</div>
-          <div style="font-size:11px;color:var(--text-muted);">${escHtml(t.requestedBy || '')}</div>
+          <div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(track.title || '')}</div>
+          <div style="font-size:11px;color:var(--text-muted);">${escHtml(track.requestedBy || '')}</div>
         </div>
+        <button class="queue-item-remove" onclick="musicRemoveFromQueue(${i})" title="${t('btn.remove')}">✕</button>
       </div>`).join('');
+  }
+
+  // Solo splice local — la cola real vive server-side y se resincroniza en
+  // el próximo evento (mismo comportamiento ya aceptado de musicClearQueue).
+  function musicRemoveFromQueue(index) {
+    musicQueue.splice(index, 1);
+    musicRenderQueue();
   }
 
   function escHtml(s) {
@@ -7666,7 +7750,7 @@
     // Reload textarea if on bot view
     if (data.raw) {
       const ta = document.getElementById('playlistTextarea');
-      if (ta && !ta.dataset.dirty) ta.value = data.raw.join('\n');
+      if (ta && !ta.dataset.dirty) { ta.value = data.raw.join('\n'); updatePlaylistInfo(); }
     }
   }
 
@@ -7674,12 +7758,17 @@
     fetch('/api/music/skip', { method: 'POST' }).catch(() => {});
   }
 
-  // Sincroniza checked + clase .active del toggle-chip contenedor
+  // Sincroniza checked del switch (+ clase .active si algún toggle-chip viejo
+  // sigue usando ese patrón en vez del switch estilo iOS).
   function syncMusicChip(id, checked) {
     const cb = document.getElementById(id);
     if (!cb) return;
     cb.checked = checked;
     cb.closest('.toggle-chip')?.classList.toggle('active', checked);
+    if (id === 'musicEnabledToggle') {
+      const label = document.getElementById('musicEnabledLabel');
+      if (label) label.textContent = checked ? t('bot.cmdActive') : t('bot.enableCmd');
+    }
   }
 
   function musicTogglePause() {
@@ -7691,9 +7780,12 @@
 
   function updateMusicPauseBtn() {
     const btn = document.getElementById('btnMusicPause');
+    const icon = document.getElementById('musicPauseIcon');
+    const label = document.getElementById('musicPauseLabel');
     if (!btn) return;
     const paused = !musicAudio || musicAudio.paused;
-    btn.textContent = paused ? t('bot.resumeSong') : t('bot.pauseSong');
+    if (icon) icon.src = paused ? 'icons/play_arrow.svg' : 'icons/pause.svg';
+    if (label) label.textContent = paused ? t('bot.resumeSong') : t('bot.pauseSong');
   }
 
   function musicSetEnabled(val) {
@@ -7826,7 +7918,20 @@
       if (ta && d.raw) ta.value = d.raw.join('\n');
       syncMusicChip('playlistEnabledToggle', !!d.enabled);
       syncMusicChip('playlistShuffleToggle', !!d.shuffle);
+      updatePlaylistInfo();
     }).catch(() => {});
+  }
+
+  // Cuenta líneas no vacías del textarea y arma "{count} canción(es) · se
+  // guarda en tu carpeta de la app" — no hay soporte ICU plural en este i18n,
+  // así que se elige la palabra a mano (mismo patrón que clips2.mark/marks).
+  function updatePlaylistInfo() {
+    const ta = document.getElementById('playlistTextarea');
+    const info = document.getElementById('playlist-info');
+    if (!ta || !info) return;
+    const count = ta.value.split('\n').map(l => l.trim()).filter(Boolean).length;
+    const songWord = count === 1 ? t('bot.songSingular') : t('bot.songPlural');
+    info.textContent = `${count} ${songWord} · ${t('bot.playlistSavedHint')}`;
   }
 
   musicInit();

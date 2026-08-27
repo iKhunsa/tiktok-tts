@@ -1045,6 +1045,16 @@
     if (vars) Object.keys(vars).forEach(k => { val = val.replace(new RegExp(`\\{${k}\\}`, 'g'), vars[k]); });
     return val;
   }
+  // Backend errors: preferir `errorKey` traducido si el servidor lo mandó,
+  // `error` sigue viajando para compatibilidad con builds viejos.
+  function tErr(data, fallbackKey) {
+    const key = data && data.errorKey;
+    if (key) {
+      const translated = t(key);
+      if (translated !== key) return translated;
+    }
+    return (data && data.error) || (fallbackKey ? t(fallbackKey) : '');
+  }
   function applyI18n() {
     document.querySelectorAll('[data-i18n]').forEach(el => { const v = t(el.dataset.i18n); if (v !== el.dataset.i18n) el.textContent = v; });
     document.querySelectorAll('[data-i18n-html]').forEach(el => { const v = t(el.dataset.i18nHtml); if (v !== el.dataset.i18nHtml) el.innerHTML = v; });
@@ -1149,7 +1159,7 @@
         body: JSON.stringify(payload)
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || t('adv.configRejected'));
+      if (!res.ok) throw new Error(tErr(data, 'adv.configRejected'));
       flashSave('btnSaveRL');
       showToast(t('adv.savedRateLimit'));
       refreshStatus();
@@ -1176,7 +1186,7 @@
         body: JSON.stringify(payload)
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || t('adv.configRejected'));
+      if (!res.ok) throw new Error(tErr(data, 'adv.configRejected'));
       flashSave('btnSaveGeneral');
       showToast(t('adv.savedGeneral'));
       refreshStatus();
@@ -1205,7 +1215,7 @@
         body: JSON.stringify(payload)
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || t('adv.configRejected'));
+      if (!res.ok) throw new Error(tErr(data, 'adv.configRejected'));
       applyA11ySelf(payload);
       showToast(t('adv.savedGeneral'));
     } catch (e) {
@@ -1267,7 +1277,7 @@
         body: JSON.stringify({ content })
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || t('adv.errorServerUnavailable'));
+      if (!res.ok) throw new Error(tErr(data, 'adv.errorServerUnavailable'));
 
       blockedWords = data.words || [];
       renderTags();

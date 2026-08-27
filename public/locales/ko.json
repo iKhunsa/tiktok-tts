@@ -94,7 +94,8 @@
     "useF8": "F8 사용",
     "usePlayPause": "재생/일시정지 키 사용",
     "clearShortcut": "✕ 지우기",
-    "blockedWordsShortcut": "차단 단어"
+    "blockedWordsShortcut": "차단 단어",
+    "delete": "삭제"
   },
   "chat": {
     "title": "라이브 채팅",
@@ -102,13 +103,15 @@
     "speaking": "읽는 중...",
     "queue": "대기열: {n}개",
     "followerBadge": "팔로워",
-    "mutedBadge": "음소거: TTS가 읽지 않음"
+    "mutedBadge": "음소거: TTS가 읽지 않음",
+    "cleared": "채팅 지워짐"
   },
   "emergencyHint": "비상 모드는 선물과 팔로우를 유지하고 채팅/좋아요/입장/공유를 음소거합니다.",
   "status": {
     "waiting": "연결 대기 중...",
     "connected": "연결됨",
-    "disconnected": "연결 해제됨"
+    "disconnected": "연결 해제됨",
+    "connectedAs": "@{username}에 연결됨"
   },
   "view": {
     "overlays": {
@@ -170,7 +173,9 @@
     "accessUrl": "접속 URL",
     "activeShortcut": "활성 단축키",
     "users": "사용자",
-    "connectToGet": "연결하여 가져오기"
+    "connectToGet": "연결하여 가져오기",
+    "color": "색상",
+    "testVoicePlaceholder": "테스트할 내용을 입력하세요..."
   },
   "overlay": {
     "chat": {
@@ -217,7 +222,8 @@
     "empty": "첫 번째 사운드를 업로드하세요",
     "noShortcut": "단축키 없음",
     "pressKey": "키를 누르세요…",
-    "clickToAssign": "단축키 지정 클릭 (Ctrl/Alt/Shift + 키)"
+    "clickToAssign": "단축키 지정 클릭 (Ctrl/Alt/Shift + 키)",
+    "test": "테스트"
   },
   "update": {
     "checking": "업데이트 확인 중...",
@@ -225,7 +231,8 @@
     "later": "나중에",
     "installing": "설치 중...",
     "available": "새 버전 사용 가능: v{version}",
-    "downloading": "v{version} 다운로드 중..."
+    "downloading": "v{version} 다운로드 중...",
+    "readyToInstall": "v{version} 설치 준비 완료."
   },
   "bot": {
     "title": "뮤직 봇",
@@ -233,28 +240,32 @@
     "nowPlaying": "재생 중",
     "nowPlayingSubtitle": "현재 재생 중인 곡, 일시정지 및 건너뛰기 제어 가능.",
     "enableCmd": "!p 활성화",
-    "skipSong": "⏭ 건너뛰기",
-    "pauseSong": "⏸ 일시정지",
-    "resumeSong": "▶ 재개",
+    "skipSong": "건너뛰기",
+    "pauseSong": "일시정지",
+    "resumeSong": "재개",
     "noMusic": "재생 중인 음악이 없습니다.",
     "musicVol": "음악 볼륨",
     "requestQueue": "신청 대기열",
     "requestQueueSubtitle": "채팅에서 !p로 신청한 곡, 도착한 순서대로.",
-    "clearQueue": "🗑 지우기",
+    "clearQueue": "지우기",
     "queueEmpty": "대기열이 비어 있습니다.",
     "myPlaylist": "내 플레이리스트 (배경)",
     "enable": "활성화",
     "shuffle": "셔플",
     "playlistHint": "한 줄에 한 곡: 이름 또는 유튜브 URL. 채팅 신청이 없을 때 재생됩니다.",
-    "playlistActive": "▶ 플레이리스트에서 재생 중:",
-    "savePlaylist": "💾 플레이리스트 저장",
+    "playlistActive": "플레이리스트에서 재생 중:",
+    "savePlaylist": "플레이리스트 저장",
     "botSettings": "봇 설정",
     "botSettingsSubtitle": "음악 봇 제한: 신청 간 대기시간과 대기열 최대 크기.",
     "cooldown": "사용자당 쿨다운 (초)",
     "maxQueue": "대기열 최대 곡 수",
     "bannedUsers": "!p 차단된 사용자",
     "banPlaceholder": "@사용자 또는 ID",
-    "ban": "차단"
+    "ban": "차단",
+    "cmdActive": "!p 활성",
+    "songSingular": "곡",
+    "songPlural": "곡",
+    "playlistSavedHint": "앱 폴더에 저장됩니다"
   },
   "overlay2": {
     "giftsTitle": "선물 알림",
@@ -279,7 +290,9 @@
     "deleteDay": "날짜 삭제",
     "confirmClearAll": "모든 클립 마커를 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.",
     "confirmClearDay": "이 날의 모든 마커 삭제",
-    "noMarkers": "아직 마커가 없습니다. 스트림을 시작하고 Ctrl+Shift+M을 눌러 마킹하세요."
+    "noMarkers": "아직 마커가 없습니다. 스트림을 시작하고 Ctrl+Shift+M을 눌러 마킹하세요.",
+    "mark": "표시",
+    "marks": "표시"
   },
   "conn": {
     "connecting": "연결 중...",
@@ -292,7 +305,13 @@
     "noSavedChannels": "저장된 채널이 없습니다. TikTok/Twitch/YouTube를 추가하고 모두 연결을 사용하세요.",
     "connectAllMsg": "모두 연결: {parts}",
     "onlyManualChannels": "수동 채널만 저장됨",
-    "connectionLost": "연결이 끊겼습니다. 앱을 다시 로드하세요."
+    "connectionLost": "연결이 끊겼습니다. 앱을 다시 로드하세요.",
+    "twitchWaitingCode": "브라우저에서 인증을 기다리는 중 (코드 {code})...",
+    "shortcutNotRegisteredPrefix": "단축키가 등록되지 않음:",
+    "shortcutTryAnother": "다른 단축키를 시도하세요.",
+    "stateManual": "수동",
+    "stateError": "오류",
+    "stateSaved": "저장됨"
   },
   "mobile2": {
     "loading": "로딩 중...",
@@ -427,7 +446,22 @@
     "followers": "팔로워",
     "noFollowers": "아직 팔로워 없음",
     "sharedList": "공유",
-    "noShared": "아직 공유 없음"
+    "noShared": "아직 공유 없음",
+    "tierPrime": "프라임",
+    "tierGeneric": "구독",
+    "tierLabel": "티어 {tier}",
+    "subResub": "재구독",
+    "subMonths": "구독 {months}개월",
+    "subGifted": "구독 선물",
+    "subGiftedTo": "@{recipient}님에게",
+    "subsGifted": "구독 선물",
+    "subsGiftedCount": "채팅에 구독 {count}개",
+    "subUpgrade": "구독 업그레이드",
+    "subNew": "신규 구독",
+    "raidJoined": "커뮤니티와 함께 도착했습니다",
+    "anonymous": "익명",
+    "giftFrom": "@{user}님으로부터",
+    "topLikers": "탑 라이커"
   },
   "donations": {
     "title": "내 콘텐츠를 지원해주세요",
@@ -586,7 +620,10 @@
     "youtubeAutoSaved": "YouTube 저장됨; 라이브 시 연결됩니다",
     "youtubeTmpSaved": "YouTube를 수동 채널로 저장했습니다",
     "readNonFollowersOn": "TTS가 모두를 읽습니다",
-    "readNonFollowersOff": "TTS가 팔로워만 읽습니다"
+    "readNonFollowersOff": "TTS가 팔로워만 읽습니다",
+    "twitchAuthorizeInBrowser": "브라우저에서 인증하세요 — 코드 {code}",
+    "twitchAuthorizeWindow": "열린 창에서 인증한 후 다시 돌아오세요",
+    "twitchAuthError": "Twitch 인증 오류"
   },
   "dictLang": {
     "title": "허용 언어",
@@ -913,5 +950,21 @@
     "mediaPlaceholder": "미리보기 준비 중",
     "comingSoon": "더 많은 기능 준비 중",
     "comingSoonDesc": "새로운 도구를 준비하고 있습니다."
+  },
+  "errors": {
+    "textRequired": "텍스트가 필요합니다",
+    "ttsRateLimited": "요청 제한이 활성화되어 있습니다",
+    "ttsServiceError": "Google TTS 음성 서비스에 문제가 발생했습니다",
+    "unsupportedAudioType": "MP3, WAV, OGG, WEBM 또는 M4A 파일만 허용됩니다",
+    "audioUploadFailed": "오디오 업로드 오류",
+    "noAudioFile": "오디오 파일을 받지 못했습니다",
+    "maxSoundsReached": "최대 24개 소리까지만 허용됩니다",
+    "imageTooLarge": "이미지는 8MB를 초과할 수 없습니다",
+    "imageUploadFailed": "이미지 업로드 오류",
+    "noImageFile": "이미지를 받지 못했습니다",
+    "contentRequired": "콘텐츠가 필요합니다",
+    "invalidConfig": "잘못된 설정입니다",
+    "twitchAuthStartFailed": "Twitch 인증을 시작할 수 없습니다",
+    "obsConnectFailed": "OBS에 연결할 수 없습니다"
   }
 }

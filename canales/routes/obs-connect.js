@@ -24,7 +24,7 @@ function obsConnect(deps) {
         'warn', 'canales', 'canales/routes/obs-connect.js#obsConnect', 'canales.obs.conexion_fallida',
         `No se pudo conectar a OBS en el puerto ${port}: ${err.message}`, { port, error: err.message }
       );
-      res.status(500).json({ error: err.message });
+      res.status(500).json({ error: err.message, errorKey: 'errors.obsConnectFailed' });
     }
   };
 }

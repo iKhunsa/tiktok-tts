@@ -6,7 +6,7 @@ const { saveBlockedWordsToFile } = require('../filters/blocked-words-file');
 function blockedWordsImport(deps) {
   return (req, res) => {
     const { content } = req.body || {};
-    if (typeof content !== 'string') return res.status(400).json({ error: 'Se requiere content' });
+    if (typeof content !== 'string') return res.status(400).json({ error: 'Se requiere content', errorKey: 'errors.contentRequired' });
 
     deps.blockedMatchersState.blockedWords.clear();
     for (const line of content.split(/\r?\n/)) {

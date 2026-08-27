@@ -8,7 +8,7 @@ function oauthStart(deps) {
       const result = await startTwitchDeviceAuth(deps);
       res.json(result);
     } catch (err) {
-      res.status(err.statusCode || 502).json({ error: err.message });
+      res.status(err.statusCode || 502).json({ error: err.message, errorKey: 'errors.twitchAuthStartFailed' });
     }
   };
 }

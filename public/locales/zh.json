@@ -94,7 +94,8 @@
     "useF8": "使用 F8",
     "usePlayPause": "使用播放/暂停键",
     "clearShortcut": "✕ 清除",
-    "blockedWordsShortcut": "屏蔽词"
+    "blockedWordsShortcut": "屏蔽词",
+    "delete": "删除"
   },
   "chat": {
     "title": "实时聊天",
@@ -102,13 +103,15 @@
     "speaking": "正在朗读...",
     "queue": "队列：{n} 条消息",
     "followerBadge": "关注者",
-    "mutedBadge": "已静音：TTS 不朗读"
+    "mutedBadge": "已静音：TTS 不朗读",
+    "cleared": "聊天已清除"
   },
   "emergencyHint": "紧急模式保持礼物和关注活跃，静音聊天/点赞/加入/分享。",
   "status": {
     "waiting": "等待连接...",
     "connected": "已连接",
-    "disconnected": "已断开"
+    "disconnected": "已断开",
+    "connectedAs": "已连接到 @{username}"
   },
   "view": {
     "overlays": {
@@ -170,7 +173,9 @@
     "accessUrl": "访问 URL",
     "activeShortcut": "当前快捷键",
     "users": "用户",
-    "connectToGet": "连接后获取"
+    "connectToGet": "连接后获取",
+    "color": "颜色",
+    "testVoicePlaceholder": "输入内容进行测试..."
   },
   "overlay": {
     "chat": {
@@ -217,7 +222,8 @@
     "empty": "上传第一个音效开始使用",
     "noShortcut": "无快捷键",
     "pressKey": "按下按键…",
-    "clickToAssign": "点击分配快捷键 (Ctrl/Alt/Shift + 按键)"
+    "clickToAssign": "点击分配快捷键 (Ctrl/Alt/Shift + 按键)",
+    "test": "试听"
   },
   "update": {
     "checking": "检查更新中...",
@@ -225,7 +231,8 @@
     "later": "稍后",
     "installing": "安装中...",
     "available": "新版本可用: v{version}",
-    "downloading": "正在下载 v{version}..."
+    "downloading": "正在下载 v{version}...",
+    "readyToInstall": "v{version} 已准备好安装。"
   },
   "bot": {
     "title": "音乐机器人",
@@ -233,28 +240,32 @@
     "nowPlaying": "正在播放",
     "nowPlayingSubtitle": "当前正在播放的歌曲，可暂停或跳过。",
     "enableCmd": "启用 !p",
-    "skipSong": "⏭ 跳过",
-    "pauseSong": "⏸ 暂停",
-    "resumeSong": "▶ 继续",
+    "skipSong": "跳过",
+    "pauseSong": "暂停",
+    "resumeSong": "继续",
     "noMusic": "没有音乐在播放。",
     "musicVol": "音乐音量",
     "requestQueue": "点歌队列",
     "requestQueueSubtitle": "聊天用 !p 点的歌，按到达顺序排列。",
-    "clearQueue": "🗑 清空",
+    "clearQueue": "清空",
     "queueEmpty": "队列为空。",
     "myPlaylist": "我的播放列表（背景）",
     "enable": "启用",
     "shuffle": "随机",
     "playlistHint": "每行一首歌：歌名或YouTube URL。聊天没有点歌时播放。",
-    "playlistActive": "▶ 正在播放列表：",
-    "savePlaylist": "💾 保存播放列表",
+    "playlistActive": "正在播放列表：",
+    "savePlaylist": "保存播放列表",
     "botSettings": "机器人设置",
     "botSettingsSubtitle": "音乐机器人限制：点歌冷却时间和队列最大长度。",
     "cooldown": "每用户冷却时间（秒）",
     "maxQueue": "队列最大曲数",
     "bannedUsers": "被封禁的 !p 用户",
     "banPlaceholder": "@用户 或 ID",
-    "ban": "封禁"
+    "ban": "封禁",
+    "cmdActive": "!p 已启用",
+    "songSingular": "首歌曲",
+    "songPlural": "首歌曲",
+    "playlistSavedHint": "保存在应用文件夹中"
   },
   "overlay2": {
     "giftsTitle": "礼物提醒",
@@ -279,7 +290,9 @@
     "deleteDay": "删除当天",
     "confirmClearAll": "删除所有片段标记？此操作无法撤销。",
     "confirmClearDay": "删除该日期的所有标记",
-    "noMarkers": "还没有标记。开始直播并按 Ctrl+Shift+M 进行标记。"
+    "noMarkers": "还没有标记。开始直播并按 Ctrl+Shift+M 进行标记。",
+    "mark": "标记",
+    "marks": "标记"
   },
   "conn": {
     "connecting": "连接中...",
@@ -292,7 +305,13 @@
     "noSavedChannels": "没有保存的频道。添加TikTok/Twitch/YouTube并使用全部连接。",
     "connectAllMsg": "全部连接：{parts}",
     "onlyManualChannels": "只保存了手动频道",
-    "connectionLost": "连接断开。请重新加载应用。"
+    "connectionLost": "连接断开。请重新加载应用。",
+    "twitchWaitingCode": "正在等待浏览器授权（代码 {code}）...",
+    "shortcutNotRegisteredPrefix": "快捷键未注册：",
+    "shortcutTryAnother": "请尝试其他快捷键。",
+    "stateManual": "手动",
+    "stateError": "错误",
+    "stateSaved": "已保存"
   },
   "mobile2": {
     "loading": "加载中...",
@@ -427,7 +446,22 @@
     "followers": "粉丝",
     "noFollowers": "暂无粉丝",
     "sharedList": "分享",
-    "noShared": "暂无分享"
+    "noShared": "暂无分享",
+    "tierPrime": "Prime",
+    "tierGeneric": "订阅",
+    "tierLabel": "{tier} 级",
+    "subResub": "续订",
+    "subMonths": "{months} 个月订阅",
+    "subGifted": "赠阅",
+    "subGiftedTo": "送给 @{recipient}",
+    "subsGifted": "批量赠阅",
+    "subsGiftedCount": "{count} 份订阅送给聊天区",
+    "subUpgrade": "订阅升级",
+    "subNew": "新订阅",
+    "raidJoined": "带着自己的社区来了",
+    "anonymous": "匿名",
+    "giftFrom": "来自 @{user}",
+    "topLikers": "点赞排行榜"
   },
   "donations": {
     "title": "支持我的内容",
@@ -586,7 +620,10 @@
     "youtubeAutoSaved": "YouTube已保存；直播时将自动连接",
     "youtubeTmpSaved": "YouTube已保存为手动频道",
     "readNonFollowersOn": "TTS 朗读所有人",
-    "readNonFollowersOff": "TTS 只朗读关注者"
+    "readNonFollowersOff": "TTS 只朗读关注者",
+    "twitchAuthorizeInBrowser": "请在浏览器中授权 — 代码 {code}",
+    "twitchAuthorizeWindow": "请在打开的窗口中授权，然后回到这里",
+    "twitchAuthError": "Twitch 授权出错"
   },
   "dictLang": {
     "title": "允许的语言",
@@ -913,5 +950,21 @@
     "mediaPlaceholder": "预览即将推出",
     "comingSoon": "更多即将推出",
     "comingSoonDesc": "我们正在开发新工具。"
+  },
+  "errors": {
+    "textRequired": "需要输入文本",
+    "ttsRateLimited": "速率限制生效中",
+    "ttsServiceError": "语音服务（Google TTS）出现问题",
+    "unsupportedAudioType": "仅支持 MP3、WAV、OGG、WEBM 或 M4A 格式的文件",
+    "audioUploadFailed": "上传音频时出错",
+    "noAudioFile": "未收到音频文件",
+    "maxSoundsReached": "最多允许24个音效",
+    "imageTooLarge": "图片不能超过 8 MB",
+    "imageUploadFailed": "上传图片时出错",
+    "noImageFile": "未收到任何图片",
+    "contentRequired": "需要内容",
+    "invalidConfig": "配置无效",
+    "twitchAuthStartFailed": "无法启动 Twitch 授权",
+    "obsConnectFailed": "无法连接到 OBS"
   }
 }

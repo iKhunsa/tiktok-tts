@@ -1,7 +1,7 @@
 'use strict';
 
 const { parseCommand } = require('./parse-command');
-const { FEATURES } = require('../avanzado/feature-flags');
+const { FEATURES } = require('../avanzado');
 
 function getConfigSnapshot(bus) {
   let snapshot = null;
