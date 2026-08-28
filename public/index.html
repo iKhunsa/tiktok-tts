@@ -161,10 +161,23 @@
     .sidebar-footer-btn:hover { background: var(--surface); color: var(--text-secondary); }
 
     .ad-slot { display: block; margin: 4px 12px; border-radius: 8px; overflow: hidden; line-height: 0; }
-    .ad-slot--lateral { flex: 1 1 auto; min-height: 48px; max-height: 461px; }
+    .ad-slot--lateral { flex: 1 1 auto; min-height: 48px; max-height: 461px; position: relative; }
     .ad-slot img { width: 100%; height: auto; display: block; object-fit: contain; }
     .ad-slot--lateral img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
     .ad-slot--banner { margin: 22px 0 0; border-radius: 12px; }
+
+    /* Carrusel lateral: dos capas apiladas, crossfade + leve zoom al cambiar */
+    .ad-slot--lateral .ad-layer {
+      position: absolute; inset: 0;
+      opacity: 0; transform: scale(1.04);
+      transition: opacity .8s ease, transform .8s ease;
+      will-change: opacity, transform;
+    }
+    .ad-slot--lateral .ad-layer.is-active { opacity: 1; transform: scale(1); }
+    @media (prefers-reduced-motion: reduce) {
+      .ad-slot--lateral .ad-layer { transition: opacity .3s linear; transform: none; }
+      .ad-slot--lateral .ad-layer.is-active { transform: none; }
+    }
 
     .community-banner {
       display: block;
@@ -1943,9 +1956,31 @@
       </button>
     </nav>
 
-    <div class="ad-slot ad-slot--lateral" id="sidebarAdSlot">
-      <img src="asset/ads/lateral.png" alt="Publicidad">
+    <div class="ad-slot ad-slot--lateral" id="sidebarAdSlot"
+         data-ads='["asset/ads/lateral-verde.png","asset/ads/lateral-azul.png","asset/ads/lateral-naranja.png"]'>
+      <img class="ad-layer is-active" src="asset/ads/lateral-verde.png" alt="Publicidad">
+      <img class="ad-layer" src="" alt="Publicidad" aria-hidden="true">
     </div>
+    <script>
+      (function rotateSidebarAd() {
+        var slot = document.getElementById('sidebarAdSlot');
+        if (!slot) return;
+        var layers = slot.querySelectorAll('.ad-layer');
+        var ads;
+        try { ads = JSON.parse(slot.dataset.ads || '[]'); } catch (e) { ads = []; }
+        if (layers.length < 2 || ads.length < 2) return;
+        var i = 0, front = 0;
+        ads.forEach(function (src) { var p = new Image(); p.src = src; }); // precarga
+        setInterval(function () {
+          i = (i + 1) % ads.length;
+          var back = 1 - front;
+          layers[back].src = ads[i];
+          layers[back].classList.add('is-active');
+          layers[front].classList.remove('is-active');
+          front = back;
+        }, 30000);
+      })();
+    </script>
 
     <a href="https://discord.com/invite/mwY859tcQK" target="_blank" class="community-banner">
       💬 <span data-i18n="community.label">Comunidad TikLiveTTS</span>
