@@ -56,6 +56,9 @@
     "langFilterHint": "Ignora mensagens de chat com caracteres que não correspondem ao idioma da voz ativa (ex: bloqueia chinês/japonês se a voz estiver em espanhol, e vice-versa).",
     "dictFilter": "Filtrar por idioma (palavras)",
     "dictFilterHint": "Só lê mensagens escritas no idioma da voz ativa ou nos idiomas extras que você permitir. Palavras desconhecidas (nomes, erros de digitação) não bloqueiam.",
+    "ttsCommand": "Ler apenas mensagens com comando",
+    "ttsCommandPlaceholder": "!tts",
+    "ttsCommandHint": "Exemplo: !tts olá. A mensagem completa aparece no chat, mas a voz lê apenas “olá”.",
     "readNonFollowers": "Ler não seguidores"
   },
   "tts": {
@@ -72,6 +75,7 @@
     "disconnect": "Desconectar",
     "connectAll": "Conectar tudo",
     "saveChannel": "Salvar",
+    "save": "Salvar",
     "addChannel": "＋ Adicionar canal",
     "cancel": "Cancelar",
     "testVoice": "▶ Testar",
@@ -565,6 +569,10 @@
     "allChannelsDisconnected": "Todos os canais desconectados",
     "youtubeAutoSaved": "YouTube salvo; vai conectar quando ao vivo",
     "youtubeTmpSaved": "YouTube salvo como canal manual",
+    "ttsCommandOn": "Modo por comando ativado",
+    "ttsCommandOff": "Modo por comando desativado",
+    "ttsCommandSaved": "Comando TTS salvo",
+    "ttsCommandInvalid": "Comando inválido: use uma palavra de até 20 caracteres",
     "readNonFollowersOn": "O TTS lê todos",
     "readNonFollowersOff": "O TTS só lê seguidores"
   },

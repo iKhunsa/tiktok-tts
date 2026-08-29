@@ -56,6 +56,9 @@
     "langFilterHint": "Ignore les messages du chat contenant des caractères ne correspondant pas à la langue de la voix active (ex : bloque le chinois/japonais si votre voix est en espagnol, et inversement).",
     "dictFilter": "Filtrer par langue (mots)",
     "dictFilterHint": "Ne lit que les messages écrits dans la langue de la voix active ou dans les langues supplémentaires autorisées. Les mots inconnus (noms, fautes de frappe) ne bloquent pas.",
+    "ttsCommand": "Lire uniquement les messages avec une commande",
+    "ttsCommandPlaceholder": "!tts",
+    "ttsCommandHint": "Exemple : !tts bonjour. Le message complet reste dans le chat, mais la voix lit seulement « bonjour ».",
     "readNonFollowers": "Lire les non-abonnés"
   },
   "tts": {
@@ -72,6 +75,7 @@
     "disconnect": "Déconnecter",
     "connectAll": "Tout connecter",
     "saveChannel": "Enregistrer",
+    "save": "Enregistrer",
     "addChannel": "＋ Ajouter chaîne",
     "cancel": "Annuler",
     "testVoice": "▶ Tester",
@@ -565,6 +569,10 @@
     "allChannelsDisconnected": "Tous les canaux déconnectés",
     "youtubeAutoSaved": "YouTube enregistré; se connectera quand en direct",
     "youtubeTmpSaved": "YouTube enregistré comme canal manuel",
+    "ttsCommandOn": "Mode commande activé",
+    "ttsCommandOff": "Mode commande désactivé",
+    "ttsCommandSaved": "Commande TTS enregistrée",
+    "ttsCommandInvalid": "Commande invalide : utilisez un seul mot de 20 caractères maximum",
     "readNonFollowersOn": "Le TTS lit tout le monde",
     "readNonFollowersOff": "Le TTS ne lit que les abonnés"
   },

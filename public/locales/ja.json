@@ -56,6 +56,9 @@
     "langFilterHint": "現在の音声の言語に合わない文字を含むチャットメッセージを無視します（例：音声がスペイン語の場合、中国語・日本語はブロックされ、逆も同様です）。",
     "dictFilter": "言語で絞り込み（単語）",
     "dictFilterHint": "アクティブな音声の言語、または許可した追加言語で書かれたメッセージのみ読み上げます。未知の単語（名前、タイプミス）はブロックされません。",
+    "ttsCommand": "コマンド付きメッセージのみ読む",
+    "ttsCommandPlaceholder": "!tts",
+    "ttsCommandHint": "例：!tts こんにちは。チャットには全文を表示し、音声は「こんにちは」だけを読みます。",
     "readNonFollowers": "非フォロワーも読む"
   },
   "tts": {
@@ -72,6 +75,7 @@
     "disconnect": "切断",
     "connectAll": "全て接続",
     "saveChannel": "保存",
+    "save": "保存",
     "addChannel": "＋ チャンネル追加",
     "cancel": "キャンセル",
     "testVoice": "▶ テスト",
@@ -565,6 +569,10 @@
     "allChannelsDisconnected": "すべてのチャンネルを切断しました",
     "youtubeAutoSaved": "YouTubeを保存しました；ライブ時に接続します",
     "youtubeTmpSaved": "YouTubeを手動チャンネルとして保存しました",
+    "ttsCommandOn": "コマンドモードを有効にしました",
+    "ttsCommandOff": "コマンドモードを無効にしました",
+    "ttsCommandSaved": "TTSコマンドを保存しました",
+    "ttsCommandInvalid": "無効なコマンドです：20文字以内の1単語を使用してください",
     "readNonFollowersOn": "TTSは全員を読みます",
     "readNonFollowersOff": "TTSはフォロワーのみ読みます"
   },

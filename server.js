@@ -626,6 +626,9 @@ const DEFAULT_CONFIG = {
   a11yUiFontScale: 1,
   a11yHighContrast: false,
   ttsSlowSpeech: false,
+  // Si está activo, solo se leen mensajes que empiezan por este comando.
+  ttsCommandEnabled: false,
+  ttsCommand: '!tts',
   // true = el TTS lee a todo el mundo (comportamiento histórico).
   // false = solo lee a seguidores y a la whitelist manual.
   ttsReadNonFollowers: true,
@@ -655,6 +658,8 @@ const CONFIG_VALIDATORS = {
   a11yUiFontScale: (v) => [1, 1.15, 1.3, 1.5].includes(v),
   a11yHighContrast: (v) => typeof v === 'boolean',
   ttsSlowSpeech: (v) => typeof v === 'boolean',
+  ttsCommandEnabled: (v) => typeof v === 'boolean',
+  ttsCommand: (v) => typeof v === 'string' && /^[!/#$%&?+.-]?[\p{L}\p{N}_-]{1,19}$/u.test(v),
   ttsReadNonFollowers: (v) => typeof v === 'boolean',
 };
 
@@ -1087,6 +1092,21 @@ function sanitizeForTTS(text) {
     .trim();
 }
 
+function applyTtsCommandFilter(text, enabled = config.ttsCommandEnabled, command = config.ttsCommand) {
+  const source = String(text || '').trim();
+  if (!enabled) return { blocked: false, text: source };
+  const normalizedCommand = String(command || '').trim();
+  if (!normalizedCommand) return { blocked: true, text: '' };
+  const prefix = source.slice(0, normalizedCommand.length);
+  const boundary = source.charAt(normalizedCommand.length);
+  if (prefix.toLocaleLowerCase() !== normalizedCommand.toLocaleLowerCase()
+      || (boundary && !/\s/u.test(boundary))) {
+    return { blocked: true, text: '' };
+  }
+  const spokenText = source.slice(normalizedCommand.length).trim();
+  return { blocked: !spokenText, text: spokenText };
+}
+
 function cleanName(str = '') {
   return str
     .replace(/^@/, '')
@@ -1482,7 +1502,8 @@ function emitChatMessage({ platform, channel, user, userId, comment, ttsComment,
 
   const isFollower = eff.isFollower || eff.isWhitelisted;
   const nonFollowerBlocked = !config.ttsReadNonFollowers && !isFollower;
-  const ttsBlocked = eff.isMuted || nonFollowerBlocked;
+  const commandResult = applyTtsCommandFilter(ttsComment ?? comment);
+  const ttsBlocked = eff.isMuted || nonFollowerBlocked || commandResult.blocked;
   if (eff.isMuted) telemetryBus.emit('moderation:message-filtered', { reason: 'user-muted' });
   else if (nonFollowerBlocked) telemetryBus.emit('moderation:tts-skipped-nonfollower', {});
 
@@ -1494,7 +1515,7 @@ function emitChatMessage({ platform, channel, user, userId, comment, ttsComment,
     userId: userId || null,
     modKey: key,
     comment,
-    ttsComment,
+    ttsComment: commandResult.text,
     emotes,
     ytMsgId,
     isFollower,

@@ -56,6 +56,9 @@
     "langFilterHint": "활성 음성의 언어와 일치하지 않는 문자가 포함된 채팅 메시지를 무시합니다 (예: 음성이 스페인어면 중국어/일본어를 차단하며, 반대의 경우도 마찬가지입니다).",
     "dictFilter": "언어별 필터 (단어)",
     "dictFilterHint": "활성 음성 언어 또는 허용한 추가 언어로 작성된 메시지만 읽습니다. 알 수 없는 단어(이름, 오타)는 차단되지 않습니다.",
+    "ttsCommand": "명령어가 있는 메시지만 읽기",
+    "ttsCommandPlaceholder": "!tts",
+    "ttsCommandHint": "예: !tts 안녕하세요. 채팅에는 전체가 표시되고 음성은 “안녕하세요”만 읽습니다.",
     "readNonFollowers": "비팔로워도 읽기"
   },
   "tts": {
@@ -72,6 +75,7 @@
     "disconnect": "연결 해제",
     "connectAll": "모두 연결",
     "saveChannel": "저장",
+    "save": "저장",
     "addChannel": "＋ 채널 추가",
     "cancel": "취소",
     "testVoice": "▶ 테스트",
@@ -565,6 +569,10 @@
     "allChannelsDisconnected": "모든 채널 연결 해제됨",
     "youtubeAutoSaved": "YouTube 저장됨; 라이브 시 연결됩니다",
     "youtubeTmpSaved": "YouTube를 수동 채널로 저장했습니다",
+    "ttsCommandOn": "명령어 모드가 켜졌습니다",
+    "ttsCommandOff": "명령어 모드가 꺼졌습니다",
+    "ttsCommandSaved": "TTS 명령어를 저장했습니다",
+    "ttsCommandInvalid": "잘못된 명령어입니다: 20자 이내의 한 단어를 사용하세요",
     "readNonFollowersOn": "TTS가 모두를 읽습니다",
     "readNonFollowersOff": "TTS가 팔로워만 읽습니다"
   },
