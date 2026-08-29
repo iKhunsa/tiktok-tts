@@ -9,7 +9,11 @@
     "dev": "node --watch server.js",
     "electron": "electron .",
     "prebuild:electron": "node scripts/ensure-webhook-config.js && node scripts/ensure-telemetry-config.js",
-    "build:electron": "electron-builder --win"
+    "build:electron": "electron-builder --win",
+    "prebuild:win": "node scripts/ensure-webhook-config.js && node scripts/ensure-telemetry-config.js",
+    "build:win": "electron-builder --win",
+    "prebuild:mac": "node scripts/ensure-webhook-config.js && node scripts/ensure-telemetry-config.js",
+    "build:mac": "electron-builder --mac dmg --arm64"
   },
   "build": {
     "appId": "com.tiktok-tts.app",
@@ -26,6 +30,29 @@
       "target": "nsis",
       "icon": "tray-icon.ico",
       "verifyUpdateCodeSignature": false
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "build/icon.png",
+      "category": "public.app-category.entertainment",
+      "identity": null,
+      "hardenedRuntime": false,
+      "artifactName": "TikTok-TTS-${version}-${arch}.${ext}"
+    },
+    "dmg": {
+      "title": "TikTok TTS ${version}",
+      "contents": [
+        {
+          "x": 140,
+          "y": 220
+        },
+        {
+          "x": 400,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
     },
     "nsis": {
       "oneClick": false,

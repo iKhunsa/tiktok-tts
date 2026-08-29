@@ -9,9 +9,24 @@ const fs = require('fs');
 const path = require('path');
 
 const RELEASE_BASE = 'https://github.com/yt-dlp/yt-dlp/releases/latest/download/';
-const ASSET_BY_ARCH = { x64: 'yt-dlp.exe', arm64: 'yt-dlp_arm64.exe', ia32: 'yt-dlp_x86.exe' };
+const WINDOWS_ASSET_BY_ARCH = { x64: 'yt-dlp.exe', arm64: 'yt-dlp_arm64.exe', ia32: 'yt-dlp_x86.exe' };
 const UPDATE_INTERVAL_MS = 24 * 60 * 60 * 1000;
 const STDERR_TAIL_MAX = 4096;
+
+function getBinaryConfig(platform = process.platform, arch = process.arch) {
+  if (platform === 'win32') {
+    return {
+      asset: WINDOWS_ASSET_BY_ARCH[arch] || 'yt-dlp.exe',
+      filename: 'yt-dlp.exe',
+      executableMode: null,
+    };
+  }
+  if (platform === 'darwin') {
+    // Official universal macOS 10.15+ standalone executable (x64 + arm64).
+    return { asset: 'yt-dlp_macos', filename: 'yt-dlp', executableMode: 0o755 };
+  }
+  throw new Error(`yt-dlp no soportado en ${platform}/${arch}`);
+}
 
 function formatDuration(secs) {
   if (!secs || isNaN(secs)) return '';
@@ -22,7 +37,8 @@ function formatDuration(secs) {
 
 function createMusicEngine({ dataDir, log, onStatus }) {
   const BIN_DIR = path.join(dataDir, 'bin');
-  const YTDLP = path.join(BIN_DIR, 'yt-dlp.exe');
+  const binary = getBinaryConfig();
+  const YTDLP = path.join(BIN_DIR, binary.filename);
   const UPDATE_MARKER = path.join(BIN_DIR, '.last-update-check');
 
   let status = { state: 'missing', version: null, error: null };
@@ -92,12 +108,17 @@ function createMusicEngine({ dataDir, log, onStatus }) {
   }
 
   async function downloadBinary() {
-    const asset = ASSET_BY_ARCH[process.arch] || 'yt-dlp.exe';
-    const url = RELEASE_BASE + asset;
+    const url = RELEASE_BASE + binary.asset;
     fs.mkdirSync(BIN_DIR, { recursive: true });
     const tmp = YTDLP + '.download';
     emitStatus('downloading');
-    log('info', 'music', 'descargando yt-dlp', { url });
+    log('info', 'music', 'descargando yt-dlp', {
+      platform: process.platform,
+      arch: process.arch,
+      asset: binary.asset,
+      destination: YTDLP,
+      url,
+    });
     const ctrl = new AbortController();
     const abortTimer = setTimeout(() => ctrl.abort(), 180000);
     try {
@@ -105,6 +126,7 @@ function createMusicEngine({ dataDir, log, onStatus }) {
       if (!res.ok) throw new Error(`HTTP ${res.status} al descargar yt-dlp`);
       const buf = Buffer.from(await res.arrayBuffer());
       fs.writeFileSync(tmp, buf);
+      if (binary.executableMode !== null) fs.chmodSync(tmp, binary.executableMode);
       fs.renameSync(tmp, YTDLP);
     } finally {
       clearTimeout(abortTimer);
@@ -118,6 +140,8 @@ function createMusicEngine({ dataDir, log, onStatus }) {
     readyPromise = (async () => {
       try {
         if (!fs.existsSync(YTDLP)) await downloadBinary();
+        // Also repairs permissions on binaries downloaded by an older version.
+        if (binary.executableMode !== null) fs.chmodSync(YTDLP, binary.executableMode);
         // Primer arranque puede tardar (PyInstaller extrae a temp) → timeout generoso
         let ver = await runYtdlp(['--version'], { timeoutMs: 60000 });
         if (ver.code !== 0) {
@@ -130,7 +154,13 @@ function createMusicEngine({ dataDir, log, onStatus }) {
         status.version = ver.stdout.trim();
         await detectJsRuntime();
         emitStatus('ready');
-        log('info', 'music', 'yt-dlp listo', { version: status.version, jsRuntime: jsRuntimeArgs.length > 0 });
+        log('info', 'music', 'yt-dlp listo', {
+          platform: process.platform,
+          arch: process.arch,
+          asset: binary.asset,
+          version: status.version,
+          jsRuntime: jsRuntimeArgs.length > 0,
+        });
       } catch (err) {
         emitStatus('error', err.message);
         log('warn', 'music', 'yt-dlp no disponible', { error: err.message });
@@ -229,4 +259,4 @@ function createMusicEngine({ dataDir, log, onStatus }) {
   return { ensureReady, getStatus, checkForUpdates, search, getInfo, createStream, shutdown };
 }
 
-module.exports = { createMusicEngine };
+module.exports = { createMusicEngine, getBinaryConfig };
