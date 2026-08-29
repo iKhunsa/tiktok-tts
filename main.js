@@ -1,5 +1,5 @@
 'use strict';
-const { app, BrowserWindow, Tray, Menu, nativeImage, dialog, shell, globalShortcut, ipcMain } = require('electron');
+const { app, BrowserWindow, Tray, Menu, nativeImage, dialog, shell, globalShortcut, ipcMain, systemPreferences } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const http = require('http');
@@ -54,8 +54,8 @@ function resolveIngestToken() {
 // ─────────────────────────────────────────────────────────────────────────
 
 // ── Low-level keyboard hook (works in exclusive-fullscreen / games) ────────────
-// uiohook-napi uses SetWindowsHookEx(WH_KEYBOARD_LL) instead of RegisterHotKey,
-// so it fires even when a DirectX exclusive-fullscreen game has focus.
+// On macOS this enhanced mode requires Accessibility permission. The app always
+// falls back to Electron globalShortcut when the native hook is unavailable.
 let uiohook = null;
 let uiohookActive = false;
 try { uiohook = require('uiohook-napi'); } catch (_) {}
@@ -76,7 +76,9 @@ const _UIOHOOK_KEYS = (() => {
 
 function _makeUiohookCheck(electronShortcut) {
   const parts = electronShortcut.split('+').map(p => p.trim());
-  const needCtrl  = parts.some(p => ['Ctrl','CommandOrControl','Control','Cmd','Command'].includes(p));
+  const commandOrControl = parts.includes('CommandOrControl');
+  const needCtrl  = parts.some(p => ['Ctrl','Control'].includes(p)) || (commandOrControl && process.platform !== 'darwin');
+  const needMeta  = parts.some(p => ['Cmd','Command','Super','Meta'].includes(p)) || (commandOrControl && process.platform === 'darwin');
   const needShift = parts.includes('Shift');
   const needAlt   = parts.includes('Alt');
   const keyParts  = parts.filter(p => !['Ctrl','CommandOrControl','Control','Cmd','Command','Shift','Alt','Super','Meta'].includes(p));
@@ -86,6 +88,7 @@ function _makeUiohookCheck(electronShortcut) {
   return (e) =>
     e.keycode === keycode &&
     !!e.ctrlKey  === needCtrl &&
+    !!e.metaKey  === needMeta &&
     !!e.shiftKey === needShift &&
     !!e.altKey   === needAlt;
 }
@@ -106,6 +109,10 @@ function unregisterUiohookShortcut(id) {
 
 function startUiohook() {
   if (!uiohook || uiohookActive) return;
+  if (process.platform === 'darwin' && !systemPreferences.isTrustedAccessibilityClient(false)) {
+    console.warn('[shortcuts] macOS Accessibility no autorizado; usando globalShortcut. El permiso solo es necesario para atajos mejorados.');
+    return;
+  }
   try {
     uiohook.uIOhook.on('keydown', (e) => {
       for (const { check, callback } of _uiohookShortcuts.values()) {
@@ -116,7 +123,8 @@ function startUiohook() {
     uiohookActive = true;
     console.log('[shortcuts] uiohook-napi active — atajos funcionan en fullscreen');
   } catch (err) {
-    console.warn('[shortcuts] uiohook-napi fallo, usando globalShortcut:', err.message);
+    const hint = process.platform === 'darwin' ? ' (revisa el permiso de Accessibility)' : '';
+    console.warn(`[shortcuts] uiohook-napi fallo${hint}; usando globalShortcut:`, err.message);
     uiohookActive = false;
   }
 }
@@ -129,6 +137,9 @@ function stopUiohook() {
 }
 
 const PORT = 3000;
+// Releases currently publish Windows updater metadata only. macOS local builds
+// must not request latest-mac.yml until a signed/notarized release channel exists.
+const AUTO_UPDATE_SUPPORTED = app.isPackaged && process.platform === 'win32';
 
 const gotLock = app.requestSingleInstanceLock();
 if (!gotLock) {
@@ -203,9 +214,10 @@ function retryWaitForServer(cb, onFailure, attempts) {
       }
 }
 
-const ICON_PATH = app.isPackaged
-  ? path.join(process.resourcesPath, 'tray-icon.ico')
-  : path.join(__dirname, 'tray-icon.ico');
+const RESOURCES_PATH = app.isPackaged ? process.resourcesPath : __dirname;
+const ICON_PATH = process.platform === 'darwin'
+  ? path.join(RESOURCES_PATH, 'public', 'logo.png')
+  : path.join(RESOURCES_PATH, 'tray-icon.ico');
 
 let mainWindow = null;
 let tray = null;
@@ -302,7 +314,8 @@ function createTray() {
   // close handler and 'window-all-closed' fall back to normal quit behavior
   // (otherwise the app would keep running with no visible way to reach it).
   try {
-    const icon = nativeImage.createFromPath(ICON_PATH);
+    let icon = nativeImage.createFromPath(ICON_PATH);
+    if (process.platform === 'darwin') icon = icon.resize({ width: 18, height: 18 });
     tray = new Tray(icon);
 
     tray.setToolTip('TikTok TTS');
@@ -332,7 +345,7 @@ app.whenReady().then(() => {
   // If server failed to load, show error dialog + trigger auto-update so user
   // gets the fix automatically without needing to reinstall manually.
   if (serverLoadError) {
-    if (app.isPackaged) {
+    if (AUTO_UPDATE_SUPPORTED) {
       // Try to update first — if a fix is available it will download + install
       try {
         autoUpdater.autoDownload = true;
@@ -348,7 +361,7 @@ app.whenReady().then(() => {
   waitForServer(() => {
     createWindow();
     createTray();
-    if (app.isPackaged) setupAutoUpdater();
+    if (AUTO_UPDATE_SUPPORTED) setupAutoUpdater();
 
     telemetry.init({
       url: resolveTelemetryUrl(),
@@ -576,7 +589,7 @@ ipcMain.handle('register-tts-shortcut', (_event, { action, shortcut }) => {
   try {
     const registered = globalShortcut.register(normalized, callback);
     if (!registered || !globalShortcut.isRegistered(normalized)) {
-      return { ok: false, shortcut: normalized, error: 'Windows no permitio registrar este atajo. Prueba F8 o MediaPlayPause.' };
+      return { ok: false, shortcut: normalized, error: 'El sistema no permitio registrar este atajo. Prueba F8 o MediaPlayPause.' };
     }
     ttsShortcuts.set(action, normalized);
     return { ok: true, shortcut: normalized };
@@ -620,7 +633,7 @@ ipcMain.handle('register-soundpad-shortcut', (_event, { soundId, shortcut }) => 
   } else {
     try {
       const registered = globalShortcut.register(normalized, playCallback);
-      if (!registered) return { ok: false, error: 'Windows no permitió registrar este atajo' };
+      if (!registered) return { ok: false, error: 'El sistema no permitió registrar este atajo' };
     } catch (err) {
       return { ok: false, error: err.message };
     }
