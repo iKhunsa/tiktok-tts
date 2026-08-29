@@ -61,6 +61,7 @@ function upload(deps) {
         filename: req.file.filename,
         name: baseName.slice(0, 40),
         shortcut: null,
+        icon: 'music_note',
         color: '#3ecf8e',
         createdAt: Date.now(),
       };

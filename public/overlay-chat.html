@@ -6,7 +6,7 @@
   <title>Overlay — Chat Unificado</title>
   <style>
     :root {
-      --accent: #3ecf8e;
+      --accent: #FFBB00;
       --bg-alpha: 0.82;
       --font-size: 14px;
       --tiktok:  #fe2c55;
@@ -107,6 +107,17 @@
 <body>
   <div id="chat-container"></div>
   <script>
+    // Errores no manejados del overlay → log de sesión del servidor → GlitchTip.
+    window.addEventListener('error', (e) => {
+      fetch('/api/logs/client', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: e.message || 'Error desconocido', stack: e.error && e.error.stack, source: 'overlay:' + location.pathname }) }).catch(() => {});
+    });
+    window.addEventListener('unhandledrejection', (e) => {
+      const r = e.reason || {};
+      fetch('/api/logs/client', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: r.message || String(e.reason), stack: r.stack, source: 'overlay:' + location.pathname }) }).catch(() => {});
+    });
+
     const PLATFORM_LABEL = { tiktok: 'T', twitch: 'W', youtube: 'Y', kick: 'K' };
     const params    = new URLSearchParams(location.search);
     const _c = params.get('color');   if (_c) document.documentElement.style.setProperty('--accent', '#' + _c);

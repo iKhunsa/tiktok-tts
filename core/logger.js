@@ -82,6 +82,18 @@ function createLogger({ logsDir, cap = DEFAULT_CAP } = {}) {
       };
       pushToBuffer(failEntry);
       console.error(JSON.stringify(failEntry));
+      // Se arma a mano (no pasa por log()), asi que hay que espejar al bus
+      // explicitamente para que llegue a /electron-shell/glitchtip.js y a
+      // /reporte-bug — si no, el unico error que nunca te enteras es el del
+      // propio logger.
+      if (bus) {
+        bus.emit('log:entry', failEntry);
+        bus.emit('error:handled', {
+          domain: 'core', function: 'core/logger.js#writeToStream',
+          event: 'core.logger.escritura_fallida', message: failEntry.message,
+          stack: failEntry.stack, data: failEntry.data,
+        });
+      }
     }
   }
 

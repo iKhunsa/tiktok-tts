@@ -231,7 +231,17 @@
     "noShortcut": "No shortcut",
     "pressKey": "Press a key…",
     "clickToAssign": "Click to assign shortcut (Ctrl/Alt/Shift + key)",
-    "test": "Test"
+    "test": "Test",
+    "iconPickerTitle": "Choose icon",
+    "iconSearchPlaceholder": "Search icons…",
+    "iconTooMany": "Showing first 300 — refine your search",
+    "changeIcon": "Change icon",
+    "settingsTitle": "Sound settings",
+    "nameLabel": "Name",
+    "shortcutLabel": "Keyboard shortcut",
+    "assignShortcut": "Assign",
+    "deleteSound": "Delete sound",
+    "cardHint": "Click to play · right-click for options"
   },
   "update": {
     "checking": "Checking for updates...",
@@ -309,7 +319,7 @@
     "connecting": "Connecting...",
     "shortcutRegistered": "Global shortcut registered: {shortcut}",
     "shortcutHint": "Active shortcut:",
-    "shortcutConflict": "That shortcut is already used by another action",
+    "shortcutConflict": "That shortcut is already in use",
     "shortcutUnavailable": "Shortcut unavailable",
     "shortcutActive": "Active shortcut: {shortcut}",
     "shortcutCapturing": "Click here and press keys...",
@@ -640,7 +650,8 @@
     "readNonFollowersOff": "TTS only reads followers",
     "twitchAuthorizeInBrowser": "Authorize in the browser — code {code}",
     "twitchAuthorizeWindow": "Authorize in the window that opened and come back here",
-    "twitchAuthError": "Twitch authorization error"
+    "twitchAuthError": "Twitch authorization error",
+    "settingSaveFailed": "Could not save the setting ({keys}). Check your connection."
   },
   "errors": {
     "textRequired": "Text required",
@@ -738,7 +749,10 @@
       "refresh": "Refresh",
       "wipe": "Wipe registry",
       "wipeConfirm": "Delete the whole viewer registry? Mutes and bans are lost too.",
-      "tour": "View tutorial"
+      "tour": "View tutorial",
+      "follow": "Mark as follower",
+      "unfollow": "Unmark follower",
+      "remove": "Remove from registry"
     },
     "wipeModal": {
       "title": "Are you sure?",
@@ -822,10 +836,10 @@
     "uploadDesc": "Click here to upload an audio file (mp3, wav, ogg, webm, or m4a). You can have up to 24 sounds in your pad.",
     "testTitle": "Test your audio",
     "testDesc": "Use this button to check that your system audio is working before playing your sound effects.",
-    "shortcutTitle": "Assign a keyboard shortcut",
-    "shortcutDesc": "Click a sound's shortcut and press a combination with Ctrl, Alt, or Shift plus a key. That lets you trigger it without opening the app.",
+    "shortcutTitle": "Configure the sound",
+    "shortcutDesc": "In this window you pick an icon from the full gallery, the card color, the keyboard shortcut (Ctrl/Alt/Shift + key), and you can delete the sound.",
     "deckTitle": "Your sound pad",
-    "deckDesc": "Each card is a sound: click to play it, rename it, recolor it, or delete it with the trash icon.",
+    "deckDesc": "Each card is a sound. Left-click plays it; right-click opens its settings.",
     "limitTitle": "Sound limit",
     "limitDesc": "You can upload up to 24 sounds total. This counter shows how many you've used."
   },

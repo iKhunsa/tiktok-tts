@@ -231,7 +231,17 @@
     "noShortcut": "Sans raccourci",
     "pressKey": "Appuyez sur une touche…",
     "clickToAssign": "Clic pour assigner raccourci (Ctrl/Alt/Shift + touche)",
-    "test": "Tester"
+    "test": "Tester",
+    "iconPickerTitle": "Choisir une icône",
+    "iconSearchPlaceholder": "Rechercher des icônes…",
+    "iconTooMany": "Affichage des 300 premières — affinez la recherche",
+    "changeIcon": "Changer d'icône",
+    "settingsTitle": "Configurer le son",
+    "nameLabel": "Nom",
+    "shortcutLabel": "Raccourci clavier",
+    "assignShortcut": "Assigner",
+    "deleteSound": "Supprimer le son",
+    "cardHint": "Clic pour lire · clic droit pour les options"
   },
   "update": {
     "checking": "Recherche de mises à jour...",
@@ -309,7 +319,7 @@
     "connecting": "Connexion...",
     "shortcutRegistered": "Raccourci global enregistré : {shortcut}",
     "shortcutHint": "Raccourci actif :",
-    "shortcutConflict": "Ce raccourci est déjà utilisé par une autre action",
+    "shortcutConflict": "Ce raccourci est déjà utilisé",
     "shortcutUnavailable": "Raccourci indisponible",
     "shortcutActive": "Raccourci actif : {shortcut}",
     "shortcutCapturing": "Cliquez ici et appuyez sur les touches...",
@@ -640,7 +650,8 @@
     "readNonFollowersOff": "Le TTS ne lit que les abonnés",
     "twitchAuthorizeInBrowser": "Autorisez dans le navigateur — code {code}",
     "twitchAuthorizeWindow": "Autorisez dans la fenêtre qui s'est ouverte puis revenez ici",
-    "twitchAuthError": "Erreur d'autorisation Twitch"
+    "twitchAuthError": "Erreur d'autorisation Twitch",
+    "settingSaveFailed": "Impossible d'enregistrer le paramètre ({keys}). Vérifiez la connexion."
   },
   "dictLang": {
     "title": "Langues autorisées",
@@ -721,7 +732,10 @@
       "refresh": "Actualiser",
       "wipe": "Vider le registre",
       "wipeConfirm": "Supprimer tout le registre des spectateurs ? Les mutes et bans sont perdus aussi.",
-      "tour": "Voir le tutoriel"
+      "tour": "Voir le tutoriel",
+      "follow": "Marquer comme abonné",
+      "unfollow": "Retirer l'abonné",
+      "remove": "Supprimer du registre"
     },
     "wipeModal": {
       "title": "Vous êtes sûr ?",
@@ -805,10 +819,10 @@
     "uploadDesc": "Cliquez ici pour importer un fichier audio (mp3, wav, ogg, webm ou m4a). Vous pouvez avoir jusqu'à 24 sons.",
     "testTitle": "Tester l'audio",
     "testDesc": "Utilisez ce bouton pour vérifier que le son de votre système fonctionne avant de jouer vos effets.",
-    "shortcutTitle": "Assigner un raccourci",
-    "shortcutDesc": "Cliquez sur le raccourci d'un son et appuyez sur une combinaison avec Ctrl, Alt ou Shift plus une touche. Ça permet de le déclencher sans ouvrir l'appli.",
+    "shortcutTitle": "Configurer le son",
+    "shortcutDesc": "Dans cette fenêtre, choisissez une icône dans la galerie complète, la couleur de la carte, le raccourci clavier (Ctrl/Alt/Shift + touche), et vous pouvez supprimer le son.",
     "deckTitle": "Votre pad de sons",
-    "deckDesc": "Chaque carte est un son : cliquez pour le jouer, renommez-le, changez sa couleur ou supprimez-le avec l'icône poubelle.",
+    "deckDesc": "Chaque carte est un son. Clic gauche pour le jouer ; clic droit pour ouvrir ses réglages.",
     "limitTitle": "Limite de sons",
     "limitDesc": "Vous pouvez importer jusqu'à 24 sons au total. Ce compteur indique combien vous en avez utilisé."
   },

@@ -57,18 +57,6 @@ function attachIpcBridge({ app, bus, logger, getMainWindow, globalShortcut }) {
     if (RENDERER_TELEMETRY_EVENTS.has(name)) bus.emit(name);
   });
 
-  // Puente Kick: la ventana oculta (kick-capture-window.js) manda por acá lo
-  // que su preload raspa del DOM de corard.tv. Mismo patron que telemetry:track.
-  // Emite un evento propio (no canal:mensaje-crudo directo) para que
-  // canales/kick/connect-kick.js pueda dedupear/watchdog ANTES de que
-  // /chat vea el mensaje.
-  ipcMain.on('kick:mensaje-crudo', (_event, { slug, payload }) => {
-    bus.emit('canales:kick:ventana-mensaje', { slug, payload });
-  });
-  ipcMain.on('kick:estado', (_event, { slug, state }) => {
-    bus.emit('canales:kick:ventana-estado', { slug, state });
-  });
-
   // ── TTS shortcuts (pause / skip / clear) ────────────────────────────────
   const ttsShortcuts = new Map(); // action -> normalizedShortcut
 
@@ -150,7 +138,17 @@ function attachIpcBridge({ app, bus, logger, getMainWindow, globalShortcut }) {
     if (!shortcut) return { ok: true, shortcut: null };
 
     const normalized = normalizeShortcut(shortcut);
-    if (!normalized) return { ok: false, error: 'Atajo inválido' };
+    if (!isValidShortcut(normalized)) return { ok: false, error: 'Atajo inválido o reservado por el sistema' };
+
+    // Conflictos: contra otros sonidos, contra los atajos de TTS y contra el
+    // atajo global de clip (Ctrl+Shift+M).
+    for (const [otherId, sc] of soundpadShortcuts) {
+      if (otherId !== soundId && sc === normalized) return { ok: false, error: 'conflict' };
+    }
+    for (const sc of ttsShortcuts.values()) {
+      if (sc === normalized) return { ok: false, error: 'conflict' };
+    }
+    if (normalizeShortcut('CommandOrControl+Shift+M') === normalized) return { ok: false, error: 'conflict' };
 
     const playCallback = () => bus.emit('sonido:soundpad-reproducir', { soundId });
 
@@ -182,7 +180,13 @@ function attachIpcBridge({ app, bus, logger, getMainWindow, globalShortcut }) {
 
   return {
     unregisterAllTtsShortcuts: () => { for (const action of ttsShortcuts.keys()) unregisterTtsShortcut(action); },
-    clearSoundpadShortcuts: () => soundpadShortcuts.clear(),
+    clearSoundpadShortcuts: () => {
+      for (const [soundId, sc] of soundpadShortcuts) {
+        if (isUiohookActive()) unregisterUiohookShortcut(`soundpad:${soundId}`);
+        else { try { globalShortcut.unregister(sc); } catch (_) { /* best-effort */ } }
+      }
+      soundpadShortcuts.clear();
+    },
   };
 }
 

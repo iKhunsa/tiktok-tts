@@ -559,6 +559,21 @@ nav::-webkit-scrollbar { display: none; }
 <div id="toast"></div>
 
 <script>
+// Errores no manejados del cliente → log de sesión del servidor → GlitchTip.
+window.addEventListener('error', (e) => {
+  fetch('/api/logs/client', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: e.message || 'Error desconocido', stack: e.error && e.error.stack, source: 'mobile' }),
+  }).catch(() => {});
+});
+window.addEventListener('unhandledrejection', (e) => {
+  const r = e.reason || {};
+  fetch('/api/logs/client', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: r.message || String(e.reason), stack: r.stack, source: 'mobile:unhandledrejection' }),
+  }).catch(() => {});
+});
+
 let _locale = {};
 async function loadLocale() {
   const lang = localStorage.getItem('tikliveTTS_lang') || 'es';

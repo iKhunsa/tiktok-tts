@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TikTok Live TTS</title>
+  <link rel="icon" type="image/svg+xml" href="logo-icon.svg" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="vendor/driver.css" />
   <link rel="stylesheet" href="plugin-store/grid.css" />
@@ -19,17 +21,17 @@
       --text: #fafafa;
       --text-secondary: #b4b4b4;
       --text-muted: #898989;
-      --accent: #3ecf8e;
-      --accent-link: #00c573;
-      --accent-border: rgba(62, 207, 142, 0.3);
+      --accent: #F0213A;
+      --accent-link: #F0213A;
+      --accent-border: rgba(240, 33, 58, 0.3);
       --glass: rgba(41, 41, 41, 0.84);
       --muted: #898989;
-      --green: #3ecf8e;
+      --green: #F0213A;
       --chat-bg: #0f0f0f;
       --tiktok-red: #2e2e2e;
-      --tiktok-cyan: #3ecf8e;
-      --cyan-light: rgba(62, 207, 142, 0.05);
-      --cyan-border: rgba(62, 207, 142, 0.2);
+      --tiktok-cyan: #F0213A;
+      --cyan-light: rgba(240, 33, 58, 0.05);
+      --cyan-border: rgba(240, 33, 58, 0.2);
       --modal-radius: 12px;
       --btn-radius: 9999px;
       --shadow-subtle: none;
@@ -41,10 +43,28 @@
       --border-strong: #6e6e6e;
       --text-secondary: #e6e6e6;
       --text-muted: #cfcfcf;
-      --accent-border: rgba(62, 207, 142, 0.6);
+      --accent-border: rgba(240, 33, 58, 0.6);
     }
 
+    /* La sección de chat (home) conserva el acento verde original;
+       el resto de la app usa el rojo #F0213A. */
+    #view-chat {
+      --accent: #3ecf8e;
+      --accent-link: #00c573;
+      --accent-border: rgba(62, 207, 142, 0.3);
+      --green: #3ecf8e;
+      --tiktok-cyan: #3ecf8e;
+      --cyan-light: rgba(62, 207, 142, 0.05);
+      --cyan-border: rgba(62, 207, 142, 0.2);
+    }
+    #view-chat .btn-clear.channels-connected { background: rgba(62, 207, 142, 0.12); }
+    #view-chat .status-dot.online { box-shadow: 0 0 0 3px rgba(62, 207, 142, 0.2); }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* App de escritorio (Electron/Chromium): nunca mostrar scrollbars. */
+    * { scrollbar-width: none !important; -ms-overflow-style: none !important; }
+    ::-webkit-scrollbar { width: 0 !important; height: 0 !important; display: none !important; }
 
     body {
       background: var(--bg);
@@ -86,23 +106,17 @@
     .sidebar-brand {
       display: flex;
       align-items: center;
-      gap: 10px;
       padding: 4px 10px 20px;
       border-bottom: 1px solid var(--border-subtle);
       margin-bottom: 14px;
     }
 
-    .logo-icon {
-      width: 34px;
-      height: 34px;
+    .brand-logo {
+      width: 100%;
+      max-width: 168px;
+      height: auto;
       display: block;
-      object-fit: contain;
-      flex-shrink: 0;
     }
-
-    .brand-text { display: flex; flex-direction: column; gap: 1px; }
-    .brand-name { font-size: 13px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; line-height: 1.2; }
-    .brand-sub  { font-size: 10px; color: var(--text-muted); }
 
     .sidebar-nav {
       flex: 0 0 auto;
@@ -131,7 +145,7 @@
     }
 
     .sidebar-item:hover { background: var(--surface); color: var(--text-secondary); }
-    .sidebar-item.active { background: rgba(62, 207, 142, 0.10); color: var(--accent); }
+    .sidebar-item.active { background: #2C2C2C; color: #F2F2F2; }
     .sidebar-icon { font-size: 15px; }
 
     .sidebar-footer {
@@ -182,26 +196,13 @@
     .community-banner {
       display: block;
       margin: 8px 12px 4px;
-      padding: 8px 10px;
       border-radius: 8px;
-      background: rgba(62, 207, 142, 0.08);
-      border: 1px solid rgba(62, 207, 142, 0.25);
-      color: var(--accent);
-      font-size: 12px;
-      font-weight: 500;
+      overflow: hidden;
       text-decoration: none;
-      text-align: left;
-      transition: background 0.15s, border-color 0.15s;
+      transition: opacity 0.15s;
     }
-    .community-banner:hover { background: rgba(62, 207, 142, 0.16); border-color: rgba(62, 207, 142, 0.5); }
-    .community-banner .community-desc {
-      display: block;
-      font-size: 10px;
-      font-weight: 400;
-      color: var(--text-muted);
-      margin-top: 3px;
-      line-height: 1.3;
-    }
+    .community-banner img { display: block; width: 100%; height: auto; }
+    .community-banner:hover { opacity: 0.88; }
 
     .lang-selector-row {
       display: flex;
@@ -237,129 +238,162 @@
       font-size: 14px;
       line-height: 1.6;
     }
+    /* ── Soundpad: tarjeta = tile de color. Clic izq reproduce, clic der abre config. ── */
     .sp-card {
       --sp-color: var(--accent);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px 12px 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      position: relative;
-      overflow: hidden;
-      min-height: 130px;
-      transition: border-color 0.12s, transform 0.1s;
-    }
-    .sp-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: var(--sp-color);
-    }
-    .sp-card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
-    .sp-card:active { transform: scale(0.97); }
-    .sp-play-area {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      gap: 6px;
-    }
-    .sp-play-btn {
-      font-size: 22px;
-      line-height: 1;
       background: var(--sp-color);
       border: none;
-      border-radius: 50%;
-      width: 48px;
-      height: 48px;
+      border-radius: 16px;
+      padding: 16px 12px;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+      min-height: 128px;
       cursor: pointer;
-      color: #fff;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.4);
-      transition: filter 0.1s;
-      flex-shrink: 0;
+      user-select: none;
+      transition: transform 0.1s, box-shadow 0.15s, filter 0.1s;
     }
-    .sp-card:hover .sp-play-btn { filter: brightness(1.15); }
-    .sp-play-btn.playing { animation: sp-pulse 0.4s ease; }
-    @keyframes sp-pulse { 0%{transform:scale(1)} 50%{transform:scale(1.2)} 100%{transform:scale(1)} }
-    .sp-name {
+    .sp-card:hover { transform: translateY(-2px); filter: brightness(1.07); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+    .sp-card:active { transform: scale(0.96); }
+    .sp-card.playing { animation: sp-pulse 0.4s ease; }
+    @keyframes sp-pulse { 0%{transform:scale(1)} 45%{transform:scale(1.06)} 100%{transform:scale(1)} }
+    .sp-card-icon {
+      width: 40px; height: 40px;
+      filter: brightness(0) invert(1);
+      pointer-events: none;
+    }
+    .sp-card--light .sp-card-icon { filter: none; }
+    .sp-card-label {
       font-size: 12px;
-      font-weight: 600;
-      color: var(--text);
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      max-width: 100%;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      text-align: center;
-      cursor: text;
-      background: none;
-      border: none;
-      width: 100%;
-      padding: 2px 4px;
-      border-radius: 6px;
+      pointer-events: none;
       font-family: 'Inter', sans-serif;
     }
-    .sp-name:focus {
-      outline: none;
-      background: var(--bg-button);
-      box-shadow: 0 0 0 1px var(--border-strong);
-    }
-    .sp-shortcut {
-      font-size: 10px;
-      font-weight: 600;
+    .sp-card--light .sp-card-label { color: #1c1c1c; }
+    .sp-card-badge {
+      position: absolute;
+      top: 6px; right: 7px;
+      font-size: 9px;
+      font-weight: 700;
       font-family: 'Source Code Pro', monospace;
+      letter-spacing: 0.3px;
+      background: rgba(0,0,0,0.28);
+      color: #fff;
+      padding: 2px 5px;
+      border-radius: 5px;
+      pointer-events: none;
+    }
+    .sp-card--light .sp-card-badge { background: rgba(255,255,255,0.45); color: #1c1c1c; }
+
+    /* ── Soundpad: modal de configuración de la tarjeta ── */
+    .sp-set-section { margin-top: 16px; }
+    .sp-set-section > label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
       color: var(--text-secondary);
-      text-align: center;
+      margin-bottom: 7px;
+    }
+    .sp-icon-search {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: var(--bg-button);
+      border: 1px solid var(--border-strong);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+    }
+    .sp-icon-search:focus { outline: none; border-color: var(--accent); }
+    .sp-icon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+      gap: 8px;
+      max-height: 38vh;
+      overflow-y: auto;
+      margin-top: 10px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .sp-icon-grid::-webkit-scrollbar { display: none; }
+    .modal-content {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .modal-content::-webkit-scrollbar { display: none; }
+    .sp-icon-tile {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      border-radius: 10px;
       cursor: pointer;
+      background: var(--bg-button);
+      transition: border-color 0.1s, transform 0.1s;
+    }
+    .sp-icon-tile:hover { border-color: var(--accent); transform: translateY(-1px); }
+    .sp-icon-tile.selected { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+    .sp-icon-tile img { width: 22px; height: 22px; filter: brightness(0) invert(1); pointer-events: none; }
+    .sp-icon-hint { margin-top: 10px; font-size: 11px; color: var(--text-muted); text-align: center; }
+    .sp-set-input {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: var(--bg-button);
+      border: 1px solid var(--border-strong);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+    }
+    .sp-set-input:focus { outline: none; border-color: var(--accent); }
+    .sp-color-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .sp-color-input {
+      width: 40px; height: 32px;
+      border-radius: 8px;
+      border: 1px solid var(--border-strong);
+      background: transparent;
+      cursor: pointer;
+      padding: 2px;
+      flex-shrink: 0;
+    }
+    .sp-color-presets { display: flex; gap: 6px; flex-wrap: wrap; }
+    .sp-color-preset {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+    .sp-color-preset:hover { transform: scale(1.15); }
+    .sp-color-preset.selected { border-color: var(--text); }
+    .sp-shortcut-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .sp-shortcut-value {
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'Source Code Pro', monospace;
+      color: var(--text);
       background: var(--bg-button);
       border: 1px solid var(--border-strong);
       border-radius: 6px;
-      padding: 3px 6px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      transition: border-color 0.1s, color 0.1s;
+      padding: 5px 10px;
       letter-spacing: 0.3px;
+      min-width: 90px;
+      text-align: center;
     }
-    .sp-shortcut:hover { border-color: var(--accent); color: var(--text); }
-    .sp-shortcut.capturing { border-color: var(--accent); color: var(--accent); animation: blink-border 0.8s infinite; }
+    .sp-shortcut-value.capturing { border-color: var(--accent); color: var(--accent); animation: blink-border 0.8s infinite; }
     @keyframes blink-border { 0%,100%{border-color:var(--accent)} 50%{border-color:var(--border)} }
-    .sp-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 4px;
-    }
-    .sp-color-btn {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      border: 2px solid var(--border-strong);
-      cursor: pointer;
-      flex-shrink: 0;
-      padding: 0;
-      background: transparent;
-    }
-    .sp-color-btn:hover { border-color: var(--text-muted); }
-    .sp-delete-btn {
-      font-size: 13px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--text-muted);
-      padding: 2px 5px;
-      border-radius: 6px;
-      line-height: 1.4;
-      flex-shrink: 0;
-      transition: background 0.1s, color 0.1s;
-    }
-    .sp-delete-btn:hover { color: #ff6666; background: rgba(255, 68, 68, 0.12); }
+    .sp-set-delete { width: 100%; justify-content: center; margin-top: 22px; }
 
     /* ── MAIN AREA ───────────────────────────────────────── */
     .main-area {
@@ -421,7 +455,7 @@
       transition: border-color 0.2s;
     }
 
-    .input-wrapper:focus-within { border-color: rgba(62, 207, 142, 0.4); }
+    .input-wrapper:focus-within { border-color: rgba(240, 33, 58, 0.4); }
 
     .input-wrapper input {
       flex: 1;
@@ -471,15 +505,15 @@
 
     .status-dot.online {
       background: var(--accent);
-      box-shadow: 0 0 0 3px rgba(62, 207, 142, 0.2);
+      box-shadow: 0 0 0 3px rgba(240, 33, 58, 0.2);
       animation: pulse 2s ease-in-out infinite;
     }
 
     .status-dot.error { background: #ff4444; }
 
     @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 0 3px rgba(62, 207, 142, 0.2); }
-      50%       { box-shadow: 0 0 0 6px rgba(62, 207, 142, 0.05); }
+      0%, 100% { box-shadow: 0 0 0 3px rgba(240, 33, 58, 0.2); }
+      50%       { box-shadow: 0 0 0 6px rgba(240, 33, 58, 0.05); }
     }
 
     .status-text { font-size: 13px; color: var(--text-muted); }
@@ -507,7 +541,9 @@
     }
 
     .setting-group select,
-    .setting-group input[type="text"] {
+    .setting-group input[type="text"],
+    .setting-group input[type="number"],
+    .setting-group input[type="password"] {
       background: var(--bg-button);
       border: 1px solid var(--border-strong);
       color: var(--text);
@@ -516,11 +552,24 @@
       font-size: 13px;
       font-family: 'Inter', sans-serif;
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
+    .setting-group input[type="text"]:hover,
+    .setting-group input[type="number"]:hover,
+    .setting-group input[type="password"]:hover { border-color: var(--text-muted); }
+
     .setting-group select:focus,
-    .setting-group input[type="text"]:focus { border-color: rgba(62, 207, 142, 0.4); }
+    .setting-group input[type="text"]:focus,
+    .setting-group input[type="number"]:focus,
+    .setting-group input[type="password"]:focus {
+      border-color: rgba(240, 33, 58, 0.55);
+      box-shadow: 0 0 0 3px rgba(240, 33, 58, 0.12);
+    }
+
+    .setting-group input::placeholder { color: var(--text-muted); }
+    .setting-group input[type="number"]::-webkit-inner-spin-button,
+    .setting-group input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
     .setting-group input[type="range"] {
       width: 100%;
@@ -599,7 +648,9 @@
     }
 
     .toggle-chip input { display: none; }
-    .toggle-chip.active { background: rgba(62, 207, 142, 0.1); border-color: rgba(62, 207, 142, 0.3); color: var(--accent); }
+    .toggle-chip:hover { border-color: rgba(242, 242, 242, 0.3); color: #F2F2F2; }
+    .toggle-chip.active { background: #2C2C2C; border-color: rgba(242, 242, 242, 0.3); color: #F2F2F2; }
+    .toggle-chip.active:hover { border-color: rgba(242, 242, 242, 0.5); background: #363636; }
     /* chip-dot removido — usado por toggle chips antiguos */
 
     /* Switch estilo iOS — mismo componente de advanced.html, para toggles
@@ -608,15 +659,118 @@
     .switch input { display: none; }
     .switch-track {
       position: absolute; inset: 0; background: var(--border);
-      border-radius: 12px; cursor: pointer; transition: background 0.2s, border-color 0.2s;
+      border: 1px solid transparent;
+      border-radius: 999px; cursor: pointer; transition: background 0.2s, border-color 0.2s;
     }
     .switch-track::after {
-      content: ''; position: absolute; top: 2px; left: 2px;
-      width: 18px; height: 18px; background: var(--text-muted); border-radius: 50%;
+      content: ''; position: absolute; top: 50%; left: 2px;
+      width: 16px; height: 16px; background: var(--text-muted); border-radius: 50%;
+      transform: translateY(-50%);
       transition: transform 0.2s, background 0.2s;
     }
-    .switch input:checked + .switch-track { background: rgba(62, 207, 142, 0.15); border: 1px solid rgba(62, 207, 142, 0.4); }
-    .switch input:checked + .switch-track::after { transform: translateX(18px); background: var(--accent); }
+    .switch input:checked + .switch-track { background: rgba(240, 33, 58, 0.15); border-color: rgba(240, 33, 58, 0.4); }
+    .switch input:checked + .switch-track::after { transform: translate(18px, -50%); background: var(--accent); }
+
+    /* Toggle TTS global — "Live Switch": knob con micrófono + ecualizador al encender. */
+    .tts-switch {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      width: 60px;
+      height: 26px;
+      padding: 0;
+      border-radius: 9999px;
+      border: 1px solid var(--border-strong);
+      background: #2b2b2b;
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-right: 4px;
+      overflow: hidden;
+      transition: border-color 0.3s, background 0.3s, box-shadow 0.3s;
+    }
+    .tts-switch.on {
+      border-color: #e63946;
+      background: #1a1a1a;
+      box-shadow: 0 2px 10px rgba(230, 57, 70, 0.35);
+    }
+    .tts-switch-knob {
+      position: absolute;
+      top: 50%;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #fff;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3;
+      transition: transform 0.4s cubic-bezier(.65, 0, .35, 1), background 0.4s ease;
+    }
+    .tts-switch.on .tts-switch-knob {
+      transform: translate(34px, -50%);
+      background: #e63946;
+    }
+    .tts-mic {
+      width: 12px;
+      height: 12px;
+      fill: #888;
+      transition: fill 0.3s ease;
+    }
+    .tts-switch.on .tts-mic { fill: #fff; }
+    .tts-bars {
+      position: absolute;
+      left: 8px;
+      right: 24px;
+      top: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+    .tts-switch.on .tts-bars { opacity: 1; }
+    .tts-bars i {
+      display: block;
+      width: 2px;
+      border-radius: 1px;
+      background: #e63946;
+      height: 20%;
+      transition: height 0.12s ease-out;
+    }
+    .tts-switch:not(.on):hover { border-color: #F2F2F2; }
+    .tts-switch:not(.on):hover .tts-switch-knob { background: #F2F2F2; }
+    .tts-switch.on:hover { filter: brightness(1.1); }
+
+    /* Bot de Música: acento en rojo (#F0213A) en vez del verde global. */
+    #view-bot {
+      --accent: #F0213A;
+      --accent-border: rgba(240, 33, 58, 0.3);
+      --green: #F0213A;
+    }
+    /* Los switches on/off del bot van en verde (como el toggle TTS), no en rojo. */
+    #view-bot .switch input:checked + .switch-track {
+      background: rgba(240, 33, 58, 0.15);
+      border-color: rgba(240, 33, 58, 0.4);
+    }
+    #view-bot .switch input:checked + .switch-track::after { background: #F0213A; }
+    /* "Guardar playlist": gris sólido como el switch en off; rojo al pasar el mouse. */
+    #view-bot .btn-connect,
+    #view-soundpad .btn-connect,
+    #btnStartStream, #btnConnectOBS { background: #363636; color: #898989; font-weight: 700; transition: background 0.15s, color 0.15s; }
+    #view-bot .btn-connect:hover,
+    #view-soundpad .btn-connect:hover,
+    #btnStartStream:hover, #btnConnectOBS:hover { background: #F0213A; color: #fff; }
+    #view-bot .btn-connect .btn-icon-hover,
+    #view-soundpad .btn-connect .btn-icon-hover { display: none; }
+    #view-bot .btn-connect:hover .btn-icon-rest,
+    #view-soundpad .btn-connect:hover .btn-icon-rest { display: none; }
+    #view-bot .btn-connect:hover .btn-icon-hover,
+    #view-soundpad .btn-connect:hover .btn-icon-hover { display: inline-block; }
 
     /* Label "eyebrow": título chico en mayúsculas para agrupar secciones
        sin el peso visual de un cfg-header completo (icono+título+subtítulo). */
@@ -658,8 +812,8 @@
     }
 
     .chat-count {
-      background: rgba(62, 207, 142, 0.12);
-      color: var(--accent);
+      background: rgba(242, 242, 242, 0.12);
+      color: #F2F2F2;
       border-radius: 9999px;
       padding: 1px 8px;
       font-size: 10px;
@@ -681,7 +835,7 @@
     .btn-clear:hover { border-color: var(--border-strong); color: var(--text-secondary); }
 
     .btn-clear.channels-connected {
-      background: rgba(62,207,142,0.12);
+      background: rgba(240,33,58,0.12);
       border-color: var(--accent);
       color: var(--accent);
       font-weight: 600;
@@ -729,7 +883,7 @@
     }
 
     .chat-msg:hover { background: rgba(255,255,255,0.02); }
-    .chat-msg.speaking { background: rgba(62, 207, 142, 0.06); }
+    .chat-msg.speaking { background: #1C1C1C; }
 
     .msg-avatar {
       width: 30px;
@@ -780,20 +934,21 @@
       align-items: center;
       gap: 10px;
       padding: 10px 18px;
-      background: rgba(62, 207, 142, 0.05);
-      border-top: 1px solid rgba(62, 207, 142, 0.1);
+      background: #222222;
+      border-top: 1px solid #222222;
       font-size: 12px;
       color: var(--accent);
     }
 
     .speaking-now.visible { display: flex; }
 
+    #speakingText { color: #F2F2F2; }
     .wave { display: flex; align-items: center; gap: 2px; }
     .wave span {
       display: block;
       width: 3px;
       border-radius: 3px;
-      background: var(--accent);
+      background: #F0213A;
       animation: waveBar 0.8s ease-in-out infinite;
     }
     .wave span:nth-child(1) { height: 8px; animation-delay: 0s; }
@@ -889,7 +1044,7 @@
     }
 
     .cfg-field input[type="text"]:focus,
-    .cfg-field input[type="number"]:focus { border-color: rgba(62, 207, 142, 0.4); }
+    .cfg-field input[type="number"]:focus { border-color: rgba(240, 33, 58, 0.4); }
 
     .cfg-field textarea {
       background: var(--bg-button);
@@ -904,7 +1059,7 @@
       transition: border-color 0.2s;
     }
 
-    .cfg-field textarea:focus { border-color: rgba(62, 207, 142, 0.4); }
+    .cfg-field textarea:focus { border-color: rgba(240, 33, 58, 0.4); }
     .cfg-field textarea::placeholder,
     .cfg-field input::placeholder { color: var(--text-muted); opacity: 0.6; }
 
@@ -912,8 +1067,8 @@
       font-size: 13px;
       line-height: 1.5;
       color: var(--text-secondary);
-      background: rgba(62, 207, 142, 0.04);
-      border: 1px solid rgba(62, 207, 142, 0.2);
+      background: rgba(240, 33, 58, 0.04);
+      border: 1px solid rgba(240, 33, 58, 0.2);
       border-radius: 10px;
       padding: 12px 14px;
       margin-bottom: 22px;
@@ -935,11 +1090,45 @@
       padding: 3px 5px;
     }
 
-    .cfg-field input[type="range"] {
+    /* Slider estilo "barra de volumen": tramo lleno = barras sólidas,
+       tramo vacío = puntos. El % de llenado lo pinta paintRangeFill()
+       vía la custom prop --range-pct. Solo Chromium (la app es Electron). */
+    .cfg-field input[type="range"],
+    #rateRange, #volRange {
+      -webkit-appearance: none;
+      appearance: none;
       width: 100%;
-      accent-color: var(--accent);
-      margin-top: 2px;
+      height: 24px;
+      margin-top: 4px;
+      background: transparent;
+      cursor: pointer;
+      --range-pct: 50%;
     }
+    .cfg-field input[type="range"]::-webkit-slider-runnable-track,
+    #rateRange::-webkit-slider-runnable-track,
+    #volRange::-webkit-slider-runnable-track {
+      height: 24px;
+      border-radius: 3px;
+      background-image:
+        repeating-linear-gradient(90deg, #ffffff 0 4px, transparent 4px 11px),
+        radial-gradient(circle at 2px 50%, var(--border-strong) 2px, transparent 2.6px);
+      background-repeat: no-repeat, repeat-x;
+      background-size: var(--range-pct) 100%, 11px 62%;
+      background-position: left center, left center;
+    }
+    .cfg-field input[type="range"]::-webkit-slider-thumb,
+    #rateRange::-webkit-slider-thumb,
+    #volRange::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 4px;
+      height: 24px;
+      border: none;
+      border-radius: 2px;
+      background: #ffffff;
+    }
+    .cfg-field input[type="range"]:focus,
+    #rateRange:focus, #volRange:focus { outline: none; }
 
     .cfg-field .range-hint {
       font-size: 10px;
@@ -961,7 +1150,7 @@
       flex: 1;
       font-family: 'Source Code Pro', monospace;
       font-size: 10px;
-      color: var(--accent);
+      color: #F2F2F2;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -979,13 +1168,20 @@
       white-space: nowrap;
       flex-shrink: 0;
       font-family: 'Inter', sans-serif;
-      transition: border-color 0.2s, color 0.2s;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
     }
 
-    .cfg-btn:hover { border-color: var(--accent-border); color: var(--accent); }
+    .cfg-btn:hover { border-color: rgba(242, 242, 242, 0.3); color: #F2F2F2; background: #2C2C2C; }
+
+    /* Banderas del selector de idioma: SVG servido, no emoji (Windows no
+       renderiza los emoji de bandera y quedaban como "IT", "GB"...). */
+    #languagePickerModal .cfg-btn img {
+      width: 20px; height: 14px; object-fit: cover; border-radius: 2px;
+      margin-right: 8px; flex-shrink: 0; display: inline-block;
+    }
 
     .bg-upload-row {
       display: flex;
@@ -1025,7 +1221,7 @@
       color: var(--text-secondary); font-size: 12px; font-weight: 600;
       font-family: 'Inter', sans-serif;
     }
-    .mod-tab.active { border-color: var(--accent); color: var(--accent); background: rgba(62,207,142,0.10); }
+    .mod-tab.active { border-color: rgba(242,242,242,0.3); color: #F2F2F2; background: #2C2C2C; }
     .mod-filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
     .mod-filters input, .mod-filters select {
       padding: 6px 10px; border-radius: 8px; font-size: 12px;
@@ -1052,7 +1248,8 @@
     .mod-table td { padding: 11px 14px; border-bottom: 1px solid var(--border-subtle); vertical-align: middle; }
     .mod-table tr:last-child td { border-bottom: none; }
     .mod-table tbody tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
-    .mod-table tr:hover td { background: rgba(62,207,142,0.05); }
+    .mod-table tbody tr.mod-row-clickable { cursor: pointer; }
+    .mod-table tr:hover td { background: rgba(240,33,58,0.07); }
     .mod-nick { font-weight: 600; color: var(--text); }
     .mod-weak-id { color: #eab308; cursor: help; margin-left: 5px; }
     .mod-pill {
@@ -1062,7 +1259,7 @@
     .mod-pill.clean { color: var(--text-muted); background: rgba(255,255,255,0.05); }
     .mod-pill.muted { color: #eab308; background: rgba(234,179,8,0.14); }
     .mod-pill.banned { color: #ef4444; background: rgba(239,68,68,0.14); }
-    .mod-pill.follower { color: var(--accent); background: rgba(62,207,142,0.14); }
+    .mod-pill.follower { color: var(--accent); background: rgba(240,33,58,0.14); }
     .mod-actions { display: flex; gap: 4px; flex-wrap: nowrap; }
     .mod-actions .cfg-btn.small { padding: 4px 9px; flex-shrink: 0; }
     .mod-empty { padding: 40px 26px; text-align: center; font-size: 13px; color: var(--text-muted); }
@@ -1097,12 +1294,16 @@
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
     .ctx-menu hr { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
+    /* El submenú de duración siempre por encima del menú de la fila. */
+    #modDurMenu { z-index: 1001; }
 
     .cfg-btn.small { padding: 5px 10px; font-size: 11px; }
     /* Solo icono, sin label — el texto vive en title (data-i18n-title). */
     .cfg-btn.icon-only { padding: 6px 9px; }
     .cfg-btn.danger { border-color: rgba(239, 68, 68, 0.4); color: #ef4444; }
     .cfg-btn.danger:hover { border-color: rgba(239, 68, 68, 0.7); color: #f87171; }
+    .cfg-btn.warn { border-color: rgba(255, 187, 0, 0.4); color: #FFBB00; }
+    .cfg-btn.warn:hover { border-color: rgba(255, 187, 0, 0.7); color: #FFBB00; }
     .cfg-btn:disabled, .cfg-btn.danger:disabled {
       opacity: 0.35; cursor: not-allowed; pointer-events: none;
     }
@@ -1127,7 +1328,7 @@
       transform: translateX(-50%);
       width: 600px;
       height: 400px;
-      background: radial-gradient(ellipse, rgba(62, 207, 142, 0.08) 0%, transparent 70%);
+      background: radial-gradient(ellipse, rgba(240, 33, 58, 0.08) 0%, transparent 70%);
       pointer-events: none;
       opacity: 0;
       transition: opacity 1s ease;
@@ -1169,6 +1370,9 @@
     }
 
     .btn-test:hover { border-color: var(--border-strong); color: var(--text); }
+    #btnTestVoice:hover { color: #F0213A; }
+    .btn-test .icon-inline { transition: filter 0.2s; }
+    .btn-test:hover .icon-inline { filter: brightness(0) invert(0.98); }
     .btn-test:disabled { opacity: 0.4; cursor: not-allowed; }
 
     /* ── MODALS ──────────────────────────────────────────── */
@@ -1276,7 +1480,7 @@
       display: flex; align-items: center; justify-content: center;
       font-size: 32px; font-weight: 700; color: #06210f;
       overflow: hidden;
-      box-shadow: 0 0 0 4px rgba(255,255,255,0.06), 0 12px 30px -8px rgba(62,207,142,0.45);
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.06), 0 12px 30px -8px rgba(240,33,58,0.45);
     }
     .landing-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .landing-hero h1 { font-size: 30px; margin: 0 0 10px; color: var(--text); letter-spacing: -0.6px; font-weight: 700; }
@@ -1345,14 +1549,14 @@
     }
     .project-card.art-retail::before {
       background:
-        radial-gradient(120% 60% at 15% 100%, rgba(62,207,142,0.35), transparent 60%),
+        radial-gradient(120% 60% at 15% 100%, rgba(240,33,58,0.35), transparent 60%),
         radial-gradient(90% 50% at 85% 15%, rgba(255,214,110,0.25), transparent 65%),
         url('/img/projects/zatobox.jpg') center/cover no-repeat;
     }
     .project-card.art-edu::before {
       background:
         radial-gradient(120% 60% at 85% 100%, rgba(255,214,110,0.35), transparent 60%),
-        radial-gradient(90% 50% at 15% 15%, rgba(62,207,142,0.25), transparent 65%),
+        radial-gradient(90% 50% at 15% 15%, rgba(240,33,58,0.25), transparent 65%),
         url('/img/projects/101btc.jpg') center/cover no-repeat;
     }
     .project-card.art-social::before {
@@ -1419,8 +1623,8 @@
     .confetti-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2000000000; }
 
     .qr-card {
-      background: rgba(62, 207, 142, 0.04);
-      border: 1px solid rgba(62, 207, 142, 0.2);
+      background: #1e1e1e;
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 12px;
       padding: 24px;
       margin: 20px 0;
@@ -1444,7 +1648,7 @@
       outline: none;
     }
 
-    .donation-input:focus { border-color: rgba(62, 207, 142, 0.5); }
+    .donation-input:focus { border-color: rgba(240, 33, 58, 0.5); }
 
     .btn-copy {
       width: 100%;
@@ -1476,11 +1680,10 @@
     .donation-link-card h3 .ext-arrow { margin-left: auto; color: var(--text-muted); font-size: 13px; }
     .donation-link-card p { margin: 0; font-size: 13px; color: var(--text-muted); }
 
-    .donation-link-card.kofi { background: rgba(255, 94, 91, 0.05); border: 1px solid rgba(255, 94, 91, 0.25); }
-    .donation-link-card.kofi:hover { background: rgba(255, 94, 91, 0.12); border-color: rgba(255, 94, 91, 0.5); }
-
-    .donation-link-card.paypal { background: rgba(0, 112, 186, 0.07); border: 1px solid rgba(0, 112, 186, 0.35); }
-    .donation-link-card.paypal:hover { background: rgba(0, 112, 186, 0.15); border-color: rgba(0, 112, 186, 0.6); }
+    .donation-link-card.kofi,
+    .donation-link-card.paypal { background: #1e1e1e; border: 1px solid rgba(255, 255, 255, 0.2); }
+    .donation-link-card.kofi:hover,
+    .donation-link-card.paypal:hover { background: #242424; border-color: rgba(255, 255, 255, 0.4); }
 
     #donationNoticeModal p { margin: 0 0 24px; font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
 
@@ -1488,9 +1691,9 @@
       display: inline-block;
       margin-left: 6px;
       padding: 1px 7px;
-      background: rgba(62, 207, 142, 0.15);
-      color: #3ecf8e;
-      border: 1px solid rgba(62, 207, 142, 0.4);
+      background: rgba(255, 187, 0, 0.15);
+      color: #FFBB00;
+      border: 1px solid rgba(255, 187, 0, 0.4);
       border-radius: 9999px;
       font-size: 10px;
       font-weight: 600;
@@ -1603,7 +1806,7 @@
       width: 100%;
     }
     .voice-dropdown-trigger:hover,
-    .voice-dropdown-trigger.open { border-color: rgba(62, 207, 142, 0.4); }
+    .voice-dropdown-trigger.open { border-color: rgba(240, 33, 58, 0.4); }
     .voice-dropdown-trigger img.flag-icon {
       width: 20px; height: 14px; object-fit: cover; border-radius: 2px;
       flex-shrink: 0; display: block;
@@ -1653,7 +1856,7 @@
     }
     .voice-option:hover,
     .voice-option.active {
-      background: rgba(62, 207, 142, 0.10);
+      background: rgba(240, 33, 58, 0.10);
       color: var(--accent);
     }
     .voice-option img.flag-icon {
@@ -1735,7 +1938,7 @@
       background: var(--text-muted);
       margin-right: 6px;
     }
-    .obs-status-dot.connected { background: var(--accent); }
+    .obs-status-dot.connected { background: #3ecf8e; box-shadow: 0 0 6px rgba(62,207,142,0.7); }
 
     /* ── PLATFORM CARDS (legacy, removidos de UI) ─────── */
     /* .platform-card, .platform-input-row eliminados tras redesign */
@@ -1783,7 +1986,7 @@
     }
     #update-btn-later:hover { color: #e2e8f0; }
 
-    .badge-tiktok  { background: rgba(254,44,85,0.15);  color: #fe2c55; }
+    .badge-tiktok  { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.15); color: #fe2c55; }
     .badge-twitch  { background: rgba(145,70,255,0.15); color: #9146ff; }
     .badge-youtube { background: rgba(255,0,0,0.15);    color: #ff4444; }
     .badge-kick    { background: rgba(83,252,24,0.15);  color: #53fc18; }
@@ -1791,7 +1994,7 @@
 
     /* Supabase-style primary button */
     .btn-supabase-primary {
-      background: #3ecf8e;
+      background: #F0213A;
       color: #0a0a0a;
       border: none;
       border-radius: 8px;
@@ -1803,6 +2006,14 @@
     }
     .btn-supabase-primary:hover { background: #2fbf7e; }
     .btn-supabase-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    /* "Agregar canal" / "Guardar": mismo estilo que "Subir sonido" — gris en reposo, rojo al hover. */
+    #btn-toggle-add-channel,
+    #btn-add-channel {
+      background: #363636; color: #898989; font-weight: 700;
+      transition: background 0.15s, color 0.15s;
+    }
+    #btn-toggle-add-channel:hover,
+    #btn-add-channel:hover { background: #F0213A; color: #fff; }
 
     /* Segmented platform selector */
     .seg-control {
@@ -1829,7 +2040,8 @@
     }
     .seg-btn:last-child { border-right: none; }
     .seg-btn:hover { background: rgba(255,255,255,0.06); color: var(--text); }
-    .seg-btn.active { background: rgba(62,207,142,0.12); color: #3ecf8e; }
+    .seg-btn.active { background: rgba(240,33,58,0.12); color: #F0213A; }
+    .seg-btn img { filter: brightness(0) invert(1); }
 
     /* Channel chip (replaces old channel-tag in canales list) */
     .channel-chip {
@@ -1844,9 +2056,10 @@
       color: var(--text-secondary);
       font-weight: 500;
     }
+    .channel-chip img { filter: brightness(0) invert(1); opacity: 1 !important; }
     .channel-chip.tiktok {
-      border-color: rgba(254, 44, 85, 0.42);
-      background: rgba(254, 44, 85, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.15);
     }
     .channel-chip.twitch {
       border-color: rgba(145, 70, 255, 0.52);
@@ -1872,7 +2085,7 @@
       border-left: 1px solid var(--border);
       padding-left: 7px;
     }
-    .channel-state.connected { color: var(--accent); }
+    .channel-state.connected { color: #3ecf8e; }
     .channel-state.manual { color: #f59e0b; }
     .channel-chip.needs-action { opacity: 0.82; }
     .channel-chip button {
@@ -1909,11 +2122,7 @@
   <!-- ══ SIDEBAR ══════════════════════════════════════════ -->
   <aside class="sidebar" id="sidebar">
     <a href="/" class="sidebar-brand" style="text-decoration:none;color:inherit;">
-      <img class="logo-icon" src="logo.png" alt="TikLive TTS">
-      <div class="brand-text">
-        <span class="brand-name">TikLive TTS</span>
-        <span class="brand-sub">Chat Reader Pro</span>
-      </div>
+      <img class="brand-logo" src="logo.svg" alt="TikLive TTS">
     </a>
 
     <nav class="sidebar-nav">
@@ -1982,9 +2191,8 @@
       })();
     </script>
 
-    <a href="https://discord.com/invite/mwY859tcQK" target="_blank" class="community-banner">
-      💬 <span data-i18n="community.label">Comunidad TikLiveTTS</span>
-      <span class="community-desc" data-i18n="community.desc">Discord oficial · feedback y preguntas bienvenidos</span>
+    <a href="https://discord.com/invite/mwY859tcQK" target="_blank" rel="noopener" class="community-banner">
+      <img src="community-banner.svg" alt="Comunidad TikLiveTTS — Discord oficial">
     </a>
 
     <div class="sidebar-footer">
@@ -2024,15 +2232,17 @@
 
       <!-- ACCIONES TTS — toggle global + acciones rápidas en una sola fila -->
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0 4px;">
-        <button id="btnTTSToggle" onclick="toggleGlobalTTS()"
-          style="display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--accent);background:rgba(62,207,142,0.12);color:var(--accent);transition:all .2s;margin-right:4px;">
-          <img id="ttsBtnIcon" class="icon-inline" src="icons/volume_up.svg" alt="">
-          <span id="ttsBtnLabel" data-i18n="tts.on">TTS Encendido</span>
+        <button id="btnTTSToggle" onclick="toggleGlobalTTS()" class="tts-switch on"
+          aria-pressed="true" data-i18n-title="tts.on" title="TTS Encendido">
+          <span class="tts-bars" id="ttsBars" aria-hidden="true"></span>
+          <span class="tts-switch-knob">
+            <svg class="tts-mic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>
+          </span>
         </button>
         <button class="cfg-btn" onclick="skipCurrentTTS()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> <span data-i18n="btn.skipCurrent">Saltar actual</span></button>
         <button class="cfg-btn danger" onclick="clearTTSQueue()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="btn.clearQueue">Vaciar cola</span></button>
-        <button class="cfg-btn icon-only" onclick="enableEmergencyTTSMode()" data-i18n-title="btn.emergency" title="Modo emergencia"><img class="icon-inline" src="icons/warning.svg" alt=""></button>
-        <button class="cfg-btn icon-only" onclick="clearChat()" data-i18n-title="btn.clearChat" title="Limpiar"><img class="icon-inline" src="icons/delete.svg" alt=""></button>
+        <button class="cfg-btn icon-only warn" onclick="enableEmergencyTTSMode()" data-i18n-title="btn.emergency" title="Modo emergencia"><img class="icon-inline" src="icons/warning-amber.svg" alt=""></button>
+        <button class="cfg-btn icon-only danger" onclick="clearChat()" data-i18n-title="btn.clearChat" title="Limpiar"><img class="icon-inline" src="icons/delete.svg" alt=""></button>
         <button class="cfg-btn icon-only" id="btnBlockedWordsShortcut" onclick="openBlockWordModal()" data-i18n-title="btn.blockedWordsShortcut" title="Palabras bloqueadas"><img class="icon-inline" src="icons/filter_none.svg" alt=""></button>
       </div>
 
@@ -2148,7 +2358,7 @@
         <div class="cfg-fields">
           <div class="cfg-field">
             <label data-i18n="label.accentColor">Color acento</label>
-            <input type="color" id="cfg-chat-color" value="#3ecf8e"
+            <input type="color" id="cfg-chat-color" value="#FFBB00"
                    oninput="onCfgChange('chat','color', this.value)" />
           </div>
           <div class="cfg-field">
@@ -2224,7 +2434,7 @@
           </div>
           <div class="cfg-field">
             <label data-i18n="label.accentColor">Color acento</label>
-            <input type="color" id="cfg-seg-color" value="#3ecf8e"
+            <input type="color" id="cfg-seg-color" value="#FFBB00"
                    oninput="onCfgChange('seguidores','color', this.value)" />
           </div>
           <div class="cfg-field">
@@ -2268,7 +2478,7 @@
           </div>
           <div class="cfg-field">
             <label data-i18n="label.accentColor">Color acento</label>
-            <input type="color" id="cfg-likes-color" value="#3ecf8e"
+            <input type="color" id="cfg-likes-color" value="#FFBB00"
                    oninput="onCfgChange('likes','color', this.value)" />
           </div>
           <div class="cfg-field full">
@@ -2313,7 +2523,7 @@
           </div>
           <div class="cfg-field">
             <label data-i18n="label.accentColor">Color acento</label>
-            <input type="color" id="cfg-alertas-color" value="#3ecf8e"
+            <input type="color" id="cfg-alertas-color" value="#FFBB00"
                    oninput="onCfgChange('alertas','color', this.value)" />
           </div>
           <div class="cfg-field">
@@ -2363,7 +2573,7 @@
           </div>
           <div class="cfg-field">
             <label data-i18n="label.accentColor">Color acento</label>
-            <input type="color" id="cfg-alertas-social-color" value="#3ecf8e"
+            <input type="color" id="cfg-alertas-social-color" value="#FFBB00"
                    oninput="updateSocialOverlayUrl()" />
           </div>
           <div class="cfg-field">
@@ -2409,7 +2619,7 @@
           </div>
           <div class="cfg-field">
             <label data-i18n="label.accentColor">Color acento</label>
-            <input type="color" id="cfg-creditos-color" value="#3ecf8e"
+            <input type="color" id="cfg-creditos-color" value="#FFBB00"
                    oninput="onCfgChange('creditos','color', this.value)" />
           </div>
           <div class="cfg-field">
@@ -2455,7 +2665,7 @@
           </div>
           <div class="cfg-field">
             <label data-i18n="label.accentColor">Color acento</label>
-            <input type="color" id="cfg-social-color" value="#3ecf8e"
+            <input type="color" id="cfg-social-color" value="#FFBB00"
                    oninput="onCfgChange('social','color', this.value)" />
           </div>
           <div class="cfg-field">
@@ -2514,10 +2724,10 @@
           <div style="flex:1;min-width:0;">
             <div id="music-title" style="font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
             <div id="music-channel" style="font-size:12px;color:var(--text-muted);margin-top:1px;"></div>
-            <div id="music-req" style="font-size:12px;color:var(--accent);margin-top:3px;font-weight:500;"></div>
+            <div id="music-req" style="font-size:12px;color:#FFBB00;margin-top:3px;font-weight:500;"></div>
             <div style="margin-top:8px;display:flex;align-items:center;gap:8px;">
               <div style="flex:1;background:var(--surface);border-radius:4px;height:4px;overflow:hidden;">
-                <div id="music-progress-bar" style="height:100%;background:var(--accent);width:0%;transition:width 1s linear;"></div>
+                <div id="music-progress-bar" style="height:100%;background:#4C4C4C;width:0%;transition:width 1s linear;"></div>
               </div>
               <span id="music-time" style="font-size:11px;color:var(--text-muted);white-space:nowrap;font-variant-numeric:tabular-nums;"></span>
             </div>
@@ -2599,17 +2809,14 @@
             </label>
           </div>
         </div>
-        <div id="music-playlist-active" style="display:none;font-size:12px;color:var(--accent);margin-bottom:6px;"><img class="icon-inline" src="icons/play_arrow.svg" alt="" style="width:12px;height:12px;"> <span data-i18n="bot.playlistActive">Sonando de playlist:</span> <span id="playlist-now-title"></span></div>
+        <div id="music-playlist-active" style="display:none;font-size:12px;color:#FFBB00;margin-bottom:6px;"><img class="icon-inline" src="icons/play_arrow.svg" alt="" style="width:12px;height:12px;"> <span data-i18n="bot.playlistActive">Sonando de playlist:</span> <span id="playlist-now-title"></span></div>
         <textarea id="playlistTextarea" rows="6" oninput="updatePlaylistInfo()" style="width:100%;box-sizing:border-box;background:var(--bg-button);border:1px solid var(--border-strong);border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;resize:vertical;outline:none;"
           placeholder="Bohemian Rhapsody Queen&#10;https://www.youtube.com/watch?v=fJ9rUzIMcZQ&#10;Lose Yourself Eminem"></textarea>
         <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
           <span id="playlist-info" style="font-size:12px;color:var(--text-muted);"></span>
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-            <button class="btn-test" onclick="playlistPlay()">
-              <img class="icon-inline" src="icons/play_arrow.svg" alt=""> <span data-i18n="bot.playlistPlayNow">Reproducir ahora</span>
-            </button>
             <button class="btn btn-connect" onclick="playlistSave()">
-              <img class="icon-inline" src="icons/save-dark.svg" alt=""> <span data-i18n="bot.savePlaylist">Guardar playlist</span>
+              <img class="icon-inline btn-icon-rest" src="icons/save-gray.svg" alt=""><img class="icon-inline btn-icon-hover" src="icons/save-white.svg" alt=""> <span data-i18n="bot.savePlaylist">Guardar playlist</span>
             </button>
           </div>
         </div>
@@ -2732,7 +2939,7 @@
               <span data-i18n="label.playbackControl">Control de reproducción</span>
             </label>
             <button id="btnPauseTTS" onclick="togglePauseTts()"
-              style="width:100%;padding:10px 16px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:2px solid var(--accent);background:rgba(62,207,142,0.12);color:var(--accent);transition:all .2s;letter-spacing:.3px;">
+              style="width:100%;padding:10px 16px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:2px solid var(--accent);background:rgba(240,33,58,0.12);color:var(--accent);transition:all .2s;letter-spacing:.3px;">
               <span data-i18n="btn.pauseTTS">⏸ Pausar TTS</span>
             </button>
           </div>
@@ -2981,13 +3188,13 @@
           <div class="cfg-icon"><img class="icon-inline" src="icons/music_note.svg" alt=""></div>
           <div class="cfg-meta">
             <div class="cfg-title"><span data-i18n="nav.soundpad">Sonidos</span> <span class="soundpad-count" id="spCount"></span></div>
-            <div class="cfg-subtitle" data-i18n="soundpad.clickToAssign">Clic para asignar atajo de teclado (requiere modificador: Ctrl/Alt/Shift)</div>
+            <div class="cfg-subtitle" data-i18n="soundpad.cardHint">Clic para reproducir · clic derecho para opciones (ícono, color, atajo)</div>
           </div>
           <button class="btn-test" onclick="spPlayTestSound()" title="Reproducir sonido de prueba">
             <img class="icon-inline" src="icons/volume_up.svg" alt=""> <span data-i18n="soundpad.test">Test</span>
           </button>
           <button class="btn btn-connect" onclick="spUploadTrigger()" id="spUploadBtn" style="padding:9px 18px;font-size:13px;">
-            <img class="icon-inline" src="icons/upload-dark.svg" alt=""> <span data-i18n="soundpad.upload">Subir sonido</span>
+            <img class="icon-inline btn-icon-rest" src="icons/upload-gray.svg" alt=""><img class="icon-inline btn-icon-hover" src="icons/upload.svg" alt=""> <span data-i18n="soundpad.upload">Subir sonido</span>
           </button>
           <input type="file" id="spFileInput" accept=".mp3,.wav,.ogg,.webm,.m4a" style="display:none" onchange="spHandleUpload(this)">
         </div>
@@ -3085,7 +3292,6 @@
               <th data-i18n="mod.col.platform">Plataforma</th>
               <th data-i18n="mod.col.state">Estado</th>
               <th data-i18n="mod.col.lastSeen">Última vez</th>
-              <th data-i18n="mod.col.actions">Acciones</th>
             </tr>
           </thead>
           <tbody id="modTableBody"></tbody>
@@ -3128,7 +3334,7 @@
 <div id="donationsModal" class="modal-overlay" onclick="closeDonationsModal(event)">
   <div class="modal-content" onclick="event.stopPropagation()">
     <button class="modal-close" onclick="closeDonationsModal()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
-    <h2><img class="icon-inline" src="icons/favorite.svg" alt=""> <span data-i18n="donations.title">Apoya mi contenido</span></h2>
+    <h2><img class="icon-inline" src="icons/favorite-red.svg" alt=""> <span data-i18n="donations.title">Apoya mi contenido</span></h2>
 
     <a href="https://ko-fi.com/ikhunsa" target="_blank" class="donation-link-card kofi">
       <h3>☕ Ko-fi <span class="ext-arrow">↗</span></h3>
@@ -3163,16 +3369,16 @@
     <h2 id="langPickerTitle" style="justify-content:center;">Elegí tu idioma</h2>
     <p id="langPickerSub" style="margin:0 auto 22px;max-width:340px;color:var(--text-secondary);">Así todo lo que te mostremos va a estar en el idioma que prefieras.</p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('es')">🇪🇸 Español</button>
-      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('en')">🇬🇧 English</button>
-      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('it')">🇮🇹 Italiano</button>
-      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('pt')">🇵🇹 Português</button>
-      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('fr')">🇫🇷 Français</button>
-      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('de')">🇩🇪 Deutsch</button>
-      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('zh')">🇨🇳 中文</button>
-      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('ja')">🇯🇵 日本語</button>
-      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('ko')">🇰🇷 한국어</button>
-      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('ru')">🇷🇺 Русский</button>
+      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('es')"><img src="flags/ES.svg" alt="">Español</button>
+      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('en')"><img src="flags/GB.svg" alt="">English</button>
+      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('it')"><img src="flags/IT.svg" alt="">Italiano</button>
+      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('pt')"><img src="flags/PT.svg" alt="">Português</button>
+      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('fr')"><img src="flags/FR.svg" alt="">Français</button>
+      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('de')"><img src="flags/DE.svg" alt="">Deutsch</button>
+      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('zh')"><img src="flags/CN.svg" alt="">中文</button>
+      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('ja')"><img src="flags/JP.svg" alt="">日本語</button>
+      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('ko')"><img src="flags/KR.svg" alt="">한국어</button>
+      <button class="cfg-btn" style="justify-content:center;padding:10px;" onclick="pickLanguage('ru')"><img src="flags/RU.svg" alt="">Русский</button>
     </div>
   </div>
 </div>
@@ -3435,6 +3641,49 @@
   </div>
 </div>
 
+<!-- ══ MODAL: Selector de icono para tarjeta del soundpad ══ -->
+<div id="spSettingsModal" class="modal-overlay" onclick="spCloseSettings(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="spCloseSettings()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <h2><img class="icon-inline" src="icons/palette-white.svg" alt=""> <span data-i18n="soundpad.settingsTitle">Configurar sonido</span></h2>
+
+    <div class="sp-set-section">
+      <label data-i18n="soundpad.nameLabel">Nombre</label>
+      <input type="text" id="spSetName" class="sp-set-input" maxlength="40" onchange="spSetSaveName(this.value)">
+    </div>
+
+    <div class="sp-set-section">
+      <label data-i18n="label.color">Color</label>
+      <div class="sp-color-row">
+        <input type="color" id="spSetColor" class="sp-color-input" onchange="spSetSaveColor(this.value)">
+        <div class="sp-color-presets" id="spColorPresets"></div>
+      </div>
+    </div>
+
+    <div class="sp-set-section">
+      <label data-i18n="soundpad.shortcutLabel">Atajo de teclado</label>
+      <div class="sp-shortcut-row">
+        <span id="spSetShortcut" class="sp-shortcut-value">Sin atajo</span>
+        <button class="cfg-btn" id="spSetCapture" onclick="spSettingsCapture()"><span data-i18n="soundpad.assignShortcut">Asignar</span></button>
+        <button class="cfg-btn" id="spSetClearShortcut" onclick="spSettingsClearShortcut()"><span data-i18n="btn.remove">Quitar</span></button>
+      </div>
+    </div>
+
+    <div class="sp-set-section">
+      <label data-i18n="soundpad.iconPickerTitle">Elegir ícono</label>
+      <input type="text" id="spIconSearch" class="sp-icon-search"
+        data-i18n-placeholder="soundpad.iconSearchPlaceholder" placeholder="Buscar ícono…"
+        oninput="spFilterIcons(this.value)">
+      <div id="spIconGrid" class="sp-icon-grid"></div>
+      <p id="spIconHint" class="sp-icon-hint" style="display:none" data-i18n="soundpad.iconTooMany">Mostrando los primeros 300 — refiná la búsqueda</p>
+    </div>
+
+    <button class="cfg-btn danger sp-set-delete" id="spSetDelete" onclick="spSettingsDelete()">
+      <img class="icon-inline" src="icons/delete.svg" alt=""> <span id="spSetDeleteLabel" data-i18n="soundpad.deleteSound">Eliminar sonido</span>
+    </button>
+  </div>
+</div>
+
 <script src="vendor/driver.js"></script>
 <script src="vendor/confetti.js"></script>
 <script>
@@ -3625,14 +3874,14 @@
     musicPauseShortcut: null,
     musicSkipShortcut: null,
     overlays: {
-      seguidores: { goal: '', color: '#3ecf8e', bg: 0.80, bgimg: '' },
-      likes:      { rows: 10, color: '#3ecf8e', bg: 0.80, bgimg: '' },
-      alertas:    { dur: 4000, color: '#3ecf8e', bg: 0.90, bgimg: '' },
-      creditos:   { speed: 40, color: '#3ecf8e', bg: 0.85, bgimg: '' },
-      social:     { layout: 'cols', color: '#3ecf8e', bg: 0.80, bgimg: '' },
-      'alertas-social': { color: '#3ecf8e', bg: 0.90, bgimg: '' },
+      seguidores: { goal: '', color: '#FFBB00', bg: 0.80, bgimg: '' },
+      likes:      { rows: 10, color: '#FFBB00', bg: 0.80, bgimg: '' },
+      alertas:    { dur: 4000, color: '#FFBB00', bg: 0.90, bgimg: '' },
+      creditos:   { speed: 40, color: '#FFBB00', bg: 0.85, bgimg: '' },
+      social:     { layout: 'cols', color: '#FFBB00', bg: 0.80, bgimg: '' },
+      'alertas-social': { color: '#FFBB00', bg: 0.90, bgimg: '' },
       chat:       {
-        color: '#3ecf8e',
+        color: '#FFBB00',
         bg: 0.82,
         bgimg: '',
         maxmsgs: 30,
@@ -3677,8 +3926,8 @@
     ttsVol  = appSettings.vol;
     const rr = document.getElementById('rateRange');
     const vr = document.getElementById('volRange');
-    if (rr) { rr.value = ttsRate; document.getElementById('rateVal').textContent = ttsRate.toFixed(1); }
-    if (vr) { vr.value = ttsVol;  document.getElementById('volVal').textContent = Math.round(ttsVol * 100); }
+    if (rr) { rr.value = ttsRate; document.getElementById('rateVal').textContent = ttsRate.toFixed(1); paintRangeFill(rr); }
+    if (vr) { vr.value = ttsVol;  document.getElementById('volVal').textContent = Math.round(ttsVol * 100); paintRangeFill(vr); }
 
     // Toggles
     const chipMap = {
@@ -3804,9 +4053,27 @@
 
   }
 
+  // Pinta el tramo lleno del slider "barra de volumen" (ver CSS .cfg-field input[type=range]).
+  function paintRangeFill(el) {
+    if (!el || el.type !== 'range') return;
+    const min = parseFloat(el.min) || 0;
+    const max = parseFloat(el.max);
+    const val = parseFloat(el.value);
+    const span = (isFinite(max) ? max : 100) - min;
+    const pct = span > 0 ? Math.max(0, Math.min(100, ((val - min) / span) * 100)) : 0;
+    el.style.setProperty('--range-pct', pct + '%');
+  }
+  document.addEventListener('input', (e) => {
+    if (e.target instanceof HTMLInputElement && e.target.type === 'range'
+        && (e.target.closest('.cfg-field') || e.target.id === 'rateRange' || e.target.id === 'volRange')) paintRangeFill(e.target);
+  });
+
   function setFieldVal(id, val) {
     const el = document.getElementById(id);
-    if (el && val != null) el.value = val;
+    if (el && val != null) {
+      el.value = val;
+      if (el.type === 'range') paintRangeFill(el);
+    }
   }
 
   function setChecked(id, val) {
@@ -3881,6 +4148,9 @@
 
   // ─── VISTAS ───────────────────────────────────────────────────
   function switchView(name) {
+    // Si se estaba capturando un atajo del soundpad, cancelarlo: si no, el
+    // listener global de keydown queda pegado y se come todas las teclas.
+    if (typeof _spCapturing !== 'undefined' && _spCapturing) spCancelCapture();
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
     const view = document.getElementById('view-' + name);
@@ -4033,19 +4303,54 @@
       tdSeen.textContent = modFormatAgo(v.lastSeen);
       tr.appendChild(tdSeen);
 
-      const tdAct = document.createElement('td');
-      const wrap = document.createElement('div');
-      wrap.className = 'mod-actions';
-      wrap.appendChild(modActionBtn(t('mod.action.mute'), (e) => modDurationMenu(e, 'mute', v.key)));
-      wrap.appendChild(modActionBtn(t('mod.action.ban'), (e) => modDurationMenu(e, 'ban', v.key), 'danger'));
-      wrap.appendChild(modActionBtn(v.isFollower ? '★' : '☆', () => modApi('follower', { key: v.key, value: !v.isFollower })));
-      wrap.appendChild(modActionBtn(t('mod.action.clear'), () => modApi('clear', { key: v.key })));
-      wrap.appendChild(modActionBtn('✕', () => modRemove(v.key), 'danger'));
-      tdAct.appendChild(wrap);
-      tr.appendChild(tdAct);
+      // Las acciones ya no viven en la fila: clic en la fila → menú contextual
+      // estilo Windows (igual que el menú del nick en el chat).
+      tr.classList.add('mod-row-clickable');
+      tr.title = t('chatCtx.hint');
+      tr.onclick = (e) => modRowMenu(e, v);
 
       body.appendChild(tr);
     }
+  }
+
+  // Menú contextual de una fila del registro de moderación. Reusa el nodo
+  // #userCtxMenu y el submenú de duración #modDurMenu del chat.
+  function modRowMenu(evt, v) {
+    evt.stopPropagation();
+    modCloseMenus();
+    const menu = document.getElementById('userCtxMenu');
+    menu.textContent = '';
+
+    const title = document.createElement('div');
+    title.className = 'ctx-title';
+    title.textContent = `@${v.nick || v.userId}`;
+    menu.appendChild(title);
+
+    const addSub = (label, kind, cls) => {
+      const b = document.createElement('button');
+      b.textContent = label + ' ▸';
+      if (cls) b.className = cls;
+      b.onclick = (e) => modDurationMenu(e, kind, v.key);
+      menu.appendChild(b);
+    };
+    const addAct = (label, fn, cls) => {
+      const b = document.createElement('button');
+      b.textContent = label;
+      if (cls) b.className = cls;
+      b.onclick = async () => { modCloseMenus(); await fn(); };
+      menu.appendChild(b);
+    };
+
+    addSub(t('mod.action.mute'), 'mute');
+    addSub(t('mod.action.ban'), 'ban', 'danger');
+    menu.appendChild(document.createElement('hr'));
+    addAct(v.isFollower ? t('mod.action.unfollow') : t('mod.action.follow'),
+      () => modApi('follower', { key: v.key, value: !v.isFollower }));
+    addAct(t('mod.action.clear'), () => modApi('clear', { key: v.key }));
+    menu.appendChild(document.createElement('hr'));
+    addAct(t('mod.action.remove'), () => modRemove(v.key), 'danger');
+
+    modPlaceMenu(menu, evt);
   }
 
   function modActionBtn(label, onClick, extra) {
@@ -4286,7 +4591,27 @@
       };
       menu.appendChild(b);
     }
-    modPlaceMenu(menu, evt);
+
+    // Si viene de una fila de Moderación, el submenú sale como fly-out al
+    // costado de #userCtxMenu (no encima). Si no, se posiciona en el cursor.
+    const parent = document.getElementById('userCtxMenu');
+    if (parent && parent.style.display !== 'none') {
+      menu.style.display = '';
+      menu.style.visibility = 'hidden';
+      menu.style.left = '0px';
+      menu.style.top = '0px';
+      const pr = parent.getBoundingClientRect();
+      const mr = menu.getBoundingClientRect();
+      let x = pr.right - 2;
+      if (x + mr.width > window.innerWidth - 8) x = pr.left - mr.width + 2;
+      let y = evt.clientY - 8;
+      y = Math.min(y, window.innerHeight - mr.height - 8);
+      menu.style.left = `${Math.max(8, x)}px`;
+      menu.style.top = `${Math.max(8, y)}px`;
+      menu.style.visibility = '';
+    } else {
+      modPlaceMenu(menu, evt);
+    }
   }
 
   function modPlaceMenu(menu, evt) {
@@ -4317,6 +4642,7 @@
     const chatLog = document.getElementById('chatLog');
     if (chatLog) chatLog.addEventListener('scroll', modCloseMenus);
     initChatScrollFollow();
+    document.querySelectorAll('.cfg-field input[type="range"], #rateRange, #volRange').forEach(paintRangeFill);
   });
 
   // Llega tras cualquier acción de moderación (también desde el menú del chat
@@ -4418,18 +4744,18 @@
           onHighlightStarted: inSoundpad,
         },
         {
-          element: '.btn-test',
-          popover: { title: t('soundTour.testTitle'), description: t('soundTour.testDesc'), side: 'bottom', align: 'start' },
-          onHighlightStarted: inSoundpad,
-        },
-        {
-          element: '.cfg-subtitle',
-          popover: { title: t('soundTour.shortcutTitle'), description: t('soundTour.shortcutDesc'), side: 'bottom', align: 'start' },
-          onHighlightStarted: inSoundpad,
-        },
-        {
-          element: '#spDeck',
+          element: '#view-soundpad .cfg-card',
           popover: { title: t('soundTour.deckTitle'), description: t('soundTour.deckDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inSoundpad,
+        },
+        {
+          element: '#view-soundpad .cfg-card',
+          popover: { title: t('soundTour.shortcutTitle'), description: t('soundTour.shortcutDesc'), side: 'top', align: 'start' },
+          onHighlightStarted: inSoundpad,
+        },
+        {
+          element: '#view-soundpad .btn-test',
+          popover: { title: t('soundTour.testTitle'), description: t('soundTour.testDesc'), side: 'bottom', align: 'start' },
           onHighlightStarted: inSoundpad,
         },
         {
@@ -4837,26 +5163,26 @@
 
     if (type === 'seguidores') {
       if (cfg.goal)   p.set('goal',   cfg.goal);
-      if (cfg.color && cfg.color !== '#3ecf8e') p.set('color', cfg.color.replace('#', ''));
+      if (cfg.color && cfg.color !== '#FFBB00') p.set('color', cfg.color.replace('#', ''));
       if (cfg.bg !== 0.80) p.set('bg', cfg.bg);
     } else if (type === 'likes') {
       if (cfg.rows && cfg.rows !== 10) p.set('rows', cfg.rows);
-      if (cfg.color && cfg.color !== '#3ecf8e') p.set('color', cfg.color.replace('#', ''));
+      if (cfg.color && cfg.color !== '#FFBB00') p.set('color', cfg.color.replace('#', ''));
       if (cfg.bg !== 0.80) p.set('bg', cfg.bg);
     } else if (type === 'alertas') {
       if (cfg.dur && cfg.dur !== 4000) p.set('dur', cfg.dur);
-      if (cfg.color && cfg.color !== '#3ecf8e') p.set('color', cfg.color.replace('#', ''));
+      if (cfg.color && cfg.color !== '#FFBB00') p.set('color', cfg.color.replace('#', ''));
       if (cfg.bg !== 0.90) p.set('bg', cfg.bg);
     } else if (type === 'creditos') {
       if (cfg.speed && cfg.speed !== 40) p.set('speed', cfg.speed);
-      if (cfg.color && cfg.color !== '#3ecf8e') p.set('color', cfg.color.replace('#', ''));
+      if (cfg.color && cfg.color !== '#FFBB00') p.set('color', cfg.color.replace('#', ''));
       if (cfg.bg !== 0.85) p.set('bg', cfg.bg);
     } else if (type === 'social') {
       if (cfg.layout && cfg.layout !== 'cols') p.set('layout', cfg.layout);
-      if (cfg.color && cfg.color !== '#3ecf8e') p.set('color', cfg.color.replace('#', ''));
+      if (cfg.color && cfg.color !== '#FFBB00') p.set('color', cfg.color.replace('#', ''));
       if (cfg.bg !== 0.80) p.set('bg', cfg.bg);
     } else if (type === 'chat') {
-      if (cfg.color && cfg.color !== '#3ecf8e') p.set('color', cfg.color.replace('#', ''));
+      if (cfg.color && cfg.color !== '#FFBB00') p.set('color', cfg.color.replace('#', ''));
       if (cfg.bg !== 0.82) p.set('bg', cfg.bg);
       if (cfg.maxmsgs && cfg.maxmsgs !== 30) p.set('maxmsgs', cfg.maxmsgs);
       if (cfg.size && cfg.size !== 14) p.set('size', cfg.size);
@@ -4865,7 +5191,7 @@
       const visible = ['tiktok', 'twitch', 'youtube', 'kick'].filter((name) => platforms[name] !== false);
       if (visible.length > 0 && visible.length < PLATFORMS.length) p.set('platforms', visible.join(','));
     } else if (type === 'alertas-social') {
-      if (cfg.color && cfg.color !== '#3ecf8e') p.set('color', cfg.color.replace('#', ''));
+      if (cfg.color && cfg.color !== '#FFBB00') p.set('color', cfg.color.replace('#', ''));
       if (cfg.bg !== 0.90) p.set('bg', cfg.bg);
     }
 
@@ -5029,13 +5355,13 @@
   function updateSocialOverlayUrl() {
     const followImg = (document.getElementById('cfg-social-follow-img')?.value || '').trim();
     const shareImg  = (document.getElementById('cfg-social-share-img')?.value  || '').trim();
-    const color     = document.getElementById('cfg-alertas-social-color')?.value || '#3ecf8e';
+    const color     = document.getElementById('cfg-alertas-social-color')?.value || '#FFBB00';
     const bg        = parseFloat(document.getElementById('cfg-alertas-social-bg')?.value || '0.90');
     const cfg        = appSettings.overlays['alertas-social'];
     const p = new URLSearchParams();
     if (followImg) p.set('followImg', followImg);
     if (shareImg)  p.set('shareImg',  shareImg);
-    if (color !== '#3ecf8e') p.set('color', color.replace('#', ''));
+    if (color !== '#FFBB00') p.set('color', color.replace('#', ''));
     if (bg !== 0.90) p.set('bg', bg);
     if (cfg?.bgimg) p.set('bgimg', cfg.bgimg);
     cfg.color = color;
@@ -5075,21 +5401,39 @@
   let currentMsgId = null;
   let ttsGlobalEnabled = true;
 
-  // Refresca ícono + label + estilos del botón TTS global según ttsGlobalEnabled.
-  // Actualiza data-i18n del label para que un cambio de idioma respete el estado.
+  // ── Ecualizador del toggle TTS ("Live Switch") ──
+  let _ttsBarTimer = null;
+  function _ttsBarsInit() {
+    const box = document.getElementById('ttsBars');
+    if (box && !box.children.length) {
+      for (let i = 0; i < 6; i++) box.appendChild(document.createElement('i'));
+    }
+  }
+  function _ttsBarsAnimate() {
+    const box = document.getElementById('ttsBars');
+    if (!box) return;
+    for (const el of box.children) el.style.height = (22 + Math.random() * 70) + '%';
+    _ttsBarTimer = setTimeout(_ttsBarsAnimate, 130);
+  }
+  function _ttsBarsStop() {
+    clearTimeout(_ttsBarTimer);
+    _ttsBarTimer = null;
+    const box = document.getElementById('ttsBars');
+    if (box) for (const el of box.children) el.style.height = '20%';
+  }
+
+  // Refresca estado + animación del botón TTS global según ttsGlobalEnabled.
   function renderGlobalTTSButton() {
     const btn = document.getElementById('btnTTSToggle');
     if (!btn) return;
-    const lbl = document.getElementById('ttsBtnLabel');
-    const ic  = document.getElementById('ttsBtnIcon');
-    if (lbl) {
-      lbl.dataset.i18n = ttsGlobalEnabled ? 'tts.on' : 'tts.off';
-      lbl.textContent  = ttsGlobalEnabled ? t('tts.on') : t('tts.off');
-    }
-    if (ic) ic.src = ttsGlobalEnabled ? 'icons/volume_up.svg' : 'icons/volume_off.svg';
-    btn.style.borderColor = ttsGlobalEnabled ? 'var(--accent)' : 'var(--text-muted)';
-    btn.style.background  = ttsGlobalEnabled ? 'rgba(62,207,142,0.12)' : 'rgba(255,255,255,0.04)';
-    btn.style.color       = ttsGlobalEnabled ? 'var(--accent)' : 'var(--text-muted)';
+    btn.classList.toggle('on', ttsGlobalEnabled);
+    btn.setAttribute('aria-pressed', ttsGlobalEnabled ? 'true' : 'false');
+    const titleKey = ttsGlobalEnabled ? 'tts.on' : 'tts.off';
+    btn.dataset.i18nTitle = titleKey;
+    btn.title = t(titleKey);
+    _ttsBarsInit();
+    if (ttsGlobalEnabled) { if (!_ttsBarTimer) _ttsBarsAnimate(); }
+    else _ttsBarsStop();
   }
 
   function toggleGlobalTTS() {
@@ -5189,9 +5533,9 @@
     const btn = document.getElementById('btnPauseTTS');
     if (btn) {
       btn.textContent = ttsPaused ? t('btn.resumeTTS') : t('btn.pauseTTS');
-      btn.style.borderColor  = ttsPaused ? '#ff6b6b' : 'var(--accent)';
-      btn.style.background   = ttsPaused ? 'rgba(255,107,107,0.12)' : 'rgba(62,207,142,0.12)';
-      btn.style.color        = ttsPaused ? '#ff6b6b' : 'var(--accent)';
+      btn.style.borderColor  = ttsPaused ? '#3ecf8e' : 'var(--accent)';
+      btn.style.background   = ttsPaused ? 'rgba(62,207,142,0.12)' : 'rgba(240,33,58,0.12)';
+      btn.style.color        = ttsPaused ? '#3ecf8e' : 'var(--accent)';
     }
     if (ttsPaused) {
       // Pausa real: congelar el audio activo sin destruirlo para poder reanudar
@@ -5238,7 +5582,7 @@
     if (inp) { inp.value = shortcut || ''; inp.style.borderColor = shortcut ? 'var(--accent)' : 'var(--border)'; }
     if (hint) {
       if (status && status.ok === false) {
-        hint.style.color = '#ff6b6b';
+        hint.style.color = '#FFBB00';
         hint.innerHTML = `${escapeHtml(t('conn.shortcutNotRegisteredPrefix'))} <span style="font-family:monospace;font-weight:600;">${escapeHtml(status.shortcut || shortcut || '')}</span>. ${escapeHtml(status.error || t('conn.shortcutTryAnother'))}`;
       } else {
         hint.style.color = 'var(--text-muted)';
@@ -5408,13 +5752,15 @@
 
   const logStorage = new LogStorage(100);
 
-  // Captura errores no manejados del cliente y los manda al log de sesión del servidor.
+  // Captura errores no manejados del cliente y los manda al log de sesión del
+  // servidor (→ GlitchTip). Se adjuntan los últimos ~25 logs locales de la UI
+  // como `recientes` para que el issue muestre qué venía haciendo el usuario.
   window.addEventListener('error', (e) => {
     logStorage.addLog('error', 'client', e.message || 'Error desconocido');
     fetch('/api/logs/client', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: e.message, stack: e.error?.stack, source: e.filename }),
+      body: JSON.stringify({ message: e.message, stack: e.error?.stack, source: e.filename, recientes: logStorage.getLogs().slice(-25) }),
     }).catch(() => {});
   });
   window.addEventListener('unhandledrejection', (e) => {
@@ -5423,7 +5769,7 @@
     fetch('/api/logs/client', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message, stack: e.reason?.stack, source: 'unhandledrejection' }),
+      body: JSON.stringify({ message, stack: e.reason?.stack, source: 'unhandledrejection', recientes: logStorage.getLogs().slice(-25) }),
     }).catch(() => {});
   });
 
@@ -5469,22 +5815,35 @@
     voiceDropdownTrigger.classList.remove('open');
   }
 
+  // PATCH de config con aviso: si el guardado falla, el usuario cree que su
+  // cambio quedó y al recargar vuelve atrás. Toast + reporte al server (→ GlitchTip).
+  function patchConfigSetting(patch) {
+    return fetch('/api/config', { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify(patch) })
+      .then((r) => { if (!r.ok) throw new Error('HTTP ' + r.status); })
+      .catch((err) => {
+        const claves = Object.keys(patch).join(', ');
+        try { showToast(t('toast.settingSaveFailed', { keys: claves }) || 'No se pudo guardar el ajuste', 'error'); } catch (_) {}
+        fetch('/api/logs/client', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: 'Fallo al guardar ajuste (' + claves + '): ' + err.message, source: 'config-patch' }) }).catch(() => {});
+      });
+  }
+
   function syncTtsVoiceLang(id) {
-    fetch('/api/config', { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ ttsVoiceLang: id }) }).catch(() => {});
+    patchConfigSetting({ ttsVoiceLang: id });
   }
 
   function toggleLangFilter(checkbox) {
     appSettings.langFilterEnabled = checkbox.checked;
     checkbox.closest('.toggle-chip')?.classList.toggle('active', checkbox.checked);
     saveSettings();
-    fetch('/api/config', { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ langFilterEnabled: checkbox.checked }) }).catch(() => {});
+    patchConfigSetting({ langFilterEnabled: checkbox.checked });
   }
 
   function toggleDictFilter(checkbox) {
     appSettings.dictFilterEnabled = checkbox.checked;
     checkbox.closest('.toggle-chip')?.classList.toggle('active', checkbox.checked);
     saveSettings();
-    fetch('/api/config', { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ dictFilterEnabled: checkbox.checked }) }).catch(() => {});
+    patchConfigSetting({ dictFilterEnabled: checkbox.checked });
   }
 
   function toggleSayUsernameConnector(checkbox) {
@@ -6271,6 +6630,10 @@
       case 'moderation-reset':
         modOnViewerUpdated();
         break;
+      case 'play-soundpad':
+        // Disparado por un atajo global del soundpad (main -> bus -> WS).
+        if (data.soundId) spPlaySound(data.soundId);
+        break;
     }
   }
 
@@ -6684,7 +7047,7 @@
     if (enabled) langs.add(lang); else langs.delete(lang);
     appSettings.allowedExtraLangs = [...langs];
     saveSettings();
-    fetch('/api/config', { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ allowedExtraLangs: appSettings.allowedExtraLangs }) }).catch(() => {});
+    patchConfigSetting({ allowedExtraLangs: appSettings.allowedExtraLangs });
   }
 
   function closeDonationNotice(e) {
@@ -6750,11 +7113,11 @@
     const duration = 1800;
     const end = Date.now() + duration;
     (function frame() {
-      window.confetti({ particleCount: 4, angle: 60, spread: 60, origin: { x: 0 }, colors: ['#3ecf8e', '#00c573', '#ffffff'] });
-      window.confetti({ particleCount: 4, angle: 120, spread: 60, origin: { x: 1 }, colors: ['#3ecf8e', '#00c573', '#ffffff'] });
+      window.confetti({ particleCount: 4, angle: 60, spread: 60, origin: { x: 0 }, colors: ['#F0213A', '#00c573', '#F2F2F2'] });
+      window.confetti({ particleCount: 4, angle: 120, spread: 60, origin: { x: 1 }, colors: ['#F0213A', '#00c573', '#F2F2F2'] });
       if (Date.now() < end) requestAnimationFrame(frame);
     })();
-    window.confetti({ particleCount: 90, spread: 100, origin: { y: 0.4 }, colors: ['#3ecf8e', '#00c573', '#ffffff'] });
+    window.confetti({ particleCount: 90, spread: 100, origin: { y: 0.4 }, colors: ['#F0213A', '#00c573', '#F2F2F2'] });
   }
 
   function showOnboardingComplete() {
@@ -6884,6 +7247,9 @@
       document.getElementById('onboardingWelcomeModal').classList.remove('show');
       document.getElementById('onboardingCompleteModal').classList.remove('show');
       document.getElementById('modWipeConfirmModal').classList.remove('show');
+      if (_spCapturing) spCancelCapture();
+      spResetDeleteBtn();
+      document.getElementById('spSettingsModal').classList.remove('show');
     }
   });
 
@@ -7205,6 +7571,9 @@
   // ─── SOUND PAD ────────────────────────────────────────────────
   let _spSounds = [];
   let _spCapturing = null; // soundId currently capturing a shortcut
+  let _spCaptureTimer = null; // safety timeout so capture never stays stuck
+  let _spIconList = null; // catálogo completo de nombres de icono (cache)
+  let _spIconTarget = null; // soundId cuyo icono se está editando
 
   async function spLoad() {
     try {
@@ -7219,6 +7588,9 @@
     const empty = document.getElementById('spEmpty');
     const count = document.getElementById('spCount');
     if (!deck) return;
+    // spRender() reescribe el DOM: si había una captura de atajo en curso, su
+    // nodo desaparece pero el listener global seguiría pegado. Cancelar primero.
+    if (_spCapturing) spCancelCapture();
     if (!_spSounds.length) {
       deck.innerHTML = '';
       if (empty) empty.style.display = '';
@@ -7227,28 +7599,36 @@
     }
     if (empty) empty.style.display = 'none';
     if (count) count.textContent = `${_spSounds.length}/24`;
+    const hint = t('soundpad.cardHint') || 'Clic para reproducir · clic derecho para opciones';
     deck.innerHTML = _spSounds.map(s => {
-      const sc = s.shortcut ? escapeHtml(s.shortcut) : (t('soundpad.noShortcut') || 'Sin atajo');
       const id = escapeHtml(s.id);
-      return `<div class="sp-card" id="spcard-${id}" style="--sp-color:${escapeHtml(s.color)}">
-        <div class="sp-play-area" onclick="spPlaySoundWithAnim('${id}')">
-          <button class="sp-play-btn" id="spplay-${id}" tabindex="-1">▶</button>
-          <input class="sp-name" value="${escapeHtml(s.name)}" maxlength="40"
-            onblur="spSaveName('${id}',this.value)"
-            onkeydown="if(event.key==='Enter')this.blur()"
-            onclick="event.stopPropagation()">
-        </div>
-        <span class="sp-shortcut" id="spsc-${id}"
-          onclick="spCaptureShortcut('${id}')"
-          title="${t('soundpad.clickToAssign')||'Clic para asignar atajo de teclado (requiere modificador: Ctrl/Alt/Shift)'}">${sc}</span>
-        <div class="sp-footer">
-          <input type="color" class="sp-color-btn" value="${escapeHtml(s.color)}"
-            title="${t('label.color')}" onchange="spSaveColor('${id}',this.value)"
-            onclick="event.stopPropagation()">
-          <button class="sp-delete-btn" onclick="event.stopPropagation();spDelete('${id}')" title="${t('btn.delete')}">🗑</button>
-        </div>
+      const icon = escapeHtml(s.icon || 'music_note');
+      const light = spColorIsLight(s.color) ? ' sp-card--light' : '';
+      const badge = s.shortcut ? `<span class="sp-card-badge">${escapeHtml(s.shortcut)}</span>` : '';
+      return `<div class="sp-card${light}" id="spcard-${id}" style="--sp-color:${escapeHtml(s.color)}"
+        onclick="spPlaySoundWithAnim('${id}')"
+        oncontextmenu="return spCardMenu(event,'${id}')"
+        title="${escapeHtml(s.name)} — ${hint}">
+        ${badge}
+        <img class="sp-card-icon" src="/soundpad-icons/${icon}.svg" alt="">
+        <div class="sp-card-label">${escapeHtml(s.name)}</div>
       </div>`;
     }).join('');
+  }
+
+  // Luminancia percibida: decide texto/ícono oscuro sobre tiles claros.
+  function spColorIsLight(hex) {
+    const m = /^#?([0-9a-fA-F]{6})$/.exec(hex || '');
+    if (!m) return false;
+    const n = parseInt(m[1], 16);
+    const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+    return (0.299 * r + 0.587 * g + 0.114 * b) > 150;
+  }
+
+  function spCardMenu(e, soundId) {
+    e.preventDefault();
+    spOpenSettings(soundId);
+    return false;
   }
 
   function spPlaySound(soundId) {
@@ -7262,8 +7642,8 @@
 
   function spPlaySoundWithAnim(soundId) {
     spPlaySound(soundId);
-    const btn = document.getElementById(`spplay-${soundId}`);
-    if (btn) { btn.classList.remove('playing'); void btn.offsetWidth; btn.classList.add('playing'); }
+    const card = document.getElementById(`spcard-${soundId}`);
+    if (card) { card.classList.remove('playing'); void card.offsetWidth; card.classList.add('playing'); }
   }
 
   function spPlayTestSound() {
@@ -7306,80 +7686,250 @@
 
   async function spSaveName(soundId, name) {
     const s = _spSounds.find(x => x.id === soundId);
-    if (!s || s.name === name.trim()) return;
-    s.name = name.trim() || s.name;
+    const trimmed = (name || '').trim();
+    if (!s || !trimmed || s.name === trimmed) return;
+    s.name = trimmed;
     spRender();
     await fetch(`/api/soundpad/${soundId}`, { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name: s.name }) });
   }
 
   async function spSaveColor(soundId, color) {
     const s = _spSounds.find(x => x.id === soundId);
-    if (!s) return;
+    if (!s || s.color === color) return;
     s.color = color;
-    const card = document.getElementById(`spcard-${soundId}`);
-    if (card) card.style.setProperty('--sp-color', color);
+    spRender(); // re-render: la clase sp-card--light depende de la luminancia
     await fetch(`/api/soundpad/${soundId}`, { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ color }) });
   }
 
-  async function spDelete(soundId) {
-    if (!confirm(t('toast.deleteSoundConfirm'))) return;
+  // Borrado real (el modal ya confirmó con el botón de dos pasos).
+  async function spDoDelete(soundId) {
     const idx = _spSounds.findIndex(x => x.id === soundId);
     if (idx === -1) return;
     if (window.electronAPI?.unregisterSoundpadShortcut) window.electronAPI.unregisterSoundpadShortcut(soundId);
     _spSounds.splice(idx, 1);
     spRender();
-    await fetch(`/api/soundpad/${soundId}`, { method: 'DELETE' });
+    try { await fetch(`/api/soundpad/${soundId}`, { method: 'DELETE' }); } catch (_) {}
   }
 
+  // ─── Captura de atajo (UI en el modal de configuración) ───
   function spCaptureShortcut(soundId) {
     if (_spCapturing) spCancelCapture();
     _spCapturing = soundId;
-    const el = document.getElementById(`spsc-${soundId}`);
+    const el = document.getElementById('spSetShortcut');
     if (el) {
       el.textContent = t('soundpad.pressKey') || 'Presiona tecla…';
       el.classList.add('capturing');
     }
+    const btn = document.getElementById('spSetCapture');
+    if (btn) btn.disabled = true;
     document.addEventListener('keydown', _spKeyCapture, { capture: true });
+    // Red de seguridad: si el usuario no completa la captura, se cancela sola
+    // en vez de dejar el listener global comiéndose el teclado.
+    clearTimeout(_spCaptureTimer);
+    _spCaptureTimer = setTimeout(() => spCancelCapture(), 10000);
   }
 
   function spCancelCapture() {
+    clearTimeout(_spCaptureTimer);
+    _spCaptureTimer = null;
     document.removeEventListener('keydown', _spKeyCapture, { capture: true });
     const id = _spCapturing;
     _spCapturing = null;
+    const btn = document.getElementById('spSetCapture');
+    if (btn) btn.disabled = false;
     if (id) {
       const s = _spSounds.find(x => x.id === id);
-      const el = document.getElementById(`spsc-${id}`);
-      if (el && s) { el.textContent = s.shortcut || (t('soundpad.noShortcut') || 'Sin atajo'); el.classList.remove('capturing'); }
+      if (s) spUpdateSettingsShortcut(s);
     }
   }
 
   async function _spKeyCapture(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.key === 'Escape') { spCancelCapture(); return; }
+    // Solo se bloquea la tecla cuando de verdad se va a procesar; si el
+    // listener quedara colgado por un bug, teclas sueltas siguen funcionando.
+    if (e.key === 'Escape') {
+      e.preventDefault(); e.stopPropagation();
+      spCancelCapture();
+      return;
+    }
+    const key = e.key.toUpperCase();
+    if (['CONTROL','SHIFT','ALT','META'].includes(key)) return; // wait for main key
     const mods = [];
     if (e.ctrlKey) mods.push('Ctrl');
     if (e.shiftKey) mods.push('Shift');
     if (e.altKey) mods.push('Alt');
-    const key = e.key.toUpperCase();
-    if (['CONTROL','SHIFT','ALT','META'].includes(key)) return; // wait for main key
     if (!mods.length) {
       showToast(t('toast.shortcutModifier'));
       return;
     }
+    e.preventDefault();
+    e.stopPropagation();
     const shortcut = [...mods, key].join('+');
-    document.removeEventListener('keydown', _spKeyCapture, { capture: true });
     const soundId = _spCapturing;
+    // Desenganchar SIEMPRE, pase lo que pase después.
+    clearTimeout(_spCaptureTimer);
+    _spCaptureTimer = null;
+    document.removeEventListener('keydown', _spKeyCapture, { capture: true });
     _spCapturing = null;
+    const btn = document.getElementById('spSetCapture');
+    if (btn) btn.disabled = false;
+    try {
+      const s = _spSounds.find(x => x.id === soundId);
+      if (!s) return;
+      s.shortcut = shortcut;
+      spUpdateSettingsShortcut(s);
+      spRender();
+      await fetch(`/api/soundpad/${soundId}`, { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ shortcut }) });
+      if (window.electronAPI?.registerSoundpadShortcut) {
+        const result = await window.electronAPI.registerSoundpadShortcut(soundId, shortcut);
+        if (!result?.ok) {
+          const msg = result?.error === 'conflict'
+            ? t('conn.shortcutConflict')
+            : (result?.error || t('conn.shortcutUnavailable'));
+          showToast(msg);
+        }
+      }
+    } catch (_) { /* best-effort: el atajo ya quedó persistido si el PATCH pasó */ }
+  }
+
+  // ─── Modal de configuración de la tarjeta ───
+  const SP_COLOR_PRESETS = ['#3ecf8e', '#b30af0', '#f59e0b', '#ef4444', '#3b82f6', '#ec4899', '#14b8a6', '#a3e635', '#f5f5f5', '#64748b'];
+
+  async function spLoadIconList() {
+    // Se cachea solo si vino con contenido: si el endpoint falló y devolvió [],
+    // el próximo intento vuelve a pedirlo.
+    if (_spIconList && _spIconList.length) return _spIconList;
+    try {
+      const r = await fetch('/api/soundpad/icons');
+      const data = await r.json();
+      _spIconList = Array.isArray(data) ? data : [];
+    } catch (_) { _spIconList = []; }
+    return _spIconList;
+  }
+
+  async function spOpenSettings(soundId) {
     const s = _spSounds.find(x => x.id === soundId);
     if (!s) return;
-    s.shortcut = shortcut;
+    _spIconTarget = soundId;
+    const nameEl = document.getElementById('spSetName');
+    if (nameEl) nameEl.value = s.name;
+    const colorEl = document.getElementById('spSetColor');
+    if (colorEl) colorEl.value = s.color;
+    spRenderColorPresets(s.color);
+    spUpdateSettingsShortcut(s);
+    spResetDeleteBtn();
+    const search = document.getElementById('spIconSearch');
+    if (search) search.value = '';
+    // Mostrar el modal ya (síncrono) para que tenga dimensiones reales; la
+    // galería se llena apenas resuelve la lista de íconos.
+    document.getElementById('spSettingsModal').classList.add('show');
+    if (_spIconList) spRenderIconGrid('');
+    await spLoadIconList();
+    if (_spIconTarget === soundId) spRenderIconGrid('');
+  }
+
+  function spCloseSettings(e) {
+    if (e && e.target.id !== 'spSettingsModal') return;
+    if (_spCapturing) spCancelCapture();
+    spResetDeleteBtn();
+    document.getElementById('spSettingsModal').classList.remove('show');
+    _spIconTarget = null;
+  }
+
+  function spCurrentSetting() { return _spSounds.find(x => x.id === _spIconTarget); }
+
+  function spSetSaveName(v) { if (_spIconTarget) spSaveName(_spIconTarget, v); }
+
+  function spSetSaveColor(v) {
+    if (!_spIconTarget) return;
+    spSaveColor(_spIconTarget, v);
+    const colorEl = document.getElementById('spSetColor');
+    if (colorEl) colorEl.value = v;
+    spRenderColorPresets(v);
+  }
+
+  function spRenderColorPresets(cur) {
+    const box = document.getElementById('spColorPresets');
+    if (!box) return;
+    box.innerHTML = SP_COLOR_PRESETS.map(c =>
+      `<div class="sp-color-preset${c.toLowerCase() === (cur || '').toLowerCase() ? ' selected' : ''}" style="background:${c}" title="${c}" onclick="spSetSaveColor('${c}')"></div>`
+    ).join('');
+  }
+
+  function spUpdateSettingsShortcut(s) {
+    const el = document.getElementById('spSetShortcut');
+    if (el) { el.textContent = s.shortcut || (t('soundpad.noShortcut') || 'Sin atajo'); el.classList.remove('capturing'); }
+    const clr = document.getElementById('spSetClearShortcut');
+    if (clr) clr.disabled = !s.shortcut;
+  }
+
+  function spSettingsCapture() { if (_spIconTarget) spCaptureShortcut(_spIconTarget); }
+
+  async function spSettingsClearShortcut() {
+    const s = spCurrentSetting();
+    if (!s || !s.shortcut) return;
+    const id = s.id;
+    s.shortcut = null;
+    spUpdateSettingsShortcut(s);
     spRender();
-    await fetch(`/api/soundpad/${soundId}`, { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ shortcut }) });
-    if (window.electronAPI?.registerSoundpadShortcut) {
-      const result = await window.electronAPI.registerSoundpadShortcut(soundId, shortcut);
-      if (!result?.ok) showToast(result?.error || t('conn.shortcutUnavailable'));
+    if (window.electronAPI?.unregisterSoundpadShortcut) window.electronAPI.unregisterSoundpadShortcut(id);
+    try { await fetch(`/api/soundpad/${id}`, { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ shortcut: null }) }); } catch (_) {}
+  }
+
+  let _spDeleteArmed = false;
+  let _spDeleteTimer = null;
+
+  function spResetDeleteBtn() {
+    _spDeleteArmed = false;
+    clearTimeout(_spDeleteTimer);
+    const lbl = document.getElementById('spSetDeleteLabel');
+    if (lbl) { lbl.setAttribute('data-i18n', 'soundpad.deleteSound'); lbl.textContent = t('soundpad.deleteSound') || 'Eliminar sonido'; }
+  }
+
+  async function spSettingsDelete() {
+    const s = spCurrentSetting();
+    if (!s) return;
+    if (!_spDeleteArmed) {
+      _spDeleteArmed = true;
+      const lbl = document.getElementById('spSetDeleteLabel');
+      if (lbl) { lbl.removeAttribute('data-i18n'); lbl.textContent = t('toast.deleteSoundConfirm') || '¿Eliminar este sonido?'; }
+      clearTimeout(_spDeleteTimer);
+      _spDeleteTimer = setTimeout(spResetDeleteBtn, 4000);
+      return;
     }
+    const id = s.id;
+    spResetDeleteBtn();
+    document.getElementById('spSettingsModal').classList.remove('show');
+    _spIconTarget = null;
+    await spDoDelete(id);
+  }
+
+  function spFilterIcons(q) { spRenderIconGrid(q); }
+
+  function spRenderIconGrid(q) {
+    const grid = document.getElementById('spIconGrid');
+    const hint = document.getElementById('spIconHint');
+    if (!grid) return;
+    const s = spCurrentSetting();
+    const cur = s ? (s.icon || 'music_note') : null;
+    const term = (q || '').trim().toLowerCase();
+    const full = term ? _spIconList.filter(n => n.includes(term)) : _spIconList;
+    const list = full.slice(0, 300);
+    if (hint) hint.style.display = full.length > 300 ? '' : 'none';
+    grid.innerHTML = list.map(n =>
+      `<div class="sp-icon-tile${n === cur ? ' selected' : ''}" onclick="spChooseIcon('${escapeHtml(n)}')" title="${escapeHtml(n)}"><img src="/soundpad-icons/${escapeHtml(n)}.svg" alt="" loading="lazy"></div>`
+    ).join('');
+  }
+
+  async function spChooseIcon(name) {
+    const s = spCurrentSetting();
+    if (!s) return;
+    const id = s.id;
+    s.icon = name;
+    spRender();
+    spRenderIconGrid(document.getElementById('spIconSearch')?.value || '');
+    try {
+      await fetch(`/api/soundpad/${id}`, { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ icon: name }) });
+    } catch (_) {}
   }
 
   // Re-register all sound shortcuts on startup (after electronAPI is ready)

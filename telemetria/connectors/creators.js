@@ -13,8 +13,10 @@ function attach(bus, track, { creatorCache, markPlatform }) {
     if (!['tiktok', 'twitch', 'youtube'].includes(payload.platform)) return;
     markPlatform(payload.platform);
 
+    // creatorCache() devuelve null si telemetria no se inicializo (sin
+    // TELEMETRY_URL, p.ej. en dev) — en ese caso no hay nada que resolver.
     const cache = creatorCache();
-    if (!cache.shouldResolve(payload.platform, payload.channel)) return;
+    if (!cache || !cache.shouldResolve(payload.platform, payload.channel)) return;
     track('creators', 'seen', { platform: payload.platform, username: payload.channel });
   });
 }

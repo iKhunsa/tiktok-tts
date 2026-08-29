@@ -18,6 +18,7 @@ module.exports = {
 
   register({ bus, logger }) {
     scheduler = createSessionScheduler({
+      logger,
       onMilestone: () => {
         let config = null;
         bus.emit('config:get', (c) => { config = c; });

@@ -13,7 +13,7 @@ let fallbackAppVersion = 'unknown';
 try { fallbackAppVersion = require('../../package.json').version; } catch (_) { /* usa 'unknown' */ }
 
 /** Migracion de POST /api/report-bug (backend-viejo/server.js:2093). */
-function reportBug(logger) {
+function reportBug(logger, bus) {
   return async (req, res) => {
     const { discordNick, channelLink, description, extra, appVersion: clientAppVersion } = req.body || {};
     if (!discordNick || !channelLink || !description) {
@@ -53,8 +53,22 @@ function reportBug(logger) {
 
     try {
       const result = await postToDiscordWebhook(logger, webhookUrl, embed, logger.getSessionLogPath());
+      // Ademas de Discord, avisar a GlitchTip (electron-shell/glitchtip.js) con
+      // el contexto completo de la sesion — asi todo queda en un solo lado.
+      if (bus) {
+        bus.emit('reporte-bug:enviado', {
+          descripcion: String(description).slice(0, 400),
+          extra: extra ? String(extra).slice(0, 400) : null,
+          canal: String(channelLink).slice(0, 200),
+          version: appVersion,
+        });
+      }
       res.json({ ok: true, attached: result.attached });
-    } catch (_error) {
+    } catch (error) {
+      logger.log(
+        'warn', 'reporte-bug', 'reporte-bug/routes/report-bug.js#reportBug', 'reporte_bug.envio_fallido',
+        `No se pudo enviar el reporte de bug: ${error.message}`, { error: error.message }
+      );
       res.status(502).json({ error: 'No se pudo enviar el reporte' });
     }
   };

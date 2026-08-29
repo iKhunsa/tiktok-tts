@@ -231,7 +231,17 @@
     "noShortcut": "ショートカットなし",
     "pressKey": "キーを押してください…",
     "clickToAssign": "クリックでショートカット割り当て (Ctrl/Alt/Shift + キー)",
-    "test": "テスト"
+    "test": "テスト",
+    "iconPickerTitle": "アイコンを選択",
+    "iconSearchPlaceholder": "アイコンを検索…",
+    "iconTooMany": "最初の300件を表示 — 検索を絞り込んでください",
+    "changeIcon": "アイコンを変更",
+    "settingsTitle": "サウンド設定",
+    "nameLabel": "名前",
+    "shortcutLabel": "キーボードショートカット",
+    "assignShortcut": "割り当て",
+    "deleteSound": "サウンドを削除",
+    "cardHint": "クリックで再生 · 右クリックでオプション"
   },
   "update": {
     "checking": "アップデートを確認中...",
@@ -309,7 +319,7 @@
     "connecting": "接続中...",
     "shortcutRegistered": "グローバルショートカット登録済み: {shortcut}",
     "shortcutHint": "有効なショートカット:",
-    "shortcutConflict": "そのショートカットは別の操作で使用されています",
+    "shortcutConflict": "そのショートカットは既に使用されています",
     "shortcutUnavailable": "ショートカット使用不可",
     "shortcutActive": "有効なショートカット: {shortcut}",
     "shortcutCapturing": "ここをクリックしてキーを押してください...",
@@ -640,7 +650,8 @@
     "readNonFollowersOff": "TTSはフォロワーのみ読みます",
     "twitchAuthorizeInBrowser": "ブラウザで認証してください — コード {code}",
     "twitchAuthorizeWindow": "開いたウィンドウで認証してから、こちらに戻ってください",
-    "twitchAuthError": "Twitch認証でエラーが発生しました"
+    "twitchAuthError": "Twitch認証でエラーが発生しました",
+    "settingSaveFailed": "設定（{keys}）を保存できませんでした。接続を確認してください。"
   },
   "dictLang": {
     "title": "許可する言語",
@@ -721,7 +732,10 @@
       "refresh": "更新",
       "wipe": "記録を消去",
       "wipeConfirm": "視聴者の記録をすべて削除しますか？ミュートとBANも失われます。",
-      "tour": "チュートリアルを見る"
+      "tour": "チュートリアルを見る",
+      "follow": "フォロワーとして登録",
+      "unfollow": "フォロワー登録を解除",
+      "remove": "記録から削除"
     },
     "wipeModal": {
       "title": "本当によろしいですか？",
@@ -805,10 +819,10 @@
     "uploadDesc": "ここをクリックして音声ファイル（mp3、wav、ogg、webm、m4a）をアップロードします。最大24個まで登録できます。",
     "testTitle": "音声をテスト",
     "testDesc": "効果音を再生する前に、このボタンでシステム音が正常か確認してください。",
-    "shortcutTitle": "ショートカットを設定",
-    "shortcutDesc": "サウンドのショートカット欄をクリックし、Ctrl・Alt・Shiftのいずれかとキーの組み合わせを押します。アプリを開かなくても再生できます。",
+    "shortcutTitle": "サウンドを設定",
+    "shortcutDesc": "このウィンドウで、豊富なギャラリーからアイコン、カードの色、キーボードショートカット（Ctrl/Alt/Shift + キー）を選び、サウンドを削除できます。",
     "deckTitle": "あなたのサウンドパッド",
-    "deckDesc": "各カードが1つのサウンドです。クリックで再生、名前や色の変更、ゴミ箱アイコンで削除できます。",
+    "deckDesc": "各カードが1つのサウンドです。左クリックで再生、右クリックで設定を開きます。",
     "limitTitle": "サウンドの上限",
     "limitDesc": "合計最大24個までアップロードできます。このカウンターで使用数がわかります。"
   },

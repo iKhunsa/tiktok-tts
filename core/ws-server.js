@@ -127,6 +127,22 @@ function createWsServer(server, bus, logger) {
         { clientId, totalClientes: wss.clients.size - 1 }
       );
     });
+
+    // Sin este handler, un 'error' del socket (reset abrupto, protocolo roto)
+    // se propaga como excepcion no capturada del proceso.
+    ws.on('error', (error) => {
+      logger.log(
+        'warn', 'core', 'core/ws-server.js#onSocketError', 'core.ws.socket_error',
+        `Error en el socket WS ${clientId}: ${error.message}`, { clientId, error: error.message }
+      );
+    });
+  });
+
+  wss.on('error', (error) => {
+    logger.log(
+      'error', 'core', 'core/ws-server.js#onServerError', 'core.ws.servidor_error',
+      `Error del servidor WebSocket: ${error.message}`, { error: error.message, stack: error.stack }
+    );
   });
 
   return { wss };

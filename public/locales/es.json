@@ -251,7 +251,17 @@
     "noShortcut": "Sin atajo",
     "pressKey": "Presiona tecla…",
     "clickToAssign": "Clic para asignar atajo (Ctrl/Alt/Shift + tecla)",
-    "test": "Probar"
+    "test": "Probar",
+    "iconPickerTitle": "Elegir ícono",
+    "iconSearchPlaceholder": "Buscar ícono…",
+    "iconTooMany": "Mostrando los primeros 300 — refiná la búsqueda",
+    "changeIcon": "Cambiar ícono",
+    "settingsTitle": "Configurar sonido",
+    "nameLabel": "Nombre",
+    "shortcutLabel": "Atajo de teclado",
+    "assignShortcut": "Asignar",
+    "deleteSound": "Eliminar sonido",
+    "cardHint": "Clic para reproducir · clic derecho para opciones"
   },
   "update": {
     "checking": "Buscando actualizaciones...",
@@ -329,7 +339,7 @@
     "connecting": "Conectando...",
     "shortcutRegistered": "Atajo global registrado: {shortcut}",
     "shortcutHint": "Atajo activo:",
-    "shortcutConflict": "Ese atajo ya está en uso por otra acción",
+    "shortcutConflict": "Ese atajo ya está en uso",
     "shortcutUnavailable": "Atajo no disponible",
     "shortcutActive": "Atajo activo: {shortcut}",
     "shortcutCapturing": "Clic aquí y presiona teclas...",
@@ -660,7 +670,8 @@
     "readNonFollowersOff": "El TTS solo lee a seguidores",
     "twitchAuthorizeInBrowser": "Autorizá en el navegador — código {code}",
     "twitchAuthorizeWindow": "Autorizá en la ventana que se abrió y volvé acá",
-    "twitchAuthError": "Error en la autorización de Twitch"
+    "twitchAuthError": "Error en la autorización de Twitch",
+    "settingSaveFailed": "No se pudo guardar el ajuste ({keys}). Revisá la conexión."
   },
   "dictLang": {
     "title": "Idiomas permitidos",
@@ -721,7 +732,10 @@
       "refresh": "Actualizar",
       "wipe": "Vaciar registro",
       "wipeConfirm": "¿Borrar todo el registro de espectadores? También se pierden los silencios y baneos.",
-      "tour": "Ver tutorial"
+      "tour": "Ver tutorial",
+      "follow": "Marcar seguidor",
+      "unfollow": "Quitar seguidor",
+      "remove": "Eliminar del registro"
     },
     "wipeModal": {
       "title": "¿Estás seguro?",
@@ -805,10 +819,10 @@
     "uploadDesc": "Hacé clic acá para subir un archivo de audio (mp3, wav, ogg, webm o m4a). Podés tener hasta 24 sonidos en tu pad.",
     "testTitle": "Probar el audio",
     "testDesc": "Usá este botón para verificar que el sonido de tu sistema funciona correctamente antes de reproducir tus efectos.",
-    "shortcutTitle": "Asignar un atajo de teclado",
-    "shortcutDesc": "Hacé clic en el atajo de cada sonido y presioná una combinación con Ctrl, Alt o Shift más una tecla. Así podés dispararlo sin abrir la app.",
+    "shortcutTitle": "Configurar el sonido",
+    "shortcutDesc": "En esta ventana elegís un ícono de la galería completa, el color de la tarjeta, el atajo de teclado (Ctrl/Alt/Shift + tecla) y podés eliminar el sonido.",
     "deckTitle": "Tu pad de sonidos",
-    "deckDesc": "Cada tarjeta representa un sonido: hacé clic para reproducirlo, cambiale el nombre, el color, o eliminalo con el ícono de basura.",
+    "deckDesc": "Cada tarjeta es un sonido. Clic izquierdo lo reproduce; clic derecho abre su configuración.",
     "limitTitle": "Límite de sonidos",
     "limitDesc": "Podés subir hasta 24 sonidos en total. Este contador te muestra cuántos llevás usados."
   },

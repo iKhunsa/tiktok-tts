@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TikLive TTS — Configuración</title>
+  <link rel="icon" type="image/svg+xml" href="logo-icon.svg" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -40,6 +42,8 @@
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { scrollbar-width: none !important; -ms-overflow-style: none !important; }
+    ::-webkit-scrollbar { width: 0 !important; height: 0 !important; display: none !important; }
 
     body {
       background: var(--bg);
@@ -71,15 +75,16 @@
 
     .logo {
       display: flex;
-      align-items: center;
-      gap: 10px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
     }
 
-    .logo-icon {
-      width: 36px;
-      height: 36px;
+    .logo-mark {
+      height: 30px;
+      width: auto;
+      max-width: 260px;
       display: block;
-      object-fit: contain;
     }
 
     h1 {
@@ -731,11 +736,8 @@
   <!-- HEADER -->
   <header>
     <a href="/" class="logo" style="text-decoration:none;color:inherit;">
-      <img class="logo-icon" src="logo.png" alt="TikLive TTS">
-      <div>
-        <h1>TikLive <span>TTS</span></h1>
-        <div class="subtitle" data-i18n="adv.subtitle">Configuración del Servidor</div>
-      </div>
+      <img class="logo-mark" src="logo.svg" alt="TikLive TTS">
+      <div class="subtitle" data-i18n="adv.subtitle">Configuración del Servidor</div>
     </a>
     <nav class="nav">
       <a href="/" class="nav-link" data-i18n="adv.navBack">← Chat Live</a>
@@ -1025,6 +1027,21 @@
 <div class="toast" id="toast"></div>
 
 <script>
+  // Errores no manejados del cliente → log de sesión del servidor → GlitchTip.
+  window.addEventListener('error', (e) => {
+    fetch('/api/logs/client', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: e.message || 'Error desconocido', stack: e.error && e.error.stack, source: 'advanced' }),
+    }).catch(() => {});
+  });
+  window.addEventListener('unhandledrejection', (e) => {
+    const r = e.reason || {};
+    fetch('/api/logs/client', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: r.message || String(e.reason), stack: r.stack, source: 'advanced:unhandledrejection' }),
+    }).catch(() => {});
+  });
+
   // ─── i18n ───────────────────────────────────────────────────────────
   let _locale = {};
   async function loadLocale() {

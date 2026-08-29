@@ -14,8 +14,12 @@ test('keyFor cae a name: cuando no hay id', () => {
   assert.equal(keyFor('twitch', '', 'Foo'), 'twitch:name:foo');
 });
 
+test('keyFor acepta kick como plataforma', () => {
+  assert.equal(keyFor('kick', '1', 'Foo'), 'kick:1');
+});
+
 test('keyFor normaliza plataforma desconocida a tiktok', () => {
-  assert.equal(keyFor('kick', '1', 'Foo'), 'tiktok:1');
+  assert.equal(keyFor('mixer', '1', 'Foo'), 'tiktok:1');
 });
 
 test('keyFor sin id ni nick cae a anon', () => {
@@ -30,8 +34,12 @@ test('parseKey detecta idKind name', () => {
   assert.deepEqual(parseKey('twitch:name:foo'), { platform: 'twitch', id: 'foo', idKind: 'name' });
 });
 
+test('parseKey acepta kick', () => {
+  assert.deepEqual(parseKey('kick:1'), { platform: 'kick', id: '1', idKind: 'id' });
+});
+
 test('parseKey rechaza plataforma invalida', () => {
-  assert.equal(parseKey('kick:1'), null);
+  assert.equal(parseKey('mixer:1'), null);
 });
 
 test('parseKey rechaza formato sin dos puntos', () => {

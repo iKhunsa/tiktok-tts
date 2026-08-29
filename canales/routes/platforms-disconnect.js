@@ -70,7 +70,7 @@ function platformsDisconnect(deps) {
           const slug = cleanKickSlug(channel);
           disconnectKick(deps, slug);
         } else {
-          for (const slug of Array.from(state.kickChannels)) disconnectKick(deps, slug);
+          for (const slug of Array.from(state.kickChannels.keys())) disconnectKick(deps, slug);
         }
         bus.emit('canal:estado', { platform: 'kick', channel: channel ? cleanKickSlug(channel) : null, state: 'desconectado' });
       }

@@ -52,10 +52,19 @@ function applyModAction(deps, req, res, fn, { blockAdmin = false } = {}) {
     }
   }
 
-  const viewer = fn(target);
-  store.flush();
-  bus.emit('ws:broadcast', { type: 'moderation-updated', viewer });
-  res.json({ ok: true, viewer });
+  try {
+    const viewer = fn(target);
+    store.flush();
+    bus.emit('ws:broadcast', { type: 'moderation-updated', viewer });
+    res.json({ ok: true, viewer });
+  } catch (error) {
+    logger.log(
+      'error', 'moderacion', 'moderacion/apply-mod-action.js#applyModAction', 'moderacion.accion.fallida',
+      `Falló aplicar la acción de moderación sobre ${target.nick || target.userId}: ${error.message}`,
+      { platform: target.platform, error: error.message, stack: error.stack }
+    );
+    res.status(500).json({ error: 'No se pudo aplicar la acción de moderación' });
+  }
 }
 
 module.exports = { resolveModTarget, resolveUntil, isAdminTarget, isAdminIdentity, applyModAction, MOD_DURATION_MAX_MS };

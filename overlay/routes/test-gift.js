@@ -24,6 +24,10 @@ function testGift(deps) {
       logger.log('info', 'overlay', 'overlay/routes/test-gift.js#testGift', 'overlay.test.disparado', 'Test gift disparado', { tipo: 'gift', payload: { user, giftName } });
       res.json({ success: true, user, giftName });
     } catch (e) {
+      logger.log(
+        'warn', 'overlay', 'overlay/routes/test-gift.js#testGift', 'overlay.test.fallido',
+        `Test gift falló: ${e.message}`, { error: e.message }
+      );
       res.status(500).json({ error: e.message });
     }
   };

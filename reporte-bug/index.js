@@ -10,7 +10,7 @@ module.exports = {
   register({ app, bus, logger }) {
     sweepOldSessionLogs(logger);
     attachErrorListeners(bus, logger);
-    app.post('/api/report-bug', reportBug(logger));
+    app.post('/api/report-bug', reportBug(logger, bus));
 
     return { rutas: 1, listeners: 2 };
   },

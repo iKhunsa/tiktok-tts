@@ -1,7 +1,7 @@
 'use strict';
 
 const path = require('path');
-const { createApp, attachFallbackStatus } = require('./core/app');
+const { createApp, attachFallbackStatus, attachErrorHandler } = require('./core/app');
 const { startHttpServer } = require('./core/http-server');
 const { createWsServer } = require('./core/ws-server');
 const { createEventBus } = require('./core/event-bus');
@@ -45,6 +45,10 @@ registerDomain(deps, require('./telemetria'));
 // Va al final: si algun dominio ya registro GET /api/status, ese gana
 // (Express usa el primer handler que responde en la misma ruta).
 attachFallbackStatus(app);
+
+// Ultimo de todo: middleware de error global. Cualquier throw de un handler de
+// ruta que no se haya manejado localmente cae aca (se loguea + 500 generico).
+attachErrorHandler(app, logger);
 
 process.on('uncaughtException', (error) => {
   logger.log(

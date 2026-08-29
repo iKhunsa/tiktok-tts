@@ -13,9 +13,10 @@ function createChannelState() {
     youtubeReconnectTimers: new Map(),
     youtubeWatchdogTimers: new Map(), // channelKey -> Timeout (watchdog de chat 'silencioso')
     youtubeSeenIds: new Map(), // channelKey -> Set<msgId>
-    kickChannels: new Set(), // slugs con ventana de captura oculta abierta
+    kickChannels: new Map(), // slug -> { ws, chatroomId, intentional, pingTimer, attempt }
     kickSeenIds: new Map(), // slug -> Set<msgId>
-    kickWatchdogTimers: new Map(), // slug -> Timeout (watchdog de captura 'silenciosa')
+    kickWatchdogTimers: new Map(), // slug -> Timeout (watchdog de chat 'silencioso')
+    kickReconnectTimers: new Map(), // slug -> Timeout (backoff de reconexion del WS)
     authTokens: { twitch: null },
     obs: {
       ws: null,

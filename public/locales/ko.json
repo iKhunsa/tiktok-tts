@@ -231,7 +231,17 @@
     "noShortcut": "단축키 없음",
     "pressKey": "키를 누르세요…",
     "clickToAssign": "단축키 지정 클릭 (Ctrl/Alt/Shift + 키)",
-    "test": "테스트"
+    "test": "테스트",
+    "iconPickerTitle": "아이콘 선택",
+    "iconSearchPlaceholder": "아이콘 검색…",
+    "iconTooMany": "처음 300개 표시 — 검색어를 좁히세요",
+    "changeIcon": "아이콘 변경",
+    "settingsTitle": "사운드 설정",
+    "nameLabel": "이름",
+    "shortcutLabel": "키보드 단축키",
+    "assignShortcut": "지정",
+    "deleteSound": "사운드 삭제",
+    "cardHint": "클릭하여 재생 · 마우스 오른쪽 버튼으로 옵션"
   },
   "update": {
     "checking": "업데이트 확인 중...",
@@ -309,7 +319,7 @@
     "connecting": "연결 중...",
     "shortcutRegistered": "전역 단축키 등록됨: {shortcut}",
     "shortcutHint": "활성 단축키:",
-    "shortcutConflict": "해당 단축키는 다른 동작에서 이미 사용 중입니다",
+    "shortcutConflict": "해당 단축키는 이미 사용 중입니다",
     "shortcutUnavailable": "단축키 사용 불가",
     "shortcutActive": "활성 단축키: {shortcut}",
     "shortcutCapturing": "여기를 클릭하고 키를 누르세요...",
@@ -640,7 +650,8 @@
     "readNonFollowersOff": "TTS가 팔로워만 읽습니다",
     "twitchAuthorizeInBrowser": "브라우저에서 인증하세요 — 코드 {code}",
     "twitchAuthorizeWindow": "열린 창에서 인증한 후 다시 돌아오세요",
-    "twitchAuthError": "Twitch 인증 오류"
+    "twitchAuthError": "Twitch 인증 오류",
+    "settingSaveFailed": "설정({keys})을 저장하지 못했습니다. 연결을 확인하세요."
   },
   "dictLang": {
     "title": "허용 언어",
@@ -721,7 +732,10 @@
       "refresh": "새로고침",
       "wipe": "기록 비우기",
       "wipeConfirm": "시청자 기록을 모두 삭제할까요? 음소거와 차단도 사라집니다.",
-      "tour": "튜토리얼 보기"
+      "tour": "튜토리얼 보기",
+      "follow": "팔로워로 표시",
+      "unfollow": "팔로워 표시 해제",
+      "remove": "기록에서 삭제"
     },
     "wipeModal": {
       "title": "정말 삭제할까요?",
@@ -805,10 +819,10 @@
     "uploadDesc": "여기를 클릭해 오디오 파일(mp3, wav, ogg, webm, m4a)을 업로드하세요. 최대 24개까지 가능합니다.",
     "testTitle": "오디오 테스트",
     "testDesc": "효과음을 재생하기 전에 이 버튼으로 시스템 소리가 정상인지 확인하세요.",
-    "shortcutTitle": "단축키 지정",
-    "shortcutDesc": "사운드의 단축키를 클릭하고 Ctrl, Alt, Shift 중 하나와 키를 함께 누르세요. 앱을 열지 않아도 실행할 수 있습니다.",
+    "shortcutTitle": "사운드 설정",
+    "shortcutDesc": "이 창에서 전체 갤러리에서 아이콘, 카드 색상, 키보드 단축키(Ctrl/Alt/Shift + 키)를 고르고 사운드를 삭제할 수 있습니다.",
     "deckTitle": "내 사운드 패드",
-    "deckDesc": "카드마다 하나의 사운드입니다: 클릭해서 재생, 이름/색상 변경, 휴지통 아이콘으로 삭제할 수 있습니다.",
+    "deckDesc": "카드마다 하나의 사운드입니다. 왼쪽 클릭은 재생, 오른쪽 클릭은 설정을 엽니다.",
     "limitTitle": "사운드 개수 제한",
     "limitDesc": "총 24개까지 업로드할 수 있습니다. 이 숫자는 현재 사용한 개수를 보여줍니다."
   },
