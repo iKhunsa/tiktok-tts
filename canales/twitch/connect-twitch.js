@@ -113,6 +113,16 @@ async function connectTwitch(deps, channelInput, token = null, attempt = 0) {
     }
   });
 
+  // Defensivo: si tmi.js llegara a emitir 'error' en el EventEmitter (algunas
+  // versiones lo hacen ante fallos de socket) y no hay listener, seria una
+  // excepcion no capturada del proceso.
+  client.on('error', (error) => {
+    logger.log(
+      'warn', 'canales', 'canales/twitch/connect-twitch.js#connectTwitch', 'canales.twitch.cliente_error',
+      `Error del cliente tmi.js para ${channel}: ${error && error.message}`, { channel, error: error && error.message }
+    );
+  });
+
   logger.log(
     'info', 'canales', 'canales/twitch/connect-twitch.js#connectTwitch', 'canales.twitch.conectando',
     `Conectando a Twitch ${channel}`, { channel }

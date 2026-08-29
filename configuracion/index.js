@@ -67,7 +67,7 @@ module.exports = {
     app.get('/api/logs', getLogs(logger));
     app.post('/api/logs/client', postClientLog(logger));
     app.get('/api/logs/session-file', getSessionLogFile(logger));
-    app.get('/api/logs/download-all', getLogsDownloadAll());
+    app.get('/api/logs/download-all', getLogsDownloadAll(logger));
 
     return { rutas: 9, listeners: 3 };
   },

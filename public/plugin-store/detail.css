@@ -48,6 +48,12 @@
 
 .store-detail-actions { display: flex; gap: 10px; flex-shrink: 0; }
 .store-detail-cta { margin-bottom: 0; }
+/* Mismo estilo que "Guardar playlist": gris en reposo, rojo al hover. */
+.btn-supabase-primary.store-detail-cta {
+  background: #363636; color: #898989; font-weight: 700;
+  transition: background 0.15s, color 0.15s;
+}
+.btn-supabase-primary.store-detail-cta:hover { background: #F0213A; color: #fff; }
 .store-detail-open {
   background: transparent; border: 1px solid var(--border); border-radius: 8px;
   color: var(--text); font-size: 12px; font-weight: 700; padding: 8px 14px;

@@ -8,7 +8,7 @@ function platformsStatus(state) {
       kick: state.kickChannels.size > 0,
       twitchChannels: Array.from(state.twitchChannels.keys()),
       youtubeChannels: Array.from(state.youtubeChannels.keys()),
-      kickChannels: Array.from(state.kickChannels),
+      kickChannels: Array.from(state.kickChannels.keys()),
     });
   };
 }

@@ -231,7 +231,17 @@
     "noShortcut": "无快捷键",
     "pressKey": "按下按键…",
     "clickToAssign": "点击分配快捷键 (Ctrl/Alt/Shift + 按键)",
-    "test": "试听"
+    "test": "试听",
+    "iconPickerTitle": "选择图标",
+    "iconSearchPlaceholder": "搜索图标…",
+    "iconTooMany": "显示前 300 个 — 请细化搜索",
+    "changeIcon": "更换图标",
+    "settingsTitle": "音效设置",
+    "nameLabel": "名称",
+    "shortcutLabel": "键盘快捷键",
+    "assignShortcut": "分配",
+    "deleteSound": "删除音效",
+    "cardHint": "点击播放 · 右键打开选项"
   },
   "update": {
     "checking": "检查更新中...",
@@ -309,7 +319,7 @@
     "connecting": "连接中...",
     "shortcutRegistered": "全局快捷键已注册：{shortcut}",
     "shortcutHint": "当前快捷键：",
-    "shortcutConflict": "该快捷键已被其他操作使用",
+    "shortcutConflict": "该快捷键已被占用",
     "shortcutUnavailable": "快捷键不可用",
     "shortcutActive": "当前快捷键：{shortcut}",
     "shortcutCapturing": "点击此处并按键...",
@@ -640,7 +650,8 @@
     "readNonFollowersOff": "TTS 只朗读关注者",
     "twitchAuthorizeInBrowser": "请在浏览器中授权 — 代码 {code}",
     "twitchAuthorizeWindow": "请在打开的窗口中授权，然后回到这里",
-    "twitchAuthError": "Twitch 授权出错"
+    "twitchAuthError": "Twitch 授权出错",
+    "settingSaveFailed": "无法保存设置（{keys}）。请检查网络连接。"
   },
   "dictLang": {
     "title": "允许的语言",
@@ -721,7 +732,10 @@
       "refresh": "刷新",
       "wipe": "清空记录",
       "wipeConfirm": "删除全部观众记录？静音和封禁也会一并丢失。",
-      "tour": "查看教程"
+      "tour": "查看教程",
+      "follow": "标记为关注者",
+      "unfollow": "取消关注者标记",
+      "remove": "从记录中移除"
     },
     "wipeModal": {
       "title": "确定吗？",
@@ -805,10 +819,10 @@
     "uploadDesc": "点这里上传音频文件（mp3、wav、ogg、webm 或 m4a）。最多可以有 24 个音效。",
     "testTitle": "测试音频",
     "testDesc": "播放音效前，用这个按钮检查系统声音是否正常。",
-    "shortcutTitle": "设置快捷键",
-    "shortcutDesc": "点击某个音效的快捷键，然后按 Ctrl、Alt 或 Shift 加一个键的组合。这样不用打开应用也能触发。",
+    "shortcutTitle": "配置音效",
+    "shortcutDesc": "在这个窗口中，你可以从完整图库选择图标、卡片颜色、键盘快捷键（Ctrl/Alt/Shift + 按键），还可以删除音效。",
     "deckTitle": "你的音效板",
-    "deckDesc": "每张卡片是一个音效：点击播放，改名字，改颜色，或用垃圾桶图标删除。",
+    "deckDesc": "每张卡片是一个音效。左键播放，右键打开设置。",
     "limitTitle": "音效数量上限",
     "limitDesc": "总共最多可以上传 24 个音效。这个计数器显示你已经用了多少个。"
   },

@@ -5,7 +5,7 @@ const { resolveFullTrack } = require('./resolve-full-track');
 const { getConfigSnapshot } = require('../config-bridge');
 
 function advanceMusicQueue(deps) {
-  const { musicState, bus } = deps;
+  const { musicState, bus, logger } = deps;
   const config = getConfigSnapshot(bus);
 
   if (musicState.queue.length > 0) {
@@ -37,7 +37,13 @@ function advanceMusicQueue(deps) {
         musicState.currentTrack = { ...resolved, requestedBy: null, platform: 'playlist' };
         bus.emit('ws:broadcast', { type: 'music-now-playing', track: musicState.currentTrack });
         musicBroadcastState(deps);
-      }).catch(() => advanceMusicQueue(deps));
+      }).catch((error) => {
+        if (logger) logger.log(
+          'warn', 'sonido', 'sonido/musica/advance-queue.js#advanceMusicQueue', 'sonido.musica.playlist_track_salteado',
+          `Se salteó un tema de la playlist al no poder resolverlo: ${error.message}`, { error: error.message }
+        );
+        advanceMusicQueue(deps);
+      });
       return;
     }
   } else {

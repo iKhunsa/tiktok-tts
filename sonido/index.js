@@ -3,7 +3,7 @@
 const path = require('path');
 const express = require('express');
 const fs = require('fs');
-const { DATA_BASE } = require('../core/paths');
+const { DATA_BASE, RESOURCE_BASE } = require('../core/paths');
 const { createTtsRateLimiterState } = require('./tts/is-rate-limited');
 const { generate } = require('./tts/routes/generate');
 const { voices } = require('./tts/routes/voices');
@@ -33,6 +33,7 @@ const { list } = require('./soundpad/routes/list');
 const { upload } = require('./soundpad/routes/upload');
 const { patch } = require('./soundpad/routes/patch');
 const { del } = require('./soundpad/routes/delete');
+const { iconsList } = require('./soundpad/routes/icons-list');
 const { attachSoundpadShortcuts } = require('./soundpad/shortcuts');
 
 let engineInstance = null;
@@ -45,6 +46,7 @@ module.exports = {
     fs.mkdirSync(soundsDir, { recursive: true });
     const soundsConfigPath = path.join(DATA_BASE, 'sounds-config.json');
     app.use('/sounds', express.static(soundsDir));
+    app.use('/soundpad-icons', express.static(path.join(RESOURCE_BASE, 'asset', 'icons')));
 
     const musicState = createMusicState();
     const engine = createMusicEngine({
@@ -101,6 +103,7 @@ module.exports = {
 
     // ── Soundpad ─────────────────────────────────────────────────────────
     app.get('/api/soundpad/list', list(soundsConfigPath));
+    app.get('/api/soundpad/icons', iconsList(logger));
     app.post('/api/soundpad/upload', upload(deps));
     app.patch('/api/soundpad/:id', patch(deps));
     app.delete('/api/soundpad/:id', del(deps));
@@ -111,10 +114,15 @@ module.exports = {
     if (Array.isArray(config.streamerPlaylist) && config.streamerPlaylist.length > 0) {
       // Fire-and-forget: la expansion de playlists de YouTube es async y no
       // debe bloquear el registro del dominio.
-      Promise.resolve(resolveAndSavePlaylist(deps, config.streamerPlaylist)).catch(() => {});
+      Promise.resolve(resolveAndSavePlaylist(deps, config.streamerPlaylist)).catch((error) => {
+        logger.log(
+          'warn', 'sonido', 'sonido/index.js#register', 'sonido.musica.playlist_streamer_fallida',
+          `No se pudo cargar la playlist del streamer al arrancar: ${error.message}`, { error: error.message }
+        );
+      });
     }
 
-    return { rutas: 21, listeners: 2 };
+    return { rutas: 22, listeners: 2 };
   },
 
   shutdown() {

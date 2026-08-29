@@ -125,27 +125,37 @@ function extractYoutubeMessage(item) {
   };
 }
 
-function extractKickMessage(raw) {
-  // raw viene de electron-shell/kick-capture-preload.js: { id, username, content, emotes }
-  // content ya trae los emotes como tokens `:nombre:` (custom de Kick) o el
-  // caracter unicode nativo (twemoji), igual que YouTube arma su ttsComment.
-  const text = String(raw.content || '').trim();
-  if (!text) return null;
+// Kick manda los emotes dentro de `content` como tokens `[emote:ID:nombre]`.
+// Se convierten al mismo formato `:nombre:` + mapa de urls que Twitch/YouTube,
+// para que el renderer los pinte como imagen y sanitizeForTTS los saque del
+// texto que lee el TTS.
+const KICK_EMOTE_TOKEN = /\[emote:(\d+):([^\]]*)\]/g;
 
-  const ttsText = text.replace(/:[\w-]+:/g, '').trim();
+function extractKickMessage(raw) {
+  // raw viene de canales/kick/handle-event.js: { id, userId, username, content }
+  const source = String(raw.content || '').trim();
+  if (!source) return null;
+
+  const emotes = {};
+  const displayText = source.replace(KICK_EMOTE_TOKEN, (_m, id, name) => {
+    const safeName = String(name || `emote_${id}`).replace(/[^a-zA-Z0-9_-]/g, '_') || `emote_${id}`;
+    emotes[safeName] = { url: `https://files.kick.com/emotes/${id}/fullsize` };
+    return `:${safeName}:`;
+  }).trim();
+  if (!displayText) return null;
+
+  const ttsText = displayText.replace(/:[\w-]+:/g, '').trim();
   return {
     user: cleanName(raw.username || 'Anónimo'),
-    // corard.tv no expone el id numerico estable de Kick, solo el username
-    // visible — se deja null a proposito para que /moderacion caiga en la
-    // clave por-nombre (idk:'name', ver CLAUDE.md), en vez de fingir un id
-    // estable que en realidad puede cambiar si el usuario se renombra.
-    userId: null,
-    comment: sanitizeForTTS(text),
+    // Kick si expone el id numerico estable del usuario — /moderacion lo usa
+    // como clave firme (no cae al castigo fragil por-nombre).
+    userId: raw.userId || null,
+    comment: sanitizeForTTS(displayText),
     // Siempre string (aunque quede vacio si el mensaje es solo emotes/emoji) —
     // nunca undefined, para que el front no caiga de vuelta a `comment` y
-    // termine leyendo el token crudo `:emote_id:` o el emoji en voz alta.
+    // termine leyendo el token crudo `:nombre:` o el emoji en voz alta.
     ttsComment: sanitizeForTTS(ttsText),
-    emotes: raw.emotes && Object.keys(raw.emotes).length > 0 ? raw.emotes : undefined,
+    emotes: Object.keys(emotes).length > 0 ? emotes : undefined,
     ytMsgId: undefined,
   };
 }

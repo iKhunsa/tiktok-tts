@@ -11,15 +11,21 @@ const LOGS_DIR = path.join(DATA_BASE, 'logs');
  * concatenadas en orden cronologico. Streaming archivo por archivo — nunca
  * carga todo en memoria a la vez, ni bloquea el server mientras se genera.
  */
-function getLogsDownloadAll() {
+function getLogsDownloadAll(logger) {
   return async (_req, res) => {
     let files;
     try {
       files = (await fs.promises.readdir(LOGS_DIR))
         .filter((f) => f.startsWith('session-') && f.endsWith('.log'))
         .sort();
-    } catch (_) {
+    } catch (error) {
       files = [];
+      if (logger && error.code !== 'ENOENT') {
+        logger.log(
+          'warn', 'configuracion', 'configuracion/routes/get-logs-download-all.js#getLogsDownloadAll', 'configuracion.logs.lectura_dir_fallida',
+          `No se pudo listar el directorio de logs: ${error.message}`, { path: LOGS_DIR, error: error.message }
+        );
+      }
     }
 
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');

@@ -231,7 +231,17 @@
     "noShortcut": "Nessuna scorciatoia",
     "pressKey": "Premi un tasto…",
     "clickToAssign": "Clic per assegnare scorciatoia (Ctrl/Alt/Shift + tasto)",
-    "test": "Prova"
+    "test": "Prova",
+    "iconPickerTitle": "Scegli icona",
+    "iconSearchPlaceholder": "Cerca icone…",
+    "iconTooMany": "Mostrando le prime 300 — affina la ricerca",
+    "changeIcon": "Cambia icona",
+    "settingsTitle": "Configura suono",
+    "nameLabel": "Nome",
+    "shortcutLabel": "Scorciatoia da tastiera",
+    "assignShortcut": "Assegna",
+    "deleteSound": "Elimina suono",
+    "cardHint": "Clic per riprodurre · clic destro per le opzioni"
   },
   "update": {
     "checking": "Ricerca aggiornamenti...",
@@ -309,7 +319,7 @@
     "connecting": "Connessione...",
     "shortcutRegistered": "Scorciatoia globale registrata: {shortcut}",
     "shortcutHint": "Scorciatoia attiva:",
-    "shortcutConflict": "Questa scorciatoia è già usata da un’altra azione",
+    "shortcutConflict": "Quella scorciatoia è già in uso",
     "shortcutUnavailable": "Scorciatoia non disponibile",
     "shortcutActive": "Scorciatoia attiva: {shortcut}",
     "shortcutCapturing": "Clicca qui e premi i tasti...",
@@ -640,7 +650,8 @@
     "readNonFollowersOff": "Il TTS legge solo i follower",
     "twitchAuthorizeInBrowser": "Autorizza nel browser — codice {code}",
     "twitchAuthorizeWindow": "Autorizza nella finestra che si è aperta e torna qui",
-    "twitchAuthError": "Errore nell'autorizzazione di Twitch"
+    "twitchAuthError": "Errore nell'autorizzazione di Twitch",
+    "settingSaveFailed": "Impossibile salvare l'impostazione ({keys}). Controlla la connessione."
   },
   "dictLang": {
     "title": "Lingue consentite",
@@ -721,7 +732,10 @@
       "refresh": "Aggiorna",
       "wipe": "Svuota registro",
       "wipeConfirm": "Cancellare tutto il registro degli spettatori? Si perdono anche silenziamenti e ban.",
-      "tour": "Vedi tutorial"
+      "tour": "Vedi tutorial",
+      "follow": "Segna come follower",
+      "unfollow": "Rimuovi follower",
+      "remove": "Rimuovi dal registro"
     },
     "wipeModal": {
       "title": "Sei sicuro?",
@@ -805,10 +819,10 @@
     "uploadDesc": "Clicca qui per caricare un file audio (mp3, wav, ogg, webm o m4a). Puoi avere fino a 24 suoni nel tuo pad.",
     "testTitle": "Testa l'audio",
     "testDesc": "Usa questo pulsante per verificare che l'audio del sistema funzioni prima di riprodurre i tuoi effetti.",
-    "shortcutTitle": "Assegna una scorciatoia",
-    "shortcutDesc": "Clicca sulla scorciatoia di un suono e premi una combinazione con Ctrl, Alt o Shift più un tasto. Così lo attivi senza aprire l'app.",
+    "shortcutTitle": "Configura il suono",
+    "shortcutDesc": "In questa finestra scegli un'icona dalla galleria completa, il colore della scheda, la scorciatoia (Ctrl/Alt/Shift + tasto) e puoi eliminare il suono.",
     "deckTitle": "Il tuo pad",
-    "deckDesc": "Ogni scheda è un suono: clicca per riprodurlo, rinominalo, cambia colore o eliminalo con l'icona del cestino.",
+    "deckDesc": "Ogni scheda è un suono. Clic sinistro lo riproduce; clic destro apre le impostazioni.",
     "limitTitle": "Limite suoni",
     "limitDesc": "Puoi caricare fino a 24 suoni in totale. Questo contatore mostra quanti ne hai usati."
   },

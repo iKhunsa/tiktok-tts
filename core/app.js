@@ -74,4 +74,25 @@ function attachFallbackStatus(app) {
   });
 }
 
-module.exports = { createApp, attachFallbackStatus };
+/**
+ * Middleware de error global. Se registra al FINAL (despues de todas las rutas
+ * y del fallback status, ver server.js). Cualquier throw sincrono de un handler
+ * de ruta cae aca automaticamente; los handlers async que rechazan tienen que
+ * pasar el error a next() (los pocos que hay lo hacen con try/catch propio).
+ * Se loguea con la ruta y se responde 500 generico (nunca el stack crudo al cliente).
+ */
+function attachErrorHandler(app, logger) {
+  app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
+    const error = err instanceof Error ? err : new Error(String(err));
+    logger.log(
+      'error', 'core', 'core/app.js#errorHandler', 'core.ruta.excepcion',
+      `Excepcion no manejada en ${req.method} ${req.originalUrl}: ${error.message}`,
+      { route: req.originalUrl, method: req.method, error: error.message, stack: error.stack }
+    );
+    if (!res.headersSent) {
+      res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  });
+}
+
+module.exports = { createApp, attachFallbackStatus, attachErrorHandler };

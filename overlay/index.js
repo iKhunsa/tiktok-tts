@@ -149,7 +149,7 @@ module.exports = {
 
     // ── Rutas ─────────────────────────────────────────────────────────────
     app.get('/api/overlay-stats', overlayStats(state));
-    app.get('/api/gifts-list', giftsList());
+    app.get('/api/gifts-list', giftsList(logger));
     app.post('/api/upload-bg', uploadBg(logger));
     app.delete('/api/upload-bg', deleteBg(logger));
     app.post('/api/test/gift', testGift(deps));

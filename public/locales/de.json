@@ -231,7 +231,17 @@
     "noShortcut": "Kein Kürzel",
     "pressKey": "Taste drücken…",
     "clickToAssign": "Klicken für Kürzel (Ctrl/Alt/Shift + Taste)",
-    "test": "Testen"
+    "test": "Testen",
+    "iconPickerTitle": "Symbol wählen",
+    "iconSearchPlaceholder": "Symbole suchen…",
+    "iconTooMany": "Erste 300 werden angezeigt — Suche verfeinern",
+    "changeIcon": "Symbol ändern",
+    "settingsTitle": "Sound einstellen",
+    "nameLabel": "Name",
+    "shortcutLabel": "Tastenkürzel",
+    "assignShortcut": "Zuweisen",
+    "deleteSound": "Sound löschen",
+    "cardHint": "Klicken zum Abspielen · Rechtsklick für Optionen"
   },
   "update": {
     "checking": "Auf Updates prüfen...",
@@ -309,7 +319,7 @@
     "connecting": "Verbinden...",
     "shortcutRegistered": "Globales Kürzel registriert: {shortcut}",
     "shortcutHint": "Aktives Kürzel:",
-    "shortcutConflict": "Dieses Kürzel wird bereits von einer anderen Aktion verwendet",
+    "shortcutConflict": "Dieses Kürzel wird bereits verwendet",
     "shortcutUnavailable": "Kürzel nicht verfügbar",
     "shortcutActive": "Aktives Kürzel: {shortcut}",
     "shortcutCapturing": "Hier klicken und Tasten drücken...",
@@ -640,7 +650,8 @@
     "readNonFollowersOff": "TTS liest nur Follower vor",
     "twitchAuthorizeInBrowser": "Autorisiere im Browser — Code {code}",
     "twitchAuthorizeWindow": "Autorisiere im geöffneten Fenster und komm zurück",
-    "twitchAuthError": "Fehler bei der Twitch-Autorisierung"
+    "twitchAuthError": "Fehler bei der Twitch-Autorisierung",
+    "settingSaveFailed": "Einstellung ({keys}) konnte nicht gespeichert werden. Verbindung prüfen."
   },
   "dictLang": {
     "title": "Erlaubte Sprachen",
@@ -721,7 +732,10 @@
       "refresh": "Aktualisieren",
       "wipe": "Register leeren",
       "wipeConfirm": "Das gesamte Zuschauerregister löschen? Stummschaltungen und Banns gehen ebenfalls verloren.",
-      "tour": "Tutorial ansehen"
+      "tour": "Tutorial ansehen",
+      "follow": "Als Follower markieren",
+      "unfollow": "Follower entfernen",
+      "remove": "Aus Verzeichnis entfernen"
     },
     "wipeModal": {
       "title": "Bist du sicher?",
@@ -805,10 +819,10 @@
     "uploadDesc": "Klicke hier, um eine Audiodatei hochzuladen (mp3, wav, ogg, webm oder m4a). Du kannst bis zu 24 Sounds haben.",
     "testTitle": "Audio testen",
     "testDesc": "Nutze diesen Button, um zu prüfen, ob dein Systemton funktioniert, bevor du deine Effekte abspielst.",
-    "shortcutTitle": "Tastenkombination zuweisen",
-    "shortcutDesc": "Klicke auf die Tastenkombination eines Sounds und drücke Strg, Alt oder Umschalt plus eine Taste. So löst du ihn aus, ohne die App zu öffnen.",
+    "shortcutTitle": "Sound einstellen",
+    "shortcutDesc": "In diesem Fenster wählst du ein Symbol aus der vollständigen Galerie, die Kartenfarbe, das Tastenkürzel (Strg/Alt/Umschalt + Taste) und kannst den Sound löschen.",
     "deckTitle": "Dein Sound-Pad",
-    "deckDesc": "Jede Karte ist ein Sound: klicke zum Abspielen, benenne ihn um, ändere die Farbe oder lösche ihn mit dem Papierkorb-Symbol.",
+    "deckDesc": "Jede Karte ist ein Sound. Linksklick spielt ihn ab, Rechtsklick öffnet die Einstellungen.",
     "limitTitle": "Sound-Limit",
     "limitDesc": "Du kannst insgesamt bis zu 24 Sounds hochladen. Dieser Zähler zeigt, wie viele du bereits benutzt hast."
   },

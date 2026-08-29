@@ -21,7 +21,14 @@ function scheduleTwitchEsReconnect(deps) {
   state.eventsub.reconnectAttempts++;
   state.eventsub.reconnectTimer = setTimeout(() => {
     state.eventsub.reconnectTimer = null;
-    require('./connect-socket').connectTwitchEventSubSocket(deps, 'wss://eventsub.wss.twitch.tv/ws');
+    try {
+      require('./connect-socket').connectTwitchEventSubSocket(deps, 'wss://eventsub.wss.twitch.tv/ws');
+    } catch (error) {
+      logger.log(
+        'warn', 'canales', 'canales/twitch/eventsub/schedule-reconnect.js#scheduleTwitchEsReconnect', 'canales.twitch_eventsub.reconexion_fallida',
+        `Falló al reintentar conectar EventSub: ${error.message}`, { error: error.message, stack: error.stack }
+      );
+    }
   }, delay);
 }
 

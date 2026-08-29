@@ -1,24 +1,38 @@
 'use strict';
 
-const SEEN_IDS_CAP = 500;
-
 /**
- * Dedup por id contra state.kickSeenIds antes de dejar pasar el mensaje a
- * canal:mensaje-crudo — la ventana oculta puede reenviar el mismo nodo del
- * DOM si el MutationObserver dispara mas de una vez, o tras una reconexion
- * interna de corard.tv.
+ * Parsea el `data` (string JSON) de un App\Events\ChatMessageEvent de Pusher a
+ * la forma cruda que espera chat/emit-chat-message.js#extractKickMessage:
+ *   { id, userId, username, content }
+ *
+ * `content` se deja tal cual lo manda Kick (con los tokens `[emote:ID:nombre]`
+ * sin expandir) — la conversion a `:nombre:` + mapa de urls la hace
+ * extractKickMessage, igual que Twitch/YouTube resuelven sus emotes ahi.
  */
-function handleKickWindowMessage(deps, slug, payload) {
-  const { state, bus } = deps;
-  if (!payload || !payload.id) return;
+function parseKickChatMessage(dataStr) {
+  let p;
+  try {
+    p = typeof dataStr === 'string' ? JSON.parse(dataStr) : dataStr;
+  } catch (_) {
+    return null;
+  }
+  if (!p || !p.id) return null;
 
-  if (!state.kickSeenIds.has(slug)) state.kickSeenIds.set(slug, new Set());
-  const seen = state.kickSeenIds.get(slug);
-  if (seen.has(payload.id)) return;
-  seen.add(payload.id);
-  if (seen.size > SEEN_IDS_CAP) seen.delete(seen.values().next().value);
+  const content = String(p.content || '').trim();
+  if (!content) return null;
 
-  bus.emit('canal:mensaje-crudo', { platform: 'kick', channel: slug, raw: payload });
+  const sender = p.sender || {};
+  const username = String(sender.username || sender.slug || '').trim();
+  if (!username) return null;
+
+  return {
+    id: String(p.id),
+    // Kick si expone un id numerico estable del usuario (a diferencia del
+    // scraping viejo de corard.tv) — /moderacion lo usa como clave firme.
+    userId: sender.id != null ? String(sender.id) : null,
+    username,
+    content,
+  };
 }
 
-module.exports = { handleKickWindowMessage, SEEN_IDS_CAP };
+module.exports = { parseKickChatMessage };

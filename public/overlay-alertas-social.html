@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Overlay — Alertas Seguidor / Compartir</title>
   <style>
-    :root { --accent: #3ecf8e; --bg-alpha: 0.90; }
+    :root { --accent: #FFBB00; --bg-alpha: 0.90; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       background: transparent;
@@ -131,6 +131,17 @@
 </head>
 <body>
   <script>
+    // Errores no manejados del overlay → log de sesión del servidor → GlitchTip.
+    window.addEventListener('error', (e) => {
+      fetch('/api/logs/client', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: e.message || 'Error desconocido', stack: e.error && e.error.stack, source: 'overlay:' + location.pathname }) }).catch(() => {});
+    });
+    window.addEventListener('unhandledrejection', (e) => {
+      const r = e.reason || {};
+      fetch('/api/logs/client', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: r.message || String(e.reason), stack: r.stack, source: 'overlay:' + location.pathname }) }).catch(() => {});
+    });
+
     let _locale = {};
     async function loadLocale() {
       const lang = localStorage.getItem('tikliveTTS_lang') || 'es';

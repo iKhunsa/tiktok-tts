@@ -13,6 +13,7 @@ App de escritorio Electron que lee en voz alta el chat de TikTok Live, Twitch y 
 | TikTok connection | tiktok-live-connector (WebSocket scraping) |
 | Twitch connection | tmi.js (IRC anónimo o autenticado) |
 | YouTube connection | youtube-chat (scraping, requiere stream activo) |
+| Kick connection | API pública kick.com + Pusher WS (`ws`, sin auth) |
 | TTS | Google Translate TTS API (google-tts-api, online) |
 | Auto-update | electron-updater → GitHub Releases |
 | Build/CI | electron-builder + GitHub Actions (windows-latest) |
@@ -264,7 +265,7 @@ no binarios, se editan igual que cualquier código.
 ## Funcionalidades actuales
 
 - TTS en 13 idiomas via Google Translate (es, es-MX, es-AR, en, en-GB, pt, pt-PT, fr, de, it, ja, zh-CN, ru, ko)
-- Chat multi-plataforma: TikTok Live + Twitch (tmi.js) + YouTube (youtube-chat, requiere stream activo)
+- Chat multi-plataforma: TikTok Live + Twitch (tmi.js) + YouTube (youtube-chat, requiere stream activo) + Kick (API + Pusher WS)
 - Badge de plataforma en cada mensaje del chat (tiktok / twitch / youtube)
 - Cola TTS ordenada por timestamp: mensajes de 3 plataformas simultáneas se leen en orden cronológico real
 - Un solo narrador (1 Audio activo a la vez, cola serializada con `isSpeaking` flag)
@@ -316,7 +317,22 @@ Actions, cortar un nuevo release (`git tag vX.Y.Z && git push --tags`); el
 build viejo filtrado queda inútil apenas se rota. Igual para el token de
 telemetría vía `TELEMETRY_URL`/su secret correspondiente.
 
-**Por qué se descartó Kick:** Kick.com usa Cloudflare que bloquea cualquier request HTTP/WS desde Node.js (403). Requeriría mantener un BrowserWindow de Electron abierto permanentemente (~200MB RAM), y su infraestructura WS cambió de Pusher a `websockets.kick.com` con tokens dinámicos. Complejidad vs beneficio no justificada actualmente.
+**Kick — conexión directa desde Node (2026-08):** el bloqueo de Cloudflare que
+antes forzaba descartar Kick ya no aplica a `https://kick.com/api/v2/channels/{slug}`
+(responde 200 a Node sin headers especiales). El chat va por Pusher público
+(`wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679`, cluster us2, canal
+`chatrooms.{chatroom_id}.v2`, sin auth). `canales/kick/`:
+`fetch-chatroom.js` (slug → chatroom.id) + `pusher.js` (URL/frames) +
+`connect-kick.js` (WS + subscribe + dedup + watchdog + backoff, mismo patrón
+que YouTube) + `handle-event.js` (parse del `ChatMessageEvent`). **No usa
+Electron** — funciona igual en `node server.js` que empaquetado. Los emotes
+llegan como `[emote:ID:nombre]` dentro de `content` y los expande
+`chat/emit-chat-message.js#extractKickMessage` a `:nombre:` +
+`https://files.kick.com/emotes/{id}/fullsize` (los globales/7TV que Kick manda
+como texto plano no se resuelven, igual que en Twitch/YT). Si Kick vuelve a
+cerrar la API con Cloudflare, el único punto a parchear es `fetch-chatroom.js`
+(proxy propio o ventana Electron). El watchdog (`stale-watchdog.js`, 5 min sin
+mensajes → `canales.kick.sin_eventos` + reconexión) es la red de seguridad.
 
 **bufferutil/utf-8-validate:** Dependencias opcionales de `ws`. Se incluyen en el build con sus binarios precompilados para Node.js (NAPI, compatibles con Electron sin rebuilding). Se excluyen solo los `.pdb` (debug symbols, innecesarios en producción).
 

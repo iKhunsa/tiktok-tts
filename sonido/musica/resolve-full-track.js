@@ -1,15 +1,16 @@
 'use strict';
 
 const { resolveYoutubeId } = require('./resolve-youtube-id');
+const perf = require('../../core/contracts/perf');
 
 async function resolveFullTrack(deps, query) {
   const { engine, logger } = deps;
-  const partial = await resolveYoutubeId(deps, query);
+  const partial = await perf.span('musica.resolve_id', { query: String(query).slice(0, 80) }, () => resolveYoutubeId(deps, query));
   if (!partial) return null;
   if (partial.title) return partial; // ya tiene metadata desde la busqueda
 
   try {
-    const info = await engine.getInfo(partial.videoId);
+    const info = await perf.span('musica.getinfo', { videoId: partial.videoId }, () => engine.getInfo(partial.videoId));
     if (info) return info;
     return { videoId: partial.videoId, title: query, channelName: '', thumbnail: '', duration: '' };
   } catch (error) {

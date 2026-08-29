@@ -10,16 +10,25 @@ const { createTray, buildTrayMenu, showStartupError } = require('./electron-shel
 const { setupAutoUpdater, installUpdate } = require('./electron-shell/updater');
 const { attachIpcBridge } = require('./electron-shell/ipc-bridge');
 const { startUiohook, stopUiohook, isUiohookActive, registerUiohookShortcut } = require('./electron-shell/uiohook');
-const { openKickCaptureWindow, closeKickCaptureWindow, closeAllKickCaptureWindows } = require('./electron-shell/kick-capture-window');
-const kickBrowserContract = require('./core/contracts/kick-browser');
 const { GLOBAL_SHORTCUT } = require('./clips/global-shortcut');
 const telemetryRuntime = require('./telemetria/runtime');
+const glitchtip = require('./electron-shell/glitchtip');
 
 // Cuando empaquetado, apunta server.js a extraResources para los assets.
 if (app.isPackaged) {
   process.env.TIKTOK_RESOURCES_PATH = process.resourcesPath;
 }
 process.env.TIKTOK_USER_DATA_PATH = app.getPath('userData');
+
+// GlitchTip (error tracking) — se inicia lo antes posible, antes de cargar
+// server.js, para captar hasta un fallo de arranque de los dominios. El
+// enganche al bus (attach) viene después, cuando ya existe el logger.
+glitchtip.init({
+  appVersion: app.getVersion(),
+  isDebug: !app.isPackaged,
+  userDataDir: app.getPath('userData'),
+  logger: null,
+});
 
 let mainWindow = null;
 let tray = null;
@@ -44,6 +53,8 @@ try {
 
 const bus = serverModule && serverModule.bus;
 const logger = serverModule && serverModule.logger;
+
+if (bus) glitchtip.attach(bus, logger);
 
 if (bus && logger) {
   process.on('uncaughtException', (error) => {
@@ -166,10 +177,6 @@ app.whenReady().then(() => {
 
     ipcHandles = attachIpcBridge({ app, bus, logger, getMainWindow, globalShortcut });
 
-    kickBrowserContract.openCapture = (slug) => openKickCaptureWindow({ slug, bus, logger });
-    kickBrowserContract.closeCapture = (slug) => closeKickCaptureWindow(slug);
-    kickBrowserContract.closeAll = () => closeAllKickCaptureWindows();
-
     // Atajo de clip (Ctrl+Shift+M): manda IPC al renderer, que hace su
     // propio bookmark local (elapsed/toast) y llama POST /api/obs/save-replay
     // (front sin cambios). /clips (Fase 11) sirve al comando movil markClip,
@@ -178,10 +185,15 @@ app.whenReady().then(() => {
     const clipCallback = () => {
       if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('mark-clip');
     };
-    if (isUiohookActive()) {
-      registerUiohookShortcut('clip', GLOBAL_SHORTCUT, clipCallback);
-    } else {
-      globalShortcut.register(GLOBAL_SHORTCUT, clipCallback);
+    const clipShortcutOk = isUiohookActive()
+      ? registerUiohookShortcut('clip', GLOBAL_SHORTCUT, clipCallback)
+      : globalShortcut.register(GLOBAL_SHORTCUT, clipCallback);
+    if (!clipShortcutOk && logger) {
+      logger.log(
+        'warn', 'electron-shell', 'main.js#registerClipShortcut', 'electron_shell.atajo_clip_fallido',
+        `No se pudo registrar el atajo de clip ${GLOBAL_SHORTCUT} (¿otra app lo tiene tomado?)`,
+        { atajo: GLOBAL_SHORTCUT, via: isUiohookActive() ? 'uiohook' : 'globalShortcut' }
+      );
     }
   }, () => {
     showStartupError(new Error(`El servidor local no respondio en http://127.0.0.1:${PORT}`));
@@ -201,11 +213,14 @@ app.on('before-quit', (event) => {
 
   // El shutdown ordenado de los dominios de negocio ya corre en
   // process.on('exit') dentro de server.js (Fase 1) — aca solo se pospone
-  // el quit lo justo para que la telemetria alcance a mandar el evento de
-  // cierre (en 'will-quit' el proceso ya murio antes de que la peticion salga).
-  if (telemetryRuntime.enabled) {
+  // el quit lo justo para que telemetria y GlitchTip alcancen a mandar/flushear
+  // (en 'will-quit' el proceso ya murio antes de que la peticion salga).
+  const cierres = [];
+  if (telemetryRuntime.enabled) cierres.push(telemetryRuntime.shutdown({ timeoutMs: 1500 }));
+  if (glitchtip.enabled) cierres.push(glitchtip.shutdown());
+  if (cierres.length) {
     event.preventDefault();
-    telemetryRuntime.shutdown({ timeoutMs: 1500 }).finally(() => app.quit());
+    Promise.allSettled(cierres).finally(() => app.quit());
   }
 });
 
@@ -213,7 +228,6 @@ app.on('will-quit', () => {
   globalShortcut.unregisterAll();
   if (ipcHandles) ipcHandles.clearSoundpadShortcuts();
   stopUiohook();
-  closeAllKickCaptureWindows();
 });
 
 // Mantiene la app viva en la tray solo cuando la tray realmente existe y no
