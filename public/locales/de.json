@@ -56,6 +56,9 @@
     "langFilterHint": "Ignoriert Chat-Nachrichten mit Zeichen, die nicht zur Sprache der aktiven Stimme passen (z. B. Chinesisch/Japanisch blockieren, wenn die Stimme Spanisch ist, und umgekehrt).",
     "dictFilter": "Nach Sprache filtern (Wörter)",
     "dictFilterHint": "Liest nur Nachrichten in der Sprache der aktiven Stimme oder in den zusätzlich erlaubten Sprachen. Unbekannte Wörter (Namen, Tippfehler) blockieren nicht.",
+    "ttsCommand": "Nur Nachrichten mit Befehl vorlesen",
+    "ttsCommandPlaceholder": "!tts",
+    "ttsCommandHint": "Beispiel: !tts hallo. Im Chat bleibt alles sichtbar, die Stimme liest nur „hallo“.",
     "readNonFollowers": "Nicht-Follower vorlesen"
   },
   "tts": {
@@ -72,6 +75,7 @@
     "disconnect": "Trennen",
     "connectAll": "Alles verbinden",
     "saveChannel": "Speichern",
+    "save": "Speichern",
     "addChannel": "＋ Kanal hinzufügen",
     "cancel": "Abbrechen",
     "testVoice": "▶ Testen",
@@ -565,6 +569,10 @@
     "allChannelsDisconnected": "Alle Kanäle getrennt",
     "youtubeAutoSaved": "YouTube gespeichert; verbindet sich wenn live",
     "youtubeTmpSaved": "YouTube als manuellen Kanal gespeichert",
+    "ttsCommandOn": "Befehlsmodus aktiviert",
+    "ttsCommandOff": "Befehlsmodus deaktiviert",
+    "ttsCommandSaved": "TTS-Befehl gespeichert",
+    "ttsCommandInvalid": "Ungültiger Befehl: ein Wort mit höchstens 20 Zeichen verwenden",
     "readNonFollowersOn": "TTS liest alle vor",
     "readNonFollowersOff": "TTS liest nur Follower vor"
   },

@@ -2514,6 +2514,19 @@
             <input type="range" id="volRange" min="0" max="1" step="0.05" value="1" oninput="updateVol(this.value)" />
             <div class="range-labels"><span data-i18n="label.mute">Mute</span><span data-i18n="label.max">Máx</span></div>
           </div>
+          <div class="setting-group" id="ttsCommandGroup">
+            <label class="toggle-chip" style="width:max-content;">
+              <input type="checkbox" id="ttsCommandEnabledToggle" onchange="setTtsCommandEnabled(this.checked)" />
+              <span data-i18n="toggle.ttsCommand">Leer solo mensajes con comando</span>
+            </label>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:7px;">
+              <input type="text" id="ttsCommandInput" value="!tts" maxlength="20" spellcheck="false"
+                aria-label="Comando TTS" data-i18n-placeholder="toggle.ttsCommandPlaceholder" placeholder="!tts"
+                onkeydown="if(event.key==='Enter'){event.preventDefault();saveTtsCommand();}" />
+              <button class="btn-test" onclick="saveTtsCommand()" data-i18n="btn.save">Guardar</button>
+            </div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px;" data-i18n="toggle.ttsCommandHint">Ejemplo: !tts hola. En el chat se muestra todo, pero la voz solo lee “hola”.</div>
+          </div>
           <div class="setting-group" id="voiceLangFilterGroup">
             <label class="toggle-chip" style="width:max-content;">
               <input type="checkbox" id="langFilterToggle" onchange="toggleLangFilter(this)" />
@@ -4909,6 +4922,7 @@
       if (Number.isInteger(cfg.MAX_QUEUE_MSG) && cfg.MAX_QUEUE_MSG > 0) MAX_QUEUE_SIZE = cfg.MAX_QUEUE_MSG;
       applyA11yConfig(cfg);
       applyReadNonFollowers(cfg);
+      applyTtsCommandConfig(cfg);
     } catch (e) {}
   }
 
@@ -4940,6 +4954,51 @@
         showToast(t('mod.toast.error'));
         loadRuntimeConfig();
       });
+  }
+
+  function applyTtsCommandConfig(cfg) {
+    const enabled = cfg.ttsCommandEnabled === true;
+    const toggle = document.getElementById('ttsCommandEnabledToggle');
+    const input = document.getElementById('ttsCommandInput');
+    if (toggle) toggle.checked = enabled;
+    toggle?.closest('.toggle-chip')?.classList.toggle('active', enabled);
+    if (input && typeof cfg.ttsCommand === 'string') input.value = cfg.ttsCommand;
+    if (input) input.disabled = !enabled;
+  }
+
+  function patchTtsCommandConfig(patch, successKey) {
+    return fetch('/api/config', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(patch),
+    }).then(async (res) => {
+      if (!res.ok) throw new Error('http');
+      const cfg = await res.json();
+      applyTtsCommandConfig(cfg.config || cfg);
+      if (successKey) showToast(t(successKey));
+    }).catch(() => {
+      showToast(t('toast.ttsCommandInvalid'));
+      loadRuntimeConfig();
+    });
+  }
+
+  function setTtsCommandEnabled(value) {
+    applyTtsCommandConfig({
+      ttsCommandEnabled: !!value,
+      ttsCommand: document.getElementById('ttsCommandInput')?.value || '!tts',
+    });
+    patchTtsCommandConfig({ ttsCommandEnabled: !!value }, value ? 'toast.ttsCommandOn' : 'toast.ttsCommandOff');
+  }
+
+  function saveTtsCommand() {
+    const input = document.getElementById('ttsCommandInput');
+    const command = (input?.value || '').trim();
+    if (!/^[!\/#$%&?+.-]?[\p{L}\p{N}_-]{1,19}$/u.test(command)) {
+      showToast(t('toast.ttsCommandInvalid'));
+      return;
+    }
+    if (input) input.value = command;
+    patchTtsCommandConfig({ ttsCommand: command }, 'toast.ttsCommandSaved');
   }
 
   function applyA11yConfig(cfg) {
@@ -5797,6 +5856,7 @@
       case 'config-updated':
         applyA11yConfig(data.config || {});
         applyReadNonFollowers(data.config || {});
+        applyTtsCommandConfig(data.config || {});
         break;
       case 'moderation-updated':
       case 'moderation-reset':
