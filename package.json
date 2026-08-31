@@ -42,10 +42,6 @@
     },
     "extraResources": [
       {
-        "from": "public/",
-        "to": "public"
-      },
-      {
         "from": "interfaz/dist/",
         "to": "public"
       },
@@ -62,6 +58,10 @@
         "filter": [
           "**/*.svg"
         ]
+      },
+      {
+        "from": "lang-words/",
+        "to": "lang-words"
       },
       {
         "from": "blocked-words.md",

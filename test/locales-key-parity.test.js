@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const LOCALES_DIR = path.join(__dirname, '..', 'public', 'locales');
+const LOCALES_DIR = path.join(__dirname, '..', 'interfaz', 'publico', 'locales');
 
 function flatten(obj, prefix = '') {
   const out = {};

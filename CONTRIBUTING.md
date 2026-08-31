@@ -31,11 +31,12 @@ Con el servidor activo, la UI está en `http://localhost:3000` y los overlays en
 ```
 main.js        → Proceso principal de Electron (ventana, tray, auto-update)
 server.js      → Express + WebSocket: conexiones (TikTok/Twitch/YouTube), TTS, API
-public/        → UI y overlays (HTML/CSS/JS)
-  index.html     → UI principal
+interfaz/      → UI y overlays (HTML/CSS/JS, modulos ESM + Vite)
+  index.html     → UI principal (fuente)
   advanced.html  → Configuración avanzada (filtros, palabras bloqueadas)
   overlay-*.html → Overlays para OBS
-  locales/       → Traducciones (i18n)
+  publico/       → estaticos (icons/, flags/, locales/, vendor/, plugin-store/)
+  dist/          → build de Vite (generado, gitignored) — lo sirve core/app.js
 gifts/         → PNGs de regalos de TikTok
 ```
 
@@ -45,7 +46,7 @@ Hay más contexto técnico en [`CLAUDE.md`](CLAUDE.md) / [`AGENTS.md`](AGENTS.md
 
 1. Crea una rama desde `main`: `git checkout -b feat/mi-cambio`
 2. Haz tus cambios y pruébalos (ver tabla de arriba).
-3. Si agregas texto visible en la UI/overlays, agrega su clave en `public/locales/*.json`.
+3. Si agregas texto visible en la UI/overlays, agrega su clave en `interfaz/publico/locales/*.json`.
 4. Abre un Pull Request contra `main` usando la plantilla.
 
 ### Convención de commits

@@ -56,13 +56,12 @@ function createApp(bus) {
     });
   }
 
-  // Sombreado por archivo (strangler): interfaz/dist es el output de Vite
-  // del frontend nuevo. Cuando interfaz/dist/X.html existe, se sirve antes
-  // que public/X.html (legado); lo que todavia no fue migrado cae al
-  // segundo static sin cambios. Rollback de una migracion = borrar el
-  // archivo de interfaz/dist.
+  // Fase-06: la migracion del frontend a interfaz/ (fases 01-05) termino
+  // y public/ se borro del repo. interfaz/dist es el output de Vite
+  // (HTML + JS/CSS de las 10 vistas + estaticos de interfaz/publico/) y
+  // es ahora la UNICA raiz estatica — ya no hay legado detras para
+  // sombrear.
   app.use(express.static(path.join(__dirname, '..', 'interfaz', 'dist')));
-  app.use(express.static(path.join(__dirname, '..', 'public')));
 
   return app;
 }

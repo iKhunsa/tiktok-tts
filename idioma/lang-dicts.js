@@ -14,7 +14,7 @@ function loadLangDicts(logger) {
   langDicts = new Map();
   for (const lang of DICT_FILTER_LANGS) {
     const set = new Set();
-    const file = path.join(RESOURCE_BASE, 'public', 'lang-words', `${lang}.json`);
+    const file = path.join(RESOURCE_BASE, 'lang-words', `${lang}.json`);
     try {
       for (const word of JSON.parse(fs.readFileSync(file, 'utf-8'))) {
         set.add(word);
