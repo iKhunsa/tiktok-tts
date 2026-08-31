@@ -10,8 +10,8 @@ const { createTray, buildTrayMenu, showStartupError } = require('./electron-shel
 const { setupAutoUpdater, installUpdate } = require('./electron-shell/updater');
 const { attachIpcBridge } = require('./electron-shell/ipc-bridge');
 const { startUiohook, stopUiohook, isUiohookActive, registerUiohookShortcut } = require('./electron-shell/uiohook');
-const { GLOBAL_SHORTCUT } = require('./clips/global-shortcut');
-const telemetryRuntime = require('./telemetria/runtime');
+const { GLOBAL_SHORTCUT } = require('./features/clips/global-shortcut');
+const telemetryRuntime = require('./features/telemetria/runtime');
 const glitchtip = require('./electron-shell/glitchtip');
 
 // Cuando empaquetado, apunta server.js a extraResources para los assets.

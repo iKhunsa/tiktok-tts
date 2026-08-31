@@ -2,9 +2,9 @@
 
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { keyFor } = require('../moderacion/store/key-for');
-const { parseKey } = require('../moderacion/store/parse-key');
-const { isActive } = require('../moderacion/store/is-active');
+const { keyFor } = require('../features/moderacion/store/key-for');
+const { parseKey } = require('../features/moderacion/store/parse-key');
+const { isActive } = require('../features/moderacion/store/is-active');
 
 test('keyFor usa id estable cuando existe', () => {
   assert.equal(keyFor('tiktok', '123', 'Foo'), 'tiktok:123');

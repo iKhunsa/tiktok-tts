@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { createModerationStore } = require('../moderacion/store/create-store');
+const { createModerationStore } = require('../features/moderacion/store/create-store');
 const { createStubLogger } = require('./helpers/stub-logger');
 
 function makeTmpDir() {
