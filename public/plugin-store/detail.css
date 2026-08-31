@@ -7,6 +7,7 @@
 @media (prefers-reduced-motion: reduce) {
   #pluginStoreDetail { animation: none; }
 }
+body.reduce-motion #pluginStoreDetail { animation: none; }
 
 .store-back-btn {
   background: none; border: none; color: var(--text-muted);
@@ -50,10 +51,11 @@
 .store-detail-cta { margin-bottom: 0; }
 /* Mismo estilo que "Guardar playlist": gris en reposo, rojo al hover. */
 .btn-supabase-primary.store-detail-cta {
-  background: #363636; color: #898989; font-weight: 700;
-  transition: background 0.15s, color 0.15s;
+  background: var(--border-strong); color: var(--text-muted); font-weight: 700;
+  transition: background var(--dur-1, .15s) var(--ease-out, ease), color var(--dur-1, .15s) var(--ease-out, ease), transform var(--dur-press, .13s) var(--ease-out, ease);
 }
-.btn-supabase-primary.store-detail-cta:hover { background: #F0213A; color: #fff; }
+.btn-supabase-primary.store-detail-cta:hover { background: var(--brand); color: #fff; }
+.btn-supabase-primary.store-detail-cta:active { transform: scale(0.97); }
 .store-detail-open {
   background: transparent; border: 1px solid var(--border); border-radius: 8px;
   color: var(--text); font-size: 12px; font-weight: 700; padding: 8px 14px;
