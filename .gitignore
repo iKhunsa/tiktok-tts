@@ -15,6 +15,6 @@ webhook-config.json
 webhook-config.generated.json
 telemetry-config.json
 telemetry-config.generated.json
-logs/
+/logs/
 moderation.json
 graphify-out/
