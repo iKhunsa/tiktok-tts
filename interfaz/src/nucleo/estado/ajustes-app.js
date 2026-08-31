@@ -43,9 +43,10 @@ export const DEFAULT_SETTINGS = {
   sayUsernameConnector: true,
   chatTogglesCollapsed: true,
   twitchSectionCollapsed: true,
-  langFilterEnabled: false,
-  dictFilterEnabled: false,
-  allowedExtraLangs: [],
+  // langFilterEnabled/dictFilterEnabled/allowedExtraLangs NO viven aca
+  // (fase-05): fuente unica de verdad = config.json del servidor, ver
+  // nucleo/estado/config-runtime.js. Antes duplicaban esas 3 claves con
+  // el server y podian desincronizarse sin que nadie se enterara.
   lastUsername: '',
   pauseShortcut: null,
   skipShortcut: null,
@@ -148,17 +149,10 @@ export function applySettings() {
   renderChatTogglesState();
   renderTwitchSectionState();
 
-  const langFilterCb = document.getElementById('langFilterToggle');
-  if (langFilterCb) {
-    langFilterCb.checked = !!appSettings.langFilterEnabled;
-    langFilterCb.closest('.toggle-chip')?.classList.toggle('active', !!appSettings.langFilterEnabled);
-  }
-
-  const dictFilterCb = document.getElementById('dictFilterToggle');
-  if (dictFilterCb) {
-    dictFilterCb.checked = !!appSettings.dictFilterEnabled;
-    dictFilterCb.closest('.toggle-chip')?.classList.toggle('active', !!appSettings.dictFilterEnabled);
-  }
+  // langFilterToggle/dictFilterToggle ya NO se hidratan aca: los pinta
+  // config-runtime.js#applyFiltroIdiomaConfig() con el valor real del
+  // servidor (loadRuntimeConfig corre despues de applySettings en el
+  // arranque, ver vistas/principal/index.js).
 
   const { seguidores, likes, alertas, creditos, social, chat } = appSettings.overlays || {};
 

@@ -10,7 +10,7 @@ import { showToast } from '../../componentes/toast.js';
 import { logStorage } from '../log-storage.js';
 import { appSettings, saveSettings } from '../estado/ajustes-app.js';
 import { options } from '../estado/opciones-lectura.js';
-import { applyA11yConfig, applyReadNonFollowers } from '../estado/config-runtime.js';
+import { applyA11yConfig, applyReadNonFollowers, applyFiltroIdiomaConfig } from '../estado/config-runtime.js';
 import {
   ttsPaused, setTtsGlobalEnabled, togglePauseTts, skipCurrentTTS,
   clearTTSQueue, enableEmergencyTTSMode, sendStateSync, speak,
@@ -376,6 +376,7 @@ function handleMessage(data) {
     case 'config-updated':
       applyA11yConfig(data.config || {});
       applyReadNonFollowers(data.config || {});
+      applyFiltroIdiomaConfig(data.config || {});
       break;
     case 'moderation-updated':
     case 'moderation-reset':
