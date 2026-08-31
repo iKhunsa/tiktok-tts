@@ -25,11 +25,13 @@ Backend reconstruido por dominios (rebuild completo, ver `plan-fases/` para
 el historial de las 14 fases y `arquitectura-propuesta.md` para el
 documento de diseño vivo). Ya no es un monolito: `main.js`/`server.js` son
 orquestadores delgados, toda la lógica de negocio vive repartida en
-carpetas por dominio en la raíz del repo.
+carpetas por dominio bajo `features/` (los 15 dominios agrupados ahí a
+propósito, para no saturar la raíz del repo — `core/` y `electron-shell/`
+NO son features, se quedan sueltos en la raíz por ser kernel/shell).
 
 ```
 main.js (Electron main process)
-  ├── require('./server.js')       ← arranca /core + registra los 14 dominios
+  ├── require('./server.js')       ← arranca /core + registra los 15 dominios de features/
   ├── electron-shell/window.js     ← BrowserWindow, carga http://localhost:3000
   ├── electron-shell/tray.js       ← ícono bandeja, menú open/exit
   ├── electron-shell/updater.js    ← autoUpdater, chequea GitHub Releases
@@ -38,30 +40,36 @@ main.js (Electron main process)
   └── electron-shell/single-instance.js
 
 server.js (Express + WS en puerto 3000)
-  ├── core/                ← kernel: bus de eventos, logger, http/ws server, register-domain
-  ├── configuracion/       ← único dueño de config.json y platform-config.json
-  ├── idioma/              ← filtro de idioma/script de voz (puro)
-  ├── reporte-bug/         ← webhook de Discord, retención de logs
-  ├── moderacion/          ← moderation.json, blocked-words.md, policy.evaluate()
-  ├── canales/             ← TikTok/Twitch/YouTube + OBS — único productor de eventos crudos
-  ├── chat/                ← orquesta: crudo → moderación → chat:mensaje-permitido
-  ├── overlay/             ← estado visual (gifts, followers, likes) para OBS
-  ├── movil/               ← panel remoto (espejo de estado + comandos)
-  ├── sonido/               ← TTS (Google), bot musical (yt-dlp), soundpad
-  ├── bot/                 ← detección de comandos de chat (!p)
-  ├── clips/                ← marca clip en OBS (atajo o comando móvil)
-  ├── avanzado/ + donar/   ← feature flags, UI avanzada; donar es no-op documentado
-  └── telemetria/           ← uso agregado anónimo, self-hosted (ver sección propia)
+  ├── core/                          ← kernel: bus de eventos, logger, http/ws server, register-domain
+  └── features/
+      ├── configuracion/             ← único dueño de config.json y platform-config.json
+      ├── idioma/                    ← filtro de idioma/script de voz (puro)
+      ├── reporte-bug/                ← webhook de Discord, retención de logs
+      ├── moderacion/                ← moderation.json, blocked-words.md, policy.evaluate()
+      ├── canales/                   ← TikTok/Twitch/YouTube/Kick + OBS — único productor de eventos crudos
+      ├── chat/                      ← orquesta: crudo → moderación → chat:mensaje-permitido
+      ├── promo/                     ← avisos promocionales periódicos (announce-texts)
+      ├── overlay/                   ← estado visual (gifts, followers, likes) para OBS
+      ├── movil/                     ← panel remoto (espejo de estado + comandos)
+      ├── sonido/                    ← TTS (Google), bot musical (yt-dlp), soundpad
+      ├── bot/                       ← detección de comandos de chat (!p)
+      ├── clips/                     ← marca clip en OBS (atajo o comando móvil)
+      ├── avanzado/ + donar/         ← feature flags, UI avanzada; donar es no-op documentado
+      └── telemetria/                ← uso agregado anónimo, self-hosted (ver sección propia)
 ```
 
 **Contrato entre dominios:** un dominio nunca importa el módulo interno de
 otro (`require('../otro-dominio/...')`). Toda comunicación cruzada pasa por
 `core/event-bus.js` (`bus.emit`/`bus.on`) o por un contrato síncrono
 inyectado en `core/contracts/*.js` (ej. `moderacion-policy.js`,
-`idioma-filtrar.js`, `obs-replay.js`) cuando el orden de ejecución importa
-y no alcanza con un evento fire-and-forget. `core/register-domain.js`
-monta cada dominio en su propio try/catch — un dominio que falla al
-arrancar no tumba a los demás.
+`idioma-filtrar.js`, `obs-replay.js`, `idioma-datos.js`) cuando el orden de
+ejecución importa y no alcanza con un evento fire-and-forget.
+`core/register-domain.js` monta cada dominio en su propio try/catch — un
+dominio que falla al arrancar no tumba a los demás. Excepción preexistente
+conocida (no introducida por el reordenamiento a `features/`, pendiente de
+arreglar aparte): `features/bot/index.js` importa `FEATURES` directo de
+`features/avanzado/index.js` en vez de pasar por un contrato — único caso
+detectado que rompe la regla.
 
 Endpoints HTTP relevantes (repartidos por dominio, ver cada carpeta para
 el resto):
@@ -69,26 +77,26 @@ el resto):
 GET  /                       ← index.html (UI principal)
 GET  /advanced.html          ← configuración avanzada
 GET  /overlay-*.html         ← overlays para OBS
-POST /api/connect            ← conecta a TikTok Live (canales/)
-POST /api/tts                ← Google TTS → stream MP3 (sonido/)
+POST /api/connect            ← conecta a TikTok Live (features/canales/)
+POST /api/tts                ← Google TTS → stream MP3 (features/sonido/)
 WS   /                       ← broadcast eventos al browser (core/broadcast.js)
-GET  /api/gifts-list         ← lista PNGs de regalos (overlay/)
-POST /api/upload-bg          ← sube imagen fondo overlay (overlay/)
-PATCH /api/config            ← ajusta config en runtime (configuracion/)
-GET  /api/platforms/status   ← estado twitch/youtube (canales/)
-POST /api/platforms/connect  ← conecta twitch o youtube (canales/)
+GET  /api/gifts-list         ← lista PNGs de regalos (features/overlay/)
+POST /api/upload-bg          ← sube imagen fondo overlay (features/overlay/)
+PATCH /api/config            ← ajusta config en runtime (features/configuracion/)
+GET  /api/platforms/status   ← estado twitch/youtube (features/canales/)
+POST /api/platforms/connect  ← conecta twitch o youtube (features/canales/)
 POST /api/platforms/disconnect
 GET  /api/moderation/viewers ← registro de espectadores (moderacion/)
 POST /api/moderation/{mute,unmute,ban,unban,clear,follower}
 ```
 
-## Moderación de espectadores (`moderacion/store/`)
+## Moderación de espectadores (`features/moderacion/store/`)
 
 Registro persistente de todo espectador que interactúa, más los seguidores, con
 moderación **local** por usuario (no se toca la plataforma). Único dueño de
 `moderation.json` (en `DATA_BASE`, o sea `app.getPath('userData')`). El store
-está migrado un archivo por función (`moderacion/store/*.js`) sobre un
-`state` compartido en vez de un closure — ver `moderacion/store/create-store.js`.
+está migrado un archivo por función (`features/moderacion/store/*.js`) sobre un
+`state` compartido en vez de un closure — ver `features/moderacion/store/create-store.js`.
 
 - Clave por usuario: `` `${platform}:${id}` ``; sin id estable cae a
   `` `${platform}:name:${nick}` `` y se marca `idk:'name'` (castigo frágil: se
@@ -103,33 +111,33 @@ está migrado un archivo por función (`moderacion/store/*.js`) sobre un
   arranca vacío; **nunca lanza**, porque el require corre al arrancar la app.
 - Cap de 5.000 espectadores con purga LRU a 4.000 que jamás descarta
   seguidores, whitelisted ni usuarios con castigo vivo.
-- `chat/emit-chat-message.js` es el **único** punto por el que salen los
-  mensajes de las 3 plataformas: llega crudo de `canales/` vía el bus
+- `features/chat/emit-chat-message.js` es el **único** punto por el que salen los
+  mensajes de las 3 plataformas: llega crudo de `features/canales/` vía el bus
   (`canal:mensaje-crudo`), llama sincrónicamente a `moderacionPolicy.evaluate()`
-  (contrato inyectado por `moderacion/`, fail-open si lanza) y publica
+  (contrato inyectado por `features/moderacion/`, fail-open si lanza) y publica
   `chat:mensaje-permitido`/`chat:mensaje-bloqueado`. Los handlers de plataforma
   y el cliente no repiten ninguna de esas reglas.
 - UI: vista "Moderación" en el menú izquierdo, con pestañas Seguidores / No
   seguidores sobre la misma tabla.
 
-## Telemetría (`telemetria/`)
+## Telemetría (`features/telemetria/`)
 
 Dominio aparte que reporta uso agregado y anónimo a un servicio propio
 (`telemetria-tts`, repo separado, self-hosted en Docker — no Vercel). Sin
 `TELEMETRY_URL` configurada, el módulo es un no-op: cero peticiones de red.
 
-- `telemetria/index.js` — dominio registrado normal (`register({bus, logger})`):
+- `features/telemetria/index.js` — dominio registrado normal (`register({bus, logger})`):
   engancha los conectores al bus de inmediato, aunque `runtime.init()` todavía
   no haya corrido (`track()` es no-op mientras no esté habilitada).
-- `telemetria/runtime.js` — el ciclo de vida real (`init`, `track`, `flush`,
+- `features/telemetria/runtime.js` — el ciclo de vida real (`init`, `track`, `flush`,
   `shutdown`). Separado de `index.js` porque `init()` necesita datos que solo
   Electron tiene (`app.getVersion()`, `app.getPath('userData')`) — lo llama
   `main.js` tras `waitForServer`.
-- `telemetria/transport.js` — envía batches por `fetch` nativo a
+- `features/telemetria/transport.js` — envía batches por `fetch` nativo a
   `TELEMETRY_URL` (o al `url` de `telemetry.json`), con cola en disco
-  (`telemetria/buffer.js`) y reintentos. 4xx ya no se trata como éxito
+  (`features/telemetria/buffer.js`) y reintentos. 4xx ya no se trata como éxito
   silencioso: todo fallo de red queda logueado (`telemetria.envio.*`).
-- `telemetria/connectors/*.js` — un conector por área (creators, platforms,
+- `features/telemetria/connectors/*.js` — un conector por área (creators, platforms,
   counters, obs, mobile, overlays, updates, errors, settings). Cada uno
   escucha el bus de dominios (`canal:estado`, `movil:comando`, etc.) o el
   espejo de logs (`core/logger.js` emite **todo** log como `log:entry` al
@@ -138,7 +146,7 @@ Dominio aparte que reporta uso agregado y anónimo a un servicio propio
   en un contador por latido de 5 min en vez de uno por mensaje.
 - La URL sale de `TELEMETRY_URL` (env, inyectada en build) o de
   `%APPDATA%\tiktok-live-tts\telemetry.json` — archivo separado de
-  `config.json` a propósito, porque `configuracion/` descarta claves que no
+  `config.json` a propósito, porque `features/configuracion/` descarta claves que no
   reconoce y lo borraría en el primer guardado.
 - Casi todos los eventos se emiten directo desde los conectores. Solo
   `tts:skipped` y `tts:queue-overflow` nacen en el renderer (`interfaz/src/nucleo/tts/cola-tts.js`)
@@ -161,7 +169,7 @@ Dominio aparte que reporta uso agregado y anónimo a un servicio propio
     gifts\                ← 810 PNGs de regalos TikTok (188 MB)
     public\               ← output de `vite build` (interfaz/dist/), vía extraResources — HTML/CSS/JS de la UI, overlays y estaticos (icons/flags/locales/vendor/plugin-store)
     asset\                ← flags SVG, iconos (fuente para asset/icons/, catalogo Material Icons)
-    lang-words\           ← diccionarios de frecuencia por idioma (filtro dictFilterEnabled, `idioma/lang-dicts.js`)
+    lang-words\           ← diccionarios de frecuencia por idioma (filtro dictFilterEnabled, `features/idioma/lang-dicts.js`)
     blocked-words.md      ← palabras bloqueadas (r/w en runtime)
     tray-icon.ico
     public\uploads\       ← imágenes subidas por usuario (r/w)
@@ -239,7 +247,7 @@ directo en HTML/JS/backend.**
   los overlays (solo los ve el streamer armando OBS, nunca el espectador),
   contenido dinámico que viene del usuario (nombre de usuario, texto del
   chat).
-- `core/announce-texts.js` (avisos TTS de admin/promo) y `idioma/` (filtro de
+- `core/announce-texts.js` (avisos TTS de admin/promo) y `features/idioma/` (filtro de
   idioma/script de voz) son sistemas **aparte**, ya cubren sus propios
   idiomas — no tocar ni confundir con el i18n de UI de arriba.
 - Antes de dar por terminada una función con texto nuevo: correr un
@@ -327,13 +335,13 @@ telemetría vía `TELEMETRY_URL`/su secret correspondiente.
 antes forzaba descartar Kick ya no aplica a `https://kick.com/api/v2/channels/{slug}`
 (responde 200 a Node sin headers especiales). El chat va por Pusher público
 (`wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679`, cluster us2, canal
-`chatrooms.{chatroom_id}.v2`, sin auth). `canales/kick/`:
+`chatrooms.{chatroom_id}.v2`, sin auth). `features/canales/kick/`:
 `fetch-chatroom.js` (slug → chatroom.id) + `pusher.js` (URL/frames) +
 `connect-kick.js` (WS + subscribe + dedup + watchdog + backoff, mismo patrón
 que YouTube) + `handle-event.js` (parse del `ChatMessageEvent`). **No usa
 Electron** — funciona igual en `node server.js` que empaquetado. Los emotes
 llegan como `[emote:ID:nombre]` dentro de `content` y los expande
-`chat/emit-chat-message.js#extractKickMessage` a `:nombre:` +
+`features/chat/emit-chat-message.js#extractKickMessage` a `:nombre:` +
 `https://files.kick.com/emotes/{id}/fullsize` (los globales/7TV que Kick manda
 como texto plano no se resuelven, igual que en Twitch/YT). Si Kick vuelve a
 cerrar la API con Cloudflare, el único punto a parchear es `fetch-chatroom.js`
