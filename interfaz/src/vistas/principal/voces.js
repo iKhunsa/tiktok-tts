@@ -1,4 +1,5 @@
 import { appSettings, saveSettings } from '../../nucleo/estado/ajustes-app.js';
+import { setLangFilterEnabled, setDictFilterEnabled } from '../../nucleo/estado/config-runtime.js';
 import { t, tErr } from '../../nucleo/i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
 import { playAudioBlob } from '../../nucleo/tts/cola-tts.js';
@@ -53,18 +54,17 @@ export function syncTtsVoiceLang(id) {
   patchConfigSetting({ ttsVoiceLang: id });
 }
 
+// langFilterEnabled/dictFilterEnabled ya no pasan por appSettings/localStorage
+// (fase-05): config-runtime.js es el unico dueño, PATCHea el servidor
+// directo y guarda el valor en memoria — ver nucleo/estado/config-runtime.js.
 export function toggleLangFilter(checkbox) {
-  appSettings.langFilterEnabled = checkbox.checked;
   checkbox.closest('.toggle-chip')?.classList.toggle('active', checkbox.checked);
-  saveSettings();
-  patchConfigSetting({ langFilterEnabled: checkbox.checked });
+  setLangFilterEnabled(checkbox.checked);
 }
 
 export function toggleDictFilter(checkbox) {
-  appSettings.dictFilterEnabled = checkbox.checked;
   checkbox.closest('.toggle-chip')?.classList.toggle('active', checkbox.checked);
-  saveSettings();
-  patchConfigSetting({ dictFilterEnabled: checkbox.checked });
+  setDictFilterEnabled(checkbox.checked);
 }
 
 export function toggleSayUsernameConnector(checkbox) {

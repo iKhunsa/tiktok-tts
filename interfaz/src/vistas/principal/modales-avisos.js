@@ -1,7 +1,7 @@
-import { appSettings, saveSettings } from '../../nucleo/estado/ajustes-app.js';
+import { appSettings } from '../../nucleo/estado/ajustes-app.js';
+import { allowedExtraLangs, setAllowedExtraLang as setAllowedExtraLangRemoto } from '../../nucleo/estado/config-runtime.js';
 import { t } from '../../nucleo/i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
-import { patchConfigSetting } from './voces.js';
 import { switchView } from './vistas-router.js';
 import { driverTourDefaults } from './tours/index.js';
 import { spCancelCapture, spResetDeleteBtn } from './soundpad.js';
@@ -121,7 +121,7 @@ function renderDictLangModal() {
     label.style.cssText = 'display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;background:rgba(255,255,255,0.05);cursor:pointer;margin-bottom:6px;font-size:14px;' + (isVoice ? 'opacity:0.6;cursor:default;' : '');
     const cb = document.createElement('input');
     cb.type = 'checkbox';
-    cb.checked = isVoice || (appSettings.allowedExtraLangs || []).includes(lang);
+    cb.checked = isVoice || allowedExtraLangs.includes(lang);
     cb.disabled = isVoice;
     if (!isVoice) cb.onchange = () => setAllowedExtraLang(lang, cb.checked);
     const span = document.createElement('span');
@@ -131,12 +131,10 @@ function renderDictLangModal() {
   }
 }
 
+// allowedExtraLangs ya no pasa por appSettings/localStorage (fase-05):
+// config-runtime.js es el unico dueño, ver nucleo/estado/config-runtime.js.
 function setAllowedExtraLang(lang, enabled) {
-  const langs = new Set(appSettings.allowedExtraLangs || []);
-  if (enabled) langs.add(lang); else langs.delete(lang);
-  appSettings.allowedExtraLangs = [...langs];
-  saveSettings();
-  patchConfigSetting({ allowedExtraLangs: appSettings.allowedExtraLangs });
+  setAllowedExtraLangRemoto(lang, enabled);
 }
 
 export function closeDonationNotice(e) {
