@@ -104,6 +104,7 @@ module.exports = [
         URLSearchParams: 'readonly',
         HTMLInputElement: 'readonly',
         confirm: 'readonly',
+        FileReader: 'readonly',
       },
     },
     rules: {
