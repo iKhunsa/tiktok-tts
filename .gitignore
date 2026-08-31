@@ -2,7 +2,7 @@ node_modules/
 .env
 bin/
 *.log
-public/uploads/
+/uploads/
 dist/
 installer/
 electron-dist/

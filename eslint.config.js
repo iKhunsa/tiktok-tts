@@ -5,7 +5,7 @@ module.exports = [
     ignores: [
       'node_modules/**',
       'release-output/**',
-      'public/vendor/**',
+      'interfaz/publico/vendor/**',
       'backend-viejo/**',
       'graphify-out/**',
       '.claude/**',
@@ -50,29 +50,7 @@ module.exports = [
     },
   },
   {
-    files: ['public/**/*.js'],
-    languageOptions: {
-      sourceType: 'script',
-      globals: {
-        window: 'readonly',
-        document: 'readonly',
-        fetch: 'readonly',
-        WebSocket: 'readonly',
-        localStorage: 'readonly',
-        console: 'readonly',
-        setTimeout: 'readonly',
-        clearTimeout: 'readonly',
-        setInterval: 'readonly',
-        clearInterval: 'readonly',
-        navigator: 'readonly',
-        Audio: 'readonly',
-        FormData: 'readonly',
-      },
-    },
-  },
-  {
-    // interfaz/ es el frontend nuevo: modulos ESM reales (import/export),
-    // a diferencia de public/ (scripts clasicos con globals cruzados).
+    // interfaz/ es el frontend nuevo: modulos ESM reales (import/export).
     files: ['interfaz/**/*.js'],
     languageOptions: {
       ecmaVersion: 2022,
@@ -114,6 +92,32 @@ module.exports = [
       'no-dupe-keys': 'error',
       'no-dupe-args': 'error',
       'no-unreachable': 'error',
+    },
+  },
+  {
+    // plugin-store/*.js (interfaz/publico/, Vite lo copia sin tocar a
+    // dist/) son scripts clasicos con <script src=...> — no modulos ES,
+    // a diferencia del resto de interfaz/. Mismos globals que el viejo
+    // override de public/**/*.js. vendor/ (driver.js/confetti.js,
+    // terceros) va directo a `ignores` arriba, ni se linteaba antes.
+    files: ['interfaz/publico/plugin-store/**/*.js'],
+    languageOptions: {
+      sourceType: 'script',
+      globals: {
+        window: 'readonly',
+        document: 'readonly',
+        fetch: 'readonly',
+        WebSocket: 'readonly',
+        localStorage: 'readonly',
+        console: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
+        navigator: 'readonly',
+        Audio: 'readonly',
+        FormData: 'readonly',
+      },
     },
   },
 ];

@@ -141,14 +141,14 @@ Dominio aparte que reporta uso agregado y anónimo a un servicio propio
   `config.json` a propósito, porque `configuracion/` descarta claves que no
   reconoce y lo borraría en el primer guardado.
 - Casi todos los eventos se emiten directo desde los conectores. Solo
-  `tts:skipped` y `tts:queue-overflow` nacen en el renderer (`public/index.html`,
-  cola TTS) y llegan al bus vía IPC:
+  `tts:skipped` y `tts:queue-overflow` nacen en el renderer (`interfaz/src/nucleo/tts/cola-tts.js`)
+  y llegan al bus vía IPC:
   `window.electronAPI.trackEvent(name)` → `preload.js` → `ipcMain.on('telemetry:track', ...)`
   en `electron-shell/ipc-bridge.js`, con lista blanca de esos dos nombres.
 
 ## Variables de entorno clave
 
-- `TIKTOK_RESOURCES_PATH` — set por `main.js` en modo packaged para que `core/paths.js` (`RESOURCE_BASE`) resuelva `gifts/`, `public/`, `asset/`, `blocked-words.md` en `process.resourcesPath` (fuera del asar)
+- `TIKTOK_RESOURCES_PATH` — set por `main.js` en modo packaged para que `core/paths.js` (`RESOURCE_BASE`) resuelva `gifts/`, `public/` (output empaquetado de `interfaz/dist/`, ver extraResources), `asset/`, `lang-words/`, `blocked-words.md` en `process.resourcesPath` (fuera del asar)
 - `TIKTOK_USER_DATA_PATH` — set por `main.js` a `app.getPath('userData')`; `core/paths.js` (`DATA_BASE`) lo usa para `config.json`, `moderation.json`, `logs/`, etc.
 
 ## Paths críticos en producción (packaged)
@@ -157,10 +157,11 @@ Dominio aparte que reporta uso agregado y anónimo a un servicio propio
 %LOCALAPPDATA%\TikTok TTS\
   TikTok TTS.exe
   resources\
-    app.asar              ← main.js + server.js + los 14 dominios + electron-shell/ + telemetria/ + node_modules
+    app.asar              ← main.js + server.js + los 17 dominios + electron-shell/ + telemetria/ + node_modules (interfaz/ fuente NO viaja, solo su build)
     gifts\                ← 810 PNGs de regalos TikTok (188 MB)
-    public\               ← HTML/CSS/JS de la UI y overlays
-    asset\                ← flags SVG, iconos
+    public\               ← output de `vite build` (interfaz/dist/), vía extraResources — HTML/CSS/JS de la UI, overlays y estaticos (icons/flags/locales/vendor/plugin-store)
+    asset\                ← flags SVG, iconos (fuente para asset/icons/, catalogo Material Icons)
+    lang-words\           ← diccionarios de frecuencia por idioma (filtro dictFilterEnabled, `idioma/lang-dicts.js`)
     blocked-words.md      ← palabras bloqueadas (r/w en runtime)
     tray-icon.ico
     public\uploads\       ← imágenes subidas por usuario (r/w)
@@ -203,10 +204,13 @@ modificado) que agregue texto visible al usuario final tiene que pasar por
 este sistema — nunca hardcodear un string en español (ni en ningún idioma)
 directo en HTML/JS/backend.**
 
-- Frontend (`public/*.html`, 8 de 9 archivos lo reimplementan
-  copy-paste — todos menos `overlay-chat.html`): función `t(key, vars)` +
-  objeto `_locale` cargado desde `fetch('/locales/${lang}.json')` (fallback a
-  `es.json`). Interpolación de variables con `{var}` dentro del string.
+- Frontend (`interfaz/`): función única `t(key, vars)` en
+  `interfaz/src/nucleo/i18n/i18n.js` (`index.html`/`advanced.html`/`mobile.html`)
+  y su espejo `interfaz/compartido/i18n-overlay.js` para los 7 overlays vanilla
+  de OBS — ya no hay copy-paste por archivo (`fase-01`/`fase-03`/`fase-04`
+  del rebuild del frontend lo unificaron). Objeto `_locale` cargado desde
+  `fetch('/locales/${lang}.json')` (fallback a `es.json`). Interpolación de
+  variables con `{var}` dentro del string.
   - Markup estático → atributo `data-i18n="seccion.clave"` (aplica a
     `textContent`), `data-i18n-html` (a `innerHTML`), `data-i18n-placeholder`
     (a `placeholder`). `advanced.html` además soporta `data-i18n-title`.
@@ -214,7 +218,8 @@ directo en HTML/JS/backend.**
     literal con la frase en español embebida.
   - Idioma elegido persiste en `localStorage['tikliveTTS_lang']` — no hay
     equivalente server-side, es puramente client-side.
-- Diccionario: `public/locales/{es,en,it,pt,fr,de,zh,ja,ko,ru}.json`.
+- Diccionario: `interfaz/publico/locales/{es,en,it,pt,fr,de,zh,ja,ko,ru}.json`
+  (Vite `publicDir` — se copian tal cual a `interfaz/dist/locales/` al buildear).
   **`es.json` es la fuente de verdad** — agregar la clave ahí primero, después
   propagar la traducción a los otros 9 (no dejar ningún idioma sin la clave
   nueva; la paridad de claves entre los 10 archivos es lo que se valida).
@@ -251,8 +256,9 @@ badges, títulos de card). En su lugar:
 
 1. Buscar el ícono que mejor encaje en `asset/icons/` (catálogo Material
    Icons completo, ~1300 SVGs — es solo fuente, la app no lo sirve).
-2. Copiarlo a `public/icons/` (carpeta que sí sirve Express y que
-   referencia el HTML como `icons/nombre.svg`, con `class="icon-inline"`).
+2. Copiarlo a `interfaz/publico/icons/` (Vite `publicDir` — se copia tal cual
+   a `interfaz/dist/icons/`, que sí sirve Express; el HTML lo referencia
+   como `icons/nombre.svg`, con `class="icon-inline"`).
 3. Usarlo con `<img class="icon-inline" src="icons/nombre.svg" alt="">`,
    mismo patrón que el resto de la app.
 
@@ -340,11 +346,31 @@ mensajes → `canales.kick.sin_eventos` + reconexión) es la red de seguridad.
 
 ## Frontend modular (`interfaz/`)
 
-El frontend esta migrando de HTML monolitico (`public/`, legado) a modulos
-ESM en `interfaz/`, siguiendo **la misma regla de modularidad del backend**:
-un archivo `.js` por funcion/responsabilidad. Si una responsabilidad
-necesita mas de un archivo (estado + helpers), se agrupa en una carpeta con
-su propio `index.js` que la expone.
+Rebuild completo del frontend (mismo patron que el rebuild por dominios del
+backend, ver "Documentación del rebuild"): HTML monolitico → modulos ESM en
+`interfaz/`, siguiendo **la misma regla de modularidad del backend**: un
+archivo `.js` por funcion/responsabilidad. Si una responsabilidad necesita
+mas de un archivo (estado + helpers), se agrupa en una carpeta con su
+propio `index.js` que la expone. El `public/` legado ya no existe en el
+repo (fase-06) — `interfaz/dist/` (build de Vite) es la unica raiz estatica
+que sirve `core/app.js`.
+
+```
+interfaz/
+  index.html  advanced.html  mobile.html  overlay-*.html   ← entries de Vite
+  src/
+    nucleo/          ← framework-agnostic: ws/, estado/, i18n/, tts/, log-storage.js
+    componentes/      ← toast, campos de formulario reutilizables
+    vistas/
+      principal/       ← index.html (~30 modulos, orquestador en index.js)
+      avanzada/         ← advanced.html
+      movil/            ← mobile.html (panel remoto)
+  compartido/        ← consumido ademas por los 7 overlays vanilla de OBS
+  publico/           ← Vite publicDir: icons/, flags/, locales/, vendor/,
+                         plugin-store/, img/, asset/, logos, favicon —
+                         se copian tal cual a dist/, sin procesar
+  dist/              ← generado (gitignored), output de `vite build`
+```
 
 - **Nomenclatura**: carpetas de dominio/vista en kebab-case **español**
   (espejo de las carpetas de dominio del backend); nombres de archivo en
@@ -352,19 +378,21 @@ su propio `index.js` que la expone.
   (`cliente-ws.js` → `conectarWS`), igual que en el backend.
 - **CommonJS en el backend, ESM (`import`/`export`) en el frontend** — es la
   unica diferencia de convencion, porque el frontend corre en el navegador/
-  Chromium vía Vite y el backend en Node.
+  Chromium vía Vite y el backend en Node. Excepcion: `interfaz/publico/plugin-store/`
+  y `interfaz/publico/vendor/` son scripts clasicos (`<script src>`, sin
+  modulos) que Vite copia a `dist/` sin tocar — `eslint.config.js` los
+  lintea con `sourceType: 'script'` aparte del resto de `interfaz/`.
 - `interfaz/src/nucleo/` (estado, WS, i18n, cola TTS) es framework-agnostic
   y no depende de ninguna vista; las vistas no se importan entre si, solo
   consumen `nucleo/` y `componentes/`.
-- `interfaz/compartido/` son los modulos que ademas consumen los 7 overlays
-  vanilla de OBS (`overlay-*.html`), que no pasan por `nucleo/`.
-- Bundler: Vite multi-entry (`interfaz/vite.config.js`). `interfaz/dist/`
-  (generado, gitignored) sombrea a `public/` en `core/app.js` — archivo por
-  archivo, sin big-bang: mientras una vista no este migrada, se sirve el
-  HTML legado de `public/`.
+- Bundler: Vite multi-entry (`interfaz/vite.config.js`), `publicDir: interfaz/publico`.
 - Sin framework de UI (no React): el estado vive en un mini-store propio
   (`crearAlmacen`, sin dependencias externas) y las vistas dinamicas usan
   helpers de render dirigido en `interfaz/src/render/`.
+- `gifts/`, `sounds/`, `asset/` (fuente de iconos) y `lang-words/` (diccionarios
+  del filtro de idioma) siguen en la raiz del repo, fuera de `interfaz/` —
+  son recursos que lee el **backend** por filesystem (`RESOURCE_BASE`), no
+  estaticos servidos al cliente; no confundir con `interfaz/publico/`.
 
 ## Repositorio
 

@@ -1,7 +1,7 @@
 'use strict';
 
-// Genera favicon.ico + iconos PNG desde public/logo-icon.svg usando el
-// Chromium de Electron para rasterizar. Uso: npm run make-icon
+// Genera favicon.ico + iconos PNG desde interfaz/publico/logo-icon.svg
+// usando el Chromium de Electron para rasterizar. Uso: npm run make-icon
 // Después empaqueta el .ico con PIL (ver make-app-icon.py).
 
 const { app, BrowserWindow } = require('electron');
@@ -9,7 +9,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
-const SVG = fs.readFileSync(path.join(ROOT, 'public', 'logo-icon.svg'), 'utf8');
+const SVG = fs.readFileSync(path.join(ROOT, 'interfaz', 'publico', 'logo-icon.svg'), 'utf8');
 const OUT = path.join(__dirname, '_iconbuild');
 const SIZES = [16, 24, 32, 48, 64, 128, 256];
 
