@@ -23,14 +23,39 @@
       --accent-border: rgba(62, 207, 142, 0.3);
       --glass: rgba(41, 41, 41, 0.84);
 
+      /* ─── movimiento: curvas ya en uso, promovidas a token ─── */
+      --ease-out: cubic-bezier(.22, .61, .36, 1);
+      --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+      --ease-overshoot: cubic-bezier(.34, 1.56, .64, 1);
+      --dur-press: 130ms;
+      --dur-1: 150ms;
+      --dur-2: 200ms;
+      --dur-3: 240ms;
+      --dur-4: 320ms;
+
+      /* ─── estados ─── */
+      --ok: #3ecf8e;
+      --danger: #e74c3c;
+      --warn: #ffbb00;
+      --hover-1: rgba(255, 255, 255, 0.04);
+      --hover-2: rgba(255, 255, 255, 0.06);
+      --accent-a10: rgba(62, 207, 142, 0.10);
+      --accent-a12: rgba(62, 207, 142, 0.12);
+      --accent-a15: rgba(62, 207, 142, 0.15);
+      --accent-a20: rgba(62, 207, 142, 0.20);
+      --accent-a30: rgba(62, 207, 142, 0.30);
+      --accent-a40: rgba(62, 207, 142, 0.40);
+      --accent-a50: rgba(62, 207, 142, 0.50);
+      --accent-a60: rgba(62, 207, 142, 0.60);
+
       /* Legacy aliases — JS uses these */
       --muted: #898989;
       --green: #3ecf8e;
       --chat-bg: #0f0f0f;
-      --tiktok-red: #2e2e2e;
-      --tiktok-cyan: #3ecf8e;
-      --orange: #898989;
-      --yellow: #b4b4b4;
+      --tiktok-red: var(--border);
+      --tiktok-cyan: var(--accent);
+      --orange: var(--text-muted);
+      --yellow: var(--text-secondary);
     }
 
     body.high-contrast {
@@ -53,6 +78,9 @@
       line-height: 1.5;
       min-height: 100vh;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      font-optical-sizing: auto;
     }
 
     .app {
@@ -166,7 +194,7 @@
     /* Resalte temporal al llegar por deep-link (#palabras-bloqueadas) */
     .panel-highlight {
       outline: 2px solid var(--accent);
-      box-shadow: 0 0 0 4px rgba(62, 207, 142, 0.15);
+      box-shadow: 0 0 0 4px var(--accent-a15);
       transition: box-shadow .3s ease, outline-color .3s ease;
     }
 
@@ -219,7 +247,7 @@
 
     .explainer .highlight {
       display: inline-block;
-      background: rgba(255, 255, 255, 0.06);
+      background: var(--hover-2);
       color: var(--text-secondary);
       border-radius: 4px;
       padding: 1px 6px;
@@ -357,8 +385,8 @@
     }
 
     .switch input:checked + .switch-track {
-      background: rgba(62, 207, 142, 0.15);
-      border: 1px solid rgba(62, 207, 142, 0.4);
+      background: var(--accent-a15);
+      border: 1px solid var(--accent-a40);
     }
 
     .switch input:checked + .switch-track::after {
@@ -387,7 +415,7 @@
     }
 
     .tag-input-row input[type="text"]:focus {
-      border-color: rgba(62, 207, 142, 0.5);
+      border-color: var(--accent-a50);
     }
 
     .tag-input-row input[type="text"]::placeholder {
@@ -426,7 +454,7 @@
       align-items: center;
       gap: 6px;
       background: rgba(62, 207, 142, 0.06);
-      border: 1px solid rgba(62, 207, 142, 0.2);
+      border: 1px solid var(--accent-a20);
       border-radius: 9999px;
       padding: 4px 12px;
       font-family: 'Source Code Pro', monospace;
@@ -471,7 +499,7 @@
       transition: border-color 0.2s;
     }
 
-    textarea:focus { border-color: rgba(62, 207, 142, 0.5); }
+    textarea:focus { border-color: var(--accent-a50); }
 
     /* FILE INPUT */
     input[type="file"] {
@@ -498,7 +526,7 @@
       width: 100%;
     }
 
-    input[type="text"]:focus { border-color: rgba(62, 207, 142, 0.5); }
+    input[type="text"]:focus { border-color: var(--accent-a50); }
     input[type="text"]::placeholder { color: var(--text-muted); }
 
     select {
@@ -514,7 +542,7 @@
       width: 100%;
     }
 
-    select:focus { border-color: rgba(62, 207, 142, 0.5); }
+    select:focus { border-color: var(--accent-a50); }
 
     /* STATUS */
     .status-grid {
@@ -598,7 +626,7 @@
 
     .dot.green {
       background: var(--accent);
-      box-shadow: 0 0 4px rgba(62, 207, 142, 0.4);
+      box-shadow: 0 0 4px var(--accent-a40);
       animation: pulse-dot 2s infinite;
     }
 
@@ -633,8 +661,8 @@
     .btn-save:hover { opacity: 0.8; }
 
     .btn-save.saved {
-      background: rgba(62, 207, 142, 0.1);
-      border-color: rgba(62, 207, 142, 0.4);
+      background: var(--accent-a10);
+      border-color: var(--accent-a40);
       color: var(--accent);
     }
 
@@ -695,9 +723,12 @@
       font-family: 'Inter', sans-serif;
       font-size: 13px;
       opacity: 0;
-      transition: all 0.3s;
+      transition: transform var(--dur-4) var(--ease-out), opacity var(--dur-4) var(--ease-out);
       z-index: 1000;
       pointer-events: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .toast { transition: opacity var(--dur-2) linear; }
     }
 
     .toast.show {
@@ -720,7 +751,7 @@
     }
 
     .badge-on {
-      background: rgba(62, 207, 142, 0.12);
+      background: var(--accent-a12);
       color: var(--accent);
     }
 
