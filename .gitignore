@@ -17,5 +17,4 @@ telemetry-config.json
 telemetry-config.generated.json
 logs/
 moderation.json
-graphify-out/cache/
-graphify-out/.needs_update
+graphify-out/

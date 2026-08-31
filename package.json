@@ -93,6 +93,7 @@
       "clips/**/*",
       "avanzado/**/*",
       "donar/**/*",
+      "promo/**/*",
       "electron-shell/**/*",
       "telemetria/**/*",
       "node_modules/**/*",
