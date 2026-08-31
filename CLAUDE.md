@@ -338,6 +338,34 @@ mensajes → `canales.kick.sin_eventos` + reconexión) es la red de seguridad.
 
 **Cola TTS timestamp-ordered:** `speechQueue` en el cliente almacena `{ text, msgId, timestamp }`. Al agregar cada mensaje, el array se re-ordena por `timestamp` ascendente. Esto garantiza que si Twitch, YouTube y TikTok envían mensajes casi simultáneos, se lean en el orden real en que los usuarios los escribieron (según el timestamp del servidor que recibió cada evento).
 
+## Frontend modular (`interfaz/`)
+
+El frontend esta migrando de HTML monolitico (`public/`, legado) a modulos
+ESM en `interfaz/`, siguiendo **la misma regla de modularidad del backend**:
+un archivo `.js` por funcion/responsabilidad. Si una responsabilidad
+necesita mas de un archivo (estado + helpers), se agrupa en una carpeta con
+su propio `index.js` que la expone.
+
+- **Nomenclatura**: carpetas de dominio/vista en kebab-case **español**
+  (espejo de las carpetas de dominio del backend); nombres de archivo en
+  kebab-case **ingles** describiendo la funcion que exportan
+  (`cliente-ws.js` → `conectarWS`), igual que en el backend.
+- **CommonJS en el backend, ESM (`import`/`export`) en el frontend** — es la
+  unica diferencia de convencion, porque el frontend corre en el navegador/
+  Chromium vía Vite y el backend en Node.
+- `interfaz/src/nucleo/` (estado, WS, i18n, cola TTS) es framework-agnostic
+  y no depende de ninguna vista; las vistas no se importan entre si, solo
+  consumen `nucleo/` y `componentes/`.
+- `interfaz/compartido/` son los modulos que ademas consumen los 7 overlays
+  vanilla de OBS (`overlay-*.html`), que no pasan por `nucleo/`.
+- Bundler: Vite multi-entry (`interfaz/vite.config.js`). `interfaz/dist/`
+  (generado, gitignored) sombrea a `public/` en `core/app.js` — archivo por
+  archivo, sin big-bang: mientras una vista no este migrada, se sirve el
+  HTML legado de `public/`.
+- Sin framework de UI (no React): el estado vive en un mini-store propio
+  (`crearAlmacen`, sin dependencias externas) y las vistas dinamicas usan
+  helpers de render dirigido en `interfaz/src/render/`.
+
 ## Repositorio
 
 - GitHub: https://github.com/iKhunsa/tiktok-tts
