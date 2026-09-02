@@ -142,7 +142,7 @@ Object.assign(window, {
   // musica
   musicRemoveFromQueue, musicSkip, musicTogglePause, musicSetEnabled, musicSetVolume,
   musicSaveCooldown, musicSaveMaxQueue, musicClearQueue, musicBanUser, musicUnbanUser,
-  playlistSave, playlistSetEnabled, playlistSetShuffle, playlistPlay,
+  playlistSave, playlistSetEnabled, playlistSetShuffle, playlistPlay, updatePlaylistInfo,
   // moderacion / bloqueo de palabras
   modPage, modSetTab, modOnSearch, modWipe, checkModWipeConfirmInput, closeModWipeConfirm,
   confirmModWipe, openBlockWordModal, closeBlockWordModal, submitBlockWord,
