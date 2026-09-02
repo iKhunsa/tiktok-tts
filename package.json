@@ -11,7 +11,7 @@
     "test": "node --test \"test/**/*.test.js\"",
     "electron": "electron .",
     "make-icon": "electron scripts/make-app-icon.js && python scripts/make-app-icon.py",
-    "prebuild:electron": "node scripts/ensure-webhook-config.js && node scripts/ensure-telemetry-config.js",
+    "prebuild:electron": "node scripts/ensure-webhook-config.js && node scripts/ensure-telemetry-config.js && node scripts/ensure-aptabase-config.js",
     "build:electron": "electron-builder --win"
   },
   "build": {
@@ -72,6 +72,10 @@
       {
         "from": "telemetry-config.generated.json",
         "to": "telemetry-config.json"
+      },
+      {
+        "from": "aptabase-config.generated.json",
+        "to": "aptabase-config.json"
       }
     ],
     "npmRebuild": false,
@@ -104,6 +108,7 @@
     ]
   },
   "dependencies": {
+    "@aptabase/electron": "^0.3.1",
     "@sentry/electron": "^7.17.0",
     "electron-updater": "^6.8.3",
     "express": "^4.18.2",
