@@ -12,7 +12,9 @@ const { createMusicEngine } = require('./musica/engine/create');
 const { createMusicState } = require('./musica/state');
 const { handleMusicRequest } = require('./musica/handle-request');
 const { resolveAndSavePlaylist } = require('./musica/resolve-and-save-playlist');
-const { getConfigSnapshot } = require('./config-bridge');
+const { getConfigSnapshot, patchConfig } = require('./config-bridge');
+const { advanceMusicQueue } = require('./musica/advance-queue');
+const mcpRegistry = require('../../core/contracts/mcp-registry');
 
 const { stream } = require('./musica/routes/stream');
 const { engineStatus } = require('./musica/routes/engine-status');
@@ -108,6 +110,75 @@ module.exports = {
     app.patch('/api/soundpad/:id', patch(deps));
     app.delete('/api/soundpad/:id', del(deps));
     attachSoundpadShortcuts(deps);
+
+    // ── MCP ──────────────────────────────────────────────────────────────
+    mcpRegistry.registerStateProvider(() => ({
+      music: {
+        queueLen: musicState.queue.length,
+        current: musicState.currentTrack ? { title: musicState.currentTrack.title, videoId: musicState.currentTrack.videoId } : null,
+        playlistActive: !!musicState.playlistActive,
+        engine: (() => { try { return engine.getStatus(); } catch (_) { return null; } })(),
+      },
+    }), 'sonido');
+
+    mcpRegistry.registerTool({
+      name: 'speak', domain: 'sonido',
+      title: 'Speak text (TTS)',
+      description: 'Enqueue text to be read aloud by TTS on the desktop client (goes through the normal TTS queue).',
+      inputSchema: {
+        type: 'object', required: ['text'],
+        properties: {
+          text: { type: 'string', description: 'Text to speak (max ~500 chars)' },
+          voice: { type: 'string', description: 'Voice code, e.g. es-MX, en, pt (optional)' },
+        },
+      },
+      handler: (a) => {
+        bus.emit('sonido:hablar', { text: String(a.text).slice(0, 500), voice: a.voice, user: 'mcp', source: 'mcp' });
+        return { ok: true, queued: true };
+      },
+    });
+
+    mcpRegistry.registerTool({
+      name: 'music_queue', domain: 'sonido', readOnly: true,
+      title: 'Music queue',
+      description: 'Current track + pending music queue + engine status.',
+      inputSchema: { type: 'object', properties: {} },
+      handler: () => ({
+        current: musicState.currentTrack,
+        queue: musicState.queue,
+        playlistActive: !!musicState.playlistActive,
+        engine: (() => { try { return engine.getStatus(); } catch (_) { return null; } })(),
+      }),
+    });
+
+    mcpRegistry.registerTool({
+      name: 'music_skip', domain: 'sonido', idempotent: true,
+      title: 'Skip current song',
+      description: 'Stop the current track and advance the music queue.',
+      inputSchema: { type: 'object', properties: {} },
+      handler: () => {
+        musicState.currentTrack = null;
+        bus.emit('ws:broadcast', { type: 'music-skip' });
+        advanceMusicQueue(deps);
+        return { ok: true };
+      },
+    });
+
+    mcpRegistry.registerTool({
+      name: 'music_ban_user', domain: 'sonido', destructive: true,
+      title: 'Ban user from music requests',
+      description: 'Add a username to the music-request banlist.',
+      inputSchema: { type: 'object', required: ['username'], properties: { username: { type: 'string' } } },
+      handler: (a) => {
+        const clean = String(a.username).trim().toLowerCase();
+        const cfg = getConfigSnapshot(bus);
+        const banned = (cfg.musicBannedUsers || []).includes(clean)
+          ? cfg.musicBannedUsers
+          : [...(cfg.musicBannedUsers || []), clean];
+        patchConfig(bus, { musicBannedUsers: banned });
+        return { ok: true, banned };
+      },
+    });
 
     // Inicializar playlist desde config persistida.
     const config = getConfigSnapshot(bus);

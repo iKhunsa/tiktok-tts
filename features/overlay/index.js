@@ -11,6 +11,7 @@ const { extractFollowerCount } = require('./state/extract-follower-count');
 const { startFollowerRefresh, stopFollowerRefresh } = require('./state/follower-refresh-timer');
 const { computeGiftUsd } = require('./compute-gift-usd');
 const { cleanNick } = require('./clean-nick');
+const mcpRegistry = require('../../core/contracts/mcp-registry');
 
 const { overlayStats } = require('./routes/overlay-stats');
 const { giftsList } = require('./routes/gifts-list');
@@ -160,6 +161,31 @@ module.exports = {
     app.post('/api/test/raid', testRaid(deps));
     app.post('/api/test/likes', testLikes(deps));
 
-    return { rutas: 9, listeners: 5 };
+    // ── MCP ──────────────────────────────────────────────────────────────
+    const slice = () => {
+      const topLikers = [...state.topLikers.values()].sort((a, b) => b.totalLikes - a.totalLikes).slice(0, 10);
+      return {
+        overlay: {
+          followCount: state.followCount,
+          baseFollowerCount: state.baseFollowerCount,
+          topLikers,
+          recentSharers: state.sharers.slice(-10).map((s) => s.user),
+          recentDonors: state.credits.donors.slice(-10),
+        },
+      };
+    };
+    mcpRegistry.registerStateProvider(slice, 'overlay');
+    // Idiom alternativo (demo): responder al pull por bus mcp:state.
+    bus.on('mcp:state', (respond) => { if (typeof respond === 'function') respond(slice()); }, 'overlay');
+
+    mcpRegistry.registerTool({
+      name: 'overlay_stats', domain: 'overlay', readOnly: true,
+      title: 'Overlay stats',
+      description: 'Follower count, top likers, recent sharers, gift/donor credits (session).',
+      inputSchema: { type: 'object', properties: {} },
+      handler: () => slice().overlay,
+    });
+
+    return { rutas: 9, listeners: 6 };
   },
 };
