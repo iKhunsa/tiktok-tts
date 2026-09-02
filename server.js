@@ -39,7 +39,10 @@ registerDomain(deps, require('./features/clips'));
 registerDomain(deps, require('./features/avanzado'));
 registerDomain(deps, require('./features/donar'));
 registerDomain(deps, require('./features/telemetria'));
-// Los 15 dominios de negocio (features/) ya estan registrados. /electron-shell
+// mcp va ULTIMO: para cuando corre su register(), cada dominio ya llamo
+// mcpRegistry.registerTool() desde el suyo, asi que el set de tools esta completo.
+registerDomain(deps, require('./features/mcp'));
+// Los 16 dominios de negocio (features/) ya estan registrados. /electron-shell
 // y /telemetria/runtime.js se conectan desde main.js (no son rutas Express).
 
 // Va al final: si algun dominio ya registro GET /api/status, ese gana
