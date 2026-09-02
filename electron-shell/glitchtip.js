@@ -40,11 +40,15 @@ const estado = {
   obsConectado: false,
   issuesEnviados: 0,
   capAvisado: false,
+  issuesPorTipo: new Map(),        // fingerprint → cuántos van esta sesión
   erroresRecientes: [],            // timestamps para detectar "sesión problemática"
   sesionProblematicaAvisada: false,
 };
 
 const CAP_ISSUES_SESION = 60;
+// Techo por fingerprint: una sola causa raíz (ej. Google TTS caído devolviendo
+// vacío en loop) no debe generar 60 issues ni comerse el cap de sesión.
+const CAP_ISSUES_POR_TIPO = 5;
 const SENTRY_NIVEL = { debug: 'debug', info: 'info', warn: 'warning', error: 'error', fatal: 'fatal' };
 
 // Eventos de logger que NO valen como breadcrumb (alta frecuencia / ya se
@@ -164,6 +168,9 @@ const WARN_PROMOVIDOS = new Set([
   'canales.twitch_oauth.tokens_carga_fallida',
   'canales.youtube.chat_estancado',
   'canales.youtube.error',
+  // 'sonido.tts.respuesta_pequena' NO se promueve: es un fallo externo
+  // transitorio (Google rate-limitea devolviendo vacío) que en una racha mala
+  // dispara decenas por minuto. Queda igual en la sección Logs (warn+).
   'canales.kick.sin_eventos',
   'canales.kick.socket_error',
   'canales.kick.reconexion_agotada',
@@ -176,7 +183,6 @@ const WARN_PROMOVIDOS = new Set([
   'sonido.musica.busqueda_fallida',
   'sonido.musica.info_fallida',
   'sonido.musica.playlist_streamer_fallida',
-  'sonido.tts.respuesta_pequena',
   'configuracion.store.carga_fallida',
   'configuracion.platform.carga_fallida',
   'configuracion.logs.lectura_dir_fallida',
@@ -345,6 +351,21 @@ function reportarIssue(e, logger) {
   const esRenderer = e.event === 'configuracion.log_cliente.recibido';
   const src = esRenderer ? String((e.data && e.data.source) || 'principal') : null;
   if (esRenderer && src.startsWith('overlay:')) tipo = 'error_overlay';
+
+  // Techo por fingerprint: una racha de la misma causa raíz (Google TTS
+  // devolviendo vacío, un dominio que no monta y reintenta, etc.) no debe
+  // llenar el panel ni agotar el cap de sesión. GlitchTip igual agrupa todos
+  // los eventos de un mismo issue — perdemos conteo fino, no el issue.
+  const vistos = (estado.issuesPorTipo.get(tipo) || 0) + 1;
+  estado.issuesPorTipo.set(tipo, vistos);
+  if (vistos > CAP_ISSUES_POR_TIPO) {
+    if (vistos === CAP_ISSUES_POR_TIPO + 1 && logger) logger.log(
+      'warn', 'electron-shell', 'electron-shell/glitchtip.js#reportarIssue', 'glitchtip.cap_tipo',
+      `Cap de ${CAP_ISSUES_POR_TIPO} issues alcanzado para "${tipo}" — se silencian los siguientes esta sesión`,
+      { tipo }
+    );
+    return;
+  }
 
   const mensaje = e.event.startsWith('canales.')
     ? `[${e.event}] ${(e.data && e.data.error) || 'fallo de conexión'}`
