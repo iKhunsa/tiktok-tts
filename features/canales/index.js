@@ -7,6 +7,8 @@ const { ensureTwitchAccessToken } = require('./twitch/oauth/ensure-access-token'
 const { startTwitchEventSub } = require('./twitch/eventsub/start');
 const { saveReplay } = require('./obs/save-replay');
 const obsReplayContract = require('../../core/contracts/obs-replay');
+const mcpRegistry = require('../../core/contracts/mcp-registry');
+const { connectPlatformChannel } = require('./connect-impl');
 
 const { connect } = require('./routes/connect');
 const { disconnect } = require('./routes/disconnect');
@@ -94,6 +96,66 @@ module.exports = {
           });
       }
     }, 'canales');
+
+    // ── MCP ──────────────────────────────────────────────────────────────
+    const snapshot = () => ({
+      tiktok: Array.from(state.tiktokChannels.keys()),
+      twitch: Array.from(state.twitchChannels.keys()),
+      youtube: Array.from(state.youtubeChannels.keys()),
+      kick: Array.from(state.kickChannels.keys()),
+      obs: !!(state.obs && state.obs.ws),
+      twitchAuth: !!state.authTokens.twitch,
+    });
+    mcpRegistry.registerStateProvider(() => ({ channels: snapshot() }), 'canales');
+
+    mcpRegistry.registerTool({
+      name: 'channels_status', domain: 'canales', readOnly: true,
+      title: 'Channel status',
+      description: 'Connected channels per platform + OBS + Twitch auth.',
+      inputSchema: { type: 'object', properties: {} },
+      handler: () => snapshot(),
+    });
+
+    mcpRegistry.registerTool({
+      name: 'channels_connect', domain: 'canales', idempotent: true, openWorld: true,
+      title: 'Connect channel',
+      description: 'Connect a channel on tiktok / twitch / youtube / kick. The platform must be LIVE for the connection to actually receive chat.',
+      inputSchema: {
+        type: 'object', required: ['platform', 'channel'],
+        properties: {
+          platform: { type: 'string', description: 'tiktok | twitch | youtube | kick' },
+          channel: { type: 'string', description: 'Username / channel / slug' },
+        },
+      },
+      handler: async (a) => {
+        try {
+          const out = await connectPlatformChannel({ state, bus, logger }, { platform: a.platform, channel: a.channel });
+          return { ok: true, ...out };
+        } catch (e) {
+          return { ok: false, reason: e.message };
+        }
+      },
+    });
+
+    mcpRegistry.registerTool({
+      name: 'channels_disconnect', domain: 'canales', destructive: true,
+      title: 'Disconnect channel',
+      description: 'Disconnect one channel (or all of a platform if channel is omitted).',
+      inputSchema: {
+        type: 'object', required: ['platform'],
+        properties: { platform: { type: 'string' }, channel: { type: 'string' } },
+      },
+      // MCP-FALLBACK: la lógica de disconnect está muy acoplada a req/res
+      // (limpieza de timers por plataforma). Self-call HTTP local.
+      handler: async (a) => {
+        const PORT = process.env.PORT || 3000;
+        const r = await fetch(`http://127.0.0.1:${PORT}/api/platforms/disconnect`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ platform: a.platform, channel: a.channel }),
+        });
+        return { ok: r.ok, status: r.status, ...(await r.json().catch(() => ({}))) };
+      },
+    });
 
     // Reanudar sesion OAuth persistida al arrancar (best-effort).
     setTimeout(async () => {

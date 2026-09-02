@@ -326,6 +326,12 @@ function attach(bus, logger) {
           break;
         }
 
+        // ── MCP ──────────────────────────────────────────────────────────
+        case 'mcp.tool.llamada': {
+          track('mcp_tool_used', { tool: String(d.tool || '').slice(0, 40) });
+          break;
+        }
+
         default:
           break;
       }

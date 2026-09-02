@@ -6,6 +6,8 @@ const { loadBlockedWordsFromFile } = require('./filters/blocked-words-file');
 const { createDuplicateTrackerState, sweepDuplicateTracker, DUP_WINDOW_MS } = require('./filters/is-duplicate-recent');
 const { createPolicy } = require('./policy');
 const moderacionPolicyContract = require('../../core/contracts/moderacion-policy');
+const mcpRegistry = require('../../core/contracts/mcp-registry');
+const { resolveModTarget, resolveUntil } = require('./apply-mod-action');
 const { DATA_BASE } = require('../../core/paths');
 
 const { preview } = require('./routes/preview');
@@ -79,6 +81,81 @@ module.exports = {
     app.post('/api/blocked-words/import', blockedWordsImport(deps));
     app.post('/api/block-word', blockWord(deps));
     app.delete('/api/block-word', unblockWord(deps));
+
+    // ── MCP ──────────────────────────────────────────────────────────────
+    mcpRegistry.registerStateProvider(() => {
+      const s = store.stats();
+      return { moderation: { viewers: s.total, followers: s.followers, muted: s.muted, banned: s.banned } };
+    }, 'moderacion');
+
+    mcpRegistry.registerTool({
+      name: 'moderation_list_viewers', domain: 'moderacion', readOnly: true,
+      title: 'List viewers',
+      description: 'Tracked viewers with mute/ban/follower state. Local registry only.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          tab: { type: 'string', description: 'all | followers | others' },
+          platform: { type: 'string', description: 'all | tiktok | twitch | youtube | kick' },
+          q: { type: 'string', description: 'Search nick' },
+          limit: { type: 'integer', description: 'Max rows (default 50, cap 200)' },
+        },
+      },
+      handler: (a) => {
+        const limit = Math.min(Number(a.limit) || 50, 200);
+        return store.list({ tab: a.tab, platform: a.platform, q: a.q, limit });
+      },
+    });
+
+    mcpRegistry.registerTool({
+      name: 'moderation_get_stats', domain: 'moderacion', readOnly: true,
+      title: 'Moderation stats',
+      description: 'Aggregate counts: total viewers, followers, muted, banned, by platform.',
+      inputSchema: { type: 'object', properties: {} },
+      handler: () => store.stats(),
+    });
+
+    const modAction = (accion, aplicar) => (a) => {
+      const target = resolveModTarget(store, a);
+      if (!target) return { ok: false, reason: 'target_no_resuelto', hint: 'pasá key o platform + (userId|nick)' };
+      const until = accion === 'mute' || accion === 'ban' ? resolveUntil(a.durationMs) : undefined;
+      if (until === null) return { ok: false, reason: 'durationMs_invalido' };
+      const viewer = aplicar(target, until);
+      store.flush();
+      bus.emit('ws:broadcast', { type: 'moderation-updated', viewer });
+      logger.log('info', 'moderacion', 'moderacion/index.js#mcp', 'moderacion.accion.aplicada',
+        `Acción ${accion} via MCP`, { platform: target.platform, accion });
+      return { ok: true, accion, target: target.key || `${target.platform}:${target.userId || target.nick}`, viewer };
+    };
+    const targetSchema = {
+      type: 'object',
+      properties: {
+        key: { type: 'string', description: '"platform:userId"' },
+        platform: { type: 'string' }, userId: { type: 'string' }, nick: { type: 'string' },
+        durationMs: { type: 'integer', description: 'Omitir = permanente' },
+      },
+    };
+    mcpRegistry.registerTool({
+      name: 'moderation_mute', domain: 'moderacion', destructive: true,
+      title: 'Mute viewer (local)',
+      description: 'Local mute — the message is shown but not read by TTS. Does NOT touch the platform.',
+      inputSchema: targetSchema,
+      handler: modAction('mute', (t, until) => store.setMute(t, until)),
+    });
+    mcpRegistry.registerTool({
+      name: 'moderation_ban', domain: 'moderacion', destructive: true,
+      title: 'Ban viewer (local)',
+      description: 'Local ban — the message is not emitted at all. Does NOT touch the platform.',
+      inputSchema: targetSchema,
+      handler: modAction('ban', (t, until) => store.setBan(t, until)),
+    });
+    mcpRegistry.registerTool({
+      name: 'moderation_clear', domain: 'moderacion', destructive: true, idempotent: true,
+      title: 'Clear punishments',
+      description: 'Remove mute and ban for a viewer (keeps the record).',
+      inputSchema: targetSchema,
+      handler: modAction('clear', (t) => store.clearPunishments(t)),
+    });
 
     return { rutas: 16, listeners: 2 };
   },

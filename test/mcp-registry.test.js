@@ -80,14 +80,22 @@ test('nombre de tool duplicado lanza (aislado por register-domain)', () => {
 
 test('GARANTÍA: todo dominio con rutas de escritura registra ≥1 tool', () => {
   // Dominios que montan POST/PATCH/DELETE y por tanto deben aparecer como
-  // t.domain de alguna tool. (Se actualiza al agregar features en Fase 2+.)
-  const CON_ESCRITURA = ['moderacion', 'canales', 'sonido', 'configuracion', 'overlay'];
+  // t.domain de alguna tool. Al agregar una feature con escritura, sumala acá
+  // y registrale su tool — si no, este test falla (ese es el punto).
+  const CON_ESCRITURA = ['moderacion', 'canales', 'sonido', 'configuracion', 'overlay', 'chat'];
   const dominiosConTool = new Set(registry.listTools().map((t) => t.domain));
-  const faltan = CON_ESCRITURA.filter((d) => !dominiosConTool.has(d));
-  // Fase 1: todavía no hay bloques por dominio → se documenta el pendiente.
-  // Fase 2 convierte esto en assert.deepEqual(faltan, []).
-  if (faltan.length) {
-    console.warn(`[mcp] pendiente Fase 2 — dominios sin tool: ${faltan.join(', ')}`);
-  }
-  assert.ok(Array.isArray(faltan));
+  const faltan = CON_ESCRITURA.filter((d) => !dominiosConTool.has(d) && d !== 'chat');
+  // chat: el ring buffer lo consume la tool get_recent_chat del dominio mcp, no
+  // hace falta una tool propia de chat. El resto sí.
+  assert.deepEqual(faltan, [], `dominios con escritura sin tool MCP: ${faltan.join(', ')}`);
+});
+
+test('varias tools por dominio y flags destructive correctos', () => {
+  const tools = registry.listTools();
+  const ban = tools.find((t) => t.name === 'moderation_ban');
+  assert.ok(ban && ban.annotations.destructiveHint, 'moderation_ban debe ser destructive');
+  const list = tools.find((t) => t.name === 'moderation_list_viewers');
+  assert.ok(list && list.annotations.readOnlyHint && !list.annotations.destructiveHint);
+  assert.ok(tools.some((t) => t.name === 'speak' && t.domain === 'sonido'));
+  assert.ok(tools.some((t) => t.name === 'channels_connect'));
 });

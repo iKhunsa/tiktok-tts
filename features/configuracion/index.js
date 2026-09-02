@@ -11,6 +11,16 @@ const { getLogs } = require('./routes/get-logs');
 const { postClientLog } = require('./routes/post-client-log');
 const { getSessionLogFile } = require('./routes/get-session-log-file');
 const { getLogsDownloadAll } = require('./routes/get-logs-download-all');
+const mcpRegistry = require('../../core/contracts/mcp-registry');
+
+// Claves de config que un agente puede leer/ajustar de forma segura (sin
+// adminIdentities ni internals).
+const CONFIG_KEYS_PUBLICAS = [
+  'ttsVoiceLang', 'ttsSlowSpeech', 'ttsReadNonFollowers', 'langFilterEnabled', 'dictFilterEnabled',
+  'allowedExtraLangs', 'rateLimitEnabled', 'TTS_RATE_LIMIT_MAX', 'TTS_RATE_WINDOW_MS', 'TTS_MAX_CHARS',
+  'MAX_QUEUE_MSG', 'LIKE_DEBOUNCE_MS', 'musicEnabled', 'musicVolume', 'musicMaxQueue', 'musicUserCooldownMs',
+  'playlistEnabled', 'playlistShuffle', 'mcpEnabled', 'mcpDestructiveToolsEnabled',
+];
 
 module.exports = {
   name: 'configuracion',
@@ -68,6 +78,46 @@ module.exports = {
     app.post('/api/logs/client', postClientLog(logger));
     app.get('/api/logs/session-file', getSessionLogFile(logger));
     app.get('/api/logs/download-all', getLogsDownloadAll(logger));
+
+    // ── MCP ──────────────────────────────────────────────────────────────
+    mcpRegistry.registerTool({
+      name: 'get_config', domain: 'configuracion', readOnly: true,
+      title: 'Get config',
+      description: 'Read the safe subset of runtime config (no admin identities).',
+      inputSchema: { type: 'object', properties: {} },
+      handler: () => {
+        const c = configStore.config;
+        const out = {};
+        for (const k of CONFIG_KEYS_PUBLICAS) if (k in c) out[k] = c[k];
+        return out;
+      },
+    });
+
+    mcpRegistry.registerTool({
+      name: 'set_config', domain: 'configuracion', destructive: true, idempotent: true,
+      title: 'Set config',
+      description: 'Patch one or more runtime config keys. Only safe keys are accepted; unknown/blocked keys are rejected.',
+      inputSchema: {
+        type: 'object', required: ['patch'],
+        properties: { patch: { type: 'object', description: 'e.g. {"musicEnabled": false, "ttsVoiceLang": "en"}' } },
+      },
+      handler: (a) => {
+        const patch = a.patch || {};
+        const filtrado = {};
+        const bloqueadas = [];
+        for (const [k, v] of Object.entries(patch)) {
+          if (CONFIG_KEYS_PUBLICAS.includes(k)) filtrado[k] = v;
+          else bloqueadas.push(k);
+        }
+        const result = configStore.applyPatch(filtrado);
+        if (result.changed) {
+          configStore.save();
+          bus.emit('config:actualizado', { keysChanged: result.keysChanged });
+          bus.emit('ws:broadcast', { type: 'config-updated', config: configStore.config });
+        }
+        return { ok: result.rejected.length === 0, keysChanged: result.keysChanged, rejected: result.rejected, blocked: bloqueadas };
+      },
+    });
 
     return { rutas: 9, listeners: 3 };
   },
