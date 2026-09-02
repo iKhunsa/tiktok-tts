@@ -8,7 +8,8 @@
     "soundpad": "사운드",
     "bot": "봇",
     "moderation": "모더레이션",
-    "moreTools": "플러그인 스토어"
+    "moreTools": "플러그인 스토어",
+    "mcp": "MCP 에이전트"
   },
   "community": {
     "label": "TikLiveTTS 커뮤니티",
@@ -959,7 +960,8 @@
       "soundpad": "키보드 단축키로 효과음을 재생하세요.",
       "mobile": "휴대폰에서 TTS를 제어하는 원격 패널.",
       "bot": "음악 봇: 채팅에서 !p로 노래를 요청합니다.",
-      "moderacion": "시청자 기록, 음소거/차단, 팔로워."
+      "moderacion": "시청자 기록, 음소거/차단, 팔로워.",
+      "mcp": "AI 에이전트(Claude)를 연결해 앱을 조작하세요."
     },
     "aboutLabel": "소개",
     "about": {
@@ -968,7 +970,8 @@
       "soundpad": "효과음을 직접 업로드하고 키보드 단축키(Ctrl/Alt/Shift 조합)를 지정해 전체 화면 게임 중에도 즉시 재생할 수 있습니다.",
       "mobile": "PC와 같은 Wi-Fi에서 휴대폰으로 여는 가벼운 패널입니다. TTS 일시정지, 메시지 건너뛰기 등 핵심 기능을 PC로 돌아가지 않고 제어할 수 있습니다.",
       "bot": "채팅은 !p 뒤에 곡명이나 유튜브 링크를 붙여 노래를 신청합니다. 신청이 없을 때는 자신의 플레이리스트가 배경으로 재생됩니다. 대기시간과 대기열 제한도 설정 가능합니다.",
-      "moderacion": "채팅했거나 팔로우한 모든 시청자의 로컬 기록을 보관하며, 음소거(메시지는 보이지만 읽지 않음)하거나 차단(메시지 자체가 표시되지 않음)할 수 있습니다. 실제 플랫폼 계정에는 영향을 주지 않습니다."
+      "moderacion": "채팅했거나 팔로우한 모든 시청자의 로컬 기록을 보관하며, 음소거(메시지는 보이지만 읽지 않음)하거나 차단(메시지 자체가 표시되지 않음)할 수 있습니다. 실제 플랫폼 계정에는 영향을 주지 않습니다.",
+      "mcp": "MCP(Model Context Protocol)는 앱의 기능을 AI 에이전트용 도구로 제공합니다. Claude Code 또는 Claude Desktop을 연결하면 에이전트가 채팅 읽기, 시청자 제재, 음악 제어, 방송 상태 확인을 할 수 있습니다. 엔드포인트는 이 컴퓨터에서만 작동하며 파괴적 작업(밴, 연결 끕기)은 별도 권한이 필요합니다."
     },
     "backToGrid": "스토어로 돌아가기",
     "hiddenBadge": "숨김",
@@ -998,6 +1001,30 @@
     "invalidConfig": "잘못된 설정입니다",
     "playlistEmpty": "재생목록이 비어 있습니다",
     "twitchAuthStartFailed": "Twitch 인증을 시작할 수 없습니다",
-    "obsConnectFailed": "OBS에 연결할 수 없습니다"
+    "obsConnectFailed": "OBS에 연결할 수 없습니다",
+    "mcpDisabled": "MCP 서버가 껺져 있습니다"
+  },
+  "mcp": {
+    "title": "MCP 에이전트",
+    "subtitle": "에이전트(Claude Code, Claude Desktop)를 연결해 앱을 조작: 채팅 읽기, 제재, 음악 관리 등.",
+    "statusHeading": "MCP 서버",
+    "enableLabel": "MCP 서버 활성화",
+    "enableHint": "엔드포인트는 이 기기에서만 접근 가능. 꺼지면 /mcp는 503을 반환.",
+    "destructiveLabel": "파괴적 도구 허용",
+    "destructiveHint": "밴/음소거/연결 끕기/삭제. 에이전트도 자체적으로 확인을 요청합니다.",
+    "connectHeading": "에이전트 연결",
+    "endpointLabel": "엔드포인트",
+    "copyEndpoint": "복사",
+    "snippetClaudeCode": "Claude Code (.mcp.json)",
+    "snippetClaudeDesktop": "Claude Desktop (claude_desktop_config.json)",
+    "toolsHeading": "사용 가능한 도구",
+    "toolColName": "도구",
+    "toolColDesc": "설명",
+    "badgeDestructive": "파괴적",
+    "badgeReadonly": "읽기 전용",
+    "clientsLabel": "마지막 요청",
+    "disabledNotice": "서버 꺼짐",
+    "loadError": "MCP 상태를 불러올 수 없었습니다.",
+    "saveError": "저장 실패"
   }
 }

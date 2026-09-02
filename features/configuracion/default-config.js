@@ -34,6 +34,10 @@ const DEFAULT_CONFIG = {
   // true = el TTS lee a todo el mundo (comportamiento historico).
   // false = solo lee a seguidores y a la whitelist manual.
   ttsReadNonFollowers: true,
+  // Servidor MCP (agentes). Endpoint solo-localhost; las tools destructivas
+  // van detras de su propio toggle + prompt del host del agente.
+  mcpEnabled: true,
+  mcpDestructiveToolsEnabled: false,
   adminIdentities: {
     tiktok: ['ikhunsa_tiklivetts', 'soykurorai'],
     twitch: ['soykurorai'],

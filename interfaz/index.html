@@ -64,6 +64,10 @@
         <img class="sidebar-icon icon-inline" src="icons/people.svg" alt="">
         <span data-i18n="nav.moderation">Moderación</span>
       </button>
+      <button class="sidebar-item" data-view="mcp" onclick="switchView('mcp')">
+        <img class="sidebar-icon icon-inline" src="icons/extension.svg" alt="">
+        <span data-i18n="nav.mcp">Agente MCP</span>
+      </button>
       <button id="navMoreToolsBtn" class="sidebar-item" data-view="tools" onclick="switchView('tools')">
         <img class="sidebar-icon icon-inline" src="icons/inventory.svg" alt="">
         <span data-i18n="nav.moreTools">Más herramientas</span>
@@ -1201,6 +1205,15 @@
         <span id="modPagerLabel"></span>
         <button class="cfg-btn" id="modNext" onclick="modPage(1)">→</button>
       </div>
+    </div>
+
+    <!-- ── VIEW: Agente MCP ────────────────────────────── -->
+    <div class="view" id="view-mcp">
+      <div class="view-header">
+        <h2><img class="icon-inline" src="icons/extension.svg" alt=""> <span data-i18n="mcp.title">Agente MCP</span></h2>
+        <p data-i18n="mcp.subtitle">Conectá un agente (Claude Code, Claude Desktop) para que opere la app: leer el chat, moderar, manejar la música y más.</p>
+      </div>
+      <div id="mcpPanel"><!-- interfaz/src/vistas/principal/mcp/ la llena --></div>
     </div>
 
     <!-- ══ VIEW: Tienda de plugins ═══════════════════════════ -->

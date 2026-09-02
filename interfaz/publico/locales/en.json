@@ -8,7 +8,8 @@
     "soundpad": "Sounds",
     "bot": "Bot",
     "moderation": "Moderation",
-    "moreTools": "Plugin Store"
+    "moreTools": "Plugin Store",
+    "mcp": "MCP Agent"
   },
   "community": {
     "label": "TikLiveTTS Community",
@@ -669,7 +670,8 @@
     "invalidConfig": "Invalid configuration",
     "playlistEmpty": "Your playlist is empty",
     "twitchAuthStartFailed": "Could not start Twitch authorization",
-    "obsConnectFailed": "Could not connect to OBS"
+    "obsConnectFailed": "Could not connect to OBS",
+    "mcpDisabled": "The MCP server is off"
   },
   "dictLang": {
     "title": "Allowed languages",
@@ -976,7 +978,8 @@
       "soundpad": "Play sound effects with keyboard shortcuts.",
       "mobile": "Remote panel to control the TTS from your phone.",
       "bot": "Music bot: chat requests songs with !p.",
-      "moderacion": "Viewer history, mute/ban, followers."
+      "moderacion": "Viewer history, mute/ban, followers.",
+      "mcp": "Connect an AI agent (Claude) to operate the app."
     },
     "aboutLabel": "About",
     "about": {
@@ -985,7 +988,8 @@
       "soundpad": "Upload your own sound effects and assign a keyboard shortcut (with a Ctrl/Alt/Shift modifier) to play them instantly, even with the game in fullscreen.",
       "mobile": "A lightweight panel you open from your phone on the same WiFi network as your PC. Pause the TTS, skip messages and control the essentials without going back to the computer.",
       "bot": "Chat requests songs by typing !p followed by a name or a YouTube link. Your own playlist plays in the background when there are no requests. Configurable with a cooldown and queue limit.",
-      "moderacion": "Keeps a local history of every viewer who chatted or followed you, with the option to mute them (message shows but isn't read aloud) or ban them (message never shows). It doesn't touch their account on the real platform."
+      "moderacion": "Keeps a local history of every viewer who chatted or followed you, with the option to mute them (message shows but isn't read aloud) or ban them (message never shows). It doesn't touch their account on the real platform.",
+      "mcp": "MCP (Model Context Protocol) exposes the app’s features as tools for an AI agent. With Claude Code or Claude Desktop connected, the agent can read chat, moderate viewers, control music and check stream state. The endpoint only works from this computer, and destructive actions (ban, disconnect) sit behind a separate permission."
     },
     "backToGrid": "Back to store",
     "hiddenBadge": "Hidden",
@@ -999,5 +1003,28 @@
     "mediaPlaceholder": "Preview coming soon",
     "comingSoon": "More coming soon",
     "comingSoonDesc": "We're working on new tools."
+  },
+  "mcp": {
+    "title": "MCP Agent",
+    "subtitle": "Connect an agent (Claude Code, Claude Desktop) to operate the app: read chat, moderate, manage music and more.",
+    "statusHeading": "MCP server",
+    "enableLabel": "MCP server enabled",
+    "enableHint": "Endpoint reachable from this machine only. When off, /mcp returns 503.",
+    "destructiveLabel": "Allow destructive tools",
+    "destructiveHint": "Ban/mute/disconnect/delete. The agent still asks for confirmation on its side.",
+    "connectHeading": "Connect an agent",
+    "endpointLabel": "Endpoint",
+    "copyEndpoint": "Copy",
+    "snippetClaudeCode": "Claude Code (.mcp.json)",
+    "snippetClaudeDesktop": "Claude Desktop (claude_desktop_config.json)",
+    "toolsHeading": "Available tools",
+    "toolColName": "Tool",
+    "toolColDesc": "Description",
+    "badgeDestructive": "destructive",
+    "badgeReadonly": "read-only",
+    "clientsLabel": "Last request",
+    "disabledNotice": "server off",
+    "loadError": "Could not load MCP status.",
+    "saveError": "Failed to save"
   }
 }

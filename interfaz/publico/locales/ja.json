@@ -8,7 +8,8 @@
     "soundpad": "サウンド",
     "bot": "Bot",
     "moderation": "モデレーション",
-    "moreTools": "プラグインストア"
+    "moreTools": "プラグインストア",
+    "mcp": "MCP エージェント"
   },
   "community": {
     "label": "TikLiveTTS コミュニティ",
@@ -959,7 +960,8 @@
       "soundpad": "キーボードショートカットで効果音を再生します。",
       "mobile": "携帯電話からTTSを操作するリモートパネル。",
       "bot": "音楽ボット: チャットで !p を使って曲をリクエスト。",
-      "moderacion": "視聴者履歴、ミュート/BAN、フォロワー。"
+      "moderacion": "視聴者履歴、ミュート/BAN、フォロワー。",
+      "mcp": "AI エージェント（Claude）を接続してアプリを操作。"
     },
     "aboutLabel": "概要",
     "about": {
@@ -968,7 +970,8 @@
       "soundpad": "自分の効果音をアップロードし、キーボードショートカット（Ctrl/Alt/Shiftの組み合わせ）を割り当てて、フルスクリーンのゲーム中でも即再生できます。",
       "mobile": "PCと同じWi-Fiで携帯から開ける軽量パネルです。TTSの一時停止やメッセージのスキップなど、基本操作をPCに戻らず行えます。",
       "bot": "チャットは !p の後に曲名かYouTubeリンクを書いてリクエストします。リクエストがない間は自分のプレイリストがBGMとして流れます。クールダウンやキュー上限も設定可能です。",
-      "moderacion": "コメントまたはフォローした視聴者ごとにローカルの履歴を保持し、ミュート（メッセージは表示されるが読み上げない）やBAN（メッセージ自体が表示されない）が可能です。実際のプラットフォームのアカウントには影響しません。"
+      "moderacion": "コメントまたはフォローした視聴者ごとにローカルの履歴を保持し、ミュート（メッセージは表示されるが読み上げない）やBAN（メッセージ自体が表示されない）が可能です。実際のプラットフォームのアカウントには影響しません。",
+      "mcp": "MCP（Model Context Protocol）はアプリの機能を AI エージェント向けのツールとして公開します。Claude Code または Claude Desktop を接続すると、エージェントはチャットの読み取り、視聴者のモデレーション、音楽の制御、配信状態の確認ができます。エンドポイントはこの PC からのみ使用でき、破壊的な操作（BAN、切断）は別の許可が必要です。"
     },
     "backToGrid": "ストアに戻る",
     "hiddenBadge": "非表示",
@@ -998,6 +1001,30 @@
     "invalidConfig": "設定が無効です",
     "playlistEmpty": "プレイリストが空です",
     "twitchAuthStartFailed": "Twitch認証を開始できませんでした",
-    "obsConnectFailed": "OBSに接続できませんでした"
+    "obsConnectFailed": "OBSに接続できませんでした",
+    "mcpDisabled": "MCP サーバーはオフです"
+  },
+  "mcp": {
+    "title": "MCP エージェント",
+    "subtitle": "エージェント（Claude Code、Claude Desktop）を接続してアプリを操作：チャットの読み取り、モデレーション、音楽管理など。",
+    "statusHeading": "MCP サーバー",
+    "enableLabel": "MCP サーバー有効",
+    "enableHint": "エンドポイントはこのマシンからのみ。オフのとき /mcp は 503 を返します。",
+    "destructiveLabel": "破壊的ツールを許可",
+    "destructiveHint": "BAN/ミュート/切断/削除。エージェント側でも確認を求めます。",
+    "connectHeading": "エージェントを接続",
+    "endpointLabel": "エンドポイント",
+    "copyEndpoint": "コピー",
+    "snippetClaudeCode": "Claude Code (.mcp.json)",
+    "snippetClaudeDesktop": "Claude Desktop (claude_desktop_config.json)",
+    "toolsHeading": "利用可能なツール",
+    "toolColName": "ツール",
+    "toolColDesc": "説明",
+    "badgeDestructive": "破壊的",
+    "badgeReadonly": "読み取り専用",
+    "clientsLabel": "最後のリクエスト",
+    "disabledNotice": "サーバーオフ",
+    "loadError": "MCP の状態を読み込めませんでした。",
+    "saveError": "保存に失敗しました"
   }
 }
