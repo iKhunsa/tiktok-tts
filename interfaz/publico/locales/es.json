@@ -8,7 +8,8 @@
     "soundpad": "Sonidos",
     "bot": "Bot",
     "moderation": "Moderación",
-    "moreTools": "Tienda de Plugins"
+    "moreTools": "Tienda de Plugins",
+    "mcp": "Agente MCP"
   },
   "community": {
     "label": "Comunidad TikLiveTTS",
@@ -959,7 +960,8 @@
       "soundpad": "Reproducí efectos de sonido con atajos de teclado.",
       "mobile": "Panel remoto para controlar el TTS desde el celular.",
       "bot": "Bot musical: el chat pide canciones con !p.",
-      "moderacion": "Historial de espectadores, silenciar/banear, seguidores."
+      "moderacion": "Historial de espectadores, silenciar/banear, seguidores.",
+      "mcp": "Conectá un agente de IA (Claude) para que opere la app."
     },
     "aboutLabel": "Acerca de",
     "about": {
@@ -968,7 +970,8 @@
       "soundpad": "Subí tus propios efectos de sonido y asignales un atajo de teclado (con modificador Ctrl/Alt/Shift) para reproducirlos al toque, incluso con el juego en pantalla completa.",
       "mobile": "Un panel liviano que se abre desde el celular, en la misma red WiFi que la PC. Permite pausar el TTS, saltar mensajes y controlar lo esencial sin volver a la computadora.",
       "bot": "El chat pide canciones escribiendo !p seguido del nombre o un link de YouTube. Mientras no hay pedidos, suena tu propia playlist de fondo. Configurable con cooldown y límite de cola.",
-      "moderacion": "Guarda un historial local de cada espectador que escribió o te siguió, con la posibilidad de silenciarlo (el mensaje se ve pero no se lee) o banearlo (ni se muestra). No afecta la cuenta en la plataforma real."
+      "moderacion": "Guarda un historial local de cada espectador que escribió o te siguió, con la posibilidad de silenciarlo (el mensaje se ve pero no se lee) o banearlo (ni se muestra). No afecta la cuenta en la plataforma real.",
+      "mcp": "MCP (Model Context Protocol) expone las funciones de la app como herramientas para un agente de IA. Con Claude Code o Claude Desktop conectado, el agente puede leer el chat, moderar espectadores, controlar la música y consultar el estado del stream. El endpoint solo funciona desde esta computadora y las acciones destructivas (banear, desconectar) van detrás de un permiso aparte."
     },
     "backToGrid": "Volver a la tienda",
     "hiddenBadge": "Oculta",
@@ -998,6 +1001,30 @@
     "invalidConfig": "Configuración inválida",
     "playlistEmpty": "Tu playlist está vacía",
     "twitchAuthStartFailed": "No se pudo iniciar la autorización de Twitch",
-    "obsConnectFailed": "No se pudo conectar a OBS"
+    "obsConnectFailed": "No se pudo conectar a OBS",
+    "mcpDisabled": "El servidor MCP está apagado"
+  },
+  "mcp": {
+    "title": "Agente MCP",
+    "subtitle": "Conectá un agente (Claude Code, Claude Desktop) para que opere la app: leer el chat, moderar, manejar la música y más.",
+    "statusHeading": "Servidor MCP",
+    "enableLabel": "Servidor MCP activo",
+    "enableHint": "Endpoint solo accesible desde esta máquina. Apagado, /mcp responde 503.",
+    "destructiveLabel": "Permitir herramientas destructivas",
+    "destructiveHint": "Banear/silenciar/desconectar/borrar. El agente igual pide confirmación en su lado.",
+    "connectHeading": "Conectar un agente",
+    "endpointLabel": "Endpoint",
+    "copyEndpoint": "Copiar",
+    "snippetClaudeCode": "Claude Code (.mcp.json)",
+    "snippetClaudeDesktop": "Claude Desktop (claude_desktop_config.json)",
+    "toolsHeading": "Herramientas disponibles",
+    "toolColName": "Herramienta",
+    "toolColDesc": "Descripción",
+    "badgeDestructive": "destructiva",
+    "badgeReadonly": "solo lectura",
+    "clientsLabel": "Última petición",
+    "disabledNotice": "servidor apagado",
+    "loadError": "No se pudo cargar el estado del MCP.",
+    "saveError": "Error al guardar"
   }
 }

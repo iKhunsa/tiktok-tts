@@ -8,7 +8,8 @@
     "soundpad": "音效",
     "bot": "Bot",
     "moderation": "管理",
-    "moreTools": "插件商店"
+    "moreTools": "插件商店",
+    "mcp": "MCP 代理"
   },
   "community": {
     "label": "TikLiveTTS 社区",
@@ -959,7 +960,8 @@
       "soundpad": "用键盘快捷键播放音效。",
       "mobile": "从手机远程控制 TTS 的面板。",
       "bot": "音乐机器人：聊天用 !p 点歌。",
-      "moderacion": "观众历史记录、禁言/封禁、粉丝。"
+      "moderacion": "观众历史记录、禁言/封禁、粉丝。",
+      "mcp": "连接一个 AI 代理（Claude）来操作应用。"
     },
     "aboutLabel": "关于",
     "about": {
@@ -968,7 +970,8 @@
       "soundpad": "上传自己的音效，并绑定键盘快捷键（配合 Ctrl/Alt/Shift）即可立即播放，即使游戏处于全屏状态。",
       "mobile": "在与电脑相同 Wi-Fi 下用手机打开的轻量面板。可暂停 TTS、跳过消息，无需回到电脑即可控制核心功能。",
       "bot": "聊天用 !p 加歌名或 YouTube 链接点歌。没有点歌时会播放你自己的歌单作为背景音乐。可设置冷却时间和队列上限。",
-      "moderacion": "为每位发言或关注过的观众保存本地历史记录，可以禁言（消息可见但不朗读）或封禁（消息完全不显示）。不会影响其在真实平台上的账号。"
+      "moderacion": "为每位发言或关注过的观众保存本地历史记录，可以禁言（消息可见但不朗读）或封禁（消息完全不显示）。不会影响其在真实平台上的账号。",
+      "mcp": "MCP（Model Context Protocol）将应用的功能作为工具提供给 AI 代理。连接 Claude Code 或 Claude Desktop 后，代理可以读取聊天、管理观众、控制音乐并查看直播状态。该端点仅在本机可用，破坏性操作（封禁、断开）需要单独授权。"
     },
     "backToGrid": "返回商店",
     "hiddenBadge": "已隐藏",
@@ -998,6 +1001,30 @@
     "invalidConfig": "配置无效",
     "playlistEmpty": "你的播放列表是空的",
     "twitchAuthStartFailed": "无法启动 Twitch 授权",
-    "obsConnectFailed": "无法连接到 OBS"
+    "obsConnectFailed": "无法连接到 OBS",
+    "mcpDisabled": "MCP 服务器已关闭"
+  },
+  "mcp": {
+    "title": "MCP 代理",
+    "subtitle": "连接代理（Claude Code、Claude Desktop）来操作应用：读取聊天、审核、管理音乐等。",
+    "statusHeading": "MCP 服务器",
+    "enableLabel": "MCP 服务器已启用",
+    "enableHint": "端点仅限本机访问。关闭时 /mcp 返回 503。",
+    "destructiveLabel": "允许破坏性工具",
+    "destructiveHint": "封禁/禁言/断开/删除。代理仍会在其一侧请求确认。",
+    "connectHeading": "连接代理",
+    "endpointLabel": "端点",
+    "copyEndpoint": "复制",
+    "snippetClaudeCode": "Claude Code (.mcp.json)",
+    "snippetClaudeDesktop": "Claude Desktop (claude_desktop_config.json)",
+    "toolsHeading": "可用工具",
+    "toolColName": "工具",
+    "toolColDesc": "描述",
+    "badgeDestructive": "破坏性",
+    "badgeReadonly": "只读",
+    "clientsLabel": "最后请求",
+    "disabledNotice": "服务器关闭",
+    "loadError": "无法加载 MCP 状态。",
+    "saveError": "保存失败"
   }
 }

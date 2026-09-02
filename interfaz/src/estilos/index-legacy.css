@@ -1512,6 +1512,38 @@
       margin-bottom: 12px;
     }
 
+    /* ── MCP (Agente) ────────────────────────────────────── */
+    .mcp-snippet {
+      background: var(--bg-button);
+      border: 1px solid var(--border-strong);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-family: 'Source Code Pro', monospace;
+      font-size: 12px;
+      color: var(--text-secondary);
+      white-space: pre;
+      overflow-x: auto;
+      margin: 4px 0 6px;
+    }
+    .mcp-count { float: right; font-size: 11px; color: var(--text-muted); text-transform: none; letter-spacing: 0; }
+    .mcp-tools-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .mcp-tools-table th {
+      text-align: left; padding: 6px 8px; color: var(--text-muted);
+      border-bottom: 1px solid var(--border); font-weight: 600;
+    }
+    .mcp-tools-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text-secondary); }
+    .mcp-tools-table td code { font-family: 'Source Code Pro', monospace; color: var(--text); }
+    .mcp-domain-row td {
+      background: rgba(255, 255, 255, 0.03);
+      font-family: 'Source Code Pro', monospace;
+      text-transform: uppercase; letter-spacing: 1px; font-size: 10px; color: var(--text-muted);
+    }
+    .mcp-badge {
+      display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08); color: var(--text-muted); vertical-align: middle;
+    }
+    .mcp-badge-danger { background: rgba(240, 33, 58, 0.15); color: var(--accent); }
+
     /* ── GLOW ────────────────────────────────────────────── */
     .app-glow {
       position: fixed;

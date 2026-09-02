@@ -17,6 +17,7 @@ const SIDEBAR_TOOLS = [
   { id: 'mobile',     icon: 'icons/smartphone.svg', labelKey: 'nav.mobile',     descKey: 'store.desc.mobile',     pinned: false, media: 'plugin-store/media/mobile.jpg',     aboutKey: 'store.about.mobile' },
   { id: 'bot',        icon: 'icons/music_note.svg', labelKey: 'nav.bot',        descKey: 'store.desc.bot',        pinned: false, media: 'plugin-store/media/bot.jpg',        aboutKey: 'store.about.bot' },
   { id: 'moderacion', icon: 'icons/people.svg',     labelKey: 'nav.moderation', descKey: 'store.desc.moderacion', pinned: false, media: 'plugin-store/media/moderacion.jpg', aboutKey: 'store.about.moderacion' },
+  { id: 'mcp',        icon: 'icons/extension.svg',  labelKey: 'nav.mcp',        descKey: 'store.desc.mcp',        pinned: false, media: null, aboutKey: 'store.about.mcp' },
   { id: 'settings',   icon: 'icons/settings.svg',   labelKey: 'nav.settings',   descKey: 'store.desc.settings',   pinned: true,  media: null },
 ];
 // Tools visibles por defecto la primera vez que arranca la app (sin prefs
