@@ -16,5 +16,5 @@ for name in ("favicon.ico", "tray-icon.ico"):
 
 # copia servible
 import shutil
-shutil.copy(os.path.join(ROOT, "favicon.ico"), os.path.join(ROOT, "public", "favicon.ico"))
-print("public/favicon.ico copiado")
+shutil.copy(os.path.join(ROOT, "favicon.ico"), os.path.join(ROOT, "interfaz", "publico", "favicon.ico"))
+print("interfaz/publico/favicon.ico copiado")

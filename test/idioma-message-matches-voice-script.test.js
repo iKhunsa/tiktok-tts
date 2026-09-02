@@ -2,7 +2,7 @@
 
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { messageMatchesVoiceScript } = require('../idioma/message-matches-voice-script');
+const { messageMatchesVoiceScript } = require('../features/idioma/message-matches-voice-script');
 
 test('texto latino con voz latina coincide', () => {
   assert.equal(messageMatchesVoiceScript('hola que tal', 'es-MX'), true);

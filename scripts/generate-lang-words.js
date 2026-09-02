@@ -1,19 +1,21 @@
 #!/usr/bin/env node
-// Genera public/lang-words/{lang}.json con las palabras más frecuentes por idioma.
+// Genera lang-words/{lang}.json con las palabras más frecuentes por idioma.
 //
 // Fuente: hermitdave/FrequencyWords (https://github.com/hermitdave/FrequencyWords)
 // Listas derivadas de OpenSubtitles 2018 — licencia CC-BY-SA-4.0.
 //
 // Uso: node scripts/generate-lang-words.js
 // Requiere Node 18+ (fetch global). Solo se corre en desarrollo; los JSON
-// generados se commitean y se empaquetan junto con public/.
+// generados se commitean y se empaquetan junto a gifts/sounds/asset (ver
+// extraResources en package.json) — lang-words/ lo lee idioma/lang-dicts.js
+// server-side, nunca el cliente por HTTP.
 
 const fs = require('fs');
 const path = require('path');
 
 const LANGS = ['es', 'en', 'pt', 'fr', 'de', 'it'];
 const TOP_N = 2000;
-const OUT_DIR = path.join(__dirname, '..', 'public', 'lang-words');
+const OUT_DIR = path.join(__dirname, '..', 'lang-words');
 
 const SOURCE_URL = (lang) =>
   `https://raw.githubusercontent.com/hermitdave/FrequencyWords/master/content/2018/${lang}/${lang}_50k.txt`;

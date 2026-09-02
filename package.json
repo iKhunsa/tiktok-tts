@@ -11,7 +11,9 @@
     "test": "node --test \"test/**/*.test.js\"",
     "electron": "electron .",
     "make-icon": "electron scripts/make-app-icon.js && python scripts/make-app-icon.py",
-    "prebuild:electron": "node scripts/ensure-webhook-config.js && node scripts/ensure-telemetry-config.js && node scripts/ensure-aptabase-config.js",
+    "dev:front": "vite --config interfaz/vite.config.js",
+    "build:front": "vite build --config interfaz/vite.config.js",
+    "prebuild:electron": "node scripts/ensure-webhook-config.js && node scripts/ensure-telemetry-config.js && node scripts/ensure-aptabase-config.js && npm run build:front",
     "build:electron": "electron-builder --win"
   },
   "build": {
@@ -40,7 +42,7 @@
     },
     "extraResources": [
       {
-        "from": "public/",
+        "from": "interfaz/dist/",
         "to": "public"
       },
       {
@@ -56,6 +58,10 @@
         "filter": [
           "**/*.svg"
         ]
+      },
+      {
+        "from": "lang-words/",
+        "to": "lang-words"
       },
       {
         "from": "blocked-words.md",
@@ -84,21 +90,8 @@
       "preload.js",
       "server.js",
       "core/**/*",
-      "configuracion/**/*",
-      "idioma/**/*",
-      "reporte-bug/**/*",
-      "moderacion/**/*",
-      "canales/**/*",
-      "chat/**/*",
-      "overlay/**/*",
-      "movil/**/*",
-      "sonido/**/*",
-      "bot/**/*",
-      "clips/**/*",
-      "avanzado/**/*",
-      "donar/**/*",
+      "features/**/*",
       "electron-shell/**/*",
-      "telemetria/**/*",
       "node_modules/**/*",
       "!node_modules/.cache",
       "!node_modules/**/test{s,}/**",
@@ -125,6 +118,7 @@
   "devDependencies": {
     "electron": "^41.5.0",
     "electron-builder": "^26.8.1",
-    "eslint": "^9.39.5"
+    "eslint": "^9.39.5",
+    "vite": "^5.4.21"
   }
 }

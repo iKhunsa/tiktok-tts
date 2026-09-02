@@ -44,7 +44,7 @@ server.js (Express en puerto 3000)
 
 ## Variables de entorno clave
 
-- `TIKTOK_RESOURCES_PATH` — set por `main.js` en modo packaged para que `server.js` encuentre `gifts/`, `public/`, `asset/`, `blocked-words.md` en `process.resourcesPath` (fuera del asar)
+- `TIKTOK_RESOURCES_PATH` — set por `main.js` en modo packaged para que `server.js` encuentre `gifts/`, `public/` (output empaquetado de `interfaz/dist/`), `asset/`, `lang-words/`, `blocked-words.md` en `process.resourcesPath` (fuera del asar)
 - `IS_PKG` — legado del approach anterior con pkg (aún presente en server.js, no afecta Electron)
 
 ## Paths críticos en producción (packaged)
