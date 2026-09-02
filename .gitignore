@@ -15,6 +15,8 @@ webhook-config.json
 webhook-config.generated.json
 telemetry-config.json
 telemetry-config.generated.json
+aptabase-config.json
+aptabase-config.generated.json
 logs/
 moderation.json
 graphify-out/cache/

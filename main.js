@@ -13,6 +13,7 @@ const { startUiohook, stopUiohook, isUiohookActive, registerUiohookShortcut } = 
 const { GLOBAL_SHORTCUT } = require('./clips/global-shortcut');
 const telemetryRuntime = require('./telemetria/runtime');
 const glitchtip = require('./electron-shell/glitchtip');
+const aptabase = require('./electron-shell/aptabase');
 
 // Cuando empaquetado, apunta server.js a extraResources para los assets.
 if (app.isPackaged) {
@@ -29,6 +30,10 @@ glitchtip.init({
   userDataDir: app.getPath('userData'),
   logger: null,
 });
+
+// Aptabase (analytics de eventos de producto) — mismo criterio: init temprano
+// (manda app_started), attach al bus más abajo cuando ya hay logger.
+aptabase.init({ logger: null });
 
 let mainWindow = null;
 let tray = null;
@@ -55,6 +60,7 @@ const bus = serverModule && serverModule.bus;
 const logger = serverModule && serverModule.logger;
 
 if (bus) glitchtip.attach(bus, logger);
+if (bus) aptabase.attach(bus, logger);
 
 if (bus && logger) {
   process.on('uncaughtException', (error) => {
@@ -218,6 +224,7 @@ app.on('before-quit', (event) => {
   const cierres = [];
   if (telemetryRuntime.enabled) cierres.push(telemetryRuntime.shutdown({ timeoutMs: 1500 }));
   if (glitchtip.enabled) cierres.push(glitchtip.shutdown());
+  if (aptabase.enabled) cierres.push(aptabase.shutdown());
   if (cierres.length) {
     event.preventDefault();
     Promise.allSettled(cierres).finally(() => app.quit());
