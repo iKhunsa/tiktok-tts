@@ -31,10 +31,6 @@ glitchtip.init({
   logger: null,
 });
 
-// Aptabase (analytics de eventos de producto) — mismo criterio: init temprano
-// (manda app_started), attach al bus más abajo cuando ya hay logger.
-aptabase.init({ logger: null });
-
 let mainWindow = null;
 let tray = null;
 let isQuitting = false;
@@ -43,6 +39,18 @@ let quitTasksDone = false;
 let ipcHandles = null;
 
 ensureSingleInstance(app, () => showMainWindow(mainWindow));
+
+// Aptabase (analytics de eventos de producto) — init temprano (antes de
+// app.isReady(), requisito del SDK) pero DESPUÉS del lock de instancia única:
+// así una 2ª instancia ya hizo process.exit(0) y no dispara installacion /
+// app_started por duplicado. attach al bus más abajo cuando ya hay logger.
+aptabase.init({
+  appVersion: app.getVersion(),
+  isPackaged: app.isPackaged,
+  isDebug: !app.isPackaged,
+  userDataDir: app.getPath('userData'),
+  logger: null,
+});
 
 // Arranca /core + los 16 dominios de negocio (server.js ya no tiene logica
 // propia desde la Fase 1). Envuelto para mostrar un dialogo recuperable en

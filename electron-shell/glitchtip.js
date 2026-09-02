@@ -20,6 +20,7 @@
 const fs = require('fs');
 const path = require('path');
 const { app } = require('electron');
+const { marcarInstalacion: marcarInstalacionCompartida } = require('./install-marker');
 
 let Sentry = null;
 try {
@@ -251,22 +252,9 @@ function recortarData(data) {
 }
 
 function marcarInstalacion(userDataDir, appVersion) {
-  const ruta = path.join(userDataDir, 'glitchtip-instalacion.json');
-  let marca = null;
-  try { marca = JSON.parse(fs.readFileSync(ruta, 'utf8')); } catch (_) { /* primera vez */ }
-  const resultado = {
-    primera: !marca,
-    actualizada: Boolean(marca && marca.version && appVersion && marca.version !== appVersion),
-    desde: marca && marca.version,
-  };
-  try {
-    fs.writeFileSync(ruta, JSON.stringify({
-      version: appVersion || null,
-      primeraVez: (marca && marca.primeraVez) || new Date().toISOString(),
-      ultimaVez: new Date().toISOString(),
-    }, null, 2));
-  } catch (_) { /* best-effort */ }
-  return resultado;
+  // Delega en el helper compartido (electron-shell/install-marker.js). Aptabase
+  // usa el mismo helper con su propio archivo.
+  return marcarInstalacionCompartida(userDataDir, appVersion, 'glitchtip-instalacion.json');
 }
 
 function init({ appVersion, isDebug, userDataDir, logger }) {

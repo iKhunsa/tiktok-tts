@@ -15,10 +15,15 @@
  *   reenvia bus.emit('ws:broadcast', { type: 'play-soundpad', soundId }).
  */
 function attachSoundpadShortcuts(deps) {
-  const { bus } = deps;
+  const { bus, logger } = deps;
   bus.on('sonido:soundpad-reproducir', (payload) => {
     if (!payload || !payload.soundId) return;
     bus.emit('ws:broadcast', { type: 'play-soundpad', soundId: payload.soundId });
+    // Analytics agregado — nunca el soundId (alta cardinalidad).
+    if (logger) logger.log(
+      'info', 'sonido', 'sonido/soundpad/shortcuts.js#attachSoundpadShortcuts', 'sonido.soundpad.reproducido',
+      'Soundpad reproducido por atajo global', {}
+    );
   }, 'sonido');
 }
 
