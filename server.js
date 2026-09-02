@@ -24,23 +24,23 @@ attachBroadcast(bus, wss, logger);
 
 const deps = { app, wss, bus, logger };
 
-registerDomain(deps, require('./configuracion'));
-registerDomain(deps, require('./idioma'));
-registerDomain(deps, require('./reporte-bug'));
-registerDomain(deps, require('./moderacion'));
-registerDomain(deps, require('./canales'));
-registerDomain(deps, require('./chat'));
-registerDomain(deps, require('./promo'));
-registerDomain(deps, require('./overlay'));
-registerDomain(deps, require('./movil'));
-registerDomain(deps, require('./sonido'));
-registerDomain(deps, require('./bot'));
-registerDomain(deps, require('./clips'));
-registerDomain(deps, require('./avanzado'));
-registerDomain(deps, require('./donar'));
-registerDomain(deps, require('./telemetria'));
-// Los 16 dominios de negocio ya estan registrados. /electron-shell y
-// /telemetria/runtime.js se conectan desde main.js (no son rutas Express).
+registerDomain(deps, require('./features/configuracion'));
+registerDomain(deps, require('./features/idioma'));
+registerDomain(deps, require('./features/reporte-bug'));
+registerDomain(deps, require('./features/moderacion'));
+registerDomain(deps, require('./features/canales'));
+registerDomain(deps, require('./features/chat'));
+registerDomain(deps, require('./features/promo'));
+registerDomain(deps, require('./features/overlay'));
+registerDomain(deps, require('./features/movil'));
+registerDomain(deps, require('./features/sonido'));
+registerDomain(deps, require('./features/bot'));
+registerDomain(deps, require('./features/clips'));
+registerDomain(deps, require('./features/avanzado'));
+registerDomain(deps, require('./features/donar'));
+registerDomain(deps, require('./features/telemetria'));
+// Los 15 dominios de negocio (features/) ya estan registrados. /electron-shell
+// y /telemetria/runtime.js se conectan desde main.js (no son rutas Express).
 
 // Va al final: si algun dominio ya registro GET /api/status, ese gana
 // (Express usa el primer handler que responde en la misma ruta).

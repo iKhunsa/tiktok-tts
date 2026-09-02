@@ -2,7 +2,7 @@ node_modules/
 .env
 bin/
 *.log
-public/uploads/
+/uploads/
 dist/
 installer/
 electron-dist/
@@ -19,5 +19,4 @@ aptabase-config.json
 aptabase-config.generated.json
 logs/
 moderation.json
-graphify-out/cache/
-graphify-out/.needs_update
+graphify-out/

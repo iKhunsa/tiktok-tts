@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Overlay — Créditos</title>
+  <link rel="stylesheet" href="./compartido/tema-overlay.css">
+  <style>
+    :root { --speed: 40s; }
+    body {
+      background: transparent;
+      width: 380px;
+      height: 500px;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    body.has-bgimg {
+      background-image: var(--bg-img);
+      background-size: cover;
+      background-position: center;
+    }
+    .card {
+      background: rgba(0,0,0,var(--bg-alpha));
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 18px;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .header {
+      padding: 14px 18px 10px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      flex-shrink: 0;
+    }
+    .header h1 {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .scroll-window { flex: 1; overflow: hidden; position: relative; }
+    .scroll-track {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      animation: scroll-up var(--speed) linear infinite;
+    }
+    .scroll-track.paused { animation-play-state: paused; }
+    @keyframes scroll-up {
+      0%   { transform: translateY(0); }
+      100% { transform: translateY(-50%); }
+    }
+    .section-header {
+      padding: 12px 18px 4px;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      font-weight: 600;
+    }
+    .credit-row { padding: 6px 18px; display: flex; align-items: center; gap: 10px; }
+    .credit-icon { font-size: 14px; width: 20px; text-align: center; flex-shrink: 0; }
+    .credit-name {
+      font-size: 13px;
+      color: #fff;
+      font-weight: 500;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .credit-badge { font-size: 11px; color: var(--accent); font-weight: 600; flex-shrink: 0; }
+    .divider-section {
+      height: 1px;
+      background: rgba(255,255,255,0.06);
+      margin: 8px 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header"><h1>&#11088; <span data-i18n="overlayStr.thanks">Gracias</span> &#11088;</h1></div>
+    <div class="scroll-window">
+      <div class="scroll-track" id="track"></div>
+    </div>
+  </div>
+  <script type="module" src="./overlay-creditos.js"></script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Overlay — Top Likers</title>
+  <link rel="stylesheet" href="./compartido/tema-overlay.css">
+  <style>
+    body {
+      background: transparent;
+      width: 260px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    body.has-bgimg {
+      background-image: var(--bg-img);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    .card {
+      background: rgba(0, 0, 0, var(--bg-alpha));
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      border-radius: 18px;
+      padding: 16px 14px 14px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .title {
+      font-size: 10px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    #leaderboard {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 8px;
+      border-radius: 10px;
+      background: transparent;
+    }
+    .row.highlight {
+      animation: highlightRow 0.7s ease-out forwards;
+    }
+    @keyframes highlightRow {
+      0%   { background: color-mix(in srgb, var(--accent) 20%, transparent); }
+      100% { background: transparent; }
+    }
+    .rank {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      width: 22px;
+      text-align: center;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .rank-1 { font-size: 16px; }
+    .rank-2 { font-size: 15px; }
+    .rank-3 { font-size: 14px; }
+    .username {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 500;
+      color: #fff;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .likes {
+      font-size: 11px;
+      color: #fff;
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .empty-msg {
+      text-align: center;
+      font-size: 12px;
+      color: #fff;
+      padding: 16px 0 8px;
+    }
+    body.reduce-motion .row.highlight { animation: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .row.highlight { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="title"><img class="icon-inline" src="icons/favorite.svg" alt=""> <span data-i18n="overlayStr.topLikers">Top Likers</span></div>
+    <div id="leaderboard">
+      <div class="empty-msg" data-i18n="overlayStr.waitingLikes">Esperando likes...</div>
+    </div>
+  </div>
+  <script type="module" src="./overlay-likes.js"></script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+/*
+ * Paleta compartida por los 7 overlays. El :root de cada overlay
+ * seguia definiendo --accent/--bg-alpha por separado con el mismo valor
+ * repetido (#FFBB00) en 7 archivos. Ahora ese default vive una sola vez
+ * aca (y en defaults-overlays.js para el JS); cada overlay puede seguir
+ * pisando --accent/--bg-alpha via querystring con parametros.js.
+ */
+:root {
+  --accent: #FFBB00;
+  --bg-alpha: 0.80;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.toast-compartido {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 9999;
+}
+.toast-compartido.show {
+  opacity: 1;
+}
+
+.icon-inline {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  display: inline-block;
+}
+
+body.reduce-motion * {
+  animation: none !important;
+}
