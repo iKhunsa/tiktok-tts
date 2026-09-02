@@ -332,7 +332,8 @@
     "shortcutTryAnother": "Try another shortcut.",
     "stateManual": "Manual",
     "stateError": "Error",
-    "stateSaved": "Saved"
+    "stateSaved": "Saved",
+    "liveRequiredHint": "The connection only happens when the channel is LIVE. If you haven't started your stream yet, save the channel and hit «Connect all» from Chat once you are live."
   },
   "mobile2": {
     "loading": "Loading...",

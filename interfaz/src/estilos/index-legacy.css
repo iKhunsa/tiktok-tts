@@ -678,6 +678,13 @@
       letter-spacing: 0.2px;
     }
 
+    /* Iconos de los labels de sección: los SVG vienen mezclados
+       (unos fill="white", otros fill="currentColor" que quedaba casi
+       invisible sobre el fondo oscuro). Se normalizan todos a blanco. */
+    .settings-panel .setting-group label .icon-inline {
+      filter: brightness(0) invert(1);
+    }
+
     .setting-group select,
     .setting-group input[type="text"],
     .setting-group input[type="number"],

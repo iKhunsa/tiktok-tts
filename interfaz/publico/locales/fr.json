@@ -332,7 +332,8 @@
     "shortcutTryAnother": "Essayez un autre raccourci.",
     "stateManual": "Manuel",
     "stateError": "Erreur",
-    "stateSaved": "Enregistré"
+    "stateSaved": "Enregistré",
+    "liveRequiredHint": "La connexion ne se fait que lorsque la chaîne est EN DIRECT. Si tu n'as pas encore lancé le live, enregistre la chaîne et clique sur «Tout connecter» depuis Chat une fois en direct."
   },
   "mobile2": {
     "loading": "Chargement...",

@@ -756,6 +756,10 @@
             <button class="btn btn-disconnect" onclick="toggleAddChannelForm()"
               style="font-size:12px;padding:9px 14px;border-radius:9999px;">Cancelar</button>
           </div>
+          <div id="channel-live-hint" style="display:flex;gap:6px;font-size:11px;color:var(--text-muted);line-height:1.5;">
+            <img class="icon-inline" src="icons/info.svg" alt="" style="opacity:.6;flex-shrink:0;width:13px;height:13px;">
+            <span data-i18n="conn.liveRequiredHint">La conexión solo ocurre cuando el canal está EN VIVO. Si aún no empiezas el directo, guarda el canal y pulsa «Conectar todo» desde Chat cuando estés en vivo.</span>
+          </div>
           <div id="youtube-channel-hint" style="display:none;font-size:11px;color:var(--text-muted);line-height:1.5;">
             Usa @canal o Channel ID para reconectar sin pegar link nuevo. Links watch/youtu.be se guardan como live temporal manual.
           </div>

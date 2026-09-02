@@ -352,7 +352,8 @@
     "stateManual": "Manual",
     "stateError": "Error",
     "stateSaved": "Guardado",
-    "shortcutNotRegisteredPrefix": "Atajo no registrado:"
+    "shortcutNotRegisteredPrefix": "Atajo no registrado:",
+    "liveRequiredHint": "La conexión solo ocurre cuando el canal está EN VIVO. Si aún no empiezas el directo, guarda el canal y pulsa «Conectar todo» desde Chat cuando estés en vivo."
   },
   "mobile2": {
     "loading": "Cargando...",

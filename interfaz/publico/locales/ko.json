@@ -332,7 +332,8 @@
     "shortcutTryAnother": "다른 단축키를 시도하세요.",
     "stateManual": "수동",
     "stateError": "오류",
-    "stateSaved": "저장됨"
+    "stateSaved": "저장됨",
+    "liveRequiredHint": "연결은 채널이 라이브 중일 때만 이루어집니다. 아직 방송을 시작하지 않았다면 채널을 저장하고, 라이브를 시작한 뒤 채팅에서 «모두 연결»을 누르세요."
   },
   "mobile2": {
     "loading": "로딩 중...",
