@@ -332,7 +332,8 @@
     "shortcutTryAnother": "Prova un'altra scorciatoia.",
     "stateManual": "Manuale",
     "stateError": "Errore",
-    "stateSaved": "Salvato"
+    "stateSaved": "Salvato",
+    "liveRequiredHint": "La connessione avviene solo quando il canale è IN DIRETTA. Se non hai ancora avviato la diretta, salva il canale e premi «Connetti tutto» da Chat quando sei in live."
   },
   "mobile2": {
     "loading": "Caricamento...",

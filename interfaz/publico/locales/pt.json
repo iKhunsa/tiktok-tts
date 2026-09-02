@@ -332,7 +332,8 @@
     "shortcutTryAnother": "Tente outro atalho.",
     "stateManual": "Manual",
     "stateError": "Erro",
-    "stateSaved": "Salvo"
+    "stateSaved": "Salvo",
+    "liveRequiredHint": "A conexão só acontece quando o canal está AO VIVO. Se ainda não começou a transmissão, salve o canal e clique em «Conectar tudo» no Chat quando estiver ao vivo."
   },
   "mobile2": {
     "loading": "Carregando...",

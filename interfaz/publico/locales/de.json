@@ -332,7 +332,8 @@
     "shortcutTryAnother": "Versuch ein anderes Kürzel.",
     "stateManual": "Manuell",
     "stateError": "Fehler",
-    "stateSaved": "Gespeichert"
+    "stateSaved": "Gespeichert",
+    "liveRequiredHint": "Die Verbindung erfolgt nur, wenn der Kanal LIVE ist. Wenn du deinen Stream noch nicht gestartet hast, speichere den Kanal und klicke im Chat auf «Alle verbinden», sobald du live bist."
   },
   "mobile2": {
     "loading": "Lädt...",

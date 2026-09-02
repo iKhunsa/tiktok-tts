@@ -332,7 +332,8 @@
     "shortcutTryAnother": "请尝试其他快捷键。",
     "stateManual": "手动",
     "stateError": "错误",
-    "stateSaved": "已保存"
+    "stateSaved": "已保存",
+    "liveRequiredHint": "仅当频道正在直播时才会建立连接。如果你还没开始直播，请先保存频道，等开播后在“聊天”中点击“全部连接”。"
   },
   "mobile2": {
     "loading": "加载中...",
