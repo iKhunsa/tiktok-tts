@@ -6,7 +6,7 @@ function ban(deps) {
   return (req, res) => {
     const until = resolveUntil((req.body || {}).durationMs);
     if (until === null) return res.status(400).json({ error: 'durationMs invalido' });
-    applyModAction(deps, req, res, (t) => deps.store.setBan(t, until), { blockAdmin: true });
+    applyModAction(deps, req, res, (t) => deps.store.setBan(t, until), { blockAdmin: true, accion: 'ban' });
   };
 }
 

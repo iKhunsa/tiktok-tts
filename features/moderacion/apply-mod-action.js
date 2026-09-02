@@ -34,7 +34,7 @@ function isAdminTarget(config, target) {
   return isAdminIdentity(config, target.platform, target.userId, target.nick);
 }
 
-function applyModAction(deps, req, res, fn, { blockAdmin = false } = {}) {
+function applyModAction(deps, req, res, fn, { blockAdmin = false, accion = null } = {}) {
   const { store, bus, logger } = deps;
   const target = resolveModTarget(store, req.body || {});
   if (!target) return res.status(400).json({ error: 'Se requiere key o platform + (userId|nick)' });
@@ -56,6 +56,14 @@ function applyModAction(deps, req, res, fn, { blockAdmin = false } = {}) {
     const viewer = fn(target);
     store.flush();
     bus.emit('ws:broadcast', { type: 'moderation-updated', viewer });
+    if (accion) {
+      // Éxito por acción — sin userId/nick (analytics lo consume agregado).
+      logger.log(
+        'info', 'moderacion', 'moderacion/apply-mod-action.js#applyModAction', 'moderacion.accion.aplicada',
+        `Acción de moderación aplicada: ${accion} (${target.platform})`,
+        { platform: target.platform, accion }
+      );
+    }
     res.json({ ok: true, viewer });
   } catch (error) {
     logger.log(

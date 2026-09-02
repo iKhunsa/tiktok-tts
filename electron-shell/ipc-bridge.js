@@ -8,7 +8,7 @@ const SPECIAL_PAUSE_SHORTCUTS = new Set(['MediaPlayPause', 'F8', 'F9', 'F10', 'F
 const TTS_SHORTCUT_ACTIONS = new Set(['pause', 'skip', 'clear', 'musicPause', 'musicSkip']);
 // Lista blanca por seguridad: el renderer no puede mandar cualquier nombre
 // de evento al bus.
-const RENDERER_TELEMETRY_EVENTS = new Set(['tts:skipped', 'tts:queue-overflow']);
+const RENDERER_TELEMETRY_EVENTS = new Set(['tts:skipped', 'tts:queue-overflow', 'ui:language-set']);
 
 function normalizeShortcut(shortcut) {
   if (!shortcut || typeof shortcut !== 'string') return '';
@@ -53,8 +53,9 @@ function attachIpcBridge({ app, bus, logger, getMainWindow, globalShortcut }) {
     require('./updater').installUpdate();
   });
 
-  ipcMain.on('telemetry:track', (_event, name) => {
-    if (RENDERER_TELEMETRY_EVENTS.has(name)) bus.emit(name);
+  ipcMain.on('telemetry:track', (_event, name, payload) => {
+    if (!RENDERER_TELEMETRY_EVENTS.has(name)) return;
+    bus.emit(name, typeof payload === 'string' ? payload.slice(0, 12) : undefined);
   });
 
   // ── TTS shortcuts (pause / skip / clear) ────────────────────────────────

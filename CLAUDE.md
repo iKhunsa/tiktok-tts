@@ -149,10 +149,63 @@ Dominio aparte que reporta uso agregado y anónimo a un servicio propio
   `config.json` a propósito, porque `features/configuracion/` descarta claves que no
   reconoce y lo borraría en el primer guardado.
 - Casi todos los eventos se emiten directo desde los conectores. Solo
-  `tts:skipped` y `tts:queue-overflow` nacen en el renderer (`interfaz/src/nucleo/tts/cola-tts.js`)
+  `tts:skipped`, `tts:queue-overflow` y `ui:language-set` nacen en el renderer
+  (`interfaz/src/nucleo/tts/cola-tts.js`, `interfaz/src/vistas/principal/i18n-app.js`)
   y llegan al bus vía IPC:
-  `window.electronAPI.trackEvent(name)` → `preload.js` → `ipcMain.on('telemetry:track', ...)`
-  en `electron-shell/ipc-bridge.js`, con lista blanca de esos dos nombres.
+  `window.electronAPI.trackEvent(name[, payload])` → `preload.js` →
+  `ipcMain.on('telemetry:track', ...)` en `electron-shell/ipc-bridge.js`, con
+  lista blanca de esos tres nombres (`payload` solo se reenvía si es string corto).
+
+## Error tracking (`electron-shell/glitchtip.js`)
+
+GlitchTip (self-hosted, compatible con Sentry, `@sentry/electron`). **Los errores
+van acá, no a Aptabase.** Captura crashes del main + `error:handled`/`error:uncaught`
+del bus, con breadcrumbs (150) de la actividad previa, snapshot de `estado_app`
+(plataformas, OBS, minutos, config), tail del log de sesión metido en el issue,
+fingerprint en español (`error_conexion_tiktok`, …), `warn` promovidos a issue,
+detección de "sesión problemática", perf spans (`tracesSampleRate: 0.05`). El botón
+"Reportar bug" también llega acá. DSN de ingesta (no secreto) override por
+`SENTRY_DSN`/`GLITCHTIP_DSN` o `glitchtip.json` en userData.
+
+## Analytics de producto (`electron-shell/aptabase.js`)
+
+Aptabase (self-hosted en `https://aptabase.tiklivetts.es`, `@aptabase/electron`).
+**Solo analítica de producto — conteo de eventos, funnels, DAU/MAU, retención.
+Los errores NO van acá.** Sin `APTABASE_APP_KEY` (env o `aptabase-config.json`
+bakeado) es un no-op total.
+
+- **Regla igual que GlitchTip/telemetría:** los dominios no conocen Aptabase.
+  Loguean su evento de negocio; `aptabase.js#attach` mapea `log:entry` +
+  algunos eventos directos del bus (`canal:estado`, `movil:comando`,
+  `reporte-bug:enviado`, `ui:language-set`) → `trackEvent()`.
+- `init()` corre en `main.js` **antes de `app.isReady()`** (requisito del SDK)
+  pero **después** del lock de instancia única (para no doble-disparar
+  `installacion`/`app_started`). Recibe `{appVersion, isPackaged, isDebug,
+  userDataDir, logger}` — patrón de inyección como `telemetria/runtime.js`.
+- **`installacion`** — evento que se dispara **exactamente una vez en la vida
+  del usuario**, vía marca persistida `%APPDATA%\tiktok-live-tts\aptabase-instalacion.json`
+  (helper compartido `electron-shell/install-marker.js`, también lo usa
+  glitchtip con su propio archivo). Conteo diario en el dashboard =
+  instalaciones únicas de por vida (Aptabase no tiene id de cliente). Sin
+  `machine_id` a propósito (máxima privacidad).
+- **Eventos:** ciclo de vida (`installacion`, `app_started`, `app_updated`,
+  `session_ended`), activación (`platform_connected`, `platform_connect_failed`,
+  `first_tts`), adopción (`overlay_opened`, `overlay_bg_uploaded`,
+  `mobile_paired`, `mobile_command`, `clip_marked`, `music_requested`,
+  `promo_fired`, `bug_report_sent`, `soundpad` en resumen), config
+  (`config_changed` **solo la clave, nunca el valor**, `voice_changed`,
+  `ui_language_set`), moderación (`moderation_action`, `moderation_action_failed`,
+  `mod_words_saved`).
+- **Resúmenes de sesión:** los de alta frecuencia (TTS, música, errores,
+  mensajes filtrados) se acumulan en memoria y salen como props bucketeadas de
+  `session_ended` (1 POST al cerrar), nunca 1 evento por ocurrencia. `bucket()`
+  vive en `electron-shell/bucket.js` (testeado en `test/aptabase-bucket.test.js`).
+- **Flush manual:** el SDK v0.3.1 **no batchea ni flushea al cerrar** — cada
+  `trackEvent` es su propio POST. `shutdown()` manda `session_ended` y espera
+  los POST en vuelo con race de 1500 ms, dentro del `Promise.allSettled` de
+  `main.js#before-quit`.
+- Toda prop pasa por `sanear()` (rutas de home fuera) + clip a 200 chars, tope
+  de 20 props/evento. Nunca nick/userId/ip/texto libre.
 
 ## Variables de entorno clave
 

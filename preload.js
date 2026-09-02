@@ -18,14 +18,19 @@ function off(channel, cb) {
   }
 }
 
-// Solo estos dos nacen en el renderer (cola TTS); el resto de la telemetria
-// vive en el proceso principal o en server.js y no necesita este canal.
-const TRACKABLE_EVENTS = new Set(['tts:skipped', 'tts:queue-overflow']);
+// Eventos de telemetria/analytics que nacen en el renderer. El resto vive en el
+// proceso principal o en server.js y no necesita este canal.
+//  - tts:skipped / tts:queue-overflow → cola TTS (sin payload).
+//  - ui:language-set → cambio de idioma de UI (payload: código de idioma).
+const TRACKABLE_EVENTS = new Set(['tts:skipped', 'tts:queue-overflow', 'ui:language-set']);
 
 contextBridge.exposeInMainWorld('electronAPI', {
   getAppVersion: () => ipcRenderer.invoke('get-app-version'),
-  trackEvent: (name) => {
-    if (TRACKABLE_EVENTS.has(name)) ipcRenderer.send('telemetry:track', name);
+  trackEvent: (name, payload) => {
+    if (!TRACKABLE_EVENTS.has(name)) return;
+    // Solo se reenvía payload cuando es un string corto (código de idioma).
+    if (typeof payload === 'string') ipcRenderer.send('telemetry:track', name, payload.slice(0, 12));
+    else ipcRenderer.send('telemetry:track', name);
   },
   onMarkClip: (cb) => on('mark-clip', () => cb()),
   offMarkClip: (cb) => off('mark-clip', cb),
