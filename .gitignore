@@ -19,4 +19,5 @@ aptabase-config.json
 aptabase-config.generated.json
 logs/
 moderation.json
+tts-cache/
 graphify-out/

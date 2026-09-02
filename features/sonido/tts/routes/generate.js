@@ -1,15 +1,28 @@
 'use strict';
 
-const https = require('https');
-const gTTS = require('google-tts-api');
-const { GOOGLE_TTS_LANGS } = require('../langs');
 const { isTTSRateLimited } = require('../is-rate-limited');
 const { sanitizeForTTS } = require('../../sanitize-for-tts');
 const { getConfigSnapshot } = require('../../config-bridge');
+const { fetchTtsAudio } = require('../fetch-audio');
+
+// Mensajes de error de Google que no valen la pena reintentar (4xx) vs los
+// transitorios (rate-limit, red). fetch-audio.js ya distingue; aca solo se
+// traduce el code a la respuesta HTTP + el evento de log.
+const EVENTO_POR_CODE = {
+  BACKOFF:      'sonido.tts.backoff_activo',
+  EMPTY:        'sonido.tts.respuesta_pequena',
+  TIMEOUT:      'sonido.tts.error_google_timeout',
+  NET:          'sonido.tts.error_google_red',
+  DECODE:       'sonido.tts.error_google_red',
+  HTTP:         'sonido.tts.error_google_http',
+  HTTP4XX:      'sonido.tts.error_google_http',
+  CONTENT_TYPE: 'sonido.tts.error_google_http',
+  URL:          'sonido.tts.error_google_red',
+};
 
 /** Migracion de POST /api/tts (backend-viejo/server.js:1805). */
 function generate(deps) {
-  return (req, res) => {
+  return async (req, res) => {
     const { bus, logger, rateLimiterState } = deps;
     const { text, voice = 'es' } = req.body || {};
     if (!text) return res.status(400).json({ error: 'Texto requerido', errorKey: 'errors.textRequired' });
@@ -31,77 +44,43 @@ function generate(deps) {
     );
 
     try {
-      const lang = GOOGLE_TTS_LANGS.has(voice) ? voice : 'es';
-      const audioUrl = gTTS.getAudioUrl(limitedText, {
-        lang,
+      const { buffer, cached } = await fetchTtsAudio({
+        text: limitedText,
+        voice,
         slow: !!config.ttsSlowSpeech,
-        host: 'https://translate.google.com',
+        logger,
       });
 
-      const reqTts = https.get(audioUrl, { headers: { 'User-Agent': 'Mozilla/5.0' } }, (audioRes) => {
-        const contentType = audioRes.headers['content-type'] || '';
-        const contentLen = parseInt(audioRes.headers['content-length'] || '0', 10);
+      res.setHeader('Content-Type', 'audio/mpeg');
+      res.setHeader('Cache-Control', cached ? 'public, max-age=86400' : 'no-cache');
+      res.send(buffer);
 
-        if (audioRes.statusCode !== 200) {
-          let errorBody = '';
-          audioRes.on('data', (chunk) => { errorBody += chunk.toString().substring(0, 500); });
-          audioRes.on('end', () => {
-            logger.log(
-              'error', 'sonido', 'sonido/tts/routes/generate.js#generate', 'sonido.tts.error_google_http',
-              `Google TTS respondio HTTP ${audioRes.statusCode}`, { status: audioRes.statusCode, contentType, errorBody }
-            );
-            res.status(500).json({ error: `Google TTS error: HTTP ${audioRes.statusCode}`, errorKey: 'errors.ttsServiceError' });
-          });
-          return;
-        }
-
-        if (!contentType.includes('audio/mpeg') && !contentType.includes('audio')) {
-          logger.log(
-            'error', 'sonido', 'sonido/tts/routes/generate.js#generate', 'sonido.tts.error_google_http',
-            'Content-Type invalido en respuesta de Google TTS', { contentType, len: contentLen }
-          );
-          return res.status(500).json({ error: 'Invalid audio format from TTS service', errorKey: 'errors.ttsServiceError' });
-        }
-
-        if (contentLen < 1000) {
-          logger.log(
-            'warn', 'sonido', 'sonido/tts/routes/generate.js#generate', 'sonido.tts.respuesta_pequena',
-            'Respuesta de audio sospechosamente pequena', { len: contentLen, contentType }
-          );
-        }
-
-        res.setHeader('Content-Type', 'audio/mpeg');
-        res.setHeader('Cache-Control', 'no-cache');
-        audioRes.pipe(res);
-
-        logger.log(
-          'debug', 'sonido', 'sonido/tts/routes/generate.js#generate', 'sonido.tts.hablado',
-          `TTS entregado, voz ${voice}`, { voice, slow: !!config.ttsSlowSpeech }
-        );
-      });
-
-      reqTts.setTimeout(15000, () => {
-        reqTts.destroy();
-        logger.log(
-          'error', 'sonido', 'sonido/tts/routes/generate.js#generate', 'sonido.tts.error_google_timeout',
-          'Timeout (15s) esperando a Google TTS', { voice, textLen: limitedText.length }
-        );
-        if (!res.headersSent) res.status(500).json({ error: 'TTS service timeout', errorKey: 'errors.ttsServiceError' });
-      });
-
-      reqTts.on('error', (err) => {
-        logger.log(
-          'error', 'sonido', 'sonido/tts/routes/generate.js#generate', 'sonido.tts.error_google_red',
-          `Error de red hacia Google TTS: ${err.message}`, { error: err.message, stack: err.stack, voice }
-        );
-        if (!res.headersSent) res.status(500).json({ error: err.message, errorKey: 'errors.ttsServiceError' });
-      });
-    } catch (err) {
       logger.log(
-        'error', 'sonido', 'sonido/tts/routes/generate.js#generate', 'sonido.tts.error_google_red',
-        `Fallo inesperado generando TTS: ${err.message}`, { error: err.message, stack: err.stack }
+        'debug', 'sonido', 'sonido/tts/routes/generate.js#generate', 'sonido.tts.hablado',
+        `TTS entregado, voz ${voice}${cached ? ' (cache)' : ''}`,
+        { voice, slow: !!config.ttsSlowSpeech, cache: cached, bytes: buffer.length }
       );
-      res.status(500).json({ error: err.message });
+    } catch (err) {
+      const code = (err && err.code) || 'DESCONOCIDO';
+      const evento = EVENTO_POR_CODE[code] || 'sonido.tts.error_google_red';
+      // BACKOFF ya se loguea dentro de fetch-audio.js — aca solo la respuesta.
+      if (code !== 'BACKOFF') {
+        const nivel = code === 'EMPTY' ? 'warn' : 'error';
+        logger.log(
+          nivel, 'sonido', 'sonido/tts/routes/generate.js#generate', evento,
+          `Fallo generando TTS (${code})`,
+          { voice, code, status: err && err.status, len: err && err.len, textLen: limitedText.length }
+        );
+      }
+
+      if (!res.headersSent) {
+        const status = code === 'BACKOFF' ? 503 : 502;
+        res.status(status).json({
+          error: `TTS no disponible (${code})`,
+          errorKey: 'errors.ttsServiceError',
+          ...(err && err.retryAfterMs ? { retryAfter: err.retryAfterMs } : {}),
+        });
+      }
     }
   };
 }

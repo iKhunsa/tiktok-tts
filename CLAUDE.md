@@ -351,7 +351,9 @@ no binarios, se editan igual que cualquier código.
 ## Roadmap / Pendiente
 
 - [ ] Firma de código del installer (elimina warning de Windows Defender, ~$300-500/año)
-- [ ] Modo sin conexión parcial (TTS cacheado para frases comunes)
+- [~] Modo sin conexión parcial (TTS cacheado para frases comunes) — cache en
+  disco ya hecho (`features/sonido/tts/fetch-audio.js`); falta un set precacheado
+  de frases comunes que viaje en el build
 - [ ] Soporte multi-cuenta / multi-stream simultáneo
 - [ ] Personalización de voces TTS (pitch, velocidad)
 - [ ] Estadísticas del stream (resumen al desconectar)
@@ -368,6 +370,19 @@ no binarios, se editan igual que cualquier código.
 **Por qué no se firma el código:** Requiere certificado de firma (~$300-500/año). Windows Defender mostrará warning en la primera instalación ("Windows protegió tu PC"). El usuario puede hacer clic en "Más información → Ejecutar de todas formas".
 
 **Por qué Google TTS y no Web Speech API:** Web Speech API requiere que la pestaña del navegador esté activa y en primer plano. Google TTS corre en el servidor y funciona aunque la ventana esté minimizada.
+
+**Resiliencia del TTS (`features/sonido/tts/fetch-audio.js`):** Google Translate
+TTS es el endpoint gratis sin API key; rate-limitea el IP devolviendo `200` +
+body vacío. `fetch-audio.js` mete 3 capas: **cache** en disco
+(`DATA_BASE/tts-cache/`, clave `sha1(lang|slow|text)`, poda a 450 archivos al
+pasar de 600) — frases repetidas (saludos, nombres de regalos, nicks) salen del
+archivo sin tocar Google; **retry** (hasta 2 reintentos ante body vacío / red /
+timeout, no ante 4xx); **backoff** de módulo (3 fallos seguidos → pausa
+5s→15s→60s, mientras falla rápido sin red; un éxito resetea). `generate.js`
+bufferea la respuesta (ya no `pipe`) y mapea el `code` de fallo a HTTP (`503` en
+backoff con `retryAfter`, `502` el resto). El warn `sonido.tts.respuesta_pequena`
+**ya no** se promueve a issue de GlitchTip (queda en la sección Logs) — era ruido
+en cada blip de rate-limit.
 
 **Por qué extraResources y no asar:** `gifts/` tiene 188 MB de PNGs. Meterlos en el asar los haría parte del bundle comprimido pero el asar tiene límites prácticos de tamaño y acceso. `extraResources` los deja en el sistema de archivos real, accesibles via `process.resourcesPath`.
 
