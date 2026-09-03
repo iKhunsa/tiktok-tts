@@ -309,8 +309,8 @@
 
     .community-banner {
       display: block;
-      margin: 8px 12px 4px;
-      border-radius: var(--radius-sm);
+      margin: 6px 12px 2px;
+      border-radius: 12px;
       overflow: hidden;
       text-decoration: none;
       transition: opacity 0.15s;
