@@ -1025,6 +1025,37 @@
     "clientsLabel": "最後のリクエスト",
     "disabledNotice": "サーバーオフ",
     "loadError": "MCP の状態を読み込めませんでした。",
-    "saveError": "保存に失敗しました"
+    "saveError": "保存に失敗しました",
+    "toolDesc": {
+      "get_state": "状態のスナップ: チャンネル、音楽、モデレーション、overlay、設定",
+      "get_recent_chat": "接続中の全プラットフォームの最新チャットメッセージ",
+      "get_activity": "アプリ内部の最近のイベントで動きを確認",
+      "health": "MCP サーバーとアプリの稼働チェック",
+      "moderation_list_viewers": "登録済み視聴者と、ミュート・BAN・フォロー状態",
+      "moderation_get_stats": "プラットフォーム別の視聴者・フォロワー・ミュート・BAN数",
+      "moderation_mute": "ローカルミュート: メッセージは表示、TTS は読まない",
+      "moderation_ban": "ローカルBAN: メッセージはチャットに出ない",
+      "moderation_clear": "視聴者のミュートと BAN を解除",
+      "channels_status": "各プラットフォームの接続チャンネルと OBS・Twitch",
+      "channels_connect": "TikTok、Twitch、YouTube、Kick のライブに接続",
+      "channels_disconnect": "チャンネル単体、またはプラットフォーム全体を切断",
+      "speak": "テキストを送って PC で TTS に読ませる",
+      "music_queue": "再生中の曲、待機キュー、プレーヤーの状態",
+      "music_skip": "今の曲を止めて次の曲へ",
+      "music_ban_user": "音楽ボットへの曲リクエストをユーザーに禁止",
+      "overlay_stats": "今回のセッションのフォロワー、トップいいね、シェア、ギフト",
+      "get_config": "機密情報なしでアプリの表示設定を読む",
+      "set_config": "許可された項目だけアプリ設定を即時変更",
+      "remote_command": "モバイルパネル同様に PC 操作: TTS停止、スキップ、クリップ"
+    },
+    "domain": {
+      "canales": "チャンネル",
+      "configuracion": "設定",
+      "mcp": "MCP コア",
+      "moderacion": "モデレーション",
+      "movil": "モバイルパネル",
+      "overlay": "Overlay",
+      "sonido": "サウンド"
+    }
   }
 }

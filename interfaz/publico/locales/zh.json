@@ -1025,6 +1025,37 @@
     "clientsLabel": "最后请求",
     "disabledNotice": "服务器关闭",
     "loadError": "无法加载 MCP 状态。",
-    "saveError": "保存失败"
+    "saveError": "保存失败",
+    "toolDesc": {
+      "get_state": "状态快照：频道、音乐、审核、overlay 和配置",
+      "get_recent_chat": "所有已连接平台的最新聊天消息",
+      "get_activity": "查看应用近期内部事件动态",
+      "health": "检查 MCP 服务器和应用的健康状况",
+      "moderation_list_viewers": "已记录观众及其静音、封禁和关注状态",
+      "moderation_get_stats": "按平台统计观众、关注者、静音和封禁数",
+      "moderation_mute": "本地静音：消息可见，但 TTS 不朗读",
+      "moderation_ban": "本地封禁：消息完全不出现在聊天中",
+      "moderation_clear": "解除某观众的静音和封禁",
+      "channels_status": "各平台已连接的频道，以及 OBS 和 Twitch",
+      "channels_connect": "连接 TikTok、Twitch、YouTube 或 Kick 直播频道",
+      "channels_disconnect": "断开某个频道，或某平台的全部频道",
+      "speak": "发送文字让电脑上的 TTS 朗读",
+      "music_queue": "当前曲目、待播队列和播放器状态",
+      "music_skip": "跳过当前曲目，播放队列中下一首",
+      "music_ban_user": "禁止某用户向音乐机器人点歌",
+      "overlay_stats": "本场关注者、点赞榜、分享者和礼物",
+      "get_config": "读取应用可见设置，不含敏感数据",
+      "set_config": "热更新应用设置，仅限允许的项",
+      "remote_command": "像手机面板一样控制电脑：暂停 TTS、跳过、剪辑"
+    },
+    "domain": {
+      "canales": "频道",
+      "configuracion": "配置",
+      "mcp": "MCP 核心",
+      "moderacion": "审核",
+      "movil": "手机面板",
+      "overlay": "Overlays",
+      "sonido": "声音"
+    }
   }
 }

@@ -1025,6 +1025,37 @@
     "clientsLabel": "Ultima richiesta",
     "disabledNotice": "server spento",
     "loadError": "Impossibile caricare lo stato MCP.",
-    "saveError": "Errore nel salvataggio"
+    "saveError": "Errore nel salvataggio",
+    "toolDesc": {
+      "get_state": "Istantanea dello stato: canali, musica, moderazione, overlay e config",
+      "get_recent_chat": "Ultimi messaggi della chat di tutte le piattaforme connesse",
+      "get_activity": "Eventi interni recenti dell'app per vedere cosa sta succedendo",
+      "health": "Controllo di salute del server MCP e dell'app",
+      "moderation_list_viewers": "Spettatori registrati con stato di mute, ban e follower",
+      "moderation_get_stats": "Totali di spettatori, follower, mutati e bannati per piattaforma",
+      "moderation_mute": "Mute locale: il messaggio si vede, il TTS non lo legge",
+      "moderation_ban": "Ban locale: il messaggio non appare nemmeno in chat",
+      "moderation_clear": "Toglie il mute e il ban a uno spettatore",
+      "channels_status": "Quali canali hai connessi su ogni piattaforma, più OBS e Twitch",
+      "channels_connect": "Connette un canale TikTok, Twitch, YouTube o Kick in diretta",
+      "channels_disconnect": "Disconnette un canale, o tutti quelli di una piattaforma",
+      "speak": "Invia un testo perché il TTS lo legga sul computer",
+      "music_queue": "Brano attuale, coda musicale in attesa e stato del player",
+      "music_skip": "Interrompe il brano attuale e passa al successivo in coda",
+      "music_ban_user": "Vieta a un utente di chiedere brani al bot musicale",
+      "overlay_stats": "Follower, top liker, chi ha condiviso e regali di questa sessione",
+      "get_config": "Legge le impostazioni visibili dell'app, senza dati sensibili",
+      "set_config": "Cambia le impostazioni dell'app a caldo, solo quelle permesse",
+      "remote_command": "Controlla il computer come dal pannello mobile: pausa TTS, salta, clip"
+    },
+    "domain": {
+      "canales": "Canali",
+      "configuracion": "Impostazioni",
+      "mcp": "Nucleo MCP",
+      "moderacion": "Moderazione",
+      "movil": "Pannello mobile",
+      "overlay": "Overlay",
+      "sonido": "Audio"
+    }
   }
 }

@@ -1025,6 +1025,37 @@
     "clientsLabel": "Dernière requête",
     "disabledNotice": "serveur éteint",
     "loadError": "Impossible de charger l’état MCP.",
-    "saveError": "Échec de l’enregistrement"
+    "saveError": "Échec de l’enregistrement",
+    "toolDesc": {
+      "get_state": "Aperçu rapide de l'état : canaux, musique, modération, overlay et config",
+      "get_recent_chat": "Les derniers messages du chat de toutes les plateformes connectées",
+      "get_activity": "Événements internes récents de l'app pour voir ce qui se passe",
+      "health": "Contrôle de santé du serveur MCP et de l'app",
+      "moderation_list_viewers": "Spectateurs enregistrés avec leur statut muet, banni et abonné",
+      "moderation_get_stats": "Totaux de spectateurs, abonnés, mis en sourdine et bannis par plateforme",
+      "moderation_mute": "Sourdine locale : le message s'affiche, le TTS ne le lit pas",
+      "moderation_ban": "Bannissement local : le message n'apparaît même pas dans le chat",
+      "moderation_clear": "Retire la sourdine et le bannissement d'un spectateur",
+      "channels_status": "Quels canaux tu as connectés sur chaque plateforme, plus OBS et Twitch",
+      "channels_connect": "Connecte un canal TikTok, Twitch, YouTube ou Kick en direct",
+      "channels_disconnect": "Déconnecte un canal, ou tous ceux d'une plateforme",
+      "speak": "Envoie un texte pour que le TTS le lise sur l'ordi",
+      "music_queue": "Titre en cours, file d'attente musicale et état du lecteur",
+      "music_skip": "Coupe le titre en cours et passe au suivant de la file",
+      "music_ban_user": "Empêche un utilisateur de demander des titres au bot musical",
+      "overlay_stats": "Abonnés, top likers, qui a partagé et cadeaux de cette session",
+      "get_config": "Lit les réglages visibles de l'app, sans données sensibles",
+      "set_config": "Change les réglages de l'app à chaud, seulement ceux autorisés",
+      "remote_command": "Contrôle l'ordi comme depuis le panneau mobile : pause TTS, saut, clip"
+    },
+    "domain": {
+      "canales": "Canaux",
+      "configuracion": "Configuration",
+      "mcp": "Cœur MCP",
+      "moderacion": "Modération",
+      "movil": "Panneau mobile",
+      "overlay": "Overlays",
+      "sonido": "Son"
+    }
   }
 }

@@ -1025,6 +1025,37 @@
     "clientsLabel": "Last request",
     "disabledNotice": "server off",
     "loadError": "Could not load MCP status.",
-    "saveError": "Failed to save"
+    "saveError": "Failed to save",
+    "toolDesc": {
+      "get_state": "Quick snapshot: channels, music, moderation, overlay and config",
+      "get_recent_chat": "Latest chat messages from all connected platforms",
+      "get_activity": "Recent internal app events to see what's going on",
+      "health": "Health check of the MCP server and the app",
+      "moderation_list_viewers": "Registered viewers with their mute, ban and follower status",
+      "moderation_get_stats": "Totals of viewers, followers, muted and banned per platform",
+      "moderation_mute": "Local mute: the message shows, the TTS won't read it",
+      "moderation_ban": "Local ban: the message doesn't even show in chat",
+      "moderation_clear": "Removes the mute and ban from a viewer",
+      "channels_status": "Which channels you have connected on each platform, plus OBS and Twitch",
+      "channels_connect": "Connect a live TikTok, Twitch, YouTube or Kick channel",
+      "channels_disconnect": "Disconnect a channel, or all of a platform's",
+      "speak": "Send text for the TTS to read on the computer",
+      "music_queue": "Current track, pending music queue and player status",
+      "music_skip": "Cuts the current track and moves to the next in queue",
+      "music_ban_user": "Blocks a user from requesting tracks from the music bot",
+      "overlay_stats": "Followers, top likers, who shared and gifts this session",
+      "get_config": "Reads the app's visible settings, no sensitive data",
+      "set_config": "Changes app settings on the fly, only the allowed ones",
+      "remote_command": "Control the computer like from the mobile panel: pause TTS, skip, clip"
+    },
+    "domain": {
+      "canales": "Channels",
+      "configuracion": "Settings",
+      "mcp": "MCP core",
+      "moderacion": "Moderation",
+      "movil": "Mobile panel",
+      "overlay": "Overlays",
+      "sonido": "Sound"
+    }
   }
 }

@@ -250,6 +250,9 @@ nuevos por request). `features/mcp/` se registra **último** en `server.js`.
   NO son issue.
 - **UI:** sección "Agente MCP" en la tienda de plugins (`interfaz/src/vistas/principal/mcp/`,
   nace oculta) — toggles, endpoint, snippets de config, tabla de tools por dominio.
+  El `description`/`title` del schema (lo que ve el agente) queda en **inglés**;
+  la tabla de la UI usa claves i18n propias `mcp.toolDesc.<name>` y `mcp.domain.<slug>`
+  (fallback al `description` inglés). El endpoint URL y los snippets JSON no se traducen.
 - `GET /api/mcp/info` — estado + catálogo de tools para la UI (GET, sin auth).
 
 ## Variables de entorno clave

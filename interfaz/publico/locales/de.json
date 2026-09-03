@@ -1025,6 +1025,37 @@
     "clientsLabel": "Letzte Anfrage",
     "disabledNotice": "Server aus",
     "loadError": "MCP-Status konnte nicht geladen werden.",
-    "saveError": "Speichern fehlgeschlagen"
+    "saveError": "Speichern fehlgeschlagen",
+    "toolDesc": {
+      "get_state": "Schnappschuss: Kanäle, Musik, Moderation, Overlay und Config",
+      "get_recent_chat": "Neueste Chat-Nachrichten aller verbundenen Plattformen",
+      "get_activity": "Aktuelle interne App-Events, um zu sehen was gerade läuft",
+      "health": "Zustandsprüfung des MCP-Servers und der App",
+      "moderation_list_viewers": "Registrierte Zuschauer mit Stumm-, Bann- und Follower-Status",
+      "moderation_get_stats": "Zuschauer, Follower, Stummgeschaltete und Gebannte pro Plattform",
+      "moderation_mute": "Lokal stumm: Nachricht sichtbar, TTS liest sie nicht",
+      "moderation_ban": "Lokaler Bann: Nachricht erscheint gar nicht im Chat",
+      "moderation_clear": "Hebt Stummschaltung und Bann eines Zuschauers auf",
+      "channels_status": "Verbundene Kanäle pro Plattform, plus OBS und Twitch",
+      "channels_connect": "Verbindet einen Live-Kanal von TikTok, Twitch, YouTube oder Kick",
+      "channels_disconnect": "Trennt einen Kanal oder alle einer Plattform",
+      "speak": "Schickt einen Text, den das TTS am PC vorliest",
+      "music_queue": "Aktueller Titel, Warteschlange und Player-Status",
+      "music_skip": "Bricht den aktuellen Titel ab und geht zum nächsten",
+      "music_ban_user": "Verbietet einem Nutzer, Titel beim Musik-Bot zu wünschen",
+      "overlay_stats": "Follower, Top-Liker, Shares und Geschenke dieser Session",
+      "get_config": "Liest die sichtbaren App-Einstellungen, ohne sensible Daten",
+      "set_config": "Ändert erlaubte App-Einstellungen zur Laufzeit",
+      "remote_command": "Steuert den PC wie das mobile Panel: TTS pausieren, überspringen, Clip"
+    },
+    "domain": {
+      "canales": "Kanäle",
+      "configuracion": "Einstellungen",
+      "mcp": "MCP-Kern",
+      "moderacion": "Moderation",
+      "movil": "Mobiles Panel",
+      "overlay": "Overlays",
+      "sonido": "Ton"
+    }
   }
 }
