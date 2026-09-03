@@ -1025,6 +1025,37 @@
     "clientsLabel": "Última petición",
     "disabledNotice": "servidor apagado",
     "loadError": "No se pudo cargar el estado del MCP.",
-    "saveError": "Error al guardar"
+    "saveError": "Error al guardar",
+    "toolDesc": {
+      "get_state": "Foto rápida del estado: canales, música, moderación, overlay y config",
+      "get_recent_chat": "Los últimos mensajes del chat de todas las plataformas conectadas",
+      "get_activity": "Eventos internos recientes de la app para ver qué viene pasando",
+      "health": "Chequeo de salud del servidor MCP y de la app",
+      "moderation_list_viewers": "Espectadores registrados con su estado de silencio, baneo y seguidor",
+      "moderation_get_stats": "Totales de espectadores, seguidores, silenciados y baneados por plataforma",
+      "moderation_mute": "Silencio local: el mensaje se ve, el TTS no lo lee",
+      "moderation_ban": "Baneo local: el mensaje ni siquiera aparece en el chat",
+      "moderation_clear": "Saca el silencio y el baneo de un espectador",
+      "channels_status": "Qué canales tenés conectados en cada plataforma, más OBS y Twitch",
+      "channels_connect": "Conecta un canal de TikTok, Twitch, YouTube o Kick en vivo",
+      "channels_disconnect": "Desconecta un canal, o todos los de una plataforma",
+      "speak": "Manda un texto para que el TTS lo lea en la compu",
+      "music_queue": "Tema actual, cola de música pendiente y estado del reproductor",
+      "music_skip": "Corta el tema actual y pasa al siguiente de la cola",
+      "music_ban_user": "Prohíbe a un usuario pedir temas al bot de música",
+      "overlay_stats": "Seguidores, top likers, quién compartió y regalos de esta sesión",
+      "get_config": "Lee los ajustes visibles de la app, sin datos sensibles",
+      "set_config": "Cambia ajustes de la app en caliente, solo los permitidos",
+      "remote_command": "Controlá la compu como desde el panel móvil: pausar TTS, saltar, clip"
+    },
+    "domain": {
+      "canales": "Canales",
+      "configuracion": "Configuración",
+      "mcp": "Núcleo MCP",
+      "moderacion": "Moderación",
+      "movil": "Panel móvil",
+      "overlay": "Overlays",
+      "sonido": "Sonido"
+    }
   }
 }

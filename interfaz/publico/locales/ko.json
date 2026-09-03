@@ -1025,6 +1025,37 @@
     "clientsLabel": "마지막 요청",
     "disabledNotice": "서버 꺼짐",
     "loadError": "MCP 상태를 불러올 수 없었습니다.",
-    "saveError": "저장 실패"
+    "saveError": "저장 실패",
+    "toolDesc": {
+      "get_state": "상태 스냅샷: 채널, 음악, 모더레이션, 오버레이, 설정",
+      "get_recent_chat": "연결된 모든 플랫폼의 최근 채팅 메시지",
+      "get_activity": "앱 내부 최근 이벤트로 상황 파악",
+      "health": "MCP 서버와 앱의 상태 점검",
+      "moderation_list_viewers": "등록된 시청자와 음소거·차단·팔로워 상태",
+      "moderation_get_stats": "플랫폼별 시청자·팔로워·음소거·차단 합계",
+      "moderation_mute": "로컬 음소거: 메시지는 보이고 TTS는 안 읽음",
+      "moderation_ban": "로컬 차단: 메시지가 채팅에 아예 안 뜸",
+      "moderation_clear": "시청자의 음소거와 차단을 해제",
+      "channels_status": "플랫폼별 연결된 채널, OBS와 Twitch 포함",
+      "channels_connect": "TikTok, Twitch, YouTube, Kick 라이브 채널 연결",
+      "channels_disconnect": "채널 하나 또는 플랫폼 전체 연결 해제",
+      "speak": "컴퓨터에서 TTS가 읽을 텍스트 전송",
+      "music_queue": "현재 곡, 대기 중인 음악 목록, 플레이어 상태",
+      "music_skip": "현재 곡을 끊고 대기열 다음 곡으로",
+      "music_ban_user": "특정 사용자의 음악 봇 신청을 금지",
+      "overlay_stats": "이번 세션의 팔로워, 톱 라이커, 공유, 선물",
+      "get_config": "민감 정보 없이 앱의 공개 설정을 조회",
+      "set_config": "허용된 앱 설정만 실시간으로 변경",
+      "remote_command": "모바일 패널처럼 제어: TTS 정지, 건너뛰기, 클립"
+    },
+    "domain": {
+      "canales": "채널",
+      "configuracion": "설정",
+      "mcp": "MCP 코어",
+      "moderacion": "모더레이션",
+      "movil": "모바일 패널",
+      "overlay": "오버레이",
+      "sonido": "사운드"
+    }
   }
 }

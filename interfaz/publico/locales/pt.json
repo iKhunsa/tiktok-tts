@@ -1025,6 +1025,37 @@
     "clientsLabel": "Última requisição",
     "disabledNotice": "servidor desligado",
     "loadError": "Não foi possível carregar o estado do MCP.",
-    "saveError": "Erro ao salvar"
+    "saveError": "Erro ao salvar",
+    "toolDesc": {
+      "get_state": "Foto rápida do estado: canais, música, moderação, overlay e config",
+      "get_recent_chat": "As últimas mensagens do chat de todas as plataformas conectadas",
+      "get_activity": "Eventos internos recentes do app pra ver o que anda acontecendo",
+      "health": "Checagem de saúde do servidor MCP e do app",
+      "moderation_list_viewers": "Espectadores registrados com status de mudo, banimento e seguidor",
+      "moderation_get_stats": "Totais de espectadores, seguidores, mutados e banidos por plataforma",
+      "moderation_mute": "Mudo local: a mensagem aparece, o TTS não lê",
+      "moderation_ban": "Banimento local: a mensagem nem aparece no chat",
+      "moderation_clear": "Remove o mudo e o banimento de um espectador",
+      "channels_status": "Quais canais você tem conectados em cada plataforma, mais OBS e Twitch",
+      "channels_connect": "Conecta um canal do TikTok, Twitch, YouTube ou Kick ao vivo",
+      "channels_disconnect": "Desconecta um canal, ou todos os de uma plataforma",
+      "speak": "Manda um texto pro TTS ler no computador",
+      "music_queue": "Faixa atual, fila de música pendente e estado do player",
+      "music_skip": "Corta a faixa atual e passa pra próxima da fila",
+      "music_ban_user": "Proíbe um usuário de pedir faixas ao bot de música",
+      "overlay_stats": "Seguidores, top likers, quem compartilhou e presentes desta sessão",
+      "get_config": "Lê os ajustes visíveis do app, sem dados sensíveis",
+      "set_config": "Muda ajustes do app na hora, só os permitidos",
+      "remote_command": "Controle o PC como no painel móvel: pausar TTS, pular, clipe"
+    },
+    "domain": {
+      "canales": "Canais",
+      "configuracion": "Configuração",
+      "mcp": "Núcleo MCP",
+      "moderacion": "Moderação",
+      "movil": "Painel móvel",
+      "overlay": "Overlays",
+      "sonido": "Som"
+    }
   }
 }

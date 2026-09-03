@@ -2,6 +2,13 @@ import { t, aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
 import { showToast } from '../../../componentes/toast.js';
 import { copyToClipboard } from '../utils-app.js';
 
+// t() con fallback: si la clave no resuelve (idioma sin ella, o clave inexistente),
+// devuelve `fb` en vez del literal de la clave.
+function tk(key, fb) {
+  const v = t(key);
+  return v === key ? fb : v;
+}
+
 function endpointURL() {
   return `${location.origin}/mcp`;
 }
@@ -41,9 +48,12 @@ function toolRows(tools, destructiveEnabled) {
       if (isDestr) badges.push(`<span class="mcp-badge mcp-badge-danger">${t('mcp.badgeDestructive')}</span>`);
       else if (tool.annotations && tool.annotations.readOnlyHint) badges.push(`<span class="mcp-badge">${t('mcp.badgeReadonly')}</span>`);
       const dim = isDestr && !destructiveEnabled ? ' style="opacity:.45"' : '';
-      return `<tr${dim}><td><code>${tool.name}</code> ${badges.join(' ')}</td><td>${tool.description || ''}</td></tr>`;
+      // Descripción para la UI: clave i18n propia; fallback a la description del
+      // schema (inglés, la que ve el agente).
+      const desc = tk(`mcp.toolDesc.${tool.name}`, tool.description || '');
+      return `<tr${dim}><td><code>${tool.name}</code> ${badges.join(' ')}</td><td>${desc}</td></tr>`;
     }).join('');
-    return `<tr class="mcp-domain-row"><td colspan="2">${d}</td></tr>${rows}`;
+    return `<tr class="mcp-domain-row"><td colspan="2">${tk(`mcp.domain.${d}`, d)}</td></tr>${rows}`;
   }).join('');
 }
 
