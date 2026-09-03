@@ -13,6 +13,8 @@
     "make-icon": "electron scripts/make-app-icon.js && python scripts/make-app-icon.py",
     "dev:front": "vite --config interfaz/vite.config.js",
     "build:front": "vite build --config interfaz/vite.config.js",
+    "serve": "npm run build:front && node server.js",
+    "serve:watch": "npm run build:front && node --watch server.js",
     "prebuild:electron": "node scripts/ensure-webhook-config.js && node scripts/ensure-telemetry-config.js && node scripts/ensure-aptabase-config.js && npm run build:front",
     "build:electron": "electron-builder --win"
   },
