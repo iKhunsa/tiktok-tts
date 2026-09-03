@@ -1056,6 +1056,9 @@
       "movil": "手机面板",
       "overlay": "Overlays",
       "sonido": "声音"
-    }
+    },
+    "devLabel": "开发者工具",
+    "devHint": "注入聊天/事件、查看原始日志、完整状态、总线。仅用于调试。",
+    "badgeDev": "dev"
   }
 }

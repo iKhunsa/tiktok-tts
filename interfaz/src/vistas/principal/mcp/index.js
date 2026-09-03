@@ -37,7 +37,14 @@ async function fetchInfo() {
   return r.json();
 }
 
-function toolRows(tools, destructiveEnabled) {
+// ¿esta tool va por el cable con la config actual?
+function enWire(tool, destructive, dev) {
+  if (tool.dev && !dev) return false;
+  if (tool.annotations && tool.annotations.destructiveHint && !destructive) return false;
+  return true;
+}
+
+function toolRows(tools, destructive, dev) {
   const byDomain = {};
   for (const tool of tools) (byDomain[tool.domain] = byDomain[tool.domain] || []).push(tool);
   const domains = Object.keys(byDomain).sort();
@@ -45,9 +52,10 @@ function toolRows(tools, destructiveEnabled) {
     const rows = byDomain[d].map((tool) => {
       const isDestr = tool.annotations && tool.annotations.destructiveHint;
       const badges = [];
+      if (tool.dev) badges.push(`<span class="mcp-badge mcp-badge-dev">${tk('mcp.badgeDev', 'dev')}</span>`);
       if (isDestr) badges.push(`<span class="mcp-badge mcp-badge-danger">${t('mcp.badgeDestructive')}</span>`);
       else if (tool.annotations && tool.annotations.readOnlyHint) badges.push(`<span class="mcp-badge">${t('mcp.badgeReadonly')}</span>`);
-      const dim = isDestr && !destructiveEnabled ? ' style="opacity:.45"' : '';
+      const dim = enWire(tool, destructive, dev) ? '' : ' class="mcp-row-off"';
       // Descripción para la UI: clave i18n propia; fallback a la description del
       // schema (inglés, la que ve el agente).
       const desc = tk(`mcp.toolDesc.${tool.name}`, tool.description || '');
@@ -65,27 +73,34 @@ export function renderMcpPanel() {
   fetchInfo().then((info) => {
     const enabled = info.enabled;
     const destructive = info.destructiveEnabled;
-    // Lo que realmente se expone por el cable: sin destructivas si el toggle está off.
-    const wireTools = info.tools.filter((tl) => destructive || !(tl.annotations && tl.annotations.destructiveHint));
-    const shownTools = enabled ? wireTools.length : 0;
+    const dev = info.devEnabled;
+    const wireCount = enabled ? info.tools.filter((tl) => enWire(tl, destructive, dev)).length : 0;
+    const countText = `${wireCount}${enabled ? '' : ' · ' + t('mcp.disabledNotice')}`;
 
     el.innerHTML = `
       <div class="settings-section">
         <div class="settings-section-title"><span data-i18n="mcp.statusHeading">Servidor MCP</span></div>
         <div class="settings-panel">
           <div class="setting-group">
-            <label class="toggle-chip ${enabled ? 'active' : ''}" style="width:max-content;">
-              <input type="checkbox" id="mcpEnabledToggle" ${enabled ? 'checked' : ''}>
+            <label class="toggle-chip${enabled ? ' active' : ''}" style="width:max-content;">
+              <input type="checkbox" id="mcpEnabledToggle"${enabled ? ' checked' : ''}>
               <img class="icon-inline" src="icons/extension.svg" alt=""> <span data-i18n="mcp.enableLabel">Servidor MCP activo</span>
             </label>
-            <p class="setting-hint" data-i18n="mcp.enableHint">Endpoint solo accesible desde esta máquina. Apagado, /mcp responde 503.</p>
+            <div class="mcp-hint" data-i18n="mcp.enableHint">Endpoint solo accesible desde esta máquina. Apagado, /mcp responde 503.</div>
           </div>
           <div class="setting-group">
-            <label class="toggle-chip ${destructive ? 'active' : ''}" style="width:max-content;">
-              <input type="checkbox" id="mcpDestructiveToggle" ${destructive ? 'checked' : ''}>
-              <img class="icon-inline" src="icons/warning-amber.svg" alt=""> <span data-i18n="mcp.destructiveLabel">Permitir tools destructivas</span>
+            <label class="toggle-chip${destructive ? ' active' : ''}" style="width:max-content;">
+              <input type="checkbox" id="mcpDestructiveToggle"${destructive ? ' checked' : ''}>
+              <img class="icon-inline" src="icons/warning-amber.svg" alt=""> <span data-i18n="mcp.destructiveLabel">Permitir herramientas destructivas</span>
             </label>
-            <p class="setting-hint" data-i18n="mcp.destructiveHint">Ban/mute/desconectar/borrar. El agente igual pide confirmación en su lado.</p>
+            <div class="mcp-hint" data-i18n="mcp.destructiveHint">Banear/silenciar/desconectar/borrar. El agente igual pide confirmación en su lado.</div>
+          </div>
+          <div class="setting-group mcp-full">
+            <label class="toggle-chip${dev ? ' active' : ''}" style="width:max-content;">
+              <input type="checkbox" id="mcpDevToggle"${dev ? ' checked' : ''}>
+              <img class="icon-inline" src="icons/build.svg" alt=""> <span data-i18n="mcp.devLabel">Herramientas de desarrollo</span>
+            </label>
+            <div class="mcp-hint" data-i18n="mcp.devHint">Inyectar chat/eventos, ver logs crudos, status completo. Solo para debug.</div>
           </div>
         </div>
       </div>
@@ -96,16 +111,16 @@ export function renderMcpPanel() {
           <div class="setting-group">
             <label data-i18n="mcp.endpointLabel">Endpoint</label>
             <div style="display:flex;gap:8px;align-items:center;">
-              <code style="flex:1;padding:8px 11px;background:var(--bg-button);border:1px solid var(--border-strong);border-radius:8px;">${url}</code>
+              <code class="mcp-endpoint">${url}</code>
               <button class="cfg-btn" id="mcpCopyEndpoint" data-i18n="mcp.copyEndpoint">Copiar</button>
             </div>
           </div>
-          <div class="setting-group full">
+          <div class="setting-group mcp-full">
             <label data-i18n="mcp.snippetClaudeCode">Claude Code (.mcp.json)</label>
             <pre class="mcp-snippet">${snippetClaudeCode(url)}</pre>
             <button class="cfg-btn small" id="mcpCopyCC" data-i18n="btn.copy">Copiar</button>
           </div>
-          <div class="setting-group full">
+          <div class="setting-group mcp-full">
             <label data-i18n="mcp.snippetClaudeDesktop">Claude Desktop (claude_desktop_config.json)</label>
             <pre class="mcp-snippet">${snippetClaudeDesktop(url)}</pre>
             <button class="cfg-btn small" id="mcpCopyCD" data-i18n="btn.copy">Copiar</button>
@@ -114,35 +129,44 @@ export function renderMcpPanel() {
       </div>
 
       <div class="settings-section">
-        <div class="settings-section-title">
+        <div class="settings-section-title" style="display:flex;justify-content:space-between;align-items:center;">
           <span data-i18n="mcp.toolsHeading">Herramientas disponibles</span>
-          <span class="mcp-count">${shownTools}${enabled ? '' : ' · ' + t('mcp.disabledNotice')}</span>
+          <span class="mcp-count">${countText}</span>
         </div>
-        <div class="settings-panel">
-          <table class="mcp-tools-table">
-            <thead><tr><th data-i18n="mcp.toolColName">Tool</th><th data-i18n="mcp.toolColDesc">Descripción</th></tr></thead>
-            <tbody>${enabled ? toolRows(info.tools, destructive) : ''}</tbody>
-          </table>
-          ${info.lastRequestAt ? `<p class="setting-hint">${t('mcp.clientsLabel')}: ${new Date(info.lastRequestAt).toLocaleString()} (${info.recentRequests})</p>` : ''}
+        <div class="settings-panel mcp-tools-panel">
+          <div class="mcp-tools-wrap">
+            <table class="mcp-tools-table">
+              <thead><tr><th data-i18n="mcp.toolColName">Herramienta</th><th data-i18n="mcp.toolColDesc">Descripción</th></tr></thead>
+              <tbody>${enabled ? toolRows(info.tools, destructive, dev) : ''}</tbody>
+            </table>
+          </div>
+          ${info.lastRequestAt ? `<div class="mcp-hint">${t('mcp.clientsLabel')}: ${new Date(info.lastRequestAt).toLocaleString()} (${info.recentRequests})</div>` : ''}
         </div>
       </div>
     `;
 
-    el.querySelector('#mcpEnabledToggle').addEventListener('change', async (e) => {
-      await patchConfig({ mcpEnabled: e.target.checked });
-      renderMcpPanel();
-    });
-    el.querySelector('#mcpDestructiveToggle').addEventListener('change', async (e) => {
-      await patchConfig({ mcpDestructiveToolsEnabled: e.target.checked });
-      renderMcpPanel();
-    });
-    el.querySelector('#mcpCopyEndpoint').addEventListener('click', () => { copyToClipboard(url); showToast(t('toast.clipboardCopied')); });
-    el.querySelector('#mcpCopyCC').addEventListener('click', () => { copyToClipboard(snippetClaudeCode(url)); showToast(t('toast.clipboardCopied')); });
-    el.querySelector('#mcpCopyCD').addEventListener('click', () => { copyToClipboard(snippetClaudeDesktop(url)); showToast(t('toast.clipboardCopied')); });
+    const onToggle = (id, key) => {
+      const cb = el.querySelector(id);
+      if (cb) cb.addEventListener('change', async (e) => {
+        await patchConfig({ [key]: e.target.checked });
+        renderMcpPanel();
+      });
+    };
+    onToggle('#mcpEnabledToggle', 'mcpEnabled');
+    onToggle('#mcpDestructiveToggle', 'mcpDestructiveToolsEnabled');
+    onToggle('#mcpDevToggle', 'mcpDevToolsEnabled');
+
+    const onCopy = (id, text) => {
+      const b = el.querySelector(id);
+      if (b) b.addEventListener('click', () => { copyToClipboard(text); showToast(t('toast.clipboardCopied')); });
+    };
+    onCopy('#mcpCopyEndpoint', url);
+    onCopy('#mcpCopyCC', snippetClaudeCode(url));
+    onCopy('#mcpCopyCD', snippetClaudeDesktop(url));
 
     aplicarTraducciones(el);
   }).catch(() => {
-    el.innerHTML = `<div class="settings-section"><p class="setting-hint" data-i18n="mcp.loadError">No se pudo cargar el estado del MCP.</p></div>`;
+    el.innerHTML = `<div class="settings-section"><div class="mcp-hint" data-i18n="mcp.loadError">No se pudo cargar el estado del MCP.</div></div>`;
     aplicarTraducciones(el);
   });
 }

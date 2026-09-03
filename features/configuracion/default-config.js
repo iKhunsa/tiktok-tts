@@ -38,6 +38,9 @@ const DEFAULT_CONFIG = {
   // van detras de su propio toggle + prompt del host del agente.
   mcpEnabled: true,
   mcpDestructiveToolsEnabled: false,
+  // Tools MCP de desarrollo (dev_*): inyectar chat/eventos, ver logs crudos,
+  // status completo, bus emit. Solo para debug — default off.
+  mcpDevToolsEnabled: false,
   adminIdentities: {
     tiktok: ['ikhunsa_tiklivetts', 'soykurorai'],
     twitch: ['soykurorai'],

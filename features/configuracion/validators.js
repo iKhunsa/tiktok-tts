@@ -31,6 +31,7 @@ const CONFIG_VALIDATORS = {
   ttsReadNonFollowers: (v) => typeof v === 'boolean',
   mcpEnabled: (v) => typeof v === 'boolean',
   mcpDestructiveToolsEnabled: (v) => typeof v === 'boolean',
+  mcpDevToolsEnabled: (v) => typeof v === 'boolean',
   adminIdentities: (v) => v && typeof v === 'object'
     && ['tiktok', 'twitch', 'youtube', 'kick'].every((p) => Array.isArray(v[p]) && v[p].every((x) => typeof x === 'string')),
 };

@@ -1056,6 +1056,9 @@
       "movil": "Mobile panel",
       "overlay": "Overlays",
       "sonido": "Sound"
-    }
+    },
+    "devLabel": "Developer tools",
+    "devHint": "Inject chat/events, view raw logs, full status, bus. For debugging only.",
+    "badgeDev": "dev"
   }
 }

@@ -16,29 +16,35 @@ const getState = require('./tools/get-state');
 const getRecentChat = require('./tools/get-recent-chat');
 const getActivity = require('./tools/get-activity');
 const health = require('./tools/health');
+const { registerDevTools } = require('./dev-tools');
 
 module.exports = {
   name: 'mcp',
 
-  register({ app, bus, logger }) {
+  register({ app, wss, bus, logger }) {
     mcpRegistry.attachLogger(logger);
 
     const activity = createActivityBuffer({ cap: 300 });
     bus.on('log:entry', (e) => activity.push(e), 'mcp');
 
     // Estado de config relevante, refrescado por el bus.
-    const cfg = { mcpEnabled: true, mcpDestructiveToolsEnabled: false };
+    const cfg = {
+      mcpEnabled: true,
+      mcpDestructiveToolsEnabled: false,
+      mcpDevToolsEnabled: !!process.env.MCP_DEV_TOOLS,
+    };
     const leerConfig = () => {
       try {
         bus.emit('config:get', (c) => {
           if (c && typeof c.mcpEnabled === 'boolean') cfg.mcpEnabled = c.mcpEnabled;
           if (c && typeof c.mcpDestructiveToolsEnabled === 'boolean') cfg.mcpDestructiveToolsEnabled = c.mcpDestructiveToolsEnabled;
+          if (c && typeof c.mcpDevToolsEnabled === 'boolean') cfg.mcpDevToolsEnabled = c.mcpDevToolsEnabled || !!process.env.MCP_DEV_TOOLS;
         });
       } catch (_) { /* noop */ }
     };
     leerConfig();
     bus.on('config:actualizado', ({ keysChanged }) => {
-      if (Array.isArray(keysChanged) && (keysChanged.includes('mcpEnabled') || keysChanged.includes('mcpDestructiveToolsEnabled'))) {
+      if (Array.isArray(keysChanged) && keysChanged.some((k) => ['mcpEnabled', 'mcpDestructiveToolsEnabled', 'mcpDevToolsEnabled'].includes(k))) {
         leerConfig();
       }
     }, 'mcp');
@@ -82,6 +88,10 @@ module.exports = {
       handler: () => health({ mcpRegistry, isEnabled: () => cfg.mcpEnabled }),
     });
 
+    // Tools de desarrollo (dev: true). Se registran siempre; el cable las filtra
+    // salvo mcpDevToolsEnabled / env MCP_DEV_TOOLS.
+    registerDevTools({ bus, logger, wss });
+
     // Observabilidad: decora callTool para emitir mcp.tool.* al bus.
     wrapWithObservability(mcpRegistry, { logger });
 
@@ -102,6 +112,7 @@ module.exports = {
     mountStreamableHttp(app, {
       isEnabled: () => cfg.mcpEnabled,
       isDestructiveEnabled: () => cfg.mcpDestructiveToolsEnabled,
+      isDevEnabled: () => cfg.mcpDevToolsEnabled,
       registry: mcpRegistry,
       logger,
       onRequest: () => { reqCount++; lastReqTs = Date.now(); },
@@ -112,6 +123,7 @@ module.exports = {
       res.json({
         enabled: cfg.mcpEnabled,
         destructiveEnabled: cfg.mcpDestructiveToolsEnabled,
+        devEnabled: cfg.mcpDevToolsEnabled,
         endpoint: '/mcp',
         protocolVersion: health.PROTOCOL_VERSION,
         version: require('../../package.json').version,

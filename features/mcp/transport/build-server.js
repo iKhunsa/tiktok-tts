@@ -21,6 +21,8 @@ function buildMcpServer(ctx) {
   for (const meta of ctx.registry.listTools()) {
     // Si las tools destructivas están apagadas, no se exponen por el cable.
     if (meta.annotations.destructiveHint && !ctx.destructiveEnabled) continue;
+    // Tools de desarrollo: solo con mcpDevToolsEnabled on.
+    if (meta.dev && !ctx.devEnabled) continue;
 
     server.registerTool(
       meta.name,

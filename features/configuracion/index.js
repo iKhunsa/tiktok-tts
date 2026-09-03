@@ -19,7 +19,7 @@ const CONFIG_KEYS_PUBLICAS = [
   'ttsVoiceLang', 'ttsSlowSpeech', 'ttsReadNonFollowers', 'langFilterEnabled', 'dictFilterEnabled',
   'allowedExtraLangs', 'rateLimitEnabled', 'TTS_RATE_LIMIT_MAX', 'TTS_RATE_WINDOW_MS', 'TTS_MAX_CHARS',
   'MAX_QUEUE_MSG', 'LIKE_DEBOUNCE_MS', 'musicEnabled', 'musicVolume', 'musicMaxQueue', 'musicUserCooldownMs',
-  'playlistEnabled', 'playlistShuffle', 'mcpEnabled', 'mcpDestructiveToolsEnabled',
+  'playlistEnabled', 'playlistShuffle', 'mcpEnabled', 'mcpDestructiveToolsEnabled', 'mcpDevToolsEnabled',
 ];
 
 module.exports = {

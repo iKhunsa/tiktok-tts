@@ -103,6 +103,9 @@ function registerTool(def) {
     description,
     inputSchema,
     domain: def.domain || 'desconocido',
+    // `dev` es concepto nuestro (no MCP): tool solo para desarrollo, se filtra
+    // del cable salvo que mcpDevToolsEnabled esté on. Ver features/mcp/dev-tools.js.
+    dev: !!def.dev,
     annotations: {
       readOnlyHint: !!def.readOnly,
       destructiveHint: !!def.destructive,
