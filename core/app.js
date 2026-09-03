@@ -15,6 +15,18 @@ const { getRequestHostname, isLocalHostname } = require('./security/is-local-req
  */
 function validateLocalMutation(req, res, next) {
   if (req.path.startsWith('/api/mobile') || req.path === '/mobile') return next();
+  // /mcp: si MCP_TOKEN esta seteado, se acepta desde cualquier host con el
+  // bearer correcto (para agentes remotos); si no, cae al chequeo local de
+  // abajo (comportamiento por defecto — solo-localhost). Espeja /api/mobile*.
+  if (req.path === '/mcp' || req.path.startsWith('/mcp/')) {
+    const token = (process.env.MCP_TOKEN || '').trim();
+    if (token) {
+      const auth = req.headers.authorization || '';
+      if (auth === `Bearer ${token}`) return next();
+      return res.status(401).json({ error: 'MCP token invalido o ausente' });
+    }
+    // sin token configurado → sigue el chequeo local normal
+  }
   if (!['POST', 'PATCH', 'DELETE', 'PUT'].includes(req.method)) return next();
 
   const host = getRequestHostname(req.headers.host);
