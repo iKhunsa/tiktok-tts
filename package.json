@@ -12,6 +12,8 @@
     "electron": "electron .",
     "make-icon": "electron scripts/make-app-icon.js && python scripts/make-app-icon.py",
     "dev:front": "vite --config interfaz/vite.config.js",
+    "dev:build-watch": "vite build --config interfaz/vite.config.js --watch",
+    "dev:all": "concurrently \"npm run dev:build-watch\" \"npm run dev\"",
     "build:front": "vite build --config interfaz/vite.config.js",
     "serve": "npm run build:front && node server.js",
     "serve:watch": "npm run build:front && node --watch server.js",
@@ -119,6 +121,7 @@
     "youtube-chat": "^2.2.0"
   },
   "devDependencies": {
+    "concurrently": "^10.0.5",
     "electron": "^41.5.0",
     "electron-builder": "^26.8.1",
     "eslint": "^9.39.5",

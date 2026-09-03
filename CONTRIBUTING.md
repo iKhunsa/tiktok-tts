@@ -18,19 +18,33 @@ npm install
 
 ### Modos de ejecución
 
-| Comando | Qué hace |
-|---------|----------|
-| `npm run electron` | Abre la app completa en modo desarrollo (Electron + servidor + UI). **Es el modo recomendado.** |
-| `npm run serve` | Buildea el frontend y levanta el servidor (`node server.js`). Abrí `http://localhost:3000` en cualquier navegador — **no necesita Electron**. Ideal para iterar UI/backend/overlays/MCP. |
-| `npm run serve:watch` | Igual que `serve` pero con recarga del servidor (`node --watch`). |
-| `npm run dev` | Solo el servidor con recarga, **sin** buildear el frontend (usa el `interfaz/dist/` que haya). |
-| `npm start` | Solo el servidor, sin recarga ni build. |
+| Comando | Caso de uso | WebSocket | Hot Reload CSS |
+|---------|-----------|-----------|----------------|
+| `npm run electron` | App completa Electron + servidor. **Es el modo recomendado.** | ✅ Funciona | ❌ Requiere refresh |
+| `npm run serve` | Buildea frontend + servidor. Abre `http://localhost:3000`. **Ideal para iterar UI/backend/overlays/MCP.** | ✅ Funciona | ❌ Requiere refresh |
+| `npm run serve:watch` | Igual que `serve` pero con recarga del servidor (`node --watch`). | ✅ Funciona | ❌ Requiere refresh |
+| `npm run dev:all` ⭐ | **PARA DESARROLLO INTERACTIVO DE CSS/HTML.** Corre compilación + servidor en paralelo. Edita CSS → Vite compila (~2s) → refresh en :3000. | ✅ Funciona | ⚠️ Automático, refresh manual |
+| `npm run dev` | Solo servidor, **sin** buildear frontend. Usa `interfaz/dist/` existente. Requiere `npm run build:front` manual si editás CSS. | ✅ Funciona | ❌ Requiere rebuild + refresh |
+| `npm run dev:front` | Solo Vite dev server (puerto 5173) con hot reload completo. **No recomendado:** choca con WebSocket de la app. | ❌ No funciona | ✅ Automático sin refresh |
+| `npm start` | Solo servidor, sin recarga ni build. | ✅ Funciona | ❌ Requiere rebuild + refresh |
 
 Con el servidor activo, la UI está en `http://localhost:3000`, los overlays en
 `http://localhost:3000/overlay-*.html` y el endpoint MCP en
 `http://localhost:3000/mcp`. Lo único que Electron aporta y el navegador no:
 atajos globales de teclado, tray, auto-update y el error tracking de GlitchTip/
 Aptabase (que viven en `electron-shell/`).
+
+#### ¿Por qué los cambios de CSS no se actualizan en tiempo real?
+
+**TL;DR:** Usa `npm run dev:all` si editas CSS/HTML frecuentemente.
+
+**Explicación:** Express sirve archivos desde `interfaz/dist/` (compilado por Vite). Los cambios en `interfaz/src/` no aparecen automáticamente sin:
+1. Recompilar Vite (`npm run build:front` manual, o automático con `dev:build-watch`)
+2. Hard refresh en el navegador (Ctrl+Shift+R) para limpiar cache
+
+- `npm run dev` = solo servidor, espera que `/dist/` esté actualizado
+- `npm run dev:all` = servidor + compilador Vite en watch mode (recompila automáticamente)
+- `npm run dev:front` = Vite dev server con hot reload completo (pero choca con WebSocket)
 
 ## Estructura del proyecto
 
