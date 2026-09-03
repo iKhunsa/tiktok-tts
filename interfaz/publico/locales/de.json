@@ -1056,6 +1056,9 @@
       "movil": "Mobiles Panel",
       "overlay": "Overlays",
       "sonido": "Ton"
-    }
+    },
+    "devLabel": "Entwickler-Werkzeuge",
+    "devHint": "Chat/Events einspeisen, Rohlogs, voller Status, Bus. Nur zum Debuggen.",
+    "badgeDev": "dev"
   }
 }

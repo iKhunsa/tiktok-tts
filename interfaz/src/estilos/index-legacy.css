@@ -1512,37 +1512,75 @@
       margin-bottom: 12px;
     }
 
-    /* ── MCP (Agente) ────────────────────────────────────── */
+    /* ── MCP (Agente) — sigue el sistema de .settings-* ─────── */
+    /* Texto de ayuda bajo un toggle — mismo patrón que los hints de la vista Voz. */
+    .mcp-hint {
+      font-size: var(--text-2xs);
+      color: var(--text-muted);
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+    /* Ítems que ocupan las 2 columnas del grid .settings-panel. */
+    .mcp-full { grid-column: 1 / -1; }
+
+    .mcp-endpoint {
+      flex: 1;
+      padding: 9px 12px;
+      background: var(--bg-button);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      font-family: 'Source Code Pro', monospace;
+      font-size: var(--text-sm);
+      color: var(--text);
+      overflow-x: auto;
+      white-space: nowrap;
+    }
     .mcp-snippet {
       background: var(--bg-button);
       border: 1px solid var(--border-strong);
-      border-radius: 8px;
+      border-radius: var(--radius-sm);
       padding: 10px 12px;
       font-family: 'Source Code Pro', monospace;
-      font-size: 12px;
+      font-size: var(--text-xs);
+      line-height: 1.6;
       color: var(--text-secondary);
       white-space: pre;
       overflow-x: auto;
       margin: 4px 0 6px;
     }
-    .mcp-count { float: right; font-size: 11px; color: var(--text-muted); text-transform: none; letter-spacing: 0; }
-    .mcp-tools-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .mcp-count { font-size: var(--text-2xs); font-weight: 400; color: var(--text-muted); letter-spacing: 0; text-transform: none; }
+
+    .mcp-tools-panel { display: block; }
+    .mcp-tools-wrap { overflow-x: auto; }
+    .mcp-tools-table { width: 100%; border-collapse: collapse; font-size: var(--text-xs); }
     .mcp-tools-table th {
-      text-align: left; padding: 6px 8px; color: var(--text-muted);
-      border-bottom: 1px solid var(--border); font-weight: 600;
+      text-align: left; padding: 6px 8px;
+      font-size: var(--text-3xs); text-transform: uppercase; letter-spacing: 0.8px;
+      color: var(--text-muted); font-weight: 600;
+      border-bottom: 1px solid var(--border-strong);
     }
-    .mcp-tools-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text-secondary); }
-    .mcp-tools-table td code { font-family: 'Source Code Pro', monospace; color: var(--text); }
+    .mcp-tools-table td {
+      padding: 6px 8px; border-bottom: 1px solid var(--border);
+      vertical-align: top; color: var(--text-secondary); line-height: 1.5;
+    }
+    .mcp-tools-table td code {
+      font-family: 'Source Code Pro', monospace; font-size: var(--text-2xs); color: var(--text);
+    }
     .mcp-domain-row td {
-      background: rgba(255, 255, 255, 0.03);
+      background: var(--surface-raised);
       font-family: 'Source Code Pro', monospace;
-      text-transform: uppercase; letter-spacing: 1px; font-size: 10px; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 1px;
+      font-size: var(--text-3xs); color: var(--text-muted);
+      padding-top: 9px; padding-bottom: 5px;
     }
+    .mcp-row-off { opacity: 0.4; }
     .mcp-badge {
-      display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 999px;
-      background: rgba(255, 255, 255, 0.08); color: var(--text-muted); vertical-align: middle;
+      display: inline-block; font-size: var(--text-3xs); padding: 1px 6px;
+      border-radius: var(--radius-pill); background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted); vertical-align: middle; line-height: 1.6;
     }
     .mcp-badge-danger { background: rgba(240, 33, 58, 0.15); color: var(--accent); }
+    .mcp-badge-dev { background: rgba(255, 187, 0, 0.15); color: var(--warn); }
 
     /* ── GLOW ────────────────────────────────────────────── */
     .app-glow {

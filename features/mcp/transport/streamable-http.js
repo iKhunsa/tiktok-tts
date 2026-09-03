@@ -11,7 +11,7 @@ const { buildMcpServer } = require('./build-server');
 
 /**
  * @param {import('express').Express} app
- * @param {{ isEnabled:()=>boolean, isDestructiveEnabled:()=>boolean, registry, logger, onRequest?:()=>void }} ctx
+ * @param {{ isEnabled:()=>boolean, isDestructiveEnabled:()=>boolean, isDevEnabled:()=>boolean, registry, logger, onRequest?:()=>void }} ctx
  * @returns {() => void}  cierre (no-op en stateless, se deja por simetría)
  */
 function mountStreamableHttp(app, ctx) {
@@ -36,7 +36,11 @@ function mountStreamableHttp(app, ctx) {
     let server;
     let transport;
     try {
-      server = buildMcpServer({ registry: ctx.registry, destructiveEnabled: ctx.isDestructiveEnabled() });
+      server = buildMcpServer({
+        registry: ctx.registry,
+        destructiveEnabled: ctx.isDestructiveEnabled(),
+        devEnabled: ctx.isDevEnabled ? ctx.isDevEnabled() : false,
+      });
       transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
       res.on('close', () => {
         try { transport.close(); } catch (_) { /* noop */ }
