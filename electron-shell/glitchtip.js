@@ -60,6 +60,9 @@ const RUIDO_BREADCRUMB = new Set([
   'configuracion.log_cliente.recibido',
   'core.ws.cliente_conectado', 'core.ws.cliente_desconectado',
   'core.broadcast.envio_fallido', 'core.ws.mensaje_invalido',
+  // MCP: un request HTTP por llamada = ruido; mcp.tool.llamada sí queda como
+  // breadcrumb (útil antes de un error_mcp_tool).
+  'mcp.transport.request',
 ]);
 
 function resolverDsn(userDataDir) {
@@ -152,6 +155,13 @@ const EVENTO_A_TIPO = {
   'promo.autopromocion.fallo_callback': 'error_autopromo',
   'clips.marcado.fallido': 'error_clip_no_marcado',
   'idioma.dict.carga_fallida': 'error_diccionario_idioma',
+  // MCP — todo error del subsistema (Fase 5). El cap por fingerprint
+  // (CAP_ISSUES_POR_TIPO) evita que un tool roto en loop llene el panel.
+  'mcp.tool.excepcion': 'error_mcp_tool',
+  'mcp.transport.error': 'error_mcp_transport',
+  'mcp.registro.tool_duplicada': 'error_mcp_registro',
+  'mcp.registro.schema_invalido': 'error_mcp_registro',
+  'mcp.estado.provider_fallido': 'error_mcp_estado',
 };
 
 // warn que se promueven a issue (fallos que el usuario sí sufre — se le corta
@@ -243,6 +253,8 @@ function estadoApp() {
     filtro_idioma: config ? Boolean(config.langFilterEnabled) : null,
     filtro_diccionario: config ? Boolean(config.dictFilterEnabled) : null,
     limite_mensajes: config ? Boolean(config.rateLimitEnabled) : null,
+    mcp_habilitado: config ? (config.mcpEnabled !== false) : null,
+    mcp_destructivas: config ? Boolean(config.mcpDestructiveToolsEnabled) : null,
   };
 }
 
@@ -396,13 +408,27 @@ function reportarIssue(e, logger) {
   const cola = colaLog(logger);
   if (cola) contexts.log_cola = { texto: cola };
 
+  const tags = {
+    dominio: e.domain || 'desconocido',
+    evento: e.event,
+    origen: esRenderer ? (src.startsWith('overlay:') ? 'overlay' : 'ventana') : 'backend',
+  };
+
+  // Fase 5 — contexto extra para issues del subsistema MCP. Solo NOMBRES de
+  // args, nunca valores (misma regla que aptabase config_changed).
+  if (e.domain === 'mcp') {
+    contexts.mcp = {
+      tool: (e.data && e.data.tool) || null,
+      code: (e.data && e.data.code) || null,
+      ms: (e.data && e.data.ms) || null,
+      args_keys: (e.data && Array.isArray(e.data.argsKeys)) ? e.data.argsKeys.join(', ') : null,
+    };
+    if (e.data && e.data.tool) tags.mcp_tool = String(e.data.tool);
+  }
+
   Sentry.captureException(err, {
     level: e.level === 'fatal' ? 'fatal' : (esWarnPromovido ? 'warning' : 'error'),
-    tags: {
-      dominio: e.domain || 'desconocido',
-      evento: e.event,
-      origen: esRenderer ? (src.startsWith('overlay:') ? 'overlay' : 'ventana') : 'backend',
-    },
+    tags,
     fingerprint: [tipo],
     contexts,
   });
