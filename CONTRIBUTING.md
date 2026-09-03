@@ -49,6 +49,20 @@ Hay más contexto técnico en [`CLAUDE.md`](CLAUDE.md) / [`AGENTS.md`](AGENTS.md
 3. Si agregas texto visible en la UI/overlays, agrega su clave en `interfaz/publico/locales/*.json`.
 4. Abre un Pull Request contra `main` usando la plantilla.
 
+### Checklist MCP (si tu feature agrega rutas de escritura)
+
+El servidor MCP (`features/mcp/`) expone las capacidades de la app a agentes de
+IA. Toda feature nueva con rutas de escritura debe seguir creciendo el toolset
+(ver `features/mcp/PROTOCOL.md`). El CI lo verifica (`scripts/check-mcp.js` +
+`test/mcp-registry.test.js`).
+
+- [ ] ¿Agrega `app.post/patch/delete`? → registra ≥1 `mcp.registerTool(...)` en
+      tu propio `register()`, colocada con la feature.
+- [ ] ¿Tiene estado que un agente querría consultar? → `mcp.registerStateProvider(...)`.
+- [ ] ¿Acción irreversible (ban, delete, disconnect)? → `destructive: true`.
+- [ ] `inputSchema` en JSON Schema plano (no Zod).
+- [ ] Suma tu dominio a `CON_ESCRITURA` en `test/mcp-registry.test.js`.
+
 ### Convención de commits
 
 El historial usa [Conventional Commits](https://www.conventionalcommits.org/) con la versión entre paréntesis:

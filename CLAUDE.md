@@ -25,13 +25,13 @@ Backend reconstruido por dominios (rebuild completo, ver `plan-fases/` para
 el historial de las 14 fases y `arquitectura-propuesta.md` para el
 documento de diseño vivo). Ya no es un monolito: `main.js`/`server.js` son
 orquestadores delgados, toda la lógica de negocio vive repartida en
-carpetas por dominio bajo `features/` (los 15 dominios agrupados ahí a
+carpetas por dominio bajo `features/` (los 16 dominios agrupados ahí a
 propósito, para no saturar la raíz del repo — `core/` y `electron-shell/`
 NO son features, se quedan sueltos en la raíz por ser kernel/shell).
 
 ```
 main.js (Electron main process)
-  ├── require('./server.js')       ← arranca /core + registra los 15 dominios de features/
+  ├── require('./server.js')       ← arranca /core + registra los 16 dominios de features/
   ├── electron-shell/window.js     ← BrowserWindow, carga http://localhost:3000
   ├── electron-shell/tray.js       ← ícono bandeja, menú open/exit
   ├── electron-shell/updater.js    ← autoUpdater, chequea GitHub Releases
@@ -55,7 +55,8 @@ server.js (Express + WS en puerto 3000)
       ├── bot/                       ← detección de comandos de chat (!p)
       ├── clips/                     ← marca clip en OBS (atajo o comando móvil)
       ├── avanzado/ + donar/         ← feature flags, UI avanzada; donar es no-op documentado
-      └── telemetria/                ← uso agregado anónimo, self-hosted (ver sección propia)
+      ├── telemetria/                ← uso agregado anónimo, self-hosted (ver sección propia)
+      └── mcp/                       ← servidor MCP (tools para agentes), registrado ÚLTIMO
 ```
 
 **Contrato entre dominios:** un dominio nunca importa el módulo interno de
@@ -206,6 +207,50 @@ bakeado) es un no-op total.
   `main.js#before-quit`.
 - Toda prop pasa por `sanear()` (rutas de home fuera) + clip a 200 chars, tope
   de 20 props/evento. Nunca nick/userId/ip/texto libre.
+
+## MCP — servidor de herramientas para agentes (`features/mcp/`)
+
+Dominio que expone las capacidades de la app como **tools MCP** (Model Context
+Protocol) para que un agente (Claude Code, Claude Desktop) opere la app: leer el
+chat, moderar, manejar música, consultar estado. Transporte **Streamable HTTP**
+en `POST /mcp` (SDK `@modelcontextprotocol/sdk`, stateless, server+transport
+nuevos por request). `features/mcp/` se registra **último** en `server.js`.
+
+- **`core/contracts/mcp-registry.js`** — registro append-only (mismo idiom que
+  `core/contracts/perf.js`: singleton require-once). `registerTool({name, title,
+  description, inputSchema, handler, readOnly?, destructive?, idempotent?,
+  domain})`, `listTools()`, `callTool(name, args)` (devuelve `{ok, result}` o
+  `{ok:false, error:{code,message,stack?}}` — nunca lanza), `registerStateProvider(fn, domain)`,
+  `collectState()`.
+- **Regla de crecimiento (forzada por CI):** todo dominio que monta
+  `app.post/patch/delete` **debe** llamar `mcp.registerTool()` desde su propio
+  `register()`, colocado con la feature. Lo verifican `scripts/check-mcp.js`
+  (grep) y `test/mcp-registry.test.js` (boot + assert). Exentos con
+  justificación: `chat` (lectura vía `get_recent_chat`), `reporte-bug` (post
+  externo). Ver `features/mcp/PROTOCOL.md`.
+- **`inputSchema` en JSON Schema plano** — los dominios no tocan Zod;
+  `features/mcp/transport/schema-adapter.js` lo convierte al shape que pide el SDK.
+- **Handlers** usan seams de bus/dominio, no self-calls HTTP (salvo donde el
+  acople req/res es pesado — `channels_disconnect` marcado `// MCP-FALLBACK`).
+- **Estado pull-based** (anti-`movil`): `get_state` = `collectState()` (cada
+  `registerStateProvider` de cada dominio) + pulls de `config:get` etc. Un campo
+  nuevo se agrega en el provider de su dominio, en un solo lugar.
+- **Doble gate de destructivas:** `mcpEnabled` (default `true` — endpoint
+  solo-localhost) + `mcpDestructiveToolsEnabled` (default `false`). Las tools con
+  `destructive:true` (ban/mute/disconnect/delete/set_config) se filtran del cable
+  en `build-server.js` cuando el 2º toggle está off; el host del agente igual
+  pide confirmación por el `destructiveHint`.
+- **Auth remota (seam):** por defecto solo-localhost (`core/app.js#validateLocalMutation`).
+  Env `MCP_TOKEN` seteada → acepta cualquier host con `Authorization: Bearer <token>`.
+- **Observabilidad:** `features/mcp/observability.js` decora `callTool` →
+  `mcp.tool.{llamada,fallo,excepcion}` al bus → GlitchTip + Aptabase
+  (`mcp_tool_used`) + telemetría, gratis. **Todo error del subsistema MCP**
+  (`mcp.*.excepcion`, `mcp.transport.error`, `mcp.registro.*`) se fingerprintea
+  en GlitchTip como `error_mcp_*`; los fallos esperados de tool (`mcp.tool.fallo`)
+  NO son issue.
+- **UI:** sección "Agente MCP" en la tienda de plugins (`interfaz/src/vistas/principal/mcp/`,
+  nace oculta) — toggles, endpoint, snippets de config, tabla de tools por dominio.
+- `GET /api/mcp/info` — estado + catálogo de tools para la UI (GET, sin auth).
 
 ## Variables de entorno clave
 

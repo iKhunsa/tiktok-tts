@@ -82,12 +82,16 @@ test('GARANTÍA: todo dominio con rutas de escritura registra ≥1 tool', () => 
   // Dominios que montan POST/PATCH/DELETE y por tanto deben aparecer como
   // t.domain de alguna tool. Al agregar una feature con escritura, sumala acá
   // y registrale su tool — si no, este test falla (ese es el punto).
-  const CON_ESCRITURA = ['moderacion', 'canales', 'sonido', 'configuracion', 'overlay', 'chat'];
+  const CON_ESCRITURA = ['moderacion', 'canales', 'sonido', 'configuracion', 'overlay', 'movil'];
   const dominiosConTool = new Set(registry.listTools().map((t) => t.domain));
-  const faltan = CON_ESCRITURA.filter((d) => !dominiosConTool.has(d) && d !== 'chat');
-  // chat: el ring buffer lo consume la tool get_recent_chat del dominio mcp, no
-  // hace falta una tool propia de chat. El resto sí.
+  const faltan = CON_ESCRITURA.filter((d) => !dominiosConTool.has(d));
   assert.deepEqual(faltan, [], `dominios con escritura sin tool MCP: ${faltan.join(', ')}`);
+});
+
+test('GARANTÍA (estática): scripts/check-mcp.js#check no encuentra dominios sin tool', () => {
+  const { check } = require('../scripts/check-mcp');
+  const problemas = check();
+  assert.deepEqual(problemas, [], `check-mcp: ${problemas.join(', ')}`);
 });
 
 test('varias tools por dominio y flags destructive correctos', () => {

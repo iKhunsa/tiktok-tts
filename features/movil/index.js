@@ -7,6 +7,9 @@ const { localIp } = require('./routes/local-ip');
 const { qr } = require('./routes/qr');
 const { state: stateRoute } = require('./routes/state');
 const { command } = require('./routes/command');
+const { MOBILE_ALLOWED_ACTIONS } = require('./allowed-actions');
+const { hasDesktopClient } = require('./has-desktop-client');
+const mcpRegistry = require('../../core/contracts/mcp-registry');
 
 const PORT = process.env.PORT || 3000;
 
@@ -37,6 +40,39 @@ module.exports = {
     app.get('/api/mobile/qr', qr(deps, PORT));
     app.get('/api/mobile/state', guard, stateRoute(mobileState));
     app.post('/api/mobile/command', guard, command(deps));
+
+    // ── MCP ──────────────────────────────────────────────────────────────
+    mcpRegistry.registerStateProvider(() => ({
+      mobile: {
+        ttsGlobalEnabled: mobileState.ttsGlobalEnabled,
+        ttsPaused: mobileState.ttsPaused,
+        streamTimerRunning: mobileState.streamTimerRunning,
+        options: mobileState.options,
+      },
+    }), 'movil');
+
+    mcpRegistry.registerTool({
+      name: 'remote_command', domain: 'movil',
+      title: 'Remote command',
+      description: `Send a control command to the desktop (same set as the mobile panel). Actions: ${[...MOBILE_ALLOWED_ACTIONS].join(', ')}.`,
+      inputSchema: {
+        type: 'object', required: ['action'],
+        properties: {
+          action: { type: 'string' },
+          value: { type: 'number', description: 'For musicVolume (0-1)' },
+          soundId: { type: 'string', description: 'For soundpadPlay' },
+          clipId: { type: 'string', description: 'For deleteClip' },
+        },
+      },
+      handler: (a) => {
+        if (!MOBILE_ALLOWED_ACTIONS.has(a.action)) return { ok: false, reason: 'accion_no_valida' };
+        bus.emit('movil:comando', { action: a.action, value: a.value, soundId: a.soundId, clipId: a.clipId });
+        if (a.action === 'markClip') return { ok: true };
+        if (!hasDesktopClient(wss)) return { ok: false, reason: 'desktop-offline' };
+        bus.emit('ws:broadcast', { type: 'remote-cmd', action: a.action, value: a.value, soundId: a.soundId, clipId: a.clipId });
+        return { ok: true };
+      },
+    });
 
     return { rutas: 5, listeners: 1 };
   },
