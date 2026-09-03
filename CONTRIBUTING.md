@@ -21,10 +21,16 @@ npm install
 | Comando | Qué hace |
 |---------|----------|
 | `npm run electron` | Abre la app completa en modo desarrollo (Electron + servidor + UI). **Es el modo recomendado.** |
-| `npm run dev` | Levanta solo el servidor Node.js con recarga (`node --watch server.js`), sin la ventana de Electron. Útil para trabajar en backend/overlays desde el navegador. |
-| `npm start` | Solo el servidor, sin recarga. |
+| `npm run serve` | Buildea el frontend y levanta el servidor (`node server.js`). Abrí `http://localhost:3000` en cualquier navegador — **no necesita Electron**. Ideal para iterar UI/backend/overlays/MCP. |
+| `npm run serve:watch` | Igual que `serve` pero con recarga del servidor (`node --watch`). |
+| `npm run dev` | Solo el servidor con recarga, **sin** buildear el frontend (usa el `interfaz/dist/` que haya). |
+| `npm start` | Solo el servidor, sin recarga ni build. |
 
-Con el servidor activo, la UI está en `http://localhost:3000` y los overlays en `http://localhost:3000/overlay-*.html`.
+Con el servidor activo, la UI está en `http://localhost:3000`, los overlays en
+`http://localhost:3000/overlay-*.html` y el endpoint MCP en
+`http://localhost:3000/mcp`. Lo único que Electron aporta y el navegador no:
+atajos globales de teclado, tray, auto-update y el error tracking de GlitchTip/
+Aptabase (que viven en `electron-shell/`).
 
 ## Estructura del proyecto
 
