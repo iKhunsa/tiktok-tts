@@ -365,6 +365,22 @@ Reglas duras (fixean los patrones imprecisos encontrados hoy):
 - `electron_shell.atajo.invalido` (warn) — data: `{shortcutSolicitado, motivo}` — fixea main.js:547 (hoy `console.error` suelto + respuesta al renderer sin registro)
 - `electron_shell.atajo.registro_fallido` (error) — data: `{action, shortcut, error, stack}` — fixea main.js:584 y main.js:624 (el segundo hoy NI SIQUIERA tiene console.error, completamente mudo)
 
+## /mcp (agregado post-rebuild)
+
+Servidor MCP. Los eventos se emiten desde `features/mcp/` y `core/contracts/mcp-registry.js`.
+`electron-shell/glitchtip.js` mapea los de nivel `error` a fingerprints `error_mcp_*`.
+
+- `mcp.dominio.listo` (info) — data: `{tools, enabled}` — al montar el dominio.
+- `mcp.tool.llamada` (info) — data: `{tool, ms}` — llamada OK. Breadcrumb + Aptabase `mcp_tool_used`.
+- `mcp.tool.fallo` (warn) — data: `{tool, ms, code}` — fallo **esperado** (`unknown_tool`, `invalid_args`, un `{ok:false}` deliberado del handler). Breadcrumb, **NO** issue.
+- `mcp.tool.excepcion` (error) — data: `{tool, ms, code, argsKeys, stack}` — el handler **lanzó** (bug). → issue `error_mcp_tool`, tag `mcp_tool`, context `mcp`.
+- `mcp.transport.request` (debug) — data: `{method}` — un request HTTP a `/mcp`. Ruido de breadcrumb (excluido).
+- `mcp.transport.error` (error) — data: `{method, error, stack}` — excepción que escapó del `StreamableHTTPServerTransport` / `server.connect`. → issue `error_mcp_transport`.
+- `mcp.deshabilitado.rechazo` (info) — data: `{method}` — request a `/mcp` con `mcpEnabled=false` (respondido 503).
+- `mcp.registro.tool_duplicada` (error) — data: `{name, domain}` — dos dominios registraron el mismo `name`. → `error_mcp_registro` (+ el 2º dominio no monta, aislado).
+- `mcp.registro.schema_invalido` (error) — data: `{name, domain, error}` — `inputSchema` que el adapter no soporta. → `error_mcp_registro`.
+- `mcp.estado.provider_fallido` (error) — data: `{domain, error}` — un `registerStateProvider` lanzó en `collectState()`. `get_state` devuelve el resto igual. → `error_mcp_estado`.
+
 ---
 
 # Checklist de migración (por si se aplica gradualmente antes de la reconstrucción completa)
