@@ -1,6 +1,6 @@
 {
   "name": "tiktok-live-tts",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "description": "TikTok Live Chat TTS Reader",
   "author": "iKhunsa",
   "main": "main.js",
@@ -8,7 +8,7 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "lint": "eslint .",
-    "test": "node --test \"test/**/*.test.js\"",
+    "test": "node --test",
     "electron": "electron .",
     "make-icon": "electron scripts/make-app-icon.js && python scripts/make-app-icon.py",
     "dev:front": "vite --config interfaz/vite.config.js",
