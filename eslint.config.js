@@ -119,5 +119,14 @@ module.exports = [
         FormData: 'readonly',
       },
     },
+    rules: {
+      // Scripts clasicos: cada archivo se carga con su propio <script src>
+      // y comparten un unico scope global (funciones/vars top-level de un
+      // archivo son visibles en los otros). eslint flat no puede modelar
+      // ese namespace implicito entre archivos, asi que no-undef daria
+      // falsos positivos para cada simbolo cruzado (renderSidebar, t,
+      // SIDEBAR_TOOLS, ...). El resto de reglas sigue activo.
+      'no-undef': 'off',
+    },
   },
 ];
