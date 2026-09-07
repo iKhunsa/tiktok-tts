@@ -260,6 +260,16 @@ nuevos por request). `features/mcp/` se registra **último** en `server.js`.
 - `TIKTOK_RESOURCES_PATH` — set por `main.js` en modo packaged para que `core/paths.js` (`RESOURCE_BASE`) resuelva `gifts/`, `public/` (output empaquetado de `interfaz/dist/`, ver extraResources), `asset/`, `lang-words/`, `blocked-words.md` en `process.resourcesPath` (fuera del asar)
 - `TIKTOK_USER_DATA_PATH` — set por `main.js` a `app.getPath('userData')`; `core/paths.js` (`DATA_BASE`) lo usa para `config.json`, `moderation.json`, `logs/`, etc.
 
+**Regla — nunca armar un path de recurso con `__dirname` en el backend.** Siempre
+`RESOURCE_BASE` / `DATA_BASE` de `core/paths.js`. En el paquete NSIS el código del
+backend corre desde dentro de `app.asar`, así que `__dirname` cae dentro del asar y
+`interfaz/`, `gifts/`, `asset/`, etc. **no viajan ahí** (van a `resources/` vía
+`extraResources`). La raíz estática de la UI se resuelve con `core/static-root.js`
+(`interfaz/dist` en dev, `<resources>/public` en empaquetado) — lo usan `core/app.js`
+y `features/movil/routes/mobile-page.js`. Este descuido causó el bug "Cannot GET /"
+de v1.8.0–v1.8.3 (`core/app.js` servía `interfaz/dist` con ruta `__dirname`-relativa);
+cubierto ahora por `test/serve-ui.test.js`.
+
 ## Paths críticos en producción (packaged)
 
 ```
