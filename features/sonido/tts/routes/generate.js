@@ -43,12 +43,22 @@ function generate(deps) {
       `TTS solicitado, voz ${voice}`, { voice, textLen: limitedText.length }
     );
 
+    // El cliente aborta esta request al "saltar" un mensaje TTS. Propagamos el
+    // corte a la peticion a Google en vuelo (fetch-audio.js) para no dejarla
+    // viva 15s ni dispararle el rate-limit con el spam de skips.
+    // OJO: `res.on('close')` (no `req.on('close')` — ese salta apenas se termina
+    // de leer el body del POST y abortaria SIEMPRE). `writableFinished` false
+    // aca = la conexion se corto antes de mandar la respuesta = cliente se fue.
+    const ac = new AbortController();
+    res.on('close', () => { if (!res.writableFinished) ac.abort(); });
+
     try {
       const { buffer, cached } = await fetchTtsAudio({
         text: limitedText,
         voice,
         slow: !!config.ttsSlowSpeech,
         logger,
+        signal: ac.signal,
       });
 
       res.setHeader('Content-Type', 'audio/mpeg');
@@ -62,6 +72,8 @@ function generate(deps) {
       );
     } catch (err) {
       const code = (err && err.code) || 'DESCONOCIDO';
+      // Cliente corto la conexion (skip) — no es un error, la respuesta ya no existe.
+      if (code === 'ABORTED' || (!res.writableEnded && !!res.socket && res.socket.destroyed)) return;
       const evento = EVENTO_POR_CODE[code] || 'sonido.tts.error_google_red';
       // BACKOFF ya se loguea dentro de fetch-audio.js — aca solo la respuesta.
       if (code !== 'BACKOFF') {
