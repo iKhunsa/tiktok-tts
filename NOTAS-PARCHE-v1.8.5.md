@@ -1,7 +1,7 @@
-# Notas de parche — v1.7.2 → v1.8.4
+# Notas de parche — v1.7.2 → v1.8.5
 
 **Fecha:** 2026-09-07
-**Alcance:** 61 commits · 606 archivos
+**Alcance:** 62 commits · 607 archivos
 
 Release mayor. Reescritura completa del backend y del frontend, cuarta plataforma
 de chat (Kick), servidor MCP para agentes, y dos capas nuevas de analítica /
@@ -240,6 +240,20 @@ móvil).
 
 En modo dev (`npm run electron` / `serve`) nunca se manifestó — de ahí que no se
 detectara antes de publicar.
+
+---
+
+## 14. Analítica de producto activada (v1.8.5)
+
+La capa de métricas de uso anónimas (Aptabase self-hosted, descrita en la sección 5)
+estaba construida pero **nunca activada en las builds distribuidas**: se publicaban
+sin app key, así que el módulo corría como no-op y no enviaba nada.
+
+Desde v1.8.5 las releases se compilan con la clave de ingesta bakeada (secret
+`APTABASE_APP_KEY` en CI), así que el conteo anónimo de uso empieza a funcionar.
+**Sin cambios en qué se envía** — sigue todo lo de la sección 5: nunca nombre,
+apodos, IDs, IP, texto del chat ni el valor de los ajustes; sin identificador de
+máquina. Los errores siguen yendo a un sistema aparte (GlitchTip), no acá.
 
 ---
 
