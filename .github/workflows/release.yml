@@ -54,6 +54,12 @@ jobs:
           $config = @{ url = "https://telemetria.tiklivetts.es/api/ingest"; token = "${{ secrets.INGEST_TOKEN }}" } | ConvertTo-Json
           Set-Content -Path telemetry-config.generated.json -Value $config
 
+      - name: Write aptabase config
+        shell: pwsh
+        run: |
+          $config = @{ appKey = "${{ secrets.APTABASE_APP_KEY }}"; host = "https://aptabase.tiklivetts.es" } | ConvertTo-Json
+          Set-Content -Path aptabase-config.generated.json -Value $config
+
       - name: Build & publish installer
         run: npm run build:electron -- --publish always
         env:
