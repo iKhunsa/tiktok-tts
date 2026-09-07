@@ -2,7 +2,7 @@ node_modules/
 .env
 bin/
 *.log
-public/uploads/
+/uploads/
 dist/
 installer/
 electron-dist/
@@ -15,5 +15,11 @@ webhook-config.json
 webhook-config.generated.json
 telemetry-config.json
 telemetry-config.generated.json
+aptabase-config.json
+aptabase-config.generated.json
 logs/
 moderation.json
+tts-cache/
+graphify-out/
+.claude/
+mcp.json

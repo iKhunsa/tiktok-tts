@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Prototipo — sistema de toasts</title>
+<style>
+  :root{
+    --toast-bg:#2e2e2e; --danger:#ef4444; --ok:#3ecf8e; --btn-radius:9999px;
+    --ease-out:cubic-bezier(.22,.61,.36,1); --dur-4:320ms; --dur-2:200ms;
+    --shadow-1:0 4px 12px rgba(0,0,0,.3);
+  }
+  body{margin:0;min-height:100vh;background:#171717;color:#fafafa;font-family:Inter,system-ui,sans-serif;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap}
+  button{background:#242424;color:#fafafa;border:1px solid #363636;border-radius:10px;padding:10px 16px;font-size:14px;cursor:pointer}
+  /* ---- picker ---- */
+  #picker{position:fixed;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:6px;background:rgba(20,20,20,.9);backdrop-filter:blur(8px);border:1px solid #333;border-radius:999px;padding:6px 8px;z-index:9999;font-size:12px}
+  #picker button{border-radius:999px;padding:6px 12px;background:transparent;border:none;color:#aaa}
+  #picker button.active{background:#fafafa;color:#111}
+
+  /* ===== Variante A — stack, bottom-center, rise (LA ELEGIDA) ===== */
+  .vA{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);display:flex;flex-direction:column-reverse;gap:8px;align-items:center}
+  .vA .t{background:var(--toast-bg);color:#fff;padding:13px 22px;border-radius:var(--btn-radius);font-size:14px;font-weight:500;box-shadow:var(--shadow-1);opacity:0;transform:translateY(12px);transition:opacity var(--dur-4) var(--ease-out),transform var(--dur-4) var(--ease-out)}
+  .vA .t.in{opacity:1;transform:translateY(0)}
+  .vA .t.error{background:var(--danger)} .vA .t.success{background:var(--ok);color:#0a0a0a}
+
+  /* ===== Variante B — top-right, slide-in, colapsa a contador ===== */
+  .vB{position:fixed;right:20px;top:20px;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+  .vB .t{background:var(--toast-bg);color:#fff;padding:12px 18px;border-radius:10px;font-size:13px;box-shadow:var(--shadow-1);opacity:0;transform:translateX(30px);transition:opacity var(--dur-2) var(--ease-out),transform var(--dur-2) var(--ease-out)}
+  .vB .t.in{opacity:1;transform:translateX(0)}
+
+  /* ===== Variante C — spring-in bottom-center, uno a la vez ===== */
+  .vC{position:fixed;left:50%;bottom:28px;transform:translateX(-50%)}
+  .vC .t{background:var(--toast-bg);color:#fff;padding:14px 24px;border-radius:var(--btn-radius);font-size:14px;box-shadow:var(--shadow-1);opacity:0;transform:translateY(20px) scale(.9);transition:opacity .28s var(--ease-out),transform .42s cubic-bezier(.34,1.56,.64,1)}
+  .vC .t.in{opacity:1;transform:translateY(0) scale(1)}
+</style>
+</head>
+<body>
+<div id="picker">
+  <button data-v="A" class="active">A · stack rise ✓</button>
+  <button data-v="B">B · top-right</button>
+  <button data-v="C">C · spring</button>
+</div>
+
+<button onclick="fire('Canal conectado')">toast normal</button>
+<button onclick="fire('Error de conexión','error')">toast error</button>
+<button onclick="fire('Guardado','success')">toast success</button>
+<button onclick="for(let i=0;i<5;i++)setTimeout(()=>fire('Mensaje '+(i+1)),i*250)">ráfaga de 5</button>
+
+<div class="layer vA" data-v="A"></div>
+<div class="layer vB" data-v="B" style="display:none"></div>
+<div class="layer vC" data-v="C" style="display:none"></div>
+
+<script>
+  let V='A';
+  document.querySelectorAll('#picker button').forEach(b=>b.onclick=()=>{
+    V=b.dataset.v;
+    document.querySelectorAll('#picker button').forEach(x=>x.classList.toggle('active',x===b));
+    document.querySelectorAll('.layer').forEach(l=>l.style.display=l.dataset.v===V?'':'none');
+  });
+  function fire(msg,type){
+    const layer=document.querySelector('.layer[data-v="'+V+'"]');
+    const el=document.createElement('div');
+    el.className='t'+(type?' '+type:'');
+    el.textContent=msg;
+    layer.appendChild(el);
+    const cap = V==='C'?1:3;
+    while(layer.children.length>cap) layer.firstElementChild.remove();
+    requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('in')));
+    setTimeout(()=>{el.classList.remove('in');setTimeout(()=>el.remove(),400);}, type==='error'?4000:2600);
+  }
+</script>
+<!--
+  DECISIÓN: Variante A (stack, bottom-center, sube al entrar, baja al salir).
+  - Simétrica (entra y sale por el mismo borde) → consistencia espacial.
+  - Transición CSS (no keyframe) → interrumpible si llegan varios seguidos.
+  - Cola de 3, apilado hacia arriba → nunca se solapan (bug actual).
+  - Sub-300ms de percepción, curva ease-out fuerte.
+  B se descartó: top-right compite con el contenido de la app y cambia el
+  borde de entrada respecto al patrón actual (abajo-centro).
+  C se descartó: el overshoot en algo que se ve decenas de veces/día se
+  siente lento/gimmicky (regla de frecuencia de Emil).
+  A es la que se promovió a public/index.html (función showToast).
+-->
+</body>
+</html>

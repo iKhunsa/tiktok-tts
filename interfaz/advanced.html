@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TikLive TTS — Configuración</title>
+  <link rel="icon" type="image/svg+xml" href="logo-icon.svg" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./src/estilos/advanced-legacy.css">
+</head>
+<body>
+
+<div class="app">
+  <!-- HEADER -->
+  <header>
+    <a href="/" class="logo" style="text-decoration:none;color:inherit;">
+      <img class="logo-mark" src="logo.svg" alt="TikLive TTS">
+      <div class="subtitle" data-i18n="adv.subtitle">Configuración del Servidor</div>
+    </a>
+    <nav class="nav">
+      <a href="/" class="nav-link" data-i18n="adv.navBack">← Chat Live</a>
+      <a href="/advanced.html" class="nav-link active" aria-current="page"><img class="icon-inline" src="icons/settings.svg" alt=""> <span data-i18n="adv.navSettings">Configuración</span></a>
+    </nav>
+  </header>
+
+  <!-- PAGE TITLE -->
+  <div class="page-title">
+    <h2 data-i18n="adv.h2">Ajustes del Servidor</h2>
+    <p data-i18n="adv.desc">Controla el rate limiting, filtros de mensajes y monitorea el estado del sistema en tiempo real. Estos cambios aplican inmediatamente al backend.</p>
+  </div>
+
+  <!-- ═══ PANEL 1: RATE LIMITING ═══ -->
+  <div class="panel panel-rate">
+    <div class="panel-title"><img class="icon-inline" src="icons/flash_on.svg" alt=""> <span data-i18n="adv.rlTitle">Rate Limiting de TTS</span></div>
+    <div class="panel-desc"><span data-i18n="adv.rlDesc">Control de velocidad del servidor</span><span class="badge badge-off" id="rlBadge">OFF</span></div>
+
+    <div class="explainer">
+      <div class="explainer-title" data-i18n="adv.rlHowTitle">¿Cómo funciona?</div>
+      <p data-i18n-html="adv.rlHowP1">
+        Durante un live activo pueden llegar <strong>decenas de mensajes por segundo</strong>. Sin límites,
+        la cola TTS crecería sin control y el bot acumularía minutos de retraso.
+      </p>
+      <p data-i18n-html="adv.rlHowP2">
+        El rate limiting actúa como un <strong>filtro en el servidor</strong>: decide cuántas peticiones TTS
+        se permiten en una ventana de tiempo. Si se supera el límite, las peticiones adicionales se rechazan
+        con error 429 y el mensaje no entra a la cola de voz.
+      </p>
+      <p data-i18n="adv.rlHowP3">
+        Por defecto está DESACTIVADO. Actívalo solo si ves que el bot se satura
+        o si Google TTS empieza a dar errores por demasiadas peticiones.
+      </p>
+      <p data-i18n="adv.rlHowP4">
+        Ejemplo práctico: con 10 peticiones / 5 segundos, si llegan 20 mensajes en 5 segundos,
+        solo los primeros 10 se leerán. El resto se descartan silenciosamente.
+      </p>
+    </div>
+
+    <div class="toggle-row" style="border-bottom:1px solid var(--border); margin-bottom:20px;">
+      <div class="toggle-info">
+        <div class="toggle-name" data-i18n="adv.rlToggleName">Activar rate limit en el servidor</div>
+        <div class="toggle-hint" data-i18n="adv.rlToggleHint">Desactivado por defecto. Solo actívalo si el live tiene mucho spam o el TTS se satura.</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="rlEnabled" onchange="toggleRateLimit()" />
+        <span class="switch-track"></span>
+      </label>
+    </div>
+
+    <div class="grid-2">
+      <div class="control-group">
+        <label><span data-i18n="adv.rlMax">Máximo de peticiones</span> — <span class="val-display" id="rlMaxVal">10</span></label>
+        <input type="range" id="rlMax" min="1" max="30" step="1" value="10"
+          oninput="document.getElementById('rlMaxVal').textContent = this.value" />
+        <div class="range-labels"><span>1</span><span>30</span></div>
+      </div>
+
+      <div class="control-group">
+        <label><span data-i18n="adv.rlWindow">Ventana de tiempo</span> — <span class="val-display" id="rlWindowVal">5</span> <span data-i18n="adv.rlWindowUnit">seg</span></label>
+        <input type="range" id="rlWindow" min="1" max="60" step="1" value="5"
+          oninput="document.getElementById('rlWindowVal').textContent = this.value" />
+        <div class="range-labels"><span>1s</span><span>60s</span></div>
+      </div>
+
+      <div class="control-group" style="grid-column: 1 / -1;">
+        <label><span data-i18n="adv.rlQueue">Máx. mensajes en cola</span> — <span class="val-display" id="rlQueueVal">15</span></label>
+        <input type="range" id="rlQueue" min="5" max="50" step="1" value="15"
+          oninput="document.getElementById('rlQueueVal').textContent = this.value" />
+        <div class="range-labels"><span>5 msgs</span><span>50 msgs</span></div>
+      </div>
+    </div>
+
+    <div class="save-row">
+      <button class="btn-save" id="btnSaveRL" onclick="saveRateLimit()" data-i18n="adv.save">Guardar cambios</button>
+    </div>
+  </div>
+
+  <!-- ═══ PANEL 2: CONFIGURACIÓN GENERAL ═══ -->
+  <div class="panel panel-rate">
+    <div class="panel-title"><img class="icon-inline" src="icons/settings_applications.svg" alt=""> <span data-i18n="adv.generalTitle">Configuración General</span></div>
+    <div class="panel-desc" data-i18n="adv.generalDesc">Otros parámetros del servidor TTS</div>
+
+    <div class="grid-2">
+      <div class="control-group">
+        <label><span data-i18n="adv.maxChars">Máx. caracteres TTS</span> — <span class="val-display" id="cfgCharsVal">500</span></label>
+        <input type="range" id="cfgChars" min="20" max="1000" step="10" value="500"
+          oninput="document.getElementById('cfgCharsVal').textContent = this.value" />
+        <div class="range-labels"><span>20</span><span>1000</span></div>
+      </div>
+
+      <div class="control-group">
+        <label><span data-i18n="adv.debounce">Debounce de likes</span> — <span class="val-display" id="cfgDebounceVal">1500</span> <span data-i18n="adv.debounceUnit">ms</span></label>
+        <input type="range" id="cfgDebounce" min="250" max="5000" step="100" value="1500"
+          oninput="document.getElementById('cfgDebounceVal').textContent = this.value" />
+        <div class="range-labels"><span>250ms</span><span>5s</span></div>
+      </div>
+    </div>
+
+    <div class="save-row">
+      <button class="btn-save" id="btnSaveGeneral" onclick="saveGeneral()" data-i18n="adv.save">Guardar cambios</button>
+    </div>
+  </div>
+
+  <!-- ═══ PANEL 2B: ACCESIBILIDAD ═══ -->
+  <div class="panel panel-a11y">
+    <div class="panel-title"><img class="icon-inline" src="icons/settings_applications.svg" alt=""> <span data-i18n="adv.a11yTitle">Accesibilidad</span></div>
+    <div class="panel-desc" data-i18n="adv.a11yDesc">Ajustes visuales y de audio para lectura y movimiento reducido</div>
+
+    <div class="explainer">
+      <div class="explainer-title" data-i18n="adv.a11yHowTitle">¿Para qué sirve esto?</div>
+      <p data-i18n="adv.a11yHowP1">Algunos overlays usan animaciones continuas (brillos, rebotes) que pueden molestar a personas con sensibilidad al movimiento o fotosensibilidad. "Reducir movimiento" las apaga en todos los overlays de OBS.</p>
+      <p data-i18n="adv.a11yHowP2">El tamaño de texto agranda toda la app (ventana principal, esta pantalla y el overlay de chat de OBS), no solo el chat. La voz lenta activa un modo de lectura más pausada en el TTS.</p>
+    </div>
+
+    <div class="toggle-row">
+      <div class="toggle-info">
+        <div class="toggle-name" data-i18n="adv.a11yReduceMotionName">Reducir movimiento en overlays</div>
+        <div class="toggle-hint" data-i18n="adv.a11yReduceMotionHint">Apaga animaciones de alertas, seguidores, likes y regalos en los overlays de OBS.</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="a11yReduceMotion" onchange="saveAccessibility()" />
+        <span class="switch-track"></span>
+      </label>
+    </div>
+
+    <div class="toggle-row">
+      <div class="toggle-info">
+        <div class="toggle-name" data-i18n="adv.a11ySlowSpeechName">TTS de voz lenta</div>
+        <div class="toggle-hint" data-i18n="adv.a11ySlowSpeechHint">La voz del TTS lee más despacio. Útil para procesar mejor el audio.</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="a11ySlowSpeech" onchange="saveAccessibility()" />
+        <span class="switch-track"></span>
+      </label>
+    </div>
+
+    <div class="toggle-row">
+      <div class="toggle-info">
+        <div class="toggle-name" data-i18n="adv.a11yHighContrastName">Alto contraste</div>
+        <div class="toggle-hint" data-i18n="adv.a11yHighContrastHint">Refuerza bordes y texto secundario en la ventana principal para mayor legibilidad.</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="a11yHighContrast" onchange="saveAccessibility()" />
+        <span class="switch-track"></span>
+      </label>
+    </div>
+
+    <div class="control-group" style="margin-top:6px;">
+      <label><span data-i18n="adv.a11yFontScaleLabel">Tamaño de texto y botones de la app</span></label>
+      <select id="a11yUiFontScale" onchange="saveAccessibility()">
+        <option value="1" data-i18n="adv.a11yFontScaleNormal">Normal</option>
+        <option value="1.15" data-i18n="adv.a11yFontScaleMedium">Grande</option>
+        <option value="1.3" data-i18n="adv.a11yFontScaleLarge">Muy grande</option>
+        <option value="1.5" data-i18n="adv.a11yFontScaleXL">Máximo</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- ═══ PANEL 3: FILTROS DE MENSAJES ═══ -->
+  <div class="panel panel-filter" id="palabras-bloqueadas">
+    <div class="panel-title"><img class="icon-inline" src="icons/search.svg" alt=""> <span data-i18n="adv.filtersTitle">Filtros de Mensajes</span></div>
+    <div class="panel-desc" data-i18n="adv.filtersDesc">Palabras prohibidas en el servidor</div>
+
+    <div class="explainer">
+      <div class="explainer-title" data-i18n="adv.filtersExplainerTitle">Reglas automáticas del servidor</div>
+      <p data-i18n-html="adv.filtersExplainerP1">El servidor ya filtra automáticamente: <strong>mensajes repetitivos</strong> (aaaaaa), <strong>URLs</strong> (se reemplazan por "link"), <strong>menciones</strong> (@usuario se eliminan), <strong>emojis</strong> (se convierten a espacio) y <strong>mensajes mayores a 300 caracteres</strong>.</p>
+      <p data-i18n-html="adv.filtersExplainerP2">Aquí puedes añadir <strong>palabras adicionales</strong> para bloquear mensajes que las contengan.</p>
+    </div>
+
+    <div class="section-label" data-i18n="adv.blockedLabel">Palabras bloqueadas</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;" data-i18n="adv.blockedDesc">
+      Los mensajes que contengan estas palabras serán ignorados completamente por el TTS. El filtro no distingue mayúsculas/minúsculas.
+    </p>
+
+    <div class="tag-input-row">
+      <input type="text" id="blockedWordInput" data-i18n-placeholder="adv.blockedPlaceholder" placeholder="Escribe una palabra y presiona Agregar..."
+        onkeydown="if(event.key==='Enter') addBlockedWord()" />
+      <button class="btn-add" onclick="addBlockedWord()" data-i18n="adv.blockedAdd">+ Agregar</button>
+    </div>
+
+    <div class="tags-container" id="blockedWordsTags">
+      <span class="tags-empty" id="blockedEmpty" data-i18n="adv.blockedEmpty">Sin palabras bloqueadas</span>
+    </div>
+
+    <div class="save-row" style="margin-top:10px;">
+      <button class="btn-save" id="btnSaveFilters" onclick="saveBlockedWords()" data-i18n="adv.blockedSync">Sincronizar con servidor</button>
+    </div>
+
+    <div class="section-label" data-i18n="adv.mdLabel">Editar lista completa</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;" data-i18n-html="adv.mdDesc">
+      Puedes editar el archivo <code>blocked-words.md</code> directamente aquí o subir uno nuevo. El formato es una palabra por línea empezando con <code>- </code>.
+    </p>
+
+    <textarea id="mdEditor" style="width:100%;min-height:160px;resize:vertical;" placeholder="- palabra1
+- palabra2"></textarea>
+
+    <div class="save-row" style="margin-top:12px;gap:10px;display:flex;justify-content:flex-end;flex-wrap:wrap;">
+      <button class="btn-refresh" onclick="loadMdContent()"><img class="icon-inline" src="icons/refresh.svg" alt=""> <span data-i18n="adv.mdReload">Recargar desde archivo</span></button>
+      <button class="btn-add" onclick="downloadMd()"><img class="icon-inline" src="icons/download.svg" alt=""> <span data-i18n="adv.mdDownload">Descargar .md</span></button>
+      <button class="btn-save" onclick="saveMdContent()"><img class="icon-inline" src="icons/save.svg" alt=""> <span data-i18n="adv.mdSave">Guardar cambios al archivo</span></button>
+    </div>
+
+    <div class="section-label" data-i18n="adv.mdUploadLabel">Subir archivo .md</div>
+    <div class="tag-input-row">
+      <input type="file" id="mdFileInput" accept=".md" style="flex:1;cursor:pointer;" />
+      <button class="btn-add" onclick="uploadMdFile()"><img class="icon-inline" src="icons/upload.svg" alt=""> <span data-i18n="adv.mdUploadBtn">Subir y reemplazar</span></button>
+    </div>
+  </div>
+
+  <!-- ═══ PANEL 4: ESTADO DEL SISTEMA ═══ -->
+  <div class="panel panel-status">
+    <div class="status-header">
+      <div>
+        <div class="panel-title"><img class="icon-inline" src="icons/assessment.svg" alt=""> <span data-i18n="adv.statusTitle">Estado del Servidor</span></div>
+        <div class="panel-desc" data-i18n="adv.statusDesc">Monitoreo en tiempo real</div>
+      </div>
+      <button class="btn-refresh" onclick="refreshStatus()" data-i18n="adv.statusRefresh">↻ Actualizar</button>
+    </div>
+
+    <div class="status-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="statUptime">0m</div>
+        <div class="stat-label" data-i18n="adv.statUptime">Tiempo activo</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statClients">0</div>
+        <div class="stat-label" data-i18n="adv.statClients">Clientes WS</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statConn">—</div>
+        <div class="stat-label">TikTok</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statMem">0</div>
+        <div class="stat-label" data-i18n="adv.statMem">Memoria MB</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statRateMax">10</div>
+        <div class="stat-label" data-i18n="adv.statRateMax">Rate max</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statRateEnabled">OFF</div>
+        <div class="stat-label" data-i18n="adv.statRateLimit">Rate limit</div>
+      </div>
+    </div>
+
+    <div class="section-label" data-i18n="adv.cfgCurrent">Configuración actual</div>
+    <div class="conn-info">
+      <div class="conn-row">
+        <span class="conn-key" data-i18n="adv.cfgRateActive">Rate limit activo</span>
+        <span class="conn-val" id="statusRateEnabled" style="color:var(--muted)">—</span>
+      </div>
+      <div class="conn-row">
+        <span class="conn-key" data-i18n="adv.cfgMaxReq">Máximo peticiones</span>
+        <span class="conn-val" id="statusRateMax">—</span>
+      </div>
+      <div class="conn-row">
+        <span class="conn-key" data-i18n="adv.cfgWindow">Ventana de tiempo</span>
+        <span class="conn-val" id="statusRateWindow">—</span>
+      </div>
+      <div class="conn-row">
+        <span class="conn-key" data-i18n="adv.cfgMaxChars">Máx. caracteres TTS</span>
+        <span class="conn-val" id="statusMaxChars">—</span>
+      </div>
+      <div class="conn-row">
+        <span class="conn-key" data-i18n="adv.cfgDebounce">Debounce likes</span>
+        <span class="conn-val" id="statusDebounce">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PANEL: DESCARGA DE LOGS ═══ -->
+  <div class="panel panel-status">
+    <div class="status-header">
+      <div>
+        <div class="panel-title"><img class="icon-inline" src="icons/description.svg" alt=""> <span data-i18n="adv.logsDownloadTitle">Logs de diagnóstico</span></div>
+        <div class="panel-desc" data-i18n="adv.logsDownloadDesc">Descarga el historial completo de logs guardados (últimos 14 días) a tu carpeta de Descargas.</div>
+      </div>
+      <button class="btn-refresh" onclick="downloadAllLogs()" data-i18n="adv.logsDownloadBtn">↓ Descargar todos</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script type="module" src="./src/vistas/avanzada/index.js"></script>
+</body>
+</html>
