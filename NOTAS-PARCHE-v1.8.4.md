@@ -1,7 +1,7 @@
-# Notas de parche — v1.7.2 → v1.8.3
+# Notas de parche — v1.7.2 → v1.8.4
 
 **Fecha:** 2026-09-07
-**Alcance:** 60 commits · 605 archivos · +38 231 / −18 505 líneas
+**Alcance:** 61 commits · 606 archivos
 
 Release mayor. Reescritura completa del backend y del frontend, cuarta plataforma
 de chat (Kick), servidor MCP para agentes, y dos capas nuevas de analítica /
@@ -210,11 +210,36 @@ gratis de Google Translate TTS:
 - `launch.json` local en puerto 3000 por default.
 - Suite de tests nueva: `mcp-registry`, `moderacion-store`, `moderacion-key-for`,
   `tts-fetch-audio`, `aptabase-bucket`, `install-marker`, `locales-key-parity`,
-  `interfaz-compartido`, `idioma-message-matches-voice-script` (51 tests, todos
-  en verde).
+  `interfaz-compartido`, `idioma-message-matches-voice-script`.
 - CI: `scripts/check-mcp.js` (garantía de cobertura MCP), validación de paridad
   de claves i18n entre los 10 idiomas.
 - `.claude/` sacado del repo.
+
+---
+
+## 13. Hotfix v1.8.4 — la app instalada abría con "Cannot GET /"
+
+Las builds v1.8.0–v1.8.3 empaquetadas **no servían la interfaz**: al abrir la app
+instalada aparecía una ventana de error con el texto `Cannot GET /` en vez de la
+UI (también afectaba `/advanced.html`, los overlays de OBS y los assets del panel
+móvil).
+
+- **Causa**: `core/app.js` resolvía la raíz estática con una ruta relativa a
+  `core/` (que dentro del `app.asar` no existe) en vez de resolverla contra
+  `RESOURCE_BASE` → `<resources>/public/` como el resto del backend. Regresión de
+  la migración del frontend a Vite (fase-06): el mismo fallback se arregló en
+  `features/movil/routes/mobile-page.js` pero no en `core/app.js`.
+- **Fix**: helper único `core/static-root.js` (interfaz/dist en dev,
+  `<resources>/public` en empaquetado), consumido por `core/app.js` y
+  `mobile-page.js`.
+- **Regresión cubierta**: `test/serve-ui.test.js` bootea la UI con el layout
+  empaquetado simulado; `scripts/verify-front-build.js` (`postbuild:front`) corta
+  el packaging si el build de frontend está incompleto.
+- La actualización a v1.8.4 se instala sola: las instalaciones rotas igual
+  recibían el chequeo de auto-update.
+
+En modo dev (`npm run electron` / `serve`) nunca se manifestó — de ahí que no se
+detectara antes de publicar.
 
 ---
 

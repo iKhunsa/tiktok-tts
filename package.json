@@ -1,6 +1,6 @@
 {
   "name": "tiktok-live-tts",
-  "version": "1.8.3",
+  "version": "1.8.4",
   "description": "TikTok Live Chat TTS Reader",
   "author": "iKhunsa",
   "main": "main.js",
@@ -15,6 +15,7 @@
     "dev:build-watch": "vite build --config interfaz/vite.config.js --watch",
     "dev:all": "concurrently \"npm run dev:build-watch\" \"npm run dev\"",
     "build:front": "vite build --config interfaz/vite.config.js",
+    "postbuild:front": "node scripts/verify-front-build.js",
     "serve": "npm run build:front && node server.js",
     "serve:watch": "npm run build:front && node --watch server.js",
     "prebuild:electron": "node scripts/ensure-webhook-config.js && node scripts/ensure-telemetry-config.js && node scripts/ensure-aptabase-config.js && npm run build:front",
