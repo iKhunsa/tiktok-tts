@@ -1,4 +1,4 @@
-# Notas de parche — v1.7.2 → v1.8.2
+# Notas de parche — v1.7.2 → v1.8.3
 
 **Fecha:** 2026-09-07
 **Alcance:** 60 commits · 605 archivos · +38 231 / −18 505 líneas
