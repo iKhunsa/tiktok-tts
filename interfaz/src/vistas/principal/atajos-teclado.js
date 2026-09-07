@@ -107,6 +107,9 @@ function matchShortcut(e, shortcut) {
 
 export function iniciarAtajosTeclado() {
   document.addEventListener('keydown', async (e) => {
+    // Tecla mantenida = un solo disparo. Sin esto, mantener pulsado el atajo de
+    // skip genera una rafaga de skipCurrentTTS() (auto-repeat del SO).
+    if (e.repeat && !capturingShortcutFor) return;
     if (capturingShortcutFor) {
       if (['Control', 'Shift', 'Alt', 'Meta'].includes(e.key)) return;
       e.preventDefault();

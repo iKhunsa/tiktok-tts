@@ -31,6 +31,18 @@ let ttsErrorCount = 0;
 let ttsAbortController = null;
 const TTS_MAX_ERRORS = 5;
 
+// Serializacion de processQueue: es async y toca estado global compartido
+// (isSpeaking, speechQueue, activeAudio, ttsAbortController). Sin este lock,
+// el spam de "saltar" dispara N ejecuciones solapadas → voces superpuestas,
+// cola vaciada de golpe, AbortController huerfano. `queueDirty` recuerda que
+// llego un pump mientras estabamos ocupados, para re-pumpear una sola vez al
+// terminar.
+let queuePumping = false;
+let queueDirty = false;
+// Coalesce de re-arranques de cola por rafaga de skips (cada skip ya aborta
+// su request en stopCurrentTTS; esto solo agrupa el processQueue posterior).
+let skipPumpTimer = null;
+
 // Conservado por compat con el marcado antiguo (.tts-switch.on anima por
 // CSS); ya no hay timer en el hilo principal.
 let _ttsBarTimer = null;
@@ -115,6 +127,11 @@ export function stopCurrentTTS({ clearQueue = false } = {}) {
     ttsAbortController = null;
   }
   if (activeAudio) {
+    // Quitar los handlers ANTES de src='': si no, el src vacio dispara
+    // audio.onerror → finish(onError) → processQueue(), un pump fantasma
+    // por cada skip.
+    activeAudio.onended = null;
+    activeAudio.onerror = null;
     activeAudio.pause();
     activeAudio.src = '';
     activeAudio = null;
@@ -128,7 +145,10 @@ export function skipCurrentTTS() {
   stopCurrentTTS({ clearQueue: false });
   if (hadPending) window.electronAPI?.trackEvent('tts:skipped');
   showToast(hadPending ? t('toast.ttsSkipped') : t('toast.ttsNoActive'));
-  if (!ttsPaused && ttsGlobalEnabled && speechQueue.length > 0) setTimeout(() => processQueue(), 50);
+  if (!ttsPaused && ttsGlobalEnabled && speechQueue.length > 0) {
+    if (skipPumpTimer) clearTimeout(skipPumpTimer);
+    skipPumpTimer = setTimeout(() => { skipPumpTimer = null; processQueue(); }, 50);
+  }
 }
 
 export function clearTTSQueue() {
@@ -159,6 +179,15 @@ export function enableEmergencyTTSMode() {
 export function playAudioBlob(blob, { onEnd, onError } = {}) {
   if (!blob || blob.size === 0) { onError?.(); return; }
 
+  // Si quedo un audio previo referenciado (dos blobs resolvieron casi juntos),
+  // matarlo antes de reemplazarlo — si no, sigue sonando fuera del alcance de
+  // skip/pause (voces superpuestas).
+  if (activeAudio) {
+    activeAudio.onended = null;
+    activeAudio.onerror = null;
+    try { activeAudio.pause(); activeAudio.src = ''; } catch (_) { /* noop */ }
+  }
+
   const url = URL.createObjectURL(blob);
   const audio = new Audio(url);
   audio.playbackRate = ttsRate;
@@ -170,7 +199,9 @@ export function playAudioBlob(blob, { onEnd, onError } = {}) {
   const finish = (cb) => {
     if (settled) return;
     settled = true;
-    activeAudio = null;
+    // Solo soltar la referencia global si sigue siendo ESTE audio; un audio
+    // huerfano que termina no debe pisar el activeAudio de otra ejecucion.
+    if (activeAudio === audio) activeAudio = null;
     URL.revokeObjectURL(url);
     cb?.();
   };
@@ -228,6 +259,22 @@ export function speak(text, msgId, timestamp) {
 }
 
 export async function processQueue() {
+  // Guard de reentrancia: colapsa los pumps redundantes (setTimeout de skip,
+  // onEnd/onError de audio, speak()) en una sola ejecucion serializada.
+  if (queuePumping) { queueDirty = true; return; }
+  queuePumping = true;
+  try {
+    await _processQueueOnce();
+  } finally {
+    queuePumping = false;
+    if (queueDirty) {
+      queueDirty = false;
+      if (!ttsPaused && ttsGlobalEnabled && speechQueue.length > 0) processQueue();
+    }
+  }
+}
+
+async function _processQueueOnce() {
   if (ttsPaused) return;
   if (speechQueue.length === 0) {
     isSpeaking = false;
@@ -264,12 +311,13 @@ export async function processQueue() {
   const voice = voiceId;
 
   ttsAbortController = new AbortController();
+  const myController = ttsAbortController;
   try {
     const res = await fetch('/api/tts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text, voice }),
-      signal: ttsAbortController.signal,
+      signal: myController.signal,
     });
 
     if (!res.ok) { logStorage.addLog('error', 'network', `Error TTS HTTP ${res.status}`); throw new Error('TTS error'); }
@@ -310,7 +358,9 @@ export async function processQueue() {
     }
     setTimeout(() => processQueue(), 300);
   } finally {
-    ttsAbortController = null;
+    // Solo anular si sigue siendo el nuestro — con el guard de reentrancia esto
+    // ya casi no compite, pero lo mantiene correcto si algo re-entra.
+    if (ttsAbortController === myController) ttsAbortController = null;
   }
 }
 

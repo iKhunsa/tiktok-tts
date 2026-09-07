@@ -44,14 +44,35 @@ function _dismissToast(el) {
   setTimeout(() => el.remove(), 360);
 }
 
+// Saca el nodo del DOM al instante (sin animar). Se usa para el desborde de
+// la pila: _dismissToast() difiere el remove() 360ms, asi que apoyarse en el
+// para recortar dispararia un while infinito (children.length no baja en el
+// mismo tick) — eso congelaba toda la UI al spamear "saltar mensaje".
+function _removeToastNow(el) {
+  if (!el) return;
+  el._closing = true;
+  clearTimeout(el._timer);
+  el.remove();
+}
+
 /** @param {string} message @param {'error'|'success'|undefined} [type] */
 export function showToast(message, type) {
   const stack = _ensureToastStack();
+
+  // Coalesce: si el ultimo toast vivo dice lo mismo (spam del boton "saltar
+  // mensaje", errores repetidos), solo reiniciar su TTL en vez de apilar.
+  const last = stack.lastElementChild;
+  if (last && !last._closing && last.textContent === message) {
+    clearTimeout(last._timer);
+    last._timer = setTimeout(() => _dismissToast(last), type === 'error' ? 4000 : 2600);
+    return;
+  }
+
   const el = document.createElement('div');
   el.className = 'toast-item' + (type === 'error' ? ' error' : type === 'success' ? ' success' : '');
   el.textContent = message;
   stack.appendChild(el);
-  while (stack.children.length > 3) _dismissToast(stack.firstElementChild);
+  while (stack.children.length > 3) _removeToastNow(stack.firstElementChild);
   requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('in')));
   const ttl = type === 'error' ? 4000 : 2600;
   el._timer = setTimeout(() => _dismissToast(el), ttl);

@@ -92,8 +92,10 @@ function podarCache() {
 }
 
 // Un intento contra Google. Resuelve con Buffer o rechaza con { code }.
-function pedirAGoogle(texto, lang, slow) {
+function pedirAGoogle(texto, lang, slow, signal = null) {
   return new Promise((resolve, reject) => {
+    if (signal && signal.aborted) { reject({ code: 'ABORTED' }); return; }
+
     let url;
     try {
       url = gTTS.getAudioUrl(texto, { lang, slow, host: 'https://translate.google.com' });
@@ -135,6 +137,12 @@ function pedirAGoogle(texto, lang, slow) {
 
     req.setTimeout(HTTP_TIMEOUT_MS, () => { req.destroy(); reject({ code: 'TIMEOUT' }); });
     req.on('error', (err) => reject({ code: 'NET', message: err.message }));
+
+    if (signal) {
+      const onAbort = () => { req.destroy(); reject({ code: 'ABORTED' }); };
+      signal.addEventListener('abort', onAbort, { once: true });
+      req.on('close', () => signal.removeEventListener('abort', onAbort));
+    }
   });
 }
 
@@ -145,7 +153,7 @@ const REINTENTABLE = new Set(['EMPTY', 'NET', 'TIMEOUT', 'DECODE', 'HTTP']);
  * @returns {Promise<{ buffer: Buffer, cached: boolean }>}
  * @throws {{ code, retryAfterMs?, ... }}  code: 'BACKOFF' | 'HTTP4XX' | 'EMPTY' | 'NET' | 'TIMEOUT' | ...
  */
-async function fetchTtsAudio({ text, voice = 'es', slow = false, logger = null }) {
+async function fetchTtsAudio({ text, voice = 'es', slow = false, logger = null, signal = null }) {
   const lang = GOOGLE_TTS_LANGS.has(voice) ? voice : 'es';
   const clave = claveCache(text, lang, slow);
 
@@ -169,7 +177,7 @@ async function fetchTtsAudio({ text, voice = 'es', slow = false, logger = null }
   let ultimoError = null;
   for (let intento = 1; intento <= MAX_ATTEMPTS; intento++) {
     try {
-      const buffer = await pedirAGoogle(text, lang, slow);
+      const buffer = await pedirAGoogle(text, lang, slow, signal);
       // Exito → resetea backoff, guarda en cache
       backoff.fallosSeguidos = 0;
       backoff.pausadoHasta = 0;
@@ -181,6 +189,9 @@ async function fetchTtsAudio({ text, voice = 'es', slow = false, logger = null }
       await esperar(RETRY_DELAY_MS * intento);
     }
   }
+
+  // Cliente abortado (skip) — no es un fallo de Google, no cuenta para el backoff.
+  if (ultimoError && ultimoError.code === 'ABORTED') throw ultimoError;
 
   // Agotados los intentos → cuenta como fallo para el backoff
   backoff.fallosSeguidos++;
