@@ -293,6 +293,9 @@
     .ad-slot img { width: 100%; height: auto; display: block; object-fit: contain; }
     .ad-slot--lateral img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
     .ad-slot--banner { margin: 22px 0 0; border-radius: var(--radius-md); }
+    .ad-link { display: block; line-height: 0; text-decoration: none; cursor: pointer; transition: opacity .15s; }
+    .ad-link:hover { opacity: .9; }
+    .ad-slot--lateral .ad-link { position: absolute; inset: 0; }
 
     /* Carrusel lateral: dos capas apiladas, crossfade + leve zoom al cambiar */
     .ad-slot--lateral .ad-layer {
