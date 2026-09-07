@@ -1,8 +1,8 @@
 'use strict';
 
-const path = require('path');
 const express = require('express');
 const { getRequestHostname, isLocalHostname } = require('./security/is-local-request');
+const { staticRoot } = require('./static-root');
 
 /**
  * Bloquea mutaciones (POST/PATCH/DELETE/PUT) que no vengan de localhost —
@@ -68,12 +68,11 @@ function createApp(bus) {
     });
   }
 
-  // Fase-06: la migracion del frontend a interfaz/ (fases 01-05) termino
-  // y public/ se borro del repo. interfaz/dist es el output de Vite
-  // (HTML + JS/CSS de las 10 vistas + estaticos de interfaz/publico/) y
-  // es ahora la UNICA raiz estatica — ya no hay legado detras para
-  // sombrear.
-  app.use(express.static(path.join(__dirname, '..', 'interfaz', 'dist')));
+  // Raiz estatica: interfaz/dist en dev, <resources>/public en empaquetado.
+  // Se resuelve contra RESOURCE_BASE — ver core/static-root.js. NUNCA armar
+  // esto con un path relativo a __dirname: en el paquete NSIS __dirname cae
+  // dentro del asar, donde interfaz/ no viaja, y GET / devuelve "Cannot GET /".
+  app.use(express.static(staticRoot()));
 
   return app;
 }
