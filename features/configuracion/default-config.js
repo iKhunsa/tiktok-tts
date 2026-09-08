@@ -41,6 +41,11 @@ const DEFAULT_CONFIG = {
   // Tools MCP de desarrollo (dev_*): inyectar chat/eventos, ver logs crudos,
   // status completo, bus emit. Solo para debug — default off.
   mcpDevToolsEnabled: false,
+  // Sistema de suscripciones freemium (features/auth/). Default false = la app
+  // se comporta como siempre (sin login, todo desbloqueado). Con true, las
+  // features Pro quedan detras del plan y aparece la UI de cuenta.
+  // Interruptor de panico: apagar revierte al estado conocido sin re-deploy.
+  subscriptionsEnabled: false,
   adminIdentities: {
     tiktok: ['ikhunsa_tiklivetts', 'soykurorai'],
     twitch: ['soykurorai'],

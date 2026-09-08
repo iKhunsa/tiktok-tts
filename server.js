@@ -25,6 +25,7 @@ attachBroadcast(bus, wss, logger);
 const deps = { app, wss, bus, logger };
 
 registerDomain(deps, require('./features/configuracion'));
+registerDomain(deps, require('./features/auth'));
 registerDomain(deps, require('./features/idioma'));
 registerDomain(deps, require('./features/reporte-bug'));
 registerDomain(deps, require('./features/moderacion'));
