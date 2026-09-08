@@ -23,6 +23,7 @@ function createSessionScheduler({ onMilestone, logger }) {
     const deltaMinutes = stepIndex < SCHEDULE_MINUTES.length ? SCHEDULE_MINUTES[stepIndex] : REPEAT_MINUTES;
     stepIndex++;
     timer = setTimeout(() => {
+      if (!running) return;
       // Sin este try/catch, un throw en onMilestone() corta scheduleNext() y
       // mata la autopromocion para toda la sesion en silencio.
       try {
@@ -44,6 +45,7 @@ function createSessionScheduler({ onMilestone, logger }) {
     if (running) return;
     running = true;
     stepIndex = 0;
+    if (timer) { clearTimeout(timer); timer = null; }
     scheduleNext();
   }
 
