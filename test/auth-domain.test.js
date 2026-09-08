@@ -62,3 +62,22 @@ test('MCP: tools auth_status/auth_logout + state provider auth', () => {
   const st = registry.collectState();
   assert.ok(st.auth && st.auth.plan === 'free');
 });
+
+test('gating: subscriptionsEnabled=true + sin sesion -> rutas Pro dan 403', async () => {
+  srv.bus.emit('config:patch', { subscriptionsEnabled: true });
+  const base = `http://127.0.0.1:${srv.port}`;
+  const post = (p) => fetch(`${base}${p}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+
+  const soundpad = await fetch(`${base}/api/soundpad/upload`, { method: 'POST' });
+  assert.equal(soundpad.status, 403, 'soundpad upload gateado');
+
+  const musicSkip = await post('/api/music/skip');
+  assert.equal(musicSkip.status, 403, 'music skip gateado');
+
+  const mobile = await fetch(`${base}/mobile`);
+  assert.equal(mobile.status, 403, 'panel movil gateado');
+
+  srv.bus.emit('config:patch', { subscriptionsEnabled: false });
+  const soundpadOff = await fetch(`${base}/api/soundpad/upload`, { method: 'POST' });
+  assert.notEqual(soundpadOff.status, 403, 'con flag off, no gatea');
+});

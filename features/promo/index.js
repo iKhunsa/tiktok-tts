@@ -2,6 +2,7 @@
 
 const { createSessionScheduler } = require('./session-scheduler');
 const { PROMO_ANNOUNCE_TEXT, pickAnnounceText } = require('../../core/announce-texts');
+const entitlements = require('../../core/contracts/entitlements');
 
 let scheduler = null;
 
@@ -20,6 +21,14 @@ module.exports = {
     scheduler = createSessionScheduler({
       logger,
       onMilestone: () => {
+        // Gate invertido: en Pro (entitlement 'sin-promos') los avisos NO suenan.
+        // subscriptionsEnabled=false o plan free -> check() da false -> suenan
+        // (comportamiento actual).
+        if (entitlements.check('sin-promos')) {
+          logger.log('info', 'promo', 'promo/index.js#register', 'promo.autopromocion.omitida',
+            'Aviso de autopromocion omitido (plan Pro sin anuncios)', {});
+          return;
+        }
         let config = null;
         bus.emit('config:get', (c) => { config = c; });
         // `text` = fallback para clientes viejos; `texts` = mapa completo, el

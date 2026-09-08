@@ -287,6 +287,24 @@ function attach(bus, logger) {
           break;
         }
 
+        // ── Cuentas / suscripciones ──────────────────────────────────────
+        case 'auth.sesion.iniciada': {
+          track('auth_signed_in', { via: String(d.via || '').slice(0, 20) });
+          break;
+        }
+        case 'auth.sesion.cerrada': {
+          track('auth_signed_out', {});
+          break;
+        }
+        case 'auth.checkout.solicitado': {
+          track('checkout_started', {});
+          break;
+        }
+        case 'auth.gating.bloqueado': {
+          track('pro_gate_hit', { featureId: String(d.featureId || '').slice(0, 30) });
+          break;
+        }
+
         // ── Config ───────────────────────────────────────────────────────
         case 'configuracion.patch.aplicado': {
           const keys = Array.isArray(d.keysChanged) ? d.keysChanged.slice(0, 20) : [];

@@ -26,4 +26,12 @@ function check(featureId) {
   }
 }
 
-module.exports = { provide, check };
+// Middleware Express: 403 errors.proRequired si la feature esta gateada.
+function guard(featureId) {
+  return (req, res, next) => {
+    if (check(featureId)) return next();
+    res.status(403).json({ error: 'Esta función requiere el plan Pro', errorKey: 'errors.proRequired' });
+  };
+}
+
+module.exports = { provide, check, guard };

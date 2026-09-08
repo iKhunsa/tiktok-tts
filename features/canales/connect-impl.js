@@ -13,6 +13,7 @@ const { connectYoutube } = require('./youtube/connect-youtube');
 const { cleanKickSlug } = require('./kick/clean-slug');
 const { connectKick } = require('./kick/connect-kick');
 const { broadcastChannels } = require('./broadcast-channels');
+const { assertMultiCanal } = require('./gate-multi-canal');
 
 const PLATAFORMAS = new Set(['tiktok', 'twitch', 'youtube', 'kick']);
 
@@ -27,6 +28,7 @@ async function connectPlatformChannel(deps, { platform, channel, token }) {
   if (!PLATAFORMAS.has(platform)) {
     const e = new Error('Plataforma no soportada'); e.statusCode = 400; throw e;
   }
+  assertMultiCanal(deps.state, platform);
 
   let clean;
   if (platform === 'tiktok') clean = await connectTiktokChannel(deps, channel);

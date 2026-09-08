@@ -1,6 +1,7 @@
 'use strict';
 
 const obsReplayContract = require('../../core/contracts/obs-replay');
+const entitlements = require('../../core/contracts/entitlements');
 const { markClip } = require('./mark-clip');
 
 module.exports = {
@@ -13,6 +14,12 @@ module.exports = {
     // teclado, no desde OBS internamente.
     bus.on('clips:marcar', (payload) => {
       const origen = (payload && payload.origen) || 'desconocido';
+      // clips es feature Pro. subscriptionsEnabled=false -> check() true.
+      if (!entitlements.check('clips')) {
+        logger.log('info', 'auth', 'clips/index.js#register', 'auth.gating.bloqueado',
+          `Marca de clip bloqueada (plan free, origen: ${origen})`, { featureId: 'clips', origen });
+        return;
+      }
       try {
         obsReplayContract.saveReplay();
         logger.log(
