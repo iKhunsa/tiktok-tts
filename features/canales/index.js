@@ -9,6 +9,7 @@ const { saveReplay } = require('./obs/save-replay');
 const obsReplayContract = require('../../core/contracts/obs-replay');
 const mcpRegistry = require('../../core/contracts/mcp-registry');
 const { connectPlatformChannel } = require('./connect-impl');
+const { gateMultiCanal } = require('./gate-multi-canal');
 
 const { connect } = require('./routes/connect');
 const { disconnect } = require('./routes/disconnect');
@@ -40,13 +41,14 @@ module.exports = {
 
     const rateLimit = connectRateLimiter(rateLimiterState, logger);
 
-    app.post('/api/connect', rateLimit, connect(deps));
+    const gateCanal = gateMultiCanal(deps);
+    app.post('/api/connect', rateLimit, gateCanal, connect(deps));
     app.post('/api/disconnect', disconnect(deps));
     app.get('/api/platforms/status', platformsStatus(state));
-    app.post('/api/platforms/connect', rateLimit, platformsConnect(deps));
+    app.post('/api/platforms/connect', rateLimit, gateCanal, platformsConnect(deps));
     app.post('/api/platforms/disconnect', platformsDisconnect(deps));
     app.get('/api/channels', listChannels(state));
-    app.post('/api/channels/add', rateLimit, addChannel(deps));
+    app.post('/api/channels/add', rateLimit, gateCanal, addChannel(deps));
     app.post('/api/channels/remove', removeChannel(deps));
     app.post('/api/obs/connect', obsConnect(deps));
     app.post('/api/obs/disconnect', obsDisconnect(deps));

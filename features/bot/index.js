@@ -2,6 +2,7 @@
 
 const { parseCommand } = require('./parse-command');
 const { FEATURES } = require('../avanzado');
+const entitlements = require('../../core/contracts/entitlements');
 
 function getConfigSnapshot(bus) {
   let snapshot = null;
@@ -14,7 +15,9 @@ module.exports = {
 
   register({ bus, logger }) {
     bus.on('chat:mensaje-permitido', (payload) => {
-      if (!payload || !FEATURES.musicBot) return;
+      // bot-musical es feature Pro (entitlements). Con subscriptionsEnabled=false
+      // check() devuelve true -> comportamiento actual.
+      if (!payload || !FEATURES.musicBot || !entitlements.check('bot-musical')) return;
       const parsed = parseCommand(payload.comment);
 
       if (!parsed) {

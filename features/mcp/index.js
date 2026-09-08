@@ -9,6 +9,7 @@
 // tools crece solo con cada feature nueva — este archivo nunca se toca.
 
 const mcpRegistry = require('../../core/contracts/mcp-registry');
+const entitlements = require('../../core/contracts/entitlements');
 const { mountStreamableHttp } = require('./transport/streamable-http');
 const { createActivityBuffer } = require('./state/activity-buffer');
 const { wrapWithObservability } = require('./observability');
@@ -49,6 +50,10 @@ module.exports = {
       }
     }, 'mcp');
 
+    // El servidor MCP es feature Pro (entitlement 'mcp-agente') ademas del
+    // toggle mcpEnabled. subscriptionsEnabled=false -> check() true.
+    const mcpDisponible = () => cfg.mcpEnabled && entitlements.check('mcp-agente');
+
     // Providers de estado que respondan al idiom de bus (demo — overlay lo usa).
     bus.on('mcp:state', (respond) => {
       if (typeof respond === 'function') respond(mcpRegistry.collectState());
@@ -85,7 +90,7 @@ module.exports = {
       title: 'MCP health',
       description: 'MCP server + app health, protocol version, tool count.',
       inputSchema: { type: 'object', properties: {} },
-      handler: () => health({ mcpRegistry, isEnabled: () => cfg.mcpEnabled }),
+      handler: () => health({ mcpRegistry, isEnabled: mcpDisponible }),
     });
 
     // Tools de desarrollo (dev: true). Se registran siempre; el cable las filtra
@@ -110,7 +115,7 @@ module.exports = {
 
     // ── Transporte ───────────────────────────────────────────────────────
     mountStreamableHttp(app, {
-      isEnabled: () => cfg.mcpEnabled,
+      isEnabled: mcpDisponible,
       isDestructiveEnabled: () => cfg.mcpDestructiveToolsEnabled,
       isDevEnabled: () => cfg.mcpDevToolsEnabled,
       registry: mcpRegistry,
@@ -121,7 +126,7 @@ module.exports = {
     // Endpoint de conveniencia para la UI de la tienda (GET, sin barrera de auth).
     app.get('/api/mcp/info', (_req, res) => {
       res.json({
-        enabled: cfg.mcpEnabled,
+        enabled: mcpDisponible(),
         destructiveEnabled: cfg.mcpDestructiveToolsEnabled,
         devEnabled: cfg.mcpDevToolsEnabled,
         endpoint: '/mcp',

@@ -10,6 +10,7 @@ const { command } = require('./routes/command');
 const { MOBILE_ALLOWED_ACTIONS } = require('./allowed-actions');
 const { hasDesktopClient } = require('./has-desktop-client');
 const mcpRegistry = require('../../core/contracts/mcp-registry');
+const entitlements = require('../../core/contracts/entitlements');
 
 const PORT = process.env.PORT || 3000;
 
@@ -35,11 +36,14 @@ module.exports = {
       bus.emit('ws:broadcast', { type: 'state-sync', state: { ...mobileState } });
     }, 'movil');
 
-    app.get('/mobile', guard, mobilePage());
-    app.get('/api/local-ip', localIp(PORT));
-    app.get('/api/mobile/qr', qr(deps, PORT));
-    app.get('/api/mobile/state', guard, stateRoute(mobileState));
-    app.post('/api/mobile/command', guard, command(deps));
+    // El panel movil completo es feature Pro. gatePro antes del guard de IP
+    // privada: un free ni ve el QR. subscriptionsEnabled=false -> pasa todo.
+    const gatePro = entitlements.guard('panel-movil');
+    app.get('/mobile', gatePro, guard, mobilePage());
+    app.get('/api/local-ip', gatePro, localIp(PORT));
+    app.get('/api/mobile/qr', gatePro, qr(deps, PORT));
+    app.get('/api/mobile/state', gatePro, guard, stateRoute(mobileState));
+    app.post('/api/mobile/command', gatePro, guard, command(deps));
 
     // ── MCP ──────────────────────────────────────────────────────────────
     mcpRegistry.registerStateProvider(() => ({

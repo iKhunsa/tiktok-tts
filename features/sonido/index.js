@@ -15,6 +15,7 @@ const { resolveAndSavePlaylist } = require('./musica/resolve-and-save-playlist')
 const { getConfigSnapshot, patchConfig } = require('./config-bridge');
 const { advanceMusicQueue } = require('./musica/advance-queue');
 const mcpRegistry = require('../../core/contracts/mcp-registry');
+const entitlements = require('../../core/contracts/entitlements');
 
 const { stream } = require('./musica/routes/stream');
 const { engineStatus } = require('./musica/routes/engine-status');
@@ -75,8 +76,13 @@ module.exports = {
     const runMusicRequest = handleMusicRequest(deps);
     bus.on('bot:comando', (cmd) => {
       if (!cmd || cmd.cmd !== 'play') return;
+      if (!entitlements.check('bot-musical')) return; // feature Pro (ya gateado en /bot, defensa extra)
       runMusicRequest({ query: cmd.args, user: cmd.user, userId: cmd.userId, platform: cmd.platform });
     }, 'sonido');
+
+    // Guards Pro para los paneles de UI del streamer.
+    const gateMusica = entitlements.guard('bot-musical');
+    const gateSoundpad = entitlements.guard('soundpad');
 
     // ── chat:mensaje-permitido: expone el gancho de habla (el front decide
     // via el campo ttsBlocked que ya viaja en el WS de /chat — este evento
@@ -88,27 +94,27 @@ module.exports = {
       bus.emit('sonido:hablar', { text, platform: payload.platform, user: payload.user });
     }, 'sonido');
 
-    app.get('/api/music/stream', stream(deps));
+    app.get('/api/music/stream', gateMusica, stream(deps));
     app.get('/api/music/engine', engineStatus(engine));
     app.get('/api/music/queue', queue(musicState));
-    app.post('/api/music/skip', skip(deps));
-    app.post('/api/music/next', next(deps));
+    app.post('/api/music/skip', gateMusica, skip(deps));
+    app.post('/api/music/next', gateMusica, next(deps));
     app.get('/api/music/config', configGet(bus));
-    app.patch('/api/music/config', configPatch(deps));
-    app.post('/api/music/ban', ban(bus));
-    app.post('/api/music/unban', unban(bus));
+    app.patch('/api/music/config', gateMusica, configPatch(deps));
+    app.post('/api/music/ban', gateMusica, ban(bus));
+    app.post('/api/music/unban', gateMusica, unban(bus));
     app.get('/api/music/playlist', playlistGet(deps));
-    app.put('/api/music/playlist', playlistPut(deps));
-    app.post('/api/music/playlist/toggle', playlistToggle(deps));
-    app.post('/api/music/playlist/play', playlistPlay(deps));
-    app.post('/api/music/playlist/shuffle', playlistShuffle(deps));
+    app.put('/api/music/playlist', gateMusica, playlistPut(deps));
+    app.post('/api/music/playlist/toggle', gateMusica, playlistToggle(deps));
+    app.post('/api/music/playlist/play', gateMusica, playlistPlay(deps));
+    app.post('/api/music/playlist/shuffle', gateMusica, playlistShuffle(deps));
 
     // ── Soundpad ─────────────────────────────────────────────────────────
     app.get('/api/soundpad/list', list(soundsConfigPath));
     app.get('/api/soundpad/icons', iconsList(logger));
-    app.post('/api/soundpad/upload', upload(deps));
-    app.patch('/api/soundpad/:id', patch(deps));
-    app.delete('/api/soundpad/:id', del(deps));
+    app.post('/api/soundpad/upload', gateSoundpad, upload(deps));
+    app.patch('/api/soundpad/:id', gateSoundpad, patch(deps));
+    app.delete('/api/soundpad/:id', gateSoundpad, del(deps));
     attachSoundpadShortcuts(deps);
 
     // ── MCP ──────────────────────────────────────────────────────────────

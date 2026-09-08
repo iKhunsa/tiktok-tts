@@ -14,10 +14,13 @@
  *   emite esto cuando el atajo global se presiona; /sonido (este archivo)
  *   reenvia bus.emit('ws:broadcast', { type: 'play-soundpad', soundId }).
  */
+const entitlements = require('../../../core/contracts/entitlements');
+
 function attachSoundpadShortcuts(deps) {
   const { bus, logger } = deps;
   bus.on('sonido:soundpad-reproducir', (payload) => {
     if (!payload || !payload.soundId) return;
+    if (!entitlements.check('soundpad')) return; // feature Pro
     bus.emit('ws:broadcast', { type: 'play-soundpad', soundId: payload.soundId });
     // Analytics agregado — nunca el soundId (alta cardinalidad).
     if (logger) logger.log(
