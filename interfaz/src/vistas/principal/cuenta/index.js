@@ -155,8 +155,8 @@ export function renderCuentaPanel() {
     showToast(t('cuenta.saved'));
     renderCuentaPanel();
   });
-  const up = el.querySelector('#cuentaUpgrade') || el.querySelector('#cuentaManage');
-  if (up) up.addEventListener('click', () => irACheckout(up));
+  el.querySelector('#cuentaUpgrade')?.addEventListener('click', (e) => irACheckout(e.currentTarget));
+  el.querySelector('#cuentaManage')?.addEventListener('click', (e) => cancelarSuscripcion(e.currentTarget));
 }
 
 async function enviarAuth(el) {
@@ -191,6 +191,20 @@ async function irACheckout(btn) {
     if (!r.ok || !r.body.url) return toastError(r.body);
     window.open(r.body.url, '_blank'); // window.js rebota la URL no-local al navegador externo
     showToast(t('cuenta.checkoutOpened'));
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function cancelarSuscripcion(btn) {
+  if (!confirm(t('cuenta.confirmCancel'))) return;
+  btn.disabled = true;
+  try {
+    const r = await pedir('/api/auth/subscription/cancel', { method: 'POST' });
+    if (!r.ok) return toastError(r.body);
+    aplicarSesion(r.body);
+    showToast(t('cuenta.canceled'));
+    renderCuentaPanel();
   } finally {
     btn.disabled = false;
   }
