@@ -212,7 +212,7 @@ function modalConfirmarCancelacion() {
         <div class="notice-icon-badge"><img class="icon-inline" src="icons/warning.svg" alt=""></div>
         <h2 style="justify-content:center;">${esc(t('cuenta.confirmCancelTitle'))}</h2>
         <div class="bugreport-guide" style="background:rgba(239,68,68,0.06);border-color:rgba(239,68,68,0.3);color:var(--text-secondary);">${esc(t('cuenta.confirmCancel'))}</div>
-        <button class="btn btn-connect" type="button" id="cuentaCancelYes" style="width:100%;justify-content:center;margin-top:16px;">${esc(t('cuenta.confirmCancelYes'))}</button>
+        <button class="btn btn-connect" type="button" id="cuentaCancelYes" style="width:100%;justify-content:center;margin-top:16px;color:#fff;">${esc(t('cuenta.confirmCancelYes'))}</button>
         <button class="btn btn-disconnect" type="button" id="cuentaCancelNo" style="width:100%;justify-content:center;margin-top:10px;">${esc(t('cuenta.confirmCancelNo'))}</button>
       </div>`;
     document.body.appendChild(overlay);
