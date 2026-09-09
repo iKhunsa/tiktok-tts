@@ -13,7 +13,7 @@ const path = require('node:path');
 
 const TMP = fs.mkdtempSync(path.join(os.tmpdir(), 'auth-test-'));
 process.env.TIKTOK_USER_DATA_PATH = TMP;
-delete process.env.CUENTAS_URL;
+process.env.CUENTAS_URL = ''; // opt-out explicito: fuerza el dominio auth a no-op aunque exista cuentas-config.json bundleado
 
 const { bootServer } = require('./helpers/boot-server');
 const srv = bootServer();

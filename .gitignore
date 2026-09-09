@@ -8,6 +8,7 @@ installer/
 electron-dist/
 release-output/
 auth-tokens.json
+auth-session.json
 platform-config.json
 config.json
 sounds-config.json
@@ -24,8 +25,6 @@ graphify-out/
 .claude/
 mcp.json
 cuentas.json
-cuentas-config.json
-cuentas-config.generated.json
 
 # skills vendorizadas por `npx skills` (el lock basta, se re-bajan)
 .agents/

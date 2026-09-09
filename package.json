@@ -87,6 +87,10 @@
       {
         "from": "aptabase-config.generated.json",
         "to": "aptabase-config.json"
+      },
+      {
+        "from": "cuentas-config.json",
+        "to": "cuentas-config.json"
       }
     ],
     "npmRebuild": false,
