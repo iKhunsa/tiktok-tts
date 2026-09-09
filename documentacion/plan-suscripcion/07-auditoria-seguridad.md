@@ -113,5 +113,5 @@ cubierto por `validateLocalMutation`.
 
 - [x] Vuln 1 — fix en `core/guard-suscripcion.js` + `core/app.js` + test (2026-09-09)
 - [x] Vuln 3 — recorte del payload `auth-updated` (`estado-sesion.js#getSesionPublica`, `refresh.js`, `index.js`, `cliente-ws.js`) (2026-09-09)
-- [x] Vuln 2 — `servicio-cuentas` `trust proxy: 1` + `keyFn` por email en login (código + tests, 2026-09-09) — **falta el redeploy en Coolify**
+- [x] Vuln 2 — `servicio-cuentas` `trust proxy: 1` + `keyFn` por email en login (código + tests, 2026-09-09) — **desplegado y vivo en `cuentas.tiklivetts.es`**
 - [ ] Descartados: aplicar los "igual conviene" antes de Fase 6 (contraseña pepper, webhook idempotency, CORS)
