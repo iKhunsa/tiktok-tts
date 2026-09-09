@@ -1087,6 +1087,8 @@
     "noAccountQ": "Vous n'avez pas de compte ?",
     "legal": "En créant un compte, vous acceptez nos Conditions d'utilisation et la Politique de confidentialité.",
     "planFreeDesc": "Vous êtes sur l'offre gratuite. Passez à Pro quand vous voulez.",
-    "noName": "Sans nom"
+    "noName": "Sans nom",
+    "confirmCancel": "Voulez-vous vraiment annuler votre abonnement Pro ? Vous garderez l'accès jusqu'à la fin de la période déjà payée.",
+    "canceled": "Votre abonnement sera annulé à la fin de la période en cours."
   }
 }

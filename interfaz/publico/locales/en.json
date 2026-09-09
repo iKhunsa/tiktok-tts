@@ -1087,6 +1087,8 @@
     "noAccountQ": "Don't have an account?",
     "legal": "By creating an account you agree to our Terms of Service and Privacy Policy.",
     "planFreeDesc": "You're on the free plan. Upgrade to Pro anytime.",
-    "noName": "No name"
+    "noName": "No name",
+    "confirmCancel": "Are you sure you want to cancel your Pro subscription? You'll keep access until the end of the period you already paid for.",
+    "canceled": "Your subscription will be canceled at the end of the current period."
   }
 }

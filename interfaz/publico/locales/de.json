@@ -1087,6 +1087,8 @@
     "noAccountQ": "Noch kein Konto?",
     "legal": "Mit der Kontoerstellung akzeptierst du unsere Nutzungsbedingungen und die Datenschutzerklärung.",
     "planFreeDesc": "Du bist im kostenlosen Tarif. Wechsle jederzeit zu Pro.",
-    "noName": "Ohne Name"
+    "noName": "Ohne Name",
+    "confirmCancel": "Möchtest du dein Pro-Abo wirklich kündigen? Du behältst den Zugang bis zum Ende des bereits bezahlten Zeitraums.",
+    "canceled": "Dein Abo wird zum Ende des aktuellen Zeitraums gekündigt."
   }
 }

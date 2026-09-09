@@ -1,7 +1,9 @@
 # 02 — Contrato HTTP de `servicio-cuentas` (CONGELADO — Gate B)
 
-Versión **1.0.0**. Producido por el Agente 02. **Es lo único contra lo que
-programa el Agente 04** (backend de la app) — no lee el código del servicio.
+Versión **1.1.0** (bump aditivo: `POST /api/subscription/cancel`, agregado en
+la corrida de QA del Flujo C — 2026-09-09, ver `06-resultados-qa.md`).
+Producido por el Agente 02. **Es lo único contra lo que programa el Agente 04**
+(backend de la app) — no lee el código del servicio.
 
 Cambios a este contrato tras el Gate B: solo aditivos en 1.x (ruta nueva,
 campo opcional nuevo). Un cambio que rompe = 2.0.0 + nota en `HANDOFF.md` +
@@ -123,6 +125,23 @@ curl -X PATCH https://cuentas.tiklivetts.es/api/account \
   `502 errors.polarUnavailable`, `501 errors.notImplemented` (hasta la Fase 2).
 - Retorno de Polar: `success_url = https://cuentas.tiklivetts.es/checkout/ok?checkout_id={CHECKOUT_ID}`
   (querystring que ve la app al volver — ver `03-contrato-checkout.md`).
+
+### `POST /api/subscription/cancel`  *(v1.1.0)*
+
+- Auth: Bearer.
+- Sin body. Cancela **al fin del período pagado** (`cancel_at_period_end=true`
+  en Polar vía `PATCH /v1/subscriptions/{id}`) — reversible desde Polar hasta
+  esa fecha, no revoca acceso inmediato. Usa el `polar_subscription_id` de la
+  suscripción activa del usuario (mismo criterio de "plan efectivo" que
+  `estado-cuenta.js`: `status IN ('active','canceled') AND current_period_end > now()`).
+- `200`: `{ "ok": true }` (o `{ "ok": true, "alreadyCanceled": true }` si ya
+  estaba programada). Actualiza `subscriptions.cancel_at_period_end` local de
+  forma optimista, sin esperar el webhook de confirmación de Polar.
+- Errores: `401 errors.unauthorized`, `404 errors.noActiveSubscription` (no
+  hay suscripción vigente para cancelar), `502 errors.polarUnavailable`,
+  `501 errors.notImplemented` (sin `POLAR_API_KEY`).
+- No existe endpoint de "deshacer" propio — si el usuario se arrepiente antes
+  de `current_period_end`, lo maneja desde el dashboard de Polar directamente.
 
 ### `POST /api/webhooks/polar`  *(implementa el Agente 03 — hoy responde 501)*
 
