@@ -56,6 +56,7 @@ function validateLocalMutation(req, res, next) {
  */
 function createApp(bus) {
   const app = express();
+  app.set('case sensitive routing', true);
   app.use(express.json());
   app.use(validateLocalMutation);
   // Con subscriptionsEnabled activo, /api/* exige sesion (salvo whitelist).

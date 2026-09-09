@@ -11,7 +11,7 @@ import { logStorage } from '../log-storage.js';
 import { appSettings, saveSettings } from '../estado/ajustes-app.js';
 import { options } from '../estado/opciones-lectura.js';
 import { applyA11yConfig, applyReadNonFollowers, applyFiltroIdiomaConfig } from '../estado/config-runtime.js';
-import { aplicarSesion } from '../estado/sesion.js';
+import { cargarSesion } from '../estado/sesion.js';
 import {
   ttsPaused, setTtsGlobalEnabled, togglePauseTts, skipCurrentTTS,
   clearTTSQueue, enableEmergencyTTSMode, sendStateSync, speak,
@@ -380,7 +380,10 @@ function handleMessage(data) {
       applyFiltroIdiomaConfig(data.config || {});
       break;
     case 'auth-updated':
-      aplicarSesion(data.session || {});
+      // El payload del WS viene recortado (sin email/user-id, ver
+      // features/auth/estado-sesion.js#getSesionPublica) -> se pide el
+      // estado completo por HTTP, que es solo-localhost.
+      cargarSesion();
       break;
     case 'moderation-updated':
     case 'moderation-reset':

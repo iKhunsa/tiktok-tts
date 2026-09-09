@@ -75,6 +75,13 @@ function marcarDegradado() {
 const getToken = () => _token;
 const getSesion = () => ({ ..._sesion, entitlements: _sesion.entitlements.slice() });
 
+// Vista sin PII para el broadcast por WS (llega a toda la LAN, sin auth —
+// overlays de OBS). Sin user/subscription/expiresAt.
+const getSesionPublica = () => {
+  const s = getSesion();
+  return { signedIn: s.signedIn, plan: s.plan, entitlements: s.entitlements, degraded: s.degraded };
+};
+
 module.exports = {
-  VACIA, hidratarDesdeDisco, aplicar, cerrar, marcarDegradado, getToken, getSesion,
+  VACIA, hidratarDesdeDisco, aplicar, cerrar, marcarDegradado, getToken, getSesion, getSesionPublica,
 };

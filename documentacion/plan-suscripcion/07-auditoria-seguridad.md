@@ -111,7 +111,7 @@ cubierto por `validateLocalMutation`.
 
 ## Estado de aplicación
 
-- [ ] Vuln 1 — fix en `core/guard-suscripcion.js` + `core/app.js` + test
-- [ ] Vuln 3 — recorte del payload `auth-updated` (app, 4 sitios + `cliente-ws.js`)
-- [ ] Vuln 2 — `servicio-cuentas` `trust proxy` + keyGenerator (repo del VPS, redeploy Coolify)
+- [x] Vuln 1 — fix en `core/guard-suscripcion.js` + `core/app.js` + test (2026-09-09)
+- [x] Vuln 3 — recorte del payload `auth-updated` (`estado-sesion.js#getSesionPublica`, `refresh.js`, `index.js`, `cliente-ws.js`) (2026-09-09)
+- [x] Vuln 2 — `servicio-cuentas` `trust proxy: 1` + `keyFn` por email en login (código + tests, 2026-09-09) — **falta el redeploy en Coolify**
 - [ ] Descartados: aplicar los "igual conviene" antes de Fase 6 (contraseña pepper, webhook idempotency, CORS)

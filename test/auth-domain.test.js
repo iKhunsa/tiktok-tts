@@ -70,6 +70,7 @@ test('subscriptionsEnabled=true + sin sesion: /api/* exige login; whitelist abie
 
   // El guard corre antes que gateMusica/gateSoundpad -> sin sesion es 401, no 403.
   assert.equal((await post('/api/tts')).status, 401, 'tts exige login');
+  assert.equal((await post('/API/tts')).status, 401, 'API/tts (mayuscula) tambien exige login');
   assert.equal((await post('/api/music/skip')).status, 401, 'music skip exige login');
   assert.equal((await fetch(`${base}/api/soundpad/upload`, { method: 'POST' })).status, 401, 'soundpad exige login');
   assert.equal((await fetch(`${base}/api/voices`)).status, 401, 'voices exige login');
@@ -87,4 +88,26 @@ test('subscriptionsEnabled=true + sin sesion: /api/* exige login; whitelist abie
   srv.bus.emit('config:patch', { subscriptionsEnabled: false });
   assert.notEqual((await post('/api/tts')).status, 401, 'con flag off, no exige login');
   assert.notEqual((await fetch(`${base}/api/soundpad/upload`, { method: 'POST' })).status, 401, 'con flag off, no exige login');
+});
+
+test('getSesionPublica() (payload del broadcast WS) no filtra email/user-id/subscription', () => {
+  const estado = require('../features/auth/estado-sesion');
+  estado.aplicar({
+    token: 'tok-de-prueba',
+    session: {
+      user: { id: 'uuid-secreto', email: 'streamer@ejemplo.com', nombre: 'Streamer' },
+      plan: 'pro',
+      entitlements: ['bot-musical'],
+      expiresAt: '2027-01-01T00:00:00Z',
+      subscription: { status: 'active' },
+    },
+  }, srv.logger);
+
+  const publica = estado.getSesionPublica();
+  assert.deepEqual(Object.keys(publica).sort(), ['degraded', 'entitlements', 'plan', 'signedIn']);
+  assert.equal(publica.plan, 'pro');
+  assert.equal(publica.signedIn, true);
+  assert.deepEqual(publica.entitlements, ['bot-musical']);
+
+  estado.cerrar(srv.logger); // no dejar sesion pegada para otros tests del mismo archivo
 });

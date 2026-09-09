@@ -20,9 +20,10 @@ function crearGuardSuscripcion(bus) {
   if (!bus) return (_req, _res, next) => next(); // createApp() sin bus (tests)
 
   return function guardSuscripcion(req, res, next) {
-    if (!req.path.startsWith('/api/')) return next();
-    if (req.path.startsWith('/api/auth/')) return next();
-    if (ABIERTAS.has(`${req.method} ${req.path}`)) return next();
+    const p = (req.path || '/').toLowerCase().replace(/\/+$/, '') || '/';
+    if (!p.startsWith('/api/')) return next();
+    if (p.startsWith('/api/auth/')) return next();
+    if (ABIERTAS.has(`${req.method} ${p}`)) return next();
 
     let subsOn = false;
     bus.emit('config:get', (c) => { subsOn = !!(c && c.subscriptionsEnabled); });

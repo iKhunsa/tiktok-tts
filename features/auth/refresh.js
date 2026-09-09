@@ -37,7 +37,7 @@ function crearRefresh({ cliente, bus, logger }) {
   function emitirCambio(antes, ahora) {
     if (antes.signedIn === ahora.signedIn && antes.plan === ahora.plan && antes.degraded === ahora.degraded) return;
     bus.emit('auth:actualizado', { signedIn: ahora.signedIn, plan: ahora.plan });
-    bus.emit('ws:broadcast', { type: 'auth-updated', session: ahora });
+    bus.emit('ws:broadcast', { type: 'auth-updated', session: estado.getSesionPublica() });
   }
 
   function start() {

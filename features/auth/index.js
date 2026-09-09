@@ -91,7 +91,7 @@ module.exports = {
         if (token) await cliente.logout(token).catch(() => {});
         estado.cerrar(logger);
         bus.emit('auth:actualizado', { signedIn: false, plan: 'free' });
-        bus.emit('ws:broadcast', { type: 'auth-updated', session: estado.getSesion() });
+        bus.emit('ws:broadcast', { type: 'auth-updated', session: estado.getSesionPublica() });
         return { ok: true };
       },
     });

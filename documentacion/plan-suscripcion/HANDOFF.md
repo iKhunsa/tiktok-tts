@@ -79,6 +79,23 @@ fases 1–4.
 
 Formato: `- YYYY-MM-DD — <agente> — <qué pasó>`.
 
+- 2026-09-09 — orquestador — **Fixeados los 3 hallazgos de `07-auditoria-seguridad.md`.**
+  Vuln 1 (HIGH, bypass del muro por mayúsculas): `core/guard-suscripcion.js` normaliza
+  `req.path` a minúsculas antes de comparar + `app.set('case sensitive routing', true)`
+  en `core/app.js` como defensa en profundidad. Test nuevo: `POST /API/tts` (mayúscula)
+  con flag on + sin sesión → 401. Vuln 3 (MEDIUM, PII por WS a la LAN):
+  `estado-sesion.js#getSesionPublica()` (solo `signedIn/plan/entitlements/degraded`,
+  sin email/user-id/subscription) reemplaza el payload completo en los 2 sitios que
+  hacen `bus.emit('ws:broadcast', {type:'auth-updated', ...})` (`refresh.js`,
+  `index.js` — tool MCP `auth_logout`); `cliente-ws.js` ya no aplica el payload
+  recortado directo, llama `cargarSesion()` (HTTP solo-localhost) para el perfil
+  completo. Vuln 2 (HIGH, rate-limit anulable con `X-Forwarded-For` falso) — repo
+  `servicio-cuentas`: `trustProxy` pasó de booleano (`true`) a hop-count (`int`,
+  default `1`) en `config.js`; `rate-limit.js` acepta `keyFn` opcional; `login.js`
+  suma un segundo limitador keyeado por email normalizado (además del de IP
+  existente). `npm test` app 77→78, `servicio-cuentas` 6→8. `build:front` y
+  `check-mcp.js` OK. **Pendiente:** push de `servicio-cuentas` a `main` + redeploy en
+  Coolify (el fix de Vuln 2 no está vivo en `cuentas.tiklivetts.es` hasta ese deploy).
 - 2026-09-09 — orquestador — **Audit de over-engineering (ponytail-audit) aplicado.** ~−150 líneas, −1 dep (`undici`), −7 archivos. Borrado `core/error-boundary.js` (muerto), `features/avanzado/{accesibilidad,feature-flags}.js`; `getConfigSnapshot` ×5 → `core/config-snapshot.js`; `sanear()` ×2 → `electron-shell/sanear.js`; `features/auth/gating.js` inline; 3 `ensure-*-config.js` → `scripts/ensure-configs.js`; `movil/utils.js` 1 escaper. Arreglada de paso la única violación cross-import (`bot/` → `avanzado/FEATURES`). Fix: `loadVoices` crasheaba (`TypeError`) al arrancar deslogueado. `CLAUDE.md` regla de modularidad reescrita ("antes reusar" + umbral n-consumidores). Commits `effe85c`..`bcf14ea`. `npm test` 77/77.
 - 2026-09-09 — orquestador — **Auditoría de seguridad (skill `security-review`).** Ver `07-auditoria-seguridad.md`. 3 hallazgos confirmados: **Vuln 1 HIGH** (bypass del muro por casing en `core/guard-suscripcion.js` — `/API/config` sin auth), **Vuln 2 HIGH** (`servicio-cuentas`: rate-limit anulable con `X-Forwarded-For`, `trust proxy: true`), **Vuln 3 MEDIUM** (email+user-id de cuenta al WS de toda la LAN). **NINGUNO arreglado todavía** — es lo siguiente a hacer.
 - 2026-09-08 — orquestador — set de planes creado (`00`–`06` + este handoff). Nada ejecutado todavía.
