@@ -25,7 +25,7 @@ sumar a la lista de limpieza de usuarios QA antes de producción).
 | B1 | Iniciar checkout | Disparar `POST /api/auth/checkout` | Abre el checkout de Polar del producto correcto | Checkout de Polar sandbox abierto — producto "Pro", **$85/yr** (confirma el fix de `plans.precio_anual_centavos` de la sesión anterior), email prefilled `qa+e2e1@tiklivetts.es` | ✅ PASA |
 | B2 | Completar pago | Tarjeta de prueba `4242 4242 4242 4242` (o Google Pay en sandbox) | Polar redirige a `success_url` | Usuario completó el pago vía el botón Google Pay del sandbox (también válido — no toca cuentas reales, solo genera un token de prueba) | ✅ PASA |
 | **B3 / Gate C** | Webhook → DB | Verificar `subscriptions` tras el pago | `status='active'`, `current_period_end` ~1 año futuro | Logs de `servicio-cuentas` (Coolify): `subscription.created`, `subscription.active`, `subscription.updated` para `user=2d78ae3d-…` `status=active`. `GET /api/auth/session` post-refresh: `subscription:{status:"active", currentPeriodEnd:"2027-09-09T17:43:52.794Z", cancelAtPeriodEnd:false}` | ✅ **PASA — Gate C CERRADO** |
-| B4 | UI refleja Pro | Sin reiniciar (o tras refresh) | Badge "PRO", candados desaparecen | **Nota de proceso:** el refresh automático es cada 10 min; se forzó reiniciando el proceso local (dispara un `tick()` inmediato al arrancar) en vez de esperar. Con eso, badge "PRO" visible en sidebar, candados de "Sonidos"/"Bot" desaparecidos, vista Cuenta muestra "Pro · activo hasta 9/9/2027" | ✅ PASA (con la salvedad de que en producción real el usuario esperaría hasta 10 min sin acción manual — comportamiento ya documentado y aceptado en el diseño original) |
+| B4 | UI refleja Pro | Sin reiniciar (o tras refresh) | Badge "PRO", candados desaparecen | **Corrida 1 (antes del fix):** el refresh automático era cada 10 min sin ninguna señal de pago confirmado; se forzó reiniciando el proceso local para verificar el resto del flujo. **Corrida 2 (después del fix, ver "Hallazgos reales" abajo), en Electron real:** al cerrarse la ventana de checkout el plan se actualiza solo, sin reiniciar nada — badge "PRO", candados fuera, "Pro · activo hasta 9/9/2027" | ✅ PASA — instantáneo, ya no depende de esperar el ciclo de 10 min |
 | B5 | Estado MCP | `get_state` del backend de la app | `auth.plan='pro'` + entitlements correctos | No se corrió explícitamente vía MCP tool (se verificó el mismo dato por `GET /api/auth/session`, misma fuente `estado.getSesion()` que consume el state provider) | 🟡 PASA por equivalencia, no verificado vía `get_state` directo |
 | B6 | Features desbloqueadas | Acción antes gateada (`POST /api/music/skip`) | `200`, no `403` | `POST /api/music/skip → 200 OK` | ✅ PASA |
 | B7 | Idempotencia webhook | Reenviar mismo `event_id` | `200`, sin fila nueva | No ejecutado (fuera del alcance pedido para esta corrida) | ⬜ NO EJECUTADO |
@@ -41,6 +41,38 @@ también lleva a un flujo de upsell/checkout, lo cual es buen comportamiento de
 producto, pero no se confirmó el mecanismo exacto (no estaba en el alcance de
 esta corrida). Confirmar en una corrida de QA completa cuál es la UI exacta al
 tocar una feature bloqueada estando en plan free.
+
+## Hallazgos reales de B1/B4 — corregidos en la misma sesión (commit `d68676e`)
+
+Corriendo el flujo con el `Browser pane` (Chrome sin Electron) en vez de la
+app empaquetada salieron dos gaps reales, ambos arreglados y re-verificados
+contra la **app Electron real** (no el dev server):
+
+1. **`window.open()` después de un `await` se bloquea en un navegador normal.**
+   `irACheckout()` (`cuenta/index.js`) hacía `await pedir('/api/auth/checkout')`
+   y recién después `window.open(url)`. Cualquier navegador puede tratar esa
+   apertura como no-iniciada-por-el-usuario tras la espera de red y bloquearla
+   en silencio — pasó exactamente eso en el Browser pane. **Fix:** el checkout
+   de Polar ahora abre como **ventana Electron propia** (no en el navegador del
+   sistema) — `electron-shell/window.js#isPolarUrl` matchea `*.polar.sh` antes
+   de caer a `shell.openExternal`, sin preload (no expone `electronAPI` a la
+   página de pago de un tercero). Verificado en Electron real: se abre
+   "TikLiveTTS Sandbox | Pro" como ventana nativa de 900×720.
+2. **El plan solo se enteraba en el próximo tick del refresh (10 min).**
+   Sin ninguna señal de "ya se confirmó el pago", un usuario real ve la UI
+   vieja (free) hasta 10 minutos después de pagar — exactamente lo que generó
+   la sospecha inicial de "el caché no se actualiza". **Fix:** la ventana de
+   checkout detecta la navegación a `/checkout/ok` y se cierra sola a los
+   1.5s; al cerrarse (por éxito o porque el usuario la cerró sin pagar) emite
+   `bus.emit('auth:forzar-refresh')`, que `features/auth/index.js` escucha
+   para correr `refresh.tick()` de inmediato. Verificado en Electron real con
+   una cuenta nueva (`qa+e2e3@tiklivetts.es`): tras pagar, la ventana se cerró
+   sola y la vista Cuenta pasó a "Pro · activo hasta 9/9/2027" **sin ninguna
+   acción manual ni reinicio**.
+
+`npm test` 78/78 tras el fix. `servicio-cuentas` `checkout.js` actualizado
+(texto de la página de éxito, ya no dice "cerrá la pestaña" sino que refleja
+el cierre automático) — commit `af52a77`, desplegado.
 
 ## Pendiente para una corrida de QA completa (antes de Fase 6 / producción)
 

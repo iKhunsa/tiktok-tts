@@ -79,6 +79,24 @@ fases 1–4.
 
 Formato: `- YYYY-MM-DD — <agente> — <qué pasó>`.
 
+- 2026-09-09 — orquestador — **Flujo D (expiración) probado ad-hoc + 2 fixes reales de B1/B4
+  encontrados y corregidos.** Flujo D: `UPDATE` manual en Supabase (`current_period_end` al
+  pasado) sobre la suscripción de `qa+e2e1` → `GET /api/session` directo devolvió `plan:free`
+  de inmediato (D1/D2 ✅); refresh de la app reflejó candados de vuelta + `POST /api/music/skip`
+  → `403` (no `401`, confirma que el gate Pro es distinto del muro de login) (D3 ✅); el job de
+  reconciliación **revirtió el cambio manual** en el siguiente redeploy (D4, comportamiento
+  esperado y ya avisado de antemano — confirmado en vivo). Corriendo el flujo con una 2ª y 3ª
+  cuenta de prueba salieron 2 gaps reales del lado de checkout (commit `d68676e`, más
+  `af52a77` en `servicio-cuentas`): (1) `window.open()` después de un `await` se bloqueaba en
+  un navegador normal — el checkout de Polar ahora abre como **ventana Electron propia**
+  (`electron-shell/window.js#isPolarUrl`, sin preload) en vez de ir al navegador del sistema;
+  (2) el plan solo se enteraba del pago en el próximo tick del refresh de 10 min — ahora la
+  ventana de checkout detecta `/checkout/ok`, se cierra sola a los 1.5s, y al cerrarse emite
+  `bus.emit('auth:forzar-refresh')` que dispara un `refresh.tick()` inmediato. Ambos fixes
+  verificados en la **app Electron real** (no el dev server) con una cuenta nueva de punta a
+  punta: pago → ventana se cierra sola → plan Pro visible sin ninguna acción manual. `npm test`
+  78/78. Detalle completo en `06-resultados-qa.md`.
+
 - 2026-09-09 — orquestador — **QA end-to-end parcial + Gate C cerrado.** Flujo A
   (parcial) + Flujo B completo probados contra la app local (`subscriptionsEnabled:true`,
   `cuentas.json` → servicio vivo) + `servicio-cuentas` real. Registro, login, checkout
