@@ -1,6 +1,7 @@
 import { t, tErr } from '../../nucleo/i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
 import { escaparHtml as escapeHtml } from '../../../compartido/escapar-html.js';
+import { aplicarBloqueoVista } from '../../nucleo/estado/vista-bloqueada.js';
 
 let _spSounds = [];
 let _spCapturing = null; // soundId capturando un atajo
@@ -24,6 +25,7 @@ export function spRender() {
   // spRender() reescribe el DOM: si habia una captura de atajo en curso, su
   // nodo desaparece pero el listener global seguiria pegado. Cancelar primero.
   spCancelCapture();
+  aplicarBloqueoVista('view-soundpad', 'soundpad');
   if (!_spSounds.length) {
     deck.innerHTML = '';
     if (empty) empty.style.display = '';

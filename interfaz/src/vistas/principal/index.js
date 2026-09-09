@@ -28,6 +28,7 @@ import { t, tErr } from '../../nucleo/i18n/i18n.js';
 import { iniciarI18nApp, pickLanguage, setLanguage } from './i18n-app.js';
 import { switchView } from './vistas-router.js';
 import { cargarSesion, almacenSesion, appBloqueada } from '../../nucleo/estado/sesion.js';
+import { aplicarBloqueoVista } from '../../nucleo/estado/vista-bloqueada.js';
 import { iniciarCuenta } from './cuenta/index.js';
 import { iniciarRotacionAnuncioLateral } from './anuncio-lateral.js';
 import { copyToClipboard } from './utils-app.js';
@@ -171,6 +172,11 @@ function aplicarBloqueoApp() {
   // cuentas apagado), nunca en la pantalla de login. arrancarAvisosOnboarding
   // es idempotente.
   if (!bloq) arrancarAvisosOnboarding();
+  // Vistas Pro enteras (Sonidos/Bot/MCP): re-evaluar el blur+overlay cada vez
+  // que cambia la sesion (login, pago, degradado) sin re-fetchear su estado.
+  aplicarBloqueoVista('view-soundpad', 'soundpad');
+  aplicarBloqueoVista('view-bot', 'bot-musical');
+  aplicarBloqueoVista('mcpPanel', 'mcp-agente');
 }
 
 function iniciarArranque() {
@@ -194,6 +200,10 @@ function iniciarArranque() {
   applySettings();
   loadRuntimeConfig();
   iniciarCuenta();
+  // Puente para interfaz/publico/plugin-store/ (scripts clasicos, sin import
+  // ES) -- mismo patron que window.refreshPluginStoreTexts/__langReady.
+  window.__sesionActual = () => almacenSesion.getState();
+  almacenSesion.subscribe(() => window.renderPluginStore?.());
   almacenSesion.subscribe(aplicarBloqueoApp);
   cargarSesion();
   renderShortcutDisplay();

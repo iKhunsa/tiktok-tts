@@ -4,26 +4,13 @@
  * de sesion. Toda la logica de plan/entitlements vive en el server
  * (features/auth/); aca solo se refleja el estado y se disparan acciones.
  */
-import { t, tErr, aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
+import { t, aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
 import { showToast } from '../../../componentes/toast.js';
 import { almacenSesion, aplicarSesion } from '../../../nucleo/estado/sesion.js';
+import { pedir, toastError } from './api.js';
+import { irACheckout } from './checkout.js';
 
 const MIN_PASS = 8;
-
-async function pedir(path, opts) {
-  const r = await fetch(path, {
-    method: opts?.method || 'GET',
-    headers: opts?.body ? { 'Content-Type': 'application/json' } : undefined,
-    body: opts?.body ? JSON.stringify(opts.body) : undefined,
-  });
-  let body = null;
-  try { body = await r.json(); } catch (_) { /* sin cuerpo */ }
-  return { ok: r.ok, status: r.status, body: body || {} };
-}
-
-function toastError(body, fallbackKey) {
-  showToast(tErr(body, fallbackKey || 'errors.generic'));
-}
 
 // Escape para contexto de atributo (value="...") ademas de texto — el
 // escaparHtml compartido no cubre las comillas. Local a esta vista.
@@ -182,18 +169,6 @@ async function enviarAuth(el) {
     if (!r.ok) return toastError(r.body, 'errors.invalidCredentials');
     aplicarSesion(r.body);
     renderCuentaPanel();
-  } finally {
-    btn.disabled = false;
-  }
-}
-
-async function irACheckout(btn) {
-  btn.disabled = true;
-  try {
-    const r = await pedir('/api/auth/checkout', { method: 'POST', body: { plan: 'pro' } });
-    if (!r.ok || !r.body.url) return toastError(r.body);
-    window.open(r.body.url, '_blank'); // window.js rebota la URL no-local al navegador externo
-    showToast(t('cuenta.checkoutOpened'));
   } finally {
     btn.disabled = false;
   }

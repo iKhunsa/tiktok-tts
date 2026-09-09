@@ -13,6 +13,7 @@ const { computeGiftUsd } = require('./compute-gift-usd');
 const { cleanNick } = require('./clean-nick');
 const mcpRegistry = require('../../core/contracts/mcp-registry');
 const { getConfigSnapshot } = require('../../core/config-snapshot');
+const entitlements = require('../../core/contracts/entitlements');
 
 const { overlayStats } = require('./routes/overlay-stats');
 const { giftsList } = require('./routes/gifts-list');
@@ -144,10 +145,11 @@ module.exports = {
     }, 'overlay');
 
     // ── Rutas ─────────────────────────────────────────────────────────────
+    const gateOverlayBg = entitlements.guard('overlay-decoraciones');
     app.get('/api/overlay-stats', overlayStats(state));
     app.get('/api/gifts-list', giftsList(logger));
-    app.post('/api/upload-bg', uploadBg(logger));
-    app.delete('/api/upload-bg', deleteBg(logger));
+    app.post('/api/upload-bg', gateOverlayBg, uploadBg(logger));
+    app.delete('/api/upload-bg', gateOverlayBg, deleteBg(logger));
     app.post('/api/test/gift', testGift(deps));
     app.post('/api/test/follow', testFollow(deps));
     app.post('/api/test/share', testShare(deps));

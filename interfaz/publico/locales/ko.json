@@ -939,6 +939,7 @@
     "moveUp": "위로 이동",
     "moveDown": "아래로 이동",
     "alwaysVisible": "항상 표시",
+    "proBadge": "PRO",
     "desc": {
       "overlays": "OBS용 선물 알림, 좋아요·팔로워 카운터.",
       "clips": "단축키로 스트림 하이라이트를 표시하세요.",
@@ -1095,5 +1096,19 @@
     "confirmCancelNo": "돌아가기",
     "resume": "구독 재개",
     "resumed": "Pro 구독이 계속 활성 상태입니다 — 취소가 취소되었습니다."
+  },
+  "pro": {
+    "popupTitle": "Pro로 이 기능 잠금 해제",
+    "popupSub": "지금은 데모를 보고 있어요 — Pro 플랜에서는 완전히 작동합니다.",
+    "benefit": {
+      "bot": "채팅에서 !p로 노래를 신청하고, 나만의 배경 재생목록도 추가하세요.",
+      "soundpad": "나만의 효과음을 업로드하고 단축키로 재생하세요.",
+      "mcp": "AI 에이전트(Claude)를 연결해 앱을 대신 조작하게 하세요.",
+      "overlayDecoraciones": "나만의 이미지로 오버레이 배경을 꾸며보세요.",
+      "generic": "TikLiveTTS의 모든 Pro 기능을 잠금 해제하세요."
+    },
+    "overlayMsg": "이 기능은 Pro 플랜이 필요합니다.",
+    "overlayBtn": "요금제 보기",
+    "badgeInline": "PRO"
   }
 }

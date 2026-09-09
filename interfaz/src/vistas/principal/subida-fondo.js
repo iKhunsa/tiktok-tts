@@ -2,9 +2,18 @@ import { appSettings, saveSettings } from '../../nucleo/estado/ajustes-app.js';
 import { t, tErr } from '../../nucleo/i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
 import { updateOverlayUrl, updateSocialOverlayUrl } from './configurador-overlays.js';
+import { almacenSesion } from '../../nucleo/estado/sesion.js';
+import { abrirPopupPro } from '../../componentes/popup-pro.js';
 
 export async function uploadBg(type, file) {
   if (!file) return;
+  const s = almacenSesion.getState();
+  if (s.activo && !s.entitlements.includes('overlay-decoraciones')) {
+    const input = document.getElementById('cfg-' + type + '-bgimg');
+    if (input) input.value = '';
+    abrirPopupPro('overlay-decoraciones');
+    return;
+  }
   const oldUrl = appSettings.overlays[type].bgimg;
   const formData = new FormData();
   formData.append('image', file);

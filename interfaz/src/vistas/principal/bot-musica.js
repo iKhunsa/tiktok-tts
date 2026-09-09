@@ -1,6 +1,7 @@
 import { t, tErr } from '../../nucleo/i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
 import { escaparHtml as escHtml } from '../../../compartido/escapar-html.js';
+import { aplicarBloqueoVista } from '../../nucleo/estado/vista-bloqueada.js';
 
 let musicAudio = null;
 let musicVol = 0.5;
@@ -415,6 +416,7 @@ export async function playlistPlay() {
 }
 
 export function musicInit() {
+  aplicarBloqueoVista('view-bot', 'bot-musical');
   fetch('/api/music/queue').then((r) => r.json()).then((d) => {
     musicQueue = d.queue || [];
     musicRenderQueue();
