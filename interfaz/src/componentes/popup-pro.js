@@ -6,8 +6,7 @@
  */
 import { t, aplicarTraducciones } from '../nucleo/i18n/i18n.js';
 import { irACheckout } from '../vistas/principal/cuenta/checkout.js';
-
-const esc = (v) => String(v || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+import { escaparAtributo as esc } from '../../compartido/escapar-html.js';
 
 const BENEFICIO_POR_FEATURE = {
   'bot-musical': 'pro.benefit.bot',

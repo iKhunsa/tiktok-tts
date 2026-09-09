@@ -22,6 +22,7 @@ const path = require('path');
 const { app } = require('electron');
 const { marcarInstalacion: marcarInstalacionCompartida } = require('./install-marker');
 const { sanear } = require('./sanear');
+const { resolveConfigValue } = require('./resolve-config-value');
 
 let Sentry = null;
 try {
@@ -67,14 +68,13 @@ const RUIDO_BREADCRUMB = new Set([
 ]);
 
 function resolverDsn(userDataDir) {
-  if (process.env.SENTRY_DSN && process.env.SENTRY_DSN.trim()) return process.env.SENTRY_DSN.trim();
-  if (process.env.GLITCHTIP_DSN && process.env.GLITCHTIP_DSN.trim()) return process.env.GLITCHTIP_DSN.trim();
-  try {
-    const f = path.join(userDataDir || app.getPath('userData'), 'glitchtip.json');
-    const v = JSON.parse(fs.readFileSync(f, 'utf8')).dsn;
-    if (typeof v === 'string' && /^https?:\/\//i.test(v.trim())) return v.trim();
-  } catch (_) { /* no existe */ }
-  return DSN_DEFECTO;
+  return resolveConfigValue({
+    envVars: ['SENTRY_DSN', 'GLITCHTIP_DSN'],
+    userFile: path.join(userDataDir || app.getPath('userData'), 'glitchtip.json'),
+    field: 'dsn',
+    validate: (v) => /^https?:\/\//i.test(v),
+    fallback: DSN_DEFECTO,
+  });
 }
 
 // event de core/logger.js → errorType legible en español. Se usa como

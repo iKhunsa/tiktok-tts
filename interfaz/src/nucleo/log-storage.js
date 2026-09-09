@@ -5,29 +5,27 @@
  * contexto de "que venia haciendo el usuario". Portado 1:1 desde
  * index.html; ahora consumido tambien desde otros modulos via logStorage.
  */
-class LogStorage {
-  constructor(maxEntries = 100) {
-    this.key = 'tiktok_tts_logs';
-    this.maxEntries = maxEntries;
-  }
-  addLog(level, source, message, data = null) {
-    try {
-      const logs = this.getLogs();
-      logs.push({ timestamp: new Date().toISOString(), level, source, message, data });
-      if (logs.length > this.maxEntries) logs.shift();
-      localStorage.setItem(this.key, JSON.stringify(logs));
-    } catch (e) { /* localStorage no disponible; se pierde el log local, no es fatal */ }
-  }
-  getLogs() {
-    try {
-      return JSON.parse(localStorage.getItem(this.key) || '[]');
-    } catch (e) {
-      return [];
-    }
+const LOG_KEY = 'tiktok_tts_logs';
+const MAX_ENTRIES = 100;
+
+function getLogs() {
+  try {
+    return JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
+  } catch (e) {
+    return [];
   }
 }
 
-export const logStorage = new LogStorage(100);
+function addLog(level, source, message, data = null) {
+  try {
+    const logs = getLogs();
+    logs.push({ timestamp: new Date().toISOString(), level, source, message, data });
+    if (logs.length > MAX_ENTRIES) logs.shift();
+    localStorage.setItem(LOG_KEY, JSON.stringify(logs));
+  } catch (e) { /* localStorage no disponible; se pierde el log local, no es fatal */ }
+}
+
+export const logStorage = { addLog, getLogs };
 
 export function iniciarCapturaErroresCliente() {
   window.addEventListener('error', (e) => {

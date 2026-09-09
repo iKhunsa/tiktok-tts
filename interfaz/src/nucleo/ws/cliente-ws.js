@@ -35,6 +35,14 @@ import { modOnViewerUpdated } from '../../vistas/principal/moderacion.js';
 export const LIKE_COOLDOWN_MS = 15 * 60 * 1000;
 export const likeCooldownMap = new Map();
 
+// Cada tipo de evento del handler de abajo arranca igual: incrementar el
+// contador global de mensajes, pintarlo en el badge, y armar el msgId.
+function nuevoMsgId() {
+  const n = incrementarMsgCount();
+  document.getElementById('msgCount').textContent = n;
+  return `msg-${n}`;
+}
+
 let ws = null;
 let wsReconnectAttempts = 0;
 const MAX_WS_RECONNECT = 20;
@@ -86,16 +94,12 @@ function handleMessage(data) {
       break;
 
     case 'chat': {
-      const n = incrementarMsgCount();
-      document.getElementById('msgCount').textContent = n;
-      handleChatData(data, `msg-${n}`);
+      handleChatData(data, nuevoMsgId());
       break;
     }
 
     case 'admin-announce': {
-      const n = incrementarMsgCount();
-      document.getElementById('msgCount').textContent = n;
-      const adminMsgId = `msg-${n}`;
+      const adminMsgId = nuevoMsgId();
       const voiceSelect = document.getElementById('voiceSelect');
       const adminTxt = (data.texts && data.texts[voiceSelect?.value]) || data.text;
       addSystemMsg(adminTxt, 'admin', adminMsgId, { iconSrc: 'icons/check_circle.svg' });
@@ -104,9 +108,7 @@ function handleMessage(data) {
     }
 
     case 'promo-announce': {
-      const n = incrementarMsgCount();
-      document.getElementById('msgCount').textContent = n;
-      const promoMsgId = `msg-${n}`;
+      const promoMsgId = nuevoMsgId();
       const voiceSelect = document.getElementById('voiceSelect');
       const promoTxt = (data.texts && data.texts[voiceSelect?.value]) || data.text;
       addSystemMsg(promoTxt, 'promo', promoMsgId, { iconSrc: 'icons/flash_on.svg' });
@@ -116,9 +118,7 @@ function handleMessage(data) {
 
     case 'gift':
       if (options.readGifts) {
-        const n = incrementarMsgCount();
-        document.getElementById('msgCount').textContent = n;
-        const giftId = `msg-${n}`;
+        const giftId = nuevoMsgId();
         const giftVars = { user: data.user, count: data.repeatCount, gift: data.giftName, amount: data.usdValue };
         const giftText = (options.readGiftAmount && data.usdValue) ? t('announce.giftUsd', giftVars) : t('announce.gift', giftVars);
         addSystemMsg(t('announce.gift', giftVars), 'gift', giftId, {
@@ -131,9 +131,7 @@ function handleMessage(data) {
 
     case 'join':
       if (options.readJoins) {
-        const n = incrementarMsgCount();
-        document.getElementById('msgCount').textContent = n;
-        const joinId = `msg-${n}`;
+        const joinId = nuevoMsgId();
         const joinText = t('announce.join', { user: data.user });
         addSystemMsg(joinText, 'join', joinId, { iconSrc: 'icons/emoji_people.svg' });
         speak(joinText, joinId, data.timestamp);
@@ -144,9 +142,7 @@ function handleMessage(data) {
       const isTwitchFollow = data.platform === 'twitch';
       const followEnabled = isTwitchFollow ? options.readTwitchFollow : options.readFollows;
       if (followEnabled) {
-        const n = incrementarMsgCount();
-        document.getElementById('msgCount').textContent = n;
-        const followId = `msg-${n}`;
+        const followId = nuevoMsgId();
         const followText = isTwitchFollow ? t('announce.followTwitch', { user: data.user }) : t('announce.follow', { user: data.user });
         addSystemMsg(followText, 'join', followId, { iconSrc: 'icons/person_add.svg' });
         speak(followText, followId, data.timestamp);
@@ -156,9 +152,7 @@ function handleMessage(data) {
 
     case 'sub': {
       if (options.readTwitchSub) {
-        const n = incrementarMsgCount();
-        document.getElementById('msgCount').textContent = n;
-        const subId = `msg-${n}`;
+        const subId = nuevoMsgId();
         const subVars = { user: data.user, months: data.months || 0, recipient: data.recipient, count: data.giftCount };
         let subText;
         if (data.subType === 'resub') subText = t('announce.subResub', subVars);
@@ -174,9 +168,7 @@ function handleMessage(data) {
 
     case 'cheer':
       if (options.readTwitchCheer) {
-        const n = incrementarMsgCount();
-        document.getElementById('msgCount').textContent = n;
-        const cheerId = `msg-${n}`;
+        const cheerId = nuevoMsgId();
         const cheerText = t('announce.cheer', { user: data.user, bits: data.bits });
         addSystemMsg(cheerText, 'gift', cheerId, { iconSrc: 'icons/card_giftcard.svg' });
         speak(cheerText, cheerId, data.timestamp);
@@ -185,9 +177,7 @@ function handleMessage(data) {
 
     case 'raid':
       if (options.readTwitchRaid) {
-        const n = incrementarMsgCount();
-        document.getElementById('msgCount').textContent = n;
-        const raidId = `msg-${n}`;
+        const raidId = nuevoMsgId();
         const raidText = t('announce.raid', { user: data.user, viewers: data.viewers });
         addSystemMsg(raidText, 'join', raidId, { iconSrc: 'icons/emoji_people.svg' });
         speak(raidText, raidId, data.timestamp);
@@ -204,9 +194,7 @@ function handleMessage(data) {
         const last = likeCooldownMap.get(data.user) || 0;
         if (now - last >= LIKE_COOLDOWN_MS) {
           likeCooldownMap.set(data.user, now);
-          const n = incrementarMsgCount();
-          document.getElementById('msgCount').textContent = n;
-          const likeId = `msg-${n}`;
+          const likeId = nuevoMsgId();
           const likeText = t('announce.like', { user: data.user, count: data.likeCount });
           addSystemMsg(likeText, 'join', likeId, { iconSrc: 'icons/thumb_up.svg' });
           speak(likeText, likeId, data.timestamp);
@@ -216,9 +204,7 @@ function handleMessage(data) {
 
     case 'share':
       if (options.readShares) {
-        const n = incrementarMsgCount();
-        document.getElementById('msgCount').textContent = n;
-        const shareId = `msg-${n}`;
+        const shareId = nuevoMsgId();
         const shareText = t('announce.share', { user: data.user });
         addSystemMsg(shareText, 'join', shareId, { iconSrc: 'icons/public.svg' });
         speak(shareText, shareId, data.timestamp);
