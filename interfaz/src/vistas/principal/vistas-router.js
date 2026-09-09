@@ -2,8 +2,12 @@ import { spCancelCapture } from './soundpad.js';
 import { modReload, modStartAutoRefresh, modStopAutoRefresh, maybeShowModerationTour } from './moderacion.js';
 import { renderMcpPanel } from './mcp/index.js';
 import { renderCuentaPanel } from './cuenta/index.js';
+import { appBloqueada } from '../../nucleo/estado/sesion.js';
 
 export function switchView(name) {
+  // App bloqueada (sistema de cuentas activo + sin sesión): la única vista
+  // accesible es "cuenta". Cualquier otro destino rebota ahí.
+  if (appBloqueada() && name !== 'cuenta') name = 'cuenta';
   // Si se estaba capturando un atajo del soundpad, cancelarlo: si no, el
   // listener global de keydown queda pegado y se come todas las teclas.
   spCancelCapture();

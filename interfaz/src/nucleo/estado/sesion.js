@@ -33,6 +33,14 @@ export function estaDesbloqueada(featureId) {
 
 export const esPro = () => almacenSesion.getState().plan === 'pro';
 
+/** Con el sistema de cuentas activo, nadie usa la app sin sesión: hay que
+ * registrarse o iniciar sesión. Con el sistema apagado (flag off / sin
+ * CUENTAS_URL) nunca bloquea — la app funciona como siempre. */
+export const appBloqueada = () => {
+  const s = almacenSesion.getState();
+  return s.activo && !s.signedIn;
+};
+
 function normalizar(data) {
   return {
     activo: true,
