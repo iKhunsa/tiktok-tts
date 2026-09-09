@@ -27,6 +27,7 @@ function esHttpUrl(u) {
 }
 
 function resolverUrl() {
+  if (process.env.CUENTAS_URL === '') return null; // opt-out explicito (tests, build sin cuentas)
   const env = (process.env.CUENTAS_URL || '').trim();
   if (esHttpUrl(env)) return env.replace(/\/+$/, '');
   const user = leerCampo(USER_FILE, 'url');
