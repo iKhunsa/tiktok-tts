@@ -9,7 +9,8 @@
     "bot": "Bot",
     "moderation": "Moderación",
     "moreTools": "Tienda de Plugins",
-    "mcp": "Agente MCP"
+    "mcp": "Agente MCP",
+    "cuenta": "Cuenta"
   },
   "community": {
     "label": "Comunidad TikLiveTTS",
@@ -1002,7 +1003,14 @@
     "playlistEmpty": "Tu playlist está vacía",
     "twitchAuthStartFailed": "No se pudo iniciar la autorización de Twitch",
     "obsConnectFailed": "No se pudo conectar a OBS",
-    "mcpDisabled": "El servidor MCP está apagado"
+    "mcpDisabled": "El servidor MCP está apagado",
+    "unauthorized": "No autenticado.",
+    "proRequired": "Esta función requiere el plan Pro.",
+    "emailTaken": "Ese email ya está registrado.",
+    "invalidCredentials": "Email o contraseña incorrectos.",
+    "serviceUnavailable": "Servicio de cuentas no disponible. Probá de nuevo en un rato.",
+    "generic": "Ocurrió un error. Probá de nuevo.",
+    "weakPassword": "La contraseña es demasiado corta."
   },
   "mcp": {
     "title": "Agente MCP",
@@ -1060,5 +1068,31 @@
     "devLabel": "Herramientas de desarrollo",
     "devHint": "Inyectar chat/eventos, ver logs crudos, status completo, bus. Solo para debug.",
     "badgeDev": "dev"
+  },
+  "cuenta": {
+    "title": "Cuenta",
+    "subtitle": "Registrate o iniciá sesión para gestionar tu plan.",
+    "inactive": "El sistema de cuentas no está habilitado en esta versión.",
+    "loginTitle": "Iniciar sesión",
+    "registerTitle": "Crear cuenta",
+    "email": "Email",
+    "password": "Contraseña",
+    "name": "Nombre",
+    "doLogin": "Iniciar sesión",
+    "doRegister": "Crear cuenta",
+    "haveAccount": "Ya tengo cuenta",
+    "noAccount": "No tengo cuenta",
+    "profileTitle": "Perfil",
+    "save": "Guardar",
+    "saved": "Guardado",
+    "logout": "Cerrar sesión",
+    "planTitle": "Plan",
+    "planFree": "Plan gratuito",
+    "planProUntil": "Pro · activo hasta {fecha}",
+    "planProCancels": "Pro · se cancela el {fecha}",
+    "manage": "Gestionar suscripción",
+    "goPro": "Hazte Pro",
+    "checkoutOpened": "Abrimos el checkout en tu navegador.",
+    "degraded": "No pudimos verificar tu plan con el servidor; usando el último estado conocido."
   }
 }

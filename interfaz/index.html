@@ -68,6 +68,10 @@
         <img class="sidebar-icon icon-inline" src="icons/extension.svg" alt="">
         <span data-i18n="nav.mcp">Agente MCP</span>
       </button>
+      <button class="sidebar-item" data-view="cuenta" onclick="switchView('cuenta')" hidden>
+        <img class="sidebar-icon icon-inline" src="icons/account_circle.svg" alt="">
+        <span data-i18n="nav.cuenta">Cuenta</span>
+      </button>
       <button id="navMoreToolsBtn" class="sidebar-item" data-view="tools" onclick="switchView('tools')">
         <img class="sidebar-icon icon-inline" src="icons/inventory.svg" alt="">
         <span data-i18n="nav.moreTools">Más herramientas</span>
@@ -1218,6 +1222,15 @@
         <p data-i18n="mcp.subtitle">Conectá un agente (Claude Code, Claude Desktop) para que opere la app: leer el chat, moderar, manejar la música y más.</p>
       </div>
       <div id="mcpPanel"><!-- interfaz/src/vistas/principal/mcp/ la llena --></div>
+    </div>
+
+    <!-- ══ VIEW: Cuenta ══════════════════════════════════════ -->
+    <div class="view" id="view-cuenta">
+      <div class="view-header">
+        <h2><img class="icon-inline" src="icons/account_circle.svg" alt=""> <span data-i18n="cuenta.title">Cuenta</span></h2>
+        <p data-i18n="cuenta.subtitle">Registrate o iniciá sesión para gestionar tu plan.</p>
+      </div>
+      <div id="cuentaPanel"><!-- interfaz/src/vistas/principal/cuenta/ la llena --></div>
     </div>
 
     <!-- ══ VIEW: Tienda de plugins ═══════════════════════════ -->

@@ -27,6 +27,8 @@ import {
 import { t, tErr } from '../../nucleo/i18n/i18n.js';
 import { iniciarI18nApp, pickLanguage, setLanguage } from './i18n-app.js';
 import { switchView } from './vistas-router.js';
+import { cargarSesion } from '../../nucleo/estado/sesion.js';
+import { iniciarCuenta } from './cuenta/index.js';
 import { iniciarRotacionAnuncioLateral } from './anuncio-lateral.js';
 import { copyToClipboard } from './utils-app.js';
 import { uploadBg, removeBg } from './subida-fondo.js';
@@ -174,6 +176,8 @@ function iniciarArranque() {
   loadSettings();
   applySettings();
   loadRuntimeConfig();
+  iniciarCuenta();
+  cargarSesion();
   renderShortcutDisplay();
   if (window.electronAPI?.registerTtsShortcut) {
     for (const action of TTS_SHORTCUT_ACTIONS_KEYS) {

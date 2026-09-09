@@ -9,7 +9,8 @@
     "bot": "Bot",
     "moderation": "管理",
     "moreTools": "插件商店",
-    "mcp": "MCP 代理"
+    "mcp": "MCP 代理",
+    "cuenta": "账户"
   },
   "community": {
     "label": "TikLiveTTS 社区",
@@ -1002,7 +1003,14 @@
     "playlistEmpty": "你的播放列表是空的",
     "twitchAuthStartFailed": "无法启动 Twitch 授权",
     "obsConnectFailed": "无法连接到 OBS",
-    "mcpDisabled": "MCP 服务器已关闭"
+    "mcpDisabled": "MCP 服务器已关闭",
+    "unauthorized": "未认证。",
+    "proRequired": "此功能需要 Pro 套餐。",
+    "emailTaken": "该邮箱已被注册。",
+    "invalidCredentials": "邮箱或密码错误。",
+    "serviceUnavailable": "账户服务不可用。请稍后重试。",
+    "generic": "发生错误。请重试。",
+    "weakPassword": "密码太短。"
   },
   "mcp": {
     "title": "MCP 代理",
@@ -1060,5 +1068,31 @@
     "devLabel": "开发者工具",
     "devHint": "注入聊天/事件、查看原始日志、完整状态、总线。仅用于调试。",
     "badgeDev": "dev"
+  },
+  "cuenta": {
+    "title": "账户",
+    "subtitle": "注册或登录以管理你的套餐。",
+    "inactive": "此版本未启用账户系统。",
+    "loginTitle": "登录",
+    "registerTitle": "创建账户",
+    "email": "邮箱",
+    "password": "密码",
+    "name": "名称",
+    "doLogin": "登录",
+    "doRegister": "创建账户",
+    "haveAccount": "我已有账户",
+    "noAccount": "我没有账户",
+    "profileTitle": "个人资料",
+    "save": "保存",
+    "saved": "已保存",
+    "logout": "退出登录",
+    "planTitle": "套餐",
+    "planFree": "免费套餐",
+    "planProUntil": "Pro · 有效期至 {fecha}",
+    "planProCancels": "Pro · 将于 {fecha} 取消",
+    "manage": "管理订阅",
+    "goPro": "升级到 Pro",
+    "checkoutOpened": "已在你的浏览器中打开结账页面。",
+    "degraded": "无法与服务器核对你的套餐；使用上次已知状态。"
   }
 }

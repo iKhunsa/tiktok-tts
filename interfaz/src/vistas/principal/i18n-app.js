@@ -9,6 +9,7 @@ import { renderGlobalTTSButton } from '../../nucleo/tts/cola-tts.js';
 import { renderShortcutDisplay } from './atajos-teclado.js';
 import { renderBlockWordSession } from './moderacion.js';
 import { updatePlaylistInfo, musicRenderQueue } from './bot-musica.js';
+import { renderCuentaPanel } from './cuenta/index.js';
 
 const LANG_PICKER_COPY = {
   es: { title: 'Elegí tu idioma', sub: 'Así todo lo que te mostremos va a estar en el idioma que prefieras.' },
@@ -46,6 +47,7 @@ function retranslateDynamic() {
   safe(renderBlockWordSession);
   safe(updatePlaylistInfo);
   safe(musicRenderQueue);
+  safe(renderCuentaPanel);
   // Boton pausa TTS: su label se setea sin data-i18n; refrescar segun estado.
   const pb = document.getElementById('btnPauseTTS');
   if (pb) pb.textContent = ttsPaused ? t('btn.resumeTTS') : t('btn.pauseTTS');

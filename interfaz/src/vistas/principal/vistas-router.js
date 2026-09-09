@@ -1,6 +1,7 @@
 import { spCancelCapture } from './soundpad.js';
 import { modReload, modStartAutoRefresh, modStopAutoRefresh, maybeShowModerationTour } from './moderacion.js';
 import { renderMcpPanel } from './mcp/index.js';
+import { renderCuentaPanel } from './cuenta/index.js';
 
 export function switchView(name) {
   // Si se estaba capturando un atajo del soundpad, cancelarlo: si no, el
@@ -16,6 +17,7 @@ export function switchView(name) {
   // localStorage desde otra pestaña/ventana o volvio despues de un rato.
   if (name === 'tools' && window.renderPluginStore) window.renderPluginStore();
   if (name === 'mcp') renderMcpPanel();
+  if (name === 'cuenta') renderCuentaPanel();
   // El refresco de la tabla de moderacion solo corre con la vista visible.
   if (name === 'moderacion') {
     modReload(true);
