@@ -1,14 +1,8 @@
 'use strict';
 
 const { parseCommand } = require('./parse-command');
-const { FEATURES } = require('../avanzado');
 const entitlements = require('../../core/contracts/entitlements');
-
-function getConfigSnapshot(bus) {
-  let snapshot = null;
-  bus.emit('config:get', (config) => { snapshot = config; });
-  return snapshot || {};
-}
+const { getConfigSnapshot } = require('../../core/config-snapshot');
 
 module.exports = {
   name: 'bot',
@@ -17,7 +11,7 @@ module.exports = {
     bus.on('chat:mensaje-permitido', (payload) => {
       // bot-musical es feature Pro (entitlements). Con subscriptionsEnabled=false
       // check() devuelve true -> comportamiento actual.
-      if (!payload || !FEATURES.musicBot || !entitlements.check('bot-musical')) return;
+      if (!payload || !entitlements.check('bot-musical')) return;
       const parsed = parseCommand(payload.comment);
 
       if (!parsed) {

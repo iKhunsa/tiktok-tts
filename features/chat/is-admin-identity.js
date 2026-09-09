@@ -1,10 +1,6 @@
 'use strict';
 
-function getConfigSnapshot(bus) {
-  let snapshot = null;
-  bus.emit('config:get', (config) => { snapshot = config; });
-  return snapshot || {};
-}
+const { getConfigSnapshot } = require('../../core/config-snapshot');
 
 /** Lee adminIdentities via el contrato de /configuracion (Fase 2), nunca el store directo. */
 function isAdminIdentity(bus, platform, ...candidates) {

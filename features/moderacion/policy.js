@@ -1,12 +1,7 @@
 'use strict';
 
 const { isSpam, logMensajeBloqueado } = require('./filters/is-spam');
-
-function getConfigSnapshot(bus) {
-  let snapshot = null;
-  bus.emit('config:get', (config) => { snapshot = config; });
-  return snapshot || {};
-}
+const { getConfigSnapshot } = require('../../core/config-snapshot');
 
 /**
  * Implementa la interfaz de core/contracts/moderacion-policy.js. `text` debe

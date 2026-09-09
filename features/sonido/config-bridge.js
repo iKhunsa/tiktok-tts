@@ -1,13 +1,10 @@
 'use strict';
 
 // /sonido no importa /configuracion directo — lee/escribe via el contrato
-// sincrono del bus (config:get / config:patch, Fase 2).
+// sincrono del bus (config:get / config:patch, Fase 2). getConfigSnapshot es
+// el compartido de core; patchConfig es propio de /sonido (unico que escribe).
 
-function getConfigSnapshot(bus) {
-  let snapshot = null;
-  bus.emit('config:get', (config) => { snapshot = config; });
-  return snapshot || {};
-}
+const { getConfigSnapshot } = require('../../core/config-snapshot');
 
 function patchConfig(bus, patch) {
   let result = null;
