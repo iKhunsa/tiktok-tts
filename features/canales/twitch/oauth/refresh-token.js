@@ -1,6 +1,5 @@
 'use strict';
 
-const { fetch: undiciFetch } = require('undici');
 const { saveAuthTokens } = require('./auth-tokens-store');
 const { getTwitchClientId } = require('./start');
 const { broadcastOauthStatus } = require('./status');
@@ -11,7 +10,7 @@ async function refreshTwitchToken(deps) {
   if (!t || !t.refreshToken) throw new Error('sin refresh token de Twitch');
 
   const twitchClientId = getTwitchClientId(bus);
-  const r = await undiciFetch('https://id.twitch.tv/oauth2/token', {
+  const r = await fetch('https://id.twitch.tv/oauth2/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({ client_id: twitchClientId, grant_type: 'refresh_token', refresh_token: t.refreshToken }),

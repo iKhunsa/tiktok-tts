@@ -1,6 +1,5 @@
 'use strict';
 
-const { fetch: undiciFetch } = require('undici');
 const { cancelTwitchDevicePoll } = require('./cancel-poll');
 
 const TWITCH_OAUTH_SCOPES = 'moderator:read:followers';
@@ -22,7 +21,7 @@ async function startTwitchDeviceAuth(deps) {
   }
   cancelTwitchDevicePoll(state);
 
-  const r = await undiciFetch('https://id.twitch.tv/oauth2/device', {
+  const r = await fetch('https://id.twitch.tv/oauth2/device', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({ client_id: twitchClientId, scopes: TWITCH_OAUTH_SCOPES }),
