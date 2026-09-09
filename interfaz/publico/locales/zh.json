@@ -1010,7 +1010,8 @@
     "invalidCredentials": "邮箱或密码错误。",
     "serviceUnavailable": "账户服务不可用。请稍后重试。",
     "generic": "发生错误。请重试。",
-    "weakPassword": "密码太短。"
+    "weakPassword": "密码太短。",
+    "passwordMismatch": "两次输入的密码不一致。"
   },
   "mcp": {
     "title": "MCP 代理",
@@ -1093,6 +1094,15 @@
     "manage": "管理订阅",
     "goPro": "升级到 Pro",
     "checkoutOpened": "已在你的浏览器中打开结账页面。",
-    "degraded": "无法与服务器核对你的套餐；使用上次已知状态。"
+    "degraded": "无法与服务器核对你的套餐；使用上次已知状态。",
+    "loginSub": "登录以管理你的套餐和订阅。",
+    "registerSub": "创建账户以解锁 Pro 功能。",
+    "passwordConfirm": "确认密码",
+    "passwordRule": "至少 8 个字符。",
+    "haveAccountQ": "已有账户？",
+    "noAccountQ": "还没有账户？",
+    "legal": "创建账户即表示你同意我们的服务条款和隐私政策。",
+    "planFreeDesc": "你正在使用免费套餐。可随时升级到 Pro。",
+    "noName": "未命名"
   }
 }

@@ -1010,7 +1010,8 @@
     "invalidCredentials": "Falsche E-Mail oder Passwort.",
     "serviceUnavailable": "Kontodienst nicht verfügbar. Versuche es bald erneut.",
     "generic": "Ein Fehler ist aufgetreten. Versuche es erneut.",
-    "weakPassword": "Das Passwort ist zu kurz."
+    "weakPassword": "Das Passwort ist zu kurz.",
+    "passwordMismatch": "Die Passwörter stimmen nicht überein."
   },
   "mcp": {
     "title": "MCP-Agent",
@@ -1093,6 +1094,15 @@
     "manage": "Abo verwalten",
     "goPro": "Pro werden",
     "checkoutOpened": "Wir haben den Checkout in deinem Browser geöffnet.",
-    "degraded": "Dein Tarif konnte nicht mit dem Server geprüft werden; letzter bekannter Stand wird verwendet."
+    "degraded": "Dein Tarif konnte nicht mit dem Server geprüft werden; letzter bekannter Stand wird verwendet.",
+    "loginSub": "Melde dich an, um deinen Tarif und dein Abo zu verwalten.",
+    "registerSub": "Erstelle dein Konto, um die Pro-Funktionen freizuschalten.",
+    "passwordConfirm": "Passwort bestätigen",
+    "passwordRule": "Mindestens 8 Zeichen.",
+    "haveAccountQ": "Schon ein Konto?",
+    "noAccountQ": "Noch kein Konto?",
+    "legal": "Mit der Kontoerstellung akzeptierst du unsere Nutzungsbedingungen und die Datenschutzerklärung.",
+    "planFreeDesc": "Du bist im kostenlosen Tarif. Wechsle jederzeit zu Pro.",
+    "noName": "Ohne Name"
   }
 }

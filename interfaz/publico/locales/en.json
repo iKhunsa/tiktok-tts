@@ -679,7 +679,8 @@
     "invalidCredentials": "Wrong email or password.",
     "serviceUnavailable": "Account service unavailable. Try again shortly.",
     "generic": "Something went wrong. Try again.",
-    "weakPassword": "The password is too short."
+    "weakPassword": "The password is too short.",
+    "passwordMismatch": "Passwords don't match."
   },
   "dictLang": {
     "title": "Allowed languages",
@@ -1093,6 +1094,15 @@
     "manage": "Manage subscription",
     "goPro": "Go Pro",
     "checkoutOpened": "We opened the checkout in your browser.",
-    "degraded": "We couldn't verify your plan with the server; using the last known state."
+    "degraded": "We couldn't verify your plan with the server; using the last known state.",
+    "loginSub": "Log in to manage your plan and subscription.",
+    "registerSub": "Create your account to unlock the Pro features.",
+    "passwordConfirm": "Confirm password",
+    "passwordRule": "At least 8 characters.",
+    "haveAccountQ": "Already have an account?",
+    "noAccountQ": "Don't have an account?",
+    "legal": "By creating an account you agree to our Terms of Service and Privacy Policy.",
+    "planFreeDesc": "You're on the free plan. Upgrade to Pro anytime.",
+    "noName": "No name"
   }
 }
