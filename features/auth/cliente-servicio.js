@@ -1,14 +1,14 @@
 'use strict';
 
-// Cliente HTTP hacia servicio-cuentas. fetch nativo + AbortSignal.timeout +
-// 2 reintentos ante red/timeout (no ante 4xx). Patron features/telemetria/transport.js.
-// Devuelve { ok, status, body }.
+// Cliente HTTP hacia servicio-cuentas. fetch nativo + AbortSignal.timeout.
+// Solo session() reintenta (es el chequeo de fondo; un falso "deslogueado"
+// molesta). Las acciones del usuario (login/register/...) van one-shot: si
+// falla, re-clickea. Devuelve { ok, status, body }.
 
 const TIMEOUT_MS = 8000;
-const REINTENTOS = 2;
 
 function crearCliente(baseUrl) {
-  async function pedir(pathRel, { method = 'GET', body, token } = {}) {
+  async function pedir(pathRel, { method = 'GET', body, token, reintentos = 0 } = {}) {
     const url = `${baseUrl}${pathRel}`;
     const headers = { 'Content-Type': 'application/json' };
     if (token) headers.Authorization = `Bearer ${token}`;
@@ -16,7 +16,7 @@ function crearCliente(baseUrl) {
     if (body !== undefined) opts.body = JSON.stringify(body);
 
     let ultimoError;
-    for (let intento = 0; intento <= REINTENTOS; intento++) {
+    for (let intento = 0; intento <= reintentos; intento++) {
       try {
         const res = await fetch(url, { ...opts, signal: AbortSignal.timeout(TIMEOUT_MS) });
         const text = await res.text();
@@ -30,7 +30,7 @@ function crearCliente(baseUrl) {
       } catch (err) {
         ultimoError = err;
       }
-      if (intento < REINTENTOS) await new Promise((r) => setTimeout(r, [500, 2000][intento] || 2000));
+      if (intento < reintentos) await new Promise((r) => setTimeout(r, [500, 2000][intento]));
     }
     return { ok: false, status: 0, body: null, error: ultimoError };
   }
@@ -39,7 +39,7 @@ function crearCliente(baseUrl) {
     register: (b) => pedir('/api/auth/register', { method: 'POST', body: b }),
     login: (b) => pedir('/api/auth/login', { method: 'POST', body: b }),
     logout: (token) => pedir('/api/auth/logout', { method: 'POST', token }),
-    session: (token) => pedir('/api/session', { token }),
+    session: (token) => pedir('/api/session', { token, reintentos: 2 }),
     account: (token, b) => pedir('/api/account', { method: 'PATCH', token, body: b }),
     checkout: (token, b) => pedir('/api/checkout', { method: 'POST', token, body: b }),
   };

@@ -20,19 +20,6 @@ export const almacenSesion = crearAlmacen({
   degraded: false,
 });
 
-export function getSesion() {
-  return almacenSesion.getState();
-}
-
-/** ¿esta feature esta disponible? Sin sistema de cuentas -> siempre si. */
-export function estaDesbloqueada(featureId) {
-  const s = almacenSesion.getState();
-  if (!s.activo) return true;
-  return s.entitlements.includes(featureId);
-}
-
-export const esPro = () => almacenSesion.getState().plan === 'pro';
-
 /** Con el sistema de cuentas activo, nadie usa la app sin sesión: hay que
  * registrarse o iniciar sesión. Con el sistema apagado (flag off / sin
  * CUENTAS_URL) nunca bloquea — la app funciona como siempre. */
