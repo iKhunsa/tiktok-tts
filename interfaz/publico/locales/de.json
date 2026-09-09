@@ -41,7 +41,6 @@
   "footer": {
     "donate": "Spenden",
     "newBadge": "Neu",
-    "channels": "Kanäle",
     "advanced": "Erweitert",
     "bugReport": "Bug melden"
   },
@@ -493,23 +492,8 @@
     "title": "Unterstütze meinen Content",
     "copyAddress": "Adresse kopieren",
     "btcNative": "Natives Bitcoin",
-    "socialTitle": "Folge meinem Content",
     "kofiDesc": "Unterstütze mich mit einem Kaffee",
     "paypalDesc": "Direkte Spende über PayPal"
-  },
-  "portfolio": {
-    "heroTitle": "Hallo, ich bin Khunsa 👋",
-    "heroDesc": "Ich baue Produkte rund um Bitcoin, Crypto-Fiat und Handel: Diese TTS-App ist eines von mehreren aktiven Projekten. Sieh dir die anderen unten an.",
-    "projectsTitle": "Meine Projekte",
-    "satoshiDesc": "Selbstgehostetes Bitcoin-Dashboard, verfügbar im Umbrel App Store. Betreibe deinen eigenen Node und behalte deine Daten auf deiner eigenen Hardware.",
-    "assetrockDesc": "Institutionelle Brücke zwischen Krypto und Fiat: Liquidität, sicheres Settlement und Compliance für Fonds und Treasuries in Lateinamerika.",
-    "zatoboxDesc": "Open-Source, modulares Kassensystem mit smartem Inventar, Automatisierungen und Zahlungen in Landeswährung oder Bitcoin.",
-    "visit": "Besuchen →",
-    "contactTitle": "Lass uns reden",
-    "tag101btc": "Bildung",
-    "btc101Desc": "Interaktiver Guide für deine ersten Schritte in Bitcoin, präsentiert von SatoshiDashboard.",
-    "tagStacker": "Community",
-    "stackerDesc": "Mein Stacker-News-Profil: Ich teile und diskutiere über Bitcoin mit der Community und verdiene Sats für guten Content."
   },
   "notice": {
     "donationsTitle": "Neue Wege, das Projekt zu unterstützen",

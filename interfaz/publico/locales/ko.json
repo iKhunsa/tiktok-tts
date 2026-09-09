@@ -41,7 +41,6 @@
   "footer": {
     "donate": "후원",
     "newBadge": "신규",
-    "channels": "채널",
     "advanced": "고급",
     "bugReport": "버그 신고"
   },
@@ -493,23 +492,8 @@
     "title": "내 콘텐츠를 지원해주세요",
     "copyAddress": "주소 복사",
     "btcNative": "네이티브 비트코인",
-    "socialTitle": "내 콘텐츠를 팔로우하세요",
     "kofiDesc": "커피 한 잔으로 응원해주세요",
     "paypalDesc": "PayPal로 직접 기부"
-  },
-  "portfolio": {
-    "heroTitle": "안녕하세요, Khunsa입니다 👋",
-    "heroDesc": "비트코인, 크립토-법정화폐, 커머스 분야에서 제품을 만들고 있습니다. 이 TTS 앱도 여러 진행 중인 프로젝트 중 하나예요. 아래에서 다른 프로젝트도 확인해 보세요.",
-    "projectsTitle": "내 프로젝트",
-    "satoshiDesc": "셀프호스팅 비트코인 대시보드, Umbrel 앱 스토어에서 이용 가능합니다. 직접 노드를 운영하고 데이터를 자신의 하드웨어에 보관하세요.",
-    "assetrockDesc": "크립토와 법정화폐를 잇는 기관용 브릿지: LATAM 지역 펀드와 자금 운용을 위한 유동성, 안전한 결제, 컴플라이언스를 제공합니다.",
-    "zatoboxDesc": "스마트 재고 관리, 자동화, 현지 통화 또는 비트코인 결제를 지원하는 오픈소스 모듈형 POS.",
-    "visit": "방문 →",
-    "contactTitle": "연락하기",
-    "tag101btc": "교육",
-    "btc101Desc": "SatoshiDashboard가 제공하는, 비트코인 첫걸음을 위한 인터랙티브 가이드입니다.",
-    "tagStacker": "커뮤니티",
-    "stackerDesc": "제 Stacker News 프로필입니다: 커뮤니티와 비트코인에 대해 공유하고 토론하며, 좋은 콘텐츠로 sats를 받습니다."
   },
   "notice": {
     "donationsTitle": "프로젝트를 지원하는 새로운 방법",

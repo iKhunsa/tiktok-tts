@@ -57,7 +57,7 @@ import {
 } from './voces.js';
 import { escapeHtml, initChatScrollFollow, clearChat } from './chat-ui.js';
 import {
-  openDonationsModal, closeDonationsModal, openSocialModal, closeSocialModal,
+  openDonationsModal, closeDonationsModal,
   openBugReportModal, closeBugReportModal, submitBugReport, openDictLangModal,
   closeDictLangModal, closeDonationNotice, openDonationsFromNotice, closeBugReportNotice,
   openBugReportFromNotice, closeOnboardingWelcome, closeOnboardingComplete, startOnboardingTour,
@@ -125,7 +125,7 @@ Object.assign(window, {
   clearChat, skipCurrentTTS, clearTTSQueue, togglePauseTts, toggleGlobalTTS,
   enableEmergencyTTSMode, updateRate, updateVol,
   // modales y avisos
-  openDonationsModal, closeDonationsModal, openSocialModal, closeSocialModal,
+  openDonationsModal, closeDonationsModal,
   openBugReportModal, closeBugReportModal, submitBugReport, openDictLangModal,
   closeDictLangModal, closeDonationNotice, openDonationsFromNotice, closeBugReportNotice,
   openBugReportFromNotice, closeOnboardingWelcome, closeOnboardingComplete, startOnboardingTour,
