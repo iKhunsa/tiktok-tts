@@ -44,16 +44,13 @@ let queueDirty = false;
 let skipPumpTimer = null;
 
 // Conservado por compat con el marcado antiguo (.tts-switch.on anima por
-// CSS); ya no hay timer en el hilo principal.
-let _ttsBarTimer = null;
+// CSS); ya no hay timer en el hilo principal, solo crea las barritas una vez.
 function _ttsBarsInit() {
   const box = document.getElementById('ttsBars');
   if (box && !box.children.length) {
     for (let i = 0; i < 6; i++) box.appendChild(document.createElement('i'));
   }
 }
-function _ttsBarsAnimate() { _ttsBarsInit(); }
-function _ttsBarsStop() {}
 
 export function renderGlobalTTSButton() {
   const btn = document.getElementById('btnTTSToggle');
@@ -64,8 +61,6 @@ export function renderGlobalTTSButton() {
   btn.dataset.i18nTitle = titleKey;
   btn.title = t(titleKey);
   _ttsBarsInit();
-  if (ttsGlobalEnabled) { if (!_ttsBarTimer) _ttsBarsAnimate(); }
-  else _ttsBarsStop();
 }
 
 /** Usado por el remote-cmd 'globalTTS' (movil manda el valor explicito,

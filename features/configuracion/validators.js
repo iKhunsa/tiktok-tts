@@ -1,6 +1,6 @@
 'use strict';
 
-const { GOOGLE_TTS_LANGS, DICT_FILTER_LANGS } = require('./default-config');
+const { GOOGLE_TTS_LANGS, DICT_FILTER_LANGS } = require('../../core/contracts/idioma-datos');
 
 // Migracion 1:1 de CONFIG_VALIDATORS (backend-viejo/server.js:639-666). No se
 // agregan ni quitan claves en esta fase.

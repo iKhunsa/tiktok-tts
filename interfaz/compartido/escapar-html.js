@@ -8,3 +8,9 @@ export function escaparHtml(str) {
   div.textContent = str == null ? '' : String(str);
   return div.innerHTML;
 }
+
+/** Para texto que va dentro de un atributo (value="...") ademas de texto
+ * plano — escaparHtml no cubre las comillas porque nunca las necesito ahi. */
+export function escaparAtributo(str) {
+  return String(str || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+}

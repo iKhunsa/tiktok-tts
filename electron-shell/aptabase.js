@@ -26,6 +26,7 @@
 const { marcarInstalacion } = require('./install-marker');
 const { bucket } = require('./bucket');
 const { sanear } = require('./sanear');
+const { resolveConfigValue } = require('./resolve-config-value');
 
 let sdk = null;
 try {
@@ -63,28 +64,14 @@ const estado = {
 
 // ── Config ─────────────────────────────────────────────────────────────────
 
-function leerJsonCampo(file, campo) {
-  try {
-    const fs = require('fs');
-    if (!fs.existsSync(file)) return null;
-    const value = JSON.parse(fs.readFileSync(file, 'utf8'))[campo];
-    return (typeof value === 'string' && value.trim()) ? value.trim() : null;
-  } catch (_) {
-    return null;
-  }
-}
-
 function resolverConfig() {
   const path = require('path');
   const bundled = path.join(
     process.env.TIKTOK_RESOURCES_PATH || path.join(__dirname, '..'),
     'aptabase-config.json'
   );
-  const appKey = (process.env.APTABASE_APP_KEY && process.env.APTABASE_APP_KEY.trim())
-    || leerJsonCampo(bundled, 'appKey');
-  const host = (process.env.APTABASE_HOST && process.env.APTABASE_HOST.trim())
-    || leerJsonCampo(bundled, 'host')
-    || HOST_DEFECTO;
+  const appKey = resolveConfigValue({ envVars: ['APTABASE_APP_KEY'], bundledFile: bundled, field: 'appKey' });
+  const host = resolveConfigValue({ envVars: ['APTABASE_HOST'], bundledFile: bundled, field: 'host', fallback: HOST_DEFECTO });
   return { appKey, host };
 }
 

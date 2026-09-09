@@ -2,7 +2,6 @@
 
 const { app, globalShortcut } = require('electron');
 const path = require('path');
-const fs = require('fs');
 
 const { ensureSingleInstance } = require('./electron-shell/single-instance');
 const { createWindow, showMainWindow, waitForServer, PORT } = require('./electron-shell/window');
@@ -14,6 +13,7 @@ const { GLOBAL_SHORTCUT } = require('./features/clips/global-shortcut');
 const telemetryRuntime = require('./features/telemetria/runtime');
 const glitchtip = require('./electron-shell/glitchtip');
 const aptabase = require('./electron-shell/aptabase');
+const { resolveConfigValue } = require('./electron-shell/resolve-config-value');
 
 // Cuando empaquetado, apunta server.js a extraResources para los assets.
 if (app.isPackaged) {
@@ -79,40 +79,28 @@ const ICON_PATH = app.isPackaged
 function getMainWindow() { return mainWindow; }
 function getTray() { return tray; }
 
-function readJsonField(file, field, validate) {
-  try {
-    if (!fs.existsSync(file)) return null;
-    const value = JSON.parse(fs.readFileSync(file, 'utf8'))[field];
-    if (typeof value !== 'string' || !value.trim()) return null;
-    if (validate && !validate(value.trim())) return null;
-    return value.trim();
-  } catch (_) {
-    return null;
-  }
-}
-
 // La URL/token de telemetria salen de TELEMETRY_URL+TELEMETRY_TOKEN (override
 // de dev), de telemetry.json en userData (override manual), o de
 // telemetry-config.json bakeado en el build. Archivo aparte a proposito:
 // config.json lo gestiona /configuracion, que descarta claves desconocidas y
 // borraria esta en el primer guardado.
 function resolveTelemetryUrl() {
-  if (process.env.TELEMETRY_URL) return process.env.TELEMETRY_URL.trim();
-  const userFile = path.join(app.getPath('userData'), 'telemetry.json');
-  const isHttpUrl = (v) => /^https?:\/\//i.test(v);
-  const fromUser = readJsonField(userFile, 'url', isHttpUrl);
-  if (fromUser) return fromUser;
-  const bundledFile = path.join(process.env.TIKTOK_RESOURCES_PATH || __dirname, 'telemetry-config.json');
-  return readJsonField(bundledFile, 'url', isHttpUrl);
+  return resolveConfigValue({
+    envVars: ['TELEMETRY_URL'],
+    userFile: path.join(app.getPath('userData'), 'telemetry.json'),
+    bundledFile: path.join(process.env.TIKTOK_RESOURCES_PATH || __dirname, 'telemetry-config.json'),
+    field: 'url',
+    validate: (v) => /^https?:\/\//i.test(v),
+  });
 }
 
 function resolveIngestToken() {
-  if (process.env.TELEMETRY_TOKEN) return process.env.TELEMETRY_TOKEN.trim();
-  const userFile = path.join(app.getPath('userData'), 'telemetry.json');
-  const fromUser = readJsonField(userFile, 'token');
-  if (fromUser) return fromUser;
-  const bundledFile = path.join(process.env.TIKTOK_RESOURCES_PATH || __dirname, 'telemetry-config.json');
-  return readJsonField(bundledFile, 'token');
+  return resolveConfigValue({
+    envVars: ['TELEMETRY_TOKEN'],
+    userFile: path.join(app.getPath('userData'), 'telemetry.json'),
+    bundledFile: path.join(process.env.TIKTOK_RESOURCES_PATH || __dirname, 'telemetry-config.json'),
+    field: 'token',
+  });
 }
 
 function trayCallbacks() {

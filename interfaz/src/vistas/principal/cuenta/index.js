@@ -9,12 +9,9 @@ import { showToast } from '../../../componentes/toast.js';
 import { almacenSesion, aplicarSesion } from '../../../nucleo/estado/sesion.js';
 import { pedir, toastError } from './api.js';
 import { irACheckout } from './checkout.js';
+import { escaparAtributo as esc } from '../../../../compartido/escapar-html.js';
 
 const MIN_PASS = 8;
-
-// Escape para contexto de atributo (value="...") ademas de texto — el
-// escaparHtml compartido no cubre las comillas. Local a esta vista.
-const esc = (v) => String(v || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 let modo = 'login'; // 'login' | 'register' — solo cuando esta deslogueado
 
