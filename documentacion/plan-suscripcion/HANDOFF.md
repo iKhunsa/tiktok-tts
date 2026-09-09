@@ -100,6 +100,16 @@ Formato: `- YYYY-MM-DD — <agente> — <qué pasó>`.
   no confundir) + redeploy disparado por MCP. Verificado: logs del contenedor
   arrancan limpio (`[servicio-cuentas] escuchando en :4000`), `status: running:healthy`.
   **Los 3 hallazgos de la auditoría están cerrados y en producción.**
+- 2026-09-09 — orquestador — **Aplicados los "igual conviene" descartados de la auditoría** (commit
+  `bbb2207` en `servicio-cuentas` `main`, pusheado y desplegado). Pepper de contraseña ahora pre-hasheado
+  con HMAC-SHA256 antes de bcrypt (cost 10→12) — `verificar-password.js` prueba el esquema nuevo y cae al
+  viejo (concat sin HMAC) para no invalidar hashes ya guardados; test nuevo confirma la compatibilidad.
+  Idempotency del webhook de Polar corregida: usa el header `webhook-id` (spec Standard Webhooks) en vez
+  de campos inexistentes del body (`evento.id`/`evento.event_id` daban `undefined`). `PUBLIC_ORIGIN` default
+  pasa de `*` a vacío en código y en Coolify (production + preview, estaba en `*` literal) — no hay ningún
+  consumidor legítimo desde navegador hoy. `docker-compose.yml` actualizado para que sus defaults
+  documentados coincidan con el código. `npm test` servicio-cuentas 8→9. Deploy verificado (logs limpios,
+  `status: running:healthy`).
 - 2026-09-09 — orquestador — **Audit de over-engineering (ponytail-audit) aplicado.** ~−150 líneas, −1 dep (`undici`), −7 archivos. Borrado `core/error-boundary.js` (muerto), `features/avanzado/{accesibilidad,feature-flags}.js`; `getConfigSnapshot` ×5 → `core/config-snapshot.js`; `sanear()` ×2 → `electron-shell/sanear.js`; `features/auth/gating.js` inline; 3 `ensure-*-config.js` → `scripts/ensure-configs.js`; `movil/utils.js` 1 escaper. Arreglada de paso la única violación cross-import (`bot/` → `avanzado/FEATURES`). Fix: `loadVoices` crasheaba (`TypeError`) al arrancar deslogueado. `CLAUDE.md` regla de modularidad reescrita ("antes reusar" + umbral n-consumidores). Commits `effe85c`..`bcf14ea`. `npm test` 77/77.
 - 2026-09-09 — orquestador — **Auditoría de seguridad (skill `security-review`).** Ver `07-auditoria-seguridad.md`. 3 hallazgos confirmados: **Vuln 1 HIGH** (bypass del muro por casing en `core/guard-suscripcion.js` — `/API/config` sin auth), **Vuln 2 HIGH** (`servicio-cuentas`: rate-limit anulable con `X-Forwarded-For`, `trust proxy: true`), **Vuln 3 MEDIUM** (email+user-id de cuenta al WS de toda la LAN). **NINGUNO arreglado todavía** — es lo siguiente a hacer.
 - 2026-09-08 — orquestador — set de planes creado (`00`–`06` + este handoff). Nada ejecutado todavía.
