@@ -196,8 +196,34 @@ async function irACheckout(btn) {
   }
 }
 
+// Modal propio (mismo patron visual que modWipeConfirmModal en index.html) en
+// vez de confirm() nativo — un dialogo de navegador desentona con el resto
+// de la app.
+function modalConfirmarCancelacion() {
+  return new Promise((resolve) => {
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay show';
+    overlay.innerHTML = `
+      <div class="modal-content" style="text-align:center;">
+        <button class="modal-close" type="button"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+        <div class="notice-icon-badge"><img class="icon-inline" src="icons/warning.svg" alt=""></div>
+        <h2 style="justify-content:center;">${esc(t('cuenta.confirmCancelTitle'))}</h2>
+        <div class="bugreport-guide" style="background:rgba(239,68,68,0.06);border-color:rgba(239,68,68,0.3);color:var(--text-secondary);">${esc(t('cuenta.confirmCancel'))}</div>
+        <button class="cfg-btn danger" type="button" id="cuentaCancelYes" style="width:100%;justify-content:center;margin-top:16px;">${esc(t('cuenta.confirmCancelYes'))}</button>
+        <button class="cfg-btn" type="button" id="cuentaCancelNo" style="width:100%;justify-content:center;margin-top:10px;">${esc(t('cuenta.confirmCancelNo'))}</button>
+      </div>`;
+    document.body.appendChild(overlay);
+    const cerrar = (resultado) => { overlay.remove(); resolve(resultado); };
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) cerrar(false); });
+    overlay.querySelector('.modal-close').addEventListener('click', () => cerrar(false));
+    overlay.querySelector('#cuentaCancelNo').addEventListener('click', () => cerrar(false));
+    overlay.querySelector('#cuentaCancelYes').addEventListener('click', () => cerrar(true));
+  });
+}
+
 async function cancelarSuscripcion(btn) {
-  if (!confirm(t('cuenta.confirmCancel'))) return;
+  const confirmado = await modalConfirmarCancelacion();
+  if (!confirmado) return;
   btn.disabled = true;
   try {
     const r = await pedir('/api/auth/subscription/cancel', { method: 'POST' });

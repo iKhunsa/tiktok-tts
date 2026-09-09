@@ -1089,6 +1089,9 @@
     "planFreeDesc": "You're on the free plan. Upgrade to Pro anytime.",
     "noName": "No name",
     "confirmCancel": "Are you sure you want to cancel your Pro subscription? You'll keep access until the end of the period you already paid for.",
-    "canceled": "Your subscription will be canceled at the end of the current period."
+    "canceled": "Your subscription will be canceled at the end of the current period.",
+    "confirmCancelTitle": "Cancel your Pro plan?",
+    "confirmCancelYes": "Yes, cancel",
+    "confirmCancelNo": "Go back"
   }
 }

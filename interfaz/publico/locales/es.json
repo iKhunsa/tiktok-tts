@@ -1089,6 +1089,9 @@
     "planFreeDesc": "Estás en el plan gratuito. Pasate a Pro cuando quieras.",
     "noName": "Sin nombre",
     "confirmCancel": "¿Seguro que querés cancelar tu suscripción Pro? Vas a seguir teniendo acceso hasta que termine el período que ya pagaste.",
-    "canceled": "Tu suscripción se cancelará al final del período actual."
+    "canceled": "Tu suscripción se cancelará al final del período actual.",
+    "confirmCancelTitle": "¿Cancelar tu plan Pro?",
+    "confirmCancelYes": "Sí, cancelar",
+    "confirmCancelNo": "Volver"
   }
 }
