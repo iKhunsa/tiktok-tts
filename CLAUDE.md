@@ -54,7 +54,7 @@ server.js (Express + WS en puerto 3000)
       ├── sonido/                    ← TTS (Google), bot musical (yt-dlp), soundpad
       ├── bot/                       ← detección de comandos de chat (!p)
       ├── clips/                     ← marca clip en OBS (atajo o comando móvil)
-      ├── avanzado/ + donar/         ← feature flags, UI avanzada; donar es no-op documentado
+      ├── avanzado/ + donar/         ← no-op documentados: lugar para crecer (UI avanzada / donación real) sin acoplar
       ├── telemetria/                ← uso agregado anónimo, self-hosted (ver sección propia)
       └── mcp/                       ← servidor MCP (tools para agentes), registrado ÚLTIMO
 ```
@@ -63,14 +63,72 @@ server.js (Express + WS en puerto 3000)
 otro (`require('../otro-dominio/...')`). Toda comunicación cruzada pasa por
 `core/event-bus.js` (`bus.emit`/`bus.on`) o por un contrato síncrono
 inyectado en `core/contracts/*.js` (ej. `moderacion-policy.js`,
-`idioma-filtrar.js`, `obs-replay.js`, `idioma-datos.js`) cuando el orden de
-ejecución importa y no alcanza con un evento fire-and-forget.
-`core/register-domain.js` monta cada dominio en su propio try/catch — un
-dominio que falla al arrancar no tumba a los demás. Excepción preexistente
-conocida (no introducida por el reordenamiento a `features/`, pendiente de
-arreglar aparte): `features/bot/index.js` importa `FEATURES` directo de
-`features/avanzado/index.js` en vez de pasar por un contrato — único caso
-detectado que rompe la regla.
+`idioma-filtrar.js`, `obs-replay.js`, `idioma-datos.js`, `entitlements.js`)
+cuando el orden de ejecución importa y no alcanza con un evento
+fire-and-forget. `core/register-domain.js` monta cada dominio en su propio
+try/catch — un dominio que falla al arrancar no tumba a los demás.
+
+## Regla de modularidad — "un archivo por función" + antes reusar
+
+La estructura es **un archivo `.js` por función/responsabilidad** (backend y
+frontend). Si una responsabilidad necesita varios archivos (estado +
+helpers), se agrupan en una carpeta con su `index.js`. Nombres de archivo en
+kebab-case inglés describiendo lo que exportan; carpetas de dominio/vista en
+kebab-case español.
+
+Pero "un archivo por función" **no es licencia para copiar y pegar**. Antes
+de escribir un helper:
+
+1. **Grepealo.** Si ya existe en el repo — aunque sea en otro dominio —
+   reusalo, no lo reimplementes.
+2. **Si dos o más lugares necesitan la misma lógica**, va en **UN** archivo
+   compartido, nunca duplicado:
+   - backend puro (sin estado, sin config) → `core/<nombre>.js`
+     (ej. `core/config-snapshot.js`)
+   - backend con orden de ejecución / inyección → contrato en
+     `core/contracts/*.js`
+   - frontend agnóstico de vista → `interfaz/src/nucleo/` o
+     `interfaz/compartido/` (este último si además lo usan los overlays)
+3. **Un dominio nunca comparte su helper importándolo desde otro dominio.**
+   Si `sonido/` y `moderacion/` necesitan lo mismo, sube a `core/`.
+
+Señales de que te pasaste para el otro lado (borrar, no crear):
+- un archivo que **solo re-exporta** otro (barrel de un símbolo)
+- un contrato/factory/wrapper con **un solo productor y un solo consumidor**
+  y sin lógica propia — inline en el call site
+- un flag de config que nadie prende/apaga (siempre el mismo valor)
+
+**Umbral — dónde vive un helper (por alcance, no por conteo):**
+
+- **1 consumidor** → inline en el call site, o archivo local al dominio si ya
+  tiene su carpeta. No sube. (`telemetria/identity.js#sessionId` → 1, se queda.)
+- **2+ consumidores en el MISMO dominio** → archivo compartido dentro de esa
+  carpeta de dominio.
+- **2+ consumidores que CRUZAN un límite de dominio** → `core/<nombre>.js`,
+  cualquiera sea el conteo. El disparador es el cruce, no el número.
+  (`getConfigSnapshot` → 5 dominios → `core/config-snapshot.js`.)
+- Regla de pulgar: la 2ª copia textual es olor; la 3ª es un bug. Al ver la 2ª,
+  extraé al alcance más chico que la cubra.
+
+**Cuándo un `core/contracts/*.js` (y no un `core/<nombre>.js` pelado), incluso
+a n=1** — solo si compra una de estas tres:
+
+1. **Desacople de una dependencia pesada/opcional.** `perf.js` evita que
+   `sonido/` haga `require('@sentry/electron')`. Sin el contrato, el dominio
+   queda atado a Sentry.
+2. **Orden de arranque forzado / inyección.** `obs-replay.js` garantiza que el
+   productor (`canales/obs`) registró su impl antes de que el consumidor la
+   llame. Un `require` normal no expresa "esto tiene que proveerse primero".
+3. **Default no-op que ya funciona sin proveedor.** `entitlements.check()`
+   devuelve `true` mientras nadie llamó `provide()`.
+
+Si no compra ninguna de las tres, es solo mover una función detrás de una capa
+→ `core/<nombre>.js` pelado, sin la ceremonia del contrato.
+
+Excepciones documentadas (copias deliberadas, NO tocar): `normalize-aggressive.js`
+/ `sanitize-for-tts.js` entre dominios (funciones puras, se eligió copiar
+antes que un contrato); los `toast.js` de `avanzada/` y `movil/` (cada vista
+legacy conserva el suyo hasta unificar la paleta CSS — ver `plan-fases/06`).
 
 Endpoints HTTP relevantes (repartidos por dominio, ver cada carpeta para
 el resto):
@@ -507,10 +565,9 @@ mensajes → `canales.kick.sin_eventos` + reconexión) es la red de seguridad.
 
 Rebuild completo del frontend (mismo patron que el rebuild por dominios del
 backend, ver "Documentación del rebuild"): HTML monolitico → modulos ESM en
-`interfaz/`, siguiendo **la misma regla de modularidad del backend**: un
-archivo `.js` por funcion/responsabilidad. Si una responsabilidad necesita
-mas de un archivo (estado + helpers), se agrupa en una carpeta con su
-propio `index.js` que la expone. El `public/` legado ya no existe en el
+`interfaz/`, siguiendo **la misma regla de modularidad del backend** (ver
+sección "Regla de modularidad" arriba — incluye el "antes reusar"). El
+`public/` legado ya no existe en el
 repo (fase-06) — `interfaz/dist/` (build de Vite) es la unica raiz estatica
 que sirve `core/app.js`.
 
