@@ -15,6 +15,18 @@ function isAppUrl(url) {
   }
 }
 
+// Checkout de Polar (sandbox.polar.sh, buy.polar.sh, polar.sh, etc.) -> se
+// abre en una ventana Electron propia en vez de mandarlo al navegador del
+// sistema, para que el pago se sienta parte de la app.
+function isPolarUrl(url) {
+  try {
+    const { protocol, hostname } = new URL(url);
+    return protocol === 'https:' && (hostname === 'polar.sh' || hostname.endsWith('.polar.sh'));
+  } catch (_) {
+    return false;
+  }
+}
+
 function waitForServer(cb, onFailure, attempts = 0) {
   http.get(`http://127.0.0.1:${PORT}/api/status`, (res) => {
     let body = '';
@@ -43,7 +55,7 @@ function retryWaitForServer(cb, onFailure, attempts) {
   }
 }
 
-function createWindow({ iconPath, onClose }) {
+function createWindow({ iconPath, onClose, bus }) {
   const win = new BrowserWindow({
     width: 1280,
     height: 800,
@@ -64,8 +76,8 @@ function createWindow({ iconPath, onClose }) {
   win.loadURL(`http://127.0.0.1:${PORT}`);
   win.removeMenu();
 
-  // URLs localhost (overlays) abren en una ventana Electron nueva; URLs
-  // externas van al navegador del sistema.
+  // URLs localhost (overlays) y el checkout de Polar abren en una ventana
+  // Electron nueva; el resto de URLs externas van al navegador del sistema.
   win.webContents.setWindowOpenHandler(({ url }) => {
     if (isAppUrl(url)) {
       return {
@@ -87,9 +99,45 @@ function createWindow({ iconPath, onClose }) {
         },
       };
     }
+    if (isPolarUrl(url)) {
+      return {
+        action: 'allow',
+        overrideBrowserWindowOptions: {
+          width: 900,
+          height: 720,
+          minWidth: 700,
+          minHeight: 600,
+          icon: iconPath,
+          autoHideMenuBar: true,
+          title: 'TikLive TTS — Pago',
+          // Sin preload: es la pagina de pago de un tercero, no expone el
+          // puente IPC de la app (electronAPI) ahi adentro.
+          webPreferences: {
+            nodeIntegration: false,
+            contextIsolation: true,
+            sandbox: true,
+            webSecurity: true,
+          },
+        },
+      };
+    }
     shell.openExternal(url);
     return { action: 'deny' };
   });
+
+  // Ventana de checkout de Polar: al llegar a la pagina de exito la cierra
+  // sola (el usuario ya vio "pago recibido"), y al cerrarse -por exito o
+  // porque el usuario la cerro sin pagar- avisa por el bus para que
+  // features/auth/ refresque la sesion ya, sin esperar el ciclo de 10 min.
+  win.webContents.on('did-create-window', (childWindow, details) => {
+    if (!isPolarUrl(details.url)) return;
+    childWindow.webContents.on('did-navigate', (_event, navUrl) => {
+      if (!navUrl.includes('/checkout/ok')) return;
+      setTimeout(() => { if (!childWindow.isDestroyed()) childWindow.close(); }, 1500);
+    });
+    if (bus) childWindow.on('closed', () => bus.emit('auth:forzar-refresh'));
+  });
+
   win.webContents.on('will-navigate', (event, url) => {
     if (!isAppUrl(url)) {
       event.preventDefault();

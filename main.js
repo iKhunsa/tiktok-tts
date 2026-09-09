@@ -143,6 +143,7 @@ app.whenReady().then(() => {
   waitForServer(() => {
     mainWindow = createWindow({
       iconPath: ICON_PATH,
+      bus,
       onClose: () => {
         if (isQuitting) return;
         isQuitting = true;
