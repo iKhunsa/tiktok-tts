@@ -1010,7 +1010,8 @@
     "invalidCredentials": "Email o password errati.",
     "serviceUnavailable": "Servizio account non disponibile. Riprova tra poco.",
     "generic": "Si è verificato un errore. Riprova.",
-    "weakPassword": "La password è troppo corta."
+    "weakPassword": "La password è troppo corta.",
+    "passwordMismatch": "Le password non coincidono."
   },
   "mcp": {
     "title": "Agente MCP",
@@ -1093,6 +1094,15 @@
     "manage": "Gestisci abbonamento",
     "goPro": "Passa a Pro",
     "checkoutOpened": "Abbiamo aperto il checkout nel tuo browser.",
-    "degraded": "Non è stato possibile verificare il piano con il server; uso l'ultimo stato noto."
+    "degraded": "Non è stato possibile verificare il piano con il server; uso l'ultimo stato noto.",
+    "loginSub": "Accedi per gestire il tuo piano e il tuo abbonamento.",
+    "registerSub": "Crea il tuo account per sbloccare le funzioni Pro.",
+    "passwordConfirm": "Conferma password",
+    "passwordRule": "Almeno 8 caratteri.",
+    "haveAccountQ": "Hai già un account?",
+    "noAccountQ": "Non hai un account?",
+    "legal": "Creando un account accetti i nostri Termini di servizio e la Privacy Policy.",
+    "planFreeDesc": "Sei nel piano gratuito. Passa a Pro quando vuoi.",
+    "noName": "Senza nome"
   }
 }

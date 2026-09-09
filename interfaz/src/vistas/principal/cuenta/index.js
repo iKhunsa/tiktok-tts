@@ -8,6 +8,8 @@ import { t, tErr, aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
 import { showToast } from '../../../componentes/toast.js';
 import { almacenSesion, aplicarSesion } from '../../../nucleo/estado/sesion.js';
 
+const MIN_PASS = 8;
+
 async function pedir(path, opts) {
   const r = await fetch(path, {
     method: opts?.method || 'GET',
@@ -23,81 +25,95 @@ function toastError(body, fallbackKey) {
   showToast(tErr(body, fallbackKey || 'errors.generic'));
 }
 
+const esc = (v) => String(v || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
 let modo = 'login'; // 'login' | 'register' — solo cuando esta deslogueado
+
+function campo({ id, labelKey, type = 'text', autocomplete, required }) {
+  return `
+    <div class="cuenta-field">
+      <label for="${id}" data-i18n="${labelKey}"></label>
+      <input type="${type}" id="${id}"${autocomplete ? ` autocomplete="${autocomplete}"` : ''}${required ? ' required' : ''}>
+    </div>`;
+}
 
 function formAuth() {
   const esReg = modo === 'register';
   return `
-    <div class="settings-section">
-      <div class="settings-section-title">
-        <span data-i18n="${esReg ? 'cuenta.registerTitle' : 'cuenta.loginTitle'}"></span>
-      </div>
-      <div class="settings-panel">
-        <div class="setting-group">
-          <label data-i18n="cuenta.email">Email</label>
-          <input type="email" id="cuentaEmail" autocomplete="email">
-        </div>
-        <div class="setting-group">
-          <label data-i18n="cuenta.password">Contraseña</label>
-          <input type="password" id="cuentaPass" autocomplete="${esReg ? 'new-password' : 'current-password'}">
-        </div>
+    <div class="cuenta-card cuenta-auth">
+      <h3 class="cuenta-card-title" data-i18n="${esReg ? 'cuenta.registerTitle' : 'cuenta.loginTitle'}"></h3>
+      <p class="cuenta-card-sub" data-i18n="${esReg ? 'cuenta.registerSub' : 'cuenta.loginSub'}"></p>
+
+      <form id="cuentaForm" novalidate>
+        ${esReg ? campo({ id: 'cuentaNombre', labelKey: 'cuenta.name', autocomplete: 'name', required: true }) : ''}
+        ${campo({ id: 'cuentaEmail', labelKey: 'cuenta.email', type: 'email', autocomplete: 'email', required: true })}
         ${esReg ? `
-        <div class="setting-group">
-          <label data-i18n="cuenta.name">Nombre</label>
-          <input type="text" id="cuentaNombre" autocomplete="nickname">
-        </div>` : ''}
-        <div class="setting-group">
-          <button class="cfg-btn" id="cuentaSubmit" data-i18n="${esReg ? 'cuenta.doRegister' : 'cuenta.doLogin'}"></button>
-          <button class="cfg-btn small" id="cuentaSwitch" data-i18n="${esReg ? 'cuenta.haveAccount' : 'cuenta.noAccount'}"></button>
-        </div>
-      </div>
+          <div class="cuenta-row">
+            ${campo({ id: 'cuentaPass', labelKey: 'cuenta.password', type: 'password', autocomplete: 'new-password', required: true })}
+            ${campo({ id: 'cuentaPass2', labelKey: 'cuenta.passwordConfirm', type: 'password', autocomplete: 'new-password', required: true })}
+          </div>
+          <p class="cuenta-hint" data-i18n="cuenta.passwordRule"></p>
+        ` : campo({ id: 'cuentaPass', labelKey: 'cuenta.password', type: 'password', autocomplete: 'current-password', required: true })}
+
+        <button type="submit" class="cuenta-btn-primary" id="cuentaSubmit" data-i18n="${esReg ? 'cuenta.doRegister' : 'cuenta.doLogin'}"></button>
+      </form>
+
+      <button type="button" class="cuenta-switch" id="cuentaSwitch">
+        <span data-i18n="${esReg ? 'cuenta.haveAccountQ' : 'cuenta.noAccountQ'}"></span>
+        <b data-i18n="${esReg ? 'cuenta.doLogin' : 'cuenta.doRegister'}"></b>
+      </button>
+
+      ${esReg ? `<p class="cuenta-legal" data-i18n="cuenta.legal"></p>` : ''}
     </div>`;
 }
 
-function planLinea(s) {
-  if (s.plan === 'pro') {
-    const sub = s.subscription || {};
-    const hasta = sub.currentPeriodEnd ? new Date(sub.currentPeriodEnd).toLocaleDateString() : '';
-    const clave = sub.cancelAtPeriodEnd ? 'cuenta.planProCancels' : 'cuenta.planProUntil';
-    return `<img class="icon-inline" src="icons/workspace_premium.svg" alt=""> ${t(clave, { fecha: hasta })}`;
-  }
-  return `${t('cuenta.planFree')}`;
+function planCard(s) {
+  const esPro = s.plan === 'pro';
+  const sub = s.subscription || {};
+  const hasta = sub.currentPeriodEnd ? new Date(sub.currentPeriodEnd).toLocaleDateString() : '';
+  let estado;
+  if (esPro && sub.cancelAtPeriodEnd) estado = t('cuenta.planProCancels', { fecha: hasta });
+  else if (esPro) estado = t('cuenta.planProUntil', { fecha: hasta });
+  else estado = t('cuenta.planFreeDesc');
+
+  return `
+    <div class="cuenta-card cuenta-plan${esPro ? ' is-pro' : ''}">
+      <div class="cuenta-plan-head">
+        <img class="icon-inline" src="icons/workspace_premium.svg" alt="">
+        <div>
+          <div class="cuenta-plan-name">${esPro ? 'Pro' : t('cuenta.planFree')}</div>
+          <div class="cuenta-plan-state">${esc(estado)}</div>
+        </div>
+      </div>
+      ${s.degraded ? `<p class="cuenta-hint" data-i18n="cuenta.degraded"></p>` : ''}
+      ${esPro
+    ? `<button class="cuenta-btn-ghost" id="cuentaManage" data-i18n="cuenta.manage"></button>`
+    : `<button class="cuenta-btn-primary" id="cuentaUpgrade" data-i18n="cuenta.goPro"></button>`}
+    </div>`;
 }
 
 function panelPerfil(s) {
   const u = s.user || {};
-  const degradado = s.degraded
-    ? `<div class="mcp-hint" data-i18n="cuenta.degraded">No pudimos verificar tu plan con el servidor; usando el último estado conocido.</div>` : '';
+  const inicial = esc((u.nombre || u.email || '?').trim().charAt(0).toUpperCase());
   return `
-    <div class="settings-section">
-      <div class="settings-section-title"><span data-i18n="cuenta.profileTitle">Perfil</span></div>
-      <div class="settings-panel">
-        <div class="setting-group">
-          <label data-i18n="cuenta.email">Email</label>
-          <code>${u.email || ''}</code>
+    <div class="cuenta-card cuenta-perfil">
+      <div class="cuenta-perfil-head">
+        <div class="cuenta-avatar">${inicial}</div>
+        <div class="cuenta-perfil-id">
+          <div class="cuenta-perfil-nombre">${esc(u.nombre) || t('cuenta.noName')}</div>
+          <div class="cuenta-perfil-email">${esc(u.email)}</div>
         </div>
-        <div class="setting-group">
-          <label data-i18n="cuenta.name">Nombre</label>
-          <input type="text" id="cuentaNombre" value="${(u.nombre || '').replace(/"/g, '&quot;')}">
-          <button class="cfg-btn small" id="cuentaGuardarNombre" data-i18n="cuenta.save">Guardar</button>
-        </div>
-        <div class="setting-group">
-          <button class="cfg-btn small" id="cuentaLogout" data-i18n="cuenta.logout">Cerrar sesión</button>
-        </div>
+      </div>
+      <div class="cuenta-field">
+        <label for="cuentaNombre" data-i18n="cuenta.name"></label>
+        <input type="text" id="cuentaNombre" autocomplete="name" value="${esc(u.nombre)}">
+      </div>
+      <div class="cuenta-perfil-acciones">
+        <button class="cuenta-btn-ghost" id="cuentaGuardarNombre" data-i18n="cuenta.save"></button>
+        <button class="cuenta-btn-ghost cuenta-btn-danger" id="cuentaLogout" data-i18n="cuenta.logout"></button>
       </div>
     </div>
-    <div class="settings-section">
-      <div class="settings-section-title"><span data-i18n="cuenta.planTitle">Plan</span></div>
-      <div class="settings-panel">
-        <div class="setting-group"><div>${planLinea(s)}</div></div>
-        ${degradado}
-        <div class="setting-group">
-          ${s.plan === 'pro'
-    ? `<button class="cfg-btn" id="cuentaManage" data-i18n="cuenta.manage">Gestionar suscripción</button>`
-    : `<button class="cfg-btn" id="cuentaUpgrade" data-i18n="cuenta.goPro">Hazte Pro</button>`}
-        </div>
-      </div>
-    </div>`;
+    ${planCard(s)}`;
 }
 
 export function renderCuentaPanel() {
@@ -106,7 +122,7 @@ export function renderCuentaPanel() {
   const s = almacenSesion.getState();
 
   if (!s.activo) {
-    el.innerHTML = `<div class="settings-section"><div class="mcp-hint" data-i18n="cuenta.inactive">El sistema de cuentas no está habilitado en esta versión.</div></div>`;
+    el.innerHTML = `<div class="cuenta-card"><p class="cuenta-hint" data-i18n="cuenta.inactive"></p></div>`;
     aplicarTraducciones(el);
     return;
   }
@@ -119,7 +135,8 @@ export function renderCuentaPanel() {
       modo = modo === 'login' ? 'register' : 'login';
       renderCuentaPanel();
     });
-    el.querySelector('#cuentaSubmit').addEventListener('click', enviarAuth);
+    el.querySelector('#cuentaForm').addEventListener('submit', (e) => { e.preventDefault(); enviarAuth(el); });
+    el.querySelector('input')?.focus();
     return;
   }
 
@@ -137,27 +154,44 @@ export function renderCuentaPanel() {
     renderCuentaPanel();
   });
   const up = el.querySelector('#cuentaUpgrade') || el.querySelector('#cuentaManage');
-  if (up) up.addEventListener('click', irACheckout);
+  if (up) up.addEventListener('click', () => irACheckout(up));
 }
 
-async function enviarAuth() {
-  const email = document.getElementById('cuentaEmail').value.trim();
-  const password = document.getElementById('cuentaPass').value;
-  const nombreEl = document.getElementById('cuentaNombre');
-  const path = modo === 'register' ? '/api/auth/register' : '/api/auth/login';
+async function enviarAuth(el) {
+  const val = (id) => (el.querySelector('#' + id)?.value || '').trim();
+  const email = val('cuentaEmail');
+  const password = el.querySelector('#cuentaPass').value;
+  const btn = el.querySelector('#cuentaSubmit');
+
+  if (modo === 'register') {
+    if (password.length < MIN_PASS) return toastError({}, 'errors.weakPassword');
+    if (password !== el.querySelector('#cuentaPass2').value) return toastError({}, 'errors.passwordMismatch');
+  }
+
   const body = { email, password };
-  if (modo === 'register' && nombreEl) body.nombre = nombreEl.value.trim();
-  const r = await pedir(path, { method: 'POST', body });
-  if (!r.ok) return toastError(r.body, 'errors.invalidCredentials');
-  aplicarSesion(r.body);
-  renderCuentaPanel();
+  if (modo === 'register') body.nombre = val('cuentaNombre');
+
+  btn.disabled = true;
+  try {
+    const r = await pedir(modo === 'register' ? '/api/auth/register' : '/api/auth/login', { method: 'POST', body });
+    if (!r.ok) return toastError(r.body, 'errors.invalidCredentials');
+    aplicarSesion(r.body);
+    renderCuentaPanel();
+  } finally {
+    btn.disabled = false;
+  }
 }
 
-async function irACheckout() {
-  const r = await pedir('/api/auth/checkout', { method: 'POST', body: { plan: 'pro' } });
-  if (!r.ok || !r.body.url) return toastError(r.body);
-  window.open(r.body.url, '_blank'); // window.js rebota la URL no-local al navegador externo
-  showToast(t('cuenta.checkoutOpened'));
+async function irACheckout(btn) {
+  btn.disabled = true;
+  try {
+    const r = await pedir('/api/auth/checkout', { method: 'POST', body: { plan: 'pro' } });
+    if (!r.ok || !r.body.url) return toastError(r.body);
+    window.open(r.body.url, '_blank'); // window.js rebota la URL no-local al navegador externo
+    showToast(t('cuenta.checkoutOpened'));
+  } finally {
+    btn.disabled = false;
+  }
 }
 
 /** Muestra/oculta el item de sidebar y re-pinta si la vista esta abierta. */

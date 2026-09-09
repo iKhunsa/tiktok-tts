@@ -23,3 +23,6 @@ tts-cache/
 graphify-out/
 .claude/
 mcp.json
+cuentas.json
+cuentas-config.json
+cuentas-config.generated.json

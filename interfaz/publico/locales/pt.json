@@ -1010,7 +1010,8 @@
     "invalidCredentials": "Email ou senha incorretos.",
     "serviceUnavailable": "Serviço de contas indisponível. Tente novamente em breve.",
     "generic": "Ocorreu um erro. Tente novamente.",
-    "weakPassword": "A senha é muito curta."
+    "weakPassword": "A senha é muito curta.",
+    "passwordMismatch": "As senhas não coincidem."
   },
   "mcp": {
     "title": "Agente MCP",
@@ -1093,6 +1094,15 @@
     "manage": "Gerenciar assinatura",
     "goPro": "Seja Pro",
     "checkoutOpened": "Abrimos o checkout no seu navegador.",
-    "degraded": "Não foi possível verificar seu plano com o servidor; usando o último estado conhecido."
+    "degraded": "Não foi possível verificar seu plano com o servidor; usando o último estado conhecido.",
+    "loginSub": "Entre para gerenciar seu plano e sua assinatura.",
+    "registerSub": "Crie sua conta para desbloquear os recursos Pro.",
+    "passwordConfirm": "Confirmar senha",
+    "passwordRule": "No mínimo 8 caracteres.",
+    "haveAccountQ": "Já tem conta?",
+    "noAccountQ": "Não tem conta?",
+    "legal": "Ao criar uma conta você aceita nossos Termos de Serviço e a Política de Privacidade.",
+    "planFreeDesc": "Você está no plano gratuito. Faça upgrade para o Pro quando quiser.",
+    "noName": "Sem nome"
   }
 }
