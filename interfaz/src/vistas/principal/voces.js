@@ -100,7 +100,9 @@ export function selectVoice(id) {
 export async function loadVoices() {
   try {
     const response = await fetch('/api/voices');
-    availableVoices = await response.json();
+    const data = await response.json();
+    if (!Array.isArray(data)) return; // 401 con el muro de login: {error,...}, no un array
+    availableVoices = data;
     voiceDropdownMenu.innerHTML = '';
 
     const addGroup = (label, voices) => {
