@@ -5,7 +5,6 @@ const entitlementsContract = require('../../core/contracts/entitlements');
 const { resolverUrl } = require('./config-servicio');
 const { crearCliente } = require('./cliente-servicio');
 const { crearRefresh } = require('./refresh');
-const { crearCheck } = require('./gating');
 const rutas = require('./routes');
 const estado = require('./estado-sesion');
 
@@ -30,8 +29,14 @@ module.exports = {
 
     const subscriptionsEnabled = () => subsEnabled;
 
-    // Contrato de gating: disponible SIEMPRE (respeta el flag internamente).
-    entitlementsContract.provide(crearCheck(subscriptionsEnabled));
+    // Contrato de gating (lo consume core/contracts/entitlements#check).
+    // Flag off -> todo desbloqueado; on -> mira la sesion. Un throw lo atrapa
+    // el contrato y bloquea (fail-safe).
+    entitlementsContract.provide((featureId) => {
+      if (!subscriptionsEnabled()) return true;
+      const s = estado.getSesion();
+      return s.signedIn && s.entitlements.includes(featureId);
+    });
 
     // Contrato de lectura de sesion.
     bus.on('auth:get', (respond) => {
