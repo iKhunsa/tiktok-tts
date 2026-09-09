@@ -85,7 +85,18 @@ function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
     res.json(estado.getSesion());
   });
 
-  return 7;
+  app.post('/api/auth/subscription/resume', guard, async (req, res) => {
+    const token = estado.getToken();
+    if (!token) return res.status(401).json({ error: 'No autenticado', errorKey: 'errors.unauthorized' });
+    const r = await cliente.reanudarSuscripcion(token);
+    if (!r.ok) return propagarError(res, r, logger);
+    logger.log('info', 'auth', 'auth/routes.js#reanudarSuscripcion', 'auth.suscripcion.reanudada', 'Reanudacion solicitada', {});
+    const s = await cliente.session(token);
+    if (s.ok) estado.aplicar({ session: s.body }, logger);
+    res.json(estado.getSesion());
+  });
+
+  return 8;
 }
 
 module.exports = { montar };

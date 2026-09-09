@@ -43,6 +43,7 @@ function crearCliente(baseUrl) {
     account: (token, b) => pedir('/api/account', { method: 'PATCH', token, body: b }),
     checkout: (token, b) => pedir('/api/checkout', { method: 'POST', token, body: b }),
     cancelarSuscripcion: (token) => pedir('/api/subscription/cancel', { method: 'POST', token }),
+    reanudarSuscripcion: (token) => pedir('/api/subscription/resume', { method: 'POST', token }),
   };
 }
 

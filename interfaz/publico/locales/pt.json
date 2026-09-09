@@ -1092,6 +1092,8 @@
     "canceled": "Sua assinatura será cancelada ao final do período atual.",
     "confirmCancelTitle": "Cancelar seu plano Pro?",
     "confirmCancelYes": "Sim, cancelar",
-    "confirmCancelNo": "Voltar"
+    "confirmCancelNo": "Voltar",
+    "resume": "Reativar assinatura",
+    "resumed": "Sua assinatura Pro continua ativa — o cancelamento foi desfeito."
   }
 }

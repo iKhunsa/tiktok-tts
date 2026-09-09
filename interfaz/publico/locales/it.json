@@ -1092,6 +1092,8 @@
     "canceled": "Il tuo abbonamento verrà annullato alla fine del periodo attuale.",
     "confirmCancelTitle": "Annullare il tuo piano Pro?",
     "confirmCancelYes": "Sì, annulla",
-    "confirmCancelNo": "Indietro"
+    "confirmCancelNo": "Indietro",
+    "resume": "Riattiva abbonamento",
+    "resumed": "Il tuo abbonamento Pro resta attivo: la cancellazione è stata annullata."
   }
 }

@@ -89,7 +89,9 @@ function planCard(s) {
       </div>
       ${s.degraded ? `<p class="cuenta-hint" data-i18n="cuenta.degraded"></p>` : ''}
       ${esPro
-    ? `<button class="cuenta-btn-ghost" id="cuentaManage" data-i18n="cuenta.manage"></button>`
+    ? (sub.cancelAtPeriodEnd
+      ? `<button class="cuenta-btn-primary" id="cuentaResume" data-i18n="cuenta.resume"></button>`
+      : `<button class="cuenta-btn-ghost" id="cuentaManage" data-i18n="cuenta.manage"></button>`)
     : `<button class="cuenta-btn-primary" id="cuentaUpgrade" data-i18n="cuenta.goPro"></button>`}
     </div>`;
 }
@@ -157,6 +159,7 @@ export function renderCuentaPanel() {
   });
   el.querySelector('#cuentaUpgrade')?.addEventListener('click', (e) => irACheckout(e.currentTarget));
   el.querySelector('#cuentaManage')?.addEventListener('click', (e) => cancelarSuscripcion(e.currentTarget));
+  el.querySelector('#cuentaResume')?.addEventListener('click', (e) => reanudarSuscripcion(e.currentTarget));
 }
 
 async function enviarAuth(el) {
@@ -209,8 +212,8 @@ function modalConfirmarCancelacion() {
         <div class="notice-icon-badge"><img class="icon-inline" src="icons/warning.svg" alt=""></div>
         <h2 style="justify-content:center;">${esc(t('cuenta.confirmCancelTitle'))}</h2>
         <div class="bugreport-guide" style="background:rgba(239,68,68,0.06);border-color:rgba(239,68,68,0.3);color:var(--text-secondary);">${esc(t('cuenta.confirmCancel'))}</div>
-        <button class="cfg-btn danger" type="button" id="cuentaCancelYes" style="width:100%;justify-content:center;margin-top:16px;">${esc(t('cuenta.confirmCancelYes'))}</button>
-        <button class="cfg-btn" type="button" id="cuentaCancelNo" style="width:100%;justify-content:center;margin-top:10px;">${esc(t('cuenta.confirmCancelNo'))}</button>
+        <button class="btn btn-connect" type="button" id="cuentaCancelYes" style="width:100%;justify-content:center;margin-top:16px;">${esc(t('cuenta.confirmCancelYes'))}</button>
+        <button class="btn btn-disconnect" type="button" id="cuentaCancelNo" style="width:100%;justify-content:center;margin-top:10px;">${esc(t('cuenta.confirmCancelNo'))}</button>
       </div>`;
     document.body.appendChild(overlay);
     const cerrar = (resultado) => { overlay.remove(); resolve(resultado); };
@@ -230,6 +233,22 @@ async function cancelarSuscripcion(btn) {
     if (!r.ok) return toastError(r.body);
     aplicarSesion(r.body);
     showToast(t('cuenta.canceled'));
+    renderCuentaPanel();
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// Reanudar es una accion positiva (deshace una cancelacion pendiente,
+// todavia dentro del periodo pagado) -> sin modal de confirmacion, solo
+// el toast de resultado.
+async function reanudarSuscripcion(btn) {
+  btn.disabled = true;
+  try {
+    const r = await pedir('/api/auth/subscription/resume', { method: 'POST' });
+    if (!r.ok) return toastError(r.body);
+    aplicarSesion(r.body);
+    showToast(t('cuenta.resumed'));
     renderCuentaPanel();
   } finally {
     btn.disabled = false;

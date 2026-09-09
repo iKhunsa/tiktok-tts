@@ -1092,6 +1092,8 @@
     "canceled": "サブスクリプションは現在の期間終了時に解約されます。",
     "confirmCancelTitle": "Proプランを解約しますか？",
     "confirmCancelYes": "はい、解約する",
-    "confirmCancelNo": "戻る"
+    "confirmCancelNo": "戻る",
+    "resume": "サブスクリプションを再開",
+    "resumed": "Proサブスクリプションは有効のままです。解約は取り消されました。"
   }
 }

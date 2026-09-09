@@ -1092,6 +1092,8 @@
     "canceled": "Your subscription will be canceled at the end of the current period.",
     "confirmCancelTitle": "Cancel your Pro plan?",
     "confirmCancelYes": "Yes, cancel",
-    "confirmCancelNo": "Go back"
+    "confirmCancelNo": "Go back",
+    "resume": "Resume subscription",
+    "resumed": "Your Pro subscription stays active — the cancellation was undone."
   }
 }

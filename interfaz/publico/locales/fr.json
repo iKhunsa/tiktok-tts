@@ -1092,6 +1092,8 @@
     "canceled": "Votre abonnement sera annulé à la fin de la période en cours.",
     "confirmCancelTitle": "Annuler votre abonnement Pro ?",
     "confirmCancelYes": "Oui, annuler",
-    "confirmCancelNo": "Retour"
+    "confirmCancelNo": "Retour",
+    "resume": "Reprendre l'abonnement",
+    "resumed": "Votre abonnement Pro reste actif — l'annulation a été annulée."
   }
 }
