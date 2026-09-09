@@ -25,6 +25,7 @@
 
 const { marcarInstalacion } = require('./install-marker');
 const { bucket } = require('./bucket');
+const { sanear } = require('./sanear');
 
 let sdk = null;
 try {
@@ -85,20 +86,6 @@ function resolverConfig() {
     || leerJsonCampo(bundled, 'host')
     || HOST_DEFECTO;
   return { appKey, host };
-}
-
-// ── Saneo ──────────────────────────────────────────────────────────────────
-
-// Rutas de home fuera de props (Aptabase no las sanea y expondrían el nombre
-// de usuario de Windows). Mismo criterio que glitchtip.js#sanear.
-function sanear(str) {
-  if (!str) return str;
-  let s = String(str);
-  const ud = process.env.TIKTOK_USER_DATA_PATH;
-  if (ud) s = s.split(ud).join('<userData>');
-  s = s.replace(/[A-Za-z]:\\Users\\[^\\/:*?"<>|\r\n]+/g, 'C:\\Users\\<user>');
-  s = s.replace(/\/(?:home|Users)\/[^/\s]+/g, '/home/<user>');
-  return s;
 }
 
 // El SDK no valida ni recorta nada — lo hacemos acá. Solo string/number/boolean,
