@@ -21,6 +21,7 @@ const fs = require('fs');
 const path = require('path');
 const { app } = require('electron');
 const { marcarInstalacion: marcarInstalacionCompartida } = require('./install-marker');
+const { sanear } = require('./sanear');
 
 let Sentry = null;
 try {
@@ -209,18 +210,6 @@ const WARN_PROMOVIDOS = new Set([
   'idioma.dict.carga_fallida',
 ]);
 
-// Rutas de home fuera del mensaje/stack — GlitchTip no las sanea y expondrían
-// el nombre de usuario de Windows.
-function sanear(str) {
-  if (!str) return str;
-  let s = String(str);
-  const ud = process.env.TIKTOK_USER_DATA_PATH;
-  if (ud) s = s.split(ud).join('<userData>');
-  s = s.replace(/[A-Za-z]:\\Users\\[^\\/:*?"<>|\r\n]+/g, 'C:\\Users\\<user>');
-  s = s.replace(/\/(?:home|Users)\/[^/\s]+/g, '/home/<user>');
-  return s;
-}
-
 // Cola del log de sesión como texto (para meterla en el context del issue —
 // GlitchTip no guarda attachments). Lectura directa del tail, saneada.
 function colaLog(logger, maxBytes = 12 * 1024) {
@@ -272,12 +261,6 @@ function recortarData(data) {
   return Object.keys(out).length ? out : undefined;
 }
 
-function marcarInstalacion(userDataDir, appVersion) {
-  // Delega en el helper compartido (electron-shell/install-marker.js). Aptabase
-  // usa el mismo helper con su propio archivo.
-  return marcarInstalacionCompartida(userDataDir, appVersion, 'glitchtip-instalacion.json');
-}
-
 function init({ appVersion, isDebug, userDataDir, logger }) {
   estado.logger = logger || null;
   if (!Sentry) {
@@ -326,7 +309,7 @@ function init({ appVersion, isDebug, userDataDir, logger }) {
   }
 
   try {
-    const m = marcarInstalacion(userDataDir || app.getPath('userData'), appVersion);
+    const m = marcarInstalacionCompartida(userDataDir || app.getPath('userData'), appVersion, 'glitchtip-instalacion.json');
     Sentry.setContext('instalacion', {
       primera_apertura: m.primera,
       actualizada_desde: m.actualizada ? m.desde : null,

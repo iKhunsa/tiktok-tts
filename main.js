@@ -69,22 +69,8 @@ const logger = serverModule && serverModule.logger;
 
 if (bus) glitchtip.attach(bus, logger);
 if (bus) aptabase.attach(bus, logger);
-
-if (bus && logger) {
-  process.on('uncaughtException', (error) => {
-    logger.log(
-      'fatal', 'electron-shell', 'main.js#uncaughtException', 'core.boundary.excepcion_capturada',
-      `Excepcion no capturada en el proceso main: ${error.message}`, { error: error.message, stack: error.stack }
-    );
-  });
-  process.on('unhandledRejection', (reason) => {
-    const error = reason instanceof Error ? reason : new Error(String(reason));
-    logger.log(
-      'fatal', 'electron-shell', 'main.js#unhandledRejection', 'core.boundary.excepcion_capturada',
-      `Promesa rechazada sin manejar en main: ${error.message}`, { error: error.message, stack: error.stack }
-    );
-  });
-}
+// uncaughtException / unhandledRejection: los registra server.js (siempre, para
+// `node server.js` y para Electron) y ademas @sentry/electron los captura.
 
 const ICON_PATH = app.isPackaged
   ? path.join(process.resourcesPath, 'tray-icon.ico')
