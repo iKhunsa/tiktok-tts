@@ -96,10 +96,18 @@ module.exports = {
       },
     });
 
+    // La ventana de checkout (electron-shell/window.js) emite esto al
+    // cerrarse, para no esperar los REFRESH_MS del ciclo automatico y que
+    // el cambio de plan se note apenas el usuario vuelve del pago.
+    bus.on('auth:forzar-refresh', () => {
+      refresh.tick().catch((err) => logger.log('warn', 'auth', 'auth/index.js#forzar-refresh',
+        'auth.refresh.fallo', err.message, {}));
+    }, 'auth');
+
     refresh.start(); // setInterval .unref()'d — no hace falta limpiarlo al salir
     logger.log('info', 'auth', 'auth/index.js#register', 'auth.servicio.configurado',
       `Dominio auth activo contra ${urlServicio}`, { subscriptionsEnabled: subsEnabled });
 
-    return { rutas: nRutas, listeners: 3 };
+    return { rutas: nRutas, listeners: 4 };
   },
 };
