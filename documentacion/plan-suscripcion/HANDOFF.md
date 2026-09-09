@@ -18,7 +18,7 @@ Estados: `pendiente` · `en curso` · `bloqueado` · `hecho`.
 | 03 Pagos Polar | `03-agente-integracion-pagos-polar.md` | ✅ código + deploy (sandbox) 2026-09-08 | `checkout.js` + `webhook-polar.js` + reconciliación ✅, `03-contrato-checkout.md` ✅ | **Sandbox operativo.** Producto Pro anual US$85 (`e68ddd7f-…`). Webhook endpoint en Polar (`d5495bf3-…`) → `cuentas.tiklivetts.es/api/webhooks/polar`, eventos `subscription.*`. Env Polar cargadas en Coolify + redeploy. Verificado: `POST /api/checkout` → `200 {url: sandbox.polar.sh/checkout/…}`. `npm test` 6/6. **Falta (Fase 6 / QA)**: pago de prueba end-to-end con tarjeta `4242…` para validar el webhook → `subscriptions`. En Fase 6: repetir setup en producción (`POLAR_ENV=production`, OAT prod, producto prod, webhook prod). |
 | 04 Backend app | `04-agente-backend-app-electron.md` | ✅ **hecho** (2026-09-08) | `features/auth/` ✅, 7 gates ✅, `04-contrato-sesion.md` ✅, `04-features-pro.md` ✅, `entitlements` seedeado ✅ | Rama `feat/suscripciones-auth` (commits 0839fc2..f48c732). Dominio completo + 7 candados cableados + `auth.*` mapeado en glitchtip/aptabase. `npm test` 77/77, `check-mcp` ok, eslint 0 errores. Tabla `cuentas.entitlements` con los 7 `featureId` en `pro`. **`subscriptionsEnabled` default `false` → cero impacto en la app actual.** |
 | 05 Frontend app | `05-agente-frontend-app-electron.md` | ✅ **hecho** (2026-09-08) + iter UX 2026-09-09 | `sesion.js` ✅, vista Cuenta ✅, candados sidebar ✅, i18n `cuenta.*`/`errors.*` en 10 locales ✅ | Rama `feat/suscripciones-auth` (commit 265e078). Item de sidebar oculto por defecto, visible solo con el sistema activo (decisión: oculto, no `pinned`). `build:front` OK, `npm test` 77/77, paridad de claves i18n verificada (938 hojas × 10). No-op con `subscriptionsEnabled=false` verificado en browser. **Falta**: check-in visual del flujo real de login/checkout (necesita `CUENTAS_URL` + servicio vivo → Fase 6/QA). |
-| 06 QA | `06-agente-qa-validacion.md` | pendiente | `06-resultados-qa.md` | — |
+| 06 QA | `06-agente-qa-validacion.md` | 🟡 parcial (2026-09-09) | `06-resultados-qa.md` ✅ | Flujo A (parcial) + Flujo B completo verificados end-to-end contra el servicio vivo. Faltan C, D, E, F — ver "Pendiente" en `06-resultados-qa.md`. |
 | — Despliegue (Fase 6) | `00-ORQUESTADOR.md` §Fase 6 | pendiente | servicio en Coolify, DNS, release | — |
 
 ---
@@ -29,7 +29,7 @@ Estados: `pendiente` · `en curso` · `bloqueado` · `hecho`.
 |---|---|---|---|---|
 | **A — Esquema estable** | Migraciones de `02` aplicadas al Supabase del VPS y verificadas; esquema no se toca más sin cambio de versión. | ✅ **CERRADO** 2026-09-08 — schema `cuentas` con 7 tablas, `plans` seedeado, migraciones registradas. Round-trip `register→login→session(plan:free)→account→logout→session(401)` **verificado contra `cuentas.tiklivetts.es` en vivo**. Esquema CONGELADO — cambios = `003_*.sql` + bump. | 03, 04, 05 | — |
 | **B — Contrato HTTP congelado** | `02-contrato-http.md` escrito, revisado por el usuario, con `curl` real por endpoint. | ✅ **CERRADO** 2026-09-08 — v1.0.0, verificado end-to-end contra la instancia viva (ver anexo del doc). Pendiente solo: si el usuario quiere cambios, es bump a 1.1.x. | 04 (todo) | `02-contrato-http.md`. |
-| **C — Webhook probado** | Evento de prueba de Polar → `subscriptions.status='active'` en Supabase; reintento del mismo `event_id` no duplica. | 🟡 endpoint configurado + firma verificada por test (403 en firma mala); falta el pago de prueba real con tarjeta `4242…` (Fase 6/QA) | 06 (flujo upgrade), Fase 6 | Endpoint Polar `d5495bf3-…`. |
+| **C — Webhook probado** | Evento de prueba de Polar → `subscriptions.status='active'` en Supabase; reintento del mismo `event_id` no duplica. | ✅ **CERRADO** 2026-09-09 — pago de prueba real en Polar sandbox (usuario `qa+e2e1@tiklivetts.es`, vía Google Pay del sandbox), logs de `servicio-cuentas` confirman `subscription.created/active/updated status=active`, `GET /api/auth/session` devuelve `subscription.status:"active"` con `current_period_end` ~1 año futuro. **Falta B7** (idempotencia de reenvío del mismo `event_id`) — no cierra la mitad de la condición del Gate, anotado como pendiente en `06-resultados-qa.md`. | 06 (flujo upgrade), Fase 6 | `06-resultados-qa.md` fila B3/Gate C. |
 | **D — Contrato de sesión definido** | `04-contrato-sesion.md` escrito; `features/auth/` responde `bus.on('auth:get')` con esa forma. | ✅ **CERRADO** 2026-09-08 — `04-contrato-sesion.md` + `features/auth/` responde `auth:get` con la forma documentada (test lo verifica). Agente 05 consumió el contrato (`sesion.js`). | 05 (todo) | — |
 
 Marcá `✅` con fecha y evidencia (query result, link a `curl`, etc.) al cumplir.
@@ -78,6 +78,19 @@ fases 1–4.
 ## Bitácora
 
 Formato: `- YYYY-MM-DD — <agente> — <qué pasó>`.
+
+- 2026-09-09 — orquestador — **QA end-to-end parcial + Gate C cerrado.** Flujo A
+  (parcial) + Flujo B completo probados contra la app local (`subscriptionsEnabled:true`,
+  `cuentas.json` → servicio vivo) + `servicio-cuentas` real. Registro, login, checkout
+  (Polar sandbox, producto Pro **$85/yr** — confirma el fix de precio de la sesión
+  anterior), pago con Google Pay del sandbox, webhook recibido (`subscription.created/
+  active/updated`), `subscriptions.status='active'` confirmado, UI refleja badge PRO +
+  candados fuera, acción antes gateada (`POST /api/music/skip`) pasa a `200`, logout +
+  re-login preservan el plan. Resultados en `06-resultados-qa.md`. **Gate C CERRADO**
+  (falta solo B7, idempotencia del webhook, no bloqueante). Quedan sin correr los
+  flujos C/D/E/F — próxima corrida de QA antes de producción. Usuario de prueba
+  `qa+e2e1@tiklivetts.es` (`2d78ae3d-…`) queda vivo a propósito para esa corrida —
+  sumar a la limpieza de usuarios QA antes de Fase 6.
 
 - 2026-09-09 — orquestador — **Fixeados los 3 hallazgos de `07-auditoria-seguridad.md`.**
   Vuln 1 (HIGH, bypass del muro por mayúsculas): `core/guard-suscripcion.js` normaliza
