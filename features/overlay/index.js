@@ -12,6 +12,7 @@ const { startFollowerRefresh, stopFollowerRefresh } = require('./state/follower-
 const { computeGiftUsd } = require('./compute-gift-usd');
 const { cleanNick } = require('./clean-nick');
 const mcpRegistry = require('../../core/contracts/mcp-registry');
+const { getConfigSnapshot } = require('../../core/config-snapshot');
 
 const { overlayStats } = require('./routes/overlay-stats');
 const { giftsList } = require('./routes/gifts-list');
@@ -26,12 +27,6 @@ const { testRaid } = require('./routes/test-raid');
 const { testLikes } = require('./routes/test-likes');
 
 const LIKE_DEBOUNCE_FALLBACK_MS = 1500;
-
-function getConfigSnapshot(bus) {
-  let snapshot = null;
-  bus.emit('config:get', (config) => { snapshot = config; });
-  return snapshot || {};
-}
 
 module.exports = {
   name: 'overlay',
