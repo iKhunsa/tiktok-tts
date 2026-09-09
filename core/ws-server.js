@@ -32,6 +32,11 @@ function isAllowedWsClient(info) {
  * dominio toca wss.clients directo (core/broadcast.js es el unico traductor
  * bus → WS de salida).
  */
+// ponytail: el WS no autentica sesion, solo origin/IP privada. subscriptionsEnabled
+// no lo toca: los overlays de OBS no pueden loguearse y lo REQUIEREN, y es
+// solo-broadcast (sin las rutas HTTP /api/*, ya gateadas, no se acciona nada).
+// Techo: exigir un token via subprotocol/query chequeado aca, con excepcion para
+// overlays, si algun dia importa.
 function createWsServer(server, bus, logger) {
   const wss = new WebSocket.Server({
     server,

@@ -3,6 +3,7 @@
 const express = require('express');
 const { getRequestHostname, isLocalHostname } = require('./security/is-local-request');
 const { staticRoot } = require('./static-root');
+const { crearGuardSuscripcion } = require('./guard-suscripcion');
 
 /**
  * Bloquea mutaciones (POST/PATCH/DELETE/PUT) que no vengan de localhost —
@@ -57,6 +58,8 @@ function createApp(bus) {
   const app = express();
   app.use(express.json());
   app.use(validateLocalMutation);
+  // Con subscriptionsEnabled activo, /api/* exige sesion (salvo whitelist).
+  app.use(crearGuardSuscripcion(bus));
 
   if (bus) {
     // Overlays cargados en OBS. Se registra cual se abre, no cuantas veces:

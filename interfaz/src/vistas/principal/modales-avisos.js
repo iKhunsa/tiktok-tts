@@ -246,11 +246,18 @@ function maybeShowBugReportNotice() {
   setTimeout(() => document.getElementById('bugReportNoticeModal').classList.add('show'), 600);
 }
 
-export function iniciarModalesYAvisos() {
-  // Espera a que el idioma este definido (elegido o cargado) antes de
-  // mostrar cualquier popup, para que todo aparezca ya traducido.
+// Onboarding + cadena de avisos (donacion/bug). Lo dispara index.js recien
+// cuando la app deja de estar bloqueada por el muro de login — no en la
+// pantalla de login. Idempotente: corre una sola vez.
+let _avisosArrancados = false;
+export function arrancarAvisosOnboarding() {
+  if (_avisosArrancados) return;
+  _avisosArrancados = true;
+  // Espera a que el idioma este definido para que todo aparezca traducido.
   Promise.resolve(window.__langReady).then(maybeShowOnboarding);
+}
 
+export function iniciarModalesYAvisos() {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       document.getElementById('donationsModal').classList.remove('show');
