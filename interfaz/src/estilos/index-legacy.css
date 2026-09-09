@@ -2405,8 +2405,18 @@
       border-radius: var(--radius-lg);
       padding: 28px 30px;
       box-shadow: var(--shadow-1);
+      animation: cuenta-in 180ms var(--ease-out) both;
     }
     .cuenta-auth { margin-top: 24px; }
+
+    /* Entrada suave al abrir la vista y al alternar login/registro — evita
+       el salto seco del re-render. Frecuencia baja, no molesta. */
+    @keyframes cuenta-in {
+      from { opacity: 0; transform: translateY(4px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .cuenta-card { animation: none; }
+    }
 
     .cuenta-card-title {
       margin: 0 0 4px;
@@ -2441,7 +2451,7 @@
       font-size: var(--text-sm);
       font-family: 'Inter', sans-serif;
       outline: none;
-      transition: border-color var(--dur-2), box-shadow var(--dur-2);
+      transition: border-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
     }
     .cuenta-field input:hover { border-color: var(--text-muted); }
     .cuenta-field input:focus {
@@ -2476,10 +2486,11 @@
       font-weight: 600;
       font-family: 'Inter', sans-serif;
       cursor: pointer;
-      transition: background var(--dur-2), opacity var(--dur-2);
+      transition: background var(--dur-2), opacity var(--dur-2), transform var(--dur-press) var(--ease-out);
     }
     .cuenta-btn-primary:hover { background: var(--brand-hover); }
-    .cuenta-btn-primary:disabled { opacity: 0.55; cursor: default; }
+    .cuenta-btn-primary:active { transform: scale(0.98); }
+    .cuenta-btn-primary:disabled { opacity: 0.55; cursor: default; transform: none; }
 
     .cuenta-switch {
       display: block;
@@ -2494,7 +2505,7 @@
       cursor: pointer;
       text-align: center;
     }
-    .cuenta-switch b { color: var(--accent-link); font-weight: 600; margin-left: 4px; }
+    .cuenta-switch b { color: var(--accent-link); font-weight: 600; margin-left: 4px; transition: color var(--dur-2); }
     .cuenta-switch:hover b { text-decoration: underline; }
 
     .cuenta-btn-ghost {
@@ -2507,10 +2518,11 @@
       font-weight: 500;
       font-family: 'Inter', sans-serif;
       cursor: pointer;
-      transition: border-color var(--dur-2), color var(--dur-2), background var(--dur-2);
+      transition: border-color var(--dur-2), color var(--dur-2), background var(--dur-2), transform var(--dur-press) var(--ease-out);
     }
     .cuenta-btn-ghost:hover { border-color: var(--text-bright-a30); color: var(--text-bright); background: var(--surface-raised); }
-    .cuenta-btn-ghost:disabled { opacity: 0.55; cursor: default; }
+    .cuenta-btn-ghost:active { transform: scale(0.97); }
+    .cuenta-btn-ghost:disabled { opacity: 0.55; cursor: default; transform: none; }
     .cuenta-btn-danger { border-color: var(--danger-a30); color: var(--danger); }
     .cuenta-btn-danger:hover { border-color: var(--danger-soft); color: var(--danger-soft); background: var(--danger-a12); }
 

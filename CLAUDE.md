@@ -387,6 +387,31 @@ estado en rojo/verde), está permitido copiarlo con otro nombre y editar el
 `fill`/`stroke` directo en el XML del SVG — son archivos de texto planos,
 no binarios, se editan igual que cualquier código.
 
+## Diseño / UX del frontend — skills de referencia obligatorias
+
+**Cada vez que se toque UX/UI del frontend o se agregue código visual nuevo**
+(vistas, componentes, CSS, markup, animaciones, transiciones, estados de
+interacción) hay que **consultar y tener presentes las skills de design
+engineering de Emil Kowalski** (instaladas vía `npx skills add emilkowalski/skill`,
+carpeta `.agents/skills/`, symlink en `.claude/skills/`):
+
+- `emil-design-eng` — filosofía de pulido de UI, diseño de componentes,
+  decisiones de detalle. Es la skill base, invocarla antes de escribir el
+  markup/CSS.
+- `animate` — construir una animación desde cero (curva, duración, propiedades).
+- `review-animations` / `improve-animations` — auditar animaciones existentes.
+- `find-animation-opportunities` — dónde una animación aporta de verdad (y dónde no).
+- `animation-vocabulary` — vocabulario preciso para describir el movimiento.
+- `apple-design` — principios de interfaz y movimiento fluido de Apple.
+- `prototype` — varias versiones de una pieza de UI para elegir en vivo.
+- `pick-ui-library` — elegir librería para la tarea.
+
+Regla práctica: antes de dar por cerrada una mejora visual, pasar el diff por
+`review-animations` (si hay movimiento) y por el criterio de `emil-design-eng`
+(jerarquía, foco, estados `:active`/`:focus`, `transition` con propiedades
+explícitas nunca `all`, `ease-out` para feedback inmediato). Sigue aplicando
+todo lo de las secciones **i18n** e **Íconos** de arriba.
+
 ## Funcionalidades actuales
 
 - TTS en 13 idiomas via Google Translate (es, es-MX, es-AR, en, en-GB, pt, pt-PT, fr, de, it, ja, zh-CN, ru, ko)

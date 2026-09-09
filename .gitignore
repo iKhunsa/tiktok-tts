@@ -26,3 +26,6 @@ mcp.json
 cuentas.json
 cuentas-config.json
 cuentas-config.generated.json
+
+# skills vendorizadas por `npx skills` (el lock basta, se re-bajan)
+.agents/
