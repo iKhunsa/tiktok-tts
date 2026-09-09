@@ -42,23 +42,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Write bug-report webhook config
+      - name: Write bakeable configs from secrets
         shell: pwsh
         run: |
-          $config = @{ discordWebhookUrl = "${{ secrets.DISCORD_BUG_REPORT_WEBHOOK }}" } | ConvertTo-Json
-          Set-Content -Path webhook-config.generated.json -Value $config
-
-      - name: Write telemetry config
-        shell: pwsh
-        run: |
-          $config = @{ url = "https://telemetria.tiklivetts.es/api/ingest"; token = "${{ secrets.INGEST_TOKEN }}" } | ConvertTo-Json
-          Set-Content -Path telemetry-config.generated.json -Value $config
-
-      - name: Write aptabase config
-        shell: pwsh
-        run: |
-          $config = @{ appKey = "${{ secrets.APTABASE_APP_KEY }}"; host = "https://aptabase.tiklivetts.es" } | ConvertTo-Json
-          Set-Content -Path aptabase-config.generated.json -Value $config
+          @{ discordWebhookUrl = "${{ secrets.DISCORD_BUG_REPORT_WEBHOOK }}" } | ConvertTo-Json | Set-Content webhook-config.generated.json
+          @{ url = "https://telemetria.tiklivetts.es/api/ingest"; token = "${{ secrets.INGEST_TOKEN }}" } | ConvertTo-Json | Set-Content telemetry-config.generated.json
+          @{ appKey = "${{ secrets.APTABASE_APP_KEY }}"; host = "https://aptabase.tiklivetts.es" } | ConvertTo-Json | Set-Content aptabase-config.generated.json
 
       - name: Build & publish installer
         run: npm run build:electron -- --publish always

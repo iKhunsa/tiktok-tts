@@ -18,7 +18,7 @@
     "postbuild:front": "node scripts/verify-front-build.js",
     "serve": "npm run build:front && node server.js",
     "serve:watch": "npm run build:front && node --watch server.js",
-    "prebuild:electron": "node scripts/ensure-webhook-config.js && node scripts/ensure-telemetry-config.js && node scripts/ensure-aptabase-config.js && npm run build:front",
+    "prebuild:electron": "node scripts/ensure-configs.js && npm run build:front",
     "build:electron": "electron-builder --win"
   },
   "build": {
