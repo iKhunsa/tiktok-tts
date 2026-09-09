@@ -79,6 +79,39 @@ fases 1–4.
 
 Formato: `- YYYY-MM-DD — <agente> — <qué pasó>`.
 
+- 2026-09-09 — orquestador — **Gating visual Pro completo (Sonidos, Bot, MCP, Overlays) +
+  ponytail-audit repo-wide aplicado.** Con el sistema de cuentas ya cerrado (Gates A-D +
+  cancelar/reanudar verificado end-to-end contra Polar real), el frontend solo pintaba un
+  candado chico en el sidebar — un usuario free podía entrar de lleno a Sonidos/Bot/MCP y
+  usarlos hasta que una acción puntual devolvía 403 sin explicación. Ahora esas 3 vistas se
+  ven bloqueadas de verdad: contenido real con blur + overlay centrado + popup de venta que
+  se abre solo automáticamente la primera vez por sesión de la app (helper reusable
+  `interfaz/src/nucleo/estado/vista-bloqueada.js`). Overlays queda 100% gratis — solo se
+  gateó "Fondo personalizado" (entitlement nuevo `overlay-decoraciones`, backend + frontend).
+  Tienda de Plugins suma badge "PRO" en las cards 100% gateadas. Commit `90e5c62` en
+  `feat/suscripciones-auth`, pusheado. Bug encontrado y corregido en el camino: el popup
+  automático se disparaba apenas arrancaba la app (antes de que el usuario entrara a la
+  vista) — atado a que la vista esté realmente visible (`offsetParent`) + re-chequeo en
+  `switchView()`. Verificado en vivo con usuario free real: blur+popup en las 3 vistas,
+  overlays 100% funcional, gate real 403 en `/api/upload-bg` (tras reiniciar el dev server,
+  que no había recargado el código nuevo). Después se corrió `/ponytail:ponytail-audit`
+  (repo completo, 3 agentes en paralelo por área) y se aplicaron los 6 hallazgos: helper
+  `nuevoMsgId()` en `cliente-ws.js` (reemplaza 10 copias del mismo patrón), helper
+  compartido `electron-shell/resolve-config-value.js` (reemplaza 3 versiones de "leer
+  config con override env+JSON" en main.js/aptabase.js/glitchtip.js), código muerto
+  borrado en `cola-tts.js` (`_ttsBarTimer` siempre null), `GOOGLE_TTS_LANGS`/
+  `DICT_FILTER_LANGS` dejaron de duplicarse en `features/configuracion/default-config.js`
+  (el TODO(fase-03) decía que era temporal hasta que `/idioma` existiera — ya existe),
+  `escaparAtributo()` compartida en `interfaz/compartido/escapar-html.js` (reemplaza la
+  copia idéntica de `esc()` en cuenta/index.js y popup-pro.js), y `LogStorage` (única
+  `class` del frontend) pasó a closure. Commit `b629396`, pusheado. `npm test` 78/78 en
+  ambos commits, `npm run lint` 0 errores, `build:front` limpio. De paso se borraron las 6
+  cuentas QA de prueba en Supabase (`qa+e2e1/e2e2/e3`, y 3 más del handoff anterior) —
+  pendiente de la nota del 06 ya resuelto. Único pendiente real que queda ahora: el
+  endpoint de "deshacer cancelación" YA se implementó en la sesión anterior (`/subscription/
+  resume`, ver commit de servicio-cuentas) — la nota vieja de abajo (línea del 06) está
+  desactualizada en ese punto.
+
 - 2026-09-09 — orquestador — **Agente 06 (QA) CERRADO — Flujos C/D/E/F + B7
   corridos, 6 bugs reales encontrados y arreglados.** Corrida contra la app
   **Electron empaquetada real** (no solo el dev server), simulando la caída
