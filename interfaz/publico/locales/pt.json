@@ -1089,6 +1089,9 @@
     "planFreeDesc": "Você está no plano gratuito. Faça upgrade para o Pro quando quiser.",
     "noName": "Sem nome",
     "confirmCancel": "Tem certeza de que deseja cancelar sua assinatura Pro? Você manterá o acesso até o fim do período já pago.",
-    "canceled": "Sua assinatura será cancelada ao final do período atual."
+    "canceled": "Sua assinatura será cancelada ao final do período atual.",
+    "confirmCancelTitle": "Cancelar seu plano Pro?",
+    "confirmCancelYes": "Sim, cancelar",
+    "confirmCancelNo": "Voltar"
   }
 }

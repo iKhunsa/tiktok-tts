@@ -1089,6 +1089,9 @@
     "planFreeDesc": "無料プランをご利用中です。いつでも Pro にアップグレードできます。",
     "noName": "名前なし",
     "confirmCancel": "Proサブスクリプションを解約してもよろしいですか？お支払い済みの期間が終わるまでは引き続きご利用いただけます。",
-    "canceled": "サブスクリプションは現在の期間終了時に解約されます。"
+    "canceled": "サブスクリプションは現在の期間終了時に解約されます。",
+    "confirmCancelTitle": "Proプランを解約しますか？",
+    "confirmCancelYes": "はい、解約する",
+    "confirmCancelNo": "戻る"
   }
 }

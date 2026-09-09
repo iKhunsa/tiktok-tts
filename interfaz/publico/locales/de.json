@@ -1089,6 +1089,9 @@
     "planFreeDesc": "Du bist im kostenlosen Tarif. Wechsle jederzeit zu Pro.",
     "noName": "Ohne Name",
     "confirmCancel": "Möchtest du dein Pro-Abo wirklich kündigen? Du behältst den Zugang bis zum Ende des bereits bezahlten Zeitraums.",
-    "canceled": "Dein Abo wird zum Ende des aktuellen Zeitraums gekündigt."
+    "canceled": "Dein Abo wird zum Ende des aktuellen Zeitraums gekündigt.",
+    "confirmCancelTitle": "Pro-Abo kündigen?",
+    "confirmCancelYes": "Ja, kündigen",
+    "confirmCancelNo": "Zurück"
   }
 }

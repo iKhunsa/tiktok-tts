@@ -1089,6 +1089,9 @@
     "planFreeDesc": "무료 요금제를 사용 중입니다. 언제든지 Pro로 업그레이드하세요.",
     "noName": "이름 없음",
     "confirmCancel": "Pro 구독을 정말 취소하시겠습니까? 이미 결제한 기간이 끝날 때까지는 계속 이용하실 수 있습니다.",
-    "canceled": "구독은 현재 결제 기간이 끝나면 취소됩니다."
+    "canceled": "구독은 현재 결제 기간이 끝나면 취소됩니다.",
+    "confirmCancelTitle": "Pro 요금제를 취소하시겠습니까?",
+    "confirmCancelYes": "예, 취소합니다",
+    "confirmCancelNo": "돌아가기"
   }
 }
