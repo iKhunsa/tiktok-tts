@@ -61,7 +61,7 @@ import {
   openBugReportModal, closeBugReportModal, submitBugReport, openDictLangModal,
   closeDictLangModal, closeDonationNotice, openDonationsFromNotice, closeBugReportNotice,
   openBugReportFromNotice, closeOnboardingWelcome, closeOnboardingComplete, startOnboardingTour,
-  iniciarModalesYAvisos,
+  iniciarModalesYAvisos, arrancarAvisosOnboarding,
 } from './modales-avisos.js';
 import { loadMobileURL, copyMobileURL, refreshMobileQR } from './mobile-remote.js';
 import {
@@ -167,6 +167,10 @@ function aplicarBloqueoApp() {
   if (bloq && !enCuenta) switchView('cuenta');
   else if (!bloq && _estabaBloqueada && enCuenta) switchView('chat');
   _estabaBloqueada = bloq;
+  // Onboarding + popups: recién con la app desbloqueada (logueado o sistema de
+  // cuentas apagado), nunca en la pantalla de login. arrancarAvisosOnboarding
+  // es idempotente.
+  if (!bloq) arrancarAvisosOnboarding();
 }
 
 function iniciarArranque() {

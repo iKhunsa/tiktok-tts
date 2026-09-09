@@ -63,21 +63,28 @@ test('MCP: tools auth_status/auth_logout + state provider auth', () => {
   assert.ok(st.auth && st.auth.plan === 'free');
 });
 
-test('gating: subscriptionsEnabled=true + sin sesion -> rutas Pro dan 403', async () => {
+test('subscriptionsEnabled=true + sin sesion: /api/* exige login; whitelist abierta', async () => {
   srv.bus.emit('config:patch', { subscriptionsEnabled: true });
   const base = `http://127.0.0.1:${srv.port}`;
   const post = (p) => fetch(`${base}${p}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
 
-  const soundpad = await fetch(`${base}/api/soundpad/upload`, { method: 'POST' });
-  assert.equal(soundpad.status, 403, 'soundpad upload gateado');
+  // El guard corre antes que gateMusica/gateSoundpad -> sin sesion es 401, no 403.
+  assert.equal((await post('/api/tts')).status, 401, 'tts exige login');
+  assert.equal((await post('/api/music/skip')).status, 401, 'music skip exige login');
+  assert.equal((await fetch(`${base}/api/soundpad/upload`, { method: 'POST' })).status, 401, 'soundpad exige login');
+  assert.equal((await fetch(`${base}/api/voices`)).status, 401, 'voices exige login');
 
-  const musicSkip = await post('/api/music/skip');
-  assert.equal(musicSkip.status, 403, 'music skip gateado');
-
-  const mobile = await fetch(`${base}/mobile`);
-  assert.equal(mobile.status, 403, 'panel movil gateado');
+  assert.equal((await fetch(`${base}/api/config`)).status, 200, 'config abierta');
+  assert.equal((await fetch(`${base}/api/overlay-stats`)).status, 200, 'overlay-stats abierta (OBS)');
+  assert.equal((await fetch(`${base}/api/gifts-list`)).status, 200, 'gifts-list abierta (OBS)');
+  assert.equal((await fetch(`${base}/api/status`)).status, 200, 'status abierta');
+  assert.equal((await fetch(`${base}/api/mcp/info`)).status, 200, 'mcp/info abierta');
+  assert.equal((await post('/api/report-bug')).status, 400, 'report-bug pasa el guard (400 = validacion del handler)');
+  assert.equal((await fetch(`${base}/api/auth/session`)).status, 404, 'auth/* pasa el guard (404 = no-op del dominio)');
+  assert.equal((await fetch(`${base}/overlay-alertas.html`)).status, 200, 'overlay estatico abierto');
+  assert.equal((await fetch(`${base}/mobile`)).status, 403, 'panel movil = 403 (gatePro, no el guard)');
 
   srv.bus.emit('config:patch', { subscriptionsEnabled: false });
-  const soundpadOff = await fetch(`${base}/api/soundpad/upload`, { method: 'POST' });
-  assert.notEqual(soundpadOff.status, 403, 'con flag off, no gatea');
+  assert.notEqual((await post('/api/tts')).status, 401, 'con flag off, no exige login');
+  assert.notEqual((await fetch(`${base}/api/soundpad/upload`, { method: 'POST' })).status, 401, 'con flag off, no exige login');
 });
