@@ -7,8 +7,7 @@ const entitlements = require('../../core/contracts/entitlements');
 // 'multi-canal'). Con subscriptionsEnabled=false, check() da true -> sin limite.
 
 function yaTieneCanalDe(state, platform) {
-  const map = state && state[`${platform}Channels`];
-  return !!map && typeof map.size === 'number' && map.size >= 1;
+  return state?.[`${platform}Channels`]?.size >= 1;
 }
 
 // Chequeo para connect-impl.js (path MCP + platforms-connect): lanza 403.

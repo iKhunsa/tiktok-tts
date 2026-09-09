@@ -25,6 +25,8 @@ function toastError(body, fallbackKey) {
   showToast(tErr(body, fallbackKey || 'errors.generic'));
 }
 
+// Escape para contexto de atributo (value="...") ademas de texto — el
+// escaparHtml compartido no cubre las comillas. Local a esta vista.
 const esc = (v) => String(v || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 let modo = 'login'; // 'login' | 'register' — solo cuando esta deslogueado

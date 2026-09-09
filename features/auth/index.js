@@ -75,7 +75,7 @@ module.exports = {
     estado.hidratarDesdeDisco();
     const refresh = crearRefresh({ cliente, bus, logger });
 
-    const nRutas = rutas.montar({ app, bus, cliente, logger, subscriptionsEnabled, refresh });
+    const nRutas = rutas.montar({ app, cliente, logger, subscriptionsEnabled, refresh });
 
     mcpRegistry.registerTool({
       name: 'auth_logout', domain: 'auth', destructive: true,
@@ -91,14 +91,10 @@ module.exports = {
       },
     });
 
-    module.exports._timer = refresh.start();
+    refresh.start(); // setInterval .unref()'d — no hace falta limpiarlo al salir
     logger.log('info', 'auth', 'auth/index.js#register', 'auth.servicio.configurado',
       `Dominio auth activo contra ${urlServicio}`, { subscriptionsEnabled: subsEnabled });
 
     return { rutas: nRutas, listeners: 3 };
-  },
-
-  shutdown() {
-    if (module.exports._timer) clearInterval(module.exports._timer);
   },
 };

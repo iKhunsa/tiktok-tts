@@ -16,13 +16,8 @@ function propagarError(res, r, logger) {
   return res.status(r.status).json({ error: b.error || 'Error', errorKey: b.errorKey || 'errors.generic' });
 }
 
-function montar({ app, bus, cliente, logger, subscriptionsEnabled, refresh }) {
+function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
   const guard = (req, res, next) => (subscriptionsEnabled() ? next() : res.status(404).end());
-
-  async function trasCambio(antes) {
-    const ahora = estado.getSesion();
-    refresh.emitirCambio(antes, ahora);
-  }
 
   app.post('/api/auth/register', guard, async (req, res) => {
     const { email, password, nombre } = req.body || {};
@@ -31,7 +26,7 @@ function montar({ app, bus, cliente, logger, subscriptionsEnabled, refresh }) {
     if (!r.ok) return propagarError(res, r, logger);
     estado.aplicar({ token: r.body.token, session: r.body }, logger);
     logger.log('info', 'auth', 'auth/routes.js#register', 'auth.sesion.iniciada', 'Registro OK', { via: 'register' });
-    await trasCambio(antes);
+    refresh.emitirCambio(antes, estado.getSesion());
     res.json(estado.getSesion());
   });
 
@@ -42,7 +37,7 @@ function montar({ app, bus, cliente, logger, subscriptionsEnabled, refresh }) {
     if (!r.ok) return propagarError(res, r, logger);
     estado.aplicar({ token: r.body.token, session: r.body }, logger);
     logger.log('info', 'auth', 'auth/routes.js#login', 'auth.sesion.iniciada', 'Login OK', { via: 'login' });
-    await trasCambio(antes);
+    refresh.emitirCambio(antes, estado.getSesion());
     res.json(estado.getSesion());
   });
 
@@ -52,7 +47,7 @@ function montar({ app, bus, cliente, logger, subscriptionsEnabled, refresh }) {
     if (token) await cliente.logout(token);
     estado.cerrar(logger);
     logger.log('info', 'auth', 'auth/routes.js#logout', 'auth.sesion.cerrada', 'Logout', {});
-    await trasCambio(antes);
+    refresh.emitirCambio(antes, estado.getSesion());
     res.json({ ok: true });
   });
 
