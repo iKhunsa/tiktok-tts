@@ -98,7 +98,6 @@
 
     <div class="sidebar-footer">
       <button class="sidebar-footer-btn" onclick="openDonationsModal()"><img class="icon-inline" src="icons/favorite-red.svg" alt=""> <span data-i18n="footer.donate">Donar</span> <span id="donateNewBadge" class="badge-new" data-i18n="footer.newBadge">Nuevo</span></button>
-      <button class="sidebar-footer-btn" onclick="openSocialModal()"><img class="icon-inline" src="icons/smartphone.svg" alt=""> <span data-i18n="footer.channels">Canales</span></button>
       <a href="/advanced.html?popup=1" target="_blank" rel="noopener" class="sidebar-footer-btn"><img class="icon-inline" src="icons/build.svg" alt=""> <span data-i18n="footer.advanced">Avanzado</span></a>
       <button id="sidebarBugReportBtn" class="sidebar-footer-btn" onclick="openBugReportModal()"><img class="icon-inline" src="icons/warning.svg" alt=""> <span data-i18n="footer.bugReport">Reportar Bug</span></button>
       <div class="lang-selector-row">
@@ -1403,113 +1402,6 @@
     <div style="display:flex;gap:10px;margin-top:10px;">
       <a href="https://github.com/iKhunsa/tiktok-tts" target="_blank" class="cfg-btn" style="flex:1;justify-content:center;" data-i18n="notice.bugReportDevCta">Sumate como developer</a>
       <button class="cfg-btn" style="flex:1;justify-content:center;" onclick="closeBugReportNotice();openDonationsModal();" data-i18n="notice.bugReportDonateCta">Apoyar con una donación</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══ MODAL: Social / Portafolio ════════════════════════════════════ -->
-<div id="socialModal" class="modal-overlay" onclick="closeSocialModal(event)">
-  <div class="modal-content modal-content--landing" onclick="event.stopPropagation()">
-    <div class="landing-topbar">
-      <button class="modal-close" onclick="closeSocialModal()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
-    </div>
-
-    <div class="landing-hero">
-      <div class="landing-avatar">
-        <img src="asset/khunsa.jpg" alt="Luis León" onerror="this.parentElement.textContent='LL'">
-      </div>
-      <h1 data-i18n="portfolio.heroTitle">Hola, soy Khunsa 👋</h1>
-      <p data-i18n="portfolio.heroDesc">Construyo productos en Bitcoin, crypto-fiat y comercio: esta app de TTS es uno de varios proyectos activos. Conocé el resto acá abajo.</p>
-    </div>
-
-    <div class="landing-section">
-      <div class="landing-section-title" data-i18n="portfolio.projectsTitle">Mis proyectos</div>
-      <div class="project-grid">
-        <a href="https://www.satoshidashboard.com/" target="_blank" class="project-card project-card--big art-bitcoin">
-          <span class="cta-top" data-i18n="portfolio.visit">Visitar →</span>
-          <span class="tag">Bitcoin</span>
-          <h3>SatoshiDashboard</h3>
-          <p data-i18n="portfolio.satoshiDesc">Dashboard de Bitcoin self-hosted, disponible en la Umbrel App Store. Corré tu propio nodo y guardá tus datos en tu hardware.</p>
-        </a>
-        <a href="https://www.assetrock.io/" target="_blank" class="project-card art-fiat">
-          <span class="cta-top" data-i18n="portfolio.visit">Visitar →</span>
-          <span class="tag">Crypto-Fiat OTC</span>
-          <h3>AssetRock</h3>
-          <p data-i18n="portfolio.assetrockDesc">Puente institucional entre crypto y fiat: liquidez, settlement seguro y compliance para fondos y tesorerías en LATAM.</p>
-        </a>
-        <a href="https://www.zatobox.io/" target="_blank" class="project-card art-retail">
-          <span class="cta-top" data-i18n="portfolio.visit">Visitar →</span>
-          <span class="tag">Retail / POS</span>
-          <h3>ZatoBox</h3>
-          <p data-i18n="portfolio.zatoboxDesc">Punto de venta open-source y modular con inventario inteligente, automatizaciones y pagos en moneda local o Bitcoin.</p>
-        </a>
-        <a href="https://101btc.satoshidashboard.com/" target="_blank" class="project-card art-edu">
-          <span class="cta-top" data-i18n="portfolio.visit">Visitar →</span>
-          <span class="tag" data-i18n="portfolio.tag101btc">Educación</span>
-          <h3>101BTC</h3>
-          <p data-i18n="portfolio.btc101Desc">Guía interactiva para dar tus primeros pasos en Bitcoin, de la mano de SatoshiDashboard.</p>
-        </a>
-      </div>
-    </div>
-
-    <div class="landing-section">
-      <div class="landing-section-title" data-i18n="portfolio.contactTitle">Hablemos</div>
-      <div class="contact-row">
-        <a href="https://t.me/ikhunsa" target="_blank" class="contact-pill contact-pill--telegram">
-          <span class="contact-pill-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.95 3.5 18.6 20.3c-.25 1.13-.9 1.4-1.83.87l-5.05-3.72-2.44 2.35c-.27.27-.5.5-1.02.5l.36-5.15L18.02 6c.4-.36-.09-.55-.63-.2L7.05 12.42l-4.97-1.55c-1.08-.34-1.1-1.08.23-1.6L20.6 2.44c.9-.33 1.68.2 1.35 1.06Z"/></svg></span>
-          <span>Telegram</span>
-        </a>
-        <a href="https://x.com/ikhunsaa" target="_blank" class="contact-pill contact-pill--x">
-          <span class="contact-pill-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 10.5 20.3 3h-1.9l-5.9 6.6L7.8 3H2.5l7.1 10.1L2.5 21h1.9l6.2-7 5 7h5.3l-7.4-10.5Zm-2.2 2.5-.7-1L4.9 4.3h2.4l4.6 6.5.7 1 6 8.5h-2.4l-4.9-7Z"/></svg></span>
-          <span>X</span>
-        </a>
-        <a href="https://www.linkedin.com/in/ikhunsa/" target="_blank" class="contact-pill contact-pill--linkedin">
-          <span class="contact-pill-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.94 8.5H3.56V20.4h3.38V8.5ZM5.25 3.1a1.96 1.96 0 1 0 0 3.92 1.96 1.96 0 0 0 0-3.92ZM20.44 20.4h-3.37v-6.05c0-1.44-.03-3.3-2.02-3.3-2.02 0-2.33 1.58-2.33 3.2v6.15H9.35V8.5h3.24v1.63h.05c.45-.86 1.56-1.77 3.2-1.77 3.42 0 4.6 2.25 4.6 5.18V20.4Z"/></svg></span>
-          <span>LinkedIn</span>
-        </a>
-        <a href="https://stacker.news/Khunsa" target="_blank" class="contact-pill contact-pill--stackernews">
-          <span class="contact-pill-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 3.5 14h6l-1 8L20.5 10h-6l-1.5-8Z"/></svg></span>
-          <span>Stacker News</span>
-        </a>
-      </div>
-    </div>
-
-    <div class="landing-section" style="padding-top:0;">
-      <div class="landing-section-title" data-i18n="donations.socialTitle">Sigue mi contenido</div>
-      <div class="social-grid">
-        <a href="https://www.youtube.com/@br0k3ny" target="_blank" class="social-card social-card--yt">
-          <span class="social-card-top">Ver →</span>
-          <div class="social-card-tab">
-            <img src="icons/tv.svg" alt="">
-            <h3>YouTube</h3>
-            <p>@br0k3ny</p>
-          </div>
-        </a>
-        <a href="https://www.tiktok.com/@soykurorai" target="_blank" class="social-card social-card--tiktok">
-          <span class="social-card-top">Ver →</span>
-          <div class="social-card-tab">
-            <img src="icons/music_note.svg" alt="">
-            <h3>TikTok</h3>
-            <p>@soykurorai</p>
-          </div>
-        </a>
-        <a href="https://www.twitch.tv/soykurorai" target="_blank" class="social-card social-card--twitch">
-          <span class="social-card-top">Ver →</span>
-          <div class="social-card-tab">
-            <img src="icons/sports_esports.svg" alt="">
-            <h3>Twitch</h3>
-            <p>soykurorai</p>
-          </div>
-        </a>
-        <a href="https://kick.com/speedmucho" target="_blank" class="social-card social-card--kick">
-          <span class="social-card-top">Ver →</span>
-          <div class="social-card-tab">
-            <img src="icons/flash_on.svg" alt="">
-            <h3>Kick</h3>
-            <p>speedmucho</p>
-          </div>
-        </a>
-      </div>
     </div>
   </div>
 </div>

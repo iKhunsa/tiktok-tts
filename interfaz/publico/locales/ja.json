@@ -41,7 +41,6 @@
   "footer": {
     "donate": "寄付",
     "newBadge": "新着",
-    "channels": "チャンネル",
     "advanced": "詳細設定",
     "bugReport": "バグを報告"
   },
@@ -493,23 +492,8 @@
     "title": "コンテンツを支援する",
     "copyAddress": "アドレスをコピー",
     "btcNative": "ネイティブビットコイン",
-    "socialTitle": "コンテンツをフォローする",
     "kofiDesc": "コーヒー1杯分の支援をお願いします",
     "paypalDesc": "PayPalで直接寄付"
-  },
-  "portfolio": {
-    "heroTitle": "こんにちは、Khunsaです 👋",
-    "heroDesc": "ビットコイン、クリプト・法定通貨、コマース分野でプロダクトを作っています。このTTSアプリも進行中のプロジェクトの一つ。他のプロジェクトも下でチェックしてください。",
-    "projectsTitle": "私のプロジェクト",
-    "satoshiDesc": "セルフホスト型のBitcoinダッシュボード。Umbrelアプリストアで公開中。自分のノードを動かし、データを自分のハードウェアに保管できます。",
-    "assetrockDesc": "クリプトと法定通貨をつなぐ機関投資家向けブリッジ：LATAMのファンドやトレジャリー向けに流動性・安全な決済・コンプライアンスを提供。",
-    "zatoboxDesc": "スマート在庫管理、自動化、現地通貨またはビットコイン決済に対応したオープンソースのモジュール式POS。",
-    "visit": "訪問 →",
-    "contactTitle": "連絡する",
-    "tag101btc": "教育",
-    "btc101Desc": "SatoshiDashboardが贈る、ビットコインの第一歩を踏み出すためのインタラクティブガイド。",
-    "tagStacker": "コミュニティ",
-    "stackerDesc": "私のStacker Newsプロフィール：コミュニティとビットコインについて共有・議論し、良質なコンテンツでsatsを稼いでいます。"
   },
   "notice": {
     "donationsTitle": "プロジェクトを支援する新しい方法",

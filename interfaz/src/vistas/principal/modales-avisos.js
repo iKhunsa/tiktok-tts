@@ -21,12 +21,6 @@ export function closeDonationsModal(e) {
   document.getElementById('donationsModal').classList.remove('show');
 }
 
-export function openSocialModal() { document.getElementById('socialModal').classList.add('show'); }
-export function closeSocialModal(e) {
-  if (e && e.target.id !== 'socialModal') return;
-  document.getElementById('socialModal').classList.remove('show');
-}
-
 export function openBugReportModal() { document.getElementById('bugReportModal').classList.add('show'); }
 export function closeBugReportModal(e) {
   if (e && e.target.id !== 'bugReportModal') return;
@@ -260,7 +254,6 @@ export function iniciarModalesYAvisos() {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       document.getElementById('donationsModal').classList.remove('show');
-      document.getElementById('socialModal').classList.remove('show');
       document.getElementById('donationNoticeModal').classList.remove('show');
       document.getElementById('dictLangModal').classList.remove('show');
       document.getElementById('bugReportModal').classList.remove('show');
