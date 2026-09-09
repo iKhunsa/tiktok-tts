@@ -9,7 +9,8 @@
     "bot": "Bot",
     "moderation": "Moderation",
     "moreTools": "Plugin-Store",
-    "mcp": "MCP-Agent"
+    "mcp": "MCP-Agent",
+    "cuenta": "Konto"
   },
   "community": {
     "label": "TikLiveTTS Gemeinschaft",
@@ -1002,7 +1003,14 @@
     "playlistEmpty": "Deine Playlist ist leer",
     "twitchAuthStartFailed": "Twitch-Autorisierung konnte nicht gestartet werden",
     "obsConnectFailed": "Verbindung zu OBS fehlgeschlagen",
-    "mcpDisabled": "Der MCP-Server ist aus"
+    "mcpDisabled": "Der MCP-Server ist aus",
+    "unauthorized": "Nicht authentifiziert.",
+    "proRequired": "Diese Funktion erfordert den Pro-Tarif.",
+    "emailTaken": "Diese E-Mail ist bereits registriert.",
+    "invalidCredentials": "Falsche E-Mail oder Passwort.",
+    "serviceUnavailable": "Kontodienst nicht verfügbar. Versuche es bald erneut.",
+    "generic": "Ein Fehler ist aufgetreten. Versuche es erneut.",
+    "weakPassword": "Das Passwort ist zu kurz."
   },
   "mcp": {
     "title": "MCP-Agent",
@@ -1060,5 +1068,31 @@
     "devLabel": "Entwickler-Werkzeuge",
     "devHint": "Chat/Events einspeisen, Rohlogs, voller Status, Bus. Nur zum Debuggen.",
     "badgeDev": "dev"
+  },
+  "cuenta": {
+    "title": "Konto",
+    "subtitle": "Registriere dich oder melde dich an, um deinen Tarif zu verwalten.",
+    "inactive": "Das Kontosystem ist in dieser Version nicht aktiviert.",
+    "loginTitle": "Anmelden",
+    "registerTitle": "Konto erstellen",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "name": "Name",
+    "doLogin": "Anmelden",
+    "doRegister": "Konto erstellen",
+    "haveAccount": "Ich habe bereits ein Konto",
+    "noAccount": "Ich habe kein Konto",
+    "profileTitle": "Profil",
+    "save": "Speichern",
+    "saved": "Gespeichert",
+    "logout": "Abmelden",
+    "planTitle": "Tarif",
+    "planFree": "Kostenloser Tarif",
+    "planProUntil": "Pro · aktiv bis {fecha}",
+    "planProCancels": "Pro · endet am {fecha}",
+    "manage": "Abo verwalten",
+    "goPro": "Pro werden",
+    "checkoutOpened": "Wir haben den Checkout in deinem Browser geöffnet.",
+    "degraded": "Dein Tarif konnte nicht mit dem Server geprüft werden; letzter bekannter Stand wird verwendet."
   }
 }

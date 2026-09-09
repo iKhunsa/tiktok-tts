@@ -9,7 +9,8 @@
     "bot": "Bot",
     "moderation": "Modération",
     "moreTools": "Boutique de plugins",
-    "mcp": "Agent MCP"
+    "mcp": "Agent MCP",
+    "cuenta": "Compte"
   },
   "community": {
     "label": "Communauté TikLiveTTS",
@@ -1002,7 +1003,14 @@
     "playlistEmpty": "Votre playlist est vide",
     "twitchAuthStartFailed": "Impossible de démarrer l'autorisation Twitch",
     "obsConnectFailed": "Impossible de se connecter à OBS",
-    "mcpDisabled": "Le serveur MCP est éteint"
+    "mcpDisabled": "Le serveur MCP est éteint",
+    "unauthorized": "Non authentifié.",
+    "proRequired": "Cette fonction nécessite l'offre Pro.",
+    "emailTaken": "Cet email est déjà enregistré.",
+    "invalidCredentials": "Email ou mot de passe incorrect.",
+    "serviceUnavailable": "Service de comptes indisponible. Réessayez bientôt.",
+    "generic": "Une erreur s'est produite. Réessayez.",
+    "weakPassword": "Le mot de passe est trop court."
   },
   "mcp": {
     "title": "Agent MCP",
@@ -1060,5 +1068,31 @@
     "devLabel": "Outils de développement",
     "devHint": "Injecter chat/événements, logs bruts, état complet, bus. Debug uniquement.",
     "badgeDev": "dev"
+  },
+  "cuenta": {
+    "title": "Compte",
+    "subtitle": "Inscrivez-vous ou connectez-vous pour gérer votre offre.",
+    "inactive": "Le système de comptes n'est pas activé dans cette version.",
+    "loginTitle": "Se connecter",
+    "registerTitle": "Créer un compte",
+    "email": "Email",
+    "password": "Mot de passe",
+    "name": "Nom",
+    "doLogin": "Se connecter",
+    "doRegister": "Créer un compte",
+    "haveAccount": "J'ai déjà un compte",
+    "noAccount": "Je n'ai pas de compte",
+    "profileTitle": "Profil",
+    "save": "Enregistrer",
+    "saved": "Enregistré",
+    "logout": "Se déconnecter",
+    "planTitle": "Offre",
+    "planFree": "Offre gratuite",
+    "planProUntil": "Pro · actif jusqu'au {fecha}",
+    "planProCancels": "Pro · résiliation le {fecha}",
+    "manage": "Gérer l'abonnement",
+    "goPro": "Passer à Pro",
+    "checkoutOpened": "Nous avons ouvert le paiement dans votre navigateur.",
+    "degraded": "Impossible de vérifier votre offre avec le serveur ; dernier état connu utilisé."
   }
 }

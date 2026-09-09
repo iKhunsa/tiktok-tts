@@ -9,7 +9,8 @@
     "bot": "Bot",
     "moderation": "Moderação",
     "moreTools": "Loja de plugins",
-    "mcp": "Agente MCP"
+    "mcp": "Agente MCP",
+    "cuenta": "Conta"
   },
   "community": {
     "label": "Comunidade TikLiveTTS",
@@ -1002,7 +1003,14 @@
     "playlistEmpty": "Sua playlist está vazia",
     "twitchAuthStartFailed": "Não foi possível iniciar a autorização da Twitch",
     "obsConnectFailed": "Não foi possível conectar ao OBS",
-    "mcpDisabled": "O servidor MCP está desligado"
+    "mcpDisabled": "O servidor MCP está desligado",
+    "unauthorized": "Não autenticado.",
+    "proRequired": "Este recurso requer o plano Pro.",
+    "emailTaken": "Esse email já está registrado.",
+    "invalidCredentials": "Email ou senha incorretos.",
+    "serviceUnavailable": "Serviço de contas indisponível. Tente novamente em breve.",
+    "generic": "Ocorreu um erro. Tente novamente.",
+    "weakPassword": "A senha é muito curta."
   },
   "mcp": {
     "title": "Agente MCP",
@@ -1060,5 +1068,31 @@
     "devLabel": "Ferramentas de desenvolvimento",
     "devHint": "Injetar chat/eventos, logs crus, status completo, bus. Só para debug.",
     "badgeDev": "dev"
+  },
+  "cuenta": {
+    "title": "Conta",
+    "subtitle": "Registre-se ou entre para gerenciar seu plano.",
+    "inactive": "O sistema de contas não está habilitado nesta versão.",
+    "loginTitle": "Entrar",
+    "registerTitle": "Criar conta",
+    "email": "Email",
+    "password": "Senha",
+    "name": "Nome",
+    "doLogin": "Entrar",
+    "doRegister": "Criar conta",
+    "haveAccount": "Já tenho conta",
+    "noAccount": "Não tenho conta",
+    "profileTitle": "Perfil",
+    "save": "Salvar",
+    "saved": "Salvo",
+    "logout": "Sair",
+    "planTitle": "Plano",
+    "planFree": "Plano gratuito",
+    "planProUntil": "Pro · ativo até {fecha}",
+    "planProCancels": "Pro · cancela em {fecha}",
+    "manage": "Gerenciar assinatura",
+    "goPro": "Seja Pro",
+    "checkoutOpened": "Abrimos o checkout no seu navegador.",
+    "degraded": "Não foi possível verificar seu plano com o servidor; usando o último estado conhecido."
   }
 }

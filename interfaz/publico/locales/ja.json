@@ -9,7 +9,8 @@
     "bot": "Bot",
     "moderation": "モデレーション",
     "moreTools": "プラグインストア",
-    "mcp": "MCP エージェント"
+    "mcp": "MCP エージェント",
+    "cuenta": "アカウント"
   },
   "community": {
     "label": "TikLiveTTS コミュニティ",
@@ -1002,7 +1003,14 @@
     "playlistEmpty": "プレイリストが空です",
     "twitchAuthStartFailed": "Twitch認証を開始できませんでした",
     "obsConnectFailed": "OBSに接続できませんでした",
-    "mcpDisabled": "MCP サーバーはオフです"
+    "mcpDisabled": "MCP サーバーはオフです",
+    "unauthorized": "認証されていません。",
+    "proRequired": "この機能には Pro プランが必要です。",
+    "emailTaken": "そのメールは既に登録されています。",
+    "invalidCredentials": "メールまたはパスワードが違います。",
+    "serviceUnavailable": "アカウントサービスを利用できません。しばらくして再試行してください。",
+    "generic": "エラーが発生しました。再試行してください。",
+    "weakPassword": "パスワードが短すぎます。"
   },
   "mcp": {
     "title": "MCP エージェント",
@@ -1060,5 +1068,31 @@
     "devLabel": "開発者ツール",
     "devHint": "チャット/イベント注入、生ログ、詳細ステータス、バス。デバッグ専用。",
     "badgeDev": "dev"
+  },
+  "cuenta": {
+    "title": "アカウント",
+    "subtitle": "登録またはログインしてプランを管理します。",
+    "inactive": "このバージョンではアカウント機能は無効です。",
+    "loginTitle": "ログイン",
+    "registerTitle": "アカウント作成",
+    "email": "メール",
+    "password": "パスワード",
+    "name": "名前",
+    "doLogin": "ログイン",
+    "doRegister": "アカウント作成",
+    "haveAccount": "すでにアカウントがある",
+    "noAccount": "アカウントがない",
+    "profileTitle": "プロフィール",
+    "save": "保存",
+    "saved": "保存しました",
+    "logout": "ログアウト",
+    "planTitle": "プラン",
+    "planFree": "無料プラン",
+    "planProUntil": "Pro · {fecha} まで有効",
+    "planProCancels": "Pro · {fecha} に解約",
+    "manage": "サブスクリプションを管理",
+    "goPro": "Pro にする",
+    "checkoutOpened": "ブラウザでチェックアウトを開きました。",
+    "degraded": "サーバーでプランを確認できませんでした。最後の既知の状態を使用します。"
   }
 }

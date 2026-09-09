@@ -9,7 +9,8 @@
     "bot": "Bot",
     "moderation": "Moderation",
     "moreTools": "Plugin Store",
-    "mcp": "MCP Agent"
+    "mcp": "MCP Agent",
+    "cuenta": "Account"
   },
   "community": {
     "label": "TikLiveTTS Community",
@@ -671,7 +672,14 @@
     "playlistEmpty": "Your playlist is empty",
     "twitchAuthStartFailed": "Could not start Twitch authorization",
     "obsConnectFailed": "Could not connect to OBS",
-    "mcpDisabled": "The MCP server is off"
+    "mcpDisabled": "The MCP server is off",
+    "unauthorized": "Not authenticated.",
+    "proRequired": "This feature requires the Pro plan.",
+    "emailTaken": "That email is already registered.",
+    "invalidCredentials": "Wrong email or password.",
+    "serviceUnavailable": "Account service unavailable. Try again shortly.",
+    "generic": "Something went wrong. Try again.",
+    "weakPassword": "The password is too short."
   },
   "dictLang": {
     "title": "Allowed languages",
@@ -1060,5 +1068,31 @@
     "devLabel": "Developer tools",
     "devHint": "Inject chat/events, view raw logs, full status, bus. For debugging only.",
     "badgeDev": "dev"
+  },
+  "cuenta": {
+    "title": "Account",
+    "subtitle": "Sign up or log in to manage your plan.",
+    "inactive": "The account system is not enabled in this version.",
+    "loginTitle": "Log in",
+    "registerTitle": "Create account",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "doLogin": "Log in",
+    "doRegister": "Create account",
+    "haveAccount": "I already have an account",
+    "noAccount": "I don't have an account",
+    "profileTitle": "Profile",
+    "save": "Save",
+    "saved": "Saved",
+    "logout": "Log out",
+    "planTitle": "Plan",
+    "planFree": "Free plan",
+    "planProUntil": "Pro · active until {fecha}",
+    "planProCancels": "Pro · cancels on {fecha}",
+    "manage": "Manage subscription",
+    "goPro": "Go Pro",
+    "checkoutOpened": "We opened the checkout in your browser.",
+    "degraded": "We couldn't verify your plan with the server; using the last known state."
   }
 }

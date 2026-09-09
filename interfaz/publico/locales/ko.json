@@ -9,7 +9,8 @@
     "bot": "봇",
     "moderation": "모더레이션",
     "moreTools": "플러그인 스토어",
-    "mcp": "MCP 에이전트"
+    "mcp": "MCP 에이전트",
+    "cuenta": "계정"
   },
   "community": {
     "label": "TikLiveTTS 커뮤니티",
@@ -1002,7 +1003,14 @@
     "playlistEmpty": "재생목록이 비어 있습니다",
     "twitchAuthStartFailed": "Twitch 인증을 시작할 수 없습니다",
     "obsConnectFailed": "OBS에 연결할 수 없습니다",
-    "mcpDisabled": "MCP 서버가 껺져 있습니다"
+    "mcpDisabled": "MCP 서버가 껺져 있습니다",
+    "unauthorized": "인증되지 않았습니다.",
+    "proRequired": "이 기능은 Pro 요금제가 필요합니다.",
+    "emailTaken": "이미 등록된 이메일입니다.",
+    "invalidCredentials": "이메일 또는 비밀번호가 잘못되었습니다.",
+    "serviceUnavailable": "계정 서비스를 사용할 수 없습니다. 잠시 후 다시 시도하세요.",
+    "generic": "오류가 발생했습니다. 다시 시도하세요.",
+    "weakPassword": "비밀번호가 너무 짧습니다."
   },
   "mcp": {
     "title": "MCP 에이전트",
@@ -1060,5 +1068,31 @@
     "devLabel": "개발자 도구",
     "devHint": "채팅/이벤트 주입, 원시 로그, 전체 상태, 버스. 디버깅 전용.",
     "badgeDev": "dev"
+  },
+  "cuenta": {
+    "title": "계정",
+    "subtitle": "가입하거나 로그인하여 요금제를 관리하세요.",
+    "inactive": "이 버전에서는 계정 시스템이 활성화되어 있지 않습니다.",
+    "loginTitle": "로그인",
+    "registerTitle": "계정 만들기",
+    "email": "이메일",
+    "password": "비밀번호",
+    "name": "이름",
+    "doLogin": "로그인",
+    "doRegister": "계정 만들기",
+    "haveAccount": "이미 계정이 있습니다",
+    "noAccount": "계정이 없습니다",
+    "profileTitle": "프로필",
+    "save": "저장",
+    "saved": "저장됨",
+    "logout": "로그아웃",
+    "planTitle": "요금제",
+    "planFree": "무료 요금제",
+    "planProUntil": "Pro · {fecha}까지 활성",
+    "planProCancels": "Pro · {fecha}에 해지",
+    "manage": "구독 관리",
+    "goPro": "Pro로 전환",
+    "checkoutOpened": "브라우저에서 결제 페이지를 열었습니다.",
+    "degraded": "서버에서 요금제를 확인할 수 없어 마지막으로 알려진 상태를 사용합니다."
   }
 }

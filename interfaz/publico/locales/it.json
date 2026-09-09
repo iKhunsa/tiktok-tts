@@ -9,7 +9,8 @@
     "bot": "Bot",
     "moderation": "Moderazione",
     "moreTools": "Negozio di plugin",
-    "mcp": "Agente MCP"
+    "mcp": "Agente MCP",
+    "cuenta": "Account"
   },
   "community": {
     "label": "Comunità TikLiveTTS",
@@ -1002,7 +1003,14 @@
     "playlistEmpty": "La tua playlist è vuota",
     "twitchAuthStartFailed": "Impossibile avviare l'autorizzazione di Twitch",
     "obsConnectFailed": "Impossibile connettersi a OBS",
-    "mcpDisabled": "Il server MCP è spento"
+    "mcpDisabled": "Il server MCP è spento",
+    "unauthorized": "Non autenticato.",
+    "proRequired": "Questa funzione richiede il piano Pro.",
+    "emailTaken": "Questa email è già registrata.",
+    "invalidCredentials": "Email o password errati.",
+    "serviceUnavailable": "Servizio account non disponibile. Riprova tra poco.",
+    "generic": "Si è verificato un errore. Riprova.",
+    "weakPassword": "La password è troppo corta."
   },
   "mcp": {
     "title": "Agente MCP",
@@ -1060,5 +1068,31 @@
     "devLabel": "Strumenti di sviluppo",
     "devHint": "Inietta chat/eventi, log grezzi, stato completo, bus. Solo per debug.",
     "badgeDev": "dev"
+  },
+  "cuenta": {
+    "title": "Account",
+    "subtitle": "Registrati o accedi per gestire il tuo piano.",
+    "inactive": "Il sistema di account non è abilitato in questa versione.",
+    "loginTitle": "Accedi",
+    "registerTitle": "Crea account",
+    "email": "Email",
+    "password": "Password",
+    "name": "Nome",
+    "doLogin": "Accedi",
+    "doRegister": "Crea account",
+    "haveAccount": "Ho già un account",
+    "noAccount": "Non ho un account",
+    "profileTitle": "Profilo",
+    "save": "Salva",
+    "saved": "Salvato",
+    "logout": "Esci",
+    "planTitle": "Piano",
+    "planFree": "Piano gratuito",
+    "planProUntil": "Pro · attivo fino al {fecha}",
+    "planProCancels": "Pro · si annulla il {fecha}",
+    "manage": "Gestisci abbonamento",
+    "goPro": "Passa a Pro",
+    "checkoutOpened": "Abbiamo aperto il checkout nel tuo browser.",
+    "degraded": "Non è stato possibile verificare il piano con il server; uso l'ultimo stato noto."
   }
 }

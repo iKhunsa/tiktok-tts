@@ -11,6 +11,7 @@ import { logStorage } from '../log-storage.js';
 import { appSettings, saveSettings } from '../estado/ajustes-app.js';
 import { options } from '../estado/opciones-lectura.js';
 import { applyA11yConfig, applyReadNonFollowers, applyFiltroIdiomaConfig } from '../estado/config-runtime.js';
+import { aplicarSesion } from '../estado/sesion.js';
 import {
   ttsPaused, setTtsGlobalEnabled, togglePauseTts, skipCurrentTTS,
   clearTTSQueue, enableEmergencyTTSMode, sendStateSync, speak,
@@ -377,6 +378,9 @@ function handleMessage(data) {
       applyA11yConfig(data.config || {});
       applyReadNonFollowers(data.config || {});
       applyFiltroIdiomaConfig(data.config || {});
+      break;
+    case 'auth-updated':
+      aplicarSesion(data.session || {});
       break;
     case 'moderation-updated':
     case 'moderation-reset':
