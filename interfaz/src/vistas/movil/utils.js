@@ -1,12 +1,11 @@
-/** escapeHtml local: 4to nombre distinto de la misma funcion en el codigo
- * viejo (esc/escHtml/escapeHtml/escaparHtml). Se mantiene local en vez de
- * usar compartido/escapar-html.js porque esta pagina tenia 2 variantes
- * (esc sin comillas simples, escHtml con todas) usadas en sitios distintos
- * — portadas 1:1 para no arriesgar el escapado de HTML generado dinamico. */
-export function esc(s) {
-  return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+/** escapeHtml de mobile.html. Una sola variante: escapa todo (incluida la
+ * comilla simple), segura tanto para texto como para atributos y para
+ * strings dentro de onclick="fn('...')". `esc` queda como alias por los
+ * imports existentes. */
+export function escHtml(str) {
+  return String(str ?? '')
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
-export function escHtml(str) {
-  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-}
+export const esc = escHtml;
