@@ -2170,6 +2170,19 @@
     /* ── CUENTA (suscripción freemium) ─────────────────────── */
     #cuentaPanel { display: flex; flex-direction: column; align-items: center; gap: 18px; }
 
+    /* App bloqueada: sin sesión no se navega. Se apaga toda la navegación
+       menos el botón "Cuenta" del footer (el único camino hacia adelante). */
+    body.app-bloqueada .sidebar-nav,
+    body.app-bloqueada .sidebar-footer-btn:not([data-view="cuenta"]),
+    body.app-bloqueada .community-banner {
+      opacity: 0.35;
+      pointer-events: none;
+    }
+    body.app-bloqueada .sidebar-footer-btn[data-view="cuenta"] {
+      background: var(--surface-raised);
+      color: var(--text-bright);
+    }
+
     .cuenta-card {
       width: 100%;
       max-width: 440px;

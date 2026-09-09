@@ -27,7 +27,7 @@ import {
 import { t, tErr } from '../../nucleo/i18n/i18n.js';
 import { iniciarI18nApp, pickLanguage, setLanguage } from './i18n-app.js';
 import { switchView } from './vistas-router.js';
-import { cargarSesion } from '../../nucleo/estado/sesion.js';
+import { cargarSesion, almacenSesion, appBloqueada } from '../../nucleo/estado/sesion.js';
 import { iniciarCuenta } from './cuenta/index.js';
 import { iniciarRotacionAnuncioLateral } from './anuncio-lateral.js';
 import { copyToClipboard } from './utils-app.js';
@@ -156,6 +156,19 @@ Object.assign(window, {
   escapeHtml,
 });
 
+// App bloqueada = sistema de cuentas activo y sin sesión. Marca el body (CSS
+// apaga la navegación) y fuerza la vista "cuenta". Al iniciar sesión, si
+// seguías en "cuenta", te lleva al chat.
+let _estabaBloqueada = false;
+function aplicarBloqueoApp() {
+  const bloq = appBloqueada();
+  document.body.classList.toggle('app-bloqueada', bloq);
+  const enCuenta = document.getElementById('view-cuenta')?.classList.contains('active');
+  if (bloq && !enCuenta) switchView('cuenta');
+  else if (!bloq && _estabaBloqueada && enCuenta) switchView('chat');
+  _estabaBloqueada = bloq;
+}
+
 function iniciarArranque() {
   iniciarRotacionAnuncioLateral();
   iniciarCapturaErroresCliente();
@@ -177,6 +190,7 @@ function iniciarArranque() {
   applySettings();
   loadRuntimeConfig();
   iniciarCuenta();
+  almacenSesion.subscribe(aplicarBloqueoApp);
   cargarSesion();
   renderShortcutDisplay();
   if (window.electronAPI?.registerTtsShortcut) {

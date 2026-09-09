@@ -68,10 +68,6 @@
         <img class="sidebar-icon icon-inline" src="icons/extension.svg" alt="">
         <span data-i18n="nav.mcp">Agente MCP</span>
       </button>
-      <button class="sidebar-item" data-view="cuenta" onclick="switchView('cuenta')" hidden>
-        <img class="sidebar-icon icon-inline" src="icons/account_circle.svg" alt="">
-        <span data-i18n="nav.cuenta">Cuenta</span>
-      </button>
       <button id="navMoreToolsBtn" class="sidebar-item" data-view="tools" onclick="switchView('tools')">
         <img class="sidebar-icon icon-inline" src="icons/inventory.svg" alt="">
         <span data-i18n="nav.moreTools">Más herramientas</span>
@@ -100,6 +96,7 @@
       <button class="sidebar-footer-btn" onclick="openDonationsModal()"><img class="icon-inline" src="icons/favorite-red.svg" alt=""> <span data-i18n="footer.donate">Donar</span> <span id="donateNewBadge" class="badge-new" data-i18n="footer.newBadge">Nuevo</span></button>
       <a href="/advanced.html?popup=1" target="_blank" rel="noopener" class="sidebar-footer-btn"><img class="icon-inline" src="icons/build.svg" alt=""> <span data-i18n="footer.advanced">Avanzado</span></a>
       <button id="sidebarBugReportBtn" class="sidebar-footer-btn" onclick="openBugReportModal()"><img class="icon-inline" src="icons/warning.svg" alt=""> <span data-i18n="footer.bugReport">Reportar Bug</span></button>
+      <button class="sidebar-footer-btn sidebar-item" data-view="cuenta" onclick="switchView('cuenta')" hidden><img class="icon-inline" src="icons/account_circle.svg" alt=""> <span data-i18n="nav.cuenta">Cuenta</span></button>
       <div class="lang-selector-row">
         <img class="icon-inline" src="icons/language.svg" alt="" style="opacity:0.6;flex-shrink:0;">
         <select id="langSelect" onchange="setLanguage(this.value)" title="UI Language">
