@@ -1092,6 +1092,8 @@
     "canceled": "你的订阅将在当前周期结束时取消。",
     "confirmCancelTitle": "要取消你的 Pro 订阅吗？",
     "confirmCancelYes": "是的，取消",
-    "confirmCancelNo": "返回"
+    "confirmCancelNo": "返回",
+    "resume": "恢复订阅",
+    "resumed": "你的 Pro 订阅保持有效——取消操作已撤销。"
   }
 }

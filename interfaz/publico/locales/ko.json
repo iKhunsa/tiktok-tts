@@ -1092,6 +1092,8 @@
     "canceled": "구독은 현재 결제 기간이 끝나면 취소됩니다.",
     "confirmCancelTitle": "Pro 요금제를 취소하시겠습니까?",
     "confirmCancelYes": "예, 취소합니다",
-    "confirmCancelNo": "돌아가기"
+    "confirmCancelNo": "돌아가기",
+    "resume": "구독 재개",
+    "resumed": "Pro 구독이 계속 활성 상태입니다 — 취소가 취소되었습니다."
   }
 }

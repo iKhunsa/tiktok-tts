@@ -1092,6 +1092,8 @@
     "canceled": "Dein Abo wird zum Ende des aktuellen Zeitraums gekündigt.",
     "confirmCancelTitle": "Pro-Abo kündigen?",
     "confirmCancelYes": "Ja, kündigen",
-    "confirmCancelNo": "Zurück"
+    "confirmCancelNo": "Zurück",
+    "resume": "Abo fortsetzen",
+    "resumed": "Dein Pro-Abo bleibt aktiv — die Kündigung wurde rückgängig gemacht."
   }
 }
