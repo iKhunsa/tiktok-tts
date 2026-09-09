@@ -378,6 +378,9 @@ function handleMessage(data) {
       applyA11yConfig(data.config || {});
       applyReadNonFollowers(data.config || {});
       applyFiltroIdiomaConfig(data.config || {});
+      // El toggle de subscriptionsEnabled cambia si /api/auth/* existe (404
+      // vs real) -> re-hidratar en vez de quedarse con el badge/vista viejos.
+      if (data.config && 'subscriptionsEnabled' in data.config) cargarSesion();
       break;
     case 'auth-updated':
       // El payload del WS viene recortado (sin email/user-id, ver

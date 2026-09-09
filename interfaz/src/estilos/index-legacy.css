@@ -260,6 +260,11 @@
     .sidebar-item:hover { background: var(--surface); color: var(--text-secondary); }
     .sidebar-item:active { transform: scale(0.98); }
     .sidebar-item.active { background: var(--surface-raised); color: var(--text-bright); }
+    /* [hidden] pierde contra ".sidebar-item { display:flex }" por especificidad
+       igual + orden de cascada (autor gana a la hoja del user agent) -> sin esto
+       btn.hidden=true (ej. item "Cuenta" con subscriptionsEnabled=false) queda
+       visible igual. */
+    .sidebar-item[hidden] { display: none; }
     .sidebar-icon { font-size: 15px; }
 
     .sidebar-footer {
