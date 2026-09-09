@@ -1,6 +1,5 @@
 'use strict';
 
-const { fetch: undiciFetch } = require('undici');
 const { ensureTwitchAccessToken } = require('../oauth/ensure-access-token');
 const { getTwitchClientId } = require('../oauth/start');
 const { broadcastOauthStatus } = require('../oauth/status');
@@ -11,7 +10,7 @@ async function createTwitchFollowSubscription(deps, sessionId) {
   const { userId } = state.authTokens.twitch;
   const twitchClientId = getTwitchClientId(bus);
 
-  const r = await undiciFetch('https://api.twitch.tv/helix/eventsub/subscriptions', {
+  const r = await fetch('https://api.twitch.tv/helix/eventsub/subscriptions', {
     method: 'POST',
     headers: { Authorization: `Bearer ${accessToken}`, 'Client-Id': twitchClientId, 'Content-Type': 'application/json' },
     body: JSON.stringify({

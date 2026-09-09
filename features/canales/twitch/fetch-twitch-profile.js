@@ -1,6 +1,5 @@
 'use strict';
 
-const { fetch: undiciFetch } = require('undici');
 
 /**
  * Perfil publico de un canal de Twitch. Fixea el catch mas citado del
@@ -11,7 +10,7 @@ const { fetch: undiciFetch } = require('undici');
 async function fetchTwitchProfile(deps, login) {
   const { state, logger } = deps;
   try {
-    const res = await undiciFetch(
+    const res = await fetch(
       `https://api.twitch.tv/helix/users?login=${encodeURIComponent(login)}`,
       {
         headers: {
@@ -33,7 +32,7 @@ async function fetchTwitchProfile(deps, login) {
 
     let followers = null;
     try {
-      const fr = await undiciFetch(
+      const fr = await fetch(
         `https://api.twitch.tv/helix/channels/followers?broadcaster_id=${user.id}&first=1`,
         {
           headers: {

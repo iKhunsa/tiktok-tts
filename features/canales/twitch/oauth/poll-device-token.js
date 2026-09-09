@@ -1,6 +1,5 @@
 'use strict';
 
-const { fetch: undiciFetch } = require('undici');
 const { TWITCH_OAUTH_SCOPES, getTwitchClientId } = require('./start');
 const { broadcastOauthStatus } = require('./status');
 const { saveAuthTokens } = require('./auth-tokens-store');
@@ -30,7 +29,7 @@ async function pollTwitchDeviceToken(deps) {
   const twitchClientId = getTwitchClientId(bus);
   let tok;
   try {
-    const r = await undiciFetch('https://id.twitch.tv/oauth2/token', {
+    const r = await fetch('https://id.twitch.tv/oauth2/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
@@ -65,7 +64,7 @@ async function pollTwitchDeviceToken(deps) {
 
   state.pendingOAuth.twitch = null;
   try {
-    const ur = await undiciFetch('https://api.twitch.tv/helix/users', {
+    const ur = await fetch('https://api.twitch.tv/helix/users', {
       headers: { Authorization: `Bearer ${tok.access_token}`, 'Client-Id': twitchClientId },
     });
     const ud = await ur.json();
