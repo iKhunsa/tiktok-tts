@@ -27,6 +27,9 @@ function renderPluginGrid() {
     const isHidden = !tool.pinned && prefs.hidden.includes(id);
     const badgeClass = tool.pinned ? 'pinned' : (isHidden ? 'hidden' : 'visible');
     const badgeText = tool.pinned ? t('store.alwaysVisible') : (isHidden ? t('store.hiddenBadge') : t('store.visibleBadge'));
+    const s = window.__sesionActual?.() || {};
+    const esPro = tool.proFeature && s.activo && !s.entitlements?.includes(tool.proFeature);
+    const proBadge = esPro ? `<span class="store-card-badge-pro">${t('store.proBadge')}</span>` : '';
 
     const card = document.createElement('button');
     card.type = 'button';
@@ -36,6 +39,7 @@ function renderPluginGrid() {
     card.onclick = () => { if (!card.dataset.wasDragged) showPluginDetail(id); delete card.dataset.wasDragged; };
     card.innerHTML = `
       <span class="store-card-badge ${badgeClass}">${badgeText}</span>
+      ${proBadge}
       <div class="store-card-icon"><img src="${tool.icon}" alt=""></div>
       <div class="store-card-name">${t(tool.labelKey)}</div>
       <div class="store-card-desc">${tool.pinned ? t('store.alwaysVisible') : t(tool.descKey)}</div>`;

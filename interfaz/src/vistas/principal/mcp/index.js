@@ -1,6 +1,7 @@
 import { t, aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
 import { showToast } from '../../../componentes/toast.js';
 import { copyToClipboard } from '../utils-app.js';
+import { aplicarBloqueoVista } from '../../../nucleo/estado/vista-bloqueada.js';
 
 // t() con fallback: si la clave no resuelve (idioma sin ella, o clave inexistente),
 // devuelve `fb` en vez del literal de la clave.
@@ -165,6 +166,7 @@ export function renderMcpPanel() {
     onCopy('#mcpCopyCD', snippetClaudeDesktop(url));
 
     aplicarTraducciones(el);
+    aplicarBloqueoVista('mcpPanel', 'mcp-agente');
   }).catch(() => {
     el.innerHTML = `<div class="settings-section"><div class="mcp-hint" data-i18n="mcp.loadError">No se pudo cargar el estado del MCP.</div></div>`;
     aplicarTraducciones(el);

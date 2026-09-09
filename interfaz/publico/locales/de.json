@@ -939,6 +939,7 @@
     "moveUp": "Nach oben",
     "moveDown": "Nach unten",
     "alwaysVisible": "Immer sichtbar",
+    "proBadge": "PRO",
     "desc": {
       "overlays": "Geschenk-Benachrichtigungen, Like- und Follower-Zähler für OBS.",
       "clips": "Markiere Stream-Highlights mit einem Tastenkürzel.",
@@ -1095,5 +1096,19 @@
     "confirmCancelNo": "Zurück",
     "resume": "Abo fortsetzen",
     "resumed": "Dein Pro-Abo bleibt aktiv — die Kündigung wurde rückgängig gemacht."
+  },
+  "pro": {
+    "popupTitle": "Diese Funktion mit Pro freischalten",
+    "popupSub": "Du siehst gerade eine Demo — mit dem Pro-Plan ist sie voll funktionsfähig.",
+    "benefit": {
+      "bot": "Lass den Chat mit !p Songs anfragen und ergänze deine eigene Hintergrund-Playlist.",
+      "soundpad": "Lade eigene Soundeffekte hoch und spiele sie mit Tastenkürzeln ab.",
+      "mcp": "Verbinde einen KI-Agenten (Claude), der die App für dich bedient.",
+      "overlayDecoraciones": "Passe den Hintergrund deiner Overlays mit einem eigenen Bild an.",
+      "generic": "Schalte alle Pro-Funktionen von TikLiveTTS frei."
+    },
+    "overlayMsg": "Diese Funktion erfordert den Pro-Plan.",
+    "overlayBtn": "Pläne ansehen",
+    "badgeInline": "PRO"
   }
 }

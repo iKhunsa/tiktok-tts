@@ -939,6 +939,7 @@
     "moveUp": "上移",
     "moveDown": "下移",
     "alwaysVisible": "始终可见",
+    "proBadge": "PRO",
     "desc": {
       "overlays": "用于 OBS 的礼物提醒、点赞和粉丝计数器。",
       "clips": "用快捷键标记直播精彩时刻。",
@@ -1095,5 +1096,19 @@
     "confirmCancelNo": "返回",
     "resume": "恢复订阅",
     "resumed": "你的 Pro 订阅保持有效——取消操作已撤销。"
+  },
+  "pro": {
+    "popupTitle": "使用 Pro 解锁此功能",
+    "popupSub": "你正在查看演示版——升级到 Pro 即可完全使用。",
+    "benefit": {
+      "bot": "让聊天用 !p 点歌，还能添加你自己的背景播放列表。",
+      "soundpad": "上传你自己的音效，用快捷键播放。",
+      "mcp": "连接 AI 代理（Claude）来帮你操作应用。",
+      "overlayDecoraciones": "用你自己的图片自定义叠加层背景。",
+      "generic": "解锁 TikLiveTTS 的所有 Pro 功能。"
+    },
+    "overlayMsg": "此功能需要 Pro 套餐。",
+    "overlayBtn": "查看套餐",
+    "badgeInline": "PRO"
   }
 }

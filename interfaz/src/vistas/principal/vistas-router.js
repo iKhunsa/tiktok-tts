@@ -3,6 +3,7 @@ import { modReload, modStartAutoRefresh, modStopAutoRefresh, maybeShowModeration
 import { renderMcpPanel } from './mcp/index.js';
 import { renderCuentaPanel } from './cuenta/index.js';
 import { appBloqueada } from '../../nucleo/estado/sesion.js';
+import { aplicarBloqueoVista } from '../../nucleo/estado/vista-bloqueada.js';
 
 export function switchView(name) {
   // App bloqueada (sistema de cuentas activo + sin sesión): la única vista
@@ -22,6 +23,11 @@ export function switchView(name) {
   if (name === 'tools' && window.renderPluginStore) window.renderPluginStore();
   if (name === 'mcp') renderMcpPanel();
   if (name === 'cuenta') renderCuentaPanel();
+  // Sonidos/Bot ya se pintaron una vez al arrancar (spLoad/musicInit) -- acá
+  // solo se re-evalua el bloqueo Pro (blur+popup) al entrar de verdad a la
+  // vista, sin repetir sus fetches.
+  if (name === 'soundpad') aplicarBloqueoVista('view-soundpad', 'soundpad');
+  if (name === 'bot') aplicarBloqueoVista('view-bot', 'bot-musical');
   // El refresco de la tabla de moderacion solo corre con la vista visible.
   if (name === 'moderacion') {
     modReload(true);

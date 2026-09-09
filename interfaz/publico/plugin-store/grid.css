@@ -63,6 +63,13 @@ body.reduce-motion .store-grid .store-card { animation: none; }
 .store-card-badge.hidden  { background: var(--hover-2, rgba(255,255,255,0.06)); color: var(--text-muted); }
 .store-card-badge.pinned  { background: var(--warn-a15, rgba(255,204,0,0.15)); color: var(--warn, #ffcc00); }
 
+.store-card-badge-pro {
+  position: absolute; top: 14px; left: 14px;
+  font-size: 10px; font-weight: 700; letter-spacing: .02em;
+  padding: 3px 8px; border-radius: 9999px;
+  background: var(--brand-a15, rgba(255,59,92,0.15)); color: var(--brand, #ff3b5c);
+}
+
 .store-card-soon { cursor: default; opacity: .55; border-style: dashed; }
 .store-card-soon:hover { border-color: var(--border); transform: none; box-shadow: none; }
 
