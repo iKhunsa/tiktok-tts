@@ -18,7 +18,7 @@ Estados: `pendiente` · `en curso` · `bloqueado` · `hecho`.
 | 03 Pagos Polar | `03-agente-integracion-pagos-polar.md` | ✅ código + deploy (sandbox) 2026-09-08 | `checkout.js` + `webhook-polar.js` + reconciliación ✅, `03-contrato-checkout.md` ✅ | **Sandbox operativo.** Producto Pro anual US$85 (`e68ddd7f-…`). Webhook endpoint en Polar (`d5495bf3-…`) → `cuentas.tiklivetts.es/api/webhooks/polar`, eventos `subscription.*`. Env Polar cargadas en Coolify + redeploy. Verificado: `POST /api/checkout` → `200 {url: sandbox.polar.sh/checkout/…}`. `npm test` 6/6. **Falta (Fase 6 / QA)**: pago de prueba end-to-end con tarjeta `4242…` para validar el webhook → `subscriptions`. En Fase 6: repetir setup en producción (`POLAR_ENV=production`, OAT prod, producto prod, webhook prod). |
 | 04 Backend app | `04-agente-backend-app-electron.md` | ✅ **hecho** (2026-09-08) | `features/auth/` ✅, 7 gates ✅, `04-contrato-sesion.md` ✅, `04-features-pro.md` ✅, `entitlements` seedeado ✅ | Rama `feat/suscripciones-auth` (commits 0839fc2..f48c732). Dominio completo + 7 candados cableados + `auth.*` mapeado en glitchtip/aptabase. `npm test` 77/77, `check-mcp` ok, eslint 0 errores. Tabla `cuentas.entitlements` con los 7 `featureId` en `pro`. **`subscriptionsEnabled` default `false` → cero impacto en la app actual.** |
 | 05 Frontend app | `05-agente-frontend-app-electron.md` | ✅ **hecho** (2026-09-08) + iter UX 2026-09-09 | `sesion.js` ✅, vista Cuenta ✅, candados sidebar ✅, i18n `cuenta.*`/`errors.*` en 10 locales ✅ | Rama `feat/suscripciones-auth` (commit 265e078). Item de sidebar oculto por defecto, visible solo con el sistema activo (decisión: oculto, no `pinned`). `build:front` OK, `npm test` 77/77, paridad de claves i18n verificada (938 hojas × 10). No-op con `subscriptionsEnabled=false` verificado en browser. **Falta**: check-in visual del flujo real de login/checkout (necesita `CUENTAS_URL` + servicio vivo → Fase 6/QA). |
-| 06 QA | `06-agente-qa-validacion.md` | 🟡 parcial (2026-09-09) | `06-resultados-qa.md` ✅ | Flujo A (parcial) + Flujo B completo verificados end-to-end contra el servicio vivo. Faltan C, D, E, F — ver "Pendiente" en `06-resultados-qa.md`. |
+| 06 QA | `06-agente-qa-validacion.md` | ✅ **hecho** (2026-09-09) | `06-resultados-qa.md` ✅ | Los 6 flujos (A, B, C, D, E) + Transversal (F) + B7 corridos de punta a punta, la mayoría contra la **app Electron real** (no solo el dev server). 6 bugs reales encontrados y arreglados en el camino (ver tabla "Resumen de bugs" en `06-resultados-qa.md`), incluyendo un hallazgo grande: el Flujo C (cancelación) no existía — implementado en esta sesión. |
 | — Despliegue (Fase 6) | `00-ORQUESTADOR.md` §Fase 6 | pendiente | servicio en Coolify, DNS, release | — |
 
 ---
@@ -29,7 +29,7 @@ Estados: `pendiente` · `en curso` · `bloqueado` · `hecho`.
 |---|---|---|---|---|
 | **A — Esquema estable** | Migraciones de `02` aplicadas al Supabase del VPS y verificadas; esquema no se toca más sin cambio de versión. | ✅ **CERRADO** 2026-09-08 — schema `cuentas` con 7 tablas, `plans` seedeado, migraciones registradas. Round-trip `register→login→session(plan:free)→account→logout→session(401)` **verificado contra `cuentas.tiklivetts.es` en vivo**. Esquema CONGELADO — cambios = `003_*.sql` + bump. | 03, 04, 05 | — |
 | **B — Contrato HTTP congelado** | `02-contrato-http.md` escrito, revisado por el usuario, con `curl` real por endpoint. | ✅ **CERRADO** 2026-09-08 — v1.0.0, verificado end-to-end contra la instancia viva (ver anexo del doc). Pendiente solo: si el usuario quiere cambios, es bump a 1.1.x. | 04 (todo) | `02-contrato-http.md`. |
-| **C — Webhook probado** | Evento de prueba de Polar → `subscriptions.status='active'` en Supabase; reintento del mismo `event_id` no duplica. | ✅ **CERRADO** 2026-09-09 — pago de prueba real en Polar sandbox (usuario `qa+e2e1@tiklivetts.es`, vía Google Pay del sandbox), logs de `servicio-cuentas` confirman `subscription.created/active/updated status=active`, `GET /api/auth/session` devuelve `subscription.status:"active"` con `current_period_end` ~1 año futuro. **Falta B7** (idempotencia de reenvío del mismo `event_id`) — no cierra la mitad de la condición del Gate, anotado como pendiente en `06-resultados-qa.md`. | 06 (flujo upgrade), Fase 6 | `06-resultados-qa.md` fila B3/Gate C. |
+| **C — Webhook probado** | Evento de prueba de Polar → `subscriptions.status='active'` en Supabase; reintento del mismo `event_id` no duplica. | ✅ **CERRADO DEL TODO** 2026-09-09 — pago de prueba real en Polar sandbox (`subscription.created/active/updated status=active`, `current_period_end` ~1 año futuro) + B7 verificado directo contra la constraint real (`INSERT ... ON CONFLICT (event_id) DO NOTHING` → `rowCount=0` sobre un `event_id` ya existente). | 06 (flujo upgrade), Fase 6 | `06-resultados-qa.md` filas B3 y B7. |
 | **D — Contrato de sesión definido** | `04-contrato-sesion.md` escrito; `features/auth/` responde `bus.on('auth:get')` con esa forma. | ✅ **CERRADO** 2026-09-08 — `04-contrato-sesion.md` + `features/auth/` responde `auth:get` con la forma documentada (test lo verifica). Agente 05 consumió el contrato (`sesion.js`). | 05 (todo) | — |
 
 Marcá `✅` con fecha y evidencia (query result, link a `curl`, etc.) al cumplir.
@@ -78,6 +78,27 @@ fases 1–4.
 ## Bitácora
 
 Formato: `- YYYY-MM-DD — <agente> — <qué pasó>`.
+
+- 2026-09-09 — orquestador — **Agente 06 (QA) CERRADO — Flujos C/D/E/F + B7
+  corridos, 6 bugs reales encontrados y arreglados.** Corrida contra la app
+  **Electron empaquetada real** (no solo el dev server), simulando la caída
+  de `servicio-cuentas` con una URL muerta en vez de tocar el servicio en
+  vivo. Hallazgo grande: **el Flujo C (cancelación) no existía** — el botón
+  "Gestionar suscripción" estaba mal cableado al mismo handler que "Hazte
+  Pro" y dejaba a un usuario Pro pagar $85 de nuevo sin aviso (confirmado en
+  sandbox real, con la tarjeta guardada de la compra anterior). Con OK
+  explícito del usuario, se implementó `POST /api/subscription/cancel` en
+  `servicio-cuentas` (llama directo a la API de Polar con el
+  `polar_subscription_id` ya guardado, sin portal hosteado) + el fix del
+  frontend — commits `0695a6b`/`9466e01` (servicio-cuentas),
+  `9d17350` (app). Otros 4 bugs menores de UI/refresh arreglados en el
+  camino (detalle completo en `06-resultados-qa.md`: CSS `[hidden]` que no
+  ocultaba de verdad, `config-updated` sin resync, 4xx de Polar reportado
+  como 502). B7 (idempotencia del webhook) verificado directo contra la
+  constraint de la tabla real. **Los 4 Gates están cerrados del todo.**
+  `npm test` 78/78 (app) y 9/9 (`servicio-cuentas`) tras cada fix. Único
+  pendiente real que queda: endpoint de "deshacer cancelación" (hoy se
+  maneja desde Polar directo) y limpieza de usuarios QA en Supabase.
 
 - 2026-09-09 — orquestador — **Flujo D (expiración) probado ad-hoc + 2 fixes reales de B1/B4
   encontrados y corregidos.** Flujo D: `UPDATE` manual en Supabase (`current_period_end` al
