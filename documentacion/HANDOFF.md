@@ -1,0 +1,80 @@
+# Handoff — TikLive TTS · Bugs de canales / replay / observabilidad
+
+Última actualización: 2026-09-10 por sesión Claude (reporte de errores + armado de handoff)
+
+## Estado general
+
+App en producción **v1.8.7**. Los usuarios reportan que el TTS deja de leer
+mensajes nuevos y, tras un hueco de inactividad o ~1 h, re-lee todo el chat ya
+leído. El diagnóstico está cerrado (ver `reporte-errores-canales.md` más abajo):
+un solo mecanismo raíz (reconexión de conector → replay de backlog sin dedup) +
+dos amplificadores (TikTok muere en silencio, YouTube reconecta cada 4 min).
+El diagnóstico completo (evidencia de logs, traza de código, tabla comparativa
+de los 4 conectores) está en la primera entrada del Log de contexto y repartido
+en el `## Contexto` de cada prompt de `prompts/bugs/`. Este handoff descompone
+el fix en tareas accionables. **Nada del fix está implementado todavía.**
+
+Rama base para el trabajo: `Dev-2-nuevo-backend` @ `831b8b8` (ya trae
+suscripciones-auth + telemetría live-signal mergeadas, aún sin pushear).
+Crear rama `fix/canales-replay-watchdog` desde ahí.
+> Alternativa descartada por ahora: basar en `main`/`v1.8.7` para un hotfix
+> independiente. Se eligió `Dev-2` porque es el tronco de la próxima release y
+> las tareas tocan archivos que suscripciones-auth ya modificó.
+
+## Roadmap
+
+- [ ] **Etapa 1 — El ciclo que reportan los usuarios** (replay + muerte silenciosa + promo).
+      Tareas 01, 02, 03, 04. Es lo único que el usuario final nota. Sale primero, se puede releasear sola.
+- [ ] **Etapa 2 — Calibrar watchdogs existentes y bajar ruido de observabilidad.**
+      Tareas 05, 06, 07. No cambia comportamiento visible; limpia GlitchTip y reduce churn de reconexión.
+- [ ] **Etapa 3 — Bugs sueltos de frontend / TTS.**
+      Tareas 08, 09, 10. Independientes entre sí y del resto.
+
+## Checklist de tareas / bugs
+
+| # | Descripción | Estado | Prioridad | Prompt asociado |
+|---|---|---|---|---|
+| 01 | Dedup por msgId estable en el broadcast de chat — mata el replay audible en las 4 plataformas | pendiente | alta | `prompts/bugs/01-dedup-mensajes-msgid.md` |
+| 02 | Watchdog de socket mudo compartido para TikTok y Twitch (patrón de Kick/YouTube) | pendiente | alta | `prompts/bugs/02-watchdog-inactividad-tiktok-twitch.md` |
+| 03 | `conn.on('error')` de TikTok: leer `err.exception`, no dejar el canal colgado, agendar reconexión post-conexión | pendiente | media | `prompts/bugs/03-tiktok-error-handler-incompleto.md` |
+| 04 | Scheduler de promo no debe reiniciar la cuenta `[15,45,60]` en una reconexión transitoria | pendiente | media | `prompts/bugs/04-promo-rearme-en-reconexion.md` |
+| 05 | `chat-watchdog.js` de YouTube: 4 min es muy agresivo; `youtubeSeenIds` sin ventana temporal | pendiente | media | `prompts/bugs/05-youtube-watchdog-agresivo.md` |
+| 06 | `canales.kick.sin_eventos` cada 5 min en canal tranquilo — falso positivo, churn de reconexión | pendiente | baja | `prompts/bugs/06-kick-sin-eventos-falso-positivo.md` |
+| 07 | GlitchTip: no promover a issue errores de conexión esperados (streamer offline, YouTube no en vivo) | pendiente | baja | `prompts/bugs/07-glitchtip-ruido-errores-esperados.md` |
+| 08 | Botón "Fallos conocidos" muerto — `showKnownIssuesNotice` nunca se bridgeó a `window` | pendiente | baja | `prompts/bugs/08-boton-fallos-conocidos-muerto.md` |
+| 09 | `sonido.tts.respuesta_pequena` dispara en el 100% de las síntesis con `len:0` | pendiente | media | `prompts/bugs/09-respuesta-pequena-100pct.md` |
+| 10 | `Google TTS failed: "text should be a string"` — valor no-string llega a la síntesis | pendiente | baja | `prompts/bugs/10-tts-text-should-be-string.md` |
+
+Dependencias:
+- **02 y 03** tocan `features/canales/tiktok/connect-tiktok-channel.js`. Hacer **03 primero** (chico, aislado), después 02.
+- **01** es independiente de todo; se puede hacer en paralelo. Es el que más alivio da al usuario.
+- **05, 06** son la misma familia (calibrar watchdogs) pero en archivos distintos; sin dependencia dura.
+- **07** depende conceptualmente de **03** (una vez que `err.exception` trae texto real, es más fácil filtrar lo esperado de lo real).
+
+Won't-fix registrados: `getaddrinfo ENOTFOUND tiktok.eulerstream.com` (S9 del
+reporte, DNS puntual al sign server de EulerStream, fuera de nuestro control);
+reconnect storm → `rate_limit_account_minute` (S8, mitigado indirectamente por
+la tarea 02 al reducir reconexiones espurias).
+
+## Cómo corre el orquestador (Entregable 3)
+
+Tras confirmar este roadmap:
+1. Tomar la primera tarea `pendiente` en orden de roadmap (Etapa 1 → 01, luego 03, 02, 04…).
+2. Spawnear **un subagente por tarea**, pasándole SOLO `prompts/bugs/NN-slug.md` + este `HANDOFF.md` para el estado general. No el historial completo.
+3. Al volver el subagente: verificar criterios de aceptación → actualizar Estado en la tabla (`pendiente`→`en curso`→`hecho`) → **agregar** (nunca sobrescribir) una entrada al Log de contexto con qué se hizo, decisiones, archivos tocados.
+4. Si el subagente se bloquea: dejar `bloqueado`, registrar el motivo en el log, **no** empezar la siguiente tarea hasta que un humano lo resuelva.
+5. `npm test` debe pasar tras cada tarea antes de marcar `hecho`.
+
+## Log de contexto (append-only)
+
+### 2026-09-10 — sesión Claude (diagnóstico + handoff)
+
+- **Qué se hizo:** diagnóstico completo del ciclo de replay/muerte silenciosa con 3 subagentes (timeline de 3 logs de usuarios, auditoría de reconexión/dedup de los 4 conectores, auditoría de frontend). Reporte consolidado en el chat de la sesión. Armado de este handoff + los 10 prompts de `prompts/bugs/`.
+- **Decisiones tomadas:**
+  - Un solo mecanismo raíz (reconexión → replay sin dedup), no 10 bugs sueltos. La tarea 01 (dedup en el broadcast) cubre las 4 plataformas de una y es la de mayor impacto.
+  - El dedup va en `features/chat/emit-chat-message.js` (punto único por el que salen los mensajes de las 4 plataformas), NO en cada conector — regla de modularidad del repo, "cruce de dominio".
+  - Watchdog compartido: subir el patrón de `kick/stale-watchdog.js` a un helper de `features/canales/`, no reimplementarlo por plataforma.
+  - Rama base `Dev-2-nuevo-backend`, no `main`.
+  - El "promo cada 15 min" NO es un leak de timer (confirmado: `session-scheduler.js` idéntico en `v1.8.7` y HEAD). Es la sesión completa reiniciándose. Tarea 04.
+- **Qué quedó pendiente:** implementar las 10 tareas. Confirmar el roadmap con el usuario antes de correr el orquestador (pausa de revisión pedida explícitamente).
+- **Archivos tocados:** solo se crearon `documentacion/HANDOFF.md` y `documentacion/prompts/bugs/*.md`. Ningún archivo de código.
