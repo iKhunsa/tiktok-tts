@@ -91,7 +91,7 @@ function setupTikTokConnection(deps, cleanUsername) {
   // Agenda una reconexion por el path de backoff, o hace teardown si se
   // agotaron los intentos. Guard anti-loop: si ya hay un timer de reconexion
   // armado (o una reconexion en vuelo, que deja el timer viejo hasta exito),
-  // no encolar otra. Lo comparten 'disconnected' y 'error' post-conexion.
+  // no encolar otra. Lo llaman 'disconnected' y el stale-watchdog (onStale).
   const scheduleReconnectOrGiveUp = (entry) => {
     if (entry.timer) return;
     if (entry.attempts < MAX_RECONNECT_ATTEMPTS) {
@@ -107,7 +107,13 @@ function setupTikTokConnection(deps, cleanUsername) {
         require('./reconnect-tiktok').reconnectTiktok(deps, cleanUsername);
       }, delay);
     } else {
+      clearWatchdog(state, staleKey);
       state.tiktokChannels.delete(cleanUsername);
+      // Teardown del connector (mismo patron que el cleanup de `prev` en
+      // connectTiktokChannel): si un connect() a medio camino dejo el socket +
+      // el heartbeat de 10s vivos, sin esto quedan colgados hasta salir del proceso.
+      entry.conn.removeAllListeners();
+      try { entry.conn.disconnect(); } catch (_) { /* best-effort */ }
       logger.log(
         'warn', 'canales', 'canales/tiktok/connect-tiktok-channel.js#setupTikTokConnection', 'canales.tiktok.reconexion_fallida',
         `Reconexion de TikTok ${cleanUsername} agotada tras ${entry.attempts} intento(s)`,
@@ -122,6 +128,14 @@ function setupTikTokConnection(deps, cleanUsername) {
   // la reconexion por el mismo path de backoff (attempts reseteado a 0), con
   // guard de identidad para no pisar un entry ya reemplazado ni duplicar si ya
   // hay una reconexion en vuelo (scheduleReconnectOrGiveUp respeta entry.timer).
+  //
+  // Limitacion aceptada: si la reconexion CONECTA pero el chat nunca vuelve
+  // (esquema de protobuf cambiado, o sala legitimamente muda por horas), esto
+  // reconecta cada 5 min indefinidamente. No se corta a proposito — cortar por
+  // "N stale seguidos" falsea el abandono de un stream tranquilo real (musica,
+  // pocos viewers) porque solo 'chat' cuenta como liveness, no gifts/likes/joins.
+  // Igual es mejor que el comportamiento pre-batch (TikTok sin watchdog: mudo
+  // para siempre sin que la app se entere).
   const onStale = () => {
     const entry = state.tiktokChannels.get(cleanUsername);
     if (!entry || entry.conn !== conn) return;
@@ -169,10 +183,16 @@ function setupTikTokConnection(deps, cleanUsername) {
       return;
     }
 
-    // Post-conexion: un 'error' de socket puede llegar en vez de 'close'.
-    // Agendar reconexion por el path de backoff (el guard interno evita
-    // duplicar si ya hay una en curso, p.ej. por el watchdog de la tarea 02).
-    scheduleReconnectOrGiveUp(entry);
+    // Post-conexion NO se reconecta desde aca a proposito. El evento 'error' de
+    // tiktok-live-connector es un cajon de sastre: 'messageDecodingFailed' y
+    // 'Failed to process decoded data' son fallos de un solo frame con el socket
+    // intacto (client.js#setupWebsocket / #processProtoMessageFetchResult los
+    // rutean a handleError sin cerrar el WS). Un fallo real de nivel-conexion
+    // ('WebSocket Error') SIEMPRE lo sigue un 'close' del ws -> evento
+    // 'disconnected', que si agenda la reconexion. La muerte silenciosa (socket
+    // vivo pero sin trafico) la cubre el stale-watchdog (5 min sin 'chat').
+    // Disparar reconexion aca solo genera churn + replay espurio por cada blip
+    // de decode. Se mantiene el log + el emit de 'canal:estado'.
   });
 
   // Fin real del directo (el streamer corto, o un moderador de la plataforma).

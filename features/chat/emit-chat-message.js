@@ -23,11 +23,20 @@ function resetAdminAnnounce() {
 
 // Dedup del broadcast: cuando un conector reconecta, la libreria reentrega su
 // buffer de mensajes recientes como 'chat' nuevos (hasta decenas por segundo).
-// Sin esto, el TTS repite el chat de los ultimos minutos. La clave NO usa
-// Date.now() (el replay de TikTok re-estampa la hora del reconnect) sino la
-// identidad real: id nativo de la plataforma si lo hay, si no
-// platform + userId + texto normalizado. O(1): Map.has + poda del mas viejo.
-// ponytail: ventana 10min/2000, subir si hay reportes de replay que se cuela
+// Sin esto, el TTS repite el chat de los ultimos minutos.
+//
+// La clave NUNCA usa Date.now() (nuestra hora de recepcion — el replay la
+// re-estampa al reconectar). Usa el timestamp/id que la PLATAFORMA le puso al
+// mensaje en origen: identico para un mensaje replayeado, distinto para un
+// re-envio legitimo del mismo texto (un user mandando "hola" o "!p <cancion>"
+// dos veces). Ver buildDedupKey() para la clave exacta por plataforma.
+//
+// Con un ts/id de origen en la clave la ventana de 10 min es segura. Cuando una
+// plataforma no expone ninguno se cae a `platform:userId:texto` (sin ts): ahi el
+// dedup puede tragarse una repeticion legitima exacta dentro de la ventana — es
+// el mismo tradeoff que ya existia y la rama casi no se ejercita (las 4
+// plataformas normalmente traen su id/ts).
+// ponytail: ventana 10min/2000, subir si hay reportes de replay que se cuela.
 const DEDUP_WINDOW_MS = 10 * 60 * 1000;
 const DEDUP_MAX = 2000;
 const seenMessages = new Map(); // key -> epoch ms de la primera emision
@@ -45,6 +54,46 @@ function isDuplicateMessage(key, now) {
     seenMessages.delete(seenMessages.keys().next().value);
   }
   return false;
+}
+
+// Clave de dedup por plataforma. El discriminador es SIEMPRE el id/ts que la
+// plataforma asigno al mensaje en origen, nunca nuestra hora de recepcion.
+// Todos son estables en el replay: el catch-up del WS re-entrega los mismos
+// protobufs bufferados desde el cursor, no regenera campos.
+//   - tiktok:  raw.msgId — id de mensaje del server, unico por mensaje. Lo
+//              aplana tiktok-live-connector desde common.msgId (mismo Object.assign
+//              del bloque `common` que trae createTime). NO se usa createTime como
+//              discriminador: es un int64 que se repite entre mensajes del mismo
+//              frame — colapsaria dos mensajes legitimos distintos del mismo user
+//              con el mismo texto normalizado ("jaja", "!p", un emote repetido).
+//   - kick:    raw.id      — id de mensaje de server.
+//   - youtube: raw.id (item.id).
+//   - twitch:  raw.tags.id — UUID por mensaje del tag IRCv3. Fallback:
+//              tmi-sent-ts + texto (epoch ms unico por mensaje).
+// Sin ninguno de esos → fallback `platform:userId:texto` (mismo tradeoff previo:
+// puede tragarse una repeticion exacta; rama casi nunca alcanzada).
+function buildDedupKey(platform, raw, userKey, normalizedText) {
+  if (platform === 'tiktok' && raw.msgId && raw.msgId !== '0') {
+    return `tiktok:id:${raw.msgId}`;
+  }
+  if (platform === 'kick' && raw.id) {
+    return `kick:id:${raw.id}`;
+  }
+  if (platform === 'youtube' && raw.id) {
+    return `youtube:id:${raw.id}`;
+  }
+  const tw = platform === 'twitch' && raw.tags ? raw.tags : null;
+  if (tw && tw.id) {
+    return `twitch:id:${tw.id}`;
+  }
+  if (tw && tw['tmi-sent-ts']) {
+    return `twitch:${userKey}:${tw['tmi-sent-ts']}:${normalizedText}`;
+  }
+  if (platform === 'tiktok' && raw.createTime) {
+    // msgId ausente (raro): createTime + texto es el mejor discriminador que queda.
+    return `tiktok:${userKey}:${raw.createTime}:${normalizedText}`;
+  }
+  return `${platform}:${userKey}:${normalizedText}`;
 }
 
 // Los "emojis de TikTok" (set propio: [Happy], [Smile], [Loveface]...) llegan
@@ -220,12 +269,7 @@ function emitChatMessage(deps) {
     // Gate de dedup — punto comun de las 4 plataformas. Un mensaje ya emitido
     // dentro de la ventana (replay tras reconexion) se descarta en silencio:
     // no re-registra interaccion, no re-evalua moderacion, no llega al broadcast.
-    // raw.msgId: TikTok lo aplana desde common.msgId (id de mensaje del server,
-    // estable en el replay). raw.id: Kick. ytMsgId: YouTube (item.id).
-    const nativeId = ytMsgId || raw.msgId || raw.id || null;
-    const dedupKey = nativeId
-      ? `${platform}:${nativeId}`
-      : `${platform}:${userId || user}:${normalizeAggressive(comment)}`;
+    const dedupKey = buildDedupKey(platform, raw, userId || user, normalizeAggressive(comment));
     if (isDuplicateMessage(dedupKey, Date.now())) {
       logger.log(
         'debug', 'chat', 'chat/emit-chat-message.js#emitChatMessage', 'chat.mensaje.duplicado',
