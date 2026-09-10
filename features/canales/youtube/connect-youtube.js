@@ -45,8 +45,6 @@ function forceReconnect(deps, target, liveChat, attempt, reason) {
   if (wasActive) scheduleReconnect(deps, target, attempt, reason);
 }
 
-const SEEN_IDS_CAP = 500;
-
 async function connectYoutube(deps, channelOrId, attempt = 0) {
   const { state, bus, logger } = deps;
   const { LiveChat } = require('youtube-chat');
@@ -62,7 +60,6 @@ async function connectYoutube(deps, channelOrId, attempt = 0) {
   }
 
   const liveChat = new LiveChat(target.opts);
-  if (!state.youtubeSeenIds.has(target.key)) state.youtubeSeenIds.set(target.key, new Set());
 
   // Watchdog: YouTube puede seguir devolviendo 200 OK con actions:[] para
   // clientes anonimos cuando el token de continuacion caduca — 'chat' deja de
@@ -79,16 +76,9 @@ async function connectYoutube(deps, channelOrId, attempt = 0) {
 
   liveChat.on('chat', (item) => {
     armWatchdog(deps, target, onStale);
-
-    // Dedup por ID de mensaje de YouTube — evita replays en reconexion. Es
-    // una garantia de la fiabilidad del stream crudo, no logica de negocio.
-    const msgId = item.id;
-    if (msgId) {
-      const seen = state.youtubeSeenIds.get(target.key);
-      if (seen.has(msgId)) return;
-      seen.add(msgId);
-      if (seen.size > SEEN_IDS_CAP) seen.delete(seen.values().next().value);
-    }
+    // Dedup del replay tras reconexion: gate central en
+    // features/chat/emit-chat-message.js (ventana 10min/2000 por ytMsgId=item.id).
+    // El Set local anterior no aportaba nada que el gate central no cubra ya.
     bus.emit('canal:mensaje-crudo', { platform: 'youtube', channel: target.key, raw: item });
   });
 

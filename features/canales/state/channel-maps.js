@@ -12,7 +12,6 @@ function createChannelState() {
     youtubeChannels: new Map(), // channelOrId -> LiveChat
     youtubeReconnectTimers: new Map(),
     youtubeWatchdogTimers: new Map(), // channelKey -> Timeout (watchdog de chat 'silencioso')
-    youtubeSeenIds: new Map(), // channelKey -> Set<msgId>
     kickChannels: new Map(), // slug -> { ws, chatroomId, intentional, pingTimer, attempt }
     kickSeenIds: new Map(), // slug -> Set<msgId>
     kickWatchdogTimers: new Map(), // slug -> Timeout (watchdog de chat 'silencioso')

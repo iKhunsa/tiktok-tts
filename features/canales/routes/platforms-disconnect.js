@@ -61,13 +61,11 @@ function platformsDisconnect(deps) {
           clearYoutubeWatchdogTimer(state.youtubeWatchdogTimers, ytChannel);
           const c = state.youtubeChannels.get(ytChannel);
           if (c) { stopYoutubeChat(c, 'disconnect'); state.youtubeChannels.delete(ytChannel); }
-          state.youtubeSeenIds.delete(ytChannel);
         } else {
           for (const ch of state.youtubeReconnectTimers.keys()) clearYoutubeReconnectTimer(state.youtubeReconnectTimers, ch);
           for (const ch of state.youtubeWatchdogTimers.keys()) clearYoutubeWatchdogTimer(state.youtubeWatchdogTimers, ch);
           for (const c of state.youtubeChannels.values()) stopYoutubeChat(c, 'disconnect');
           state.youtubeChannels.clear();
-          state.youtubeSeenIds.clear();
         }
         bus.emit('canal:estado', { platform: 'youtube', channel: channel ? normalizeYoutubeInput(channel) : null, state: 'desconectado' });
       } else if (platform === 'kick') {
