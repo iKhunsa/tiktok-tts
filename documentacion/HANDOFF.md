@@ -37,7 +37,7 @@ Crear rama `fix/canales-replay-watchdog` desde ahí.
 | 01 | Dedup por msgId estable en el broadcast de chat — mata el replay audible en las 4 plataformas | hecho | alta | `prompts/bugs/01-dedup-mensajes-msgid.md` |
 | 02 | Watchdog de socket mudo compartido para TikTok y Twitch (patrón de Kick/YouTube) | hecho | alta | `prompts/bugs/02-watchdog-inactividad-tiktok-twitch.md` |
 | 03 | `conn.on('error')` de TikTok: leer `err.exception`, no dejar el canal colgado, agendar reconexión post-conexión | hecho | media | `prompts/bugs/03-tiktok-error-handler-incompleto.md` |
-| 04 | Scheduler de promo no debe reiniciar la cuenta `[15,45,60]` en una reconexión transitoria | pendiente | media | `prompts/bugs/04-promo-rearme-en-reconexion.md` |
+| 04 | Scheduler de promo no debe reiniciar la cuenta `[15,45,60]` en una reconexión transitoria | hecho | media | `prompts/bugs/04-promo-rearme-en-reconexion.md` |
 | 05 | `chat-watchdog.js` de YouTube: 4 min es muy agresivo; `youtubeSeenIds` sin ventana temporal | pendiente | media | `prompts/bugs/05-youtube-watchdog-agresivo.md` |
 | 06 | `canales.kick.sin_eventos` cada 5 min en canal tranquilo — falso positivo, churn de reconexión | pendiente | baja | `prompts/bugs/06-kick-sin-eventos-falso-positivo.md` |
 | 07 | GlitchTip: no promover a issue errores de conexión esperados (streamer offline, YouTube no en vivo) | pendiente | baja | `prompts/bugs/07-glitchtip-ruido-errores-esperados.md` |
@@ -112,3 +112,47 @@ Tras confirmar este roadmap:
 - **Commit:** `2bea050`.
 - **Nota:** eventos nuevos `canales.twitch.sin_eventos` / `canales.twitch.reconexion_fallida` y `canales.tiktok.sin_eventos` van a GlitchTip — un stale-reconnect fallido sí merece issue, no se filtra en la tarea 07.
 - **Próximo:** tarea 04 (promo).
+
+### 2026-09-10 — orquestador · tarea 04 (promo — rearme en reconexión)
+
+- **Mecanismo real del disparo temprano (verificado sobre el código de la rama):**
+  - `features/promo/index.js` escucha `canal:estado` y SOLO reacciona a
+    `state:'lista-canales'` (lo emite `broadcast-channels.js`). Los estados
+    `desconectado` / `reconectando` / `conectado` de una reconexión transitoria
+    **no** llegan al promo — el scheduler ni se entera de un flap normal.
+  - `broadcastChannels` con total 0 se emite únicamente en un fin de sesión
+    genuino: give-up tras 5 intentos (`connect-tiktok-channel.js#scheduleReconnectOrGiveUp`
+    → `cleanupAfterLastTikTokChannel`), `streamEnd`, o desconexión manual. Eso
+    dispara `scheduler.stop()` → `stepIndex = 0`, `running = false`, timer limpio.
+  - El streamer reconecta → `connect-impl.js` → `broadcastChannels` total 1 →
+    `scheduler.startIfNeeded()` → `stepIndex = 0` → `scheduleNext()` agenda el
+    **primer** paso `SCHEDULE_MINUTES[0] = 15 min`. Cada ciclo caída-total /
+    reconexión = un aviso 15 min después, en vez de seguir la cadencia
+    `45 → 60 → 90…` de la sesión original.
+  - **El "1–2 min" del log NO es un disparo inmediato.** No hay ningún path que
+    llame `onMilestone()` fuera del `setTimeout` de `scheduleNext`, ni forma de
+    que `deltaMinutes` quede `undefined`/`NaN` (`stepIndex` nunca es negativo).
+    Los huecos observados `23, 30, 45, 60` = `15 + {8, 15, 30, 45}` → un reset
+    ocurrido a los `gap−15` min del aviso anterior, seguido del primer paso de
+    15 min corrido entero. El "1.2–2.7 min después de un `canales.*`" es
+    **correlación por densidad de eventos**: durante la ventana de 15 min post-reset
+    TikTok sigue flappeando y logueando `reconectando`/`reconexion_exitosa` cada
+    1–2 min, así que cualquier aviso cae cerca de *alguno* de esos eventos. No
+    es causa, es ruido de fondo. La hipótesis del prompt (reset de `[15,45,60]`)
+    es la causa raíz correcta; el "1–2 min" era un artefacto de lectura.
+- **Implementación elegida:** ventana de gracia en `promo/index.js`, sin tocar
+  el scheduler (diff más chico — el scheduler ya tiene `if (running) return`
+  en `startIfNeeded`, así que basta con no llamar `stop()` durante la gracia:
+  el `setTimeout` interno sigue corriendo y el tiempo transcurrido se preserva
+  gratis). Al bajar a 0 canales se arma un `setTimeout` de `STOP_GRACE_MS`
+  (5 min, `unref`, comentario `ponytail:`); si vuelven canales antes → se
+  cancela y `startIfNeeded()` es no-op; si se cumple → `stop()` real. No se
+  agregó `pause()`/`resume()` al scheduler (era más código para el mismo
+  efecto).
+- **Verificación:** `npm test` 99/99 (95 previos + 4 nuevos en
+  `test/promo-rearme-reconexion.test.js`, con `t.mock.timers`). eslint limpio.
+- **Archivos tocados:** `features/promo/index.js`, `test/promo-rearme-reconexion.test.js` (nuevo).
+- **Sin commit** (pedido explícito del prompt).
+
+- **Commit:** `4443553`.
+- **Próximo:** tarea 05 (watchdog YouTube) — arranca Etapa 2.
