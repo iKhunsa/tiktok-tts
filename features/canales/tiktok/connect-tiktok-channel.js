@@ -8,6 +8,18 @@ const { cleanupAfterLastTikTokChannel } = require('./cleanup-after-last-channel'
 const CONNECT_TIMEOUT_MS = 30000;
 
 /**
+ * tiktok-live-connector NO pasa un Error al evento 'error': pasa un objeto
+ * plano `{ info, exception }` (client.js#handleError). El texto real vive en
+ * `exception.message`, la categoria en `info`. Nunca devolver undefined.
+ */
+function readTikTokError(err) {
+  if (err instanceof Error) return { message: err.message, stack: err.stack };
+  const message = (err && (err.exception?.message || err.info)) || String(err);
+  const stack = err && err.exception && err.exception.stack;
+  return { message, stack };
+}
+
+/**
  * Crea la conexion TikTok y engancha los handlers de evento. Cada handler
  * SOLO publica al bus con el dato crudo de la plataforma — /canales no
  * conoce Chat/Overlay/Moderacion, esos dominios deciden que hacer con
@@ -70,11 +82,12 @@ function setupTikTokConnection(deps, cleanUsername) {
     });
   });
 
-  conn.on('disconnected', () => {
-    const entry = state.tiktokChannels.get(cleanUsername);
-    if (!entry) return;
-    bus.emit('canal:estado', { platform: 'tiktok', channel: cleanUsername, state: 'desconectado' });
-
+  // Agenda una reconexion por el path de backoff, o hace teardown si se
+  // agotaron los intentos. Guard anti-loop: si ya hay un timer de reconexion
+  // armado (o una reconexion en vuelo, que deja el timer viejo hasta exito),
+  // no encolar otra. Lo comparten 'disconnected' y 'error' post-conexion.
+  const scheduleReconnectOrGiveUp = (entry) => {
+    if (entry.timer) return;
     if (entry.attempts < MAX_RECONNECT_ATTEMPTS) {
       const delay = Math.min(1000 * Math.pow(2, entry.attempts), 30000);
       entry.attempts++;
@@ -96,27 +109,40 @@ function setupTikTokConnection(deps, cleanUsername) {
       );
       cleanupAfterLastTikTokChannel(deps);
     }
+  };
+
+  conn.on('disconnected', () => {
+    const entry = state.tiktokChannels.get(cleanUsername);
+    if (!entry) return;
+    bus.emit('canal:estado', { platform: 'tiktok', channel: cleanUsername, state: 'desconectado' });
+    scheduleReconnectOrGiveUp(entry);
   });
 
   conn.on('error', (err) => {
+    const { message, stack } = readTikTokError(err);
     logger.log(
       'warn', 'canales', 'canales/tiktok/connect-tiktok-channel.js#setupTikTokConnection', 'canales.tiktok.error',
-      `Error de conexion TikTok ${cleanUsername}: ${err.message}`, { channel: cleanUsername, error: err.message, stack: err.stack }
+      `Error de conexion TikTok ${cleanUsername}: ${message}`, { channel: cleanUsername, error: message, stack }
     );
 
-    // Si el canal nunca llego a conectar y solo emite errores, no dejarlo
-    // colgado en state.tiktokChannels (donde el panel lo veria "en vivo" para
-    // siempre). Mismo teardown que la rama de reintentos agotados.
     const entry = state.tiktokChannels.get(cleanUsername);
-    if (entry && !entry.connectedOnce) {
+    bus.emit('canal:estado', { platform: 'tiktok', channel: cleanUsername, state: 'error', error: message });
+    if (!entry) return;
+
+    if (!entry.connectedOnce) {
+      // Nunca llego a conectar y solo emite errores: no dejarlo colgado en
+      // state.tiktokChannels (el panel lo veria "en vivo" para siempre).
+      // Mismo teardown que la rama de reintentos agotados. Sin reintento.
       if (entry.timer) clearTimeout(entry.timer);
       state.tiktokChannels.delete(cleanUsername);
-      bus.emit('canal:estado', { platform: 'tiktok', channel: cleanUsername, state: 'error', error: err.message });
       cleanupAfterLastTikTokChannel(deps);
       return;
     }
 
-    bus.emit('canal:estado', { platform: 'tiktok', channel: cleanUsername, state: 'error', error: err.message });
+    // Post-conexion: un 'error' de socket puede llegar en vez de 'close'.
+    // Agendar reconexion por el path de backoff (el guard interno evita
+    // duplicar si ya hay una en curso, p.ej. por el watchdog de la tarea 02).
+    scheduleReconnectOrGiveUp(entry);
   });
 
   // Fin real del directo (el streamer corto, o un moderador de la plataforma).
