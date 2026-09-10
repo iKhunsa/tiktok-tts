@@ -112,11 +112,16 @@ async function connectKick(deps, channelOrSlug, attempt = 0) {
       let msg;
       try { msg = JSON.parse(buf.toString()); } catch (_) { return; }
 
+      // Cualquier frame de Pusher (subscription_succeeded, pusher:pong del ping
+      // cada 100s, chat) prueba que el socket sigue vivo. Kick tiene poco chat
+      // en canales tranquilos pero el ping mantiene el WS abierto — re-armar
+      // solo con CHAT_MESSAGE_EVENT daba un falso positivo cada 5 min.
+      armKickWatchdog(deps, slug, onStale);
+
       if (msg.event === 'pusher_internal:subscription_succeeded') {
         if (settled) return;
         settled = true;
         state.kickChannels.set(slug, entry);
-        armKickWatchdog(deps, slug, onStale);
         logger.log(
           'info', 'canales', 'canales/kick/connect-kick.js#connectKick', 'canales.kick.conectado',
           `Kick ${slug} conectado`, { slug }
@@ -127,7 +132,6 @@ async function connectKick(deps, channelOrSlug, attempt = 0) {
       }
 
       if (msg.event === CHAT_MESSAGE_EVENT) {
-        armKickWatchdog(deps, slug, onStale);
         const raw = parseKickChatMessage(msg.data);
         if (!raw) return;
         const seen = state.kickSeenIds.get(slug);

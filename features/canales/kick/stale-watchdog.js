@@ -13,8 +13,10 @@ function clearKickWatchdog(map, slug) {
   map.delete(slug);
 }
 
-/** (Re)arma el timeout de inactividad para `slug`. Llamar tras abrir la
- * ventana y en cada `canal:mensaje-crudo` de ese slug. */
+/** (Re)arma el timeout de inactividad para `slug`. Llamar en cada frame
+ * recibido del socket Pusher (no solo los de chat): el ping cada 100s mantiene
+ * el WS vivo aunque no haya mensajes, y solo "ningun frame en N min" implica
+ * socket muerto. */
 function armKickWatchdog(deps, slug, onStale) {
   const { state } = deps;
   clearKickWatchdog(state.kickWatchdogTimers, slug);
