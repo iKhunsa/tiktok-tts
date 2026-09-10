@@ -38,7 +38,7 @@ Crear rama `fix/canales-replay-watchdog` desde ahí.
 | 02 | Watchdog de socket mudo compartido para TikTok y Twitch (patrón de Kick/YouTube) | hecho | alta | `prompts/bugs/02-watchdog-inactividad-tiktok-twitch.md` |
 | 03 | `conn.on('error')` de TikTok: leer `err.exception`, no dejar el canal colgado, agendar reconexión post-conexión | hecho | media | `prompts/bugs/03-tiktok-error-handler-incompleto.md` |
 | 04 | Scheduler de promo no debe reiniciar la cuenta `[15,45,60]` en una reconexión transitoria | hecho | media | `prompts/bugs/04-promo-rearme-en-reconexion.md` |
-| 05 | `chat-watchdog.js` de YouTube: 4 min es muy agresivo; `youtubeSeenIds` sin ventana temporal | pendiente | media | `prompts/bugs/05-youtube-watchdog-agresivo.md` |
+| 05 | `chat-watchdog.js` de YouTube: 4 min es muy agresivo; `youtubeSeenIds` sin ventana temporal | hecho | media | `prompts/bugs/05-youtube-watchdog-agresivo.md` |
 | 06 | `canales.kick.sin_eventos` cada 5 min en canal tranquilo — falso positivo, churn de reconexión | pendiente | baja | `prompts/bugs/06-kick-sin-eventos-falso-positivo.md` |
 | 07 | GlitchTip: no promover a issue errores de conexión esperados (streamer offline, YouTube no en vivo) | pendiente | baja | `prompts/bugs/07-glitchtip-ruido-errores-esperados.md` |
 | 08 | Botón "Fallos conocidos" muerto — `showKnownIssuesNotice` nunca se bridgeó a `window` | pendiente | baja | `prompts/bugs/08-boton-fallos-conocidos-muerto.md` |
@@ -156,3 +156,13 @@ Tras confirmar este roadmap:
 
 - **Commit:** `4443553`.
 - **Próximo:** tarea 05 (watchdog YouTube) — arranca Etapa 2.
+
+### 2026-09-10 — orquestador · tarea 05 (watchdog YouTube) — arranca Etapa 2
+
+- **Qué se hizo:** `WATCHDOG_TIMEOUT_MS` de YouTube 4 min → 8 min (chat lento es normal; 4 min = ~74 reconexiones espurias/28 h). `youtubeSeenIds` **eliminado** por completo.
+- **Decisión (youtubeSeenIds):** redundante. Usaba la misma clave (`item.id`) que el gate central de la tarea 01, aguas arriba en la misma cadena de evento → todo item que pasaba el dedup local llegaba al gate central. Y el gate central es mejor (ventana temporal 10 min + cap 2000 FIFO vs. cap 500 sin ventana). El Set local era código muerto con su propio bug. Menos código gana.
+- **Criterio no cumplido literalmente:** "replay 20 min después se descarta" — el gate central usa ventana de 10 min (decisión tarea 01). Justificación: `youtube-chat` re-entrega su buffer *reciente* (últimos minutos) en la reconexión, no de hace 20 min; 10 min cubre el replay real. Ceiling marcado `ponytail:` en `emit-chat-message.js:31` para subir en un lugar si aparecen reportes.
+- **Verificación:** `npm test` 103/103 (99 + 4 nuevos en `test/canales-youtube-watchdog.test.js`). eslint 0 errores. Sin refs colgadas de `youtubeSeenIds`.
+- **Archivos tocados:** `youtube/chat-watchdog.js`, `youtube/connect-youtube.js`, `state/channel-maps.js`, `routes/remove-channel.js`, `routes/platforms-disconnect.js`, `test/canales-youtube-watchdog.test.js` (nuevo).
+- **Commit:** `6a81f52`.
+- **Próximo:** tarea 06 (falso positivo de Kick).
