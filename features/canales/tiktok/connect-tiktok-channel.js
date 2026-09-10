@@ -24,7 +24,12 @@ function setupTikTokConnection(deps, cleanUsername) {
     enableWebsocketUpgrade: true,
     requestPollingIntervalMs: 2000,
   });
-  state.tiktokChannels.set(cleanUsername, { conn, attempts: existing ? existing.attempts : 0, timer: null });
+  state.tiktokChannels.set(cleanUsername, {
+    conn,
+    attempts: existing ? existing.attempts : 0,
+    connectedOnce: existing ? Boolean(existing.connectedOnce) : false,
+    timer: null,
+  });
 
   conn.on('chat', (data) => {
     if (!data.comment || !data.comment.trim()) return;
@@ -98,7 +103,36 @@ function setupTikTokConnection(deps, cleanUsername) {
       'warn', 'canales', 'canales/tiktok/connect-tiktok-channel.js#setupTikTokConnection', 'canales.tiktok.error',
       `Error de conexion TikTok ${cleanUsername}: ${err.message}`, { channel: cleanUsername, error: err.message, stack: err.stack }
     );
+
+    // Si el canal nunca llego a conectar y solo emite errores, no dejarlo
+    // colgado en state.tiktokChannels (donde el panel lo veria "en vivo" para
+    // siempre). Mismo teardown que la rama de reintentos agotados.
+    const entry = state.tiktokChannels.get(cleanUsername);
+    if (entry && !entry.connectedOnce) {
+      if (entry.timer) clearTimeout(entry.timer);
+      state.tiktokChannels.delete(cleanUsername);
+      bus.emit('canal:estado', { platform: 'tiktok', channel: cleanUsername, state: 'error', error: err.message });
+      cleanupAfterLastTikTokChannel(deps);
+      return;
+    }
+
     bus.emit('canal:estado', { platform: 'tiktok', channel: cleanUsername, state: 'error', error: err.message });
+  });
+
+  // Fin real del directo (el streamer corto, o un moderador de la plataforma).
+  // La lib emite 'streamEnd' y acto seguido llama a disconnect(); si no se
+  // maneja aqui, ese disconnect se trata como caida transitoria y el app
+  // reintenta 5 veces (~31s) reportandose "en vivo" con una sala ya muerta.
+  conn.on('streamEnd', () => {
+    const entry = state.tiktokChannels.get(cleanUsername);
+    if (entry && entry.timer) clearTimeout(entry.timer);
+    state.tiktokChannels.delete(cleanUsername);
+    logger.log(
+      'info', 'canales', 'canales/tiktok/connect-tiktok-channel.js#setupTikTokConnection', 'canales.tiktok.directo_terminado',
+      `El directo de TikTok ${cleanUsername} termino`, { channel: cleanUsername }
+    );
+    bus.emit('canal:estado', { platform: 'tiktok', channel: cleanUsername, state: 'desconectado' });
+    cleanupAfterLastTikTokChannel(deps);
   });
 
   return conn;
@@ -153,6 +187,7 @@ async function connectTiktokChannel(deps, channel) {
     const entry = state.tiktokChannels.get(cleanUsername);
     const connState = await entry.conn.connect();
     entry.attempts = 0;
+    entry.connectedOnce = true;
 
     logger.log(
       'info', 'canales', 'canales/tiktok/connect-tiktok-channel.js#connectTiktokChannel', 'canales.tiktok.conectado',

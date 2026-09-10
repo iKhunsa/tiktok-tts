@@ -14,6 +14,7 @@ async function reconnectTiktok(deps, username) {
     const refreshed = state.tiktokChannels.get(username);
     const connState = await refreshed.conn.connect();
     refreshed.attempts = 0;
+    refreshed.connectedOnce = true;
     if (refreshed.timer) { clearTimeout(refreshed.timer); refreshed.timer = null; }
 
     logger.log(
