@@ -10,6 +10,7 @@ const { stopYoutubeChat } = require('../youtube/stop-chat');
 const { cleanKickSlug } = require('../kick/clean-slug');
 const { disconnectKick } = require('../kick/connect-kick');
 const { broadcastChannels } = require('../broadcast-channels');
+const { clearWatchdog } = require('../stale-watchdog');
 
 function platformsDisconnect(deps) {
   return async (req, res) => {
@@ -19,6 +20,7 @@ function platformsDisconnect(deps) {
       if (platform === 'tiktok') {
         if (channel) {
           const cleanUsername = cleanTiktokUsername(channel);
+          clearWatchdog(state, `tiktok:${cleanUsername}`);
           const entry = state.tiktokChannels.get(cleanUsername);
           if (entry) {
             if (entry.timer) clearTimeout(entry.timer);
@@ -29,6 +31,7 @@ function platformsDisconnect(deps) {
           if (state.tiktokChannels.size === 0) cleanupAfterLastTikTokChannel(deps);
           else bus.emit('canal:estado', { platform: 'tiktok', channel: cleanUsername, state: 'desconectado' });
         } else {
+          for (const key of state.tiktokChannels.keys()) clearWatchdog(state, `tiktok:${key}`);
           for (const entry of state.tiktokChannels.values()) {
             if (entry.timer) clearTimeout(entry.timer);
             entry.conn.removeAllListeners();
@@ -41,10 +44,12 @@ function platformsDisconnect(deps) {
         if (channel) {
           const twitchChannel = cleanTwitchChannel(channel);
           clearTwitchReconnectTimer(state.twitchReconnectTimers, twitchChannel);
+          clearWatchdog(state, `twitch:${twitchChannel}`);
           const c = state.twitchChannels.get(twitchChannel);
           if (c) { c._intentionalDisconnect = true; try { await c.disconnect(); } catch (_) { /* best-effort */ } state.twitchChannels.delete(twitchChannel); }
         } else {
           for (const ch of state.twitchReconnectTimers.keys()) clearTwitchReconnectTimer(state.twitchReconnectTimers, ch);
+          for (const ch of state.twitchChannels.keys()) clearWatchdog(state, `twitch:${ch}`);
           for (const c of state.twitchChannels.values()) { c._intentionalDisconnect = true; try { await c.disconnect(); } catch (_) { /* best-effort */ } }
           state.twitchChannels.clear();
         }

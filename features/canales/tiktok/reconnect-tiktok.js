@@ -16,6 +16,7 @@ async function reconnectTiktok(deps, username) {
     refreshed.attempts = 0;
     refreshed.connectedOnce = true;
     if (refreshed.timer) { clearTimeout(refreshed.timer); refreshed.timer = null; }
+    if (refreshed.armStaleWatchdog) refreshed.armStaleWatchdog();
 
     logger.log(
       'info', 'canales', 'canales/tiktok/reconnect-tiktok.js#reconnectTiktok', 'canales.tiktok.reconexion_exitosa',

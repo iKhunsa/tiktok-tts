@@ -17,6 +17,7 @@ function createChannelState() {
     kickSeenIds: new Map(), // slug -> Set<msgId>
     kickWatchdogTimers: new Map(), // slug -> Timeout (watchdog de chat 'silencioso')
     kickReconnectTimers: new Map(), // slug -> Timeout (backoff de reconexion del WS)
+    channelWatchdogTimers: new Map(), // 'tiktok:<user>' / 'twitch:<chan>' -> Timeout (stale-watchdog.js)
     authTokens: { twitch: null },
     obs: {
       ws: null,

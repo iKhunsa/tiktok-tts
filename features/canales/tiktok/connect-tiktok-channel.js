@@ -4,6 +4,7 @@ const { WebcastPushConnection } = require('tiktok-live-connector');
 const { MAX_RECONNECT_ATTEMPTS } = require('../state/channel-maps');
 const { cleanTiktokUsername } = require('./clean-username');
 const { cleanupAfterLastTikTokChannel } = require('./cleanup-after-last-channel');
+const { armWatchdog, clearWatchdog, WATCHDOG_TIMEOUT_MS } = require('../stale-watchdog');
 
 const CONNECT_TIMEOUT_MS = 30000;
 
@@ -43,7 +44,12 @@ function setupTikTokConnection(deps, cleanUsername) {
     timer: null,
   });
 
+  const staleKey = `tiktok:${cleanUsername}`;
+
   conn.on('chat', (data) => {
+    // Re-armar el watchdog en toda actividad de chat (incluso mensajes vacios
+    // que no se emiten): prueba que el socket sigue vivo.
+    armWatchdog(state, staleKey, WATCHDOG_TIMEOUT_MS, onStale);
     if (!data.comment || !data.comment.trim()) return;
     bus.emit('canal:mensaje-crudo', { platform: 'tiktok', channel: cleanUsername, raw: data });
   });
@@ -111,7 +117,30 @@ function setupTikTokConnection(deps, cleanUsername) {
     }
   };
 
+  // Socket mudo: 5 min sin ningun 'chat'. Un chat sano re-arma el watchdog en
+  // cada mensaje, asi que esto solo dispara contra una conexion muerta. Fuerza
+  // la reconexion por el mismo path de backoff (attempts reseteado a 0), con
+  // guard de identidad para no pisar un entry ya reemplazado ni duplicar si ya
+  // hay una reconexion en vuelo (scheduleReconnectOrGiveUp respeta entry.timer).
+  const onStale = () => {
+    const entry = state.tiktokChannels.get(cleanUsername);
+    if (!entry || entry.conn !== conn) return;
+    clearWatchdog(state, staleKey);
+    logger.log(
+      'warn', 'canales', 'canales/tiktok/connect-tiktok-channel.js#setupTikTokConnection', 'canales.tiktok.sin_eventos',
+      `TikTok ${cleanUsername} sin 'chat' en ${WATCHDOG_TIMEOUT_MS}ms; forzando reconexion`,
+      { channel: cleanUsername, timeoutMs: WATCHDOG_TIMEOUT_MS }
+    );
+    entry.attempts = 0;
+    scheduleReconnectOrGiveUp(entry);
+  };
+  // Lo llama connectTiktokChannel / reconnectTiktok tras conectar: si el chat
+  // esta callado desde el arranque, igual queremos vigilar el socket.
+  const entryRef = state.tiktokChannels.get(cleanUsername);
+  if (entryRef) entryRef.armStaleWatchdog = () => armWatchdog(state, staleKey, WATCHDOG_TIMEOUT_MS, onStale);
+
   conn.on('disconnected', () => {
+    clearWatchdog(state, staleKey);
     const entry = state.tiktokChannels.get(cleanUsername);
     if (!entry) return;
     bus.emit('canal:estado', { platform: 'tiktok', channel: cleanUsername, state: 'desconectado' });
@@ -134,6 +163,7 @@ function setupTikTokConnection(deps, cleanUsername) {
       // state.tiktokChannels (el panel lo veria "en vivo" para siempre).
       // Mismo teardown que la rama de reintentos agotados. Sin reintento.
       if (entry.timer) clearTimeout(entry.timer);
+      clearWatchdog(state, staleKey);
       state.tiktokChannels.delete(cleanUsername);
       cleanupAfterLastTikTokChannel(deps);
       return;
@@ -150,6 +180,7 @@ function setupTikTokConnection(deps, cleanUsername) {
   // maneja aqui, ese disconnect se trata como caida transitoria y el app
   // reintenta 5 veces (~31s) reportandose "en vivo" con una sala ya muerta.
   conn.on('streamEnd', () => {
+    clearWatchdog(state, staleKey);
     const entry = state.tiktokChannels.get(cleanUsername);
     if (entry && entry.timer) clearTimeout(entry.timer);
     state.tiktokChannels.delete(cleanUsername);
@@ -184,6 +215,7 @@ async function connectTiktokChannel(deps, channel) {
       'warn', 'canales', 'canales/tiktok/connect-tiktok-channel.js#connectTiktokChannel', 'canales.tiktok.timeout_conexion',
       `Timeout (30s) conectando TikTok ${cleanUsername}, abortando conexion colgada`, { channel: cleanUsername }
     );
+    clearWatchdog(state, `tiktok:${cleanUsername}`);
     const stale = state.tiktokChannels.get(cleanUsername);
     if (stale) {
       if (stale.timer) clearTimeout(stale.timer);
@@ -194,6 +226,7 @@ async function connectTiktokChannel(deps, channel) {
     state.connectingTiktok.delete(cleanUsername);
   }, CONNECT_TIMEOUT_MS);
 
+  clearWatchdog(state, `tiktok:${cleanUsername}`);
   const prev = state.tiktokChannels.get(cleanUsername);
   if (prev) {
     if (prev.timer) clearTimeout(prev.timer);
@@ -214,6 +247,7 @@ async function connectTiktokChannel(deps, channel) {
     const connState = await entry.conn.connect();
     entry.attempts = 0;
     entry.connectedOnce = true;
+    if (entry.armStaleWatchdog) entry.armStaleWatchdog();
 
     logger.log(
       'info', 'canales', 'canales/tiktok/connect-tiktok-channel.js#connectTiktokChannel', 'canales.tiktok.conectado',

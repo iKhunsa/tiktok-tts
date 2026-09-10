@@ -3,6 +3,7 @@
 const { cleanTiktokUsername } = require('../tiktok/clean-username');
 const { cleanupAfterLastTikTokChannel } = require('../tiktok/cleanup-after-last-channel');
 const { broadcastChannels } = require('../broadcast-channels');
+const { clearWatchdog } = require('../stale-watchdog');
 
 /** POST /api/disconnect — { username } desconecta un canal; sin body desconecta todos. */
 function disconnect(deps) {
@@ -12,6 +13,7 @@ function disconnect(deps) {
 
     if (username) {
       const cleanUsername = cleanTiktokUsername(username);
+      clearWatchdog(state, `tiktok:${cleanUsername}`);
       const entry = state.tiktokChannels.get(cleanUsername);
       if (entry) {
         if (entry.timer) clearTimeout(entry.timer);
@@ -23,6 +25,7 @@ function disconnect(deps) {
       if (state.tiktokChannels.size === 0) cleanupAfterLastTikTokChannel(deps);
       else bus.emit('canal:estado', { platform: 'tiktok', channel: cleanUsername, state: 'desconectado' });
     } else {
+      for (const key of state.tiktokChannels.keys()) clearWatchdog(state, `tiktok:${key}`);
       for (const entry of state.tiktokChannels.values()) {
         if (entry.timer) clearTimeout(entry.timer);
         entry.conn.removeAllListeners();
