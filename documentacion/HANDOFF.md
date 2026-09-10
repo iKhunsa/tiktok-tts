@@ -35,7 +35,7 @@ Crear rama `fix/canales-replay-watchdog` desde ahí.
 | # | Descripción | Estado | Prioridad | Prompt asociado |
 |---|---|---|---|---|
 | 01 | Dedup por msgId estable en el broadcast de chat — mata el replay audible en las 4 plataformas | hecho | alta | `prompts/bugs/01-dedup-mensajes-msgid.md` |
-| 02 | Watchdog de socket mudo compartido para TikTok y Twitch (patrón de Kick/YouTube) | pendiente | alta | `prompts/bugs/02-watchdog-inactividad-tiktok-twitch.md` |
+| 02 | Watchdog de socket mudo compartido para TikTok y Twitch (patrón de Kick/YouTube) | hecho | alta | `prompts/bugs/02-watchdog-inactividad-tiktok-twitch.md` |
 | 03 | `conn.on('error')` de TikTok: leer `err.exception`, no dejar el canal colgado, agendar reconexión post-conexión | hecho | media | `prompts/bugs/03-tiktok-error-handler-incompleto.md` |
 | 04 | Scheduler de promo no debe reiniciar la cuenta `[15,45,60]` en una reconexión transitoria | pendiente | media | `prompts/bugs/04-promo-rearme-en-reconexion.md` |
 | 05 | `chat-watchdog.js` de YouTube: 4 min es muy agresivo; `youtubeSeenIds` sin ventana temporal | pendiente | media | `prompts/bugs/05-youtube-watchdog-agresivo.md` |
@@ -101,3 +101,14 @@ Tras confirmar este roadmap:
 - **Archivos tocados:** `features/canales/tiktok/connect-tiktok-channel.js`, `features/canales/tiktok/reconnect-tiktok.js`, `test/canales-tiktok-error-handler.test.js` (nuevo).
 - **Commit:** `f4f2c59`.
 - **Próximo:** tarea 02 (watchdog TikTok/Twitch) — se rebasa sobre el `scheduleReconnectOrGiveUp` de esta tarea.
+
+### 2026-09-10 — orquestador · tarea 02 (watchdog TikTok/Twitch)
+
+- **Qué se hizo:** helper nuevo `features/canales/stale-watchdog.js` (`armWatchdog`/`clearWatchdog`, timeout 5 min, `unref()`), Map `state.channelWatchdogTimers` con claves `tiktok:<user>` / `twitch:<chan>`. Armado al conectar + re-armado en cada `'chat'` / `'message'`. `onStale` con guard de identidad del entry → TikTok usa `scheduleReconnectOrGiveUp` (tarea 03), Twitch re-llama `connectTwitch(..., 0)`.
+- **Decisión:** NO se unifican Kick/YouTube en el helper nuevo. Cada uno tiene su Map propio cableado en ~5 teardowns + tests; migrar es churn con riesgo de regresión y cero beneficio para el usuario. Helper nuevo solo TikTok+Twitch.
+- **Limpieza de timers:** `onStale` (primera línea), `disconnected`, `error` pre-conexión, `streamEnd`, las 3 rutas de desconexión explícita (`disconnect.js`, `platforms-disconnect.js`, `remove-channel.js`), y `index.js#shutdown` (barrido del Map). Red de seguridad: `unref()` + guard de identidad.
+- **Verificación:** `npm test` 95/95 (89 + 6 nuevos en `test/canales-stale-watchdog.test.js`). eslint 0 errores.
+- **Archivos tocados:** `features/canales/stale-watchdog.js` (nuevo), `state/channel-maps.js`, `tiktok/connect-tiktok-channel.js`, `tiktok/reconnect-tiktok.js`, `twitch/connect-twitch.js`, `routes/{disconnect,platforms-disconnect,remove-channel}.js`, `index.js`, `test/canales-stale-watchdog.test.js` (nuevo).
+- **Commit:** `2bea050`.
+- **Nota:** eventos nuevos `canales.twitch.sin_eventos` / `canales.twitch.reconexion_fallida` y `canales.tiktok.sin_eventos` van a GlitchTip — un stale-reconnect fallido sí merece issue, no se filtra en la tarea 07.
+- **Próximo:** tarea 04 (promo).
