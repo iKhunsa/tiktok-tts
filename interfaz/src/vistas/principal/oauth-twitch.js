@@ -46,7 +46,7 @@ export async function startOAuthFlow(provider) {
       if (twText) twText.textContent = t('conn.twitchWaitingCode', { code: data.userCode });
     }
     if (popup) popup.location.href = data.url;
-    else if (isElectron) window.open(data.url, '_blank'); // windowOpenHandler -> shell.openExternal
+    else if (isElectron) window.open(data.url, '_blank'); // windowOpenHandler -> openExternalSafe
     else window.location.href = data.url; // Popup bloqueado: ultima opcion
   } catch (e) { if (popup) popup.close(); showToast(t('toast.testError')); }
 }

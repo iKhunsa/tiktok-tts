@@ -11,13 +11,20 @@ const CONNECT_TIMEOUT_MS = 30000;
 /**
  * tiktok-live-connector NO pasa un Error al evento 'error': pasa un objeto
  * plano `{ info, exception }` (client.js#handleError). El texto real vive en
- * `exception.message`, la categoria en `info`. Nunca devolver undefined.
+ * `exception.message`, la categoria en `info`. Nunca devolver undefined —
+ * si `message` queda vacio, `esErrorConexionEsperado` (glitchtip.js) no puede
+ * matchear "isn't online" y un canal offline se reporta como issue + dispara
+ * la alerta de "sesion problematica" (GlitchTip #58).
  */
 function readTikTokError(err) {
-  if (err instanceof Error) return { message: err.message, stack: err.stack };
-  const message = (err && (err.exception?.message || err.info)) || String(err);
-  const stack = err && err.exception && err.exception.stack;
-  return { message, stack };
+  if (err instanceof Error) {
+    return { message: err.message || String(err) || 'error desconocido', stack: err.stack };
+  }
+  const message = (err && (err.exception?.message || err.message || err.info))
+    || (typeof err === 'string' ? err : '')
+    || 'error desconocido';
+  const stack = (err && err.exception && err.exception.stack) || (err && err.stack);
+  return { message: String(message), stack };
 }
 
 /**

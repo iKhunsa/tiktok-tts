@@ -1,6 +1,7 @@
 'use strict';
 
-const { Tray, Menu, nativeImage, dialog, shell } = require('electron');
+const { Tray, Menu, nativeImage, dialog } = require('electron');
+const { openExternalSafe } = require('./open-external');
 
 function buildTrayMenu({ onOpen, onInstallUpdate, onQuit }, updateVersion = null) {
   const items = [
@@ -48,7 +49,7 @@ function showStartupError(error) {
     buttons: ['Descargar ultima version', 'Cerrar'],
     defaultId: 0,
   }).then(({ response }) => {
-    if (response === 0) shell.openExternal('https://github.com/iKhunsa/tiktok-tts/releases/latest');
+    if (response === 0) openExternalSafe('https://github.com/iKhunsa/tiktok-tts/releases/latest');
   });
 }
 
