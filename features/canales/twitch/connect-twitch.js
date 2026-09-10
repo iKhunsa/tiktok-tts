@@ -2,6 +2,7 @@
 
 const { MAX_RECONNECT_ATTEMPTS } = require('../state/channel-maps');
 const { cleanTwitchChannel } = require('./clean-channel');
+const { armWatchdog, clearWatchdog, WATCHDOG_TIMEOUT_MS } = require('../stale-watchdog');
 
 function clearReconnectTimer(map, channel) {
   const timer = map.get(channel);
@@ -21,7 +22,9 @@ async function connectTwitch(deps, channelInput, token = null, attempt = 0) {
   const channel = cleanTwitchChannel(channelInput);
   if (!channel) throw new Error('Se requiere canal Twitch');
 
+  const staleKey = `twitch:${channel}`;
   clearReconnectTimer(state.twitchReconnectTimers, channel);
+  clearWatchdog(state, staleKey);
 
   if (state.twitchChannels.has(channel)) {
     const prev = state.twitchChannels.get(channel);
@@ -39,7 +42,28 @@ async function connectTwitch(deps, channelInput, token = null, attempt = 0) {
   const client = new tmi.Client(clientOpts);
   client._intentionalDisconnect = false;
 
+  // Socket mudo: 5 min sin ningun 'message'. Un chat sano re-arma en cada
+  // mensaje, asi que solo dispara contra una conexion IRC muerta. Fuerza una
+  // reconexion limpia (attempt 0); connectTwitch ya descarta el client viejo
+  // al arrancar, no duplica. Guard de identidad para no pisar un client nuevo.
+  const onStale = () => {
+    if (state.twitchChannels.get(channel) !== client) return;
+    clearWatchdog(state, staleKey);
+    logger.log(
+      'warn', 'canales', 'canales/twitch/connect-twitch.js#connectTwitch', 'canales.twitch.sin_eventos',
+      `Twitch ${channel} sin 'message' en ${WATCHDOG_TIMEOUT_MS}ms; forzando reconexion`,
+      { channel, timeoutMs: WATCHDOG_TIMEOUT_MS }
+    );
+    connectTwitch(deps, channel, effectiveToken, 0).catch((err) => {
+      logger.log(
+        'error', 'canales', 'canales/twitch/connect-twitch.js#connectTwitch', 'canales.twitch.reconexion_fallida',
+        `Fallo reconexion (stale) de Twitch ${channel}: ${err.message}`, { channel, error: err.message, stack: err.stack }
+      );
+    });
+  };
+
   client.on('message', (_ch, tags, message, self) => {
+    armWatchdog(state, staleKey, WATCHDOG_TIMEOUT_MS, onStale);
     if (self || !message.trim()) return;
     bus.emit('canal:mensaje-crudo', { platform: 'twitch', channel, raw: { tags, message: message.trim() } });
   });
@@ -90,6 +114,7 @@ async function connectTwitch(deps, channelInput, token = null, attempt = 0) {
   });
 
   client.on('disconnected', () => {
+    clearWatchdog(state, staleKey);
     bus.emit('canal:estado', { platform: 'twitch', channel, state: 'desconectado' });
     state.twitchChannels.delete(channel);
 
@@ -131,6 +156,7 @@ async function connectTwitch(deps, channelInput, token = null, attempt = 0) {
 
   await client.connect();
   state.twitchChannels.set(channel, client);
+  armWatchdog(state, staleKey, WATCHDOG_TIMEOUT_MS, onStale);
 
   logger.log(
     'info', 'canales', 'canales/twitch/connect-twitch.js#connectTwitch', 'canales.twitch.conectado',

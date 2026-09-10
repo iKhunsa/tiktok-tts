@@ -180,6 +180,9 @@ module.exports = {
     if (!channelState) return;
     const state = channelState;
 
+    for (const timer of state.channelWatchdogTimers.values()) clearTimeout(timer);
+    state.channelWatchdogTimers.clear();
+
     for (const entry of state.tiktokChannels.values()) {
       if (entry.timer) clearTimeout(entry.timer);
       try { entry.conn.removeAllListeners(); entry.conn.disconnect(); } catch (_) { /* best-effort */ }
