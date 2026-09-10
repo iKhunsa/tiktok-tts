@@ -11,7 +11,7 @@ const { broadcastChannels } = require('../broadcast-channels');
 
 function addChannel(deps) {
   return async (req, res) => {
-    const { platform, channel, token } = req.body || {};
+    const { platform, channel } = req.body || {};
     if (!platform || !channel) return res.status(400).json({ error: 'Se requiere platform y channel' });
     try {
       if (platform === 'tiktok') {
@@ -21,7 +21,7 @@ function addChannel(deps) {
       }
       if (platform === 'twitch') {
         const twitchChannel = cleanTwitchChannel(channel);
-        await connectTwitch(deps, twitchChannel, token || null);
+        await connectTwitch(deps, twitchChannel);
         broadcastChannels(deps);
         return res.json({ success: true, channel: twitchChannel });
       }

@@ -59,6 +59,31 @@ test('error post-conexion agenda una reconexion (backoff), sin duplicar si ya ha
   clearTimeout(entry.timer);
 });
 
+// GlitchTip #58: si readTikTokError deja `message` vacio, esErrorConexionEsperado
+// (glitchtip.js) no puede matchear "isn't online" y un canal offline se reporta
+// como issue + dispara la alerta de "sesion problematica".
+for (const [nombre, err, esperado] of [
+  ['Error con message vacio', Object.assign(new Error(), { message: '' }), 'Error'],
+  ['string pelado', "The requested user isn't online :(", "The requested user isn't online :("],
+  ['objeto solo con info', { info: "isn't online" }, "isn't online"],
+  ['objeto raro sin nada util', {}, 'error desconocido'],
+]) {
+  test(`error "${nombre}": el log y canal:estado nunca traen undefined`, () => {
+    const { logger, estados, entry } = setup();
+    entry.connectedOnce = true;
+
+    entry.conn.emit('error', err);
+
+    const errLog = logger.entries.find((e) => e.event === 'canales.tiktok.error');
+    assert.ok(errLog && !/undefined/.test(errLog.message), errLog && errLog.message);
+    assert.equal(errLog.data.error, esperado);
+    const errEstado = estados.find((p) => p.state === 'error');
+    assert.equal(errEstado.error, esperado);
+
+    if (entry.timer) clearTimeout(entry.timer);
+  });
+}
+
 test('error pre-conexion (nunca conecto): teardown, sin reintento', () => {
   const { state, logger, estados } = setup();
   const entry = state.tiktokChannels.get('ana');
