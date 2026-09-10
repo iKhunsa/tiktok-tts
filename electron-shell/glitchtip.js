@@ -168,6 +168,30 @@ const EVENTO_A_TIPO = {
   'mcp.estado.provider_fallido': 'error_mcp_estado',
 };
 
+// Errores de conexión ESPERADOS: el streamer tiene un canal guardado que no
+// está transmitiendo ahora mismo. No son bugs — la app reintenta y reporta el
+// fallo. Saturan GlitchTip y tapan los errores reales (socket muerto, sign
+// server caído). Se degradan: quedan en Logs / breadcrumbs, no generan issue.
+//
+// ponytail: match por substring del texto libre del error, case-insensitive.
+// Frágil si la lib cambia el copy (tiktok-live-connector: UserOfflineError;
+// youtube-chat: "Live Stream was not found"). No hay un `code`/`type` estable
+// que llegue hasta acá — `readTikTokError` ya colapsó `err.info` a texto. Si
+// aparece un caso nuevo de "canal no en vivo", sumar el patrón a esta lista.
+const ERRORES_CONEXION_ESPERADOS = [
+  "isn't online",           // TikTok — "The requested user isn't online :("
+  'live stream was not found', // YouTube — canal sin directo activo
+  'client version was not found', // YouTube — idem
+  'live has ended',         // TikTok/YouTube — el directo terminó
+  'user_not_found',
+];
+
+function esErrorConexionEsperado(e) {
+  if (!e.event.startsWith('canales.')) return false;
+  const txt = String((e.data && e.data.error) || e.message || '').toLowerCase();
+  return ERRORES_CONEXION_ESPERADOS.some((p) => txt.includes(p));
+}
+
 // warn que se promueven a issue (fallos que el usuario sí sufre — se le corta
 // el chat, se rompe yt-dlp — pero que el código loguea como warn).
 const WARN_PROMOVIDOS = new Set([
@@ -331,6 +355,10 @@ function reportarIssue(e, logger) {
   const esError = e.level === 'error' || e.level === 'fatal';
   const esWarnPromovido = e.level === 'warn' && WARN_PROMOVIDOS.has(e.event);
   if (!esError && !esWarnPromovido) return;
+
+  // Canal guardado que no está en vivo: esperado, no es issue (sigue en Logs
+  // y breadcrumbs, que ya se registraron aguas arriba en el handler de log:entry).
+  if (esErrorConexionEsperado(e)) return;
 
   if (estado.issuesEnviados >= CAP_ISSUES_SESION) {
     if (!estado.capAvisado) {
@@ -526,5 +554,6 @@ module.exports = {
   init,
   attach,
   shutdown,
+  esErrorConexionEsperado, // export para tests (bug 07)
   get enabled() { return estado.enabled; },
 };
