@@ -42,7 +42,7 @@ Crear rama `fix/canales-replay-watchdog` desde ahí.
 | 06 | `canales.kick.sin_eventos` cada 5 min en canal tranquilo — falso positivo, churn de reconexión | hecho | baja | `prompts/bugs/06-kick-sin-eventos-falso-positivo.md` |
 | 07 | GlitchTip: no promover a issue errores de conexión esperados (streamer offline, YouTube no en vivo) | hecho | baja | `prompts/bugs/07-glitchtip-ruido-errores-esperados.md` |
 | 08 | Botón "Fallos conocidos" muerto — `showKnownIssuesNotice` nunca se bridgeó a `window` | hecho | baja | `prompts/bugs/08-boton-fallos-conocidos-muerto.md` |
-| 09 | `sonido.tts.respuesta_pequena` dispara en el 100% de las síntesis con `len:0` | pendiente | media | `prompts/bugs/09-respuesta-pequena-100pct.md` |
+| 09 | `sonido.tts.respuesta_pequena` dispara en el 100% de las síntesis con `len:0` | bloqueado | media | `prompts/bugs/09-respuesta-pequena-100pct.md` |
 | 10 | `Google TTS failed: "text should be a string"` — valor no-string llega a la síntesis | pendiente | baja | `prompts/bugs/10-tts-text-should-be-string.md` |
 
 Dependencias:
@@ -215,3 +215,20 @@ Tras confirmar este roadmap:
 - **Archivos tocados:** `interfaz/src/vistas/principal/index.js`.
 - **Commit:** `a66fdfa`.
 - **Próximo:** tarea 09 (respuesta_pequena).
+
+### 2026-09-10 — orquestador · tarea 09 (respuesta_pequena 100%) — BLOQUEADA, sin cambios
+
+- **Estado:** `bloqueado`. No se tocó código. Requiere decisión humana / dato de producción.
+- **Trace del mecanismo (revisión completa de `fetch-audio.js` + `generate.js` + `cola-tts.js` + probe en vivo contra Google):**
+  - `sonido.tts.respuesta_pequena` se emite en **un solo lugar**: `generate.js` catch, `code === 'EMPTY'`, con `len: err.len`.
+  - `EMPTY` sale **solo** de `pedirAGoogle` cuando `Buffer.concat(chunks).length < 1024` **después** de consumir y descomprimir el stream entero (`stream.on('end')`). NO se mide sobre un stream sin consumir, ni sobre `Content-Length`, ni sobre el objeto equivocado. El buffer está resuelto. `generate.js` no "bufferea antes" — `fetchTtsAudio` le devuelve el Buffer final.
+  - `len:0` ⇒ Google devolvió un **200 con body de 0 bytes** (sin `content-encoding`). Es exactamente la señal de rate-limit para la que se construyó cache+retry+backoff. **No hay bug de medición.**
+  - `hablado` (try) y `respuesta_pequena` (catch) son **mutuamente excluyentes** por request. Un `/api/tts` exitoso (cache hit o miss) loguea solo `hablado`; uno fallido loguea solo el evento de error y responde 502. El cliente (`cola-tts.js`) hace `shift()` del mensaje y **no lo reintenta** — un 502 = ese mensaje se salta.
+  - Por lo tanto los conteos ~iguales en los logs **no son un pairing 1:1**: son una **tasa de fallo ~50% de las requests no cacheadas**. El reporte interpretó "totales parecidos" como "una por cada".
+- **Probe en vivo** (`node`, 8 requests a `translate.google.com/translate_tts` con el mismo header set del código, 250 ms de espaciado): 8/8 → `status=200 ct=audio/mpeg enc=- raw=~21KB decoded=~21KB`. No se reprodujo ni un empty. La medición del código sobre respuestas normales es correcta.
+- **Por qué se bloquea (instrucción del prompt):** "si los clips SÍ son realmente vacíos (no bug de medición) → parar, documentar, escalar". El empty es real (Google rate-limitea con 200+body vacío desde IPs residenciales de streamers con chat denso). El warning **ya es correcto**. Hacerlo "no disparar en éxito" no aplica: no dispara en éxito. Las opciones reales son de producto, no de este ticket:
+  1. Aceptar que ~N% de mensajes de chat se saltan bajo rate-limit y que el warn lo refleje (estado actual — el warn hace su trabajo).
+  2. Subir la agresividad de retry / bajar `MIN_AUDIO_BYTES` / warm-up del cache — toca el retry/backoff, **prohibido por el prompt**.
+  3. Migrar a un endpoint TTS con API key. Fuera de alcance.
+  - Falta confirmar con un log de producción reciente si además aparece `sonido.tts.backoff_activo` (si NO aparece con 50% de fallo, la tasa real de fallo por-request es <12% y el problema es menor).
+- **Archivos tocados:** ninguno. **Sin commit.** `npm test` sin correr (sin cambios).
