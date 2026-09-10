@@ -41,7 +41,7 @@ Crear rama `fix/canales-replay-watchdog` desde ahí.
 | 05 | `chat-watchdog.js` de YouTube: 4 min es muy agresivo; `youtubeSeenIds` sin ventana temporal | hecho | media | `prompts/bugs/05-youtube-watchdog-agresivo.md` |
 | 06 | `canales.kick.sin_eventos` cada 5 min en canal tranquilo — falso positivo, churn de reconexión | hecho | baja | `prompts/bugs/06-kick-sin-eventos-falso-positivo.md` |
 | 07 | GlitchTip: no promover a issue errores de conexión esperados (streamer offline, YouTube no en vivo) | hecho | baja | `prompts/bugs/07-glitchtip-ruido-errores-esperados.md` |
-| 08 | Botón "Fallos conocidos" muerto — `showKnownIssuesNotice` nunca se bridgeó a `window` | pendiente | baja | `prompts/bugs/08-boton-fallos-conocidos-muerto.md` |
+| 08 | Botón "Fallos conocidos" muerto — `showKnownIssuesNotice` nunca se bridgeó a `window` | hecho | baja | `prompts/bugs/08-boton-fallos-conocidos-muerto.md` |
 | 09 | `sonido.tts.respuesta_pequena` dispara en el 100% de las síntesis con `len:0` | pendiente | media | `prompts/bugs/09-respuesta-pequena-100pct.md` |
 | 10 | `Google TTS failed: "text should be a string"` — valor no-string llega a la síntesis | pendiente | baja | `prompts/bugs/10-tts-text-should-be-string.md` |
 
@@ -204,3 +204,14 @@ Tras confirmar este roadmap:
 - **Archivos tocados:** `electron-shell/glitchtip.js`, `test/glitchtip-errores-esperados.test.js` (nuevo).
 - **Commit:** `d516bf8`.
 - **Próximo:** Etapa 3 — tarea 08 (botón "Fallos conocidos").
+
+### 2026-09-10 — orquestador · tarea 08 (botón "Fallos conocidos") — arranca Etapa 3
+
+- **Qué se hizo:** `showKnownIssuesNotice` agregado al `import` de `./utils-app.js` y al `Object.assign(window, {...})` en `interfaz/src/vistas/principal/index.js`.
+- **Extra (orquestador):** el subagente encontró **2 hermanos del mismo bug** y el orquestador los arregló en el mismo commit (misma línea de `Object.assign`, diff más chico que 2 tickets nuevos):
+  - `updateSocialOverlayUrl` — ya estaba importado (L37), faltaba en el bridge. `oninput` en la config del overlay de alertas sociales (`index.html` L466-481).
+  - `modReload` — ni importado ni bridgeado. `onchange`/`onclick` de los filtros de la vista Moderación (`index.html` L1168-1185). Se agregó al import de `moderacion.js` y al bridge.
+- **Verificación:** `npm run build:front` OK, `npm test` 109/109 (sin cambios — es frontend).
+- **Archivos tocados:** `interfaz/src/vistas/principal/index.js`.
+- **Commit:** `a66fdfa`.
+- **Próximo:** tarea 09 (respuesta_pequena).
