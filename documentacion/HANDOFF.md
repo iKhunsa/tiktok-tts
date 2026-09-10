@@ -36,7 +36,7 @@ Crear rama `fix/canales-replay-watchdog` desde ahí.
 |---|---|---|---|---|
 | 01 | Dedup por msgId estable en el broadcast de chat — mata el replay audible en las 4 plataformas | hecho | alta | `prompts/bugs/01-dedup-mensajes-msgid.md` |
 | 02 | Watchdog de socket mudo compartido para TikTok y Twitch (patrón de Kick/YouTube) | pendiente | alta | `prompts/bugs/02-watchdog-inactividad-tiktok-twitch.md` |
-| 03 | `conn.on('error')` de TikTok: leer `err.exception`, no dejar el canal colgado, agendar reconexión post-conexión | pendiente | media | `prompts/bugs/03-tiktok-error-handler-incompleto.md` |
+| 03 | `conn.on('error')` de TikTok: leer `err.exception`, no dejar el canal colgado, agendar reconexión post-conexión | hecho | media | `prompts/bugs/03-tiktok-error-handler-incompleto.md` |
 | 04 | Scheduler de promo no debe reiniciar la cuenta `[15,45,60]` en una reconexión transitoria | pendiente | media | `prompts/bugs/04-promo-rearme-en-reconexion.md` |
 | 05 | `chat-watchdog.js` de YouTube: 4 min es muy agresivo; `youtubeSeenIds` sin ventana temporal | pendiente | media | `prompts/bugs/05-youtube-watchdog-agresivo.md` |
 | 06 | `canales.kick.sin_eventos` cada 5 min en canal tranquilo — falso positivo, churn de reconexión | pendiente | baja | `prompts/bugs/06-kick-sin-eventos-falso-positivo.md` |
@@ -91,3 +91,13 @@ Tras confirmar este roadmap:
 - **Archivos tocados:** `features/chat/emit-chat-message.js`, `test/chat-dedup.test.js` (nuevo), `test/chat-admin-announce.test.js` (ajuste: `resetDedup()` en setup + `comment` variado por llamada).
 - **Commit:** `e839a29`.
 - **Próximo:** tarea 03 (error-handler de TikTok).
+
+### 2026-09-10 — orquestador · tarea 03 (error-handler de TikTok)
+
+- **Qué se hizo:** helper `readTikTokError(err)` (lee `err.exception.message → err.info → String(err)` y `err.exception.stack`). `conn.on('error')` reescrito: log/`canal:estado` nunca `undefined`; `!connectedOnce` → teardown sin reintento (igual que `831b8b8`); `connectedOnce` → reconexión por el path existente. Backoff extraído a closure `scheduleReconnectOrGiveUp(entry)` reusable (lo usará el watchdog de la tarea 02).
+- **Doble reconexión:** guard `if (entry.timer) return;` — `entry.timer` truthy = reconexión agendada/en vuelo. Lo respetan `disconnected`, `error` post-conexión y (futuro) el watchdog.
+- **Extra (orquestador):** `reconnect-tiktok.js` — mismo fix de lectura para el `reject` con string de `client.js:430` (`const msg = err?.message ? err.message : String(err)`).
+- **Verificación:** `npm test` 89/89 (86 + 3 nuevos en `test/canales-tiktok-error-handler.test.js`). eslint: 0 errores (2 warnings `no-unused-vars` de `catch (_)` pre-existentes).
+- **Archivos tocados:** `features/canales/tiktok/connect-tiktok-channel.js`, `features/canales/tiktok/reconnect-tiktok.js`, `test/canales-tiktok-error-handler.test.js` (nuevo).
+- **Commit:** `f4f2c59`.
+- **Próximo:** tarea 02 (watchdog TikTok/Twitch) — se rebasa sobre el `scheduleReconnectOrGiveUp` de esta tarea.
