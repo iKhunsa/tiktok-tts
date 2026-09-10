@@ -301,3 +301,43 @@ Tras confirmar este roadmap:
   y el resto.
 - **Archivos tocados:** `features/telemetria/connectors/counters.js`.
 - **Fin de la corrida — las 10 tareas del roadmap están cerradas.**
+
+### 2026-09-10 — orquestador · auditoria de backend completa (workflows) + smoke test MCP/logs
+
+- **Smoke test** (`node server.js` en :49997, Twitch xqc en vivo): 17 dominios montados, **482 mensajes reales por el pipeline de dedup nuevo, 0 duplicados espurios, 0 errores/warnings**, MCP funcional, ciclo disconnect/reconnect limpio. Cross-user same-text ("21" de 6 users) pasó todo — el dedup no sobre-filtra.
+
+- **Auditoria de backend** (2 workflows, 10 areas: canales, chat+moderacion, sonido, core, electron-shell, telemetria+mcp, config+idioma+reporte+auth, orquestadores, movil+promo+bot+clips+overlay, transversal). **~27 hallazgos, 12 verificados adversarialmente como CONFIRMED, 0 rechazados.**
+
+- **Arreglados en esta corrida** (commits `81438e7` + el siguiente):
+  - shutdown ordenado nunca corria en quit (`process.on('exit')` sync vs `shutdownAll` async) + re-entrancy de `window-all-closed` que abortaba el shutdown en el cierre por X.
+  - canales/index.js#shutdown: 5 timers de reconexion sin limpiar.
+  - sonido: loop infinito de yt-dlp con playlist irresoluble; 2 crashes de proceso (gzip resp sin 'error' listener, taskkill spawn sin 'error'); race del backoff de TTS.
+  - **HIGH** glitchtip.js espeja PII de espectadores (nick/userId/IP/queries) a GlitchTip via el mirror de `log:entry`.
+  - core/logger.js sin 'error' listener en el WriteStream (crash ante ENOSPC/lock).
+  - CONFIG_KEYS_PUBLICAS exponia `subscriptionsEnabled`/`mcpDestructiveToolsEnabled`/`mcpDevToolsEnabled` a la tool MCP `set_config` (apagar auth de la app).
+  - telemetria/connectors/errors.js manda stacks con `C:\Users\<nombre>` (des-anonimiza).
+  - auth/refresh.js#tick race: logout durante el `await` re-aplicaba sesion Pro sin token.
+  - moderacion: palabra bloqueada solo-whitespace -> regex que bloquea todo el chat.
+  - configuracion/apply-patch.js: `__proto__` en el patch -> TypeError.
+
+- **BACKLOG — hallazgos CONFIRMED sin arreglar todavia** (a triar por el usuario):
+
+  | Sev | Hallazgo | Ubicacion | Nota |
+  |---|---|---|---|
+  | MED | `validateLocalMutation` confia en el header `Host` (spoofable), sin chequeo de `req.socket.remoteAddress`; un cliente no-browser en la LAN evade la restriccion localhost para endpoints de escritura | `core/app.js:17-50` | Cuidado: el panel movil + overlays de OBS legitimamente pegan desde IPs de LAN. Necesita una decision de diseño (loopback-only para mutaciones "reales", LAN para movil). |
+  | MED | `GET /api/auth/session` devuelve PII completa (email, id de Supabase, subscription) a cualquier cliente LAN sin auth cuando `subscriptionsEnabled=true` | `features/auth/routes.js:54` | Mismo fix subyacente que el de arriba. |
+  | MED | disconnect que corre contra un connect en vuelo (twitch/youtube/kick) deja una conexion huerfana; el connect solo hace `state.*Channels.set` DESPUES del await | `connect-twitch.js:164`, `connect-youtube.js:100`, `connect-kick.js:84` | Falta un guard de "connect en progreso" (tiktok sí lo tiene con `connectingTiktok`). |
+  | MED | Twitch EventSub sin path de reconexion si el WS inicial falla antes de `session_welcome` | `twitch/eventsub/connect-socket.js:106` | Fallo transitorio de red al boot -> EventSub muerto hasta reiniciar la app. |
+  | LOW | `guard-suscripcion.js` falla OPEN (wall desactivado) si el listener `config:get`/`auth:get` tira (event-bus traga la excepcion) | `core/guard-suscripcion.js:28` | |
+  | LOW | `ws-server.js#isAllowedWsClient` mismo trust del Host spoofable; cliente remoto con `Host: localhost` sin Origin recibe todo el broadcast | `core/ws-server.js:13-28` | |
+  | LOW | `auth-session.json` (tiene el token) se escribe con `writeFileSync` pelado, sin tmp+rename (a diferencia de config/moderacion) | `features/auth/session-store.js:24` | Crash mid-write -> sesion perdida. Fix barato. |
+  | LOW | `GET /mcp` sin `MCP_TOKEN` evade el chequeo localhost (solo POST/PATCH/DELETE/PUT lo tienen); compare de `MCP_TOKEN` con `===` (timing) | `core/app.js:31`, `mcp/transport/streamable-http.js:70` | El GET responde 405 igual, pero llega a `buildMcpServer`. |
+  | LOW | telemetria/buffer.js `drop(n)` por posicion + el trim de `push()` (`slice(-MAX)`) pueden correr la cola durante un flush en vuelo -> descarta eventos sin enviar y re-envia enviados | `features/telemetria/buffer.js:47` | |
+  | LOW | telemetria/connectors/creators.js nunca llama `recordResolved()` -> el cap `MAX_RESOLVES=2` es codigo muerto, `creators/seen` (con el nombre del canal) se emite en cada connect/reconnect/escena | `features/telemetria/connectors/creators.js:18` | |
+  | LOW | ventana del checkout de Polar (`window.js`) tiene titulo legitimante pero sin `will-navigate`/`setWindowOpenHandler` restrictivo -> un redirect fuera de `*.polar.sh` renderiza contenido arbitrario bajo el titulo de la app | `electron-shell/window.js:103-140` | |
+  | LOW | `waitForServer()` sin timeout por request -> una conexion aceptada que nunca responde cuelga el arranque para siempre (sin ventana, sin dialogo) | `electron-shell/window.js:31-57` | |
+  | LOW | `moderacion/index.js` `dupSweepTimer` no se limpia en shutdown (a diferencia del sweep del store) | `features/moderacion/index.js:65` | `.unref()`'d, solo importa si se re-registra el dominio (tests). |
+  | LOW | `getBlockedMatchers` colapsa letras repetidas del lado de la palabra bloqueada: bloquear "ass" tambien bloquea "as" | `features/moderacion/filters/blocked-matchers.js:33` | |
+  | LOW | `shutdownAll(logger)` con `logger` undefined tras un fallo parcial de boot en packaged -> el catch tira | `main.js:208` + `core/shutdown.js:26` | Guard barato. |
+  | LOW | `waitForServer` exige `data.app === 'tiktok-tts'` (solo lo produce `configuracion`); si ese dominio falla al montar, el arranque cuelga y culpa lo equivocado | `electron-shell/window.js:31` | |
+  | NIT | `ws-server.js` contador de `violations` del rate-limit nunca se resetea en una ventana OK (contradice la semantica "ventanas seguidas" documentada) | `core/ws-server.js:69-101` | |
