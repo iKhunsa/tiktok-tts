@@ -23,9 +23,9 @@ Crear rama `fix/canales-replay-watchdog` desde ahí.
 
 ## Roadmap
 
-- [ ] **Etapa 1 — El ciclo que reportan los usuarios** (replay + muerte silenciosa + promo).
+- [x] **Etapa 1 — El ciclo que reportan los usuarios** (replay + muerte silenciosa + promo).
       Tareas 01, 02, 03, 04. Es lo único que el usuario final nota. Sale primero, se puede releasear sola.
-- [ ] **Etapa 2 — Calibrar watchdogs existentes y bajar ruido de observabilidad.**
+- [x] **Etapa 2 — Calibrar watchdogs existentes y bajar ruido de observabilidad.**
       Tareas 05, 06, 07. No cambia comportamiento visible; limpia GlitchTip y reduce churn de reconexión.
 - [ ] **Etapa 3 — Bugs sueltos de frontend / TTS.**
       Tareas 08, 09, 10. Independientes entre sí y del resto.
@@ -40,7 +40,7 @@ Crear rama `fix/canales-replay-watchdog` desde ahí.
 | 04 | Scheduler de promo no debe reiniciar la cuenta `[15,45,60]` en una reconexión transitoria | hecho | media | `prompts/bugs/04-promo-rearme-en-reconexion.md` |
 | 05 | `chat-watchdog.js` de YouTube: 4 min es muy agresivo; `youtubeSeenIds` sin ventana temporal | hecho | media | `prompts/bugs/05-youtube-watchdog-agresivo.md` |
 | 06 | `canales.kick.sin_eventos` cada 5 min en canal tranquilo — falso positivo, churn de reconexión | hecho | baja | `prompts/bugs/06-kick-sin-eventos-falso-positivo.md` |
-| 07 | GlitchTip: no promover a issue errores de conexión esperados (streamer offline, YouTube no en vivo) | pendiente | baja | `prompts/bugs/07-glitchtip-ruido-errores-esperados.md` |
+| 07 | GlitchTip: no promover a issue errores de conexión esperados (streamer offline, YouTube no en vivo) | hecho | baja | `prompts/bugs/07-glitchtip-ruido-errores-esperados.md` |
 | 08 | Botón "Fallos conocidos" muerto — `showKnownIssuesNotice` nunca se bridgeó a `window` | pendiente | baja | `prompts/bugs/08-boton-fallos-conocidos-muerto.md` |
 | 09 | `sonido.tts.respuesta_pequena` dispara en el 100% de las síntesis con `len:0` | pendiente | media | `prompts/bugs/09-respuesta-pequena-100pct.md` |
 | 10 | `Google TTS failed: "text should be a string"` — valor no-string llega a la síntesis | pendiente | baja | `prompts/bugs/10-tts-text-should-be-string.md` |
@@ -195,3 +195,12 @@ Tras confirmar este roadmap:
 - **Commit:** `624f8d0`.
 - **Criterios de aceptación:** los 4 cumplidos.
 - **Próximo:** tarea 07 (ruido de errores esperados en GlitchTip).
+
+### 2026-09-10 — orquestador · tarea 07 (ruido de GlitchTip) — cierra Etapa 2
+
+- **Qué se hizo:** `electron-shell/glitchtip.js` — constante `ERRORES_CONEXION_ESPERADOS` (patrones substring case-insensitive: `isn't online`, `live stream was not found`, `client version was not found`, `live has ended`, `user_not_found`) + helper `esErrorConexionEsperado(e)` (solo `canales.*`, matchea `e.data.error || e.message`). Guard en `reportarIssue` tras el gate de nivel y antes de los caps: `if (esErrorConexionEsperado(e)) return;`.
+- **Decisiones:** match por texto libre (no hay `code` estable que llegue a `reportarIssue` — la tarea 03 colapsó `err.info` a texto). Comentario `ponytail:` con la fragilidad. Breadcrumbs / sección Logs se registran aguas arriba → los eventos filtrados NO se pierden, solo no son issue. Los eventos `sin_eventos` de la tarea 02 NO matchean → se siguen promoviendo (un stale real sí importa). `WARN_PROMOVIDOS` y la línea de la tarea 06 intactos. `aptabase.js` sin cambios (los `warn` no suman a `errorCount`).
+- **Verificación:** `npm test` 109/109 (105 + 4 nuevos en `test/glitchtip-errores-esperados.test.js`). eslint 0 errores.
+- **Archivos tocados:** `electron-shell/glitchtip.js`, `test/glitchtip-errores-esperados.test.js` (nuevo).
+- **Commit:** `d516bf8`.
+- **Próximo:** Etapa 3 — tarea 08 (botón "Fallos conocidos").
