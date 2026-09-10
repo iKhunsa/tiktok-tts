@@ -11,6 +11,7 @@ function createMusicState() {
     playlistResolved: [],
     playlistIndex: 0,
     playlistActive: false,
+    playlistResolveFails: 0, // fallos consecutivos de resolucion perezosa en el ciclo actual de advance
   };
 }
 

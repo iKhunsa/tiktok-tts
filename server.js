@@ -8,7 +8,6 @@ const { createEventBus } = require('./core/event-bus');
 const { createLogger } = require('./core/logger');
 const { registerDomain } = require('./core/register-domain');
 const { attachBroadcast } = require('./core/broadcast');
-const { shutdownAll } = require('./core/shutdown');
 const { DATA_BASE } = require('./core/paths');
 
 const PORT = process.env.PORT || 3000;
@@ -77,8 +76,10 @@ process.on('unhandledRejection', (reason) => {
   );
 });
 
-process.on('exit', () => {
-  shutdownAll(logger);
-});
+// El shutdown ordenado de los dominios (core/shutdown.js#shutdownAll) es async y
+// lo dispara main.js en 'before-quit'. No se engancha a process.on('exit') aca:
+// ese handler tiene que ser sincrono y abandonaria toda microtask pendiente, o
+// sea que ningun domain.shutdown() llegaria a correr. En `node server.js` suelto
+// (sin Electron) no hay teardown ordenado — es dev-only, aceptado.
 
 module.exports = { app, server, bus, logger };
