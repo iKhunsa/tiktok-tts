@@ -10,6 +10,7 @@ const { fetchTtsAudio } = require('../fetch-audio');
 // traduce el code a la respuesta HTTP + el evento de log.
 const EVENTO_POR_CODE = {
   BACKOFF:      'sonido.tts.backoff_activo',
+  EMPTY_INPUT:  'sonido.tts.texto_invalido',
   EMPTY:        'sonido.tts.respuesta_pequena',
   TIMEOUT:      'sonido.tts.error_google_timeout',
   NET:          'sonido.tts.error_google_red',
@@ -25,7 +26,12 @@ function generate(deps) {
   return async (req, res) => {
     const { bus, logger, rateLimiterState } = deps;
     const { text, voice = 'es' } = req.body || {};
-    if (!text) return res.status(400).json({ error: 'Texto requerido', errorKey: 'errors.textRequired' });
+    // El body es JSON arbitrario del cliente: `text` puede venir no-string
+    // (number, objeto, null). Coerce antes de tocarlo — sin esto `text.substring`
+    // de abajo tira un TypeError sin catch. El guard central de fetch-audio.js
+    // es la red de seguridad para el resto de call sites (bug 10).
+    const rawText = typeof text === 'string' ? text : '';
+    if (!rawText.trim()) return res.status(400).json({ error: 'Texto requerido', errorKey: 'errors.textRequired' });
 
     const config = getConfigSnapshot(bus);
 
@@ -37,7 +43,7 @@ function generate(deps) {
       return res.status(429).json({ error: 'Rate limit activo', errorKey: 'errors.ttsRateLimited', retryAfter: config.TTS_RATE_WINDOW_MS });
     }
 
-    const limitedText = sanitizeForTTS(text.substring(0, config.TTS_MAX_CHARS));
+    const limitedText = sanitizeForTTS(rawText.substring(0, config.TTS_MAX_CHARS));
     logger.log(
       'info', 'sonido', 'sonido/tts/routes/generate.js#generate', 'sonido.tts.solicitado',
       `TTS solicitado, voz ${voice}`, { voice, textLen: limitedText.length }
@@ -75,8 +81,8 @@ function generate(deps) {
       // Cliente corto la conexion (skip) — no es un error, la respuesta ya no existe.
       if (code === 'ABORTED' || (!res.writableEnded && !!res.socket && res.socket.destroyed)) return;
       const evento = EVENTO_POR_CODE[code] || 'sonido.tts.error_google_red';
-      // BACKOFF ya se loguea dentro de fetch-audio.js — aca solo la respuesta.
-      if (code !== 'BACKOFF') {
+      // BACKOFF y EMPTY_INPUT ya se loguean dentro de fetch-audio.js — aca solo la respuesta.
+      if (code !== 'BACKOFF' && code !== 'EMPTY_INPUT') {
         const nivel = code === 'EMPTY' ? 'warn' : 'error';
         logger.log(
           nivel, 'sonido', 'sonido/tts/routes/generate.js#generate', evento,
@@ -86,7 +92,7 @@ function generate(deps) {
       }
 
       if (!res.headersSent) {
-        const status = code === 'BACKOFF' ? 503 : 502;
+        const status = code === 'BACKOFF' ? 503 : code === 'EMPTY_INPUT' ? 400 : 502;
         res.status(status).json({
           error: `TTS no disponible (${code})`,
           errorKey: 'errors.ttsServiceError',
