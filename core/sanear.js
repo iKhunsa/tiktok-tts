@@ -1,8 +1,9 @@
 'use strict';
 
 // Saca rutas de home de mensajes/props antes de mandarlos afuera — ni
-// GlitchTip ni Aptabase las sanean y expondrían el nombre de usuario de
-// Windows. Compartido por glitchtip.js y aptabase.js.
+// GlitchTip ni Aptabase ni telemetria las sanean y expondrían el nombre de
+// usuario de Windows. Cruza el límite electron-shell/ ↔ features/ (lo usan
+// glitchtip.js, aptabase.js y features/telemetria/) → vive en core/.
 function sanear(str) {
   if (!str) return str;
   let s = String(str);

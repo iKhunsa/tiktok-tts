@@ -1,5 +1,7 @@
 'use strict';
 
+const { sanear } = require('../../../core/sanear');
+
 // Ciclo de electron-updater — electron-shell/updater.js (esta misma fase)
 // emite estos eventos con los mismos nombres que el backend viejo.
 function attach(bus, track) {
@@ -17,7 +19,7 @@ function attach(bus, track) {
 
   bus.on('update:error', (payload) => {
     const { message } = payload || {};
-    track('updates', 'error', { message: String(message || '').slice(0, 200) });
+    track('updates', 'error', { message: sanear(String(message || '')).slice(0, 200) });
   });
 }
 

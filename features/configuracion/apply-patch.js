@@ -11,7 +11,10 @@ function applyConfigPatch(config, input = {}) {
   const rejected = [];
   const keysChanged = [];
   for (const [k, v] of Object.entries(input)) {
-    if (!(k in CONFIG_VALIDATORS)) continue;
+    // hasOwnProperty, no `k in`: `in` es prototype-inclusive, entonces un patch
+    // {"__proto__": {}} / {"constructor": ...} resolvia a Object.prototype y
+    // llamarlo como validador tiraba TypeError.
+    if (!Object.prototype.hasOwnProperty.call(CONFIG_VALIDATORS, k)) continue;
     if (!CONFIG_VALIDATORS[k](v)) {
       rejected.push(k);
       continue;

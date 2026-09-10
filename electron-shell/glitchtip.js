@@ -21,7 +21,7 @@ const fs = require('fs');
 const path = require('path');
 const { app } = require('electron');
 const { marcarInstalacion: marcarInstalacionCompartida } = require('./install-marker');
-const { sanear } = require('./sanear');
+const { sanear } = require('../core/sanear');
 const { resolveConfigValue } = require('./resolve-config-value');
 
 let Sentry = null;
@@ -276,15 +276,40 @@ function estadoApp() {
   };
 }
 
+// Campos que llevan identidad de un espectador. El mirror de 'log:entry'
+// (core/logger.js espeja TODO log, sin filtro de nivel) trae eventos info con
+// identidad completa — moderacion.filtro.mensaje_bloqueado {nick,userId,key},
+// movil.* {ip}, sonido.musica.* {user,query} — que acá terminarían como
+// breadcrumb + sección Logs. Los issues reales usan otro path (reportarIssue),
+// que arma su propio contexto y no toca esto.
+const CAMPOS_IDENTIDAD = ['userId', 'nick', 'user', 'username', 'ip', 'key', 'query', 'texto', 'comment'];
+
 function recortarData(data) {
   if (!data || typeof data !== 'object') return undefined;
   const out = {};
   for (const [k, v] of Object.entries(data)) {
     if (k === 'stack') continue;
+    if (CAMPOS_IDENTIDAD.includes(k)) continue;
     if (typeof v === 'string') out[k] = sanear(v).slice(0, 300);
     else if (typeof v === 'number' || typeof v === 'boolean') out[k] = v;
   }
   return Object.keys(out).length ? out : undefined;
+}
+
+// El mensaje del log suele interpolar el nick/ip/usuario ("Mensaje bloqueado de
+// Fulano", "Panel movil emparejado desde 192.168.1.5"). Redacta cualquier valor
+// de campo de identidad que aparezca literal en el texto, además del scrubbing
+// de rutas home de sanear().
+function sanearMensajeEvento(e) {
+  let m = sanear(String((e && (e.message || e.event)) || ''));
+  const d = e && e.data;
+  if (d && typeof d === 'object') {
+    for (const k of CAMPOS_IDENTIDAD) {
+      const v = d[k];
+      if (typeof v === 'string' && v.length >= 3) m = m.split(v).join(`<${k}>`);
+    }
+  }
+  return m;
 }
 
 function init({ appVersion, isDebug, userDataDir, logger }) {
@@ -500,7 +525,7 @@ function attach(bus, logger) {
       if (!RUIDO_BREADCRUMB.has(e.event)) {
         Sentry.addBreadcrumb({
           category: e.domain || 'app',
-          message: `${e.event} — ${e.message}`.slice(0, 300),
+          message: `${e.event} — ${sanearMensajeEvento(e)}`.slice(0, 300),
           level: nivel,
           data: recortarData(e.data),
         });
@@ -510,7 +535,7 @@ function attach(bus, logger) {
       if ((e.level === 'warn' || e.level === 'error' || e.level === 'fatal') && Sentry.logger) {
         const fn = Sentry.logger[nivel] || Sentry.logger.warn;
         try {
-          fn(sanear(String(e.message || e.event)), {
+          fn(sanearMensajeEvento(e), {
             dominio: e.domain || 'desconocido',
             evento: e.event,
             funcion: e.function || undefined,
@@ -555,5 +580,7 @@ module.exports = {
   attach,
   shutdown,
   esErrorConexionEsperado, // export para tests (bug 07)
+  recortarData,            // export para tests (scrub de PII en breadcrumbs/Logs)
+  sanearMensajeEvento,     // idem
   get enabled() { return estado.enabled; },
 };

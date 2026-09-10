@@ -4,6 +4,8 @@
 // core/logger.js y core/error-boundary.js desde la Fase 1 — coincide 1:1
 // con el nombre de evento del backend viejo, sin necesidad de bridge.
 
+const { sanear } = require('../../../core/sanear');
+
 const MAX_PER_SESSION = 50;
 
 function attach(bus, track) {
@@ -15,8 +17,9 @@ function attach(bus, track) {
     sent++;
     track('errors', kind, {
       where: String(domain || 'unknown').slice(0, 120),
-      message: String(message).slice(0, 500),
-      stack: stack ? String(stack).slice(0, 500) : null,
+      // Windows mete C:\Users\<nombre> en cada stack — des-anonimiza el stream.
+      message: sanear(String(message)).slice(0, 500),
+      stack: stack ? sanear(String(stack)).slice(0, 500) : null,
     });
   };
 

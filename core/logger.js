@@ -36,6 +36,13 @@ function createLogger({ logsDir, cap = DEFAULT_CAP } = {}) {
       const fileName = `session-${new Date().toISOString().replace(/:/g, '-').split('.')[0]}.log`;
       sessionLogPath = path.join(logsDir, fileName);
       stream = fs.createWriteStream(sessionLogPath, { flags: 'a' });
+      // ENOSPC / EACCES / lock de antivirus emiten 'error' async — sin listener
+      // seria un unhandled y tumbaria el proceso. El logger nunca debe tirar:
+      // se descarta el stream y writeToStream cae a console/no-op.
+      stream.on('error', (error) => {
+        stream = null;
+        console.error('[core.logger] stream de log de sesion caido:', error && error.message);
+      });
     } catch (error) {
       stream = null;
       console.error('[core.logger] no se pudo abrir el stream de log de sesion:', error.message);

@@ -36,7 +36,14 @@ function readTikTokError(err) {
 function setupTikTokConnection(deps, cleanUsername) {
   const { state, bus, logger } = deps;
   const existing = state.tiktokChannels.get(cleanUsername);
-  if (existing && existing.conn) existing.conn.removeAllListeners();
+  if (existing && existing.conn) {
+    // Teardown completo del conn superseded (mismo patron que el give-up branch
+    // y el cleanup de `prev` en connectTiktokChannel): sin disconnect() su
+    // polling loop / heartbeat / socket half-open quedan colgados cuando onStale
+    // fuerza la reconexion.
+    existing.conn.removeAllListeners();
+    try { existing.conn.disconnect(); } catch (_) { /* best-effort */ }
+  }
 
   const conn = new WebcastPushConnection(cleanUsername, {
     processInitialData: false,

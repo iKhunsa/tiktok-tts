@@ -13,14 +13,17 @@ const { getSessionLogFile } = require('./routes/get-session-log-file');
 const { getLogsDownloadAll } = require('./routes/get-logs-download-all');
 const mcpRegistry = require('../../core/contracts/mcp-registry');
 
-// Claves de config que un agente puede leer/ajustar de forma segura (sin
-// adminIdentities ni internals).
+// Claves de config que un agente MCP puede leer/ajustar de forma segura (sin
+// adminIdentities ni internals). NO incluye las llaves de gate de seguridad
+// (subscriptionsEnabled, mcpEnabled, mcpDevToolsEnabled,
+// mcpDestructiveToolsEnabled): un agente no puede apagar el login-wall ni
+// habilitarse mas tools a si mismo. Esas solo se togglean por PATCH /api/config
+// (local) o la UI, que no filtran por esta lista.
 const CONFIG_KEYS_PUBLICAS = [
   'ttsVoiceLang', 'ttsSlowSpeech', 'ttsReadNonFollowers', 'langFilterEnabled', 'dictFilterEnabled',
   'allowedExtraLangs', 'rateLimitEnabled', 'TTS_RATE_LIMIT_MAX', 'TTS_RATE_WINDOW_MS', 'TTS_MAX_CHARS',
   'MAX_QUEUE_MSG', 'LIKE_DEBOUNCE_MS', 'musicEnabled', 'musicVolume', 'musicMaxQueue', 'musicUserCooldownMs',
-  'playlistEnabled', 'playlistShuffle', 'mcpEnabled', 'mcpDestructiveToolsEnabled', 'mcpDevToolsEnabled',
-  'subscriptionsEnabled',
+  'playlistEnabled', 'playlistShuffle',
 ];
 
 module.exports = {
