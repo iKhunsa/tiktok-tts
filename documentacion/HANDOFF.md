@@ -256,3 +256,17 @@ Tras confirmar este roadmap:
   `features/sonido/tts/routes/generate.js`, `test/tts-texto-invalido.test.js` (nuevo).
 - **Commit:** `109b827`.
 - **Fin de la corrida del orquestador.** Pendiente: tarea 09 (decisión de producto), push de la rama, PR.
+
+### 2026-09-10 — orquestador · correcciones de la review + verificacion adversarial (workflows)
+
+- **Contexto:** tras mergear el batch a Dev-2, una review encontro 5 findings. Se corrieron 2 workflows: (1) fix + verify con 2 agentes de fix en paralelo + 4 lentes adversariales; (2) re-verify del diff corregido con 3 lentes.
+- **Findings 1-5 resueltos** (commit `a413b26`):
+  - **1** — `conn.on('error')` post-conexion de TikTok ya NO reconecta (es un cajon de sastre; 'disconnected' + watchdog cubren). Test `canales-tiktok-error-handler.test.js` reescrito para el nuevo comportamiento.
+  - **2+3** — clave de dedup por id/ts de ORIGEN del mensaje: tiktok `raw.msgId` (unico por mensaje; `createTime` NO sirve — int64 repetido entre mensajes del mismo frame, colapsaba legitimos), twitch `raw.tags.id` (UUID IRCv3) con fallback `tmi-sent-ts`+texto, kick/youtube `raw.id`. Un replay lleva el mismo id → deduped; un re-envio legitimo lleva id nuevo → pasa. Ventana unica de 10 min.
+  - **4** — give-up de `scheduleReconnectOrGiveUp`: `clearWatchdog` + teardown del connector (`removeAllListeners` + `disconnect`).
+  - **5** — comentario en `promo/index.js`.
+- **Verificacion adversarial encontro y se corrigio en la misma sesion:** un `MAX_STALE_RECONNECTS` que el orquestador agrego para el finding "give-up inalcanzable" — REVERTIDO porque (a) abandonaba streams legitimamente tranquilos (solo 'chat' contaba como liveness, no gifts/likes/joins) y (b) leakeaba el socket + heartbeat. La limitacion "canal que conecta pero nunca manda chat → reconecta cada 5 min" se ACEPTA y documenta en el comentario de `onStale` (es mejor que pre-batch: TikTok sin watchdog quedaba mudo para siempre).
+- **Limitaciones residuales aceptadas (plausibles, no confirmadas):** ceiling 10min/2000 del dedup (subir si hay reportes); el fallback `platform:userId:texto` colapsa repeticiones exactas legitimas en la rama rara sin id; `setupTikTokConnection` replace-path hace `removeAllListeners` pero no `disconnect` del conn viejo (PRE-EXISTENTE, no del batch — a revisar en la auditoria).
+- **Verificacion:** `npm test` 118/118. eslint 0 errores.
+- **Commit:** `a413b26`.
+- **Proximo:** smoke test por MCP/logs + auditoria backend completa + re-chequeo contra reportes de usuarios.
