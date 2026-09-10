@@ -5,6 +5,15 @@ const { PROMO_ANNOUNCE_TEXT, pickAnnounceText } = require('../../core/announce-t
 const entitlements = require('../../core/contracts/entitlements');
 
 let scheduler = null;
+let stopGraceTimer = null;
+
+// ponytail: 5 min. Una reconexion transitoria (TikTok agota reintentos y el
+// streamer vuelve a conectar, o una caida total breve) NO cuenta como sesion
+// de vivo nueva: si los canales vuelven dentro de esta ventana, el scheduler
+// sigue con su stepIndex y su tiempo transcurrido intactos en vez de reiniciar
+// [15, 45, 60]. Subir si sesiones cortas legitimas empiezan a heredar el
+// schedule de la sesion anterior.
+const STOP_GRACE_MS = 5 * 60 * 1000;
 
 /**
  * Autopromocion por tiempo de sesion — misma inspiracion que el aviso de
@@ -50,14 +59,28 @@ module.exports = {
       if (!payload || payload.state !== 'lista-canales') return;
       const total = ['tiktok', 'twitch', 'youtube', 'kick']
         .reduce((sum, p) => sum + (Array.isArray(payload[p]) ? payload[p].length : 0), 0);
-      if (total > 0) scheduler.startIfNeeded();
-      else scheduler.stop();
+      if (total > 0) {
+        // Volvieron los canales: cancelar cualquier stop() en gracia. Si el
+        // scheduler seguia corriendo, startIfNeeded() es no-op (misma sesion).
+        if (stopGraceTimer) { clearTimeout(stopGraceTimer); stopGraceTimer = null; }
+        scheduler.startIfNeeded();
+      } else if (!stopGraceTimer) {
+        // Bajamos a 0 canales: no cortar el scheduler de una — dar STOP_GRACE_MS
+        // por si es una reconexion. Recien si la ventana se cumple, stop() real
+        // (resetea stepIndex -> proxima sesion arranca en [15, 45, 60]).
+        stopGraceTimer = setTimeout(() => {
+          stopGraceTimer = null;
+          scheduler.stop();
+        }, STOP_GRACE_MS);
+        if (stopGraceTimer.unref) stopGraceTimer.unref();
+      }
     }, 'promo');
 
     return { rutas: 0, listeners: 1 };
   },
 
   shutdown() {
+    if (stopGraceTimer) { clearTimeout(stopGraceTimer); stopGraceTimer = null; }
     if (scheduler) scheduler.stop();
   },
 };
