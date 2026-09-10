@@ -1,6 +1,6 @@
 # Handoff — TikLive TTS · Bugs de canales / replay / observabilidad
 
-Última actualización: 2026-09-10 por sesión Claude (reporte de errores + armado de handoff)
+Última actualización: 2026-09-10 por orquestador (Etapas 1-3 ejecutadas; tarea 09 bloqueada)
 
 ## Estado general
 
@@ -12,7 +12,7 @@ dos amplificadores (TikTok muere en silencio, YouTube reconecta cada 4 min).
 El diagnóstico completo (evidencia de logs, traza de código, tabla comparativa
 de los 4 conectores) está en la primera entrada del Log de contexto y repartido
 en el `## Contexto` de cada prompt de `prompts/bugs/`. Este handoff descompone
-el fix en tareas accionables. **Nada del fix está implementado todavía.**
+el fix en tareas accionables. **Etapas 1 y 2 completas; Etapa 3: 08 y 10 hechas, 09 bloqueada.** Rama `fix/canales-replay-watchdog`, sin pushear.
 
 Rama base para el trabajo: `Dev-2-nuevo-backend` @ `831b8b8` (ya trae
 suscripciones-auth + telemetría live-signal mergeadas, aún sin pushear).
@@ -27,8 +27,8 @@ Crear rama `fix/canales-replay-watchdog` desde ahí.
       Tareas 01, 02, 03, 04. Es lo único que el usuario final nota. Sale primero, se puede releasear sola.
 - [x] **Etapa 2 — Calibrar watchdogs existentes y bajar ruido de observabilidad.**
       Tareas 05, 06, 07. No cambia comportamiento visible; limpia GlitchTip y reduce churn de reconexión.
-- [ ] **Etapa 3 — Bugs sueltos de frontend / TTS.**
-      Tareas 08, 09, 10. Independientes entre sí y del resto.
+- [~] **Etapa 3 — Bugs sueltos de frontend / TTS.**
+      08 y 10 hechas. 09 BLOQUEADA (no es bug de medición — decisión de producto pendiente).
 
 ## Checklist de tareas / bugs
 
@@ -43,7 +43,7 @@ Crear rama `fix/canales-replay-watchdog` desde ahí.
 | 07 | GlitchTip: no promover a issue errores de conexión esperados (streamer offline, YouTube no en vivo) | hecho | baja | `prompts/bugs/07-glitchtip-ruido-errores-esperados.md` |
 | 08 | Botón "Fallos conocidos" muerto — `showKnownIssuesNotice` nunca se bridgeó a `window` | hecho | baja | `prompts/bugs/08-boton-fallos-conocidos-muerto.md` |
 | 09 | `sonido.tts.respuesta_pequena` dispara en el 100% de las síntesis con `len:0` | bloqueado | media | `prompts/bugs/09-respuesta-pequena-100pct.md` |
-| 10 | `Google TTS failed: "text should be a string"` — valor no-string llega a la síntesis | pendiente | baja | `prompts/bugs/10-tts-text-should-be-string.md` |
+| 10 | `Google TTS failed: "text should be a string"` — valor no-string llega a la síntesis | hecho | baja | `prompts/bugs/10-tts-text-should-be-string.md` |
 
 Dependencias:
 - **02 y 03** tocan `features/canales/tiktok/connect-tiktok-channel.js`. Hacer **03 primero** (chico, aislado), después 02.
@@ -232,3 +232,27 @@ Tras confirmar este roadmap:
   3. Migrar a un endpoint TTS con API key. Fuera de alcance.
   - Falta confirmar con un log de producción reciente si además aparece `sonido.tts.backoff_activo` (si NO aparece con 50% de fallo, la tasa real de fallo por-request es <12% y el problema es menor).
 - **Archivos tocados:** ninguno. **Sin commit.** `npm test` sin correr (sin cambios).
+
+### 2026-09-10 — orquestador · tarea 10 (`"text should be a string"`)
+
+- **Call sites de síntesis:** hay **un solo** productor de audio TTS en el backend
+  (`features/sonido/tts/fetch-audio.js#fetchTtsAudio`) y **un solo** caller
+  (`features/sonido/tts/routes/generate.js`, `POST /api/tts`). Announce, promo,
+  soundpad, móvil y MCP **no** sintetizan en el backend — emiten mensajes/eventos
+  y el renderer (`interfaz/src/nucleo/tts/cola-tts.js`) hace `fetch('/api/tts')`.
+  Todo texto no-string entra por el body JSON de `/api/tts` o por
+  `sanitizeForTTS()` devolviendo `''` (mensaje solo emoji/@mención).
+- **Bug secundario encontrado:** `text.substring()` en `generate.js` tiraba un
+  TypeError **sin catch** (antes del `try`) para `{text: 123}`.
+- **Guard central (fix lazy):** tope de `fetchTtsAudio` —
+  `clean = typeof text === 'string' ? text.trim() : ''`; vacío → log `warn`
+  `sonido.tts.texto_invalido` `{tipo,voice}` si no-string, `debug` si string vacío,
+  y `throw {code:'EMPTY_INPUT'}` (nunca toca Google). El resto usa `clean`.
+- **Guard de caller:** `generate.js` coerce `rawText` antes de `.substring()` +
+  `400 textRequired`; `EMPTY_INPUT` → `400`, sin re-loguear.
+- **Verificación:** `npm test` 111/111 (109 + 2 en `test/tts-texto-invalido.test.js`).
+  eslint 0 errores.
+- **Archivos tocados:** `features/sonido/tts/fetch-audio.js`,
+  `features/sonido/tts/routes/generate.js`, `test/tts-texto-invalido.test.js` (nuevo).
+- **Commit:** `109b827`.
+- **Fin de la corrida del orquestador.** Pendiente: tarea 09 (decisión de producto), push de la rama, PR.
