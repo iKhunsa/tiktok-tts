@@ -185,7 +185,9 @@ const WARN_PROMOVIDOS = new Set([
   // 'sonido.tts.respuesta_pequena' NO se promueve: es un fallo externo
   // transitorio (Google rate-limitea devolviendo vacío) que en una racha mala
   // dispara decenas por minuto. Queda igual en la sección Logs (warn+).
-  'canales.kick.sin_eventos',
+  // 'canales.kick.sin_eventos' tampoco: el watchdog ya no da falso positivo en
+  // canales tranquilos (se re-arma con cualquier frame Pusher), y si igual
+  // dispara es un flap de socket que se resuelve solo — ruido en el panel.
   'canales.kick.socket_error',
   'canales.kick.reconexion_agotada',
   'canales.twitch_eventsub.suscripcion_revocada',
