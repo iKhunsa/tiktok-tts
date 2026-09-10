@@ -4,9 +4,9 @@ const { connectPlatformChannel } = require('../connect-impl');
 
 function platformsConnect(deps) {
   return async (req, res) => {
-    const { platform, channel, token } = req.body || {};
+    const { platform, channel } = req.body || {};
     try {
-      const { channel: clean } = await connectPlatformChannel(deps, { platform, channel, token });
+      const { channel: clean } = await connectPlatformChannel(deps, { platform, channel });
       res.json({ success: true, channel: clean });
     } catch (err) {
       if (err.statusCode === 400) return res.status(400).json({ error: err.message });

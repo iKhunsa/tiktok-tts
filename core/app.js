@@ -100,10 +100,24 @@ function attachFallbackStatus(app) {
  * de ruta cae aca automaticamente; los handlers async que rechazan tienen que
  * pasar el error a next() (los pocos que hay lo hacen con try/catch propio).
  * Se loguea con la ruta y se responde 500 generico (nunca el stack crudo al cliente).
+ *
+ * Errores de clase 4xx (statusCode < 500): NO son bugs de la app. express.static
+ * reenvia aca un ENOENT con statusCode 404 cuando un asset existio para fs.stat
+ * pero fallo al abrir (TOCTOU con el antivirus, o un index.html cacheado de una
+ * version vieja pidiendo un PNG que ya no existe — GlitchTip #61); body-parser
+ * reenvia "request aborted" con status 400. Se responde con ese codigo y no se
+ * loguea como core.ruta.excepcion (si no, cada asset faltante = un issue).
  */
 function attachErrorHandler(app, logger) {
   app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
     const error = err instanceof Error ? err : new Error(String(err));
+    const status = error.statusCode || error.status || 500;
+
+    if (status < 500) {
+      if (!res.headersSent) res.status(status).end();
+      return;
+    }
+
     logger.log(
       'error', 'core', 'core/app.js#errorHandler', 'core.ruta.excepcion',
       `Excepcion no manejada en ${req.method} ${req.originalUrl}: ${error.message}`,

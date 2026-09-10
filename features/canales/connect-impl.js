@@ -21,7 +21,7 @@ const PLATAFORMAS = new Set(['tiktok', 'twitch', 'youtube', 'kick']);
  * @returns {Promise<{ platform:string, channel:string }>}
  * @throws  Error (con `statusCode` opcional)
  */
-async function connectPlatformChannel(deps, { platform, channel, token }) {
+async function connectPlatformChannel(deps, { platform, channel }) {
   if (!platform || !channel) {
     const e = new Error('Se requiere platform y channel'); e.statusCode = 400; throw e;
   }
@@ -32,7 +32,7 @@ async function connectPlatformChannel(deps, { platform, channel, token }) {
 
   let clean;
   if (platform === 'tiktok') clean = await connectTiktokChannel(deps, channel);
-  else if (platform === 'twitch') { clean = cleanTwitchChannel(channel); await connectTwitch(deps, clean, token || null); }
+  else if (platform === 'twitch') { clean = cleanTwitchChannel(channel); await connectTwitch(deps, clean); }
   else if (platform === 'youtube') { clean = normalizeYoutubeInput(channel); await connectYoutube(deps, clean); }
   else if (platform === 'kick') clean = await connectKick(deps, cleanKickSlug(channel));
 
