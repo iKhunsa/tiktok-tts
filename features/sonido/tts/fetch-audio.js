@@ -154,8 +154,26 @@ const REINTENTABLE = new Set(['EMPTY', 'NET', 'TIMEOUT', 'DECODE', 'HTTP']);
  * @throws {{ code, retryAfterMs?, ... }}  code: 'BACKOFF' | 'HTTP4XX' | 'EMPTY' | 'NET' | 'TIMEOUT' | ...
  */
 async function fetchTtsAudio({ text, voice = 'es', slow = false, logger = null, signal = null }) {
+  // Guard de input — red de seguridad para TODOS los call sites (bug 10).
+  // google-tts-api tira "text should be a string" si le llega no-string; algo
+  // (mensaje mal normalizado, promo con var sin resolver, payload móvil/MCP)
+  // manda undefined/null/numero/objeto de vez en cuando. Coerce + rechazo limpio.
+  const clean = typeof text === 'string' ? text.trim() : '';
+  if (!clean) {
+    if (logger) {
+      const tipo = text === null ? 'null' : typeof text;
+      logger.log(
+        typeof text === 'string' ? 'debug' : 'warn',
+        'sonido', 'sonido/tts/fetch-audio.js#fetchTtsAudio', 'sonido.tts.texto_invalido',
+        `TTS recibió un texto no sintetizable (${tipo})`,
+        { tipo, voice }
+      );
+    }
+    throw { code: 'EMPTY_INPUT' };
+  }
+
   const lang = GOOGLE_TTS_LANGS.has(voice) ? voice : 'es';
-  const clave = claveCache(text, lang, slow);
+  const clave = claveCache(clean, lang, slow);
 
   // 1. Cache
   const enCache = leerCache(clave);
@@ -177,7 +195,7 @@ async function fetchTtsAudio({ text, voice = 'es', slow = false, logger = null, 
   let ultimoError = null;
   for (let intento = 1; intento <= MAX_ATTEMPTS; intento++) {
     try {
-      const buffer = await pedirAGoogle(text, lang, slow, signal);
+      const buffer = await pedirAGoogle(clean, lang, slow, signal);
       // Exito → resetea backoff, guarda en cache
       backoff.fallosSeguidos = 0;
       backoff.pausadoHasta = 0;
