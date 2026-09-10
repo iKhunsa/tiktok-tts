@@ -25,6 +25,12 @@ const LOG_ENTRY_COUNTED = [
   // [event de core/logger.js,                  conector,     nombre]
   ['sonido.tts.hablado', 'tts', 'spoken'],
   ['sonido.tts.rate_limitado', 'tts', 'rate_limited'],
+  // Tarea 09 (respuesta_pequena 100%): Google rate-limitea devolviendo 200 +
+  // body vacio, es esperado y no se toca retry/backoff. Contados para medir
+  // la tasa real de fallo por-request en produccion (# empty_response /
+  // # spoken+empty_response), sin loguear texto ni PII.
+  ['sonido.tts.respuesta_pequena', 'tts', 'empty_response'],
+  ['sonido.tts.backoff_activo', 'tts', 'backoff_active'],
   ['sonido.musica.solicitud_recibida', 'music', 'request'],
   ['moderacion.filtro.mensaje_bloqueado', 'moderation', 'message_filtered'],
   ['moderacion.filtro.palabra_bloqueada', 'moderation', 'word_blocked'],

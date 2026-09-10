@@ -1,6 +1,6 @@
 # Handoff — TikLive TTS · Bugs de canales / replay / observabilidad
 
-Última actualización: 2026-09-10 por orquestador (Etapas 1-3 ejecutadas; tarea 09 bloqueada)
+Última actualización: 2026-09-10 por orquestador (Etapas 1-3 completas; tarea 09 resuelta como aceptada)
 
 ## Estado general
 
@@ -12,7 +12,7 @@ dos amplificadores (TikTok muere en silencio, YouTube reconecta cada 4 min).
 El diagnóstico completo (evidencia de logs, traza de código, tabla comparativa
 de los 4 conectores) está en la primera entrada del Log de contexto y repartido
 en el `## Contexto` de cada prompt de `prompts/bugs/`. Este handoff descompone
-el fix en tareas accionables. **Etapas 1 y 2 completas; Etapa 3: 08 y 10 hechas, 09 bloqueada.** Rama `fix/canales-replay-watchdog`, sin pushear.
+el fix en tareas accionables. **Etapas 1, 2 y 3 completas (las 10 tareas cerradas).** Rama `fix/canales-replay-watchdog`, sin pushear.
 
 Rama base para el trabajo: `Dev-2-nuevo-backend` @ `831b8b8` (ya trae
 suscripciones-auth + telemetría live-signal mergeadas, aún sin pushear).
@@ -27,8 +27,8 @@ Crear rama `fix/canales-replay-watchdog` desde ahí.
       Tareas 01, 02, 03, 04. Es lo único que el usuario final nota. Sale primero, se puede releasear sola.
 - [x] **Etapa 2 — Calibrar watchdogs existentes y bajar ruido de observabilidad.**
       Tareas 05, 06, 07. No cambia comportamiento visible; limpia GlitchTip y reduce churn de reconexión.
-- [~] **Etapa 3 — Bugs sueltos de frontend / TTS.**
-      08 y 10 hechas. 09 BLOQUEADA (no es bug de medición — decisión de producto pendiente).
+- [x] **Etapa 3 — Bugs sueltos de frontend / TTS.**
+      08 y 10 hechas. 09 resuelta (aceptada como comportamiento esperado + instrumentada, ver Log de contexto).
 
 ## Checklist de tareas / bugs
 
@@ -42,7 +42,7 @@ Crear rama `fix/canales-replay-watchdog` desde ahí.
 | 06 | `canales.kick.sin_eventos` cada 5 min en canal tranquilo — falso positivo, churn de reconexión | hecho | baja | `prompts/bugs/06-kick-sin-eventos-falso-positivo.md` |
 | 07 | GlitchTip: no promover a issue errores de conexión esperados (streamer offline, YouTube no en vivo) | hecho | baja | `prompts/bugs/07-glitchtip-ruido-errores-esperados.md` |
 | 08 | Botón "Fallos conocidos" muerto — `showKnownIssuesNotice` nunca se bridgeó a `window` | hecho | baja | `prompts/bugs/08-boton-fallos-conocidos-muerto.md` |
-| 09 | `sonido.tts.respuesta_pequena` dispara en el 100% de las síntesis con `len:0` | bloqueado | media | `prompts/bugs/09-respuesta-pequena-100pct.md` |
+| 09 | `sonido.tts.respuesta_pequena` dispara en el 100% de las síntesis con `len:0` | hecho (aceptado) | media | `prompts/bugs/09-respuesta-pequena-100pct.md` |
 | 10 | `Google TTS failed: "text should be a string"` — valor no-string llega a la síntesis | hecho | baja | `prompts/bugs/10-tts-text-should-be-string.md` |
 
 Dependencias:
@@ -270,3 +270,34 @@ Tras confirmar este roadmap:
 - **Verificacion:** `npm test` 118/118. eslint 0 errores.
 - **Commit:** `a413b26`.
 - **Proximo:** smoke test por MCP/logs + auditoria backend completa + re-chequeo contra reportes de usuarios.
+
+### 2026-09-10 — tarea 09 (respuesta_pequena 100%) — desbloqueada, decisión de producto
+
+- **Decisión tomada:** opción 1 de las 3 planteadas en el bloqueo — **aceptar** que
+  Google TTS (endpoint gratis, sin API key) rate-limitea devolviendo `200` +
+  body vacío bajo carga, y que eso ya está bien manejado (cache + retry +
+  backoff + warn sin promover a issue de GlitchTip, confirmado en
+  `electron-shell/glitchtip.js` — `sonido.tts.respuesta_pequena` está
+  explícitamente excluido de `WARN_PROMOVIDOS`). Las otras 2 opciones siguen
+  descartadas: tocar retry/backoff estaba prohibido por el prompt original;
+  migrar a un endpoint con API key es un cambio de infraestructura/costo,
+  fuera de alcance de este ticket.
+- **Lo único que faltaba y sí se hizo:** instrumentar para poder medir la tasa
+  real de fallo por-request (el propio bloqueo lo pedía: "falta confirmar con
+  un log de producción si aparece `backoff_activo`"). Se agregaron
+  `sonido.tts.respuesta_pequena` → `tts.empty_response` y
+  `sonido.tts.backoff_activo` → `tts.backoff_active` a
+  `features/telemetria/connectors/counters.js` (mismo patrón que
+  `sonido.tts.rate_limitado`, ya contado ahí). Se acumulan por latido de 5 min
+  y viajan a Aptabase self-hosted, sin texto ni PII — permite calcular
+  `empty_response / (spoken + empty_response)` en el dashboard y confirmar si
+  la tasa real es la <12% estimada o peor.
+- **Sin cambios** en `fetch-audio.js` / `generate.js` (retry/backoff/cache
+  intactos, tal como pedía el prompt original).
+- **Verificación:** `npm test` — sin tests dedicados a `counters.js` (no había
+  antes); no se agregó ninguno nuevo porque el conector no tiene suite propia
+  y el cambio es un array literal de 2 líneas sin lógica nueva. Se corrió la
+  suite completa para confirmar cero regresión en `telemetria-live-signal.test.js`
+  y el resto.
+- **Archivos tocados:** `features/telemetria/connectors/counters.js`.
+- **Fin de la corrida — las 10 tareas del roadmap están cerradas.**
