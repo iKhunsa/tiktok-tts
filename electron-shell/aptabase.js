@@ -25,7 +25,7 @@
 
 const { marcarInstalacion } = require('./install-marker');
 const { bucket } = require('./bucket');
-const { sanear } = require('./sanear');
+const { sanear } = require('../core/sanear');
 const { resolveConfigValue } = require('./resolve-config-value');
 
 let sdk = null;

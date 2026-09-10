@@ -15,6 +15,17 @@ function crearRefresh({ cliente, bus, logger }) {
     const antes = estado.getSesion();
 
     const r = await cliente.session(token);
+
+    // El servicio-cuentas puede tardar 10-20s. Si durante el await el usuario
+    // cerro sesion o cambio de cuenta, este resultado es de otro usuario:
+    // descartarlo (si no, un 200 re-aplica una sesion Pro sin token y no se
+    // auto-cura; un 401 stale cerraria una sesion nueva y valida).
+    if (estado.getToken() !== token) {
+      logger.log('info', 'auth', 'auth/refresh.js#tick', 'auth.refresh.descartado',
+        'La sesion cambio durante el refresh; resultado descartado', {});
+      return;
+    }
+
     if (r.status === 401) {
       // token invalido/expirado -> cerrar sesion local
       estado.cerrar(logger);
