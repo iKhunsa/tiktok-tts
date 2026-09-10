@@ -29,10 +29,12 @@ async function reconnectTiktok(deps, username) {
     const e2 = state.tiktokChannels.get(username);
     if (!e2) return;
 
+    // client.js:430 rechaza con un string, no un Error → err.message seria undefined.
+    const msg = err && err.message ? err.message : String(err);
     logger.log(
       'error', 'canales', 'canales/tiktok/reconnect-tiktok.js#reconnectTiktok', 'canales.tiktok.reconexion_fallida',
-      `Fallo reconexion de TikTok ${username}: ${err.message}`,
-      { channel: username, attempt: e2.attempts, error: err.message, stack: err.stack }
+      `Fallo reconexion de TikTok ${username}: ${msg}`,
+      { channel: username, attempt: e2.attempts, error: msg, stack: err && err.stack }
     );
 
     if (e2.attempts < MAX_RECONNECT_ATTEMPTS) {
