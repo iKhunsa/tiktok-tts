@@ -2,7 +2,8 @@
 
 const path = require('path');
 const http = require('http');
-const { BrowserWindow, shell } = require('electron');
+const { BrowserWindow } = require('electron');
+const { openExternalSafe } = require('./open-external');
 
 const PORT = process.env.PORT || 3000;
 
@@ -121,7 +122,7 @@ function createWindow({ iconPath, onClose, bus }) {
         },
       };
     }
-    shell.openExternal(url);
+    openExternalSafe(url);
     return { action: 'deny' };
   });
 
@@ -141,7 +142,7 @@ function createWindow({ iconPath, onClose, bus }) {
   win.webContents.on('will-navigate', (event, url) => {
     if (!isAppUrl(url)) {
       event.preventDefault();
-      shell.openExternal(url);
+      openExternalSafe(url);
     }
   });
 

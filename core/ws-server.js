@@ -144,6 +144,11 @@ function createWsServer(server, bus, logger) {
   });
 
   wss.on('error', (error) => {
+    // El WSServer comparte el http.Server, asi que un fallo de listen
+    // (EADDRINUSE cuando ya hay otra instancia / otro proceso en el puerto)
+    // se emite por ambos. core/http-server.js ya lo reporta como
+    // core.http.puerto_en_uso — no duplicar el issue (GlitchTip #53 + #54).
+    if (error.code === 'EADDRINUSE' || error.code === 'EACCES') return;
     logger.log(
       'error', 'core', 'core/ws-server.js#onServerError', 'core.ws.servidor_error',
       `Error del servidor WebSocket: ${error.message}`, { error: error.message, stack: error.stack }

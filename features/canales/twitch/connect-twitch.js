@@ -15,8 +15,16 @@ function clearReconnectTimer(map, channel) {
  * handler solo publica al bus con el dato crudo — subs/cheers/raids/join no
  * tienen un evento canonico de los 5 principales, se agrupan bajo
  * canal:evento-especial con `kind` para que /overlay (Fase 8) los consuma.
+ *
+ * Conexion SIEMPRE anonima: este cliente es solo-lectura (no hay .say() en
+ * ningun lado). Un cliente anonimo (justinfan) lee todo el chat, incluidos los
+ * USERNOTICE de subs/cheers/raids y las salas solo-sub. Pasarle `identity` con
+ * el token OAuth (que es de EventSub y caduca a las ~4 h, sin refresh en este
+ * path) solo agregaba un modo de fallo: token vencido -> tmi.js rechaza con
+ * "Login unsuccessful" -> el chat entero se caia y reintentaba 5x con el mismo
+ * token muerto (GlitchTip #63).
  */
-async function connectTwitch(deps, channelInput, token = null, attempt = 0) {
+async function connectTwitch(deps, channelInput, attempt = 0) {
   const { state, bus, logger } = deps;
   const tmi = require('tmi.js');
   const channel = cleanTwitchChannel(channelInput);
@@ -33,13 +41,7 @@ async function connectTwitch(deps, channelInput, token = null, attempt = 0) {
     state.twitchChannels.delete(channel);
   }
 
-  const clientOpts = { channels: [channel] };
-  const effectiveToken = token || (state.authTokens.twitch && state.authTokens.twitch.accessToken);
-  if (effectiveToken && state.authTokens.twitch && state.authTokens.twitch.login) {
-    clientOpts.identity = { username: state.authTokens.twitch.login, password: `oauth:${effectiveToken}` };
-  }
-
-  const client = new tmi.Client(clientOpts);
+  const client = new tmi.Client({ channels: [channel] });
   client._intentionalDisconnect = false;
 
   // Socket mudo: 5 min sin ningun 'message'. Un chat sano re-arma en cada
@@ -54,7 +56,7 @@ async function connectTwitch(deps, channelInput, token = null, attempt = 0) {
       `Twitch ${channel} sin 'message' en ${WATCHDOG_TIMEOUT_MS}ms; forzando reconexion`,
       { channel, timeoutMs: WATCHDOG_TIMEOUT_MS }
     );
-    connectTwitch(deps, channel, effectiveToken, 0).catch((err) => {
+    connectTwitch(deps, channel, 0).catch((err) => {
       logger.log(
         'error', 'canales', 'canales/twitch/connect-twitch.js#connectTwitch', 'canales.twitch.reconexion_fallida',
         `Fallo reconexion (stale) de Twitch ${channel}: ${err.message}`, { channel, error: err.message, stack: err.stack }
@@ -127,7 +129,7 @@ async function connectTwitch(deps, channelInput, token = null, attempt = 0) {
       bus.emit('canal:estado', { platform: 'twitch', channel, state: 'reconectando', attempt: attempt + 1, delayMs: delay });
       const timer = setTimeout(() => {
         state.twitchReconnectTimers.delete(channel);
-        connectTwitch(deps, channel, effectiveToken, attempt + 1).catch((err) => {
+        connectTwitch(deps, channel, attempt + 1).catch((err) => {
           logger.log(
             'error', 'canales', 'canales/twitch/connect-twitch.js#connectTwitch', 'canales.twitch.reconexion_fallida',
             `Fallo reconexion de Twitch ${channel}: ${err.message}`, { channel, error: err.message, stack: err.stack }
@@ -154,7 +156,15 @@ async function connectTwitch(deps, channelInput, token = null, attempt = 0) {
   );
   bus.emit('canal:estado', { platform: 'twitch', channel, state: 'conectando' });
 
-  await client.connect();
+  // tmi.js rechaza connect() con un string (this.reason: "Unable to connect.",
+  // "Connection closed."…), no un Error. Normalizar aca — asi todo caller
+  // (rutas HTTP, reconexion, watchdog) recibe un Error con .message real en vez
+  // de loguear/responder "undefined" (GlitchTip #63).
+  try {
+    await client.connect();
+  } catch (err) {
+    throw err instanceof Error ? err : new Error(String(err));
+  }
   state.twitchChannels.set(channel, client);
   armWatchdog(state, staleKey, WATCHDOG_TIMEOUT_MS, onStale);
 
