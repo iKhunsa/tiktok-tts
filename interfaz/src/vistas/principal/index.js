@@ -31,7 +31,7 @@ import { cargarSesion, almacenSesion, appBloqueada } from '../../nucleo/estado/s
 import { aplicarBloqueoVista, aplicarBadgesInlinePro } from '../../nucleo/estado/vista-bloqueada.js';
 import { iniciarCuenta } from './cuenta/index.js';
 import { iniciarRotacionAnuncioLateral } from './anuncio-lateral.js';
-import { copyToClipboard } from './utils-app.js';
+import { copyToClipboard, showKnownIssuesNotice } from './utils-app.js';
 import { uploadBg, removeBg } from './subida-fondo.js';
 import {
   buildOverlayUrl, updateOverlayUrl, onCfgChange, onChatPlatformChange, copyCfgUrl,
@@ -88,7 +88,7 @@ import {
 import {
   modPage, modSetTab, modOnSearch, modWipe, checkModWipeConfirmInput, closeModWipeConfirm,
   confirmModWipe, openBlockWordModal, closeBlockWordModal, submitBlockWord,
-  iniciarMenusModeracion,
+  iniciarMenusModeracion, modReload,
 } from './moderacion.js';
 import {
   startModerationTour, startSoundpadTour, startBotTour, startPluginStoreTour,
@@ -105,12 +105,12 @@ Object.assign(window, {
   // vistas
   switchView,
   // utils
-  copyToClipboard,
+  copyToClipboard, showKnownIssuesNotice,
   // fondo de overlays
   uploadBg, removeBg,
   // configurador de overlays
   onCfgChange, onChatPlatformChange, copyCfgUrl, testGiftAlert, testSocialAlert,
-  testAlertType, copySocialAlertUrl, testTopLikers,
+  testAlertType, copySocialAlertUrl, testTopLikers, updateSocialOverlayUrl,
   // oauth twitch
   saveTwitchClientId, connectTwitchAuth, disconnectTwitchAuth,
   // toggles de chat
@@ -148,7 +148,7 @@ Object.assign(window, {
   playlistSave, playlistSetEnabled, playlistSetShuffle, playlistPlay, updatePlaylistInfo,
   // moderacion / bloqueo de palabras
   modPage, modSetTab, modOnSearch, modWipe, checkModWipeConfirmInput, closeModWipeConfirm,
-  confirmModWipe, openBlockWordModal, closeBlockWordModal, submitBlockWord,
+  confirmModWipe, openBlockWordModal, closeBlockWordModal, submitBlockWord, modReload,
   // tours
   startModerationTour, startSoundpadTour, startBotTour, startPluginStoreTour,
   startChatActionsTour, startClipsTour, startOverlaysTour, startVoiceTour,
