@@ -1,7 +1,7 @@
 'use strict';
 
 const { MAX_RECONNECT_ATTEMPTS } = require('../state/channel-maps');
-const { setupTikTokConnection } = require('./connect-tiktok-channel');
+const { setupTikTokConnection, readTikTokError } = require('./connect-tiktok-channel');
 const { cleanupAfterLastTikTokChannel } = require('./cleanup-after-last-channel');
 
 async function reconnectTiktok(deps, username) {
@@ -30,12 +30,13 @@ async function reconnectTiktok(deps, username) {
     const e2 = state.tiktokChannels.get(username);
     if (!e2) return;
 
-    // client.js:430 rechaza con un string, no un Error → err.message seria undefined.
-    const msg = err && err.message ? err.message : String(err);
+    // client.js:430 rechaza con un string, no un Error → reusa el mismo lector
+    // que setupTikTokConnection (canales.tiktok.error) para no duplicar la coercion.
+    const { message: msg, stack } = readTikTokError(err);
     logger.log(
       'error', 'canales', 'canales/tiktok/reconnect-tiktok.js#reconnectTiktok', 'canales.tiktok.reconexion_fallida',
       `Fallo reconexion de TikTok ${username}: ${msg}`,
-      { channel: username, attempt: e2.attempts, error: msg, stack: err && err.stack }
+      { channel: username, attempt: e2.attempts, error: msg, stack }
     );
 
     if (e2.attempts < MAX_RECONNECT_ATTEMPTS) {
