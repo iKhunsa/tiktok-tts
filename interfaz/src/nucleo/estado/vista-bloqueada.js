@@ -31,6 +31,18 @@ export function aplicarBloqueoVista(elId, featureId) {
   return bloqueada;
 }
 
+/**
+ * Badges "PRO" inline en markup estatico (hoy: el control "Fondo personalizado"
+ * de cada card de Overlays, entitlement `overlay-decoraciones`). Se ocultan
+ * cuando la feature esta desbloqueada. El gate funcional real vive en
+ * subida-fondo.js#uploadBg; esto es solo el aviso visual.
+ */
+export function aplicarBadgesInlinePro() {
+  const s = almacenSesion.getState();
+  const bloqueada = s.activo && !s.entitlements.includes('overlay-decoraciones');
+  document.querySelectorAll('.pro-inline-badge').forEach((b) => { b.hidden = !bloqueada; });
+}
+
 function pintarOverlayBloqueo(el, bloqueada, featureId) {
   let overlay = el.querySelector(':scope > .vista-bloqueada-overlay');
   if (bloqueada && !overlay) {

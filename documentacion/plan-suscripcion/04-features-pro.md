@@ -31,6 +31,7 @@ bug, i18n, accesibilidad.
 | `mcp-agente` | Servidor MCP (operar la app con un agente) | `features/mcp/` — ya tiene `mcpEnabled` (config); sumar `entitlements.check('mcp-agente')` al gate `isEnabled` que usa `mountStreamableHttp`. `GET /api/mcp/info` queda abierto. |
 | `multi-canal` | Conectar **2+ canales de la misma plataforma** (ej. 2 TikTok, o 2 YouTube). 1 de cada plataforma sigue siendo free. | `features/canales/index.js` — en `connect(deps)` / `platformsConnect(deps)` / `addChannel(deps)`: si la plataforma **ya tiene ≥1 canal conectado** (mirar `features/canales/state/channel-maps.js`) y `!entitlements.check('multi-canal')` → 403 `errors.proRequired`. El 1º de cada plataforma siempre pasa. |
 | `sin-promos` | En Pro, los **avisos promocionales de voz** (cada 15/30 min) **NO suenan**. Gate invertido: tener el entitlement = silenciarlos. | `features/promo/index.js` — donde decide disparar un aviso (el timer / `bus.emit('sonido:hablar', …)` del promo): si `entitlements.check('sin-promos')` → **skip** (no emitir). `core/announce-texts.js` es el generador; el gate va en `features/promo/`, no ahí. |
+| `overlay-decoraciones` | Control **"Fondo personalizado"** de los overlays (subir imagen de fondo). El resto de overlays es 100% free. | `interfaz/src/vistas/principal/subida-fondo.js#uploadBg` — gate funcional (bloquea el upload + abre popup); `interfaz/src/nucleo/estado/vista-bloqueada.js#aplicarBadgesInlinePro` — oculta el badge `.pro-inline-badge` cuando está desbloqueado. Backend: `features/overlay/` `/api/upload-bg` con `entitlements.guard('overlay-decoraciones')`. |
 
 ## Notas de implementación
 
@@ -50,6 +51,12 @@ bug, i18n, accesibilidad.
 ```sql
 INSERT INTO cuentas.entitlements (feature_id, plan_id) VALUES
   ('bot-musical','pro'), ('soundpad','pro'), ('panel-movil','pro'),
-  ('clips','pro'), ('mcp-agente','pro'), ('multi-canal','pro'), ('sin-promos','pro')
+  ('clips','pro'), ('mcp-agente','pro'), ('multi-canal','pro'), ('sin-promos','pro'),
+  ('overlay-decoraciones','pro')
 ON CONFLICT DO NOTHING;
 ```
+
+Versionado en `servicio-cuentas/api/db/migrations/004_seed_entitlements.sql`
+(corre solo en el próximo deploy). `overlay-decoraciones` se agregó en Fase 4
+y **falta en la DB viva** — correr el INSERT de arriba en el SQL Editor, o
+redeploy.
