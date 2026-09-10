@@ -28,7 +28,7 @@ import { t, tErr } from '../../nucleo/i18n/i18n.js';
 import { iniciarI18nApp, pickLanguage, setLanguage } from './i18n-app.js';
 import { switchView } from './vistas-router.js';
 import { cargarSesion, almacenSesion, appBloqueada } from '../../nucleo/estado/sesion.js';
-import { aplicarBloqueoVista } from '../../nucleo/estado/vista-bloqueada.js';
+import { aplicarBloqueoVista, aplicarBadgesInlinePro } from '../../nucleo/estado/vista-bloqueada.js';
 import { iniciarCuenta } from './cuenta/index.js';
 import { iniciarRotacionAnuncioLateral } from './anuncio-lateral.js';
 import { copyToClipboard } from './utils-app.js';
@@ -177,6 +177,7 @@ function aplicarBloqueoApp() {
   aplicarBloqueoVista('view-soundpad', 'soundpad');
   aplicarBloqueoVista('view-bot', 'bot-musical');
   aplicarBloqueoVista('mcpPanel', 'mcp-agente');
+  aplicarBadgesInlinePro();
 }
 
 function iniciarArranque() {
