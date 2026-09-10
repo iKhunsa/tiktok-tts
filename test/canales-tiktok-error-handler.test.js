@@ -1,8 +1,10 @@
 'use strict';
 
 // Bug 03: conn.on('error') de TikTok recibe un objeto plano { info, exception }
-// (no un Error). Antes leia err.message -> "undefined" en log y panel, y no
-// agendaba reconexion tras una conexion ya establecida.
+// (no un Error). Antes leia err.message -> "undefined" en log y panel.
+// Un 'error' post-conexion NO agenda reconexion a proposito: 'error' es un
+// cajon de sastre (incluye fallos de decode de un frame con el socket sano) y
+// la recuperacion real la cubren 'disconnected' + el stale-watchdog de 5 min.
 
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
@@ -44,19 +46,22 @@ test('error con shape {info,exception}: log y canal:estado traen el texto real, 
   if (entry.timer) clearTimeout(entry.timer);
 });
 
-test('error post-conexion agenda una reconexion (backoff), sin duplicar si ya hay una en curso', () => {
+test('error post-conexion NO agenda reconexion (lo cubren disconnected + watchdog)', () => {
   const { logger, estados, entry } = setup();
   entry.connectedOnce = true;
 
   entry.conn.emit('error', errShape);
   entry.conn.emit('error', errShape);
 
-  const reconLogs = logger.entries.filter((e) => e.event === 'canales.tiktok.reconectando');
-  assert.equal(reconLogs.length, 1, 'una sola reconexion agendada pese a dos errores');
-  assert.ok(estados.some((p) => p.state === 'reconectando'));
-  assert.ok(entry.timer, 'timer de reconexion armado');
-
-  clearTimeout(entry.timer);
+  assert.equal(
+    logger.entries.filter((e) => e.event === 'canales.tiktok.reconectando').length, 0,
+    'un error post-conexion no dispara reconexion'
+  );
+  assert.ok(!entry.timer, 'no se armo timer de reconexion');
+  assert.ok(!estados.some((p) => p.state === 'reconectando'), 'no se emitio estado reconectando');
+  // pero el error sí se reporta
+  assert.ok(logger.entries.some((e) => e.event === 'canales.tiktok.error'));
+  assert.ok(estados.some((p) => p.state === 'error' && p.error === 'boom'));
 });
 
 test('error pre-conexion (nunca conecto): teardown, sin reintento', () => {

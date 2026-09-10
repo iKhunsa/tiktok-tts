@@ -65,6 +65,9 @@ module.exports = {
         if (stopGraceTimer) { clearTimeout(stopGraceTimer); stopGraceTimer = null; }
         scheduler.startIfNeeded();
       } else if (!stopGraceTimer) {
+        // Deliberado: un canal que flappea (baja a 0 y vuelve dentro de la ventana)
+        // re-arma esta gracia indefinidamente y mantiene viva la sesion de promo —
+        // flappear no es un fin de directo. Sin cap ni contador a proposito.
         // Bajamos a 0 canales: no cortar el scheduler de una — dar STOP_GRACE_MS
         // por si es una reconexion. Recien si la ventana se cumple, stop() real
         // (resetea stepIndex -> proxima sesion arranca en [15, 45, 60]).
