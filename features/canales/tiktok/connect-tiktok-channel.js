@@ -299,4 +299,4 @@ async function connectTiktokChannel(deps, channel) {
   }
 }
 
-module.exports = { connectTiktokChannel, setupTikTokConnection };
+module.exports = { connectTiktokChannel, setupTikTokConnection, readTikTokError };
