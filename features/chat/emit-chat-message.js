@@ -5,6 +5,7 @@ const { cleanName } = require('./clean-name');
 const { sanitizeForTTS } = require('./sanitize-for-tts');
 const { normalizeForModeration } = require('./normalize-for-moderation');
 const { isAdminIdentity } = require('./is-admin-identity');
+const { normalizeAggressive } = require('./normalize-aggressive');
 const moderacionPolicyContract = require('../../core/contracts/moderacion-policy');
 const { ADMIN_ANNOUNCE_TEXT, pickAnnounceText } = require('../../core/announce-texts');
 
@@ -18,6 +19,32 @@ let adminAnnounced = false;
 
 function resetAdminAnnounce() {
   adminAnnounced = false;
+}
+
+// Dedup del broadcast: cuando un conector reconecta, la libreria reentrega su
+// buffer de mensajes recientes como 'chat' nuevos (hasta decenas por segundo).
+// Sin esto, el TTS repite el chat de los ultimos minutos. La clave NO usa
+// Date.now() (el replay de TikTok re-estampa la hora del reconnect) sino la
+// identidad real: id nativo de la plataforma si lo hay, si no
+// platform + userId + texto normalizado. O(1): Map.has + poda del mas viejo.
+// ponytail: ventana 10min/2000, subir si hay reportes de replay que se cuela
+const DEDUP_WINDOW_MS = 10 * 60 * 1000;
+const DEDUP_MAX = 2000;
+const seenMessages = new Map(); // key -> epoch ms de la primera emision
+
+function resetDedup() {
+  seenMessages.clear();
+}
+
+// true = ya visto dentro de la ventana (descartar). Registra la clave si es nueva.
+function isDuplicateMessage(key, now) {
+  const prev = seenMessages.get(key);
+  if (prev !== undefined && now - prev < DEDUP_WINDOW_MS) return true;
+  seenMessages.set(key, now);
+  if (seenMessages.size > DEDUP_MAX) {
+    seenMessages.delete(seenMessages.keys().next().value);
+  }
+  return false;
 }
 
 // Los "emojis de TikTok" (set propio: [Happy], [Smile], [Loveface]...) llegan
@@ -189,6 +216,24 @@ function emitChatMessage(deps) {
     if (!extracted) return;
 
     const { user, userId, comment, ttsComment, emotes, ytMsgId } = extracted;
+
+    // Gate de dedup — punto comun de las 4 plataformas. Un mensaje ya emitido
+    // dentro de la ventana (replay tras reconexion) se descarta en silencio:
+    // no re-registra interaccion, no re-evalua moderacion, no llega al broadcast.
+    // raw.msgId: TikTok lo aplana desde common.msgId (id de mensaje del server,
+    // estable en el replay). raw.id: Kick. ytMsgId: YouTube (item.id).
+    const nativeId = ytMsgId || raw.msgId || raw.id || null;
+    const dedupKey = nativeId
+      ? `${platform}:${nativeId}`
+      : `${platform}:${userId || user}:${normalizeAggressive(comment)}`;
+    if (isDuplicateMessage(dedupKey, Date.now())) {
+      logger.log(
+        'debug', 'chat', 'chat/emit-chat-message.js#emitChatMessage', 'chat.mensaje.duplicado',
+        `Mensaje duplicado descartado de ${user} (${platform})`, { platform, userId, nick: user }
+      );
+      return;
+    }
+
     const isAdmin = isAdminIdentity(bus, platform, userId, user);
 
     // Registro de interaccion: /moderacion (Fase 5) escucha este evento con
@@ -275,4 +320,4 @@ function emitChatMessage(deps) {
   };
 }
 
-module.exports = { emitChatMessage, resetAdminAnnounce };
+module.exports = { emitChatMessage, resetAdminAnnounce, resetDedup };
