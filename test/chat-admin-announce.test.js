@@ -3,11 +3,12 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { createEventBus } = require('../core/event-bus');
-const { emitChatMessage, resetAdminAnnounce } = require('../features/chat/emit-chat-message');
+const { emitChatMessage, resetAdminAnnounce, resetDedup } = require('../features/chat/emit-chat-message');
 const chatDomain = require('../features/chat/index');
 
 function setup() {
   resetAdminAnnounce();
+  resetDedup();
   const logger = { log: () => {} };
   const bus = createEventBus(logger);
   bus.on('config:get', (respond) => respond({ adminIdentities: { tiktok: ['streamer'] } }), 'test');
@@ -19,8 +20,12 @@ function setup() {
   const app = { get: () => {}, post: () => {} };
   chatDomain.register({ app, bus, logger });
 
+  // comment distinto por llamada: el gate de dedup de emit-chat-message
+  // descartaria un mensaje byte-identico repetido y este test necesita que
+  // cada emision llegue al orquestador.
+  let n = 0;
   const adminMessage = () => emitChatMessage({ bus, logger })({
-    platform: 'tiktok', channel: 'x', raw: { nickname: 'Streamer', uniqueId: 'streamer', comment: 'hola' },
+    platform: 'tiktok', channel: 'x', raw: { nickname: 'Streamer', uniqueId: 'streamer', comment: `hola ${n++}` },
   });
 
   const adminAnnounceCount = () => broadcasts.filter((b) => b.type === 'admin-announce').length;
