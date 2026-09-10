@@ -34,7 +34,7 @@ Crear rama `fix/canales-replay-watchdog` desde ahí.
 
 | # | Descripción | Estado | Prioridad | Prompt asociado |
 |---|---|---|---|---|
-| 01 | Dedup por msgId estable en el broadcast de chat — mata el replay audible en las 4 plataformas | pendiente | alta | `prompts/bugs/01-dedup-mensajes-msgid.md` |
+| 01 | Dedup por msgId estable en el broadcast de chat — mata el replay audible en las 4 plataformas | hecho | alta | `prompts/bugs/01-dedup-mensajes-msgid.md` |
 | 02 | Watchdog de socket mudo compartido para TikTok y Twitch (patrón de Kick/YouTube) | pendiente | alta | `prompts/bugs/02-watchdog-inactividad-tiktok-twitch.md` |
 | 03 | `conn.on('error')` de TikTok: leer `err.exception`, no dejar el canal colgado, agendar reconexión post-conexión | pendiente | media | `prompts/bugs/03-tiktok-error-handler-incompleto.md` |
 | 04 | Scheduler de promo no debe reiniciar la cuenta `[15,45,60]` en una reconexión transitoria | pendiente | media | `prompts/bugs/04-promo-rearme-en-reconexion.md` |
@@ -78,3 +78,16 @@ Tras confirmar este roadmap:
   - El "promo cada 15 min" NO es un leak de timer (confirmado: `session-scheduler.js` idéntico en `v1.8.7` y HEAD). Es la sesión completa reiniciándose. Tarea 04.
 - **Qué quedó pendiente:** implementar las 10 tareas. Confirmar el roadmap con el usuario antes de correr el orquestador (pausa de revisión pedida explícitamente).
 - **Archivos tocados:** solo se crearon `documentacion/HANDOFF.md` y `documentacion/prompts/bugs/*.md`. Ningún archivo de código.
+
+### 2026-09-10 — orquestador · tarea 01 (dedup de mensajes)
+
+- **Qué se hizo:** gate de dedup central en `features/chat/emit-chat-message.js#emitChatMessage`, antes de registrar interacción y evaluar moderación. Map a nivel módulo `seenMessages` (key → epoch), helper `isDuplicateMessage(key, now)`, export `resetDedup()` para tests.
+- **Decisiones:**
+  - Clave: id nativo si existe (`ytMsgId` YouTube / `raw.msgId` TikTok, aplanado de `common.msgId` por la lib, estable en replay / `raw.id` Kick); si no, `platform:userId:normalizeAggressive(comment)`. NO se usa `Date.now()` ni el `msgId` de la línea ~239 (se re-estampa en el replay de TikTok).
+  - Ventana 10 min **o** 2000 mensajes (poda FIFO por orden de inserción del Map). Comentario `ponytail:` con el ceiling.
+  - Duplicado → log `debug` `chat.mensaje.duplicado` (payload sin texto), `return`. No `warn`, no GlitchTip.
+  - El orquestador agregó `raw.msgId` a la cadena de id nativo (el subagente solo había puesto `ytMsgId || raw.id`) tras verificar en `node_modules/.../data-converter.js:19-24` que TikTok aplana `common.msgId` al objeto de chat.
+- **Verificación:** `npm test` 86/86 (83 previos + 3 nuevos en `test/chat-dedup.test.js`). eslint limpio. Todos los criterios de aceptación del prompt cumplidos.
+- **Archivos tocados:** `features/chat/emit-chat-message.js`, `test/chat-dedup.test.js` (nuevo), `test/chat-admin-announce.test.js` (ajuste: `resetDedup()` en setup + `comment` variado por llamada).
+- **Commit:** `e839a29`.
+- **Próximo:** tarea 03 (error-handler de TikTok).
