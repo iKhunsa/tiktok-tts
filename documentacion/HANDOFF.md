@@ -39,7 +39,7 @@ Crear rama `fix/canales-replay-watchdog` desde ahí.
 | 03 | `conn.on('error')` de TikTok: leer `err.exception`, no dejar el canal colgado, agendar reconexión post-conexión | hecho | media | `prompts/bugs/03-tiktok-error-handler-incompleto.md` |
 | 04 | Scheduler de promo no debe reiniciar la cuenta `[15,45,60]` en una reconexión transitoria | hecho | media | `prompts/bugs/04-promo-rearme-en-reconexion.md` |
 | 05 | `chat-watchdog.js` de YouTube: 4 min es muy agresivo; `youtubeSeenIds` sin ventana temporal | hecho | media | `prompts/bugs/05-youtube-watchdog-agresivo.md` |
-| 06 | `canales.kick.sin_eventos` cada 5 min en canal tranquilo — falso positivo, churn de reconexión | pendiente | baja | `prompts/bugs/06-kick-sin-eventos-falso-positivo.md` |
+| 06 | `canales.kick.sin_eventos` cada 5 min en canal tranquilo — falso positivo, churn de reconexión | hecho | baja | `prompts/bugs/06-kick-sin-eventos-falso-positivo.md` |
 | 07 | GlitchTip: no promover a issue errores de conexión esperados (streamer offline, YouTube no en vivo) | pendiente | baja | `prompts/bugs/07-glitchtip-ruido-errores-esperados.md` |
 | 08 | Botón "Fallos conocidos" muerto — `showKnownIssuesNotice` nunca se bridgeó a `window` | pendiente | baja | `prompts/bugs/08-boton-fallos-conocidos-muerto.md` |
 | 09 | `sonido.tts.respuesta_pequena` dispara en el 100% de las síntesis con `len:0` | pendiente | media | `prompts/bugs/09-respuesta-pequena-100pct.md` |
@@ -152,7 +152,7 @@ Tras confirmar este roadmap:
 - **Verificación:** `npm test` 99/99 (95 previos + 4 nuevos en
   `test/promo-rearme-reconexion.test.js`, con `t.mock.timers`). eslint limpio.
 - **Archivos tocados:** `features/promo/index.js`, `test/promo-rearme-reconexion.test.js` (nuevo).
-- **Sin commit** (pedido explícito del prompt).
+- **Commit:** `624f8d0`.
 
 - **Commit:** `4443553`.
 - **Próximo:** tarea 05 (watchdog YouTube) — arranca Etapa 2.
@@ -166,3 +166,32 @@ Tras confirmar este roadmap:
 - **Archivos tocados:** `youtube/chat-watchdog.js`, `youtube/connect-youtube.js`, `state/channel-maps.js`, `routes/remove-channel.js`, `routes/platforms-disconnect.js`, `test/canales-youtube-watchdog.test.js` (nuevo).
 - **Commit:** `6a81f52`.
 - **Próximo:** tarea 06 (falso positivo de Kick).
+
+### 2026-09-10 — orquestador · tarea 06 (falso positivo `canales.kick.sin_eventos`)
+
+- **Parte A (re-arme con cualquier frame):** en `connect-kick.js`, `armKickWatchdog()`
+  se movió al tope del handler `ws.on('message')` — se llama tras parsear
+  cualquier frame de Pusher (subscription_succeeded, `pusher:pong` del ping cada
+  100s, chat), no solo en `CHAT_MESSAGE_EVENT`. Se quitaron las dos llamadas
+  puntuales (branch de subscription y branch de chat). El ping mantiene el WS
+  vivo en canales tranquilos → ya no hay falso positivo cada 5 min. El caso real
+  se preserva: si NO llega ningún frame en 5 min (socket muerto sin `close`), el
+  timeout vence y dispara `scheduleReconnect(..., 'stale')` igual que antes.
+  Comentario del contrato actualizado en `stale-watchdog.js`.
+- **Parte C (bajar severidad):** hecha, cambio chico y aislado — se sacó
+  `'canales.kick.sin_eventos'` de `WARN_PROMOVIDOS` en `electron-shell/glitchtip.js`
+  (una línea + comentario). Ya no se promueve a issue de GlitchTip; queda en la
+  sección Logs (es `warn`). NO toca la zona de la tarea 07 (`EVENTO_A_TIPO` /
+  filtrado de errores esperados de conexión) — la entrada
+  `EVENTO_A_TIPO['canales.kick.sin_eventos']` se dejó (inerte salvo que el evento
+  vuelva a nivel error).
+- **Verificación:** `npm test` 105/105 (103 + 2 nuevos en
+  `test/canales-kick-watchdog.test.js`: silencio total de frames sí dispara;
+  frames no-chat cada 100s re-arman y un canal tranquilo de 30 min no dispara).
+  eslint 0 errores (solo warnings `catch (_)` pre-existentes).
+- **Archivos tocados:** `features/canales/kick/connect-kick.js`,
+  `features/canales/kick/stale-watchdog.js`, `electron-shell/glitchtip.js`,
+  `test/canales-kick-watchdog.test.js` (nuevo).
+- **Commit:** `624f8d0`.
+- **Criterios de aceptación:** los 4 cumplidos.
+- **Próximo:** tarea 07 (ruido de errores esperados en GlitchTip).
