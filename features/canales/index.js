@@ -5,6 +5,7 @@ const { createRateLimiterState, connectRateLimiter } = require('./rate-limit');
 const { loadAuthTokens } = require('./twitch/oauth/auth-tokens-store');
 const { ensureTwitchAccessToken } = require('./twitch/oauth/ensure-access-token');
 const { startTwitchEventSub } = require('./twitch/eventsub/start');
+const { clearTwitchEsTimers } = require('./twitch/eventsub/stop');
 const { saveReplay } = require('./obs/save-replay');
 const obsReplayContract = require('../../core/contracts/obs-replay');
 const mcpRegistry = require('../../core/contracts/mcp-registry');
@@ -189,6 +190,8 @@ module.exports = {
     }
     state.tiktokChannels.clear();
 
+    for (const timer of state.twitchReconnectTimers.values()) clearTimeout(timer);
+    state.twitchReconnectTimers.clear();
     for (const c of state.twitchChannels.values()) {
       c._intentionalDisconnect = true;
       try { c.disconnect(); } catch (_) { /* best-effort */ }
@@ -197,20 +200,26 @@ module.exports = {
 
     for (const timer of state.youtubeWatchdogTimers.values()) clearTimeout(timer);
     state.youtubeWatchdogTimers.clear();
+    for (const timer of state.youtubeReconnectTimers.values()) clearTimeout(timer);
+    state.youtubeReconnectTimers.clear();
 
     for (const c of state.youtubeChannels.values()) {
       try { c.stop('shutdown'); c.removeAllListeners(); } catch (_) { /* best-effort */ }
     }
     state.youtubeChannels.clear();
 
+    if (state.obs.reconnectTimer) { clearTimeout(state.obs.reconnectTimer); state.obs.reconnectTimer = null; }
     if (state.obs.ws) {
       state.obs.intentionalClose = true;
       try { state.obs.ws.close(); } catch (_) { /* best-effort */ }
     }
 
     state.eventsub.stopped = true;
+    state.eventsub.followActive = false;
+    clearTwitchEsTimers(state); // keepaliveTimer + reconnectTimer
     if (state.eventsub.ws) {
       try { state.eventsub.ws.removeAllListeners(); state.eventsub.ws.close(); } catch (_) { /* best-effort */ }
+      state.eventsub.ws = null;
     }
 
     for (const timer of state.kickWatchdogTimers.values()) clearTimeout(timer);

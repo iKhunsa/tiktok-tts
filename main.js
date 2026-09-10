@@ -36,6 +36,7 @@ let tray = null;
 let isQuitting = false;
 let pendingUpdateVersion = null;
 let quitTasksDone = false;
+let cierresListos = false;
 let ipcHandles = null;
 
 ensureSingleInstance(app, () => showMainWindow(mainWindow));
@@ -195,23 +196,32 @@ app.on('before-quit', (event) => {
     mainWindow.removeAllListeners('close');
   }
 
-  // El handler se vuelve a disparar tras el app.quit() de abajo; la segunda
-  // vez solo tiene que dejar pasar el cierre.
+  // Los cierres ya terminaron -> este before-quit (el disparado por el
+  // app.quit() del .finally) deja salir de verdad.
+  if (cierresListos) return;
+
+  // Hasta que los cierres terminen, NUNCA dejar quitar. El cierre por X
+  // (path principal) destruye la ventana sin cancelar 'close', luego
+  // 'window-all-closed' dispara otro app.quit() re-entrante — sin este
+  // preventDefault incondicional, ese segundo quit abandona el
+  // Promise.allSettled todavia pendiente y el shutdown ordenado no corre.
+  event.preventDefault();
+
   if (quitTasksDone) return;
   quitTasksDone = true;
 
-  // El shutdown ordenado de los dominios de negocio ya corre en
-  // process.on('exit') dentro de server.js (Fase 1) — aca solo se pospone
-  // el quit lo justo para que telemetria y GlitchTip alcancen a mandar/flushear
-  // (en 'will-quit' el proceso ya murio antes de que la peticion salga).
-  const cierres = [];
+  // Shutdown ordenado de los dominios (moderation.json flush, matar children
+  // de yt-dlp, cerrar WS de canales) + telemetria/GlitchTip/Aptabase.
+  // shutdownAll es async y process.on('exit') no puede esperar microtasks.
+  const HARD_QUIT_MS = 8000;
+  const cierres = [require('./core/shutdown').shutdownAll(logger)];
   if (telemetryRuntime.enabled) cierres.push(telemetryRuntime.shutdown({ timeoutMs: 1500 }));
   if (glitchtip.enabled) cierres.push(glitchtip.shutdown());
   if (aptabase.enabled) cierres.push(aptabase.shutdown());
-  if (cierres.length) {
-    event.preventDefault();
-    Promise.allSettled(cierres).finally(() => app.quit());
-  }
+  Promise.race([
+    Promise.allSettled(cierres),
+    new Promise((r) => setTimeout(r, HARD_QUIT_MS)),
+  ]).finally(() => { cierresListos = true; app.quit(); });
 });
 
 app.on('will-quit', () => {
@@ -224,9 +234,9 @@ app.on('will-quit', () => {
 // se esta cerrando; si no, deja que Electron cierre normal para no dejar un
 // proceso huerfano corriendo sin ventana visible.
 app.on('window-all-closed', (e) => {
-  if (tray && !isQuitting) {
-    e.preventDefault();
-  } else {
-    app.quit();
-  }
+  // Shutdown ordenado en vuelo -> no dejar que el default de Electron corte
+  // el proceso; el app.quit() del .finally lo cierra cuando termina.
+  if (quitTasksDone && !cierresListos) { e.preventDefault(); return; }
+  if (tray && !isQuitting) { e.preventDefault(); return; }
+  app.quit();
 });

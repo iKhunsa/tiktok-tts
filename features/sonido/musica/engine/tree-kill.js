@@ -11,10 +11,14 @@ function treeKill(child) {
   if (!child || !child.pid) return;
   if (process.platform === 'win32') {
     try {
-      spawn('taskkill', ['/PID', String(child.pid), '/T', '/F'], {
+      const killer = spawn('taskkill', ['/PID', String(child.pid), '/T', '/F'], {
         windowsHide: true,
         stdio: 'ignore',
       });
+      // spawn reporta fallo ASYNC via 'error' (EMFILE/EAGAIN bajo exhaustion de
+      // fds/procesos), no un throw sync. Sin handler → 'error' sin capturar →
+      // crash. En ese caso caemos al kill directo del proceso inmediato.
+      killer.on('error', () => { try { child.kill(); } catch (_) { /* best-effort */ } });
       return;
     } catch (_) {
       // best-effort — cae al kill directo abajo

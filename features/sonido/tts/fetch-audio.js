@@ -125,6 +125,12 @@ function pedirAGoogle(texto, lang, slow, signal = null) {
         : enc === 'deflate' ? resp.pipe(zlib.createInflate())
         : resp;
 
+      // Con respuesta comprimida, un 'error' de `resp` (socket reset mid-body)
+      // NO se propaga por .pipe() al stream de gunzip → 'error' sin handler →
+      // CRASH del proceso. En el path identidad ya lo cubre stream.on('error')
+      // de abajo (stream === resp), acá el reject extra es no-op.
+      if (stream !== resp) resp.on('error', (err) => reject({ code: 'NET', message: err.message }));
+
       const chunks = [];
       stream.on('data', (c) => chunks.push(c));
       stream.on('end', () => {
@@ -194,11 +200,16 @@ async function fetchTtsAudio({ text, voice = 'es', slow = false, logger = null, 
   // 2. Retry
   let ultimoError = null;
   for (let intento = 1; intento <= MAX_ATTEMPTS; intento++) {
+    const intentoInicio = Date.now();
     try {
       const buffer = await pedirAGoogle(clean, lang, slow, signal);
-      // Exito → resetea backoff, guarda en cache
-      backoff.fallosSeguidos = 0;
-      backoff.pausadoHasta = 0;
+      // Exito real de red → resetea el backoff, PERO solo si la pausa no la
+      // seteó una rafaga de fallos concurrentes mientras este request (lento)
+      // estaba en vuelo. Un exito viejo no debe borrar una pausa recién puesta.
+      if (backoff.pausadoHasta <= intentoInicio) {
+        backoff.fallosSeguidos = 0;
+        backoff.pausadoHasta = 0;
+      }
       escribirCache(clave, buffer);
       return { buffer, cached: false };
     } catch (err) {
