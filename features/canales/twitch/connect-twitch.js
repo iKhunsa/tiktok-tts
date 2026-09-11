@@ -3,6 +3,7 @@
 const { MAX_RECONNECT_ATTEMPTS } = require('../state/channel-maps');
 const { cleanTwitchChannel } = require('./clean-channel');
 const { armWatchdog, clearWatchdog, WATCHDOG_TIMEOUT_MS } = require('../stale-watchdog');
+const { assertNoConexionEnCurso } = require('../connecting-lock');
 
 function clearReconnectTimer(map, channel) {
   const timer = map.get(channel);
@@ -30,12 +31,7 @@ async function connectTwitch(deps, channelInput, attempt = 0) {
   const channel = cleanTwitchChannel(channelInput);
   if (!channel) throw new Error('Se requiere canal Twitch');
 
-  if (state.connectingTwitch.has(channel)) {
-    const err = new Error('Conexión ya en progreso para este canal');
-    err.statusCode = 409;
-    throw err;
-  }
-  state.connectingTwitch.add(channel);
+  assertNoConexionEnCurso(state.connectingTwitch, channel);
 
   try {
     return await connectTwitchLocked(deps, tmi, channel, attempt);

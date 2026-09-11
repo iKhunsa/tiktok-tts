@@ -20,16 +20,25 @@ function crearGuardSuscripcion(bus) {
   if (!bus) return (_req, _res, next) => next(); // createApp() sin bus (tests)
 
   // Cacheado, no releido en cada request (mismo patron que features/auth/index.js).
+  // ponytail: NO leer aca en el momento de crear el middleware — createApp(bus)
+  // corre antes de que features/configuracion se registre y empiece a escuchar
+  // 'config:get' (ver server.js), asi que esa primera lectura no recibiria
+  // respuesta y subsOn quedaria pegado en false para siempre (bypass silencioso
+  // del muro de login si subscriptionsEnabled=true venia guardado de antes).
+  // Se difiere al primer request real, momento en el que todos los dominios ya
+  // estan registrados.
   let subsOn = false;
+  let inicializado = false;
   const leerConfig = () => {
     bus.emit('config:get', (c) => { subsOn = !!(c && c.subscriptionsEnabled); });
+    inicializado = true;
   };
-  leerConfig();
   bus.on('config:actualizado', ({ keysChanged } = {}) => {
     if (!keysChanged || keysChanged.includes('subscriptionsEnabled')) leerConfig();
   }, 'core');
 
   return function guardSuscripcion(req, res, next) {
+    if (!inicializado) leerConfig();
     const p = (req.path || '/').toLowerCase().replace(/\/+$/, '') || '/';
     if (!p.startsWith('/api/')) return next();
     // /api/auth/* son las rutas del dominio de cuentas (login, session, etc.),

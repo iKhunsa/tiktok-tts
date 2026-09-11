@@ -7,6 +7,7 @@ const { fetchKickChatroom } = require('./fetch-chatroom');
 const { parseKickChatMessage } = require('./handle-event');
 const { PUSHER_URL, CHAT_MESSAGE_EVENT, subscribeFrame, PING_FRAME } = require('./pusher');
 const { armKickWatchdog, clearKickWatchdog, WATCHDOG_TIMEOUT_MS } = require('./stale-watchdog');
+const { assertNoConexionEnCurso } = require('../connecting-lock');
 
 // Conexion directa al chat de Kick desde Node: resuelve el chatroom.id via la
 // API publica de kick.com y se suscribe al canal Pusher `chatrooms.<id>.v2`
@@ -68,12 +69,7 @@ async function connectKick(deps, channelOrSlug, attempt = 0) {
   const slug = cleanKickSlug(channelOrSlug);
   if (!slug) throw new Error('Kick: ingresa el nombre del canal');
 
-  if (state.connectingKick.has(slug)) {
-    const err = new Error('Conexión ya en progreso para este canal');
-    err.statusCode = 409;
-    throw err;
-  }
-  state.connectingKick.add(slug);
+  assertNoConexionEnCurso(state.connectingKick, slug);
 
   try {
     return await connectKickLocked(deps, slug, attempt);
