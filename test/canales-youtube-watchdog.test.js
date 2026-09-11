@@ -42,6 +42,11 @@ test('re-armar el watchdog en cada chat impide el onStale de un stream lento', (
   clearWatchdogTimer(state.youtubeWatchdogTimers, target.key);
 });
 
-test('el dedup local youtubeSeenIds ya no existe (delegado al gate central de chat)', () => {
-  assert.equal('youtubeSeenIds' in createChannelState(), false);
+test('youtubeSeenIds existe como segunda capa de dedup (sin ventana de tiempo, huecos largos)', () => {
+  // Restaurado: el gate central (emit-chat-message.js) tiene ventana de 10min,
+  // pero youtube-chat re-scrapea la pagina del live en cada reconexion y puede
+  // reentregar backlog mas viejo que eso. youtubeSeenIds (cap de conteo, sin
+  // ventana) es la defensa que sobrevive huecos largos, igual que kickSeenIds.
+  const state = createChannelState();
+  assert.ok(state.youtubeSeenIds instanceof Map);
 });
