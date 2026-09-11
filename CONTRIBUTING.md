@@ -18,45 +18,24 @@ npm install
 
 ### Modos de ejecución
 
-| Comando | Caso de uso | WebSocket | Hot Reload CSS |
-|---------|-----------|-----------|----------------|
-| `npm run electron` | App completa Electron + servidor. **Es el modo recomendado.** | ✅ Funciona | ❌ Requiere refresh |
-| `npm run serve` | Buildea frontend + servidor. Abre `http://localhost:3000`. **Ideal para iterar UI/backend/overlays/MCP.** | ✅ Funciona | ❌ Requiere refresh |
-| `npm run serve:watch` | Igual que `serve` pero con recarga del servidor (`node --watch`). | ✅ Funciona | ❌ Requiere refresh |
-| `npm run dev:all` ⭐ | **PARA DESARROLLO INTERACTIVO DE CSS/HTML.** Corre compilación + servidor en paralelo. Edita CSS → Vite compila (~2s) → refresh en :3000. | ✅ Funciona | ⚠️ Automático, refresh manual |
-| `npm run dev` | Solo servidor, **sin** buildear frontend. Usa `interfaz/dist/` existente. Requiere `npm run build:front` manual si editás CSS. | ✅ Funciona | ❌ Requiere rebuild + refresh |
-| `npm run dev:front` | Solo Vite dev server (puerto 5173) con hot reload completo. **No recomendado:** choca con WebSocket de la app. | ❌ No funciona | ✅ Automático sin refresh |
-| `npm start` | Solo servidor, sin recarga ni build. | ✅ Funciona | ❌ Requiere rebuild + refresh |
+| Comando | Qué hace |
+|---------|----------|
+| `npm run electron` | Abre la app completa en modo desarrollo (Electron + servidor + UI). **Es el modo recomendado.** |
+| `npm run dev` | Levanta solo el servidor Node.js con recarga (`node --watch server.js`), sin la ventana de Electron. Útil para trabajar en backend/overlays desde el navegador. |
+| `npm start` | Solo el servidor, sin recarga. |
 
-Con el servidor activo, la UI está en `http://localhost:3000`, los overlays en
-`http://localhost:3000/overlay-*.html` y el endpoint MCP en
-`http://localhost:3000/mcp`. Lo único que Electron aporta y el navegador no:
-atajos globales de teclado, tray, auto-update y el error tracking de GlitchTip/
-Aptabase (que viven en `electron-shell/`).
-
-#### ¿Por qué los cambios de CSS no se actualizan en tiempo real?
-
-**TL;DR:** Usa `npm run dev:all` si editas CSS/HTML frecuentemente.
-
-**Explicación:** Express sirve archivos desde `interfaz/dist/` (compilado por Vite). Los cambios en `interfaz/src/` no aparecen automáticamente sin:
-1. Recompilar Vite (`npm run build:front` manual, o automático con `dev:build-watch`)
-2. Hard refresh en el navegador (Ctrl+Shift+R) para limpiar cache
-
-- `npm run dev` = solo servidor, espera que `/dist/` esté actualizado
-- `npm run dev:all` = servidor + compilador Vite en watch mode (recompila automáticamente)
-- `npm run dev:front` = Vite dev server con hot reload completo (pero choca con WebSocket)
+Con el servidor activo, la UI está en `http://localhost:3000` y los overlays en `http://localhost:3000/overlay-*.html`.
 
 ## Estructura del proyecto
 
 ```
 main.js        → Proceso principal de Electron (ventana, tray, auto-update)
 server.js      → Express + WebSocket: conexiones (TikTok/Twitch/YouTube), TTS, API
-interfaz/      → UI y overlays (HTML/CSS/JS, modulos ESM + Vite)
-  index.html     → UI principal (fuente)
+public/        → UI y overlays (HTML/CSS/JS)
+  index.html     → UI principal
   advanced.html  → Configuración avanzada (filtros, palabras bloqueadas)
   overlay-*.html → Overlays para OBS
-  publico/       → estaticos (icons/, flags/, locales/, vendor/, plugin-store/)
-  dist/          → build de Vite (generado, gitignored) — lo sirve core/app.js
+  locales/       → Traducciones (i18n)
 gifts/         → PNGs de regalos de TikTok
 ```
 
@@ -66,22 +45,8 @@ Hay más contexto técnico en [`CLAUDE.md`](CLAUDE.md) / [`AGENTS.md`](AGENTS.md
 
 1. Crea una rama desde `main`: `git checkout -b feat/mi-cambio`
 2. Haz tus cambios y pruébalos (ver tabla de arriba).
-3. Si agregas texto visible en la UI/overlays, agrega su clave en `interfaz/publico/locales/*.json`.
+3. Si agregas texto visible en la UI/overlays, agrega su clave en `public/locales/*.json`.
 4. Abre un Pull Request contra `main` usando la plantilla.
-
-### Checklist MCP (si tu feature agrega rutas de escritura)
-
-El servidor MCP (`features/mcp/`) expone las capacidades de la app a agentes de
-IA. Toda feature nueva con rutas de escritura debe seguir creciendo el toolset
-(ver `features/mcp/PROTOCOL.md`). El CI lo verifica (`scripts/check-mcp.js` +
-`test/mcp-registry.test.js`).
-
-- [ ] ¿Agrega `app.post/patch/delete`? → registra ≥1 `mcp.registerTool(...)` en
-      tu propio `register()`, colocada con la feature.
-- [ ] ¿Tiene estado que un agente querría consultar? → `mcp.registerStateProvider(...)`.
-- [ ] ¿Acción irreversible (ban, delete, disconnect)? → `destructive: true`.
-- [ ] `inputSchema` en JSON Schema plano (no Zod).
-- [ ] Suma tu dominio a `CON_ESCRITURA` en `test/mcp-registry.test.js`.
 
 ### Convención de commits
 
