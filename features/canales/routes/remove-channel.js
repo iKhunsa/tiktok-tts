@@ -43,6 +43,7 @@ function removeChannel(deps) {
         clearYoutubeWatchdogTimer(state.youtubeWatchdogTimers, ytChannel);
         const c = state.youtubeChannels.get(ytChannel);
         if (c) { stopYoutubeChat(c, 'disconnect'); state.youtubeChannels.delete(ytChannel); }
+        state.youtubeSeenIds.delete(ytChannel);
         bus.emit('canal:estado', { platform: 'youtube', channel: ytChannel, state: 'desconectado' });
       } else if (platform === 'kick') {
         const slug = cleanKickSlug(channel);

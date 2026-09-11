@@ -33,6 +33,8 @@ function scheduleReconnect(deps, target, attempt, reason) {
   state.youtubeReconnectTimers.set(target.key, timer);
 }
 
+const SEEN_IDS_CAP = 500;
+
 function forceReconnect(deps, target, liveChat, attempt, reason) {
   const { state, bus } = deps;
   const wasActive = state.youtubeChannels.get(target.key) === liveChat;
@@ -60,6 +62,7 @@ async function connectYoutube(deps, channelOrId, attempt = 0) {
   }
 
   const liveChat = new LiveChat(target.opts);
+  if (!state.youtubeSeenIds.has(target.key)) state.youtubeSeenIds.set(target.key, new Set());
 
   // Watchdog: YouTube puede seguir devolviendo 200 OK con actions:[] para
   // clientes anonimos cuando el token de continuacion caduca — 'chat' deja de
@@ -76,9 +79,17 @@ async function connectYoutube(deps, channelOrId, attempt = 0) {
 
   liveChat.on('chat', (item) => {
     armWatchdog(deps, target, onStale);
-    // Dedup del replay tras reconexion: gate central en
-    // features/chat/emit-chat-message.js (ventana 10min/2000 por ytMsgId=item.id).
-    // El Set local anterior no aportaba nada que el gate central no cubra ya.
+    // Dedup por ID de mensaje de YouTube — sin ventana de tiempo, sobrevive
+    // huecos mas largos que los 10min del gate central (ver comentario en
+    // channel-maps.js#youtubeSeenIds). Doble capa a proposito: esto atrapa
+    // huecos largos, el gate central atrapa lo que esto no cubra (cap de 500).
+    const msgId = item.id;
+    if (msgId) {
+      const seen = state.youtubeSeenIds.get(target.key);
+      if (seen.has(msgId)) return;
+      seen.add(msgId);
+      if (seen.size > SEEN_IDS_CAP) seen.delete(seen.values().next().value);
+    }
     bus.emit('canal:mensaje-crudo', { platform: 'youtube', channel: target.key, raw: item });
   });
 

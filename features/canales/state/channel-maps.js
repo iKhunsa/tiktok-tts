@@ -12,6 +12,16 @@ function createChannelState() {
     youtubeChannels: new Map(), // channelOrId -> LiveChat
     youtubeReconnectTimers: new Map(),
     youtubeWatchdogTimers: new Map(), // channelKey -> Timeout (watchdog de chat 'silencioso')
+    // channelKey -> Set<item.id>. Defensa en profundidad ademas del gate central
+    // de dedup (features/chat/emit-chat-message.js, ventana 10min): youtube-chat
+    // SIEMPRE re-scrapea la pagina del live al reconectar y extrae el
+    // "continuation" con un regex de primera coincidencia que no garantiza
+    // arrancar "desde ahora" — un hueco real (red, suspension) mas largo que la
+    // ventana de 10 min puede reentregar backlog que el gate central ya evacuo.
+    // Sin ventana de tiempo (solo cap de conteo, como kickSeenIds) para no
+    // depender de cuanto dure el hueco. Se crea una vez por canal y NO se
+    // recrea en reconexiones (mismo patron que kickSeenIds).
+    youtubeSeenIds: new Map(),
     kickChannels: new Map(), // slug -> { ws, chatroomId, intentional, pingTimer, attempt }
     kickSeenIds: new Map(), // slug -> Set<msgId>
     kickWatchdogTimers: new Map(), // slug -> Timeout (watchdog de chat 'silencioso')
