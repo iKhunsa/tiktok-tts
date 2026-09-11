@@ -9,7 +9,27 @@ permissions:
   contents: write
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
   release:
+    needs: test
     runs-on: windows-latest
 
     steps:
@@ -17,7 +37,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install dependencies
         run: npm ci
@@ -33,6 +53,12 @@ jobs:
         run: |
           $config = @{ url = "https://telemetria.tiklivetts.es/api/ingest"; token = "${{ secrets.INGEST_TOKEN }}" } | ConvertTo-Json
           Set-Content -Path telemetry-config.generated.json -Value $config
+
+      - name: Write aptabase config
+        shell: pwsh
+        run: |
+          $config = @{ appKey = "${{ secrets.APTABASE_APP_KEY }}"; host = "https://aptabase.tiklivetts.es" } | ConvertTo-Json
+          Set-Content -Path aptabase-config.generated.json -Value $config
 
       - name: Build & publish installer
         run: npm run build:electron -- --publish always

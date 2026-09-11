@@ -1,24 +1,100 @@
 'use strict';
-const { app, BrowserWindow, Tray, Menu, nativeImage, dialog, shell, globalShortcut, ipcMain } = require('electron');
-const { autoUpdater } = require('electron-updater');
-const path = require('path');
-const http = require('http');
 
-// ── Telemetría ─────────────────────────────────────────────────────────────
-// El módulo vive en telemetry/. Si no hay URL configurada no hace nada: cero
-// peticiones de red.
-//
-// La URL/token salen de TELEMETRY_URL+TELEMETRY_TOKEN (override de dev), de un
-// telemetry.json en userData (override manual del usuario), o del
-// telemetry-config.json bakeado en el build (extraResources, ver package.json
-// build.extraResources y scripts/ensure-telemetry-config.js). Archivo aparte a
-// proposito: config.json lo gestiona server.js, que descarta las claves que no
-// conoce y borraria esta en el primer guardado.
-const telemetry = require('./telemetry');
+const { app, globalShortcut } = require('electron');
+const path = require('path');
+const fs = require('fs');
+
+const { ensureSingleInstance } = require('./electron-shell/single-instance');
+const { createWindow, showMainWindow, waitForServer, PORT } = require('./electron-shell/window');
+const { createTray, buildTrayMenu, showStartupError } = require('./electron-shell/tray');
+const { setupAutoUpdater, installUpdate } = require('./electron-shell/updater');
+const { attachIpcBridge } = require('./electron-shell/ipc-bridge');
+const { startUiohook, stopUiohook, isUiohookActive, registerUiohookShortcut } = require('./electron-shell/uiohook');
+const { GLOBAL_SHORTCUT } = require('./features/clips/global-shortcut');
+const telemetryRuntime = require('./features/telemetria/runtime');
+const glitchtip = require('./electron-shell/glitchtip');
+const aptabase = require('./electron-shell/aptabase');
+
+// Cuando empaquetado, apunta server.js a extraResources para los assets.
+if (app.isPackaged) {
+  process.env.TIKTOK_RESOURCES_PATH = process.resourcesPath;
+}
+process.env.TIKTOK_USER_DATA_PATH = app.getPath('userData');
+
+// GlitchTip (error tracking) — se inicia lo antes posible, antes de cargar
+// server.js, para captar hasta un fallo de arranque de los dominios. El
+// enganche al bus (attach) viene después, cuando ya existe el logger.
+glitchtip.init({
+  appVersion: app.getVersion(),
+  isDebug: !app.isPackaged,
+  userDataDir: app.getPath('userData'),
+  logger: null,
+});
+
+let mainWindow = null;
+let tray = null;
+let isQuitting = false;
+let pendingUpdateVersion = null;
+let quitTasksDone = false;
+let ipcHandles = null;
+
+ensureSingleInstance(app, () => showMainWindow(mainWindow));
+
+// Aptabase (analytics de eventos de producto) — init temprano (antes de
+// app.isReady(), requisito del SDK) pero DESPUÉS del lock de instancia única:
+// así una 2ª instancia ya hizo process.exit(0) y no dispara installacion /
+// app_started por duplicado. attach al bus más abajo cuando ya hay logger.
+aptabase.init({
+  appVersion: app.getVersion(),
+  isPackaged: app.isPackaged,
+  isDebug: !app.isPackaged,
+  userDataDir: app.getPath('userData'),
+  logger: null,
+});
+
+// Arranca /core + los 16 dominios de negocio (server.js ya no tiene logica
+// propia desde la Fase 1). Envuelto para mostrar un dialogo recuperable en
+// vez de una excepcion sin manejar que bloquee al auto-updater.
+let serverLoadError = null;
+let serverModule = null;
+try {
+  serverModule = require('./server');
+} catch (error) {
+  serverLoadError = error;
+  if (!app.isPackaged) throw error;
+}
+
+const bus = serverModule && serverModule.bus;
+const logger = serverModule && serverModule.logger;
+
+if (bus) glitchtip.attach(bus, logger);
+if (bus) aptabase.attach(bus, logger);
+
+if (bus && logger) {
+  process.on('uncaughtException', (error) => {
+    logger.log(
+      'fatal', 'electron-shell', 'main.js#uncaughtException', 'core.boundary.excepcion_capturada',
+      `Excepcion no capturada en el proceso main: ${error.message}`, { error: error.message, stack: error.stack }
+    );
+  });
+  process.on('unhandledRejection', (reason) => {
+    const error = reason instanceof Error ? reason : new Error(String(reason));
+    logger.log(
+      'fatal', 'electron-shell', 'main.js#unhandledRejection', 'core.boundary.excepcion_capturada',
+      `Promesa rechazada sin manejar en main: ${error.message}`, { error: error.message, stack: error.stack }
+    );
+  });
+}
+
+const ICON_PATH = app.isPackaged
+  ? path.join(process.resourcesPath, 'tray-icon.ico')
+  : path.join(__dirname, 'tray-icon.ico');
+
+function getMainWindow() { return mainWindow; }
+function getTray() { return tray; }
 
 function readJsonField(file, field, validate) {
   try {
-    const fs = require('fs');
     if (!fs.existsSync(file)) return null;
     const value = JSON.parse(fs.readFileSync(file, 'utf8'))[field];
     if (typeof value !== 'string' || !value.trim()) return null;
@@ -29,351 +105,114 @@ function readJsonField(file, field, validate) {
   }
 }
 
+// La URL/token de telemetria salen de TELEMETRY_URL+TELEMETRY_TOKEN (override
+// de dev), de telemetry.json en userData (override manual), o de
+// telemetry-config.json bakeado en el build. Archivo aparte a proposito:
+// config.json lo gestiona /configuracion, que descarta claves desconocidas y
+// borraria esta en el primer guardado.
 function resolveTelemetryUrl() {
   if (process.env.TELEMETRY_URL) return process.env.TELEMETRY_URL.trim();
-
   const userFile = path.join(app.getPath('userData'), 'telemetry.json');
   const isHttpUrl = (v) => /^https?:\/\//i.test(v);
   const fromUser = readJsonField(userFile, 'url', isHttpUrl);
   if (fromUser) return fromUser;
-
   const bundledFile = path.join(process.env.TIKTOK_RESOURCES_PATH || __dirname, 'telemetry-config.json');
   return readJsonField(bundledFile, 'url', isHttpUrl);
 }
 
 function resolveIngestToken() {
   if (process.env.TELEMETRY_TOKEN) return process.env.TELEMETRY_TOKEN.trim();
-
   const userFile = path.join(app.getPath('userData'), 'telemetry.json');
   const fromUser = readJsonField(userFile, 'token');
   if (fromUser) return fromUser;
-
   const bundledFile = path.join(process.env.TIKTOK_RESOURCES_PATH || __dirname, 'telemetry-config.json');
   return readJsonField(bundledFile, 'token');
 }
-// ─────────────────────────────────────────────────────────────────────────
 
-// ── Low-level keyboard hook (works in exclusive-fullscreen / games) ────────────
-// uiohook-napi uses SetWindowsHookEx(WH_KEYBOARD_LL) instead of RegisterHotKey,
-// so it fires even when a DirectX exclusive-fullscreen game has focus.
-let uiohook = null;
-let uiohookActive = false;
-try { uiohook = require('uiohook-napi'); } catch (_) {}
-
-// Map Electron shortcut key names → uiohook-napi keycodes
-const _UIOHOOK_KEYS = (() => {
-  const map = {};
-  if (!uiohook) return map;
-  const K = uiohook.UiohookKey;
-  // Letters
-  'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(c => { map[c] = K[c]; });
-  // Digits
-  '0123456789'.split('').forEach(d => { map[d] = K[`Num${d}`] ?? K[d]; });
-  // F-keys
-  for (let i = 1; i <= 12; i++) map[`F${i}`] = K[`F${i}`];
-  return map;
-})();
-
-function _makeUiohookCheck(electronShortcut) {
-  const parts = electronShortcut.split('+').map(p => p.trim());
-  const needCtrl  = parts.some(p => ['Ctrl','CommandOrControl','Control','Cmd','Command'].includes(p));
-  const needShift = parts.includes('Shift');
-  const needAlt   = parts.includes('Alt');
-  const keyParts  = parts.filter(p => !['Ctrl','CommandOrControl','Control','Cmd','Command','Shift','Alt','Super','Meta'].includes(p));
-  if (!keyParts.length) return null;
-  const keycode = _UIOHOOK_KEYS[keyParts[0].toUpperCase()];
-  if (keycode == null) return null;
-  return (e) =>
-    e.keycode === keycode &&
-    !!e.ctrlKey  === needCtrl &&
-    !!e.shiftKey === needShift &&
-    !!e.altKey   === needAlt;
-}
-
-// id → { check, callback }
-const _uiohookShortcuts = new Map();
-
-function registerUiohookShortcut(id, electronShortcut, callback) {
-  const check = _makeUiohookCheck(electronShortcut);
-  if (!check) return false;
-  _uiohookShortcuts.set(id, { check, callback });
-  return true;
-}
-
-function unregisterUiohookShortcut(id) {
-  _uiohookShortcuts.delete(id);
-}
-
-function startUiohook() {
-  if (!uiohook || uiohookActive) return;
-  try {
-    uiohook.uIOhook.on('keydown', (e) => {
-      for (const { check, callback } of _uiohookShortcuts.values()) {
-        if (check(e)) callback();
-      }
-    });
-    uiohook.uIOhook.start();
-    uiohookActive = true;
-    console.log('[shortcuts] uiohook-napi active — atajos funcionan en fullscreen');
-  } catch (err) {
-    console.warn('[shortcuts] uiohook-napi fallo, usando globalShortcut:', err.message);
-    uiohookActive = false;
-  }
-}
-
-function stopUiohook() {
-  if (uiohook && uiohookActive) {
-    try { uiohook.uIOhook.stop(); } catch (_) {}
-    uiohookActive = false;
-  }
-}
-
-const PORT = 3000;
-
-const gotLock = app.requestSingleInstanceLock();
-if (!gotLock) {
-  app.quit();
-  process.exit(0);
-}
-
-// When packaged, point server.js to the extraResources folder for assets
-if (app.isPackaged) {
-  process.env.TIKTOK_RESOURCES_PATH = process.resourcesPath;
-}
-process.env.TIKTOK_USER_DATA_PATH = app.getPath('userData');
-
-// Start Express server — wrapped so a crash here shows a recoverable dialog
-// instead of an unhandled exception that blocks the auto-updater from running.
-let serverLoadError = null;
-let serverShutdown = null;
-let serverLog = null;
-try {
-  const serverModule = require('./server');
-  serverShutdown = serverModule.shutdown;
-  serverLog = serverModule.log;
-} catch (e) {
-  serverLoadError = e;
-  // In development, surface the real error immediately instead of hiding it
-  if (!app.isPackaged) throw e;
-}
-
-process.on('uncaughtException', (err) => {
-  console.error('[main] uncaughtException:', err);
-  if (serverLog) serverLog('error', 'main', 'uncaughtException', { message: err && err.message, stack: err && err.stack });
-  telemetry.bus.emit('error:uncaught', {
-    where: 'main', message: err && err.message, stack: err && err.stack,
-  });
-});
-process.on('unhandledRejection', (reason) => {
-  console.error('[main] unhandledRejection:', reason);
-  if (serverLog) serverLog('error', 'main', 'unhandledRejection', { message: (reason && reason.message) || String(reason), stack: reason && reason.stack });
-  telemetry.bus.emit('error:uncaught', {
-    where: 'main:rejection',
-    message: (reason && reason.message) || String(reason),
-    stack: reason && reason.stack,
-  });
-});
-
-// Poll until server is accepting connections
-function waitForServer(cb, onFailure, attempts = 0) {
-  http.get(`http://127.0.0.1:${PORT}/api/status`, (res) => {
-    let body = '';
-    res.setEncoding('utf8');
-    res.on('data', (chunk) => { body += chunk; });
-    res.on('end', () => {
-      try {
-        const data = JSON.parse(body);
-        if (res.statusCode === 200 && data.app === 'tiktok-tts') {
-          cb();
-          return;
-        }
-      } catch (_) {}
-      retryWaitForServer(cb, onFailure, attempts);
-    });
-  }).on('error', () => {
-    retryWaitForServer(cb, onFailure, attempts);
-  });
-}
-
-function retryWaitForServer(cb, onFailure, attempts) {
-      if (attempts < 30) {
-        setTimeout(() => waitForServer(cb, onFailure, attempts + 1), 200);
-      } else if (onFailure) {
-        onFailure();
-      }
-}
-
-const ICON_PATH = app.isPackaged
-  ? path.join(process.resourcesPath, 'tray-icon.ico')
-  : path.join(__dirname, 'tray-icon.ico');
-
-let mainWindow = null;
-let tray = null;
-// True once app.quit() is in progress — lets the window 'close' handler allow a real close
-let isQuitting = false;
-let pendingUpdateVersion = null;
-
-function isAppUrl(url) {
-  try {
-    const parsed = new URL(url);
-    return parsed.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(parsed.hostname) && parsed.port === String(PORT);
-  } catch (_) {
-    return false;
-  }
-}
-
-function createWindow() {
-  mainWindow = new BrowserWindow({
-    width: 1280,
-    height: 800,
-    minWidth: 900,
-    minHeight: 600,
-    icon: ICON_PATH,
-    title: 'TikTok TTS',
-    show: false,
-    webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
-      sandbox: true,
-      webSecurity: true,
-      preload: path.join(__dirname, 'preload.js'),
-    },
-  });
-
-  mainWindow.loadURL(`http://127.0.0.1:${PORT}`);
-  mainWindow.removeMenu();
-
-  // Localhost overlay URLs open in a new Electron window; external URLs go to system browser
-  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    if (isAppUrl(url)) return { action: 'allow' };
-    shell.openExternal(url);
-    return { action: 'deny' };
-  });
-  mainWindow.webContents.on('will-navigate', (event, url) => {
-    if (!isAppUrl(url)) {
-      event.preventDefault();
-      shell.openExternal(url);
-    }
-  });
-
-  mainWindow.once('ready-to-show', () => mainWindow.show());
-
-  // Close (X) → apaga todo, no minimiza a tray.
-  mainWindow.on('close', () => {
-    if (isQuitting) return;
-    isQuitting = true;
-    app.quit();
-  });
-}
-
-// Build tray context menu — rebuilds with an install item when an update is ready
-function showMainWindow() {
-  if (mainWindow && !mainWindow.isDestroyed()) {
-    mainWindow.show();
-    mainWindow.focus();
-  }
-}
-
-function buildTrayMenu(updateVersion = null) {
-  const items = [
-    {
-      label: 'Abrir TikTok TTS',
-      click: showMainWindow,
-    },
-    { type: 'separator' },
-  ];
-
-  if (updateVersion) {
-    items.push({
-      label: `⬆️ Instalar v${updateVersion} ahora`,
-      click: () => autoUpdater.quitAndInstall(false, true),
-    });
-    items.push({ type: 'separator' });
-  }
-
-  // app.quit() fires before-quit so autoInstallOnAppQuit works
-  items.push({ label: 'Salir', click: () => app.quit() });
-
-  return Menu.buildFromTemplate(items);
-}
-
-function createTray() {
-  // Resilient: if the tray cannot be created, leave `tray` null so the window
-  // close handler and 'window-all-closed' fall back to normal quit behavior
-  // (otherwise the app would keep running with no visible way to reach it).
-  try {
-    const icon = nativeImage.createFromPath(ICON_PATH);
-    tray = new Tray(icon);
-
-    tray.setToolTip('TikTok TTS');
-    tray.setContextMenu(buildTrayMenu());
-    tray.on('double-click', showMainWindow);
-  } catch (err) {
-    console.error('[main] createTray failed, disabling minimize-to-tray:', err);
-    tray = null;
-  }
-}
-
-function showStartupError(error) {
-  dialog.showMessageBox({
-    type: 'error',
-    title: 'TikTok TTS - Error de inicio',
-    message: 'Hubo un error al iniciar la aplicacion.',
-    detail: `${error.message}\n\nSi el problema persiste, descarga la ultima version desde GitHub.`,
-    buttons: ['Descargar ultima version', 'Cerrar'],
-    defaultId: 0,
-  }).then(({ response }) => {
-    if (response === 0) shell.openExternal('https://github.com/iKhunsa/tiktok-tts/releases/latest');
-    setTimeout(() => app.exit(1), 500);
-  });
+function trayCallbacks() {
+  return {
+    onOpen: () => showMainWindow(mainWindow),
+    onInstallUpdate: installUpdate,
+    onQuit: () => app.quit(),
+  };
 }
 
 app.whenReady().then(() => {
-  // If server failed to load, show error dialog + trigger auto-update so user
-  // gets the fix automatically without needing to reinstall manually.
   if (serverLoadError) {
+    // Intenta actualizar primero — si hay un fix disponible, se descarga e
+    // instala automaticamente sin que el usuario tenga que reinstalar a mano.
     if (app.isPackaged) {
-      // Try to update first — if a fix is available it will download + install
       try {
+        const { autoUpdater } = require('electron-updater');
         autoUpdater.autoDownload = true;
         autoUpdater.autoInstallOnAppQuit = false;
         autoUpdater.on('update-downloaded', () => autoUpdater.quitAndInstall(false, true));
-        autoUpdater.checkForUpdates().catch((err) => console.error('[updater] check error:', err.message));
-      } catch (_) {}
+        autoUpdater.checkForUpdates().catch(() => { /* best-effort */ });
+      } catch (_) { /* best-effort */ }
     }
     showStartupError(serverLoadError);
     return;
   }
 
   waitForServer(() => {
-    createWindow();
-    createTray();
-    if (app.isPackaged) setupAutoUpdater();
+    mainWindow = createWindow({
+      iconPath: ICON_PATH,
+      onClose: () => {
+        if (isQuitting) return;
+        isQuitting = true;
+        app.quit();
+      },
+    });
 
-    telemetry.init({
+    tray = createTray({ iconPath: ICON_PATH, logger, ...trayCallbacks() });
+
+    if (app.isPackaged) {
+      setupAutoUpdater({
+        app,
+        bus,
+        logger,
+        getMainWindow,
+        getTray,
+        buildTrayMenu: (version) => buildTrayMenu(trayCallbacks(), version),
+        onPendingVersion: (version) => { pendingUpdateVersion = version; },
+      });
+    }
+
+    telemetryRuntime.init({
       url: resolveTelemetryUrl(),
       token: resolveIngestToken(),
       appVersion: app.getVersion(),
       dataDir: app.getPath('userData'),
+      bus,
+      logger,
     });
 
-    startUiohook();
+    startUiohook(logger);
 
+    ipcHandles = attachIpcBridge({ app, bus, logger, getMainWindow, globalShortcut });
+
+    // Atajo de clip (Ctrl+Shift+M): manda IPC al renderer, que hace su
+    // propio bookmark local (elapsed/toast) y llama POST /api/obs/save-replay
+    // (front sin cambios). /clips (Fase 11) sirve al comando movil markClip,
+    // que no tiene renderer del que colgar un bookmark local — ese camino
+    // pasa por bus.emit('clips:marcar') en vez de IPC.
     const clipCallback = () => {
-      telemetry.bus.emit('obs:clip-saved');
-      if (mainWindow) mainWindow.webContents.send('mark-clip');
+      if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('mark-clip');
     };
-    if (uiohookActive) {
-      registerUiohookShortcut('clip', 'CommandOrControl+Shift+M', clipCallback);
-    } else {
-      globalShortcut.register('CommandOrControl+Shift+M', clipCallback);
+    const clipShortcutOk = isUiohookActive()
+      ? registerUiohookShortcut('clip', GLOBAL_SHORTCUT, clipCallback)
+      : globalShortcut.register(GLOBAL_SHORTCUT, clipCallback);
+    if (!clipShortcutOk && logger) {
+      logger.log(
+        'warn', 'electron-shell', 'main.js#registerClipShortcut', 'electron_shell.atajo_clip_fallido',
+        `No se pudo registrar el atajo de clip ${GLOBAL_SHORTCUT} (¿otra app lo tiene tomado?)`,
+        { atajo: GLOBAL_SHORTCUT, via: isUiohookActive() ? 'uiohook' : 'globalShortcut' }
+      );
     }
   }, () => {
     showStartupError(new Error(`El servidor local no respondio en http://127.0.0.1:${PORT}`));
   });
 });
-
-let quitTasksDone = false;
 
 app.on('before-quit', (event) => {
   isQuitting = true;
@@ -386,268 +225,29 @@ app.on('before-quit', (event) => {
   if (quitTasksDone) return;
   quitTasksDone = true;
 
-  if (serverShutdown) {
-    try { serverShutdown(); } catch (_) {}
-  }
-
-  // El evento de cierre se manda aquí, no en 'will-quit': allí el proceso
-  // muere antes de que la petición llegue a salir. Se pospone el cierre 1,5 s
-  // como máximo; si no da tiempo, el evento queda en disco y sale al arrancar.
-  if (telemetry.enabled) {
+  // El shutdown ordenado de los dominios de negocio ya corre en
+  // process.on('exit') dentro de server.js (Fase 1) — aca solo se pospone
+  // el quit lo justo para que telemetria y GlitchTip alcancen a mandar/flushear
+  // (en 'will-quit' el proceso ya murio antes de que la peticion salga).
+  const cierres = [];
+  if (telemetryRuntime.enabled) cierres.push(telemetryRuntime.shutdown({ timeoutMs: 1500 }));
+  if (glitchtip.enabled) cierres.push(glitchtip.shutdown());
+  if (aptabase.enabled) cierres.push(aptabase.shutdown());
+  if (cierres.length) {
     event.preventDefault();
-    telemetry.shutdown({ timeoutMs: 1500 }).finally(() => app.quit());
+    Promise.allSettled(cierres).finally(() => app.quit());
   }
 });
 
 app.on('will-quit', () => {
   globalShortcut.unregisterAll();
-  soundpadShortcuts.clear();
+  if (ipcHandles) ipcHandles.clearSoundpadShortcuts();
   stopUiohook();
 });
 
-function sendUpdate(data) {
-  if (mainWindow && !mainWindow.isDestroyed()) {
-    mainWindow.webContents.send('update-event', data);
-  }
-}
-
-function setupAutoUpdater() {
-  autoUpdater.autoDownload = true;
-  autoUpdater.autoInstallOnAppQuit = true;
-
-  autoUpdater.on('checking-for-update', () => {
-    telemetry.bus.emit('update:check');
-    sendUpdate({ type: 'checking' });
-  });
-
-  autoUpdater.on('update-available', (info) => {
-    telemetry.bus.emit('update:available', { from: app.getVersion(), to: info.version });
-    sendUpdate({ type: 'available', version: info.version });
-  });
-
-  autoUpdater.on('update-not-available', () =>
-    sendUpdate({ type: 'not-available' }));
-
-  autoUpdater.on('download-progress', (p) =>
-    sendUpdate({
-      type: 'progress',
-      percent: Math.round(p.percent),
-      transferred: p.transferred,
-      total: p.total,
-      bytesPerSecond: p.bytesPerSecond,
-    }));
-
-  autoUpdater.on('update-downloaded', (info) => {
-    pendingUpdateVersion = info.version;
-    telemetry.bus.emit('update:downloaded', { from: app.getVersion(), to: info.version });
-
-    // Rebuild tray menu with install shortcut — works even if preload/banner is unavailable
-    if (tray) tray.setContextMenu(buildTrayMenu(info.version));
-
-    // Send to in-app banner (requires preload to be working)
-    sendUpdate({ type: 'ready', version: info.version });
-
-    // Native dialog fallback — guaranteed to work regardless of preload/banner state
-    dialog.showMessageBox({
-      type: 'info',
-      title: 'TikTok TTS — Actualización lista',
-      message: `v${info.version} descargada y lista para instalar.`,
-      detail: 'La app se reiniciará sola (no requiere reiniciar el PC).\n¿Instalar ahora?',
-      buttons: ['Instalar ahora', 'Después'],
-      defaultId: 0,
-      cancelId: 1,
-    }).then(({ response }) => {
-      if (response === 0) autoUpdater.quitAndInstall(false, true);
-    });
-  });
-
-  autoUpdater.on('error', (err) => {
-    telemetry.bus.emit('update:error', { message: err.message });
-    sendUpdate({ type: 'error', message: err.message });
-  });
-
-  autoUpdater.checkForUpdatesAndNotify().catch((err) => console.error('[updater] notify error:', err.message));
-}
-
-ipcMain.on('install-update', () => {
-  // false = not silent (show nothing extra), true = relaunch after install
-  // No PC restart required — only app restarts
-  autoUpdater.quitAndInstall(false, true);
-});
-
-// Puente para los pocos eventos de telemetria que nacen en el renderer (cola
-// TTS). Lista blanca por seguridad: el renderer no puede mandar cualquier
-// nombre de evento al bus.
-const RENDERER_TELEMETRY_EVENTS = new Set(['tts:skipped', 'tts:queue-overflow']);
-ipcMain.on('telemetry:track', (_event, name) => {
-  if (RENDERER_TELEMETRY_EVENTS.has(name)) telemetry.bus.emit(name);
-});
-
-const FORBIDDEN_SHORTCUTS = new Set(['Alt+F4', 'Ctrl+C', 'Cmd+C', 'Ctrl+V', 'Cmd+V', 'Ctrl+Alt+Del', 'Ctrl+Shift+Esc', 'Cmd+Shift+Esc']);
-const SPECIAL_PAUSE_SHORTCUTS = new Set(['MediaPlayPause', 'F8', 'F9', 'F10', 'F11', 'F12']);
-
-function normalizeShortcut(shortcut) {
-  if (!shortcut || typeof shortcut !== 'string') return '';
-  return shortcut
-    .split('+')
-    .map(part => part.trim())
-    .filter(Boolean)
-    .map((part) => {
-      const lower = part.toLowerCase();
-      if (lower === 'control') return 'Ctrl';
-      if (lower === 'cmdorctrl' || lower === 'commandorcontrol') return 'CommandOrControl';
-      if (lower === 'cmd' || lower === 'command') return 'Cmd';
-      if (lower === 'option') return 'Alt';
-      if (lower === 'arrowup') return 'Up';
-      if (lower === 'arrowdown') return 'Down';
-      if (lower === 'arrowleft') return 'Left';
-      if (lower === 'arrowright') return 'Right';
-      if (lower === 'mediaplaypause') return 'MediaPlayPause';
-      if (/^f\d{1,2}$/i.test(part)) return part.toUpperCase();
-      return part.length === 1 ? part.toUpperCase() : part;
-    })
-    .join('+');
-}
-
-function isValidShortcut(shortcut) {
-  const normalized = normalizeShortcut(shortcut);
-  if (!normalized || normalized.length > 50) return false;
-  if (FORBIDDEN_SHORTCUTS.has(normalized)) return false;
-  if (SPECIAL_PAUSE_SHORTCUTS.has(normalized)) return true;
-  return /^(Ctrl|CommandOrControl|Cmd|Alt|Shift|Super)\+([A-Z0-9]|F\d{1,2})(\+([A-Z0-9]|F\d{1,2}))*$/i.test(normalized);
-}
-
-// ── TTS shortcuts (pause / skip / clear) ─────────────────────────────────────
-const TTS_SHORTCUT_ACTIONS = new Set(['pause', 'skip', 'clear', 'musicPause', 'musicSkip']);
-const ttsShortcuts = new Map(); // action → normalizedShortcut
-
-function unregisterTtsShortcut(action) {
-  const prev = ttsShortcuts.get(action);
-  if (!prev) return;
-  if (uiohookActive) {
-    unregisterUiohookShortcut(`tts:${action}`);
-  } else {
-    try { globalShortcut.unregister(prev); } catch (_) {}
-  }
-  ttsShortcuts.delete(action);
-}
-
-ipcMain.handle('get-app-version', () => app.getVersion());
-
-ipcMain.handle('register-tts-shortcut', (_event, { action, shortcut }) => {
-  if (!TTS_SHORTCUT_ACTIONS.has(action)) {
-    return { ok: false, error: 'Accion desconocida' };
-  }
-  if (!shortcut) {
-    unregisterTtsShortcut(action);
-    return { ok: true, shortcut: null };
-  }
-  const normalized = normalizeShortcut(shortcut);
-  if (!isValidShortcut(normalized)) {
-    console.error('Invalid or forbidden shortcut rejected:', normalized);
-    return { ok: false, shortcut: normalized, error: 'Atajo invalido o reservado por el sistema' };
-  }
-  for (const [otherAction, otherShortcut] of ttsShortcuts) {
-    if (otherAction !== action && otherShortcut === normalized) {
-      return { ok: false, shortcut: normalized, error: 'conflict' };
-    }
-  }
-  unregisterTtsShortcut(action);
-
-  const callback = () => {
-    if (mainWindow && !mainWindow.isDestroyed())
-      mainWindow.webContents.send('tts-shortcut', action);
-  };
-
-  // MediaPlayPause goes through the Windows multimedia API — works in fullscreen
-  // without uiohook. Use globalShortcut for it; use uiohook for everything else.
-  const isMediaKey = normalized === 'MediaPlayPause';
-
-  if (uiohookActive && !isMediaKey) {
-    const ok = registerUiohookShortcut(`tts:${action}`, normalized, callback);
-    if (!ok) {
-      return { ok: false, shortcut: normalized, error: 'Atajo no soportado. Prueba F8, Ctrl+F8 o MediaPlayPause.' };
-    }
-    ttsShortcuts.set(action, normalized);
-    return { ok: true, shortcut: normalized };
-  }
-
-  // Fallback: globalShortcut (used when uiohook unavailable, or for MediaPlayPause)
-  try {
-    const registered = globalShortcut.register(normalized, callback);
-    if (!registered || !globalShortcut.isRegistered(normalized)) {
-      return { ok: false, shortcut: normalized, error: 'Windows no permitio registrar este atajo. Prueba F8 o MediaPlayPause.' };
-    }
-    ttsShortcuts.set(action, normalized);
-    return { ok: true, shortcut: normalized };
-  } catch (err) {
-    console.error(`Failed to register tts shortcut (${action}):`, err.message);
-    return { ok: false, shortcut: normalized, error: err.message };
-  }
-});
-
-// ── Sound Pad shortcuts ───────────────────────────────────────────────────────
-const soundpadShortcuts = new Map(); // soundId → normalizedShortcut
-
-ipcMain.handle('register-soundpad-shortcut', (_event, { soundId, shortcut }) => {
-  if (!soundId) return { ok: false, error: 'soundId requerido' };
-
-  // Unregister previous shortcut for this sound
-  const prev = soundpadShortcuts.get(soundId);
-  if (prev) {
-    if (uiohookActive) {
-      unregisterUiohookShortcut(`soundpad:${soundId}`);
-    } else {
-      try { globalShortcut.unregister(prev); } catch (_) {}
-    }
-    soundpadShortcuts.delete(soundId);
-  }
-
-  if (!shortcut) return { ok: true, shortcut: null };
-
-  const normalized = normalizeShortcut(shortcut);
-  if (!normalized) return { ok: false, error: 'Atajo inválido' };
-
-  const playCallback = () => {
-    telemetry.bus.emit('soundpad:triggered', { via: 'hotkey' });
-    if (mainWindow && !mainWindow.isDestroyed())
-      mainWindow.webContents.send('play-soundpad', { soundId });
-  };
-
-  if (uiohookActive) {
-    const ok = registerUiohookShortcut(`soundpad:${soundId}`, normalized, playCallback);
-    if (!ok) return { ok: false, error: 'Atajo no soportado por uiohook' };
-  } else {
-    try {
-      const registered = globalShortcut.register(normalized, playCallback);
-      if (!registered) return { ok: false, error: 'Windows no permitió registrar este atajo' };
-    } catch (err) {
-      return { ok: false, error: err.message };
-    }
-  }
-
-  soundpadShortcuts.set(soundId, normalized);
-  return { ok: true, shortcut: normalized };
-});
-
-ipcMain.handle('unregister-soundpad-shortcut', (_event, soundId) => {
-  const prev = soundpadShortcuts.get(soundId);
-  if (prev) {
-    if (uiohookActive) {
-      unregisterUiohookShortcut(`soundpad:${soundId}`);
-    } else {
-      try { globalShortcut.unregister(prev); } catch (_) {}
-    }
-    soundpadShortcuts.delete(soundId);
-  }
-  return { ok: true };
-});
-
-app.on('second-instance', showMainWindow);
-
-// Keep the app alive in the tray only when the tray actually exists and we
-// are not quitting; otherwise let Electron quit normally so no orphan process
-// is left running with no visible window.
+// Mantiene la app viva en la tray solo cuando la tray realmente existe y no
+// se esta cerrando; si no, deja que Electron cierre normal para no dejar un
+// proceso huerfano corriendo sin ventana visible.
 app.on('window-all-closed', (e) => {
   if (tray && !isQuitting) {
     e.preventDefault();

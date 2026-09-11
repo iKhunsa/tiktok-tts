@@ -1,0 +1,132 @@
+'use strict';
+
+module.exports = [
+  {
+    ignores: [
+      'node_modules/**',
+      'release-output/**',
+      'interfaz/publico/vendor/**',
+      'backend-viejo/**',
+      'graphify-out/**',
+      '.claude/**',
+      'release-output/**',
+      'interfaz/dist/**',
+    ],
+  },
+  {
+    files: ['**/*.js'],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: 'commonjs',
+      globals: {
+        require: 'readonly',
+        module: 'readonly',
+        exports: 'readonly',
+        process: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        console: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
+        Buffer: 'readonly',
+        fetch: 'readonly',
+        FormData: 'readonly',
+        Blob: 'readonly',
+        URL: 'readonly',
+        AbortController: 'readonly',
+        AbortSignal: 'readonly',
+        URLSearchParams: 'readonly',
+      },
+    },
+    rules: {
+      'no-unused-vars': ['warn', { args: 'none', varsIgnorePattern: '^_' }],
+      'no-undef': 'error',
+      'no-const-assign': 'error',
+      'no-dupe-keys': 'error',
+      'no-dupe-args': 'error',
+      'no-unreachable': 'error',
+    },
+  },
+  {
+    // interfaz/ es el frontend nuevo: modulos ESM reales (import/export).
+    files: ['interfaz/**/*.js'],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: 'module',
+      globals: {
+        window: 'readonly',
+        document: 'readonly',
+        location: 'readonly',
+        performance: 'readonly',
+        fetch: 'readonly',
+        WebSocket: 'readonly',
+        localStorage: 'readonly',
+        sessionStorage: 'readonly',
+        console: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
+        requestAnimationFrame: 'readonly',
+        cancelAnimationFrame: 'readonly',
+        navigator: 'readonly',
+        Audio: 'readonly',
+        AudioContext: 'readonly',
+        Image: 'readonly',
+        MutationObserver: 'readonly',
+        AbortController: 'readonly',
+        FormData: 'readonly',
+        URL: 'readonly',
+        URLSearchParams: 'readonly',
+        HTMLInputElement: 'readonly',
+        confirm: 'readonly',
+        FileReader: 'readonly',
+      },
+    },
+    rules: {
+      'no-unused-vars': ['warn', { args: 'none', varsIgnorePattern: '^_' }],
+      'no-undef': 'error',
+      'no-const-assign': 'error',
+      'no-dupe-keys': 'error',
+      'no-dupe-args': 'error',
+      'no-unreachable': 'error',
+    },
+  },
+  {
+    // plugin-store/*.js (interfaz/publico/, Vite lo copia sin tocar a
+    // dist/) son scripts clasicos con <script src=...> — no modulos ES,
+    // a diferencia del resto de interfaz/. Mismos globals que el viejo
+    // override de public/**/*.js. vendor/ (driver.js/confetti.js,
+    // terceros) va directo a `ignores` arriba, ni se linteaba antes.
+    files: ['interfaz/publico/plugin-store/**/*.js'],
+    languageOptions: {
+      sourceType: 'script',
+      globals: {
+        window: 'readonly',
+        document: 'readonly',
+        fetch: 'readonly',
+        WebSocket: 'readonly',
+        localStorage: 'readonly',
+        console: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
+        navigator: 'readonly',
+        Audio: 'readonly',
+        FormData: 'readonly',
+      },
+    },
+    rules: {
+      // Scripts clasicos: cada archivo se carga con su propio <script src>
+      // y comparten un unico scope global (funciones/vars top-level de un
+      // archivo son visibles en los otros). eslint flat no puede modelar
+      // ese namespace implicito entre archivos, asi que no-undef daria
+      // falsos positivos para cada simbolo cruzado (renderSidebar, t,
+      // SIDEBAR_TOOLS, ...). El resto de reglas sigue activo.
+      'no-undef': 'off',
+    },
+  },
+];
