@@ -21,4 +21,4 @@ function purgeTopLikersIfNeeded(topLikers) {
   for (const [key] of toRemove) topLikers.delete(key);
 }
 
-module.exports = { pushBounded, MAX_LIST_LENGTH, purgeTopLikersIfNeeded, MAX_TOP_LIKERS, TOP_LIKERS_PURGE_TARGET };
+module.exports = { pushBounded, purgeTopLikersIfNeeded };

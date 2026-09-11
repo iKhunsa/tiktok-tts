@@ -2,6 +2,7 @@
 
 const mcpRegistry = require('../../core/contracts/mcp-registry');
 const entitlementsContract = require('../../core/contracts/entitlements');
+const { crearSubsEnabledCache } = require('../../core/subs-enabled-cache');
 const { resolverUrl } = require('./config-servicio');
 const { crearCliente } = require('./cliente-servicio');
 const { crearRefresh } = require('./refresh');
@@ -17,17 +18,7 @@ module.exports = {
   name: 'auth',
 
   register({ app, bus, logger }) {
-    // Snapshot de config (subscriptionsEnabled) + re-lectura en config:actualizado.
-    let subsEnabled = false;
-    const leerConfig = () => {
-      bus.emit('config:get', (c) => { subsEnabled = c && c.subscriptionsEnabled === true; });
-    };
-    leerConfig();
-    bus.on('config:actualizado', ({ keysChanged } = {}) => {
-      if (!keysChanged || keysChanged.includes('subscriptionsEnabled')) leerConfig();
-    }, 'auth');
-
-    const subscriptionsEnabled = () => subsEnabled;
+    const subscriptionsEnabled = crearSubsEnabledCache(bus, { domain: 'auth' });
 
     // Contrato de gating (lo consume core/contracts/entitlements#check).
     // Flag off -> todo desbloqueado; on -> mira la sesion. Un throw lo atrapa
@@ -106,7 +97,7 @@ module.exports = {
 
     refresh.start(); // setInterval .unref()'d — no hace falta limpiarlo al salir
     logger.log('info', 'auth', 'auth/index.js#register', 'auth.servicio.configurado',
-      `Dominio auth activo contra ${urlServicio}`, { subscriptionsEnabled: subsEnabled });
+      `Dominio auth activo contra ${urlServicio}`, { subscriptionsEnabled: subscriptionsEnabled() });
 
     return { rutas: nRutas, listeners: 4 };
   },
