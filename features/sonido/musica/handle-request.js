@@ -34,9 +34,12 @@ function handleMusicRequest(deps) {
     }
 
     const now = Date.now();
+    // Sin userId estable (plataforma no lo expone), varios espectadores
+    // colapsarian en la misma clave 'null' y se bloquearian entre si.
+    const identityKey = userId || `name:${String(user || '').toLowerCase()}`;
     // Dedup fijo, siempre activo (independiente del cooldown configurable):
     // ignora el mismo comando del mismo usuario si llega duplicado.
-    const dedupKey = `${userId}::${query.toLowerCase()}`;
+    const dedupKey = `${identityKey}::${query.toLowerCase()}`;
     const lastSeen = musicState.recentCommands.get(dedupKey);
     if (lastSeen && now - lastSeen < MUSIC_DEDUP_WINDOW_MS) {
       logger.log(
@@ -61,8 +64,8 @@ function handleMusicRequest(deps) {
       return;
     }
 
-    if (config.musicUserCooldownMs > 0 && musicState.userLastRequest[userId] &&
-        now - musicState.userLastRequest[userId] < config.musicUserCooldownMs) {
+    if (config.musicUserCooldownMs > 0 && musicState.userLastRequest[identityKey] &&
+        now - musicState.userLastRequest[identityKey] < config.musicUserCooldownMs) {
       logger.log(
         'info', 'sonido', 'sonido/musica/handle-request.js#handleMusicRequest', 'sonido.musica.cooldown_activo',
         `Cooldown activo para ${user}`, { user, platform }
@@ -81,7 +84,14 @@ function handleMusicRequest(deps) {
 
     // Marcar el cooldown ya aca (antes de los await) para que un evento
     // duplicado llegando mientras esto resuelve sea bloqueado, no procesado dos veces.
-    musicState.userLastRequest[userId] = now;
+    musicState.userLastRequest[identityKey] = now;
+    // Poda LRU por cantidad (no por antiguedad: el cooldown es configurable
+    // y puede estar en 0, lo que invalidaria un criterio basado en el).
+    const ulrKeys = Object.keys(musicState.userLastRequest);
+    if (ulrKeys.length > 500) {
+      ulrKeys.sort((a, b) => musicState.userLastRequest[a] - musicState.userLastRequest[b]);
+      for (const k of ulrKeys.slice(0, ulrKeys.length - 400)) delete musicState.userLastRequest[k];
+    }
 
     // Anunciar la peticion apenas pasa los filtros: el front pinta un item
     // "buscando…" en la cola aunque yt-dlp todavia este descargandose /

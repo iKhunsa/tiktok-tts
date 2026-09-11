@@ -2,6 +2,10 @@
 
 const { isActive } = require('./is-active');
 
+// ponytail: flag de módulo, vive toda la sesión de la app — evita repetir el
+// warn en cada flush (15s) mientras persista la falta de candidatos a purgar.
+let yaAvisado = false;
+
 /**
  * Descarta los inactivos mas antiguos. Nunca toca seguidores, whitelisted ni
  * usuarios con un castigo vivo.
@@ -19,11 +23,16 @@ function purge(state) {
   if (excess <= 0) return 0;
 
   if (disposable.length < excess) {
-    state.logger.log(
-      'warn', 'moderacion', 'moderacion/store/purge.js#purge', 'moderacion.store.limite_alcanzado',
-      `Registro por encima del limite (${state.viewers.size}) y sin candidatos suficientes para purgar (${disposable.length})`,
-      { viewers: state.viewers.size, disposable: disposable.length }
-    );
+    if (!yaAvisado) {
+      yaAvisado = true;
+      state.logger.log(
+        'warn', 'moderacion', 'moderacion/store/purge.js#purge', 'moderacion.store.limite_alcanzado',
+        `Registro por encima del limite (${state.viewers.size}) y sin candidatos suficientes para purgar (${disposable.length})`,
+        { viewers: state.viewers.size, disposable: disposable.length }
+      );
+    }
+  } else {
+    yaAvisado = false;
   }
 
   disposable.sort((a, b) => a[1] - b[1]);

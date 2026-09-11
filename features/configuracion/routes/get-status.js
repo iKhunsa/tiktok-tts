@@ -1,5 +1,7 @@
 'use strict';
 
+const { getSafeConfig } = require('../safe-config');
+
 /**
  * Healthcheck. Filtra adminIdentities de la config expuesta (lista de
  * usernames admin) — este endpoint es accesible desde el front, no debe
@@ -9,7 +11,7 @@
  */
 function getStatus(configStore, { wss, bus }) {
   return (_req, res) => {
-    const { adminIdentities, ...safeConfig } = configStore.config;
+    const safeConfig = getSafeConfig(configStore.config);
     let connected = false;
     if (bus) bus.emit('canales:tiktok-conectado', (v) => { connected = !!v; });
 

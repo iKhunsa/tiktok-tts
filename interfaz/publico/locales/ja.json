@@ -988,6 +988,7 @@
     "playlistEmpty": "プレイリストが空です",
     "twitchAuthStartFailed": "Twitch認証を開始できませんでした",
     "obsConnectFailed": "OBSに接続できませんでした",
+    "obsConnectInProgress": "OBSへの接続が既に進行中です",
     "mcpDisabled": "MCP サーバーはオフです",
     "unauthorized": "認証されていません。",
     "proRequired": "この機能には Pro プランが必要です。",

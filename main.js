@@ -226,7 +226,10 @@ app.on('before-quit', (event) => {
 
 app.on('will-quit', () => {
   globalShortcut.unregisterAll();
-  if (ipcHandles) ipcHandles.clearSoundpadShortcuts();
+  if (ipcHandles) {
+    ipcHandles.clearSoundpadShortcuts();
+    ipcHandles.unregisterAllTtsShortcuts();
+  }
   stopUiohook();
 });
 

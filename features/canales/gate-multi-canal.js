@@ -23,7 +23,9 @@ function assertMultiCanal(state, platform) {
 // Middleware para las rutas HTTP historicas (/api/connect, /api/channels/add).
 function gateMultiCanal(deps) {
   return (req, res, next) => {
-    const platform = (req.body && req.body.platform) || 'tiktok'; // /api/connect es siempre tiktok
+    const bodyPlatform = req.body && req.body.platform;
+    const platform = bodyPlatform || (req.path === '/api/connect' ? 'tiktok' : null);
+    if (!platform) return next(); // sin platform en /platforms/connect o /channels/add: que el handler real reporte el campo faltante
     if (yaTieneCanalDe(deps.state, platform) && !entitlements.check('multi-canal')) {
       return res.status(403).json({
         error: `Conectar 2+ canales de ${platform} requiere el plan Pro`,

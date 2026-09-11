@@ -164,8 +164,8 @@ function setupTikTokConnection(deps, cleanUsername) {
   };
   // Lo llama connectTiktokChannel / reconnectTiktok tras conectar: si el chat
   // esta callado desde el arranque, igual queremos vigilar el socket.
-  const entryRef = state.tiktokChannels.get(cleanUsername);
-  if (entryRef) entryRef.armStaleWatchdog = () => armWatchdog(state, staleKey, WATCHDOG_TIMEOUT_MS, onStale);
+  state.tiktokChannels.get(cleanUsername).armStaleWatchdog =
+    () => armWatchdog(state, staleKey, WATCHDOG_TIMEOUT_MS, onStale);
 
   conn.on('disconnected', () => {
     clearWatchdog(state, staleKey);
@@ -275,10 +275,19 @@ async function connectTiktokChannel(deps, channel) {
   );
   bus.emit('canal:estado', { platform: 'tiktok', channel: cleanUsername, state: 'conectando' });
 
+  let entry;
   try {
     setupTikTokConnection(deps, cleanUsername);
-    const entry = state.tiktokChannels.get(cleanUsername);
+    entry = state.tiktokChannels.get(cleanUsername);
     const connState = await entry.conn.connect();
+
+    // Mientras el connect() de arriba estaba pendiente, pudo dispararse
+    // 'disconnected' sobre este mismo conn y una reconexion concurrente ya
+    // reemplazo la entrada del Map con un conn nuevo. Esta llamada quedo
+    // obsoleta: no pisar el estado vigente ni emitir 'conectado' sobre una
+    // conexion muerta.
+    if (state.tiktokChannels.get(cleanUsername) !== entry) return cleanUsername;
+
     entry.attempts = 0;
     entry.connectedOnce = true;
     if (entry.armStaleWatchdog) entry.armStaleWatchdog();
@@ -294,6 +303,11 @@ async function connectTiktokChannel(deps, channel) {
 
     return cleanUsername;
   } catch (err) {
+    // Idem: si ya fue reemplazada por una reconexion concurrente, la entrada
+    // nueva y valida es de otra llamada — no borrarla, y no hay error real
+    // que reportar (ya hay una conexion viva para este canal).
+    if (entry && state.tiktokChannels.get(cleanUsername) !== entry) return cleanUsername;
+
     state.tiktokChannels.delete(cleanUsername);
     logger.log(
       'error', 'canales', 'canales/tiktok/connect-tiktok-channel.js#connectTiktokChannel', 'canales.tiktok.conexion_fallida',

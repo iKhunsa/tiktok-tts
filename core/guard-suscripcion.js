@@ -19,19 +19,26 @@ const ABIERTAS = new Set([
 function crearGuardSuscripcion(bus) {
   if (!bus) return (_req, _res, next) => next(); // createApp() sin bus (tests)
 
+  // Cacheado, no releido en cada request (mismo patron que features/auth/index.js).
+  let subsOn = false;
+  const leerConfig = () => {
+    bus.emit('config:get', (c) => { subsOn = !!(c && c.subscriptionsEnabled); });
+  };
+  leerConfig();
+  bus.on('config:actualizado', ({ keysChanged } = {}) => {
+    if (!keysChanged || keysChanged.includes('subscriptionsEnabled')) leerConfig();
+  }, 'core');
+
   return function guardSuscripcion(req, res, next) {
     const p = (req.path || '/').toLowerCase().replace(/\/+$/, '') || '/';
     if (!p.startsWith('/api/')) return next();
-    if (p.startsWith('/api/auth/')) return next();
+    // /api/auth/* son las rutas del dominio de cuentas (login, session, etc.),
+    // pero /api/auth/twitch/* son el OAuth de Twitch (features/canales) —
+    // comparten prefijo por accidente y no deben eximirse del muro.
+    if (p.startsWith('/api/auth/') && !p.startsWith('/api/auth/twitch/')) return next();
     if (ABIERTAS.has(`${req.method} ${p}`)) return next();
-
-    let subsOn = false;
-    bus.emit('config:get', (c) => { subsOn = !!(c && c.subscriptionsEnabled); });
     if (!subsOn) return next();
 
-    // ponytail: doble bus.emit sincrono por request (config:get + auth:get),
-    // ambas lecturas en memoria. Si pesa, cachear config con
-    // bus.on('config:actualizado') como features/auth/index.js.
     let sesion;
     bus.emit('auth:get', (s) => { sesion = s; });
     if (sesion === undefined) return next(); // sin dominio auth: no hay como loguearse

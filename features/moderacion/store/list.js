@@ -6,9 +6,6 @@ const { toDTO } = require('./to-dto');
 const SORTS = {
   last: (v) => v.last,
   first: (v) => v.first,
-  msgs: (v) => v.msgs,
-  gifts: (v) => v.gifts,
-  likes: (v) => v.likes,
   nick: (v) => String(v.nick || '').toLowerCase(),
 };
 
@@ -45,7 +42,7 @@ function list(state, query = {}) {
     matched.push([key, v]);
   }
 
-  const pick = SORTS[sort] || SORTS.last;
+  const pick = Object.prototype.hasOwnProperty.call(SORTS, sort) ? SORTS[sort] : SORTS.last;
   const sign = dir === 'asc' ? 1 : -1;
   matched.sort((a, b) => {
     const va = pick(a[1]);

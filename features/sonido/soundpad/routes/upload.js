@@ -41,7 +41,7 @@ function upload(deps) {
       }
       if (!req.file) return res.status(400).json({ error: 'No se recibió archivo de audio', errorKey: 'errors.noAudioFile' });
 
-      const sounds = loadSounds(deps.soundsConfigPath);
+      const sounds = loadSounds(deps.soundsConfigPath, deps.logger);
       if (sounds.length >= 24) {
         fs.unlink(req.file.path, (err2) => {
           if (err2) {
@@ -66,7 +66,7 @@ function upload(deps) {
         createdAt: Date.now(),
       };
       sounds.push(entry);
-      saveSounds(deps.soundsConfigPath, sounds);
+      saveSounds(deps.soundsConfigPath, sounds, deps.logger);
       syncSoundPadsToMobileState(deps);
       res.json(entry);
     });

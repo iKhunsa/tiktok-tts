@@ -988,6 +988,7 @@
     "playlistEmpty": "你的播放列表是空的",
     "twitchAuthStartFailed": "无法启动 Twitch 授权",
     "obsConnectFailed": "无法连接到 OBS",
+    "obsConnectInProgress": "已有一个 OBS 连接正在进行中",
     "mcpDisabled": "MCP 服务器已关闭",
     "unauthorized": "未认证。",
     "proRequired": "此功能需要 Pro 套餐。",

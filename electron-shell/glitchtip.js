@@ -57,6 +57,7 @@ const SENTRY_NIVEL = { debug: 'debug', info: 'info', warn: 'warning', error: 'er
 // capturan como issue / ruido de infra).
 const RUIDO_BREADCRUMB = new Set([
   'chat.mensaje.emitido', 'chat.mensaje.recibido', 'chat.test.inyectado',
+  'chat.mensaje.duplicado',
   'sonido.tts.solicitado', 'sonido.tts.hablado',
   'overlay.test.disparado', 'promo.autopromocion.disparada',
   'configuracion.log_cliente.recibido',

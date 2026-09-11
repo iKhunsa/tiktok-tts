@@ -9,6 +9,7 @@ const { generate } = require('./tts/routes/generate');
 const { voices } = require('./tts/routes/voices');
 
 const { createMusicEngine } = require('./musica/engine/create');
+const { UPDATE_INTERVAL_MS } = require('./musica/engine/check-for-updates');
 const { createMusicState } = require('./musica/state');
 const { handleMusicRequest } = require('./musica/handle-request');
 const { resolveAndSavePlaylist } = require('./musica/resolve-and-save-playlist');
@@ -52,17 +53,30 @@ module.exports = {
     app.use('/soundpad-icons', express.static(path.join(RESOURCE_BASE, 'asset', 'icons')));
 
     const musicState = createMusicState();
+    const checkForUpdatesFailedLog = (error) => logger.log(
+      'warn', 'sonido', 'sonido/index.js#register', 'sonido.musica.chequeo_actualizacion_fallido',
+      `No se pudo chequear actualizacion de yt-dlp: ${error.message}`, { error: error.message }
+    );
+    // onStatus solo se invoca async (tras los await de ensure-ready.js), nunca
+    // sincronicamente dentro de createMusicEngine, asi que `engine` ya esta
+    // asignada para cuando este closure corre.
     const engine = createMusicEngine({
       dataDir: DATA_BASE,
       logger,
       onStatus: (s) => {
         if (s.state === 'downloading') bus.emit('ws:broadcast', { type: 'music-engine', status: 'downloading' });
         else if (s.state === 'preparing') bus.emit('ws:broadcast', { type: 'music-engine', status: 'preparing' });
-        else if (s.state === 'ready') bus.emit('ws:broadcast', { type: 'music-engine', status: 'ready' });
-        else if (s.state === 'error') bus.emit('ws:broadcast', { type: 'music-engine', status: 'error', error: s.error });
+        else if (s.state === 'ready') {
+          bus.emit('ws:broadcast', { type: 'music-engine', status: 'ready' });
+          engine.checkForUpdates().catch(checkForUpdatesFailedLog);
+        } else if (s.state === 'error') bus.emit('ws:broadcast', { type: 'music-engine', status: 'error', error: s.error });
       },
     });
     engineInstance = engine;
+    const updateCheckInterval = setInterval(() => {
+      engine.checkForUpdates().catch(checkForUpdatesFailedLog);
+    }, UPDATE_INTERVAL_MS);
+    if (typeof updateCheckInterval.unref === 'function') updateCheckInterval.unref();
 
     const deps = { app, bus, logger, musicState, engine, soundsDir, soundsConfigPath };
     const ttsRateLimiterState = createTtsRateLimiterState();
@@ -77,7 +91,12 @@ module.exports = {
     bus.on('bot:comando', (cmd) => {
       if (!cmd || cmd.cmd !== 'play') return;
       if (!entitlements.check('bot-musical')) return; // feature Pro (ya gateado en /bot, defensa extra)
-      runMusicRequest({ query: cmd.args, user: cmd.user, userId: cmd.userId, platform: cmd.platform });
+      Promise.resolve(runMusicRequest({ query: cmd.args, user: cmd.user, userId: cmd.userId, platform: cmd.platform })).catch((error) => {
+        logger.log(
+          'error', 'sonido', 'sonido/index.js#register', 'sonido.musica.solicitud_fallida',
+          `No se pudo procesar la solicitud de musica de ${cmd.user}: ${error.message}`, { error: error.message }
+        );
+      });
     }, 'sonido');
 
     // Guards Pro para los paneles de UI del streamer.

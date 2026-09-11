@@ -13,22 +13,49 @@ function saveReplay(deps) {
     );
     const err = new Error('OBS no conectado');
     err.statusCode = 400;
-    throw err;
+    return Promise.reject(err);
   }
-  try {
-    const requestId = `replay-${Date.now()}`;
-    ws.send(JSON.stringify({ op: 6, d: { requestType: 'SaveReplayBuffer', requestId } }));
-    logger.log(
-      'info', 'canales', 'canales/obs/save-replay.js#saveReplay', 'canales.obs.replay_guardado',
-      'Solicitud de guardado de replay enviada a OBS', { requestId }
-    );
-  } catch (error) {
-    logger.log(
-      'error', 'canales', 'canales/obs/save-replay.js#saveReplay', 'canales.obs.replay_fallido',
-      `Fallo enviando solicitud de replay a OBS: ${error.message}`, { error: error.message, stack: error.stack }
-    );
-    throw error;
-  }
+
+  if (!state.obs.pendingRequests) state.obs.pendingRequests = new Map();
+  const requestId = `replay-${Date.now()}`;
+
+  return new Promise((resolve, reject) => {
+    const timeoutId = setTimeout(() => {
+      state.obs.pendingRequests.delete(requestId);
+      reject(new Error('OBS no confirmo el guardado del replay a tiempo'));
+    }, 5000);
+
+    state.obs.pendingRequests.set(requestId, {
+      resolve: () => {
+        clearTimeout(timeoutId);
+        logger.log(
+          'info', 'canales', 'canales/obs/save-replay.js#saveReplay', 'canales.obs.replay_guardado',
+          'OBS confirmo el guardado del replay', { requestId }
+        );
+        resolve();
+      },
+      reject: (error) => {
+        clearTimeout(timeoutId);
+        logger.log(
+          'error', 'canales', 'canales/obs/save-replay.js#saveReplay', 'canales.obs.replay_fallido',
+          `OBS no confirmo el guardado del replay: ${error.message}`, { requestId, error: error.message }
+        );
+        reject(error);
+      },
+    });
+
+    try {
+      ws.send(JSON.stringify({ op: 6, d: { requestType: 'SaveReplayBuffer', requestId } }));
+    } catch (error) {
+      state.obs.pendingRequests.delete(requestId);
+      clearTimeout(timeoutId);
+      logger.log(
+        'error', 'canales', 'canales/obs/save-replay.js#saveReplay', 'canales.obs.replay_fallido',
+        `Fallo enviando solicitud de replay a OBS: ${error.message}`, { error: error.message, stack: error.stack }
+      );
+      reject(error);
+    }
+  });
 }
 
 module.exports = { saveReplay };

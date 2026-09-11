@@ -988,6 +988,7 @@
     "playlistEmpty": "La tua playlist è vuota",
     "twitchAuthStartFailed": "Impossibile avviare l'autorizzazione di Twitch",
     "obsConnectFailed": "Impossibile connettersi a OBS",
+    "obsConnectInProgress": "È già in corso una connessione a OBS",
     "mcpDisabled": "Il server MCP è spento",
     "unauthorized": "Non autenticato.",
     "proRequired": "Questa funzione richiede il piano Pro.",

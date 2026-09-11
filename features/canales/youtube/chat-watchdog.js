@@ -20,6 +20,7 @@ function armWatchdog(deps, target, onStale) {
   const { state } = deps;
   clearWatchdogTimer(state.youtubeWatchdogTimers, target.key);
   const timer = setTimeout(onStale, WATCHDOG_TIMEOUT_MS);
+  if (typeof timer.unref === 'function') timer.unref();
   state.youtubeWatchdogTimers.set(target.key, timer);
 }
 

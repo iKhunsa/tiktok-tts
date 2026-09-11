@@ -77,22 +77,26 @@ function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
   app.post('/api/auth/subscription/cancel', guard, async (req, res) => {
     const token = estado.getToken();
     if (!token) return res.status(401).json({ error: 'No autenticado', errorKey: 'errors.unauthorized' });
+    const antes = estado.getSesion();
     const r = await cliente.cancelarSuscripcion(token);
     if (!r.ok) return propagarError(res, r, logger);
     logger.log('info', 'auth', 'auth/routes.js#cancelarSuscripcion', 'auth.suscripcion.cancelada', 'Cancelacion solicitada', {});
     const s = await cliente.session(token); // re-hidrata: cancel_at_period_end ya actualizado (optimista del lado del servicio)
     if (s.ok) estado.aplicar({ session: s.body }, logger);
+    refresh.emitirCambio(antes, estado.getSesion());
     res.json(estado.getSesion());
   });
 
   app.post('/api/auth/subscription/resume', guard, async (req, res) => {
     const token = estado.getToken();
     if (!token) return res.status(401).json({ error: 'No autenticado', errorKey: 'errors.unauthorized' });
+    const antes = estado.getSesion();
     const r = await cliente.reanudarSuscripcion(token);
     if (!r.ok) return propagarError(res, r, logger);
     logger.log('info', 'auth', 'auth/routes.js#reanudarSuscripcion', 'auth.suscripcion.reanudada', 'Reanudacion solicitada', {});
     const s = await cliente.session(token);
     if (s.ok) estado.aplicar({ session: s.body }, logger);
+    refresh.emitirCambio(antes, estado.getSesion());
     res.json(estado.getSesion());
   });
 

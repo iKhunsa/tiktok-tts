@@ -8,6 +8,8 @@ const LAZY_RETRY_DELAY_MS = 500;
 
 function advanceMusicQueue(deps) {
   const { musicState, bus, logger } = deps;
+  musicState.playbackGen = (musicState.playbackGen || 0) + 1;
+  const myGen = musicState.playbackGen;
   const config = getConfigSnapshot(bus);
 
   if (musicState.queue.length > 0) {
@@ -35,6 +37,7 @@ function advanceMusicQueue(deps) {
     } else {
       // Resolver perezosamente y luego reproducir.
       resolveFullTrack(deps, entry.raw).then((resolved) => {
+        if (musicState.playbackGen !== myGen) return; // esta resolucion quedo obsoleta (otra llamada a advanceMusicQueue ya decidio que suena ahora)
         if (!resolved) { salteoPerezoso(deps); return; }
         musicState.playlistResolveFails = 0;
         const idx = musicState.playlistResolved.indexOf(entry);
@@ -43,6 +46,7 @@ function advanceMusicQueue(deps) {
         bus.emit('ws:broadcast', { type: 'music-now-playing', track: musicState.currentTrack });
         musicBroadcastState(deps);
       }).catch((error) => {
+        if (musicState.playbackGen !== myGen) return; // esta resolucion quedo obsoleta
         if (logger) logger.log(
           'warn', 'sonido', 'sonido/musica/advance-queue.js#advanceMusicQueue', 'sonido.musica.playlist_track_salteado',
           `Se salteó un tema de la playlist al no poder resolverlo: ${error.message}`, { error: error.message }

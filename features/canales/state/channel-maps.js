@@ -7,6 +7,9 @@ function createChannelState() {
   return {
     tiktokChannels: new Map(), // cleanUsername -> { conn, attempts, timer }
     connectingTiktok: new Set(),
+    connectingTwitch: new Set(),
+    connectingYoutube: new Set(),
+    connectingKick: new Set(),
     twitchChannels: new Map(), // channel -> tmi.Client
     twitchReconnectTimers: new Map(),
     youtubeChannels: new Map(), // channelOrId -> LiveChat
@@ -34,6 +37,7 @@ function createChannelState() {
       reconnectTimer: null,
       reconnectAttempts: 0,
       intentionalClose: false,
+      connecting: false,
     },
     eventsub: {
       ws: null,

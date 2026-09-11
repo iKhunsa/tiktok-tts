@@ -8,7 +8,7 @@ const { syncSoundPadsToMobileState } = require('../sync-to-mobile-state');
 
 function del(deps) {
   return (req, res) => {
-    const sounds = loadSounds(deps.soundsConfigPath);
+    const sounds = loadSounds(deps.soundsConfigPath, deps.logger);
     const idx = sounds.findIndex((s) => s.id === req.params.id);
     if (idx === -1) return res.status(404).json({ error: 'Sonido no encontrado' });
 
@@ -21,7 +21,7 @@ function del(deps) {
         `No se pudo borrar el archivo de audio ${removed.filename}: ${error.message}`, { filename: removed.filename, error: error.message }
       );
     }
-    saveSounds(deps.soundsConfigPath, sounds);
+    saveSounds(deps.soundsConfigPath, sounds, deps.logger);
     syncSoundPadsToMobileState(deps);
     res.json({ ok: true });
   };

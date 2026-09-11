@@ -6,7 +6,7 @@ const { syncSoundPadsToMobileState } = require('../sync-to-mobile-state');
 
 function patch(deps) {
   return (req, res) => {
-    const sounds = loadSounds(deps.soundsConfigPath);
+    const sounds = loadSounds(deps.soundsConfigPath, deps.logger);
     const idx = sounds.findIndex((s) => s.id === req.params.id);
     if (idx === -1) return res.status(404).json({ error: 'Sonido no encontrado' });
 
@@ -16,7 +16,7 @@ function patch(deps) {
     if (shortcut !== undefined) sounds[idx].shortcut = shortcut || null;
     if (typeof icon === 'string' && /^[a-z0-9_]{1,64}$/.test(icon)) sounds[idx].icon = icon;
 
-    saveSounds(deps.soundsConfigPath, sounds);
+    saveSounds(deps.soundsConfigPath, sounds, deps.logger);
     syncSoundPadsToMobileState(deps);
     res.json(sounds[idx]);
   };

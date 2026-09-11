@@ -56,8 +56,13 @@ function attach(bus, track, { markPlatform }) {
       if (payload.channel) liveChannels.delete(`${payload.platform}:${payload.channel}`);
       if (liveChannels.size === 0) stopLive();
     } else if (payload.state === 'sin-canales') {
-      liveChannels.clear();
-      stopLive();
+      // Emitido solo por TikTok (cleanup-after-last-channel.js) — no tocar
+      // los canales de otras plataformas que puedan seguir en vivo.
+      const prefix = `${payload.platform}:`;
+      for (const key of liveChannels) {
+        if (key.startsWith(prefix)) liveChannels.delete(key);
+      }
+      if (liveChannels.size === 0) stopLive();
     }
     // 'reconectando' / 'error' se ignoran: son transitorios y la ventana de
     // 150s del backend absorbe el hueco hasta el proximo 'conectado' o el

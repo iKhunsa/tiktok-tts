@@ -15,6 +15,7 @@ const { armKickWatchdog, clearKickWatchdog, WATCHDOG_TIMEOUT_MS } = require('./s
 
 const SEEN_IDS_CAP = 500;
 const PING_INTERVAL_MS = 100 * 1000; // Pusher corta a los 120s sin actividad.
+const SUBSCRIBE_TIMEOUT_MS = 20000; // evita que la Promise quede colgada si Pusher nunca confirma la suscripcion.
 
 function clearKickReconnect(map, slug) {
   const timer = map.get(slug);
@@ -63,9 +64,26 @@ function scheduleReconnect(deps, slug, attempt, reason) {
 }
 
 async function connectKick(deps, channelOrSlug, attempt = 0) {
-  const { state, bus, logger } = deps;
+  const { state } = deps;
   const slug = cleanKickSlug(channelOrSlug);
   if (!slug) throw new Error('Kick: ingresa el nombre del canal');
+
+  if (state.connectingKick.has(slug)) {
+    const err = new Error('Conexión ya en progreso para este canal');
+    err.statusCode = 409;
+    throw err;
+  }
+  state.connectingKick.add(slug);
+
+  try {
+    return await connectKickLocked(deps, slug, attempt);
+  } finally {
+    state.connectingKick.delete(slug);
+  }
+}
+
+async function connectKickLocked(deps, slug, attempt) {
+  const { state, bus, logger } = deps;
 
   clearKickReconnect(state.kickReconnectTimers, slug);
   clearKickWatchdog(state.kickWatchdogTimers, slug);
@@ -101,6 +119,17 @@ async function connectKick(deps, channelOrSlug, attempt = 0) {
   await new Promise((resolve, reject) => {
     let settled = false;
 
+    const subscribeTimeout = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      logger.log(
+        'warn', 'canales', 'canales/kick/connect-kick.js#connectKick', 'canales.kick.suscripcion_timeout',
+        `Kick ${slug}: sin confirmacion de suscripcion tras ${SUBSCRIBE_TIMEOUT_MS}ms`, { slug, timeoutMs: SUBSCRIBE_TIMEOUT_MS }
+      );
+      teardownEntry(entry);
+      reject(new Error('Timeout esperando confirmacion de suscripcion de Kick'));
+    }, SUBSCRIBE_TIMEOUT_MS);
+
     ws.on('open', () => {
       ws.send(subscribeFrame(chatroomId));
       entry.pingTimer = setInterval(() => {
@@ -121,6 +150,7 @@ async function connectKick(deps, channelOrSlug, attempt = 0) {
       if (msg.event === 'pusher_internal:subscription_succeeded') {
         if (settled) return;
         settled = true;
+        clearTimeout(subscribeTimeout);
         state.kickChannels.set(slug, entry);
         logger.log(
           'info', 'canales', 'canales/kick/connect-kick.js#connectKick', 'canales.kick.conectado',
@@ -148,13 +178,13 @@ async function connectKick(deps, channelOrSlug, attempt = 0) {
         'warn', 'canales', 'canales/kick/connect-kick.js#connectKick', 'canales.kick.socket_error',
         `Error de socket de Kick ${slug}: ${error.message}`, { slug, error: error.message }
       );
-      if (!settled) { settled = true; reject(error); }
+      if (!settled) { settled = true; clearTimeout(subscribeTimeout); reject(error); }
     });
 
     ws.on('close', () => {
       if (entry.pingTimer) clearInterval(entry.pingTimer);
       if (entry.intentional) return;
-      if (!settled) { settled = true; reject(new Error('Kick: el socket se cerro antes de suscribirse')); return; }
+      if (!settled) { settled = true; clearTimeout(subscribeTimeout); reject(new Error('Kick: el socket se cerro antes de suscribirse')); return; }
       if (state.kickChannels.get(slug) !== entry) return;
       state.kickChannels.delete(slug);
       clearKickWatchdog(state.kickWatchdogTimers, slug);

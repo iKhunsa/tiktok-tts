@@ -1,5 +1,7 @@
 'use strict';
 
+const { getSafeConfig } = require('../safe-config');
+
 function patchConfig(configStore, bus, logger) {
   return (req, res) => {
     const { rejected, changed, keysChanged } = configStore.applyPatch(req.body || {});
@@ -20,7 +22,7 @@ function patchConfig(configStore, bus, logger) {
         `PATCH /api/config aplico ${keysChanged.length} cambio(s)`, { keysChanged }
       );
       bus.emit('config:actualizado', { keysChanged });
-      bus.emit('ws:broadcast', { type: 'config-updated', config: configStore.config });
+      bus.emit('ws:broadcast', { type: 'config-updated', config: getSafeConfig(configStore.config) });
     }
 
     res.json(configStore.config);

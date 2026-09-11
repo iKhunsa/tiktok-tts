@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const { DATA_BASE } = require('../../core/paths');
+const { atomicWriteFileSync } = require('../../core/atomic-write');
 
 // Persistencia del token + ultimo estado de sesion conocido.
 // DATA_BASE/auth-session.json. Patron auth-tokens-store.js: writeFileSync,
@@ -23,7 +24,7 @@ function cargar() {
 // data: { token, session, cachedAt }  (session = objeto de sesion sin token)
 function guardar(data, logger) {
   try {
-    fs.writeFileSync(FILE, `${JSON.stringify(data, null, 2)}\n`, 'utf8');
+    atomicWriteFileSync(FILE, `${JSON.stringify(data, null, 2)}\n`);
   } catch (error) {
     logger.log(
       'error', 'auth', 'auth/session-store.js#guardar', 'auth.store.guardado_fallido',

@@ -18,26 +18,28 @@ function withTimeout(promise, ms) {
 }
 
 /**
- * Recorre los dominios registrados en orden inverso de registro y llama
- * domain.shutdown() de cada uno en su propio try/catch con un timeout: uno
- * que falle o cuelgue no bloquea el shutdown de los demas.
+ * Llama domain.shutdown() de todos los dominios registrados EN PARALELO,
+ * cada uno en su propio try/catch con un timeout: uno que falle o cuelgue
+ * no bloquea el shutdown de los demas. El tiempo total queda acotado por
+ * SHUTDOWN_TIMEOUT_MS (el mas lento) en vez de la suma de todos.
  */
 async function shutdownAll(logger) {
-  for (let i = registered.length - 1; i >= 0; i--) {
-    const { domain, shutdown } = registered[i];
-    try {
-      await withTimeout(Promise.resolve().then(shutdown), SHUTDOWN_TIMEOUT_MS);
-    } catch (error) {
-      logger.log(
-        'error',
-        domain,
-        `${domain}#shutdown`,
-        'core.dominio.fallo_apagado',
-        `Dominio ${domain} fallo al apagarse: ${error.message}`,
-        { domain, error: error.message, stack: error.stack }
-      );
-    }
-  }
+  await Promise.allSettled(
+    registered.map(async ({ domain, shutdown }) => {
+      try {
+        await withTimeout(Promise.resolve().then(shutdown), SHUTDOWN_TIMEOUT_MS);
+      } catch (error) {
+        logger.log(
+          'error',
+          domain,
+          `${domain}#shutdown`,
+          'core.dominio.fallo_apagado',
+          `Dominio ${domain} fallo al apagarse: ${error.message}`,
+          { domain, error: error.message, stack: error.stack }
+        );
+      }
+    })
+  );
 }
 
 module.exports = { trackForShutdown, shutdownAll };

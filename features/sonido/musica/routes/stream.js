@@ -45,7 +45,7 @@ function stream(deps) {
     });
     res.on('close', () => {
       if (!res.writableEnded) aborted = true;
-      treeKill(child);
+      treeKill(child, logger);
     });
   };
 }

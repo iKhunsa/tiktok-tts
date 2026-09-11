@@ -988,6 +988,7 @@
     "playlistEmpty": "Ваш плейлист пуст",
     "twitchAuthStartFailed": "Не удалось запустить авторизацию Twitch",
     "obsConnectFailed": "Не удалось подключиться к OBS",
+    "obsConnectInProgress": "Подключение к OBS уже выполняется",
     "mcpDisabled": "Сервер MCP выключен",
     "unauthorized": "Не аутентифицирован.",
     "proRequired": "Для этой функции нужен тариф Pro.",

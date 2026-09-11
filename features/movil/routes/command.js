@@ -3,6 +3,16 @@
 const { MOBILE_ALLOWED_ACTIONS } = require('../allowed-actions');
 const { hasDesktopClient } = require('../has-desktop-client');
 
+function esPayloadValido({ action, value, soundId, clipId, key, index }) {
+  if (value !== undefined && (typeof value !== 'number' || !Number.isFinite(value))) return false;
+  if (action === 'musicVolume' && value !== undefined && (value < 0 || value > 1)) return false;
+  if (soundId !== undefined && typeof soundId !== 'string') return false;
+  if (clipId !== undefined && typeof clipId !== 'string') return false;
+  if (key !== undefined && typeof key !== 'string') return false;
+  if (index !== undefined && (!Number.isInteger(index) || index < 0)) return false;
+  return true;
+}
+
 /**
  * Valida y re-emite el comando como movil:comando — /canales, /sonido,
  * /clips se suscriben cuando existan, /movil nunca llama funciones de otro
@@ -20,6 +30,14 @@ function command(deps) {
         `Comando movil no valido: ${action}`, { action }
       );
       return res.status(400).json({ error: 'Acción no válida' });
+    }
+
+    if (!esPayloadValido(req.body || {})) {
+      logger.log(
+        'warn', 'movil', 'movil/routes/command.js#command', 'movil.comando.payload_invalido',
+        `Payload invalido para comando movil: ${action}`, { action }
+      );
+      return res.status(400).json({ error: 'Datos del comando inválidos' });
     }
 
     bus.emit('movil:comando', { action, key, value, index, clipId, soundId });

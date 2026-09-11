@@ -124,7 +124,7 @@ function createLogger({ logsDir, cap = DEFAULT_CAP } = {}) {
     writeToStream(entry);
 
     if (bus && isErrorLevel) {
-      bus.emit(event === 'core.dominio.fallo_montaje' ? 'error:uncaught' : 'error:handled', {
+      bus.emit(event === 'core.boundary.excepcion_capturada' ? 'error:uncaught' : 'error:handled', {
         domain,
         function: fn,
         event,

@@ -3,13 +3,14 @@
 const fs = require('fs');
 const path = require('path');
 const { DATA_BASE } = require('../../../../core/paths');
+const { atomicWriteFileSync } = require('../../../../core/atomic-write');
 
 const AUTH_TOKENS_FILE = path.join(DATA_BASE, 'auth-tokens.json');
 
 function saveAuthTokens(deps) {
   const { state, logger } = deps;
   try {
-    fs.writeFileSync(AUTH_TOKENS_FILE, `${JSON.stringify(state.authTokens, null, 2)}\n`, 'utf8');
+    atomicWriteFileSync(AUTH_TOKENS_FILE, `${JSON.stringify(state.authTokens, null, 2)}\n`);
   } catch (error) {
     logger.log(
       'error', 'canales', 'canales/twitch/oauth/auth-tokens-store.js#saveAuthTokens', 'canales.twitch_oauth.tokens_guardado_fallido',

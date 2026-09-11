@@ -50,6 +50,10 @@ async function reconnectTiktok(deps, username) {
       e2.timer = setTimeout(() => reconnectTiktok(deps, username), delay);
     } else {
       state.tiktokChannels.delete(username);
+      // Teardown del connector (mismo patron que connect-tiktok-channel.js):
+      // sin esto el socket/heartbeat de e2.conn queda vivo para siempre.
+      e2.conn.removeAllListeners();
+      try { e2.conn.disconnect(); } catch (_) { /* best-effort */ }
       cleanupAfterLastTikTokChannel(deps);
     }
   }

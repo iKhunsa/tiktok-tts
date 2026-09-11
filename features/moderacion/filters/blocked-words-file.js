@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const { RESOURCE_BASE, DATA_BASE } = require('../../../core/paths');
+const { atomicWriteFileSync } = require('../../../core/atomic-write');
 const { invalidateBlockedMatchers } = require('./blocked-matchers');
 
 const DEFAULT_BLOCKED_WORDS_FILE = path.join(RESOURCE_BASE, 'blocked-words.md');
@@ -47,7 +48,7 @@ function saveBlockedWordsToFile(state, logger) {
     ];
     for (const word of sorted) lines.push(`- ${word}`);
     lines.push('');
-    fs.writeFileSync(BLOCKED_WORDS_FILE, lines.join('\n'), 'utf-8');
+    atomicWriteFileSync(BLOCKED_WORDS_FILE, lines.join('\n'));
     logger.log(
       'info', 'moderacion', 'moderacion/filters/blocked-words-file.js#saveBlockedWordsToFile', 'moderacion.palabras.guardado',
       `blocked-words.md guardado con ${sorted.length} palabra(s)`, { count: sorted.length }

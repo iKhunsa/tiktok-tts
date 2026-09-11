@@ -11,6 +11,7 @@ const { getLogs } = require('./routes/get-logs');
 const { postClientLog } = require('./routes/post-client-log');
 const { getSessionLogFile } = require('./routes/get-session-log-file');
 const { getLogsDownloadAll } = require('./routes/get-logs-download-all');
+const { getSafeConfig } = require('./safe-config');
 const mcpRegistry = require('../../core/contracts/mcp-registry');
 
 // Claves de config que un agente MCP puede leer/ajustar de forma segura (sin
@@ -68,7 +69,7 @@ module.exports = {
           `config:patch via bus aplico ${result.keysChanged.length} cambio(s)`, { keysChanged: result.keysChanged }
         );
         bus.emit('config:actualizado', { keysChanged: result.keysChanged });
-        bus.emit('ws:broadcast', { type: 'config-updated', config: configStore.config });
+        bus.emit('ws:broadcast', { type: 'config-updated', config: getSafeConfig(configStore.config) });
       }
       if (typeof respond === 'function') respond(result);
     }, 'configuracion');
@@ -117,7 +118,7 @@ module.exports = {
         if (result.changed) {
           configStore.save();
           bus.emit('config:actualizado', { keysChanged: result.keysChanged });
-          bus.emit('ws:broadcast', { type: 'config-updated', config: configStore.config });
+          bus.emit('ws:broadcast', { type: 'config-updated', config: getSafeConfig(configStore.config) });
         }
         return { ok: result.rejected.length === 0, keysChanged: result.keysChanged, rejected: result.rejected, blocked: bloqueadas };
       },
