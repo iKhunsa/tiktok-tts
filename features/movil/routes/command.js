@@ -4,8 +4,12 @@ const { MOBILE_ALLOWED_ACTIONS } = require('../allowed-actions');
 const { hasDesktopClient } = require('../has-desktop-client');
 
 function esPayloadValido({ action, value, soundId, clipId, key, index }) {
-  if (value !== undefined && (typeof value !== 'number' || !Number.isFinite(value))) return false;
-  if (action === 'musicVolume' && value !== undefined && (value < 0 || value > 1)) return false;
+  // value es booleano para toggle/globalTTS/pause, numero 0-1 para musicVolume.
+  if (action === 'musicVolume') {
+    if (typeof value !== 'number' || !Number.isFinite(value) || value < 0 || value > 1) return false;
+  } else if (value !== undefined && typeof value !== 'boolean' && typeof value !== 'number') {
+    return false;
+  }
   if (soundId !== undefined && typeof soundId !== 'string') return false;
   if (clipId !== undefined && typeof clipId !== 'string') return false;
   if (key !== undefined && typeof key !== 'string') return false;
