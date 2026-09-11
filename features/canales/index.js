@@ -67,14 +67,12 @@ module.exports = {
     // /clips tambien puede pedirlo via bus (fire-and-forget), sin conocer el
     // protocolo OBS WS — /canales/obs lo ejecuta.
     bus.on('canal:obs:guardar-replay', () => {
-      try {
-        saveReplay(deps);
-      } catch (error) {
+      saveReplay(deps).catch((error) => {
         logger.log(
           'error', 'canales', 'canales/index.js#register', 'canales.obs.replay_fallido',
           `No se pudo guardar el replay solicitado via bus: ${error.message}`, { error: error.message }
         );
-      }
+      });
     }, 'canales');
 
     // /configuracion (Fase 2) pide esto para GET /api/status ("connected"),

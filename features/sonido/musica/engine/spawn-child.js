@@ -11,6 +11,7 @@ function spawnChild(state, args) {
     windowsHide: true,
     stdio: ['ignore', 'pipe', 'pipe'],
     env: { ...process.env, ELECTRON_RUN_AS_NODE: '1' },
+    detached: process.platform !== 'win32',
   });
   state.liveChildren.add(child);
   child.on('close', () => state.liveChildren.delete(child));

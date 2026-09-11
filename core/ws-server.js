@@ -82,23 +82,24 @@ function createWsServer(server, bus, logger) {
     ws.on('message', (raw) => {
       const now = Date.now();
       if (now - windowStart >= RATE_LIMIT_WINDOW_MS) {
+        violations = windowCount > RATE_LIMIT_MAX_MESSAGES ? violations + 1 : 0;
         windowStart = now;
         windowCount = 0;
+        if (violations >= RATE_LIMIT_MAX_VIOLATIONS) {
+          logger.log(
+            'warn',
+            'core',
+            'core/ws-server.js#onMessage',
+            'core.ws.rate_limit_excedido',
+            `Cliente WS ${clientId} excedio el limite de mensajes/seg (violacion ${violations})`,
+            { clientId, violations }
+          );
+          ws.close(1008, 'rate limit excedido');
+          return;
+        }
       }
       windowCount++;
-      if (windowCount > RATE_LIMIT_MAX_MESSAGES) {
-        violations++;
-        logger.log(
-          'warn',
-          'core',
-          'core/ws-server.js#onMessage',
-          'core.ws.rate_limit_excedido',
-          `Cliente WS ${clientId} excedio el limite de mensajes/seg (violacion ${violations})`,
-          { clientId, violations }
-        );
-        if (violations >= RATE_LIMIT_MAX_VIOLATIONS) ws.close(1008, 'rate limit excedido');
-        return;
-      }
+      if (windowCount > RATE_LIMIT_MAX_MESSAGES) return;
 
       const rawStr = raw.toString();
       let parsed;
@@ -118,6 +119,7 @@ function createWsServer(server, bus, logger) {
       bus.emit('ws:mensaje-entrante', {
         clientId,
         data: parsed,
+        ip,
         markDesktop: () => { ws.isDesktop = true; },
       });
     });

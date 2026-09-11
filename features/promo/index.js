@@ -3,6 +3,7 @@
 const { createSessionScheduler } = require('./session-scheduler');
 const { PROMO_ANNOUNCE_TEXT, pickAnnounceText } = require('../../core/announce-texts');
 const entitlements = require('../../core/contracts/entitlements');
+const { getConfigSnapshot } = require('../../core/config-snapshot');
 
 let scheduler = null;
 let stopGraceTimer = null;
@@ -30,16 +31,17 @@ module.exports = {
     scheduler = createSessionScheduler({
       logger,
       onMilestone: () => {
+        const config = getConfigSnapshot(bus);
         // Gate invertido: en Pro (entitlement 'sin-promos') los avisos NO suenan.
-        // subscriptionsEnabled=false o plan free -> check() da false -> suenan
-        // (comportamiento actual).
-        if (entitlements.check('sin-promos')) {
+        // entitlements.check() default-abre TODO cuando subscriptionsEnabled=false
+        // (para las features Pro normales), lo cual seria incorrecto acá porque
+        // 'sin-promos' es negativo — por eso solo se evalua con suscripciones
+        // activas; sin ellas, los avisos SIEMPRE suenan.
+        if (config.subscriptionsEnabled && entitlements.check('sin-promos')) {
           logger.log('info', 'promo', 'promo/index.js#register', 'promo.autopromocion.omitida',
             'Aviso de autopromocion omitido (plan Pro sin anuncios)', {});
           return;
         }
-        let config = null;
-        bus.emit('config:get', (c) => { config = c; });
         // `text` = fallback para clientes viejos; `texts` = mapa completo, el
         // cliente elige contra su voz TTS real (ver chat/emit-chat-message.js).
         const text = pickAnnounceText(PROMO_ANNOUNCE_TEXT, config && config.ttsVoiceLang);

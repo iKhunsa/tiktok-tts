@@ -26,7 +26,13 @@ function validateLocalMutation(req, res, next) {
       if (auth === `Bearer ${token}`) return next();
       return res.status(401).json({ error: 'MCP token invalido o ausente' });
     }
-    // sin token configurado → sigue el chequeo local normal
+    // sin token configurado -> solo-localhost para TODOS los metodos (antes
+    // dejaba pasar cualquier GET sin chequeo, porque el chequeo de host de
+    // abajo solo corre para mutaciones).
+    const host = getRequestHostname(req.headers.host);
+    if (!isLocalHostname(host)) {
+      return res.status(403).json({ error: 'Host no permitido' });
+    }
   }
   if (!['POST', 'PATCH', 'DELETE', 'PUT'].includes(req.method)) return next();
 

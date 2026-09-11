@@ -7,8 +7,9 @@ const { spawn } = require('child_process');
  * child.kill() — solo mata el proceso yt-dlp inmediato. En Windows,
  * `taskkill /T /F` mata el arbol completo (yt-dlp + sus hijos).
  */
-function treeKill(child) {
+function treeKill(child, logger) {
   if (!child || !child.pid) return;
+  if (child.exitCode !== null || child.signalCode !== null) return; // ya termino, no reciclar el PID
   if (process.platform === 'win32') {
     try {
       const killer = spawn('taskkill', ['/PID', String(child.pid), '/T', '/F'], {
@@ -19,12 +20,33 @@ function treeKill(child) {
       // fds/procesos), no un throw sync. Sin handler → 'error' sin capturar →
       // crash. En ese caso caemos al kill directo del proceso inmediato.
       killer.on('error', () => { try { child.kill(); } catch (_) { /* best-effort */ } });
+      // taskkill puede arrancar y aun asi fallar en matar el arbol (permiso
+      // denegado, proceso protegido) sin disparar 'error' — solo se ve en el
+      // exit code. Sin este handler el proceso yt-dlp/ffmpeg queda vivo.
+      killer.on('close', (code) => {
+        if (code === 0) return;
+        if (logger) {
+          logger.log(
+            'warn', 'sonido', 'sonido/musica/engine/tree-kill.js#treeKill', 'sonido.musica.taskkill_fallido',
+            `taskkill no pudo matar el arbol del proceso ${child.pid} (exit code ${code})`, { pid: child.pid, code }
+          );
+        }
+        try { child.kill(); } catch (_) { /* best-effort */ }
+      });
       return;
     } catch (_) {
       // best-effort — cae al kill directo abajo
     }
   }
-  try { child.kill(); } catch (_) { /* best-effort */ }
+  try {
+    if (process.platform !== 'win32') {
+      process.kill(-child.pid); // PID negativo = grupo de procesos completo (requiere detached:true al spawnear, ver spawn-child.js)
+    } else {
+      child.kill();
+    }
+  } catch (_) {
+    try { child.kill(); } catch (_) { /* best-effort */ }
+  }
 }
 
 module.exports = { treeKill };

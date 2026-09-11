@@ -16,9 +16,10 @@ async function postToDiscordWebhook(logger, webhookUrl, embed, logFilePath) {
     return { attached: false, bytes: 0 };
   }
 
-  const candidates = [knownGoodAttachmentBytes, ...ATTACHMENT_SIZE_LADDER]
-    .filter((v, i, arr) => arr.indexOf(v) === i)
-    .sort((a, b) => b - a);
+  const candidates = [
+    knownGoodAttachmentBytes,
+    ...ATTACHMENT_SIZE_LADDER.filter((v) => v < knownGoodAttachmentBytes),
+  ];
 
   let intentoNumero = 0;
   for (const cap of candidates) {

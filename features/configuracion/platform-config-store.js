@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const { DATA_BASE } = require('../../core/paths');
+const { atomicWriteFileSync } = require('../../core/atomic-write');
 
 const PLATFORM_CONFIG_FILE = path.join(DATA_BASE, 'platform-config.json');
 
@@ -11,7 +12,7 @@ function createPlatformConfigStore(logger) {
 
   function save() {
     try {
-      fs.writeFileSync(PLATFORM_CONFIG_FILE, `${JSON.stringify(platformConfig, null, 2)}\n`, 'utf8');
+      atomicWriteFileSync(PLATFORM_CONFIG_FILE, `${JSON.stringify(platformConfig, null, 2)}\n`);
     } catch (error) {
       logger.log(
         'error', 'configuracion', 'configuracion/platform-config-store.js#save', 'configuracion.platform.guardado_fallido',

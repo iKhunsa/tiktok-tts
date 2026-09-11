@@ -88,6 +88,10 @@ function attachIpcBridge({ app, bus, logger, getMainWindow, globalShortcut }) {
         return { ok: false, shortcut: normalized, error: 'conflict' };
       }
     }
+    for (const sc of soundpadShortcuts.values()) {
+      if (sc === normalized) return { ok: false, shortcut: normalized, error: 'conflict' };
+    }
+    if (normalizeShortcut('CommandOrControl+Shift+M') === normalized) return { ok: false, shortcut: normalized, error: 'conflict' };
     unregisterTtsShortcut(action);
 
     const callback = () => {

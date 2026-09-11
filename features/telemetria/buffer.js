@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { atomicWriteFileSync } = require('../../core/atomic-write');
 
 // Cola de eventos con respaldo en disco. Si el servidor de telemetria esta
 // caido, los eventos no se pierden: quedan en un archivo del directorio de
@@ -35,7 +36,7 @@ class Buffer {
 
   persist() {
     try {
-      fs.writeFileSync(this.file, JSON.stringify(this.items), 'utf8');
+      atomicWriteFileSync(this.file, JSON.stringify(this.items));
     } catch (error) {
       this.logger.log(
         'warn', 'telemetria', 'telemetria/buffer.js#persist', 'telemetria.buffer.persistencia_fallida',

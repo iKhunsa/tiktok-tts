@@ -10,6 +10,7 @@ const { recomputeFollowerBase } = require('./state/recompute-follower-base');
 const { extractFollowerCount } = require('./state/extract-follower-count');
 const { startFollowerRefresh, stopFollowerRefresh } = require('./state/follower-refresh-timer');
 const { computeGiftUsd } = require('./compute-gift-usd');
+const { pushBounded, purgeTopLikersIfNeeded } = require('./state/bounded-push');
 const { cleanNick } = require('./clean-nick');
 const mcpRegistry = require('../../core/contracts/mcp-registry');
 const { getConfigSnapshot } = require('../../core/config-snapshot');
@@ -47,7 +48,7 @@ module.exports = {
       const user = cleanNick(data.nickname, data.uniqueId);
       const repeatCount = data.repeatCount || 1;
       const { usdValue } = computeGiftUsd(logger, { giftName: data.giftName, repeatCount, diamondCount: data.diamondCount || 0 });
-      state.credits.donors.push({ user, giftName: data.giftName, count: repeatCount, ts: Date.now() });
+      pushBounded(state.credits.donors, { user, giftName: data.giftName, count: repeatCount, ts: Date.now() });
       bus.emit('ws:broadcast', {
         type: 'gift', user, giftName: data.giftName, giftId: data.giftId,
         giftPictureUrl: data.giftPictureUrl || null, repeatCount, usdValue, timestamp: Date.now(),
@@ -56,7 +57,7 @@ module.exports = {
 
     bus.on('canal:follow', (payload) => {
       const user = cleanNick(payload.nick, payload.userId);
-      state.credits.followers.push({ user, ts: Date.now() });
+      pushBounded(state.credits.followers, { user, ts: Date.now() });
       bus.emit('ws:broadcast', { type: 'follow', platform: payload.platform, user, userId: payload.userId || null, timestamp: Date.now() });
       if (payload.platform === 'tiktok') state.followCount += 1;
     }, 'overlay');
@@ -80,6 +81,7 @@ module.exports = {
         const existing = state.topLikers.get(user) || { user, totalLikes: 0 };
         existing.totalLikes += likeCount;
         state.topLikers.set(user, existing);
+        purgeTopLikersIfNeeded(state.topLikers);
       }, debounceMs);
     }, 'overlay');
 
@@ -87,8 +89,8 @@ module.exports = {
       const { platform, channel, kind, raw, userId, nick } = payload;
       if (kind === 'share') {
         const user = cleanNick(nick, userId);
-        state.sharers.push({ user, ts: Date.now() });
-        state.credits.sharers.push({ user, ts: Date.now() });
+        pushBounded(state.sharers, { user, ts: Date.now() });
+        pushBounded(state.credits.sharers, { user, ts: Date.now() });
         bus.emit('ws:broadcast', { type: 'share', platform, user, timestamp: Date.now() });
       } else if (kind === 'join') {
         bus.emit('ws:broadcast', { type: 'join', platform, user: cleanNick(nick, userId), userId: userId || null, timestamp: Date.now() });

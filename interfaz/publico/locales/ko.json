@@ -988,6 +988,7 @@
     "playlistEmpty": "재생목록이 비어 있습니다",
     "twitchAuthStartFailed": "Twitch 인증을 시작할 수 없습니다",
     "obsConnectFailed": "OBS에 연결할 수 없습니다",
+    "obsConnectInProgress": "이미 OBS 연결이 진행 중입니다",
     "mcpDisabled": "MCP 서버가 껺져 있습니다",
     "unauthorized": "인증되지 않았습니다.",
     "proRequired": "이 기능은 Pro 요금제가 필요합니다.",

@@ -1,5 +1,6 @@
 'use strict';
 
+const { ensureTwitchAccessToken } = require('./oauth/ensure-access-token');
 
 /**
  * Perfil publico de un canal de Twitch. Fixea el catch mas citado del
@@ -8,13 +9,14 @@
  * HTTP + error explicitos.
  */
 async function fetchTwitchProfile(deps, login) {
-  const { state, logger } = deps;
+  const { logger } = deps;
   try {
+    const accessToken = await ensureTwitchAccessToken(deps);
     const res = await fetch(
       `https://api.twitch.tv/helix/users?login=${encodeURIComponent(login)}`,
       {
         headers: {
-          Authorization: `Bearer ${state.authTokens.twitch.accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
           'Client-Id': deps.twitchClientId,
         },
         signal: AbortSignal.timeout(5000),
@@ -36,7 +38,7 @@ async function fetchTwitchProfile(deps, login) {
         `https://api.twitch.tv/helix/channels/followers?broadcaster_id=${user.id}&first=1`,
         {
           headers: {
-            Authorization: `Bearer ${state.authTokens.twitch.accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
             'Client-Id': deps.twitchClientId,
           },
           signal: AbortSignal.timeout(5000),

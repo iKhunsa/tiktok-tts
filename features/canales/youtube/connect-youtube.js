@@ -48,10 +48,27 @@ function forceReconnect(deps, target, liveChat, attempt, reason) {
 }
 
 async function connectYoutube(deps, channelOrId, attempt = 0) {
-  const { state, bus, logger } = deps;
-  const { LiveChat } = require('youtube-chat');
+  const { state } = deps;
   const target = parseYoutubeTarget(channelOrId);
   if (!target) throw new Error('YouTube: ingresa @handle, URL del live/video o Channel ID UC...');
+
+  if (state.connectingYoutube.has(target.key)) {
+    const err = new Error('Conexión ya en progreso para este canal');
+    err.statusCode = 409;
+    throw err;
+  }
+  state.connectingYoutube.add(target.key);
+
+  try {
+    return await connectYoutubeLocked(deps, target, attempt);
+  } finally {
+    state.connectingYoutube.delete(target.key);
+  }
+}
+
+async function connectYoutubeLocked(deps, target, attempt) {
+  const { state, bus, logger } = deps;
+  const { LiveChat } = require('youtube-chat');
 
   clearReconnectTimer(state.youtubeReconnectTimers, target.key);
   clearWatchdogTimer(state.youtubeWatchdogTimers, target.key);

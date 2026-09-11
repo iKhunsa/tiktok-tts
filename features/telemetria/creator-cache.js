@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { atomicWriteFileSync } = require('../../core/atomic-write');
 
 // Cache local de la identidad de cada canal. Regla del proyecto: el perfil
 // de un canal se resuelve como maximo DOS veces por canal; de ahi en
@@ -37,7 +38,7 @@ class CreatorCache {
 
   persist() {
     try {
-      fs.writeFileSync(this.file, JSON.stringify(this.data, null, 2), 'utf8');
+      atomicWriteFileSync(this.file, JSON.stringify(this.data, null, 2));
     } catch (error) {
       this.logger.log(
         'warn', 'telemetria', 'telemetria/creator-cache.js#persist', 'telemetria.creator_cache.resolucion_fallida',

@@ -45,8 +45,13 @@ function crearRefresh({ cliente, bus, logger }) {
     emitirCambio(antes, estado.getSesion());
   }
 
+  function mismosEntitlements(a, b) {
+    return a.length === b.length && a.every((id) => b.includes(id));
+  }
+
   function emitirCambio(antes, ahora) {
-    if (antes.signedIn === ahora.signedIn && antes.plan === ahora.plan && antes.degraded === ahora.degraded) return;
+    if (antes.signedIn === ahora.signedIn && antes.plan === ahora.plan && antes.degraded === ahora.degraded
+      && mismosEntitlements(antes.entitlements, ahora.entitlements)) return;
     bus.emit('auth:actualizado', { signedIn: ahora.signedIn, plan: ahora.plan });
     bus.emit('ws:broadcast', { type: 'auth-updated', session: estado.getSesionPublica() });
   }

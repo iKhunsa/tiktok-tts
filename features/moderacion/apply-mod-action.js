@@ -6,7 +6,12 @@ const MOD_DURATION_MAX_MS = 365 * 24 * 60 * 60 * 1000;
 function resolveModTarget(store, body = {}) {
   if (typeof body.key === 'string' && store.parseKey(body.key)) {
     const parsed = store.parseKey(body.key);
-    return { key: body.key, platform: parsed.platform, userId: body.userId || null, nick: body.nick || null };
+    return {
+      key: body.key,
+      platform: parsed.platform,
+      userId: parsed.idKind === 'id' ? parsed.id : (body.userId || null),
+      nick: parsed.idKind === 'name' ? parsed.id : (body.nick || null),
+    };
   }
   const platform = ['tiktok', 'twitch', 'youtube', 'kick'].includes(body.platform) ? body.platform : null;
   if (!platform) return null;
@@ -54,7 +59,10 @@ function applyModAction(deps, req, res, fn, { blockAdmin = false, accion = null 
 
   try {
     const viewer = fn(target);
-    store.flush();
+    const saved = store.flush();
+    if (saved === false) {
+      return res.status(500).json({ error: 'La acción se aplicó pero no se pudo guardar en disco' });
+    }
     bus.emit('ws:broadcast', { type: 'moderation-updated', viewer });
     if (accion) {
       // Éxito por acción — sin userId/nick (analytics lo consume agregado).

@@ -12,7 +12,7 @@ module.exports = {
     // contrato sincrono inyectado por /canales (Fase 6); necesita saber
     // exito/fallo porque el usuario percibe el fallo desde el atajo de
     // teclado, no desde OBS internamente.
-    bus.on('clips:marcar', (payload) => {
+    bus.on('clips:marcar', async (payload) => {
       const origen = (payload && payload.origen) || 'desconocido';
       // clips es feature Pro. subscriptionsEnabled=false -> check() true.
       if (!entitlements.check('clips')) {
@@ -21,7 +21,7 @@ module.exports = {
         return;
       }
       try {
-        obsReplayContract.saveReplay();
+        await obsReplayContract.saveReplay();
         logger.log(
           'info', 'clips', 'clips/index.js#register', 'clips.marcado.exitoso',
           `Clip marcado exitosamente (origen: ${origen})`, { origen }

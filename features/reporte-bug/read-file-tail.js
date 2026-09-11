@@ -4,9 +4,7 @@ const fs = require('fs');
 
 /**
  * Lee solo la cola del archivo (ultimos maxBytes) sin cargar el resto en
- * memoria. Copia local intencional (mismo algoritmo que
- * configuracion/logs/read-file-tail.js) — los dominios no importan modulos
- * internos de otros dominios.
+ * memoria.
  */
 async function readFileTail(filePath, maxBytes) {
   const stat = await fs.promises.stat(filePath);

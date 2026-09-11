@@ -8,7 +8,7 @@ const REFRESH_MS = 5 * 60 * 1000;
  * (ver canales/index.js#register, listener 'canales:refrescar-followers').
  */
 function startFollowerRefresh(deps) {
-  stopFollowerRefresh(deps);
+  if (deps.state.followerRefreshTimer) return; // ya esta corriendo, no reiniciar el ciclo de 5 min
   deps.state.followerRefreshTimer = setInterval(() => {
     deps.bus.emit('canales:refrescar-followers');
   }, REFRESH_MS);

@@ -16,19 +16,26 @@ function createEventBus(logger) {
     emitter.emit(event, payload);
   }
 
+  function logListenerError(domain, event, error, asyncLabel) {
+    logger.log(
+      'error',
+      'core',
+      'core/event-bus.js#on',
+      'core.bus.listener_fallido',
+      `Listener de ${domain} fallo${asyncLabel} al procesar el evento ${event}: ${error.message}`,
+      { event, domainListener: domain, error: error.message, stack: error.stack }
+    );
+  }
+
   function on(event, handler, domain = 'desconocido') {
     emitter.on(event, (payload) => {
       try {
-        handler(payload);
+        const result = handler(payload);
+        if (result && typeof result.catch === 'function') {
+          result.catch((error) => logListenerError(domain, event, error, ' (async)'));
+        }
       } catch (error) {
-        logger.log(
-          'error',
-          'core',
-          'core/event-bus.js#on',
-          'core.bus.listener_fallido',
-          `Listener de ${domain} fallo al procesar el evento ${event}: ${error.message}`,
-          { event, domainListener: domain, error: error.message, stack: error.stack }
-        );
+        logListenerError(domain, event, error, '');
       }
     });
   }

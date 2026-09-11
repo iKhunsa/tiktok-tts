@@ -21,6 +21,7 @@ function armKickWatchdog(deps, slug, onStale) {
   const { state } = deps;
   clearKickWatchdog(state.kickWatchdogTimers, slug);
   const timer = setTimeout(() => onStale(slug), WATCHDOG_TIMEOUT_MS);
+  if (typeof timer.unref === 'function') timer.unref();
   state.kickWatchdogTimers.set(slug, timer);
 }
 

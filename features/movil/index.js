@@ -13,6 +13,7 @@ const mcpRegistry = require('../../core/contracts/mcp-registry');
 const entitlements = require('../../core/contracts/entitlements');
 
 const PORT = process.env.PORT || 3000;
+const LOOPBACK_IPS = new Set(['127.0.0.1', '::1']);
 
 module.exports = {
   name: 'movil',
@@ -24,8 +25,9 @@ module.exports = {
 
     // Espejo de solo lectura: el desktop es la unica fuente de verdad, este
     // dominio solo refleja lo que el desktop confirma via state-sync.
-    bus.on('ws:mensaje-entrante', ({ data, markDesktop }) => {
+    bus.on('ws:mensaje-entrante', ({ data, ip, markDesktop }) => {
       if (!data || data.type !== 'state-sync' || !data.state || typeof data.state !== 'object') return;
+      if (!LOOPBACK_IPS.has(ip)) return; // solo la ventana de Electron (mismo proceso/maquina) puede anunciarse como desktop
       markDesktop();
       const s = data.state;
       if (typeof s.ttsGlobalEnabled === 'boolean') mobileState.ttsGlobalEnabled = s.ttsGlobalEnabled;
@@ -56,7 +58,7 @@ module.exports = {
     }), 'movil');
 
     mcpRegistry.registerTool({
-      name: 'remote_command', domain: 'movil',
+      name: 'remote_command', domain: 'movil', destructive: true,
       title: 'Remote command',
       description: `Send a control command to the desktop (same set as the mobile panel). Actions: ${[...MOBILE_ALLOWED_ACTIONS].join(', ')}.`,
       inputSchema: {
@@ -69,6 +71,7 @@ module.exports = {
         },
       },
       handler: (a) => {
+        if (!entitlements.check('panel-movil')) return { ok: false, reason: 'requiere_plan_pro' };
         if (!MOBILE_ALLOWED_ACTIONS.has(a.action)) return { ok: false, reason: 'accion_no_valida' };
         bus.emit('movil:comando', { action: a.action, value: a.value, soundId: a.soundId, clipId: a.clipId });
         if (a.action === 'markClip') return { ok: true };

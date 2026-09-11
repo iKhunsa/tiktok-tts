@@ -67,6 +67,20 @@ function connectObs(deps, port, password) {
             bus.emit('canal:estado', { platform: 'obs', channel: null, state: 'stream-detenido' });
           }
         }
+      } else if (msg.op === 7) {
+        // RequestResponse — correlaciona con la promesa pendiente que la disparo
+        // (ver save-replay.js). Sin pendiente (timeout ya limpio, o requestId
+        // desconocido) no hay nada que resolver.
+        const d = msg.d || {};
+        const pending = state.obs.pendingRequests && state.obs.pendingRequests.get(d.requestId);
+        if (!pending) return;
+        state.obs.pendingRequests.delete(d.requestId);
+        const status = d.requestStatus || {};
+        if (status.result) {
+          pending.resolve();
+        } else {
+          pending.reject(new Error(status.comment || 'OBS rechazo la solicitud'));
+        }
       }
     });
 

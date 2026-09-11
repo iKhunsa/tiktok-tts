@@ -1,7 +1,7 @@
 'use strict';
 
 const { foldAccents, getBlockedMatchers } = require('./blocked-matchers');
-const { collapseRepeats } = require('./normalize-aggressive');
+const { collapseRepeats, leetify } = require('./normalize-aggressive');
 const idiomaFiltrarContract = require('../../../core/contracts/idioma-filtrar');
 
 /**
@@ -14,7 +14,7 @@ function moderationStage(text, blockedMatchersState, idiomaOpts) {
   if (text.length > 300) return { stage: 'length' };
   if (/^(.)\1+$/.test(text.trim())) return { stage: 'repeatedChar' };
 
-  const folded = foldAccents(text.toLowerCase());
+  const folded = foldAccents(leetify(text.toLowerCase()));
   const { re1, re2 } = getBlockedMatchers(blockedMatchersState);
   if (re1 && re1.test(folded)) return { stage: 'blockedWord' };
   if (re2 && re2.test(collapseRepeats(folded))) return { stage: 'blockedWord' };

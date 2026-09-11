@@ -28,6 +28,7 @@ const CACHE_DIR = path.join(DATA_BASE, 'tts-cache');
 const CACHE_MAX_FILES = 600;         // techo antes de podar
 const CACHE_PRUNE_TO = 450;          // a cuanto baja al podar
 const MIN_AUDIO_BYTES = 1024;        // menos que esto = respuesta vacia/basura
+const MAX_GOOGLE_CHARS = 200;        // limite real (no configurable) de google-tts-api#getAudioUrl; mas que esto tira RangeError
 const MAX_ATTEMPTS = 3;              // 1 intento + 2 reintentos
 const RETRY_DELAY_MS = 400;
 const HTTP_TIMEOUT_MS = 15000;
@@ -112,6 +113,7 @@ function pedirAGoogle(texto, lang, slow, signal = null) {
         let body = '';
         resp.on('data', (c) => { if (body.length < 500) body += c.toString(); });
         resp.on('end', () => reject({ code: status >= 400 && status < 500 ? 'HTTP4XX' : 'HTTP', status, body: body.slice(0, 300), contentType: ct }));
+        resp.on('error', (err) => reject({ code: 'NET', message: err.message }));
         return;
       }
       if (!ct.includes('audio')) {
@@ -164,7 +166,7 @@ async function fetchTtsAudio({ text, voice = 'es', slow = false, logger = null, 
   // google-tts-api tira "text should be a string" si le llega no-string; algo
   // (mensaje mal normalizado, promo con var sin resolver, payload móvil/MCP)
   // manda undefined/null/numero/objeto de vez en cuando. Coerce + rechazo limpio.
-  const clean = typeof text === 'string' ? text.trim() : '';
+  const clean = (typeof text === 'string' ? text.trim() : '').slice(0, MAX_GOOGLE_CHARS);
   if (!clean) {
     if (logger) {
       const tipo = text === null ? 'null' : typeof text;

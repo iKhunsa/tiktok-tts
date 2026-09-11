@@ -30,6 +30,22 @@ async function connectTwitch(deps, channelInput, attempt = 0) {
   const channel = cleanTwitchChannel(channelInput);
   if (!channel) throw new Error('Se requiere canal Twitch');
 
+  if (state.connectingTwitch.has(channel)) {
+    const err = new Error('Conexión ya en progreso para este canal');
+    err.statusCode = 409;
+    throw err;
+  }
+  state.connectingTwitch.add(channel);
+
+  try {
+    return await connectTwitchLocked(deps, tmi, channel, attempt);
+  } finally {
+    state.connectingTwitch.delete(channel);
+  }
+}
+
+async function connectTwitchLocked(deps, tmi, channel, attempt) {
+  const { state, bus, logger } = deps;
   const staleKey = `twitch:${channel}`;
   clearReconnectTimer(state.twitchReconnectTimers, channel);
   clearWatchdog(state, staleKey);
@@ -116,6 +132,10 @@ async function connectTwitch(deps, channelInput, attempt = 0) {
   });
 
   client.on('disconnected', () => {
+    // Guard de identidad (mismo patron que onStale): si este client ya no es
+    // la entrada vigente del Map (perdio la carrera de connectTwitch contra
+    // otra conexion), no borrar la entrada del ganador ni reportar/reconectar.
+    if (state.twitchChannels.get(channel) !== client) return;
     clearWatchdog(state, staleKey);
     bus.emit('canal:estado', { platform: 'twitch', channel, state: 'desconectado' });
     state.twitchChannels.delete(channel);

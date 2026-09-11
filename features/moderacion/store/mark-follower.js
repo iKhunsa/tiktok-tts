@@ -3,7 +3,7 @@
 const { ensure } = require('./ensure');
 const { markDirty } = require('./flush');
 
-function markFollower(state, { platform, userId, nick, manual = false }) {
+function markFollower(state, { platform, userId, nick }) {
   const { viewer } = ensure(state, { platform, userId, nick });
   const t = Date.now();
   viewer.last = t;
@@ -12,7 +12,6 @@ function markFollower(state, { platform, userId, nick, manual = false }) {
     viewer.fol = true;
     viewer.folAt = t;
   }
-  if (manual) viewer.wl = true;
   markDirty(state);
   return viewer;
 }

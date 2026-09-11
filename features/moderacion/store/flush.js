@@ -17,7 +17,7 @@ function clearTimers(state) {
  */
 function flush(state) {
   clearTimers(state);
-  if (!state.dirty) return;
+  if (!state.dirty) return true;
   if (state.viewers.size > state.maxViewers) purge(state);
 
   const payload = {
@@ -34,11 +34,13 @@ function flush(state) {
       'info', 'moderacion', 'moderacion/store/flush.js#flush', 'moderacion.store.guardado',
       `moderation.json guardado con ${state.viewers.size} viewer(s)`, { path: state.filePath, viewers: state.viewers.size }
     );
+    return true;
   } catch (error) {
     state.logger.log(
       'error', 'moderacion', 'moderacion/store/flush.js#flush', 'moderacion.store.guardado_fallido',
       `No se pudo guardar moderation.json: ${error.message}`, { path: state.filePath, error: error.message, stack: error.stack }
     );
+    return false;
   }
 }
 

@@ -17,6 +17,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { atomicWriteFileSync } = require('../core/atomic-write');
 
 function marcarInstalacion(userDataDir, appVersion, fileName) {
   const ruta = path.join(userDataDir, fileName);
@@ -35,7 +36,7 @@ function marcarInstalacion(userDataDir, appVersion, fileName) {
   };
 
   try {
-    fs.writeFileSync(ruta, JSON.stringify({
+    atomicWriteFileSync(ruta, JSON.stringify({
       version: appVersion || null,
       primeraVez: resultado.primeraVez,
       ultimaVez: new Date().toISOString(),

@@ -167,6 +167,16 @@ function aplicarBloqueoApp() {
   const enCuenta = document.getElementById('view-cuenta')?.classList.contains('active');
   if (bloq && !enCuenta) switchView('cuenta');
   else if (!bloq && _estabaBloqueada && enCuenta) switchView('chat');
+  // Recien desbloqueada: los loaders de arranque (voces, soundpad, config de
+  // plataformas, OAuth, musica) corrieron en paralelo al login y volvieron
+  // 401 contra el muro — nadie mas los vuelve a pedir, hay que re-hidratarlos.
+  if (!bloq && _estabaBloqueada) {
+    loadVoices();
+    loadPlatformConfigUI();
+    loadOAuthStatusUI();
+    spLoad().then(() => spRestoreShortcuts());
+    musicInit();
+  }
   _estabaBloqueada = bloq;
   // Onboarding + popups: recién con la app desbloqueada (logueado o sistema de
   // cuentas apagado), nunca en la pantalla de login. arrancarAvisosOnboarding

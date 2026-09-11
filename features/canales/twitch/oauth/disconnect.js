@@ -5,7 +5,7 @@ const { getTwitchClientId } = require('./start');
 const { broadcastOauthStatus } = require('./status');
 
 async function disconnectTwitchOAuth(deps) {
-  const { state, bus } = deps;
+  const { state, bus, logger } = deps;
   require('../eventsub/stop').stopTwitchEventSub(deps, 'user-disconnect');
   const token = state.authTokens.twitch && state.authTokens.twitch.accessToken;
   state.authTokens.twitch = null;
@@ -17,7 +17,12 @@ async function disconnectTwitchOAuth(deps) {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({ client_id: twitchClientId, token }),
-    }).catch(() => {});
+    }).catch((error) => {
+      logger.log(
+        'warn', 'canales', 'canales/twitch/oauth/disconnect.js#disconnectTwitchOAuth', 'canales.twitch_oauth.revocacion_fallida',
+        `No se pudo revocar el token de Twitch: ${error.message}`, { error: error.message }
+      );
+    });
   }
   broadcastOauthStatus(deps);
 }
