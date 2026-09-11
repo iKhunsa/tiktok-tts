@@ -1,5 +1,7 @@
 'use strict';
 
+const { crearSubsEnabledCache } = require('./subs-enabled-cache');
+
 // subscriptionsEnabled ON -> toda ruta /api/* que sirve funcionalidad exige
 // sesion iniciada (cualquier plan). Whitelist chica: bootstrap del cliente,
 // login, y lo que consumen los overlays de OBS (que nunca estan logueados).
@@ -19,26 +21,14 @@ const ABIERTAS = new Set([
 function crearGuardSuscripcion(bus) {
   if (!bus) return (_req, _res, next) => next(); // createApp() sin bus (tests)
 
-  // Cacheado, no releido en cada request (mismo patron que features/auth/index.js).
-  // ponytail: NO leer aca en el momento de crear el middleware — createApp(bus)
-  // corre antes de que features/configuracion se registre y empiece a escuchar
-  // 'config:get' (ver server.js), asi que esa primera lectura no recibiria
-  // respuesta y subsOn quedaria pegado en false para siempre (bypass silencioso
-  // del muro de login si subscriptionsEnabled=true venia guardado de antes).
-  // Se difiere al primer request real, momento en el que todos los dominios ya
-  // estan registrados.
-  let subsOn = false;
-  let inicializado = false;
-  const leerConfig = () => {
-    bus.emit('config:get', (c) => { subsOn = !!(c && c.subscriptionsEnabled); });
-    inicializado = true;
-  };
-  bus.on('config:actualizado', ({ keysChanged } = {}) => {
-    if (!keysChanged || keysChanged.includes('subscriptionsEnabled')) leerConfig();
-  }, 'core');
+  // createApp(bus) corre antes de que features/configuracion se registre y
+  // empiece a escuchar 'config:get' (ver server.js) — eager:false difiere la
+  // primera lectura al primer request real, momento en el que todos los
+  // dominios ya estan registrados (sin esto, subsOn quedaria pegado en false
+  // para siempre: bypass silencioso del muro de login).
+  const subsEnabled = crearSubsEnabledCache(bus, { domain: 'core', eager: false });
 
   return function guardSuscripcion(req, res, next) {
-    if (!inicializado) leerConfig();
     const p = (req.path || '/').toLowerCase().replace(/\/+$/, '') || '/';
     if (!p.startsWith('/api/')) return next();
     // /api/auth/* son las rutas del dominio de cuentas (login, session, etc.),
@@ -46,7 +36,7 @@ function crearGuardSuscripcion(bus) {
     // comparten prefijo por accidente y no deben eximirse del muro.
     if (p.startsWith('/api/auth/') && !p.startsWith('/api/auth/twitch/')) return next();
     if (ABIERTAS.has(`${req.method} ${p}`)) return next();
-    if (!subsOn) return next();
+    if (!subsEnabled()) return next();
 
     let sesion;
     bus.emit('auth:get', (s) => { sesion = s; });
