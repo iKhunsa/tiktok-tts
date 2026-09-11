@@ -341,3 +341,29 @@ Tras confirmar este roadmap:
   | LOW | `shutdownAll(logger)` con `logger` undefined tras un fallo parcial de boot en packaged -> el catch tira | `main.js:208` + `core/shutdown.js:26` | Guard barato. |
   | LOW | `waitForServer` exige `data.app === 'tiktok-tts'` (solo lo produce `configuracion`); si ese dominio falla al montar, el arranque cuelga y culpa lo equivocado | `electron-shell/window.js:31` | |
   | NIT | `ws-server.js` contador de `violations` del rate-limit nunca se resetea en una ventana OK (contradice la semantica "ventanas seguidas" documentada) | `core/ws-server.js:69-101` | |
+
+### 2026-09-10 — orquestador · re-chequeo contra los reportes de usuarios (workflow)
+
+Un agente por sintoma/issue original, trazando el codigo ACTUAL (no el diagnostico viejo) de punta a punta.
+
+| Reporte de usuario | Veredicto | Cubre |
+|---|---|---|
+| "deja de leer, hay que reconectar a mano" | **Parcial** | `stale-watchdog.js` compartido (TikTok+Twitch, 5min) + watchdogs propios ya existentes de Kick/YouTube (YouTube subido 4→8min). Limitacion aceptada: un stream legitimamente mudo 5+min fuerza reconexion cada 5min en TikTok/Twitch (documentado en el propio codigo, no ajustado empiricamente como YouTube). |
+| "repite mensajes tras 15-20min de hueco" | **Parcial** — **YouTube tenia un riesgo real, ahora arreglado (commit `37ed6fa`)** | Gate central (`emit-chat-message.js`) cubre TikTok/Twitch/Kick de sobra porque esos conectores no reentregan backlog real. YouTube SI puede reentregar backlog (re-scrapea la pagina al reconectar) y un hueco >10min podia colarse — se restauro `youtubeSeenIds` (segunda capa sin ventana de tiempo, mismo patron que `kickSeenIds`). |
+| "se reinicia cada 1h, aviso cada 15min" | **Resuelto** | `STOP_GRACE_MS` de 5min en `promo/index.js` + el watchdog (reconexiones mas rapidas, caen dentro de la gracia) + el dedup. |
+| TTS timeout / respuesta_pequena 100% | **Parcial** | `sonido-2` (crash del proceso ante gzip cortado — mitiga algo peor que un mensaje perdido) + `sonido-4` (race del backoff). NO resuelve que ~50% de mensajes no cacheados se pierdan sin reintento bajo carga sostenida — limitacion de infraestructura de Google, aceptada como decision de producto (tarea 09). |
+| Ruido/issues fantasma en GlitchTip (48/57/49/50/52/55) | **Resuelto** | `readTikTokError`, `esErrorConexionEsperado`, watchdog de Kick con cualquier frame, bridge de `showKnownIssuesNotice`. |
+| Twitch "Login unsuccessful" / GlitchTip #63 | **Resuelto** (PR#38, sesion paralela) | Cliente tmi.js siempre anonimo, sin `identity` con token de EventSub que caducaba. String-reject normalizado a Error. |
+
+**Riesgos residuales (por orden de importancia):**
+1. ~~YouTube podia seguir repitiendo en huecos largos~~ → **arreglado** (commit `37ed6fa`, este mismo re-chequeo lo encontro).
+2. TikTok/Twitch reconectan cada 5min indefinidamente en un stream legitimamente silencioso (trade-off documentado, no ajustado empiricamente como YouTube 4→8min — vigilar en produccion).
+3. TTS sigue perdiendo mensajes sin aviso bajo chat denso con rate-limit sostenido de Google (limitacion de infra, aceptada).
+
+**Verificacion de campo pendiente (no confirmable por lectura de codigo):**
+1. YouTube con un hueco real de 15-20min (cortar red/suspender) → confirmar que ya no repite.
+2. TikTok/Twitch con una caida real → medir si la reconexion (manual o por watchdog) entra siempre en la ventana de gracia de 5min del promo.
+3. Kick con un canal tranquilo >5min con WS vivo → confirmar que el ping de Pusher evita el falso positivo.
+4. TTS en produccion varios dias con los contadores nuevos (`tts.empty_response`, `tts.backoff_active`) → tasa real de perdida.
+
+**Bottom line:** se puede decir "deberia estar bastante mejor en la proxima version" para 4 de los 6 sintomas. NO decir "arreglado del todo": el TTS sigue perdiendo mensajes bajo carga (limitacion de Google, no de la app) y el ajuste de YouTube recien se hizo en esta corrida — falta verificacion de campo.
