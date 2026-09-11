@@ -5,6 +5,7 @@ const { MAX_RECONNECT_ATTEMPTS } = require('../state/channel-maps');
 const { cleanTiktokUsername } = require('./clean-username');
 const { cleanupAfterLastTikTokChannel } = require('./cleanup-after-last-channel');
 const { armWatchdog, clearWatchdog, WATCHDOG_TIMEOUT_MS } = require('../stale-watchdog');
+const { assertNoConexionEnCurso } = require('../connecting-lock');
 
 const CONNECT_TIMEOUT_MS = 30000;
 
@@ -234,12 +235,7 @@ async function connectTiktokChannel(deps, channel) {
   const cleanUsername = cleanTiktokUsername(channel);
   if (!cleanUsername) throw new Error('Se requiere canal TikTok');
 
-  if (state.connectingTiktok.has(cleanUsername)) {
-    const err = new Error('Conexión ya en progreso para este canal');
-    err.statusCode = 409;
-    throw err;
-  }
-  state.connectingTiktok.add(cleanUsername);
+  assertNoConexionEnCurso(state.connectingTiktok, cleanUsername);
 
   // Salvaguarda anti-cuelgue: si connect() no resuelve en 30s, abortar la
   // conexion (disconnect + removeAllListeners + borrar entrada).
