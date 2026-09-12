@@ -50,10 +50,12 @@ const MAX_WS_RECONNECT = 20;
 export function getWs() { return ws; }
 
 export function connectWS() {
-  if (ws !== null && ws.readyState === WebSocket.OPEN) return;
+  if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return;
   const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
-  ws = new WebSocket(`${proto}//${location.host}`);
-  ws.onmessage = (e) => {
+  const socket = new WebSocket(`${proto}//${location.host}`);
+  ws = socket;
+  socket.onmessage = (e) => {
+    if (ws !== socket) return;
     let d;
     try {
       d = JSON.parse(e.data);
@@ -67,8 +69,13 @@ export function connectWS() {
       logStorage.addLog('warn', 'ws', `error procesando mensaje WS: ${err.message}`);
     }
   };
-  ws.onopen = () => { wsReconnectAttempts = 0; setTimeout(sendStateSync, 200); };
-  ws.onclose = () => {
+  socket.onopen = () => {
+    if (ws !== socket) return;
+    wsReconnectAttempts = 0;
+    setTimeout(() => { if (ws === socket) sendStateSync(); }, 200);
+  };
+  socket.onclose = () => {
+    if (ws !== socket) return;
     ws = null;
     wsReconnectAttempts++;
     if (wsReconnectAttempts >= MAX_WS_RECONNECT) {
@@ -78,7 +85,7 @@ export function connectWS() {
     const delay = Math.min(2000 * Math.pow(2, wsReconnectAttempts), 30000);
     setTimeout(connectWS, delay);
   };
-  ws.onerror = () => ws.close();
+  socket.onerror = () => socket.close();
 }
 
 function handleMessage(data) {
@@ -331,6 +338,16 @@ function handleMessage(data) {
     case 'music-queued':
       musicDropPending(data.requestId);
       if (Array.isArray(data.queue)) setMusicQueue(data.queue);
+      musicRenderQueue();
+      break;
+    case 'music-queue-updated':
+      if (Array.isArray(data.queue)) {
+        setMusicQueue(data.queue);
+        musicRenderQueue();
+      }
+      break;
+    case 'music-request-cancelled':
+      musicDropPending(data.requestId);
       musicRenderQueue();
       break;
     case 'music-skip':

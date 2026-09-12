@@ -2,7 +2,7 @@
 
 const crypto = require('crypto');
 const WebSocket = require('ws');
-const { getRequestHostname, isLocalHostname } = require('./security/is-local-request');
+const { isLocalHostname, getRequestClientIp, isLoopbackIp } = require('./security/is-local-request');
 const { isPrivateIP } = require('./security/is-private-ip');
 
 const MAX_MESSAGE_BYTES = 64 * 1024; // 64 KB — sobra para comandos moviles/state-sync
@@ -11,11 +11,10 @@ const RATE_LIMIT_MAX_MESSAGES = 30; // por cliente por segundo
 const RATE_LIMIT_MAX_VIOLATIONS = 5; // ventanas seguidas por encima del limite -> se cierra la conexion
 
 function isAllowedWsClient(info) {
-  const host = getRequestHostname(info.req.headers.host);
-  const clientIp = info.req.socket && info.req.socket.remoteAddress
-    ? info.req.socket.remoteAddress.replace(/^::ffff:/, '')
-    : '';
-  if (!isLocalHostname(host) && !isPrivateIP(clientIp)) return false;
+  const clientIp = getRequestClientIp(info.req);
+  // Igual que HTTP: Host es un encabezado controlado por el cliente. Solo el
+  // socket prueba que viene de loopback o de la LAN privada (para /mobile).
+  if (!isPrivateIP(clientIp)) return false;
 
   const origin = info.origin || info.req.headers.origin;
   if (!origin) return true;
@@ -62,8 +61,8 @@ function createWsServer(server, bus, logger) {
 
   wss.on('connection', (ws, req) => {
     const clientId = crypto.randomUUID();
-    const ip = req.socket && req.socket.remoteAddress ? req.socket.remoteAddress.replace(/^::ffff:/, '') : '';
-    const esDesktop = isLocalHostname(getRequestHostname(req.headers.host));
+    const ip = getRequestClientIp(req);
+    const esDesktop = isLoopbackIp(ip);
     ws.clientId = clientId;
 
     let windowStart = Date.now();

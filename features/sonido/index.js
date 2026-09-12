@@ -21,6 +21,7 @@ const entitlements = require('../../core/contracts/entitlements');
 const { stream } = require('./musica/routes/stream');
 const { engineStatus } = require('./musica/routes/engine-status');
 const { queue } = require('./musica/routes/queue');
+const { removeQueueItem, clearQueue } = require('./musica/routes/queue-delete');
 const { skip } = require('./musica/routes/skip');
 const { next } = require('./musica/routes/next');
 const { configGet } = require('./musica/routes/config-get');
@@ -116,6 +117,8 @@ module.exports = {
     app.get('/api/music/stream', gateMusica, stream(deps));
     app.get('/api/music/engine', engineStatus(engine));
     app.get('/api/music/queue', queue(musicState));
+    app.delete('/api/music/queue/:index', gateMusica, removeQueueItem(deps));
+    app.delete('/api/music/queue', gateMusica, clearQueue(deps));
     app.post('/api/music/skip', gateMusica, skip(deps));
     app.post('/api/music/next', gateMusica, next(deps));
     app.get('/api/music/config', configGet(bus));

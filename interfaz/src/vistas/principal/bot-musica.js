@@ -14,11 +14,12 @@ export let musicPending = [];
 // Estado del motor yt-dlp: 'preparing' | 'downloading' | 'error' | null.
 let musicEngineStatus = null;
 let musicEngineErrorTimer = null;
+let musicQueueMutationInFlight = false;
 
 /** ws-cliente.js necesita reasignar musicQueue en varios casos del
  * dispatcher (`music-now-playing`, `music-queued`); es un `let` de este
  * modulo, asi que el import de otro modulo pide el cambio por aca. */
-export function setMusicQueue(q) { musicQueue = q; }
+export function setMusicQueue(q) { musicQueue = Array.isArray(q) ? q : []; }
 export function setMusicVol(v) { musicVol = v; }
 /** Getter: musicAudio se reasigna (nuevo Audio / null) dentro de este
  * modulo; otros modulos lo leen via esta funcion, no por import directo. */
@@ -218,11 +219,23 @@ export function musicRenderQueue() {
     </div>`).join('');
 }
 
-// Solo splice local — la cola real vive server-side y se resincroniza en
-// el proximo evento (mismo comportamiento ya aceptado de musicClearQueue).
-export function musicRemoveFromQueue(index) {
-  musicQueue.splice(index, 1);
-  musicRenderQueue();
+export async function musicRemoveFromQueue(index) {
+  if (!Number.isInteger(index) || index < 0 || musicQueueMutationInFlight) return;
+  musicQueueMutationInFlight = true;
+  try {
+    const res = await fetch(`/api/music/queue/${index}`, { method: 'DELETE' });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !Array.isArray(data.queue)) {
+      showToast(tErr(data, 'toast.songError'));
+      return;
+    }
+    setMusicQueue(data.queue);
+    musicRenderQueue();
+  } catch (_) {
+    showToast(t('toast.songError'));
+  } finally {
+    musicQueueMutationInFlight = false;
+  }
 }
 
 export function musicOnNowPlaying(track) {
@@ -334,11 +347,24 @@ export function musicSaveMaxQueue(val) {
   fetch('/api/music/config', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ musicMaxQueue: n }) }).catch(() => {});
 }
 
-export function musicClearQueue() {
-  musicQueue = [];
-  musicPending = [];
-  musicRenderQueue();
-  // No hay endpoint de servidor: la cola se vacia naturalmente
+export async function musicClearQueue() {
+  if (musicQueueMutationInFlight) return;
+  musicQueueMutationInFlight = true;
+  try {
+    const res = await fetch('/api/music/queue', { method: 'DELETE' });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !Array.isArray(data.queue)) {
+      showToast(tErr(data, 'toast.songError'));
+      return;
+    }
+    setMusicQueue(data.queue);
+    musicPending = [];
+    musicRenderQueue();
+  } catch (_) {
+    showToast(t('toast.songError'));
+  } finally {
+    musicQueueMutationInFlight = false;
+  }
 }
 
 export function musicBanUser() {
@@ -357,11 +383,20 @@ export function musicUnbanUser(username) {
 function musicRenderBanned(banned) {
   const list = document.getElementById('music-banned-list');
   if (!list) return;
-  list.innerHTML = banned.map((u) => `
-    <span style="display:inline-flex;align-items:center;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:9999px;padding:3px 10px;font-size:12px;">
-      ${escHtml(u)}
-      <button onclick="musicUnbanUser('${escHtml(u)}')" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:14px;line-height:1;padding:0;">×</button>
-    </span>`).join('');
+  list.replaceChildren();
+  for (const username of Array.isArray(banned) ? banned : []) {
+    const pill = document.createElement('span');
+    pill.style.cssText = 'display:inline-flex;align-items:center;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:9999px;padding:3px 10px;font-size:12px;';
+    pill.appendChild(document.createTextNode(String(username)));
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.textContent = '×';
+    remove.setAttribute('aria-label', t('btn.remove'));
+    remove.style.cssText = 'background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:14px;line-height:1;padding:0;';
+    remove.addEventListener('click', () => musicUnbanUser(String(username)));
+    pill.appendChild(remove);
+    list.appendChild(pill);
+  }
 }
 
 export function playlistSave() {

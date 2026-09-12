@@ -1,5 +1,5 @@
 import { t } from '../../nucleo/i18n/i18n.js';
-import { escaparHtml as escapeHtml } from '../../../compartido/escapar-html.js';
+import { escaparHtml as escapeHtml, escaparAtributo } from '../../../compartido/escapar-html.js';
 import { options } from '../../nucleo/estado/opciones-lectura.js';
 import { CHAT_TTS_MAX_LEN } from '../../nucleo/estado/config-runtime.js';
 import { getSayUsernameConnector } from './modales-avisos.js';
@@ -17,16 +17,17 @@ export function resetearMsgCount() { msgCount = 0; }
 export { escapeHtml };
 
 export function renderTextWithEmotes(text, emotes) {
-  if (!emotes || Object.keys(emotes).length === 0) return escapeHtml(text);
-  const parts = text.split(/(:[a-zA-Z0-9_\-]+:)/g);
+  const safeText = String(text ?? '');
+  if (!emotes || Object.keys(emotes).length === 0) return escapeHtml(safeText);
+  const parts = safeText.split(/(:[a-zA-Z0-9_\-]+:)/g);
   return parts
     .map((part) => {
       const m = part.match(/^:([\w-]+):$/);
       if (m && emotes[m[1]]?.url) {
-        return `<img src="${escapeHtml(emotes[m[1]].url)}" alt="${escapeHtml(m[1])}" title="${escapeHtml(m[1])}" class="chat-emote" loading="lazy">`;
+        return `<img src="${escaparAtributo(emotes[m[1]].url)}" alt="${escaparAtributo(m[1])}" title="${escaparAtributo(m[1])}" class="chat-emote" loading="lazy">`;
       }
       if (emotes[part]?.url) {
-        return `<img src="${escapeHtml(emotes[part].url)}" alt="${escapeHtml(part)}" title="${escapeHtml(part)}" class="chat-emote" loading="lazy">`;
+        return `<img src="${escaparAtributo(emotes[part].url)}" alt="${escaparAtributo(part)}" title="${escaparAtributo(part)}" class="chat-emote" loading="lazy">`;
       }
       return escapeHtml(part);
     })
@@ -34,15 +35,19 @@ export function renderTextWithEmotes(text, emotes) {
 }
 
 const COLORS = ['#fe2c55', '#25f4ee', '#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#ff922b'];
-const colorMap = {};
+const MAX_CHAT_MESSAGES = 500;
+const MAX_USER_COLORS = 2000;
+const colorMap = new Map();
 
 function getUserColor(user) {
-  if (!colorMap[user]) {
-    let hash = 5381;
-    for (let i = 0; i < user.length; i++) hash = ((hash << 5) + hash + user.charCodeAt(i)) | 0;
-    colorMap[user] = COLORS[Math.abs(hash) % COLORS.length];
-  }
-  return colorMap[user];
+  const knownColor = colorMap.get(user);
+  if (knownColor) return knownColor;
+  let hash = 5381;
+  for (let i = 0; i < user.length; i++) hash = ((hash << 5) + hash + user.charCodeAt(i)) | 0;
+  const color = COLORS[Math.abs(hash) % COLORS.length];
+  if (colorMap.size >= MAX_USER_COLORS) colorMap.delete(colorMap.keys().next().value);
+  colorMap.set(user, color);
+  return color;
 }
 
 // ─── Scroll que sigue la lectura ───────────────────────────────
@@ -85,6 +90,7 @@ function appendChatNode(node) {
   const log = document.getElementById('chatLog');
   if (!log) return;
   log.appendChild(node);
+  while (log.children.length > MAX_CHAT_MESSAGES) log.firstElementChild?.remove();
   chatFollowSpeaking();
 }
 
@@ -230,6 +236,7 @@ export function clearChat() {
       <div class="empty-text">${t('chat.cleared')}</div>
     </div>`;
   resetearMsgCount();
+  colorMap.clear();
   document.getElementById('msgCount').textContent = '0';
   chatFollow = true;
   likeCooldownMap.clear();

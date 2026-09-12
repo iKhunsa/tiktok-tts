@@ -1,40 +1,66 @@
 'use strict';
 
+const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
 const express = require('express');
-const { getRequestHostname, isLocalHostname } = require('./security/is-local-request');
+const { getRequestHostname, isLocalHostname, isLoopbackRequest } = require('./security/is-local-request');
 const { staticRoot } = require('./static-root');
 const { crearGuardSuscripcion } = require('./guard-suscripcion');
+const { DATA_BASE } = require('./paths');
 
 /**
- * Bloquea mutaciones (POST/PATCH/DELETE/PUT) que no vengan de localhost —
- * protege TODAS las rutas de escritura de todos los dominios contra CSRF/
- * acceso desde otra maquina de la red. /api/mobile/* y /mobile quedan
- * afuera a proposito: esas rutas ya validan IP privada por su cuenta
- * (movil/validate-request.js, Fase 8) porque el panel movil necesita
- * mutar desde otro dispositivo de la LAN.
- * Migracion de validateLocalMutation (backend-viejo/server.js:222).
+ * Resuelve el token MCP desde el entorno o el archivo de usuario documentado.
+ * El archivo no se mezcla con config.json porque ese store elimina claves que
+ * no conoce. Se lee solo al atender /mcp, por lo que cambiarlo requiere cero
+ * reinicios y no afecta el hot path normal de la aplicacion.
  */
-function validateLocalMutation(req, res, next) {
-  if (req.path.startsWith('/api/mobile') || req.path === '/mobile') return next();
-  // /mcp: si MCP_TOKEN esta seteado, se acepta desde cualquier host con el
-  // bearer correcto (para agentes remotos); si no, cae al chequeo local de
-  // abajo (comportamiento por defecto — solo-localhost). Espeja /api/mobile*.
-  if (req.path === '/mcp' || req.path.startsWith('/mcp/')) {
-    const token = (process.env.MCP_TOKEN || '').trim();
+function getMcpToken({ env = process.env, file = path.join(DATA_BASE, 'mcp.json') } = {}) {
+  const envToken = String(env.MCP_TOKEN || '').trim();
+  if (envToken) return envToken;
+  try {
+    const token = JSON.parse(fs.readFileSync(file, 'utf8')).token;
+    return typeof token === 'string' && token.trim() ? token.trim() : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+function hasValidBearerToken(header, token) {
+  const expected = Buffer.from(`Bearer ${token}`);
+  const actual = Buffer.from(String(header || ''));
+  return actual.length === expected.length && crypto.timingSafeEqual(actual, expected);
+}
+
+/**
+ * Todas las APIs no móviles son locales. El servidor escucha en la LAN para
+ * servir el panel móvil, por lo que Host/Origin por sí solos no son una
+ * frontera de seguridad: un cliente remoto puede falsificarlos. Se exige la
+ * IP real loopback del socket tanto para lecturas sensibles como mutaciones.
+ * /api/mobile/* y /mobile conservan su guard de IP privada propio. /mcp es la
+ * excepción explícita: con un bearer configurado se puede usar remotamente.
+ */
+function validateLocalApiRequest(req, res, next) {
+  const requestPath = String(req.path || '').toLowerCase();
+  if (requestPath.startsWith('/api/mobile') || requestPath === '/mobile') return next();
+
+  const isMcp = requestPath === '/mcp' || requestPath.startsWith('/mcp/');
+  if (isMcp) {
+    const token = getMcpToken();
     if (token) {
-      const auth = req.headers.authorization || '';
-      if (auth === `Bearer ${token}`) return next();
+      if (hasValidBearerToken(req.headers.authorization, token)) return next();
       return res.status(401).json({ error: 'MCP token invalido o ausente' });
     }
-    // sin token configurado -> solo-localhost para TODOS los metodos (antes
-    // dejaba pasar cualquier GET sin chequeo, porque el chequeo de host de
-    // abajo solo corre para mutaciones).
-    const host = getRequestHostname(req.headers.host);
-    if (!isLocalHostname(host)) {
-      return res.status(403).json({ error: 'Host no permitido' });
-    }
   }
-  if (!['POST', 'PATCH', 'DELETE', 'PUT'].includes(req.method)) return next();
+
+  // Archivos estáticos públicos (incluido mobile.html) quedan fuera: el panel
+  // móvil necesita descargar sus assets desde la LAN. Sus APIs sí están
+  // cubiertas por el guard móvil, y el resto de /api queda solo-loopback.
+  if (!isMcp && !requestPath.startsWith('/api/')) return next();
+
+  if (!isLoopbackRequest(req)) {
+    return res.status(403).json({ error: 'Acceso local requerido' });
+  }
 
   const host = getRequestHostname(req.headers.host);
   if (!isLocalHostname(host)) {
@@ -64,7 +90,7 @@ function createApp(bus) {
   const app = express();
   app.set('case sensitive routing', true);
   app.use(express.json());
-  app.use(validateLocalMutation);
+  app.use(validateLocalApiRequest);
   // Con subscriptionsEnabled activo, /api/* exige sesion (salvo whitelist).
   app.use(crearGuardSuscripcion(bus));
 
@@ -135,4 +161,11 @@ function attachErrorHandler(app, logger) {
   });
 }
 
-module.exports = { createApp, attachFallbackStatus, attachErrorHandler };
+module.exports = {
+  createApp,
+  attachFallbackStatus,
+  attachErrorHandler,
+  validateLocalApiRequest,
+  getMcpToken,
+  hasValidBearerToken,
+};

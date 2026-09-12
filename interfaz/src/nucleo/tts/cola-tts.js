@@ -30,6 +30,14 @@ let ttsDroppedCount = 0;
 let ttsErrorCount = 0;
 let ttsAbortController = null;
 const TTS_MAX_ERRORS = 5;
+const audioObjectUrls = new WeakMap();
+
+function releaseAudioObjectUrl(audio) {
+  const url = audioObjectUrls.get(audio);
+  if (!url) return;
+  audioObjectUrls.delete(audio);
+  URL.revokeObjectURL(url);
+}
 
 // Serializacion de processQueue: es async y toca estado global compartido
 // (isSpeaking, speechQueue, activeAudio, ttsAbortController). Sin este lock,
@@ -127,8 +135,9 @@ export function stopCurrentTTS({ clearQueue = false } = {}) {
     // por cada skip.
     activeAudio.onended = null;
     activeAudio.onerror = null;
-    activeAudio.pause();
-    activeAudio.src = '';
+    const audio = activeAudio;
+    try { audio.pause(); audio.src = ''; } catch (_) { /* noop */ }
+    releaseAudioObjectUrl(audio);
     activeAudio = null;
   }
   if (clearQueue) speechQueue = [];
@@ -180,11 +189,14 @@ export function playAudioBlob(blob, { onEnd, onError } = {}) {
   if (activeAudio) {
     activeAudio.onended = null;
     activeAudio.onerror = null;
-    try { activeAudio.pause(); activeAudio.src = ''; } catch (_) { /* noop */ }
+    const previousAudio = activeAudio;
+    try { previousAudio.pause(); previousAudio.src = ''; } catch (_) { /* noop */ }
+    releaseAudioObjectUrl(previousAudio);
   }
 
   const url = URL.createObjectURL(blob);
   const audio = new Audio(url);
+  audioObjectUrls.set(audio, url);
   audio.playbackRate = ttsRate;
   audio.volume = ttsVol;
   audio.preservesPitch = false;
@@ -197,7 +209,7 @@ export function playAudioBlob(blob, { onEnd, onError } = {}) {
     // Solo soltar la referencia global si sigue siendo ESTE audio; un audio
     // huerfano que termina no debe pisar el activeAudio de otra ejecucion.
     if (activeAudio === audio) activeAudio = null;
-    URL.revokeObjectURL(url);
+    releaseAudioObjectUrl(audio);
     cb?.();
   };
 

@@ -5,6 +5,9 @@ const MUSIC_DEDUP_WINDOW_MS = 3000;
 function createMusicState() {
   return {
     queue: [], // [{ videoId, title, channelName, thumbnail, duration, requestedBy, platform }]
+    // Se incrementa al vaciar la cola para invalidar solicitudes !p que aun
+    // estan resolviendose en yt-dlp y no deben reaparecer despues del clear.
+    queueGeneration: 0,
     currentTrack: null,
     userLastRequest: {}, // { userId: timestamp }
     recentCommands: new Map(), // `${userId}::${query}` -> timestamp, dedup fijo

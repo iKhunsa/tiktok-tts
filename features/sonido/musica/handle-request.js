@@ -97,15 +97,23 @@ function handleMusicRequest(deps) {
     // "buscando…" en la cola aunque yt-dlp todavia este descargandose /
     // extrayendose (primer !p puede tardar bastante).
     const requestId = `mr${now.toString(36)}${(++musicRequestSeq).toString(36)}`;
+    const queueGeneration = musicState.queueGeneration || 0;
     bus.emit('ws:broadcast', { type: 'music-request-pending', requestId, user, platform, query });
 
     const failRequest = (reason) => {
       bus.emit('ws:broadcast', { type: 'music-request-failed', requestId, query, reason });
     };
+    const cancelRequest = () => {
+      bus.emit('ws:broadcast', { type: 'music-request-cancelled', requestId });
+    };
 
     try {
       await engine.ensureReady();
     } catch (error) {
+      if (musicState.queueGeneration !== queueGeneration) {
+        cancelRequest();
+        return;
+      }
       logger.log(
         'warn', 'sonido', 'sonido/musica/handle-request.js#handleMusicRequest', 'sonido.musica.motor_no_disponible',
         `Motor de musica no disponible: ${error.message}`, { error: error.message }
@@ -113,16 +121,28 @@ function handleMusicRequest(deps) {
       failRequest('engine');
       return;
     }
+    if (musicState.queueGeneration !== queueGeneration) {
+      cancelRequest();
+      return;
+    }
 
     let track;
     try {
       track = await resolveFullTrack(deps, query);
     } catch (error) {
+      if (musicState.queueGeneration !== queueGeneration) {
+        cancelRequest();
+        return;
+      }
       logger.log(
         'warn', 'sonido', 'sonido/musica/handle-request.js#handleMusicRequest', 'sonido.musica.track_no_encontrado',
         `Error resolviendo track para "${query}": ${error.message}`, { query, error: error.message }
       );
       failRequest('resolve');
+      return;
+    }
+    if (musicState.queueGeneration !== queueGeneration) {
+      cancelRequest();
       return;
     }
     if (!track) {
