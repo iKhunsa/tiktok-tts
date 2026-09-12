@@ -27,6 +27,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Build front (interfaz/dist)
+        run: npm run build:front
+
       - name: Test
         run: npm test
 
