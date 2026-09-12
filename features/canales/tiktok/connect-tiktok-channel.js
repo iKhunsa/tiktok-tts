@@ -1,6 +1,6 @@
 'use strict';
 
-const { WebcastPushConnection } = require('tiktok-live-connector');
+const { TikTokLiveClient } = require('@tiklivetts/tiktok-live-client');
 const { MAX_RECONNECT_ATTEMPTS } = require('../state/channel-maps');
 const { cleanTiktokUsername } = require('./clean-username');
 const { cleanupAfterLastTikTokChannel } = require('./cleanup-after-last-channel');
@@ -9,13 +9,31 @@ const { assertNoConexionEnCurso } = require('../connecting-lock');
 
 const CONNECT_TIMEOUT_MS = 30000;
 
+// El nuevo cliente no expone una senal limpia de "combo de regalo terminado"
+// (ver README de tiktok-live-client#hallazgos): emite 'gift' en cada
+// actualizacion del combo con el groupCount acumulado mas alto visto hasta
+// el momento. Se debounce por combo (giftId+uniqueId) para publicar un solo
+// canal:gift con el ultimo estado, en vez de una alerta de overlay por tap.
+const GIFT_COMBO_DEBOUNCE_MS = 1500;
+
+/** Limpia listeners, timers de combo pendientes y desconecta - mismo teardown en cada punto de salida. */
+function teardownConn(entry) {
+  if (entry.giftComboTimers) {
+    for (const timer of entry.giftComboTimers.values()) clearTimeout(timer);
+    entry.giftComboTimers.clear();
+  }
+  entry.conn.removeAllListeners();
+  try { entry.conn.disconnect(); } catch (_) { /* best-effort */ }
+}
+
 /**
- * tiktok-live-connector NO pasa un Error al evento 'error': pasa un objeto
- * plano `{ info, exception }` (client.js#handleError). El texto real vive en
- * `exception.message`, la categoria en `info`. Nunca devolver undefined —
- * si `message` queda vacio, `esErrorConexionEsperado` (glitchtip.js) no puede
- * matchear "isn't online" y un canal offline se reporta como issue + dispara
- * la alerta de "sesion problematica" (GlitchTip #58).
+ * @tiklivetts/tiktok-live-client SIEMPRE emite un Error real (a diferencia de
+ * tiktok-live-connector, que pasaba un objeto plano `{ info, exception }` —
+ * client.js#handleError). Se mantiene el branch defensivo para ese shape
+ * viejo por las dudas de que algo upstream vuelva a pasar un objeto plano.
+ * Nunca devolver undefined — si `message` queda vacio, `esErrorConexionEsperado`
+ * (glitchtip.js) no puede matchear "isn't online" y un canal offline se
+ * reporta como issue + dispara la alerta de "sesion problematica" (GlitchTip #58).
  */
 function readTikTokError(err) {
   if (err instanceof Error) {
@@ -40,23 +58,17 @@ function setupTikTokConnection(deps, cleanUsername) {
   if (existing && existing.conn) {
     // Teardown completo del conn superseded (mismo patron que el give-up branch
     // y el cleanup de `prev` en connectTiktokChannel): sin disconnect() su
-    // polling loop / heartbeat / socket half-open quedan colgados cuando onStale
-    // fuerza la reconexion.
-    existing.conn.removeAllListeners();
-    try { existing.conn.disconnect(); } catch (_) { /* best-effort */ }
+    // WS / ventana invisible quedan colgados cuando onStale fuerza la reconexion.
+    teardownConn(existing);
   }
 
-  const conn = new WebcastPushConnection(cleanUsername, {
-    processInitialData: false,
-    enableExtendedGiftInfo: false,
-    enableWebsocketUpgrade: true,
-    requestPollingIntervalMs: 2000,
-  });
+  const conn = new TikTokLiveClient(cleanUsername);
   state.tiktokChannels.set(cleanUsername, {
     conn,
     attempts: existing ? existing.attempts : 0,
     connectedOnce: existing ? Boolean(existing.connectedOnce) : false,
     timer: null,
+    giftComboTimers: new Map(), // `${giftId}:${uniqueId}` -> Timeout, ver handler 'gift'
   });
 
   const staleKey = `tiktok:${cleanUsername}`;
@@ -70,9 +82,15 @@ function setupTikTokConnection(deps, cleanUsername) {
   });
 
   conn.on('gift', (data) => {
-    // giftType 1 = combo en curso; solo interesa el ultimo golpe (repeatEnd).
-    if (data.giftType === 1 && !data.repeatEnd) return;
-    bus.emit('canal:gift', { platform: 'tiktok', channel: cleanUsername, raw: data });
+    const entry = state.tiktokChannels.get(cleanUsername);
+    if (!entry || entry.conn !== conn) return;
+    const comboKey = `${data.giftId}:${data.uniqueId || ''}`;
+    const pending = entry.giftComboTimers.get(comboKey);
+    if (pending) clearTimeout(pending);
+    entry.giftComboTimers.set(comboKey, setTimeout(() => {
+      entry.giftComboTimers.delete(comboKey);
+      bus.emit('canal:gift', { platform: 'tiktok', channel: cleanUsername, raw: data });
+    }, GIFT_COMBO_DEBOUNCE_MS));
   });
 
   conn.on('like', (data) => {
@@ -125,10 +143,9 @@ function setupTikTokConnection(deps, cleanUsername) {
       clearWatchdog(state, staleKey);
       state.tiktokChannels.delete(cleanUsername);
       // Teardown del connector (mismo patron que el cleanup de `prev` en
-      // connectTiktokChannel): si un connect() a medio camino dejo el socket +
-      // el heartbeat de 10s vivos, sin esto quedan colgados hasta salir del proceso.
-      entry.conn.removeAllListeners();
-      try { entry.conn.disconnect(); } catch (_) { /* best-effort */ }
+      // connectTiktokChannel): si un connect() a medio camino dejo el WS +
+      // la ventana invisible vivos, sin esto quedan colgados hasta salir del proceso.
+      teardownConn(entry);
       logger.log(
         'warn', 'canales', 'canales/tiktok/connect-tiktok-channel.js#setupTikTokConnection', 'canales.tiktok.reconexion_fallida',
         `Reconexion de TikTok ${cleanUsername} agotada tras ${entry.attempts} intento(s)`,
@@ -199,21 +216,20 @@ function setupTikTokConnection(deps, cleanUsername) {
     }
 
     // Post-conexion NO se reconecta desde aca a proposito. El evento 'error' de
-    // tiktok-live-connector es un cajon de sastre: 'messageDecodingFailed' y
-    // 'Failed to process decoded data' son fallos de un solo frame con el socket
-    // intacto (client.js#setupWebsocket / #processProtoMessageFetchResult los
-    // rutean a handleError sin cerrar el WS). Un fallo real de nivel-conexion
-    // ('WebSocket Error') SIEMPRE lo sigue un 'close' del ws -> evento
-    // 'disconnected', que si agenda la reconexion. La muerte silenciosa (socket
-    // vivo pero sin trafico) la cubre el stale-watchdog (5 min sin 'chat').
-    // Disparar reconexion aca solo genera churn + replay espurio por cada blip
-    // de decode. Se mantiene el log + el emit de 'canal:estado'.
+    // tiktok-live-client es un cajon de sastre: un frame WS no decodificable
+    // (live-window.js#connect) se emite con el socket/ventana intactos, sin
+    // 'close'. Un fallo real de nivel-conexion (ventana destruida) SIEMPRE lo
+    // sigue un 'close' -> evento 'disconnected', que si agenda la reconexion.
+    // La muerte silenciosa (ventana viva pero sin trafico) la cubre el
+    // stale-watchdog (5 min sin 'chat'). Disparar reconexion aca solo genera
+    // churn por cada blip de decode. Se mantiene el log + el emit de 'canal:estado'.
   });
 
   // Fin real del directo (el streamer corto, o un moderador de la plataforma).
-  // La lib emite 'streamEnd' y acto seguido llama a disconnect(); si no se
-  // maneja aqui, ese disconnect se trata como caida transitoria y el app
-  // reintenta 5 veces (~31s) reportandose "en vivo" con una sala ya muerta.
+  // tiktok-live-client todavia NO implementa 'streamEnd' (TODO documentado en
+  // su README) — este listener queda a la espera de esa señal; hoy el fin de
+  // directo se ve como un 'disconnected' mas y sigue el path de reconexion
+  // normal (agota MAX_RECONNECT_ATTEMPTS reintentando contra una sala muerta).
   conn.on('streamEnd', () => {
     clearWatchdog(state, staleKey);
     const entry = state.tiktokChannels.get(cleanUsername);
@@ -249,8 +265,7 @@ async function connectTiktokChannel(deps, channel) {
     const stale = state.tiktokChannels.get(cleanUsername);
     if (stale) {
       if (stale.timer) clearTimeout(stale.timer);
-      stale.conn.removeAllListeners();
-      try { stale.conn.disconnect(); } catch (_) { /* best-effort */ }
+      teardownConn(stale);
       state.tiktokChannels.delete(cleanUsername);
     }
     state.connectingTiktok.delete(cleanUsername);
@@ -260,8 +275,7 @@ async function connectTiktokChannel(deps, channel) {
   const prev = state.tiktokChannels.get(cleanUsername);
   if (prev) {
     if (prev.timer) clearTimeout(prev.timer);
-    prev.conn.removeAllListeners();
-    try { prev.conn.disconnect(); } catch (_) { /* best-effort */ }
+    teardownConn(prev);
     state.tiktokChannels.delete(cleanUsername);
   }
 
@@ -316,4 +330,4 @@ async function connectTiktokChannel(deps, channel) {
   }
 }
 
-module.exports = { connectTiktokChannel, setupTikTokConnection, readTikTokError };
+module.exports = { connectTiktokChannel, setupTikTokConnection, readTikTokError, teardownConn };
