@@ -75,7 +75,7 @@ function setupTikTokConnection(deps, cleanUsername) {
 
   conn.on('chat', (data) => {
     // Re-armar el watchdog en toda actividad de chat (incluso mensajes vacios
-    // que no se emiten): prueba que el socket sigue vivo.
+    // que no se emiten): prueba que la ventana/WS interno sigue vivo.
     armWatchdog(state, staleKey, WATCHDOG_TIMEOUT_MS, onStale);
     if (!data.comment || !data.comment.trim()) return;
     bus.emit('canal:mensaje-crudo', { platform: 'tiktok', channel: cleanUsername, raw: data });
@@ -161,13 +161,16 @@ function setupTikTokConnection(deps, cleanUsername) {
   // guard de identidad para no pisar un entry ya reemplazado ni duplicar si ya
   // hay una reconexion en vuelo (scheduleReconnectOrGiveUp respeta entry.timer).
   //
+  // Con @tiklivetts/tiktok-live-client este watchdog cumple ademas el rol de
+  // detectar un WS interno de TikTok muerto DENTRO de la ventana invisible
+  // sin que la ventana misma se haya cerrado — 'disconnected' solo dispara
+  // cuando la ventana se destruye, no cuando el WS de la pagina cae solo.
+  //
   // Limitacion aceptada: si la reconexion CONECTA pero el chat nunca vuelve
-  // (esquema de protobuf cambiado, o sala legitimamente muda por horas), esto
-  // reconecta cada 5 min indefinidamente. No se corta a proposito — cortar por
+  // (esquema cambiado, o sala legitimamente muda por horas), esto reconecta
+  // cada 5 min indefinidamente. No se corta a proposito — cortar por
   // "N stale seguidos" falsea el abandono de un stream tranquilo real (musica,
   // pocos viewers) porque solo 'chat' cuenta como liveness, no gifts/likes/joins.
-  // Igual es mejor que el comportamiento pre-batch (TikTok sin watchdog: mudo
-  // para siempre sin que la app se entere).
   const onStale = () => {
     const entry = state.tiktokChannels.get(cleanUsername);
     if (!entry || entry.conn !== conn) return;
@@ -226,10 +229,12 @@ function setupTikTokConnection(deps, cleanUsername) {
   });
 
   // Fin real del directo (el streamer corto, o un moderador de la plataforma).
-  // tiktok-live-client todavia NO implementa 'streamEnd' (TODO documentado en
-  // su README) — este listener queda a la espera de esa señal; hoy el fin de
-  // directo se ve como un 'disconnected' mas y sigue el path de reconexion
-  // normal (agota MAX_RECONNECT_ATTEMPTS reintentando contra una sala muerta).
+  // tiktok-live-client >=0.1.1 lo detecta escuchando el polling de
+  // check_alive que la propia pagina de TikTok ya hace (ver su README) — no
+  // esta validado contra una captura real de un directo terminando, asi que
+  // esto puede no disparar nunca en la practica (fail-safe: en ese caso el
+  // fin de directo se sigue viendo como un 'disconnected' mas, mismo
+  // comportamiento que antes de tiktok-live-client 0.1.1).
   conn.on('streamEnd', () => {
     clearWatchdog(state, staleKey);
     const entry = state.tiktokChannels.get(cleanUsername);
