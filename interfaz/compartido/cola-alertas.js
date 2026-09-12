@@ -37,4 +37,5 @@ export const PLATFORM_META = {
   tiktok: { label: 'TIKTOK', color: '#ff0050' },
   twitch: { label: 'TWITCH', color: '#9146FF' },
   youtube: { label: 'YOUTUBE', color: '#FF0000' },
+  kick: { label: 'KICK', color: '#53FC18' },
 };

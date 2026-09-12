@@ -3,9 +3,8 @@
 // Monta el endpoint MCP Streamable HTTP en el Express existente.
 //
 // Stateless: server + transport nuevos por request (sin session store). Encaja
-// con el modelo de confianza local de la app. validateLocalMutation (core/app.js)
-// ya 403ea un POST /mcp no-local, así que no hace falta carve-out todavía
-// (el seam de token es Fase 4).
+// con el modelo de confianza local de la app. validateLocalApiRequest
+// (core/app.js) deja entrar remotamente solo a un bearer MCP configurado.
 
 const { buildMcpServer } = require('./build-server');
 

@@ -1,7 +1,7 @@
 import { leerParametros, aplicarParametrosVisuales, intParam } from './compartido/parametros.js';
 import { conectarWSOverlay } from './compartido/ws-cliente.js';
 import { registrarErroresOverlay } from './compartido/registrar-errores.js';
-import { escaparHtml } from './compartido/escapar-html.js';
+import { escaparHtml, escaparAtributo } from './compartido/escapar-html.js';
 
 registrarErroresOverlay();
 
@@ -21,16 +21,17 @@ const allowedPlatforms = new Set(filterRaw.split(',').map((s) => s.trim().toLowe
 const container = document.getElementById('chat-container');
 
 function renderText(text, emotes) {
-  if (!emotes || Object.keys(emotes).length === 0) return escaparHtml(text);
-  const parts = text.split(/(:[a-zA-Z0-9_\-]+:)/g);
+  const safeText = String(text ?? '');
+  if (!emotes || Object.keys(emotes).length === 0) return escaparHtml(safeText);
+  const parts = safeText.split(/(:[a-zA-Z0-9_\-]+:)/g);
   return parts
     .map((part) => {
       const m = part.match(/^:([\w-]+):$/);
       if (m && emotes[m[1]]?.url) {
-        return `<img src="${escaparHtml(emotes[m[1]].url)}" alt="${escaparHtml(m[1])}" class="chat-emote">`;
+        return `<img src="${escaparAtributo(emotes[m[1]].url)}" alt="${escaparAtributo(m[1])}" class="chat-emote">`;
       }
       if (emotes[part]?.url) {
-        return `<img src="${escaparHtml(emotes[part].url)}" alt="${escaparHtml(part)}" class="chat-emote">`;
+        return `<img src="${escaparAtributo(emotes[part].url)}" alt="${escaparAtributo(part)}" class="chat-emote">`;
       }
       return escaparHtml(part);
     })

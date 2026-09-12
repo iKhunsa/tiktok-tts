@@ -3,6 +3,7 @@ import { esc } from './utils.js';
 
 let mMusicEnabled = true;
 let mPlaylistEnabled = false;
+let mQueue = [];
 // Peticiones !p aceptadas por el server, aun resolviendose (yt-dlp descarga
 // la primera vez -> puede tardar). [{ id, user, query, ts }]
 let mPending = [];
@@ -32,46 +33,54 @@ export function mRenderNowPlaying(track) {
   if (req) {
     req.textContent = track.platform === 'playlist'
       ? t('mobile3.streamerPlaylist')
-      : (track.requestedBy ? `${t('mobile3.requestedBy')} ${esc(track.requestedBy)}` : '');
+      : (track.requestedBy ? `${t('mobile3.requestedBy')} ${track.requestedBy}` : '');
   }
 }
 
+export function mRenderQueue() {
+  const list = document.getElementById('m-queue-list');
+  const count = document.getElementById('m-queue-count');
+  const q = mQueue;
+  const cutoff = Date.now() - 120000;
+  mPending = mPending.filter((p) => p.ts > cutoff);
+  if (count) count.textContent = `(${q.length + mPending.length})`;
+  if (!list) return;
+  let engineHtml = '';
+  if (mEngineStatus === 'downloading' || mEngineStatus === 'preparing') {
+    engineHtml = `<div style="display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);opacity:.9;">
+      <span class="m-queue-spinner"></span>
+      <div style="flex:1;min-width:0;font-size:13px;">${esc(t('toast.musicEngineDownloading'))}</div></div>`;
+  } else if (mEngineStatus === 'error') {
+    engineHtml = `<div style="display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);color:#e5484d;">
+      <span>⚠</span><div style="flex:1;min-width:0;font-size:13px;">${esc(t('toast.musicEngineError'))}</div></div>`;
+  }
+  if (!q.length && !mPending.length && !engineHtml) { list.innerHTML = `<div style="color:var(--muted);font-size:13px;">${t('mobile3.queueEmpty')}</div>`; return; }
+  const pendHtml = mPending.map((p) => `
+    <div style="display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);opacity:.9;">
+      <span class="m-queue-spinner"></span>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t('bot.requestResolving').replace('{query}', esc(p.query || ''))}</div>
+        <div style="font-size:11px;color:var(--muted);">${esc(p.user || '')}</div>
+      </div>
+    </div>`).join('');
+  list.innerHTML = engineHtml + pendHtml + q.slice(0, 5).map((track, i) => `
+    <div style="display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);">
+      <span style="font-size:11px;color:var(--muted);min-width:14px;">${i + 1}</span>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(track.title || '')}</div>
+        <div style="font-size:11px;color:var(--muted);">${esc(track.requestedBy || '')}</div>
+      </div>
+    </div>`).join('') + (q.length > 5 ? `<div style="font-size:11px;color:var(--muted);padding-top:4px;">+${q.length - 5} más…</div>` : '');
+}
+
+export function mApplyQueue(queue) {
+  if (!Array.isArray(queue)) return;
+  mQueue = queue;
+  mRenderQueue();
+}
+
 export function mFetchQueue() {
-  fetch('/api/music/queue').then((r) => r.json()).then((d) => {
-    const list = document.getElementById('m-queue-list');
-    const count = document.getElementById('m-queue-count');
-    const q = d.queue || [];
-    const cutoff = Date.now() - 120000;
-    mPending = mPending.filter((p) => p.ts > cutoff);
-    if (count) count.textContent = `(${q.length + mPending.length})`;
-    if (!list) return;
-    let engineHtml = '';
-    if (mEngineStatus === 'downloading' || mEngineStatus === 'preparing') {
-      engineHtml = `<div style="display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);opacity:.9;">
-        <span class="m-queue-spinner"></span>
-        <div style="flex:1;min-width:0;font-size:13px;">${esc(t('toast.musicEngineDownloading'))}</div></div>`;
-    } else if (mEngineStatus === 'error') {
-      engineHtml = `<div style="display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);color:#e5484d;">
-        <span>⚠</span><div style="flex:1;min-width:0;font-size:13px;">${esc(t('toast.musicEngineError'))}</div></div>`;
-    }
-    if (!q.length && !mPending.length && !engineHtml) { list.innerHTML = `<div style="color:var(--muted);font-size:13px;">${t('mobile3.queueEmpty')}</div>`; return; }
-    const pendHtml = mPending.map((p) => `
-      <div style="display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);opacity:.9;">
-        <span class="m-queue-spinner"></span>
-        <div style="flex:1;min-width:0;">
-          <div style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t('bot.requestResolving').replace('{query}', esc(p.query || ''))}</div>
-          <div style="font-size:11px;color:var(--muted);">${esc(p.user || '')}</div>
-        </div>
-      </div>`).join('');
-    list.innerHTML = engineHtml + pendHtml + q.slice(0, 5).map((track, i) => `
-      <div style="display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);">
-        <span style="font-size:11px;color:var(--muted);min-width:14px;">${i + 1}</span>
-        <div style="flex:1;min-width:0;">
-          <div style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(track.title || '')}</div>
-          <div style="font-size:11px;color:var(--muted);">${esc(track.requestedBy || '')}</div>
-        </div>
-      </div>`).join('') + (q.length > 5 ? `<div style="font-size:11px;color:var(--muted);padding-top:4px;">+${q.length - 5} más…</div>` : '');
-  }).catch(() => {});
+  fetch('/api/music/queue').then((r) => r.json()).then((d) => mApplyQueue(d.queue)).catch(() => {});
 }
 
 export function mApplyMusicState(d) {
@@ -146,7 +155,7 @@ export function mPlaylistToggle() {
 export function mInit() {
   fetch('/api/music/queue').then((r) => r.json()).then((d) => {
     if (d.current) mRenderNowPlaying(d.current);
-    mFetchQueue();
+    mApplyQueue(d.queue);
   }).catch(() => {});
   fetch('/api/music/config').then((r) => r.json()).then((d) => {
     mMusicEnabled = d.musicEnabled !== false;

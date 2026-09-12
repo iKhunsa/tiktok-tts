@@ -2,7 +2,6 @@ import { cargarLocaleOverlay, t, aplicarI18nOverlay } from './compartido/i18n-ov
 import { leerParametros, aplicarParametrosVisuales } from './compartido/parametros.js';
 import { conectarWSOverlay } from './compartido/ws-cliente.js';
 import { registrarErroresOverlay } from './compartido/registrar-errores.js';
-import { escaparHtml } from './compartido/escapar-html.js';
 
 registrarErroresOverlay();
 
@@ -14,19 +13,41 @@ const baseSpeed = hasManualSpeed ? _s : 40;
 if (hasManualSpeed) document.documentElement.style.setProperty('--speed', _s + 's');
 
 const track = document.getElementById('track');
+const MAX_CREDITS_PER_TYPE = 50;
 let credits = { donors: [], followers: [], sharers: [] };
 
 function buildRows(list) {
   return list.map((item) => {
     const row = document.createElement('div');
     row.className = 'credit-row';
-    row.innerHTML = `
-      <span class="credit-icon">${item.icon}</span>
-      <span class="credit-name">${escaparHtml(item.name)}</span>
-      ${item.badge ? `<span class="credit-badge">${escaparHtml(item.badge)}</span>` : ''}
-    `;
+    const icon = document.createElement('span');
+    icon.className = 'credit-icon';
+    icon.textContent = String(item.icon || '');
+    const name = document.createElement('span');
+    name.className = 'credit-name';
+    name.textContent = String(item.name || '');
+    row.append(icon, name);
+    if (item.badge) {
+      const badge = document.createElement('span');
+      badge.className = 'credit-badge';
+      badge.textContent = String(item.badge);
+      row.appendChild(badge);
+    }
     return row;
   });
+}
+
+function normalizeCredits(value) {
+  return ['donors', 'followers', 'sharers'].reduce((result, type) => {
+    result[type] = Array.isArray(value?.[type]) ? value[type].slice(-MAX_CREDITS_PER_TYPE) : [];
+    return result;
+  }, {});
+}
+
+function addCredit(type, value) {
+  const list = credits[type];
+  list.push(value);
+  if (list.length > MAX_CREDITS_PER_TYPE) list.splice(0, list.length - MAX_CREDITS_PER_TYPE);
 }
 
 function renderTrack() {
@@ -55,7 +76,11 @@ function renderTrack() {
   if (!sections.length) {
     const ph = document.createElement('div');
     ph.className = 'credit-row';
-    ph.innerHTML = `<span class="credit-name" style="color:rgba(255,255,255,0.3);text-align:center;width:100%">${t('overlayStr.waitingEvents')}</span>`;
+    const text = document.createElement('span');
+    text.className = 'credit-name';
+    text.style.cssText = 'color:rgba(255,255,255,0.3);text-align:center;width:100%';
+    text.textContent = t('overlayStr.waitingEvents');
+    ph.appendChild(text);
     track.appendChild(ph);
     return;
   }
@@ -77,20 +102,20 @@ function renderTrack() {
 fetch('/api/overlay-stats')
   .then((r) => r.json())
   .then((d) => {
-    if (d.credits) credits = d.credits;
+    if (d.credits) credits = normalizeCredits(d.credits);
     renderTrack();
   })
   .catch(() => renderTrack());
 
 function alManejarMensaje(d) {
   if (d.type === 'gift') {
-    credits.donors.push({ user: d.user, giftName: d.giftName, count: d.repeatCount || 1 });
+    addCredit('donors', { user: d.user, giftName: d.giftName, count: d.repeatCount || 1 });
     renderTrack();
   } else if (d.type === 'follow') {
-    credits.followers.push({ user: d.user });
+    addCredit('followers', { user: d.user });
     renderTrack();
   } else if (d.type === 'share') {
-    credits.sharers.push({ user: d.user });
+    addCredit('sharers', { user: d.user });
     renderTrack();
   } else if (d.type === 'connected' && d.isFirst) {
     credits = { donors: [], followers: [], sharers: [] };

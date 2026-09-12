@@ -2,6 +2,10 @@
 
 const { GOOGLE_TTS_LANGS, DICT_FILTER_LANGS } = require('../../core/contracts/idioma-datos');
 
+function isStringArray(v) {
+  return Array.isArray(v) && v.every((item) => typeof item === 'string');
+}
+
 // Migracion 1:1 de CONFIG_VALIDATORS (backend-viejo/server.js:639-666). No se
 // agregan ni quitan claves en esta fase.
 const CONFIG_VALIDATORS = {
@@ -14,9 +18,12 @@ const CONFIG_VALIDATORS = {
   musicEnabled: (v) => typeof v === 'boolean',
   musicUserCooldownMs: (v) => Number.isInteger(v) && v >= 0 && v <= 3600000,
   musicMaxQueue: (v) => Number.isInteger(v) && v >= 1 && v <= 50,
-  musicBannedUsers: (v) => Array.isArray(v),
+  // Ambos valores se consumen con .toLowerCase()/.trim() en /sonido. Aceptar
+  // objetos aqui deja una configuracion persistida que rompe las peticiones !p
+  // o la carga de la playlist en el siguiente uso.
+  musicBannedUsers: isStringArray,
   musicVolume: (v) => typeof v === 'number' && v >= 0 && v <= 1,
-  streamerPlaylist: (v) => Array.isArray(v),
+  streamerPlaylist: isStringArray,
   playlistShuffle: (v) => typeof v === 'boolean',
   playlistEnabled: (v) => typeof v === 'boolean',
   langFilterEnabled: (v) => typeof v === 'boolean',
@@ -37,4 +44,4 @@ const CONFIG_VALIDATORS = {
     && ['tiktok', 'twitch', 'youtube', 'kick'].every((p) => Array.isArray(v[p]) && v[p].every((x) => typeof x === 'string')),
 };
 
-module.exports = { CONFIG_VALIDATORS };
+module.exports = { CONFIG_VALIDATORS, isStringArray };

@@ -3,7 +3,7 @@ import { setStatus } from './status.js';
 import { fetchState, applyState } from './estado.js';
 import { addChat, addEvent } from './chat.js';
 import {
-  mDropPending, mClearPending, mRenderNowPlaying, mApplyMusicState, mFetchQueue, mAddPending, mSetEngineStatus, mSetVolUI,
+  mDropPending, mClearPending, mRenderNowPlaying, mApplyMusicState, mFetchQueue, mAddPending, mSetEngineStatus, mSetVolUI, mApplyQueue, mRenderQueue,
 } from './bot-musica.js';
 
 let ws = null;
@@ -12,25 +12,29 @@ let wsRetry = 0;
 /** WS propio de esta vista (13 tipos), independiente del de index.html —
  * ver nucleo/ws/cliente-ws.js para el de la app principal. */
 export function connectWS() {
-  if (ws && ws.readyState === WebSocket.OPEN) return;
+  if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return;
   const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
-  ws = new WebSocket(`${proto}//${location.host}`);
+  const socket = new WebSocket(`${proto}//${location.host}`);
+  ws = socket;
 
-  ws.onopen = () => {
+  socket.onopen = () => {
+    if (ws !== socket) return;
     wsRetry = 0;
     setStatus('online', t('mobile3.connected'));
     fetchState();
   };
-  ws.onmessage = (e) => {
+  socket.onmessage = (e) => {
+    if (ws !== socket) return;
     try { dispatch(JSON.parse(e.data)); } catch (_) { /* mensaje no-JSON, ignorar */ }
   };
-  ws.onclose = () => {
+  socket.onclose = () => {
+    if (ws !== socket) return;
     ws = null;
     setStatus('error', t('mobile3.disconnected'));
     wsRetry++;
     setTimeout(connectWS, Math.min(500 * Math.pow(1.5, wsRetry), 15000));
   };
-  ws.onerror = () => ws.close();
+  socket.onerror = () => socket.close();
 }
 
 function dispatch(d) {
@@ -58,6 +62,7 @@ function dispatch(d) {
       break;
     case 'music-now-playing':
       mDropPending(d.requestId);
+      if (Array.isArray(d.queue)) mApplyQueue(d.queue);
       mRenderNowPlaying(d.track);
       break;
     case 'music-idle':
@@ -72,7 +77,15 @@ function dispatch(d) {
       break;
     case 'music-queued':
       mDropPending(d.requestId);
-      mFetchQueue();
+      if (Array.isArray(d.queue)) mApplyQueue(d.queue);
+      else mFetchQueue();
+      break;
+    case 'music-queue-updated':
+      if (Array.isArray(d.queue)) mApplyQueue(d.queue);
+      break;
+    case 'music-request-cancelled':
+      mDropPending(d.requestId);
+      mRenderQueue();
       break;
     case 'music-request-pending':
       mAddPending(d.requestId, d.user, d.query);

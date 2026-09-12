@@ -1,6 +1,5 @@
 import { t, tErr } from '../../nucleo/i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
-import { escaparHtml as escapeHtml } from '../../../compartido/escapar-html.js';
 import { aplicarBloqueoVista } from '../../nucleo/estado/vista-bloqueada.js';
 
 let _spSounds = [];
@@ -8,6 +7,12 @@ let _spCapturing = null; // soundId capturando un atajo
 let _spCaptureTimer = null;
 let _spIconList = null;
 let _spIconTarget = null;
+const DEFAULT_SOUNDPAD_COLOR = '#3ecf8e';
+
+function spSafeColor(color) {
+  const value = String(color || '');
+  return /^#[0-9a-f]{6}$/i.test(value) ? value : DEFAULT_SOUNDPAD_COLOR;
+}
 
 export async function spLoad() {
   try {
@@ -27,7 +32,7 @@ export function spRender() {
   spCancelCapture();
   aplicarBloqueoVista('view-soundpad', 'soundpad');
   if (!_spSounds.length) {
-    deck.innerHTML = '';
+    deck.replaceChildren();
     if (empty) empty.style.display = '';
     if (count) count.textContent = '0/24';
     return;
@@ -35,20 +40,38 @@ export function spRender() {
   if (empty) empty.style.display = 'none';
   if (count) count.textContent = `${_spSounds.length}/24`;
   const hint = t('soundpad.cardHint') || 'Clic para reproducir · clic derecho para opciones';
-  deck.innerHTML = _spSounds.map((s) => {
-    const id = escapeHtml(s.id);
-    const icon = escapeHtml(s.icon || 'music_note');
-    const light = spColorIsLight(s.color) ? ' sp-card--light' : '';
-    const badge = s.shortcut ? `<span class="sp-card-badge">${escapeHtml(s.shortcut)}</span>` : '';
-    return `<div class="sp-card${light}" id="spcard-${id}" style="--sp-color:${escapeHtml(s.color)}"
-      onclick="spPlaySoundWithAnim('${id}')"
-      oncontextmenu="return spCardMenu(event,'${id}')"
-      title="${escapeHtml(s.name)} — ${hint}">
-      ${badge}
-      <img class="sp-card-icon" src="/soundpad-icons/${icon}.svg" alt="">
-      <div class="sp-card-label">${escapeHtml(s.name)}</div>
-    </div>`;
-  }).join('');
+  const fragment = document.createDocumentFragment();
+  for (const sound of _spSounds) {
+    const s = sound || {};
+    const soundId = String(s.id || '');
+    const color = spSafeColor(s.color);
+    const card = document.createElement('div');
+    card.className = `sp-card${spColorIsLight(color) ? ' sp-card--light' : ''}`;
+    card.id = `spcard-${soundId}`;
+    card.style.setProperty('--sp-color', color);
+    card.title = `${String(s.name || '')} — ${hint}`;
+    if (soundId) {
+      card.addEventListener('click', () => spPlaySoundWithAnim(soundId));
+      card.addEventListener('contextmenu', (event) => spCardMenu(event, soundId));
+    }
+    if (s.shortcut) {
+      const badge = document.createElement('span');
+      badge.className = 'sp-card-badge';
+      badge.textContent = String(s.shortcut);
+      card.appendChild(badge);
+    }
+    const icon = document.createElement('img');
+    icon.className = 'sp-card-icon';
+    icon.src = `/soundpad-icons/${encodeURIComponent(String(s.icon || 'music_note'))}.svg`;
+    icon.alt = '';
+    card.appendChild(icon);
+    const label = document.createElement('div');
+    label.className = 'sp-card-label';
+    label.textContent = String(s.name || '');
+    card.appendChild(label);
+    fragment.appendChild(card);
+  }
+  deck.replaceChildren(fragment);
 }
 
 function spColorIsLight(hex) {
@@ -337,12 +360,25 @@ function spRenderIconGrid(q) {
   const s = spCurrentSetting();
   const cur = s ? (s.icon || 'music_note') : null;
   const term = (q || '').trim().toLowerCase();
-  const full = term ? _spIconList.filter((n) => n.includes(term)) : _spIconList;
+  const full = (Array.isArray(_spIconList) ? _spIconList : [])
+    .filter((n) => String(n).includes(term));
   const list = full.slice(0, 300);
   if (hint) hint.style.display = full.length > 300 ? '' : 'none';
-  grid.innerHTML = list.map((n) =>
-    `<div class="sp-icon-tile${n === cur ? ' selected' : ''}" onclick="spChooseIcon('${escapeHtml(n)}')" title="${escapeHtml(n)}"><img src="/soundpad-icons/${escapeHtml(n)}.svg" alt="" loading="lazy"></div>`,
-  ).join('');
+  const fragment = document.createDocumentFragment();
+  for (const iconName of list) {
+    const name = String(iconName);
+    const tile = document.createElement('div');
+    tile.className = `sp-icon-tile${name === cur ? ' selected' : ''}`;
+    tile.title = name;
+    tile.addEventListener('click', () => spChooseIcon(name));
+    const image = document.createElement('img');
+    image.src = `/soundpad-icons/${encodeURIComponent(name)}.svg`;
+    image.alt = '';
+    image.loading = 'lazy';
+    tile.appendChild(image);
+    fragment.appendChild(tile);
+  }
+  grid.replaceChildren(fragment);
 }
 
 export async function spChooseIcon(name) {

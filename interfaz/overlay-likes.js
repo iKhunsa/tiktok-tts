@@ -9,6 +9,7 @@ registrarErroresOverlay();
 const params = leerParametros();
 aplicarParametrosVisuales(params);
 const maxRows = intParam(params, 'rows', 10);
+const MAX_TRACKED_LIKERS = 2000;
 
 const RANK_SYMBOLS = {
   1: '<img class="icon-inline" src="icons/emoji_events.svg" alt="">',
@@ -18,6 +19,30 @@ const RANK_SYMBOLS = {
 
 let likersMap = new Map();
 let reduceMotion = false;
+
+function recordLikes(user, totalLikes) {
+  const key = String(user || '');
+  const amount = Number(totalLikes);
+  if (!key || !Number.isFinite(amount) || amount <= 0) return;
+  const existing = likersMap.get(key);
+  if (existing) {
+    existing.totalLikes += amount;
+    return;
+  }
+  if (likersMap.size >= MAX_TRACKED_LIKERS) {
+    let lowestKey = null;
+    let lowestLikes = Infinity;
+    for (const [candidate, entry] of likersMap) {
+      if (entry.totalLikes < lowestLikes) {
+        lowestKey = candidate;
+        lowestLikes = entry.totalLikes;
+      }
+    }
+    if (amount <= lowestLikes) return;
+    likersMap.delete(lowestKey);
+  }
+  likersMap.set(key, { user: key, totalLikes: amount });
+}
 
 function getSorted() {
   return [...likersMap.values()].sort((a, b) => b.totalLikes - a.totalLikes).slice(0, maxRows);
@@ -86,17 +111,16 @@ function renderLeaderboard(animate) {
 fetch('/api/overlay-stats')
   .then((r) => r.json())
   .then((d) => {
-    for (const entry of d.topLikers || []) likersMap.set(entry.user, entry);
+    for (const entry of (Array.isArray(d.topLikers) ? d.topLikers.slice(-MAX_TRACKED_LIKERS) : [])) {
+      recordLikes(entry.user, entry.totalLikes);
+    }
     renderLeaderboard(false);
   })
   .catch(() => {});
 
 function alManejarMensaje(d) {
   if (d.type === 'like') {
-    const key = d.user;
-    const existing = likersMap.get(key) || { user: key, totalLikes: 0 };
-    existing.totalLikes += d.likeCount;
-    likersMap.set(key, existing);
+    recordLikes(d.user, d.likeCount);
     renderLeaderboard(true);
   }
   if (d.type === 'connected' && d.isFirst) {
