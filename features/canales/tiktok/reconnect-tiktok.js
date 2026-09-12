@@ -1,7 +1,7 @@
 'use strict';
 
 const { MAX_RECONNECT_ATTEMPTS } = require('../state/channel-maps');
-const { setupTikTokConnection, readTikTokError, teardownConn } = require('./connect-tiktok-channel');
+const { setupTikTokConnection, readTikTokError, teardownConn, connectWithTimeout } = require('./connect-tiktok-channel');
 const { cleanupAfterLastTikTokChannel } = require('./cleanup-after-last-channel');
 
 async function reconnectTiktok(deps, username) {
@@ -9,10 +9,12 @@ async function reconnectTiktok(deps, username) {
   const entry = state.tiktokChannels.get(username);
   if (!entry) return;
 
+  let refreshed;
   try {
     setupTikTokConnection(deps, username);
-    const refreshed = state.tiktokChannels.get(username);
-    const connState = await refreshed.conn.connect();
+    refreshed = state.tiktokChannels.get(username);
+    const connState = await connectWithTimeout(refreshed);
+    if (state.tiktokChannels.get(username) !== refreshed) return;
     refreshed.attempts = 0;
     refreshed.connectedOnce = true;
     if (refreshed.timer) { clearTimeout(refreshed.timer); refreshed.timer = null; }
@@ -28,7 +30,8 @@ async function reconnectTiktok(deps, username) {
     });
   } catch (err) {
     const e2 = state.tiktokChannels.get(username);
-    if (!e2) return;
+    if (refreshed) teardownConn(refreshed);
+    if (!e2 || e2 !== refreshed) return;
 
     // client.js:430 rechaza con un string, no un Error → reusa el mismo lector
     // que setupTikTokConnection (canales.tiktok.error) para no duplicar la coercion.

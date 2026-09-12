@@ -1,5 +1,7 @@
 'use strict';
 
+const { teardownConn } = require('../tiktok/connect-tiktok-channel');
+
 const { cleanTiktokUsername } = require('../tiktok/clean-username');
 const { cleanupAfterLastTikTokChannel } = require('../tiktok/cleanup-after-last-channel');
 const { cleanTwitchChannel } = require('../twitch/clean-channel');
@@ -24,8 +26,7 @@ function platformsDisconnect(deps) {
           const entry = state.tiktokChannels.get(cleanUsername);
           if (entry) {
             if (entry.timer) clearTimeout(entry.timer);
-            entry.conn.removeAllListeners();
-            try { entry.conn.disconnect(); } catch (_) { /* best-effort */ }
+            teardownConn(entry);
             state.tiktokChannels.delete(cleanUsername);
           }
           if (state.tiktokChannels.size === 0) cleanupAfterLastTikTokChannel(deps);
@@ -34,8 +35,7 @@ function platformsDisconnect(deps) {
           for (const key of state.tiktokChannels.keys()) clearWatchdog(state, `tiktok:${key}`);
           for (const entry of state.tiktokChannels.values()) {
             if (entry.timer) clearTimeout(entry.timer);
-            entry.conn.removeAllListeners();
-            try { entry.conn.disconnect(); } catch (_) { /* best-effort */ }
+            teardownConn(entry);
           }
           state.tiktokChannels.clear();
           cleanupAfterLastTikTokChannel(deps);

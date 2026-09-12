@@ -1,5 +1,7 @@
 'use strict';
 
+const { teardownConn } = require('./tiktok/connect-tiktok-channel');
+
 const { createChannelState } = require('./state/channel-maps');
 const { createRateLimiterState, connectRateLimiter } = require('./rate-limit');
 const { loadAuthTokens } = require('./twitch/oauth/auth-tokens-store');
@@ -184,7 +186,7 @@ module.exports = {
 
     for (const entry of state.tiktokChannels.values()) {
       if (entry.timer) clearTimeout(entry.timer);
-      try { entry.conn.removeAllListeners(); entry.conn.disconnect(); } catch (_) { /* best-effort */ }
+      teardownConn(entry);
     }
     state.tiktokChannels.clear();
 
