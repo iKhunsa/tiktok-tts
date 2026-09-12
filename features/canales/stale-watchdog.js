@@ -1,7 +1,7 @@
 'use strict';
 
 // Watchdog de socket mudo para TikTok y Twitch. El heartbeat interno de
-// tiktok-live-connector / tmi.js es fire-and-forget: si el TCP queda half-open
+// tiktok-live-client / tmi.js es fire-and-forget: si el TCP queda half-open
 // (NAT timeout, suspension del equipo, blip de red) el conector no emite
 // 'close'/'error'/'disconnected' y la app reporta "en vivo" contra una
 // conexion muerta hasta el reconnect por timer (~1h) o hasta "conectar todo".

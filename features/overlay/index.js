@@ -46,7 +46,10 @@ module.exports = {
       if (payload.platform !== 'tiktok') return; // valorizacion en USD solo aplica a TikTok
       const data = payload.raw || {};
       const user = cleanNick(data.nickname, data.uniqueId);
-      const repeatCount = data.repeatCount || 1;
+      // tiktok-live-client manda groupCount (conteo acumulado del combo, ya
+      // deduplicado por connect-tiktok-channel.js#GIFT_COMBO_DEBOUNCE_MS) —
+      // reemplaza al repeatCount de tiktok-live-connector.
+      const repeatCount = data.groupCount || 1;
       const { usdValue } = computeGiftUsd(logger, { giftName: data.giftName, repeatCount, diamondCount: data.diamondCount || 0 });
       pushBounded(state.credits.donors, { user, giftName: data.giftName, count: repeatCount, ts: Date.now() });
       bus.emit('ws:broadcast', {

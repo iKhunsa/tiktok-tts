@@ -61,8 +61,8 @@ function isDuplicateMessage(key, now) {
 // Todos son estables en el replay: el catch-up del WS re-entrega los mismos
 // protobufs bufferados desde el cursor, no regenera campos.
 //   - tiktok:  raw.msgId — id de mensaje del server, unico por mensaje. Lo
-//              aplana tiktok-live-connector desde common.msgId (mismo Object.assign
-//              del bloque `common` que trae createTime). NO se usa createTime como
+//              aplana tiktok-live-client desde common.msgId (mismo objeto
+//              `common` que trae createTime). NO se usa createTime como
 //              discriminador: es un int64 que se repite entre mensajes del mismo
 //              frame — colapsaria dos mensajes legitimos distintos del mismo user
 //              con el mismo texto normalizado ("jaja", "!p", un emote repetido).

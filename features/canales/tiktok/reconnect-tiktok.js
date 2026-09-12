@@ -1,7 +1,7 @@
 'use strict';
 
 const { MAX_RECONNECT_ATTEMPTS } = require('../state/channel-maps');
-const { setupTikTokConnection, readTikTokError } = require('./connect-tiktok-channel');
+const { setupTikTokConnection, readTikTokError, teardownConn } = require('./connect-tiktok-channel');
 const { cleanupAfterLastTikTokChannel } = require('./cleanup-after-last-channel');
 
 async function reconnectTiktok(deps, username) {
@@ -51,9 +51,8 @@ async function reconnectTiktok(deps, username) {
     } else {
       state.tiktokChannels.delete(username);
       // Teardown del connector (mismo patron que connect-tiktok-channel.js):
-      // sin esto el socket/heartbeat de e2.conn queda vivo para siempre.
-      e2.conn.removeAllListeners();
-      try { e2.conn.disconnect(); } catch (_) { /* best-effort */ }
+      // sin esto el WS/ventana invisible de e2.conn queda vivo para siempre.
+      teardownConn(e2);
       cleanupAfterLastTikTokChannel(deps);
     }
   }
