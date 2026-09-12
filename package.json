@@ -1,6 +1,6 @@
 {
   "name": "tiktok-live-tts",
-  "version": "1.8.10",
+  "version": "1.8.11",
   "description": "TikTok Live Chat TTS Reader",
   "author": "iKhunsa",
   "main": "main.js",
@@ -91,6 +91,10 @@
       {
         "from": "cuentas-config.json",
         "to": "cuentas-config.json"
+      },
+      {
+        "from": "config-defaults.json",
+        "to": "config-defaults.json"
       }
     ],
     "npmRebuild": false,
