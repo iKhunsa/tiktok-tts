@@ -4,6 +4,19 @@ Todas las novedades relevantes de este proyecto se documentan aquí.
 
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.8.12] — 2026-09-12
+
+### Cambiado
+- **Conexión a TikTok Live** reemplaza `tiktok-live-connector` (dependía de
+  Eulerstream, un servicio de firma anti-bot de pago) por
+  `@tiklivetts/tiktok-live-client`, cliente propio que resuelve la firma
+  localmente con una ventana de Electron invisible. Sin cambios para el
+  usuario final; misma UX de conexión y chat.
+
+### Arreglado
+- Detección de canal de TikTok sin transmitir en vivo, y de fin de directo,
+  sin depender de un servicio externo.
+
 ## [1.6.0] — 2026-08-07
 
 ### Añadido
