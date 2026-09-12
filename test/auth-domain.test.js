@@ -14,6 +14,7 @@ const path = require('node:path');
 const TMP = fs.mkdtempSync(path.join(os.tmpdir(), 'auth-test-'));
 process.env.TIKTOK_USER_DATA_PATH = TMP;
 process.env.CUENTAS_URL = ''; // opt-out explicito: fuerza el dominio auth a no-op aunque exista cuentas-config.json bundleado
+process.env.CONFIG_DEFAULTS_FILE = ''; // opt-out explicito: ignora config-defaults.json bundleado (draft de QA con subscriptionsEnabled:true)
 
 const { bootServer } = require('./helpers/boot-server');
 const srv = bootServer();
