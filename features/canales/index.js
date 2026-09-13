@@ -11,6 +11,7 @@ const obsReplayContract = require('../../core/contracts/obs-replay');
 const mcpRegistry = require('../../core/contracts/mcp-registry');
 const { connectPlatformChannel } = require('./connect-impl');
 const { gateMultiCanal } = require('./gate-multi-canal');
+const { teardownConn } = require('./tiktok/connect-tiktok-channel');
 
 const { connect } = require('./routes/connect');
 const { disconnect } = require('./routes/disconnect');
@@ -184,7 +185,7 @@ module.exports = {
 
     for (const entry of state.tiktokChannels.values()) {
       if (entry.timer) clearTimeout(entry.timer);
-      try { entry.conn.removeAllListeners(); entry.conn.disconnect(); } catch (_) { /* best-effort */ }
+      teardownConn(entry);
     }
     state.tiktokChannels.clear();
 
