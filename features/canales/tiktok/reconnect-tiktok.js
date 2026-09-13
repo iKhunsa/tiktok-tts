@@ -16,7 +16,7 @@ async function reconnectTiktok(deps, username) {
     refreshed.attempts = 0;
     refreshed.connectedOnce = true;
     if (refreshed.timer) { clearTimeout(refreshed.timer); refreshed.timer = null; }
-    if (refreshed.armStaleWatchdog) refreshed.armStaleWatchdog();
+    refreshed.armStaleWatchdog();
 
     logger.log(
       'info', 'canales', 'canales/tiktok/reconnect-tiktok.js#reconnectTiktok', 'canales.tiktok.reconexion_exitosa',
@@ -27,32 +27,28 @@ async function reconnectTiktok(deps, username) {
       roomInfo: (connState && connState.roomInfo) || null, isReconnect: true,
     });
   } catch (err) {
-    const e2 = state.tiktokChannels.get(username);
-    if (!e2) return;
+    const current = state.tiktokChannels.get(username);
+    if (!current) return;
 
-    // client.js:430 rechaza con un string, no un Error → reusa el mismo lector
-    // que setupTikTokConnection (canales.tiktok.error) para no duplicar la coercion.
-    const { message: msg, stack } = readTikTokError(err);
+    const { message, stack } = readTikTokError(err);
     logger.log(
       'error', 'canales', 'canales/tiktok/reconnect-tiktok.js#reconnectTiktok', 'canales.tiktok.reconexion_fallida',
-      `Fallo reconexion de TikTok ${username}: ${msg}`,
-      { channel: username, attempt: e2.attempts, error: msg, stack }
+      `Fallo reconexion de TikTok ${username}: ${message}`,
+      { channel: username, attempt: current.attempts, error: message, stack }
     );
 
-    if (e2.attempts < MAX_RECONNECT_ATTEMPTS) {
-      const delay = Math.min(1000 * Math.pow(2, e2.attempts), 30000);
-      e2.attempts++;
+    if (current.attempts < MAX_RECONNECT_ATTEMPTS) {
+      const delay = Math.min(1000 * 2 ** current.attempts, 30000);
+      current.attempts++;
       logger.log(
         'warn', 'canales', 'canales/tiktok/reconnect-tiktok.js#reconnectTiktok', 'canales.tiktok.reconectando',
-        `Reconectando TikTok ${username}, intento ${e2.attempts}`, { channel: username, intento: e2.attempts, delayMs: delay }
+        `Reconectando TikTok ${username}, intento ${current.attempts}`, { channel: username, intento: current.attempts, delayMs: delay }
       );
-      bus.emit('canal:estado', { platform: 'tiktok', channel: username, state: 'reconectando', attempt: e2.attempts, delayMs: delay });
-      e2.timer = setTimeout(() => reconnectTiktok(deps, username), delay);
+      bus.emit('canal:estado', { platform: 'tiktok', channel: username, state: 'reconectando', attempt: current.attempts, delayMs: delay });
+      current.timer = setTimeout(() => reconnectTiktok(deps, username), delay);
     } else {
       state.tiktokChannels.delete(username);
-      // Teardown del connector (mismo patron que connect-tiktok-channel.js):
-      // sin esto el WS/ventana invisible de e2.conn queda vivo para siempre.
-      teardownConn(e2);
+      teardownConn(current);
       cleanupAfterLastTikTokChannel(deps);
     }
   }
