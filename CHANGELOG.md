@@ -4,6 +4,27 @@ Todas las novedades relevantes de este proyecto se documentan aquí.
 
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.9.1] — 2026-09-13 (prerelease)
+
+### Cambiado
+- **Dominio TikTok reescrito** (`features/canales/tiktok/`): mismo
+  comportamiento que la versión anterior — debounce de combos de regalo,
+  watchdog de socket mudo (5 min), timeout anti-cuelgue de 30s al conectar,
+  backoff exponencial con tope de reintentos — sobre código nuevo y más
+  simple. Se unificó el teardown de conexión, antes duplicado en las 3 rutas
+  de desconexión (`disconnect`, `remove-channel`, `platforms-disconnect`) y
+  en el shutdown de `canales/`, para que todas reusen un único `teardownConn`.
+- **Cliente propio de TikTok Live** (`@tiklivetts/tiktok-live-client`, sin
+  depender de Eulerstream) verificado en vivo end-to-end: conecta, recibe
+  chat/regalos/likes/follows/joins/shares, y se reconecta sola ante un corte.
+
+### Conocido
+- La conexión a TikTok puede fallar de forma puntual y no determinista
+  (`Network.getResponseBody` vuelve vacío bajo carga del proceso, ya
+  documentado como limitación conocida del propio cliente) — reintentar
+  conectar la resuelve. No es un bug de la app ni depende de en qué carpeta
+  viva la app; se auditó a fondo antes de descartarlo como tal.
+
 ## [1.8.12] — 2026-09-12
 
 ### Cambiado
