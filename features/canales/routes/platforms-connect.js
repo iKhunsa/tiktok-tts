@@ -1,6 +1,7 @@
 'use strict';
 
 const { connectPlatformChannel } = require('../connect-impl');
+const { tiktokConnectErrorMessage } = require('../tiktok/tiktok-connect-error-message');
 
 function platformsConnect(deps) {
   return async (req, res) => {
@@ -12,9 +13,10 @@ function platformsConnect(deps) {
       if (err.statusCode === 400) return res.status(400).json({ error: err.message });
       deps.logger.log(
         'error', 'canales', 'canales/routes/platforms-connect.js#platformsConnect', 'canales.conexion.fallida',
-        `Error al conectar plataforma ${platform}: ${err.message}`, { platform, channel, error: err.message, stack: err.stack }
+        `Error al conectar plataforma ${platform}: ${err.message}`, { platform, channel, error: err.message, code: err.code, stack: err.stack }
       );
-      res.status(err.statusCode || 500).json({ error: err.message });
+      const body = platform === 'tiktok' ? tiktokConnectErrorMessage(err) : { error: err.message };
+      res.status(err.statusCode || 500).json(body);
     }
   };
 }

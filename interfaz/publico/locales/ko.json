@@ -334,7 +334,11 @@
     "stateManual": "수동",
     "stateError": "오류",
     "stateSaved": "저장됨",
-    "liveRequiredHint": "연결은 채널이 라이브 중일 때만 이루어집니다. 아직 방송을 시작하지 않았다면 채널을 저장하고, 라이브를 시작한 뒤 채팅에서 «모두 연결»을 누르세요."
+    "liveRequiredHint": "연결은 채널이 라이브 중일 때만 이루어집니다. 아직 방송을 시작하지 않았다면 채널을 저장하고, 라이브를 시작한 뒤 채팅에서 «모두 연결»을 누르세요.",
+    "tiktokConnecting": "TikTok에 연결하는 중…",
+    "tiktokRestoring": "TikTok 연결을 복구하는 중…",
+    "tiktokRestored": "TikTok 연결이 복구되었습니다.",
+    "tiktokWaitingLive": "이 채널은 라이브 중이 아닙니다. 다음 라이브를 기다리겠습니다."
   },
   "mobile2": {
     "loading": "로딩 중...",
@@ -988,6 +992,9 @@
     "playlistEmpty": "재생목록이 비어 있습니다",
     "twitchAuthStartFailed": "Twitch 인증을 시작할 수 없습니다",
     "obsConnectFailed": "OBS에 연결할 수 없습니다",
+    "tiktokNoEnVivo": "사용자가 라이브 중이 아닙니다",
+    "tiktokEstadoDesconocido": "사용자가 라이브 중인지 확인할 수 없습니다. 다시 시도해 주세요",
+    "tiktokEsperandoProximoLive": "이 채널은 라이브 중이 아닙니다. 다음 라이브를 기다리겠습니다.",
     "obsConnectInProgress": "이미 OBS 연결이 진행 중입니다",
     "mcpDisabled": "MCP 서버가 껺져 있습니다",
     "unauthorized": "인증되지 않았습니다.",

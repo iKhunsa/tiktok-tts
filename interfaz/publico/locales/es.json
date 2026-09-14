@@ -354,7 +354,11 @@
     "stateError": "Error",
     "stateSaved": "Guardado",
     "shortcutNotRegisteredPrefix": "Atajo no registrado:",
-    "liveRequiredHint": "La conexión solo ocurre cuando el canal está EN VIVO. Si aún no empiezas el directo, guarda el canal y pulsa «Conectar todo» desde Chat cuando estés en vivo."
+    "liveRequiredHint": "La conexión solo ocurre cuando el canal está EN VIVO. Si aún no empiezas el directo, guarda el canal y pulsa «Conectar todo» desde Chat cuando estés en vivo.",
+    "tiktokConnecting": "Conectando con TikTok…",
+    "tiktokRestoring": "Restaurando conexión con TikTok…",
+    "tiktokRestored": "Conexión con TikTok restablecida.",
+    "tiktokWaitingLive": "Este canal no está en vivo. Esperaremos su próximo live."
   },
   "mobile2": {
     "loading": "Cargando...",
@@ -988,6 +992,9 @@
     "playlistEmpty": "Tu playlist está vacía",
     "twitchAuthStartFailed": "No se pudo iniciar la autorización de Twitch",
     "obsConnectFailed": "No se pudo conectar a OBS",
+    "tiktokNoEnVivo": "El usuario no está en vivo",
+    "tiktokEstadoDesconocido": "No pudimos comprobar si el usuario está en vivo. Intentá nuevamente",
+    "tiktokEsperandoProximoLive": "Este canal no está en vivo. Esperaremos su próximo live.",
     "obsConnectInProgress": "Ya hay una conexión a OBS en curso",
     "mcpDisabled": "El servidor MCP está apagado",
     "unauthorized": "No autenticado.",

@@ -334,7 +334,11 @@
     "stateManual": "Manual",
     "stateError": "Error",
     "stateSaved": "Saved",
-    "liveRequiredHint": "The connection only happens when the channel is LIVE. If you haven't started your stream yet, save the channel and hit «Connect all» from Chat once you are live."
+    "liveRequiredHint": "The connection only happens when the channel is LIVE. If you haven't started your stream yet, save the channel and hit «Connect all» from Chat once you are live.",
+    "tiktokConnecting": "Connecting to TikTok…",
+    "tiktokRestoring": "Restoring connection to TikTok…",
+    "tiktokRestored": "Connection to TikTok restored.",
+    "tiktokWaitingLive": "This channel isn't live. We'll wait for their next live."
   },
   "mobile2": {
     "loading": "Loading...",
@@ -656,6 +660,9 @@
     "playlistEmpty": "Your playlist is empty",
     "twitchAuthStartFailed": "Could not start Twitch authorization",
     "obsConnectFailed": "Could not connect to OBS",
+    "tiktokNoEnVivo": "The user isn't live",
+    "tiktokEstadoDesconocido": "We couldn't check if the user is live. Try again",
+    "tiktokEsperandoProximoLive": "This channel isn't live. We'll wait for their next live.",
     "obsConnectInProgress": "An OBS connection is already in progress",
     "mcpDisabled": "The MCP server is off",
     "unauthorized": "Not authenticated.",
