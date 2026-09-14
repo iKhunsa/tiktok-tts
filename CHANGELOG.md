@@ -4,6 +4,19 @@ Todas las novedades relevantes de este proyecto se documentan aquí.
 
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.9.3] — 2026-09-14 (prerelease)
+
+### Cambiado
+- **Experimento de continuidad de TikTok** (`@tiklivetts/tiktok-live-client@0.1.5`):
+  ante un cuerpo vacío de `room/enter/` (el único caso "sin info" real, sin
+  ningún dato — a diferencia de un `status_code` o un JSON inválido, que sí
+  traen algo), la ventana invisible ahora se revela 10 segundos (silenciada)
+  antes de cerrarse, en vez de destruirse al instante. Coincide con el
+  reintento interno ya existente (hasta 3 intentos). Hipótesis a comprobar:
+  el throttling de una ventana en segundo plano podría ser parte de por qué
+  la firma/anti-bot de TikTok a veces no completa a tiempo — verificado
+  manualmente que funciona en una corrida real, sigue en observación.
+
 ## [1.9.2] — 2026-09-14 (prerelease)
 
 ### Arreglado
