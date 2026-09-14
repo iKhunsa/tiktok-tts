@@ -1,6 +1,7 @@
 'use strict';
 
 const { connectTiktokChannel } = require('../tiktok/connect-tiktok-channel');
+const { tiktokConnectErrorMessage } = require('../tiktok/tiktok-connect-error-message');
 const { cleanTwitchChannel } = require('../twitch/clean-channel');
 const { connectTwitch } = require('../twitch/connect-twitch');
 const { normalizeYoutubeInput } = require('../youtube/parse-target');
@@ -40,9 +41,10 @@ function addChannel(deps) {
     } catch (err) {
       deps.logger.log(
         'error', 'canales', 'canales/routes/add-channel.js#addChannel', 'canales.conexion.fallida',
-        `Error al agregar canal ${platform}: ${err.message}`, { platform, channel, error: err.message, stack: err.stack }
+        `Error al agregar canal ${platform}: ${err.message}`, { platform, channel, error: err.message, code: err.code, stack: err.stack }
       );
-      res.status(err.statusCode || 500).json({ error: err.message });
+      const body = platform === 'tiktok' ? tiktokConnectErrorMessage(err) : { error: err.message };
+      res.status(err.statusCode || 500).json(body);
     }
   };
 }

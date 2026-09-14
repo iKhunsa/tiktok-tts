@@ -334,7 +334,11 @@
     "stateManual": "手動",
     "stateError": "エラー",
     "stateSaved": "保存済み",
-    "liveRequiredHint": "接続はチャンネルがライブ中のときのみ行われます。まだ配信を開始していない場合は、チャンネルを保存し、ライブ開始後に「チャット」から「すべて接続」を押してください。"
+    "liveRequiredHint": "接続はチャンネルがライブ中のときのみ行われます。まだ配信を開始していない場合は、チャンネルを保存し、ライブ開始後に「チャット」から「すべて接続」を押してください。",
+    "tiktokConnecting": "TikTokに接続中…",
+    "tiktokRestoring": "TikTokとの接続を復元中…",
+    "tiktokRestored": "TikTokとの接続が回復しました。",
+    "tiktokWaitingLive": "このチャンネルは配信中ではありません。次のライブをお待ちします。"
   },
   "mobile2": {
     "loading": "読み込み中...",
@@ -988,6 +992,9 @@
     "playlistEmpty": "プレイリストが空です",
     "twitchAuthStartFailed": "Twitch認証を開始できませんでした",
     "obsConnectFailed": "OBSに接続できませんでした",
+    "tiktokNoEnVivo": "このユーザーはライブ配信していません",
+    "tiktokEstadoDesconocido": "ライブ配信中かどうか確認できませんでした。もう一度お試しください",
+    "tiktokEsperandoProximoLive": "このチャンネルは配信中ではありません。次のライブをお待ちします。",
     "obsConnectInProgress": "OBSへの接続が既に進行中です",
     "mcpDisabled": "MCP サーバーはオフです",
     "unauthorized": "認証されていません。",

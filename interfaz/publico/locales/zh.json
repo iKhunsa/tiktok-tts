@@ -334,7 +334,11 @@
     "stateManual": "手动",
     "stateError": "错误",
     "stateSaved": "已保存",
-    "liveRequiredHint": "仅当频道正在直播时才会建立连接。如果你还没开始直播，请先保存频道，等开播后在“聊天”中点击“全部连接”。"
+    "liveRequiredHint": "仅当频道正在直播时才会建立连接。如果你还没开始直播，请先保存频道，等开播后在“聊天”中点击“全部连接”。",
+    "tiktokConnecting": "正在连接 TikTok…",
+    "tiktokRestoring": "正在恢复与 TikTok 的连接…",
+    "tiktokRestored": "已恢复与 TikTok 的连接。",
+    "tiktokWaitingLive": "该频道不在直播中，我们会等待下一次直播。"
   },
   "mobile2": {
     "loading": "加载中...",
@@ -988,6 +992,9 @@
     "playlistEmpty": "你的播放列表是空的",
     "twitchAuthStartFailed": "无法启动 Twitch 授权",
     "obsConnectFailed": "无法连接到 OBS",
+    "tiktokNoEnVivo": "该用户不在直播中",
+    "tiktokEstadoDesconocido": "无法确认该用户是否在直播，请重试",
+    "tiktokEsperandoProximoLive": "该频道不在直播中，我们会等待下一次直播。",
     "obsConnectInProgress": "已有一个 OBS 连接正在进行中",
     "mcpDisabled": "MCP 服务器已关闭",
     "unauthorized": "未认证。",

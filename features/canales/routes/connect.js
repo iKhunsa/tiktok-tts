@@ -1,7 +1,7 @@
 'use strict';
 
 const { connectTiktokChannel } = require('../tiktok/connect-tiktok-channel');
-const { cleanTiktokUsername } = require('../tiktok/clean-username');
+const { tiktokConnectErrorMessage } = require('../tiktok/tiktok-connect-error-message');
 const { broadcastChannels } = require('../broadcast-channels');
 
 /** POST /api/connect — endpoint historico, solo TikTok, agrega canal sin reemplazar otros. */
@@ -14,14 +14,8 @@ function connect(deps) {
       broadcastChannels(deps);
       res.json({ success: true, username: cleanUsername });
     } catch (err) {
-      const cleanUsername = cleanTiktokUsername(username);
-      res.status(err.statusCode || 500).json({
-        error: err.message.includes('LIVE')
-          ? `@${cleanUsername} no está en vivo ahora mismo`
-          : err.message.includes('not found')
-            ? `Usuario @${cleanUsername} no encontrado`
-            : `No se pudo conectar: ${err.message}`,
-      });
+      const { error, errorKey } = tiktokConnectErrorMessage(err);
+      res.status(err.statusCode || 500).json({ error, errorKey });
     }
   };
 }

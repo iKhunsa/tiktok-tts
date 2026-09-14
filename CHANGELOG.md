@@ -4,6 +4,37 @@ Todas las novedades relevantes de este proyecto se documentan aquí.
 
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.9.2] — 2026-09-14 (prerelease)
+
+### Arreglado
+- **Falsos "el usuario no está en vivo"**: el paquete (`@tiklivetts/tiktok-live-client@0.1.4`)
+  ya no convierte un cuerpo vacío, un JSON inválido, una estructura
+  inesperada o un código de error de TikTok (ej. `status_code: 4003110`, sin
+  `data.status`) en un offline confirmado. Esos casos ahora se distinguen
+  como "no pudimos comprobar el estado" — la app muestra "No pudimos
+  comprobar si el usuario está en vivo. Intentá nuevamente" en vez de
+  afirmar (incorrectamente) que el directo no está en vivo.
+
+### Agregado
+- **Continuidad de conexión de TikTok**: al pulsar "Conectar", el canal se
+  mantiene intentando conectar y recuperándose solo — ráfaga rápida de
+  reintentos al principio, después backoff espaciado sin límite — hasta que
+  el usuario pulsa "Desconectar". Un corte técnico o un estado ambiguo ya no
+  borra el canal ni obliga a volver a conectar a mano. Mensajes nuevos y
+  calmados: "Conectando con TikTok…", "Restaurando conexión con TikTok…",
+  "Conexión con TikTok restablecida.", "Este canal no está en vivo.
+  Esperaremos su próximo live." — nunca un error técnico por cada intento.
+- El watchdog de conexión muda ya no depende solo del chat: cualquier señal
+  técnica (regalos, likes, follows, o el conteo de viewers que TikTok empuja
+  igual con la sala en silencio) cuenta como "conexión viva", así que un
+  directo silencioso ya no se trata como caído.
+
+### Conocido
+- Sigue sin identificarse la causa raíz de por qué la comprobación de
+  `room/enter/` falla de forma intermitente (firma, sesión, o carga del
+  proceso principal siguen siendo hipótesis, ninguna confirmada) — esta
+  versión hace que la app la tolere automáticamente, no la elimina.
+
 ## [1.9.1] — 2026-09-13 (prerelease)
 
 ### Cambiado

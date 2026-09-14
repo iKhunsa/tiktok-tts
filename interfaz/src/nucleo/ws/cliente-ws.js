@@ -241,6 +241,17 @@ function handleMessage(data) {
       loadOAuthStatusUI();
       break;
 
+    // Supervisor de continuidad de TikTok (features/canales/tiktok/connect-tiktok-channel.js):
+    // solo estas 4 transiciones llegan aca, nunca un toast por cada intento
+    // tecnico fallido — ver CLAUDE.md / handoff de continuidad de conexion.
+    case 'tiktok-connection-status': {
+      if (data.status === 'connecting') showToast(t('conn.tiktokConnecting'));
+      else if (data.status === 'restoring') showToast(t('conn.tiktokRestoring'));
+      else if (data.status === 'connected' && data.recovered) showToast(t('conn.tiktokRestored'));
+      else if (data.status === 'waiting-live') showToast(t('conn.tiktokWaitingLive'));
+      break;
+    }
+
     case 'platform-connected':
       renderSettingsChannels();
       showToast(t('toast.platformConnected').replace('{platform}', data.platform.charAt(0).toUpperCase() + data.platform.slice(1)));
