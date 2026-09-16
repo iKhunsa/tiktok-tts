@@ -8,6 +8,8 @@ const { createWindow, showMainWindow, waitForServer, PORT } = require('./electro
 const { createTray, buildTrayMenu, showStartupError } = require('./electron-shell/tray');
 const { setupAutoUpdater, installUpdate } = require('./electron-shell/updater');
 const { attachIpcBridge } = require('./electron-shell/ipc-bridge');
+const { createPortalViewController } = require('./electron-shell/portal-view/controller');
+const { attachPortalViewIpc } = require('./electron-shell/portal-view/ipc');
 const { startUiohook, stopUiohook, isUiohookActive, registerUiohookShortcut } = require('./electron-shell/uiohook');
 const { GLOBAL_SHORTCUT } = require('./features/clips/global-shortcut');
 const telemetryRuntime = require('./features/telemetria/runtime');
@@ -38,6 +40,8 @@ let pendingUpdateVersion = null;
 let quitTasksDone = false;
 let cierresListos = false;
 let ipcHandles = null;
+let portalView = null;
+let portalViewIpcHandles = null;
 
 ensureSingleInstance(app, () => showMainWindow(mainWindow));
 
@@ -140,6 +144,9 @@ app.whenReady().then(() => {
       },
     });
 
+    portalView = createPortalViewController({ mainWindow, logger });
+    portalViewIpcHandles = attachPortalViewIpc({ controller: portalView });
+
     tray = createTray({ iconPath: ICON_PATH, logger, ...trayCallbacks() });
 
     if (app.isPackaged) {
@@ -230,6 +237,8 @@ app.on('will-quit', () => {
     ipcHandles.clearSoundpadShortcuts();
     ipcHandles.unregisterAllTtsShortcuts();
   }
+  if (portalViewIpcHandles) portalViewIpcHandles.dispose();
+  if (portalView) portalView.destroyAll();
   stopUiohook();
 });
 

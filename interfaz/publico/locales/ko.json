@@ -42,7 +42,24 @@
     "donate": "후원",
     "newBadge": "신규",
     "advanced": "고급",
-    "bugReport": "버그 신고"
+    "bugReport": "버그 신고",
+    "portalView": "브라우저"
+  },
+  "portalView": {
+    "urlPlaceholder": "URL 입력",
+    "close": "닫기",
+    "newTab": "새 탭",
+    "closeTab": "탭 닫기",
+    "goBack": "뒤로",
+    "goForward": "앞으로",
+    "reload": "새로고침",
+    "shortcuts": "빠른 접근",
+    "favorites": "즐겨찾기",
+    "addFavorite": "즐겨찾기 추가",
+    "favoriteLabelPlaceholder": "이름",
+    "favoriteUrlPlaceholder": "URL",
+    "removeFavorite": "즐겨찾기 삭제",
+    "closeSession": "브라우징 세션 종료"
   },
   "toggle": {
     "readChat": "댓글 읽기",
@@ -585,6 +602,10 @@
     "share": "{user}님이 방송을 공유하고 있습니다"
   },
   "toast": {
+    "portalTabLimit": "브라우저는 최대 6개 탭까지 가능합니다",
+    "portalFavoriteInvalid": "이름 또는 URL이 올바르지 않습니다",
+    "portalDownloadDone": "다운로드 완료: {filename}",
+    "portalDownloadFailed": "다운로드 실패: {filename}",
     "bgUploaded": "배경이 성공적으로 업로드되었습니다",
     "bgUploadError": "배경 업로드 중 네트워크 오류",
     "minOnePlatform": "적어도 하나의 플랫폼을 표시해두세요",

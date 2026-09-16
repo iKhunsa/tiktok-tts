@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="plugin-store/grid.css" />
   <link rel="stylesheet" href="plugin-store/detail.css" />
   <link rel="stylesheet" href="./src/estilos/index-legacy.css">
+  <link rel="stylesheet" href="./src/estilos/portal-view.css">
 </head>
 <body>
 
@@ -27,6 +28,7 @@
   <button id="update-btn-later"   style="display:none" onclick="document.getElementById('update-banner').classList.remove('visible')" data-i18n="update.later">Después</button>
 </div>
 
+<div id="app-shell">
 <div class="app-layout">
 
   <!-- ══ SIDEBAR ══════════════════════════════════════════ -->
@@ -95,6 +97,7 @@
     <div class="sidebar-footer">
       <button class="sidebar-footer-btn" onclick="openDonationsModal()"><img class="icon-inline" src="icons/favorite-red.svg" alt=""> <span data-i18n="footer.donate">Donar</span> <span id="donateNewBadge" class="badge-new" data-i18n="footer.newBadge">Nuevo</span></button>
       <a href="/advanced.html?popup=1" target="_blank" rel="noopener" class="sidebar-footer-btn"><img class="icon-inline" src="icons/build.svg" alt=""> <span data-i18n="footer.advanced">Avanzado</span></a>
+      <button id="sidebarPortalViewBtn" class="sidebar-footer-btn" onclick="togglePortalView()"><img class="icon-inline" src="icons/public.svg" alt=""> <span data-i18n="footer.portalView">Navegador</span></button>
       <button id="sidebarBugReportBtn" class="sidebar-footer-btn" onclick="openBugReportModal()"><img class="icon-inline" src="icons/warning.svg" alt=""> <span data-i18n="footer.bugReport">Reportar Bug</span></button>
       <button class="sidebar-footer-btn sidebar-item" data-view="cuenta" onclick="switchView('cuenta')" hidden><img class="icon-inline" src="icons/account_circle.svg" alt=""> <span data-i18n="nav.cuenta">Cuenta</span></button>
       <div class="lang-selector-row">
@@ -1498,6 +1501,7 @@
       <img class="icon-inline" src="icons/delete.svg" alt=""> <span id="spSetDeleteLabel" data-i18n="soundpad.deleteSound">Eliminar sonido</span>
     </button>
   </div>
+</div>
 </div>
 
 <script src="vendor/driver.js"></script>

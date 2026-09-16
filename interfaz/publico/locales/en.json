@@ -42,7 +42,24 @@
     "donate": "Donate",
     "newBadge": "New",
     "advanced": "Advanced",
-    "bugReport": "Report Bug"
+    "bugReport": "Report Bug",
+    "portalView": "Browser"
+  },
+  "portalView": {
+    "urlPlaceholder": "Enter a URL",
+    "close": "Close",
+    "newTab": "New tab",
+    "closeTab": "Close tab",
+    "goBack": "Back",
+    "goForward": "Forward",
+    "reload": "Reload",
+    "shortcuts": "Quick access",
+    "favorites": "Favorites",
+    "addFavorite": "Add favorite",
+    "favoriteLabelPlaceholder": "Name",
+    "favoriteUrlPlaceholder": "URL",
+    "removeFavorite": "Remove favorite",
+    "closeSession": "Close browsing session"
   },
   "toggle": {
     "readChat": "Read comments",
@@ -585,6 +602,10 @@
     "share": "{user} is sharing the live"
   },
   "toast": {
+    "portalTabLimit": "Maximum 6 tabs in the browser",
+    "portalFavoriteInvalid": "Invalid name or URL",
+    "portalDownloadDone": "Download complete: {filename}",
+    "portalDownloadFailed": "Download failed: {filename}",
     "bgUploaded": "Background uploaded successfully",
     "bgUploadError": "Network error uploading background",
     "minOnePlatform": "Leave at least one platform visible",

@@ -42,7 +42,24 @@
     "donate": "捐赠",
     "newBadge": "新",
     "advanced": "高级",
-    "bugReport": "报告问题"
+    "bugReport": "报告问题",
+    "portalView": "浏览器"
+  },
+  "portalView": {
+    "urlPlaceholder": "输入网址",
+    "close": "关闭",
+    "newTab": "新标签页",
+    "closeTab": "关闭标签页",
+    "goBack": "后退",
+    "goForward": "前进",
+    "reload": "刷新",
+    "shortcuts": "快捷方式",
+    "favorites": "收藏夹",
+    "addFavorite": "添加收藏",
+    "favoriteLabelPlaceholder": "名称",
+    "favoriteUrlPlaceholder": "URL",
+    "removeFavorite": "删除收藏",
+    "closeSession": "关闭浏览会话"
   },
   "toggle": {
     "readChat": "朗读评论",
@@ -585,6 +602,10 @@
     "share": "{user} 正在分享直播"
   },
   "toast": {
+    "portalTabLimit": "浏览器最多支持6个标签页",
+    "portalFavoriteInvalid": "名称或URL无效",
+    "portalDownloadDone": "下载完成：{filename}",
+    "portalDownloadFailed": "下载失败：{filename}",
     "bgUploaded": "背景上传成功",
     "bgUploadError": "上传背景时网络错误",
     "minOnePlatform": "至少保留一个平台可见",

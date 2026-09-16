@@ -42,7 +42,24 @@
     "donate": "Spenden",
     "newBadge": "Neu",
     "advanced": "Erweitert",
-    "bugReport": "Bug melden"
+    "bugReport": "Bug melden",
+    "portalView": "Browser"
+  },
+  "portalView": {
+    "urlPlaceholder": "URL eingeben",
+    "close": "Schließen",
+    "newTab": "Neuer Tab",
+    "closeTab": "Tab schließen",
+    "goBack": "Zurück",
+    "goForward": "Vorwärts",
+    "reload": "Neu laden",
+    "shortcuts": "Schnellzugriff",
+    "favorites": "Favoriten",
+    "addFavorite": "Favorit hinzufügen",
+    "favoriteLabelPlaceholder": "Name",
+    "favoriteUrlPlaceholder": "URL",
+    "removeFavorite": "Favorit entfernen",
+    "closeSession": "Browsersitzung schließen"
   },
   "toggle": {
     "readChat": "Kommentare lesen",
@@ -585,6 +602,10 @@
     "share": "{user} teilt den Live-Stream"
   },
   "toast": {
+    "portalTabLimit": "Maximal 6 Tabs im Browser",
+    "portalFavoriteInvalid": "Ungültiger Name oder ungültige URL",
+    "portalDownloadDone": "Download abgeschlossen: {filename}",
+    "portalDownloadFailed": "Download fehlgeschlagen: {filename}",
     "bgUploaded": "Hintergrund erfolgreich hochgeladen",
     "bgUploadError": "Netzwerkfehler beim Hochladen des Hintergrunds",
     "minOnePlatform": "Mindestens eine Plattform sichtbar lassen",

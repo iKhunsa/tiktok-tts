@@ -38,6 +38,7 @@ registerDomain(deps, require('./features/bot'));
 registerDomain(deps, require('./features/clips'));
 registerDomain(deps, require('./features/avanzado'));
 registerDomain(deps, require('./features/donar'));
+registerDomain(deps, require('./features/portal-view'));
 registerDomain(deps, require('./features/telemetria'));
 // mcp va ULTIMO: para cuando corre su register(), cada dominio ya llamo
 // mcpRegistry.registerTool() desde el suyo, asi que el set de tools esta completo.

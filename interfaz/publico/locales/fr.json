@@ -42,7 +42,24 @@
     "donate": "Faire un don",
     "newBadge": "Nouveau",
     "advanced": "Avancé",
-    "bugReport": "Signaler un bug"
+    "bugReport": "Signaler un bug",
+    "portalView": "Navigateur"
+  },
+  "portalView": {
+    "urlPlaceholder": "Entrez une URL",
+    "close": "Fermer",
+    "newTab": "Nouvel onglet",
+    "closeTab": "Fermer l'onglet",
+    "goBack": "Précédent",
+    "goForward": "Suivant",
+    "reload": "Actualiser",
+    "shortcuts": "Accès rapide",
+    "favorites": "Favoris",
+    "addFavorite": "Ajouter un favori",
+    "favoriteLabelPlaceholder": "Nom",
+    "favoriteUrlPlaceholder": "URL",
+    "removeFavorite": "Retirer le favori",
+    "closeSession": "Fermer la session de navigation"
   },
   "toggle": {
     "readChat": "Lire les commentaires",
@@ -585,6 +602,10 @@
     "share": "{user} partage le live"
   },
   "toast": {
+    "portalTabLimit": "Maximum 6 onglets dans le navigateur",
+    "portalFavoriteInvalid": "Nom ou URL invalide",
+    "portalDownloadDone": "Téléchargement terminé : {filename}",
+    "portalDownloadFailed": "Échec du téléchargement : {filename}",
     "bgUploaded": "Arrière-plan téléchargé avec succès",
     "bgUploadError": "Erreur réseau lors du téléchargement de l'arrière-plan",
     "minOnePlatform": "Laissez au moins une plateforme visible",
