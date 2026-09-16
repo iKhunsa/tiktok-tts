@@ -20,7 +20,24 @@
     "donate": "Donar",
     "newBadge": "Nuevo",
     "advanced": "Avanzado",
-    "bugReport": "Reportar Bug"
+    "bugReport": "Reportar Bug",
+    "portalView": "Navegador"
+  },
+  "portalView": {
+    "urlPlaceholder": "Escribe una URL",
+    "close": "Cerrar",
+    "newTab": "Nueva pestaña",
+    "closeTab": "Cerrar pestaña",
+    "goBack": "Atrás",
+    "goForward": "Adelante",
+    "reload": "Recargar",
+    "shortcuts": "Accesos rápidos",
+    "favorites": "Favoritos",
+    "addFavorite": "Agregar favorito",
+    "favoriteLabelPlaceholder": "Nombre",
+    "favoriteUrlPlaceholder": "URL",
+    "removeFavorite": "Quitar favorito",
+    "closeSession": "Cerrar sesión de navegación"
   },
   "bugReport": {
     "title": "Reportar un problema",
@@ -605,6 +622,10 @@
     "share": "{user} está compartiendo el live"
   },
   "toast": {
+    "portalTabLimit": "Máximo 6 pestañas en el navegador",
+    "portalFavoriteInvalid": "Nombre o URL inválidos",
+    "portalDownloadDone": "Descarga completa: {filename}",
+    "portalDownloadFailed": "Error al descargar: {filename}",
     "bgUploaded": "Fondo subido correctamente",
     "bgUploadError": "Error de red al subir fondo",
     "minOnePlatform": "Deja al menos una plataforma visible",

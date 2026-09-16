@@ -20,6 +20,7 @@ aptabase-config.json
 aptabase-config.generated.json
 logs/
 moderation.json
+portal-view.json
 tts-cache/
 graphify-out/
 .claude/

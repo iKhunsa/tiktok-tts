@@ -95,6 +95,7 @@ import {
   startChatActionsTour, startClipsTour, startOverlaysTour, startVoiceTour,
   startShortcutsTour, startTwitchTour,
 } from './tours/index.js';
+import { iniciarPortalView, togglePortalView } from './portal-view/index.js';
 
 // ─── Puente onclick/onchange/oninput: el markup los invoca como globales ──
 Object.assign(window, {
@@ -155,6 +156,8 @@ Object.assign(window, {
   startShortcutsTour, startTwitchTour,
   // usadas por markup construido en JS (template strings con onclick="...")
   escapeHtml,
+  // portal view (navegador embebido)
+  togglePortalView,
 });
 
 // App bloqueada = sistema de cuentas activo y sin sesión. Marca el body (CSS
@@ -240,6 +243,7 @@ function iniciarArranque() {
 
   iniciarEventosElectron();
   musicInit();
+  iniciarPortalView();
 }
 
 iniciarArranque();
