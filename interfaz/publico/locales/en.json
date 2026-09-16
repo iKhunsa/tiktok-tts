@@ -56,6 +56,8 @@
     "shortcuts": "Quick access",
     "favorites": "Favorites",
     "addFavorite": "Add favorite",
+    "editFavorite": "Edit",
+    "favoriteOptions": "Options",
     "favoriteLabelPlaceholder": "Name",
     "favoriteUrlPlaceholder": "URL",
     "removeFavorite": "Remove favorite",

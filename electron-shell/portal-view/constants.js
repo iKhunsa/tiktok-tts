@@ -18,13 +18,7 @@ const TOOLBAR_HEIGHT_PX = 40;
 // Alto HTML real que el WebContentsView debe dejar libre arriba (tab-bar +
 // toolbar apiladas) — ver electron-shell/portal-view/bounds.js#computeBounds.
 const CONTENT_TOP_OFFSET_PX = TAB_BAR_HEIGHT_PX + TOOLBAR_HEIGHT_PX;
-
-// Constante de codigo, no dato de usuario — nunca viaja en portal-view.json.
-const PREDEFINED_SHORTCUTS = [
-  { id: 'tiktok-studio', label: 'TikTok Studio', url: 'https://www.tiktok.com/tiktokstudio/live' },
-  { id: 'twitch-dashboard', label: 'Twitch Dashboard', url: 'https://dashboard.twitch.tv/' },
-  { id: 'kick-dashboard', label: 'Kick', url: 'https://kick.com/dashboard' },
-];
+const DEFAULT_FAVORITE_ICON = 'public';
 
 module.exports = {
   MAX_TABS,
@@ -37,5 +31,5 @@ module.exports = {
   TAB_BAR_HEIGHT_PX,
   TOOLBAR_HEIGHT_PX,
   CONTENT_TOP_OFFSET_PX,
-  PREDEFINED_SHORTCUTS,
+  DEFAULT_FAVORITE_ICON,
 };

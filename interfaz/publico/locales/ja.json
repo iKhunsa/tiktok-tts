@@ -56,6 +56,8 @@
     "shortcuts": "クイックアクセス",
     "favorites": "お気に入り",
     "addFavorite": "お気に入りに追加",
+    "editFavorite": "編集",
+    "favoriteOptions": "オプション",
     "favoriteLabelPlaceholder": "名前",
     "favoriteUrlPlaceholder": "URL",
     "removeFavorite": "お気に入りを削除",
