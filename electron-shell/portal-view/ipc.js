@@ -18,8 +18,9 @@ function attachPortalViewIpc({ controller }) {
   ipcMain.handle('portal:go-back', (_e, { tabId }) => controller.goBack(tabId));
   ipcMain.handle('portal:go-forward', (_e, { tabId }) => controller.goForward(tabId));
   ipcMain.handle('portal:reload', (_e, { tabId }) => controller.reload(tabId));
-  ipcMain.handle('portal:add-favorite', (_e, { label, url }) => controller.addFavorite(label, url));
+  ipcMain.handle('portal:add-favorite', (_e, { label, url, icon }) => controller.addFavorite(label, url, icon));
   ipcMain.handle('portal:remove-favorite', (_e, { id }) => controller.removeFavorite(id));
+  ipcMain.handle('portal:edit-favorite', (_e, { id, label, url, icon }) => controller.editFavorite(id, { label, url, icon }));
   ipcMain.handle('portal:close-session', () => controller.closeSession());
 
   return {
@@ -37,6 +38,7 @@ function attachPortalViewIpc({ controller }) {
       ipcMain.removeHandler('portal:reload');
       ipcMain.removeHandler('portal:add-favorite');
       ipcMain.removeHandler('portal:remove-favorite');
+      ipcMain.removeHandler('portal:edit-favorite');
       ipcMain.removeHandler('portal:close-session');
     },
   };

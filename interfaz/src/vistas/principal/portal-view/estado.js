@@ -9,7 +9,6 @@ export const almacenPortalView = crearAlmacen({
   activeTabId: null,
   panelWidthPct: 0.5,
   favorites: [],
-  predefined: [],
 });
 
 export function aplicarEstadoPortal(state) {

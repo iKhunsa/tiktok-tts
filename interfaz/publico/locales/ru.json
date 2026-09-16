@@ -56,6 +56,8 @@
     "shortcuts": "Быстрый доступ",
     "favorites": "Избранное",
     "addFavorite": "Добавить в избранное",
+    "editFavorite": "Изменить",
+    "favoriteOptions": "Параметры",
     "favoriteLabelPlaceholder": "Название",
     "favoriteUrlPlaceholder": "URL",
     "removeFavorite": "Удалить из избранного",

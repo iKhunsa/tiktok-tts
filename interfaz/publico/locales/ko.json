@@ -56,6 +56,8 @@
     "shortcuts": "빠른 접근",
     "favorites": "즐겨찾기",
     "addFavorite": "즐겨찾기 추가",
+    "editFavorite": "편집",
+    "favoriteOptions": "옵션",
     "favoriteLabelPlaceholder": "이름",
     "favoriteUrlPlaceholder": "URL",
     "removeFavorite": "즐겨찾기 삭제",

@@ -8,7 +8,7 @@ const { computeBounds, clampPanelWidth, attachResizeListener } = require('./boun
 const { loadPortalViewData, scheduleFlush, flushSync } = require('./store');
 const portalViewContract = require('../../core/contracts/portal-view');
 const {
-  DEFAULT_PANEL_WIDTH_PCT, CONTENT_TOP_OFFSET_PX, MAX_TABS, COMBINED_MIN_WIDTH_PX, PREDEFINED_SHORTCUTS,
+  DEFAULT_PANEL_WIDTH_PCT, CONTENT_TOP_OFFSET_PX, MAX_TABS, COMBINED_MIN_WIDTH_PX, DEFAULT_FAVORITE_ICON,
 } = require('./constants');
 
 const DEFAULT_MIN_SIZE = [900, 600];
@@ -86,7 +86,6 @@ function createPortalViewController({ mainWindow, logger }) {
       })),
       panelWidthPct,
       favorites,
-      predefined: PREDEFINED_SHORTCUTS,
     };
   }
 
@@ -288,11 +287,14 @@ function createPortalViewController({ mainWindow, logger }) {
     return { ok: true };
   }
 
-  function addFavorite(label, url) {
+  function addFavorite(label, url, icon) {
     const cleanUrl = normalizeUrl(url);
     const cleanLabel = typeof label === 'string' ? label.trim().slice(0, 60) : '';
     if (!cleanUrl || !cleanLabel) return { ok: false, error: 'invalid_favorite' };
-    const favorite = { id: `fav_${crypto.randomUUID()}`, label: cleanLabel, url: cleanUrl };
+    const favorite = {
+      id: `fav_${crypto.randomUUID()}`, label: cleanLabel, url: cleanUrl,
+      icon: typeof icon === 'string' && icon ? icon : DEFAULT_FAVORITE_ICON,
+    };
     favorites.push(favorite);
     broadcastState();
     return { ok: true, favorite };
@@ -304,6 +306,19 @@ function createPortalViewController({ mainWindow, logger }) {
     favorites.splice(idx, 1);
     broadcastState();
     return { ok: true };
+  }
+
+  function editFavorite(id, { label, url, icon }) {
+    const favorite = favorites.find((f) => f.id === id);
+    if (!favorite) return { ok: false, error: 'invalid_favorite' };
+    const cleanUrl = normalizeUrl(url);
+    const cleanLabel = typeof label === 'string' ? label.trim().slice(0, 60) : '';
+    if (!cleanUrl || !cleanLabel) return { ok: false, error: 'invalid_favorite' };
+    favorite.label = cleanLabel;
+    favorite.url = cleanUrl;
+    if (typeof icon === 'string' && icon) favorite.icon = icon;
+    broadcastState();
+    return { ok: true, favorite };
   }
 
   function newTab(url) {
@@ -382,7 +397,7 @@ function createPortalViewController({ mainWindow, logger }) {
 
   return {
     show, hide, navigate, newTab, closeTab, switchTab,
-    goBack, goForward, reload, addFavorite, removeFavorite,
+    goBack, goForward, reload, addFavorite, removeFavorite, editFavorite,
     resizePanel, setPanelWidth, getState, closeSession, destroyAll,
   };
 }
