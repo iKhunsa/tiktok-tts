@@ -21,13 +21,13 @@ export function switchView(name) {
   // La tienda de plugins se re-renderiza al entrar, por si el usuario toco
   // localStorage desde otra pestaña/ventana o volvio despues de un rato.
   if (name === 'tools' && window.renderPluginStore) window.renderPluginStore();
-  if (name === 'mcp') renderMcpPanel({ autoPopup: true });
+  if (name === 'mcp') renderMcpPanel();
   if (name === 'cuenta') renderCuentaPanel();
   // Sonidos/Bot ya se pintaron una vez al arrancar (spLoad/musicInit) -- acá
-  // solo se re-evalua el bloqueo Pro (aviso+popup) al entrar de verdad a la
+  // solo se re-evalua el bloqueo Pro al entrar de verdad a la
   // vista, sin repetir sus fetches.
-  if (name === 'soundpad') aplicarBloqueoVista('view-soundpad', 'soundpad', { autoPopup: true });
-  if (name === 'bot') aplicarBloqueoVista('view-bot', 'bot-musical', { autoPopup: true });
+  if (name === 'soundpad') aplicarBloqueoVista('view-soundpad', 'soundpad');
+  if (name === 'bot') aplicarBloqueoVista('view-bot', 'bot-musical');
   // El refresco de la tabla de moderacion solo corre con la vista visible.
   if (name === 'moderacion') {
     modReload(true);

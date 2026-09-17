@@ -1791,6 +1791,12 @@
       pointer-events: none;
       user-select: none;
     }
+    /* Soundpad puede contener una grilla de hasta 24 tiles; en la demo
+       limitada al viewport, la card debe recortarla como las demás vistas. */
+    #view-soundpad.vista-bloqueada-demo > .cfg-card {
+      min-height: 0;
+      overflow: hidden;
+    }
     .vista-bloqueada-overlay {
       position: sticky;
       top: 0;
@@ -1806,10 +1812,12 @@
       gap: 6px;
       padding: 24px;
       text-align: center;
-      background: transparent;
+      background-color: transparent;
+      transition: background-color var(--dur-2) var(--ease-out);
       opacity: 0;
       animation: fadeIn 0.2s ease-out forwards;
     }
+    .vista-bloqueada-overlay:hover { background-color: rgba(0, 0, 0, 0.15); }
     .vista-bloqueada-msg {
       margin: 0;
       max-width: 280px;

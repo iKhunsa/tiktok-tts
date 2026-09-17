@@ -66,7 +66,7 @@ function toolRows(tools, destructive, dev) {
   }).join('');
 }
 
-export function renderMcpPanel({ autoPopup = false } = {}) {
+export function renderMcpPanel() {
   const el = document.getElementById('mcpPanel');
   if (!el) return;
   const url = endpointURL();
@@ -166,11 +166,11 @@ export function renderMcpPanel({ autoPopup = false } = {}) {
     onCopy('#mcpCopyCD', snippetClaudeDesktop(url));
 
     aplicarTraducciones(el);
-    aplicarBloqueoVista('mcpPanel', 'mcp-agente', { autoPopup });
+    aplicarBloqueoVista('mcpPanel', 'mcp-agente');
   }).catch(() => {
     el.innerHTML = `<div class="settings-section"><div class="mcp-hint" data-i18n="mcp.loadError">No se pudo cargar el estado del MCP.</div></div>`;
     aplicarTraducciones(el);
-    aplicarBloqueoVista('mcpPanel', 'mcp-agente', { autoPopup });
+    aplicarBloqueoVista('mcpPanel', 'mcp-agente');
   });
 }
 
