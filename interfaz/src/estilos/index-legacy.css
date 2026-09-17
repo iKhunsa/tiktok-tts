@@ -1549,6 +1549,18 @@
       margin-bottom: 12px;
     }
 
+    /* Settings control rows wrap when PortalView narrows the main area. */
+    #view-settings .settings-row-flex {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    #view-settings .settings-row-flex > input,
+    #view-settings .settings-row-flex > .input-wrapper { min-width: 0; }
+    #view-settings #twitchAuthStatusText { flex: 1 1 180px; min-width: 0; }
+    #view-settings .settings-section-title.settings-row-flex > span { min-width: 0; }
+
     /* ── MCP (Agente) — sigue el sistema de .settings-* ─────── */
     /* Texto de ayuda bajo un toggle — mismo patrón que los hints de la vista Voz. */
     .mcp-hint {
@@ -2199,6 +2211,7 @@
     /* Segmented platform selector */
     .seg-control {
       display: inline-flex;
+      flex-wrap: wrap;
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       overflow: hidden;
