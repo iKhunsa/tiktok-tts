@@ -8,7 +8,7 @@
  * con boton propio para reabrirlo.
  */
 import { almacenSesion } from './sesion.js';
-import { abrirPopupPro } from '../../componentes/popup-pro.js';
+import { abrirPopupPlanes } from '../../componentes/popup-planes.js';
 import { aplicarTraducciones } from '../i18n/i18n.js';
 
 const yaMostrado = new Set();
@@ -26,7 +26,7 @@ export function aplicarBloqueoVista(elId, featureId) {
   // arranque de la app, todavia deslogueada) lo dispararian de la nada.
   if (bloqueada && el.offsetParent !== null && !yaMostrado.has(featureId)) {
     yaMostrado.add(featureId);
-    abrirPopupPro(featureId);
+    abrirPopupPlanes();
   }
   return bloqueada;
 }
@@ -48,10 +48,14 @@ function pintarOverlayBloqueo(el, bloqueada, featureId) {
   if (bloqueada && !overlay) {
     overlay = document.createElement('div');
     overlay.className = 'vista-bloqueada-overlay';
+    // Convencion para demos: interfaz/publico/videos/demo-<featureId>.mp4.
+    // Vite las sirve desde /videos/; si aun no existe, el listener la oculta.
     overlay.innerHTML =
+      `<video class="vista-bloqueada-video" src="videos/demo-${featureId}.mp4" muted loop playsinline controls autoplay></video>` +
       '<p class="vista-bloqueada-msg" data-i18n="pro.overlayMsg"></p>' +
-      '<button type="button" class="cuenta-btn-primary vista-bloqueada-btn" data-i18n="pro.overlayBtn"></button>';
-    overlay.querySelector('.vista-bloqueada-btn').addEventListener('click', () => abrirPopupPro(featureId));
+      '<button type="button" class="cuenta-btn-primary vista-bloqueada-btn" data-i18n="pro.upgradeCta"></button>';
+    overlay.querySelector('.vista-bloqueada-video').addEventListener('error', (e) => e.currentTarget.remove());
+    overlay.querySelector('.vista-bloqueada-btn').addEventListener('click', abrirPopupPlanes);
     el.appendChild(overlay);
     aplicarTraducciones(overlay);
   } else if (!bloqueada && overlay) {
