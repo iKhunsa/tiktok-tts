@@ -10,6 +10,7 @@
 import { crearAlmacen } from './crear-almacen.js';
 import { t } from '../i18n/i18n.js';
 import { abrirPopupPlanes } from '../../componentes/popup-planes.js';
+import { toggleAccountPopover } from '../../componentes/popover-cuenta.js';
 
 export const almacenSesion = crearAlmacen({
   activo: false, // ¿el server tiene subscriptionsEnabled? (404 => false)
@@ -89,6 +90,11 @@ export function pintarBadgeSidebar() {
     copy('.sidebar-account-subtitle', `sidebarAccount.subtitle${planKey}`);
     copy('.sidebar-account-cta span', s.plan === 'free' ? 'sidebarAccount.upgrade' : 'sidebarAccount.managePlan');
     cuenta.querySelector('.sidebar-account-cta img').hidden = s.plan !== 'free';
+    const cta = cuenta.querySelector('.sidebar-account-cta');
+    cuenta.onclick = () => toggleAccountPopover(cuenta);
+    cta.onclick = s.plan === 'free'
+      ? (event) => { event.stopPropagation(); abrirPopupPlanes(); }
+      : null;
   }
 
   for (const [vista, featureId] of Object.entries(VISTA_FEATURE)) {
@@ -108,10 +114,10 @@ export function pintarBadgeSidebar() {
   }
 }
 
-/** El bloque completo lleva a planes para Free y al perfil para los planes pagos. */
+/** Puente global legacy para el bloque Cuenta. */
 export function abrirCuentaDesdeSidebar() {
-  if (almacenSesion.getState().plan === 'free') return abrirPopupPlanes();
-  window.switchView('cuenta');
+  const cuenta = document.querySelector('.sidebar-item[data-view="cuenta"]');
+  if (cuenta) toggleAccountPopover(cuenta);
 }
 
 almacenSesion.subscribe(pintarBadgeSidebar);
