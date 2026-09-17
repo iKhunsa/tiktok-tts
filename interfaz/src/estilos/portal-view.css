@@ -249,6 +249,10 @@ body.divisor-resizing {
 .portal-view-shortcut:hover,.portal-view-shortcut:focus-within {
   background: var(--hover-2);
 }
+.portal-view-shortcut--ejemplo {
+  border: 1px dashed var(--border);
+  opacity: .72;
+}
 .portal-view-shortcut-main {
   display: flex;
   align-items: center;
