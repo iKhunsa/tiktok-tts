@@ -39,10 +39,6 @@ import {
   updateSocialOverlayUrl, copySocialAlertUrl, testTopLikers,
 } from './configurador-overlays.js';
 import {
-  saveTwitchClientId, loadPlatformConfigUI, connectTwitchAuth, disconnectTwitchAuth,
-  loadOAuthStatusUI,
-} from './oauth-twitch.js';
-import {
   toggleChatToggles, toggleTwitchSection, toggleOption, setSoloChatMode,
   iniciarObservadorTogglesChat,
 } from './toggles-chat.js';
@@ -112,8 +108,6 @@ Object.assign(window, {
   // configurador de overlays
   onCfgChange, onChatPlatformChange, copyCfgUrl, testGiftAlert, testSocialAlert,
   testAlertType, copySocialAlertUrl, testTopLikers, updateSocialOverlayUrl,
-  // oauth twitch
-  saveTwitchClientId, connectTwitchAuth, disconnectTwitchAuth,
   // toggles de chat
   toggleChatToggles, toggleTwitchSection, toggleOption, setSoloChatMode,
   // atajos de teclado
@@ -175,8 +169,6 @@ function aplicarBloqueoApp() {
   // 401 contra el muro — nadie mas los vuelve a pedir, hay que re-hidratarlos.
   if (!bloq && _estabaBloqueada) {
     loadVoices();
-    loadPlatformConfigUI();
-    loadOAuthStatusUI();
     spLoad().then(() => spRestoreShortcuts());
     musicInit();
   }
@@ -232,8 +224,6 @@ function iniciarArranque() {
   updateQueueBadge();
   renderSettingsChannels();
   loadMobileURL();
-  loadPlatformConfigUI();
-  loadOAuthStatusUI();
   spLoad().then(() => spRestoreShortcuts());
 
   fetch('/api/overlay-stats')

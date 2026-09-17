@@ -34,7 +34,7 @@ function crearGuardSuscripcion(bus) {
     // /api/auth/* son las rutas del dominio de cuentas (login, session, etc.),
     // pero /api/auth/twitch/* son el OAuth de Twitch (features/canales) —
     // comparten prefijo por accidente y no deben eximirse del muro.
-    if (p.startsWith('/api/auth/') && !p.startsWith('/api/auth/twitch/')) return next();
+    if (p.startsWith('/api/auth/')) return next();
     if (ABIERTAS.has(`${req.method} ${p}`)) return next();
     if (!subsEnabled()) return next();
 

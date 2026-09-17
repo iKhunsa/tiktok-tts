@@ -2,10 +2,6 @@
 
 const { createChannelState } = require('./state/channel-maps');
 const { createRateLimiterState, connectRateLimiter } = require('./rate-limit');
-const { loadAuthTokens } = require('./twitch/oauth/auth-tokens-store');
-const { ensureTwitchAccessToken } = require('./twitch/oauth/ensure-access-token');
-const { startTwitchEventSub } = require('./twitch/eventsub/start');
-const { clearTwitchEsTimers } = require('./twitch/eventsub/stop');
 const { saveReplay } = require('./obs/save-replay');
 const obsReplayContract = require('../../core/contracts/obs-replay');
 const mcpRegistry = require('../../core/contracts/mcp-registry');
@@ -24,9 +20,6 @@ const { removeChannel } = require('./routes/remove-channel');
 const { obsConnect } = require('./routes/obs-connect');
 const { obsDisconnect } = require('./routes/obs-disconnect');
 const { obsSaveReplay } = require('./routes/obs-save-replay');
-const { oauthStart } = require('./routes/oauth-start');
-const { oauthStatus } = require('./routes/oauth-status');
-const { oauthDisconnect } = require('./routes/oauth-disconnect');
 
 let channelState = null;
 
@@ -38,8 +31,6 @@ module.exports = {
     channelState = state;
     const rateLimiterState = createRateLimiterState();
     const deps = { state, bus, logger };
-
-    loadAuthTokens(deps);
 
     const rateLimit = connectRateLimiter(rateLimiterState, logger);
 
@@ -55,11 +46,6 @@ module.exports = {
     app.post('/api/obs/connect', obsConnect(deps));
     app.post('/api/obs/disconnect', obsDisconnect(deps));
     app.post('/api/obs/save-replay', obsSaveReplay(deps));
-    // GET/PATCH /api/platform-config ya los monta /configuracion (Fase 2) —
-    // ese dominio es el unico dueno de platform-config.json.
-    app.get('/api/auth/twitch/start', oauthStart(deps));
-    app.get('/api/oauth/status', oauthStatus(state));
-    app.post('/api/auth/twitch/disconnect', oauthDisconnect(deps));
 
     // Contrato sincrono: /clips (Fase 11) necesita saber exito/fallo para
     // responder al usuario que disparo el atajo de teclado.
@@ -106,14 +92,13 @@ module.exports = {
       youtube: Array.from(state.youtubeChannels.keys()),
       kick: Array.from(state.kickChannels.keys()),
       obs: !!(state.obs && state.obs.ws),
-      twitchAuth: !!state.authTokens.twitch,
     });
     mcpRegistry.registerStateProvider(() => ({ channels: snapshot() }), 'canales');
 
     mcpRegistry.registerTool({
       name: 'channels_status', domain: 'canales', readOnly: true,
       title: 'Channel status',
-      description: 'Connected channels per platform + OBS + Twitch auth.',
+      description: 'Connected channels per platform + OBS.',
       inputSchema: { type: 'object', properties: {} },
       handler: () => snapshot(),
     });
@@ -159,21 +144,7 @@ module.exports = {
       },
     });
 
-    // Reanudar sesion OAuth persistida al arrancar (best-effort).
-    setTimeout(async () => {
-      if (!state.authTokens.twitch) return;
-      try {
-        await ensureTwitchAccessToken(deps);
-        startTwitchEventSub(deps);
-      } catch (error) {
-        logger.log(
-          'warn', 'canales', 'canales/index.js#register', 'canales.twitch_oauth.reanudacion_fallida',
-          `No se pudo reanudar la sesion de Twitch: ${error.message}`, { error: error.message }
-        );
-      }
-    }, 1000);
-
-    return { rutas: 14, listeners: 3 };
+    return { rutas: 11, listeners: 3 };
   },
 
   shutdown() {
@@ -211,14 +182,6 @@ module.exports = {
     if (state.obs.ws) {
       state.obs.intentionalClose = true;
       try { state.obs.ws.close(); } catch (_) { /* best-effort */ }
-    }
-
-    state.eventsub.stopped = true;
-    state.eventsub.followActive = false;
-    clearTwitchEsTimers(state); // keepaliveTimer + reconnectTimer
-    if (state.eventsub.ws) {
-      try { state.eventsub.ws.removeAllListeners(); state.eventsub.ws.close(); } catch (_) { /* best-effort */ }
-      state.eventsub.ws = null;
     }
 
     for (const timer of state.kickWatchdogTimers.values()) clearTimeout(timer);
