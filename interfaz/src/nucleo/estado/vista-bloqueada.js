@@ -19,7 +19,7 @@ export function aplicarBloqueoVista(elId, featureId, { autoPopup = false } = {})
   if (!el) return false;
   const bloqueada = s.activo && !s.entitlements.includes(featureId);
   el.classList.toggle('vista-bloqueada-demo', bloqueada);
-  pintarOverlayBloqueo(el, bloqueada);
+  pintarOverlayBloqueo(el, bloqueada, featureId);
   // El barrido de sesión solo pinta el estado. El popup automático es una
   // consecuencia explícita de navegar a la vista, no de su visibilidad.
   if (autoPopup && bloqueada && el.offsetParent !== null && !yaMostrado.has(featureId)) {
@@ -41,14 +41,24 @@ export function aplicarBadgesInlinePro() {
   document.querySelectorAll('.pro-inline-badge').forEach((b) => { b.hidden = !bloqueada; });
 }
 
-function pintarOverlayBloqueo(el, bloqueada) {
+function pintarOverlayBloqueo(el, bloqueada, featureId) {
   let overlay = el.querySelector(':scope > .vista-bloqueada-overlay');
   if (bloqueada && !overlay) {
     overlay = document.createElement('div');
     overlay.className = 'vista-bloqueada-overlay';
     overlay.innerHTML =
+      `<div class="vista-bloqueada-video-wrap">
+        <div class="vista-bloqueada-video-placeholder">
+          <img src="icons/play_arrow.svg" alt="">
+          <span data-i18n="pro.demoVideoSoon"></span>
+        </div>
+        <video class="vista-bloqueada-video" src="videos/demo-${featureId}.mp4" muted loop playsinline controls></video>
+      </div>` +
       '<p class="vista-bloqueada-msg" data-i18n="pro.overlayMsg"></p>' +
       '<button type="button" class="vista-bloqueada-link" data-i18n="pro.upgradeCta"></button>';
+    overlay.querySelector('.vista-bloqueada-video').addEventListener('loadeddata', (e) => {
+      e.currentTarget.closest('.vista-bloqueada-video-wrap').classList.add('cargado');
+    });
     overlay.querySelector('.vista-bloqueada-link').addEventListener('click', abrirPopupPlanes);
     el.appendChild(overlay);
     aplicarTraducciones(overlay);
