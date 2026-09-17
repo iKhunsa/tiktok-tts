@@ -55,6 +55,7 @@
     "reload": "刷新",
     "shortcuts": "快捷方式",
     "favorites": "收藏夹",
+    "exampleFavorite": "tiklivetts.es（示例）",
     "addFavorite": "添加收藏",
     "editFavorite": "编辑",
     "favoriteOptions": "选项",
@@ -1129,7 +1130,8 @@
     "confirmCancelYes": "是的，取消",
     "confirmCancelNo": "返回",
     "resume": "恢复订阅",
-    "resumed": "你的 Pro 订阅保持有效——取消操作已撤销。"
+    "resumed": "你的 Pro 订阅保持有效——取消操作已撤销。",
+    "planSinPromosCancels": "无推广 · 将于 {fecha} 取消"
   },
   "sidebarAccount": {
     "badgeFree": "免费",
@@ -1189,6 +1191,7 @@
     },
     "overlayMsg": "此功能需要 Pro 套餐。",
     "overlayBtn": "查看套餐",
-    "badgeInline": "PRO"
+    "badgeInline": "PRO",
+    "upgradeCta": "升级你的套餐"
   }
 }

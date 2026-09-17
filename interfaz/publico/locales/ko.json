@@ -55,6 +55,7 @@
     "reload": "새로고침",
     "shortcuts": "빠른 접근",
     "favorites": "즐겨찾기",
+    "exampleFavorite": "tiklivetts.es (예시)",
     "addFavorite": "즐겨찾기 추가",
     "editFavorite": "편집",
     "favoriteOptions": "옵션",
@@ -1129,7 +1130,8 @@
     "confirmCancelYes": "예, 취소합니다",
     "confirmCancelNo": "돌아가기",
     "resume": "구독 재개",
-    "resumed": "Pro 구독이 계속 활성 상태입니다 — 취소가 취소되었습니다."
+    "resumed": "Pro 구독이 계속 활성 상태입니다 — 취소가 취소되었습니다.",
+    "planSinPromosCancels": "프로모션 없음 · {fecha}에 해지"
   },
   "sidebarAccount": {
     "badgeFree": "무료",
@@ -1189,6 +1191,7 @@
     },
     "overlayMsg": "이 기능은 Pro 플랜이 필요합니다.",
     "overlayBtn": "요금제 보기",
-    "badgeInline": "PRO"
+    "badgeInline": "PRO",
+    "upgradeCta": "플랜 업그레이드"
   }
 }

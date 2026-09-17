@@ -52,6 +52,7 @@
     "reload": "Recargar",
     "shortcuts": "Accesos rápidos",
     "favorites": "Favoritos",
+    "exampleFavorite": "tiklivetts.es (ejemplo)",
     "addFavorite": "Agregar favorito",
     "editFavorite": "Editar",
     "favoriteOptions": "Opciones",
@@ -1164,7 +1165,6 @@
     "overlayMsg": "Esta función requiere el plan Pro.",
     "overlayBtn": "Ver planes",
     "upgradeCta": "Mejorá tu plan",
-    "demoVideoSoon": "Video de demostración próximamente",
     "badgeInline": "PRO"
   },
   "planesPopup": {

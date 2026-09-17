@@ -55,6 +55,7 @@
     "reload": "Обновить",
     "shortcuts": "Быстрый доступ",
     "favorites": "Избранное",
+    "exampleFavorite": "tiklivetts.es (пример)",
     "addFavorite": "Добавить в избранное",
     "editFavorite": "Изменить",
     "favoriteOptions": "Параметры",
@@ -1129,7 +1130,8 @@
     "confirmCancelYes": "Да, отменить",
     "confirmCancelNo": "Назад",
     "resume": "Возобновить подписку",
-    "resumed": "Ваша подписка Pro остаётся активной — отмена отменена."
+    "resumed": "Ваша подписка Pro остаётся активной — отмена отменена.",
+    "planSinPromosCancels": "Без рекламы · отменяется {fecha}"
   },
   "sidebarAccount": {
     "badgeFree": "БЕСПЛАТНО",
@@ -1189,6 +1191,7 @@
     },
     "overlayMsg": "Эта функция доступна только на тарифе Pro.",
     "overlayBtn": "Посмотреть тарифы",
-    "badgeInline": "PRO"
+    "badgeInline": "PRO",
+    "upgradeCta": "Улучшить тариф"
   }
 }

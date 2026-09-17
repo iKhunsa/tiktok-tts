@@ -55,6 +55,7 @@
     "reload": "Ricarica",
     "shortcuts": "Accessi rapidi",
     "favorites": "Preferiti",
+    "exampleFavorite": "tiklivetts.es (esempio)",
     "addFavorite": "Aggiungi preferito",
     "editFavorite": "Modifica",
     "favoriteOptions": "Opzioni",
@@ -1129,7 +1130,8 @@
     "confirmCancelYes": "Sì, annulla",
     "confirmCancelNo": "Indietro",
     "resume": "Riattiva abbonamento",
-    "resumed": "Il tuo abbonamento Pro resta attivo: la cancellazione è stata annullata."
+    "resumed": "Il tuo abbonamento Pro resta attivo: la cancellazione è stata annullata.",
+    "planSinPromosCancels": "Senza promozioni · si annulla il {fecha}"
   },
   "sidebarAccount": {
     "badgeFree": "FREE",
@@ -1189,6 +1191,7 @@
     },
     "overlayMsg": "Questa funzione richiede il piano Pro.",
     "overlayBtn": "Vedi i piani",
-    "badgeInline": "PRO"
+    "badgeInline": "PRO",
+    "upgradeCta": "Passa a un piano superiore"
   }
 }
