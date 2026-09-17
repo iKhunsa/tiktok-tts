@@ -55,6 +55,7 @@
     "reload": "Neu laden",
     "shortcuts": "Schnellzugriff",
     "favorites": "Favoriten",
+    "exampleFavorite": "tiklivetts.es (Beispiel)",
     "addFavorite": "Favorit hinzufügen",
     "editFavorite": "Bearbeiten",
     "favoriteOptions": "Optionen",
@@ -1129,7 +1130,8 @@
     "confirmCancelYes": "Ja, kündigen",
     "confirmCancelNo": "Zurück",
     "resume": "Abo fortsetzen",
-    "resumed": "Dein Pro-Abo bleibt aktiv — die Kündigung wurde rückgängig gemacht."
+    "resumed": "Dein Pro-Abo bleibt aktiv — die Kündigung wurde rückgängig gemacht.",
+    "planSinPromosCancels": "Ohne Werbung · endet am {fecha}"
   },
   "sidebarAccount": {
     "badgeFree": "FREE",
@@ -1189,6 +1191,7 @@
     },
     "overlayMsg": "Diese Funktion erfordert den Pro-Plan.",
     "overlayBtn": "Pläne ansehen",
-    "badgeInline": "PRO"
+    "badgeInline": "PRO",
+    "upgradeCta": "Plan upgraden"
   }
 }

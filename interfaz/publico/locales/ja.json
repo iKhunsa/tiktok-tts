@@ -55,6 +55,7 @@
     "reload": "再読み込み",
     "shortcuts": "クイックアクセス",
     "favorites": "お気に入り",
+    "exampleFavorite": "tiklivetts.es（例）",
     "addFavorite": "お気に入りに追加",
     "editFavorite": "編集",
     "favoriteOptions": "オプション",
@@ -1129,7 +1130,8 @@
     "confirmCancelYes": "はい、解約する",
     "confirmCancelNo": "戻る",
     "resume": "サブスクリプションを再開",
-    "resumed": "Proサブスクリプションは有効のままです。解約は取り消されました。"
+    "resumed": "Proサブスクリプションは有効のままです。解約は取り消されました。",
+    "planSinPromosCancels": "プロモーションなし · {fecha} に解約"
   },
   "sidebarAccount": {
     "badgeFree": "無料",
@@ -1189,6 +1191,7 @@
     },
     "overlayMsg": "この機能はProプランが必要です。",
     "overlayBtn": "プランを見る",
-    "badgeInline": "PRO"
+    "badgeInline": "PRO",
+    "upgradeCta": "プランをアップグレード"
   }
 }
