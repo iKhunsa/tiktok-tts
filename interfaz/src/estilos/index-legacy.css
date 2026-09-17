@@ -2428,7 +2428,26 @@
     .cuenta-plan.is-pro .cuenta-plan-head .icon-inline { opacity: 1; }
     .cuenta-plan-name { font-size: var(--text-md); font-weight: 650; color: var(--text-bright); }
     .cuenta-plan-state { font-size: var(--text-xs); color: var(--text-muted); margin-top: 2px; }
-    .cuenta-plan.is-pro { border-color: var(--brand-a30); }
+    .cuenta-plan.is-pro {
+      position: relative;
+      overflow: hidden;
+      border: 0;
+      background: transparent;
+    }
+    .cuenta-plan.is-pro::before,
+    .cuenta-plan.is-pro::after { content: ''; position: absolute; pointer-events: none; }
+    .cuenta-plan.is-pro::before {
+      inset: -100%;
+      background: conic-gradient(#d97706, #84cc16, #38bdf8, #8b5cf6, #f43f5e, #d97706);
+      animation: cuenta-pro-border 12s linear infinite;
+    }
+    .cuenta-plan.is-pro::after { inset: 2px; z-index: 0; border-radius: calc(var(--radius-lg) - 2px); background: var(--surface); }
+    .cuenta-plan.is-pro > * { position: relative; z-index: 1; }
+    @keyframes cuenta-pro-border { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) {
+      .cuenta-plan.is-pro { animation: none; }
+    }
+    body.reduce-motion .cuenta-plan.is-pro { animation: none; }
 
     /* Comparador de planes */
     .planes-popup-content { max-width: 980px; }
