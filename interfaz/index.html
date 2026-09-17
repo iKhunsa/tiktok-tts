@@ -741,7 +741,7 @@
 
       <!-- CANALES VINCULADOS -->
       <div class="settings-section">
-        <div class="settings-section-title" style="display:flex;justify-content:space-between;align-items:center;">
+        <div class="settings-section-title settings-row-flex" style="justify-content:space-between;">
           <span data-i18n="settings.channels">Canales vinculados</span>
           <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
             <button class="btn-supabase-primary" id="btn-toggle-add-channel" onclick="toggleAddChannelForm()">
@@ -765,7 +765,7 @@
               <img style="width:13px;height:13px;vertical-align:middle;" src="icons/kick.svg" alt=""> Kick
             </button>
           </div>
-          <div style="display:flex;gap:8px;align-items:center;">
+          <div class="settings-row-flex">
             <div class="input-wrapper" style="flex:1;">
               <input type="text" id="add-channel-input" placeholder="@usuario"
                 autocomplete="off" onkeydown="if(event.key==='Enter')addChannelFromSettings()" />
@@ -785,7 +785,7 @@
       </div>
 
       <div class="settings-section" id="settingsSectionVoice">
-        <div class="settings-section-title" style="display:flex;justify-content:space-between;align-items:center;">
+        <div class="settings-section-title settings-row-flex" style="justify-content:space-between;">
           <span data-i18n="settings.voice">Voz y audio</span>
           <button class="cfg-btn" id="btnVoiceTour" onclick="startVoiceTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
         </div>
@@ -804,7 +804,7 @@
           </div>
           <div class="setting-group" id="voiceTestGroup">
             <label><img class="icon-inline" src="icons/science.svg" alt=""> <span data-i18n="label.testVoice">Probar voz</span></label>
-            <div style="display:flex;gap:8px;align-items:center;">
+            <div class="settings-row-flex">
               <input type="text" id="testVoiceInput" data-i18n-placeholder="label.testVoicePlaceholder" placeholder="Escribe algo para probar..." style="flex:1;" />
               <button id="btnTestVoice" class="btn-test" onclick="testVoice()">▶ Probar</button>
             </div>
@@ -841,7 +841,7 @@
 
       <!-- KEYBOARD SHORTCUTS SECTION -->
       <div class="settings-section" id="settingsSectionShortcuts">
-        <div class="settings-section-title" style="display:flex;justify-content:space-between;align-items:center;">
+        <div class="settings-section-title settings-row-flex" style="justify-content:space-between;">
           <span data-i18n="settings.shortcuts">Atajos de teclado</span>
           <button class="cfg-btn" id="btnShortcutsTour" onclick="startShortcutsTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
         </div>
@@ -861,7 +861,7 @@
               <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
               <span data-i18n="label.pauseShortcut">Pausar / Reanudar TTS</span>
             </label>
-            <div style="display:flex;gap:8px;align-items:center;">
+            <div class="settings-row-flex">
               <input id="pauseShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" placeholder="Clic aquí y presiona teclas..."
   onclick="startCapturingShortcut('pause')"
                 style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
@@ -889,7 +889,7 @@
               <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
               <span data-i18n="label.skipShortcut">Saltar mensaje actual</span>
             </label>
-            <div style="display:flex;gap:8px;align-items:center;">
+            <div class="settings-row-flex">
               <input id="skipShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" placeholder="Clic aquí y presiona teclas..."
   onclick="startCapturingShortcut('skip')"
                 style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
@@ -913,7 +913,7 @@
               <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
               <span data-i18n="label.clearQueueShortcut">Limpiar cola</span>
             </label>
-            <div style="display:flex;gap:8px;align-items:center;">
+            <div class="settings-row-flex">
               <input id="clearShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" placeholder="Clic aquí y presiona teclas..."
   onclick="startCapturingShortcut('clear')"
                 style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
@@ -937,7 +937,7 @@
               <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
               <span data-i18n="label.musicPauseShortcut">Pausar/Reanudar música del bot</span>
             </label>
-            <div style="display:flex;gap:8px;align-items:center;">
+            <div class="settings-row-flex">
               <input id="musicPauseShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" placeholder="Clic aquí y presiona teclas..."
   onclick="startCapturingShortcut('musicPause')"
                 style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
@@ -961,7 +961,7 @@
               <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
               <span data-i18n="label.musicSkipShortcut">Saltar canción del bot</span>
             </label>
-            <div style="display:flex;gap:8px;align-items:center;">
+            <div class="settings-row-flex">
               <input id="musicSkipShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" placeholder="Clic aquí y presiona teclas..."
   onclick="startCapturingShortcut('musicSkip')"
                 style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
@@ -984,7 +984,7 @@
       </div>
 
       <div class="settings-section" id="settingsSectionTwitch">
-        <div class="settings-section-title twitch-collapse-header" id="twitchSectionHeader" role="button" tabindex="0" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="toggleTwitchSection()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleTwitchSection();}">
+        <div class="settings-section-title settings-row-flex twitch-collapse-header" id="twitchSectionHeader" role="button" tabindex="0" style="justify-content:space-between;cursor:pointer;" onclick="toggleTwitchSection()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleTwitchSection();}">
           <span style="color:#9146FF;">💜 Twitch — alertas en vivo <img class="icon-inline" src="icons/expand_more.svg" alt="" id="twitchSectionChevron"></span>
           <button class="cfg-btn" id="btnTwitchTour" onclick="event.stopPropagation(); startTwitchTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
         </div>
@@ -996,7 +996,7 @@
                    onchange="saveTwitchClientId(this.value)" />
           </div>
         </div>
-        <div id="twitchConnectRow" style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+        <div class="settings-row-flex" id="twitchConnectRow" style="margin-top:10px;">
           <button class="btn btn-connect" id="btnConnectTwitchAuth" onclick="connectTwitchAuth()" style="font-size:13px;">Conectar Twitch</button>
           <button class="btn btn-disconnect" id="btnDisconnectTwitchAuth" onclick="disconnectTwitchAuth()" style="font-size:13px;display:none;">Desconectar</button>
           <span id="twitchAuthStatusText" style="font-size:12px;color:var(--text-muted);">Sin conectar — solo llegarán sub/bits/raids (sin follows con nombre)</span>
