@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const { emitStatus } = require('./get-status');
+const { ensureDirSync } = require('../../../../core/ensure-dir');
 
 const RELEASE_BASE = 'https://github.com/yt-dlp/yt-dlp/releases/latest/download/';
 const ASSET_BY_ARCH = { x64: 'yt-dlp.exe', arm64: 'yt-dlp_arm64.exe', ia32: 'yt-dlp_x86.exe' };
@@ -9,7 +10,7 @@ const ASSET_BY_ARCH = { x64: 'yt-dlp.exe', arm64: 'yt-dlp_arm64.exe', ia32: 'yt-
 async function downloadBinary(state) {
   const asset = ASSET_BY_ARCH[process.arch] || 'yt-dlp.exe';
   const url = RELEASE_BASE + asset;
-  fs.mkdirSync(state.binDir, { recursive: true });
+  ensureDirSync(state.binDir);
   const tmp = `${state.ytdlpPath}.download`;
   emitStatus(state, 'downloading');
   state.logger.log(

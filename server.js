@@ -23,26 +23,39 @@ attachBroadcast(bus, wss, logger);
 
 const deps = { app, wss, bus, logger };
 
-registerDomain(deps, require('./features/configuracion'));
-registerDomain(deps, require('./features/auth'));
-registerDomain(deps, require('./features/idioma'));
-registerDomain(deps, require('./features/reporte-bug'));
-registerDomain(deps, require('./features/moderacion'));
-registerDomain(deps, require('./features/canales'));
-registerDomain(deps, require('./features/chat'));
-registerDomain(deps, require('./features/promo'));
-registerDomain(deps, require('./features/overlay'));
-registerDomain(deps, require('./features/movil'));
-registerDomain(deps, require('./features/sonido'));
-registerDomain(deps, require('./features/bot'));
-registerDomain(deps, require('./features/clips'));
-registerDomain(deps, require('./features/avanzado'));
-registerDomain(deps, require('./features/donar'));
-registerDomain(deps, require('./features/portal-view'));
-registerDomain(deps, require('./features/telemetria'));
+function mount(domain, modulePath) {
+  try {
+    return registerDomain(deps, require(modulePath));
+  } catch (error) {
+    logger.log(
+      'fatal', domain, 'server.js#mount', 'core.dominio.fallo_carga',
+      `Dominio ${domain} fallo al cargar: ${error.message}`,
+      { domain, modulePath, error: error.message, stack: error.stack }
+    );
+    return false;
+  }
+}
+
+mount('configuracion', './features/configuracion');
+mount('auth', './features/auth');
+mount('idioma', './features/idioma');
+mount('reporte-bug', './features/reporte-bug');
+mount('moderacion', './features/moderacion');
+mount('canales', './features/canales');
+mount('chat', './features/chat');
+mount('promo', './features/promo');
+mount('overlay', './features/overlay');
+mount('movil', './features/movil');
+mount('sonido', './features/sonido');
+mount('bot', './features/bot');
+mount('clips', './features/clips');
+mount('avanzado', './features/avanzado');
+mount('donar', './features/donar');
+mount('portal-view', './features/portal-view');
+mount('telemetria', './features/telemetria');
 // mcp va ULTIMO: para cuando corre su register(), cada dominio ya llamo
 // mcpRegistry.registerTool() desde el suyo, asi que el set de tools esta completo.
-registerDomain(deps, require('./features/mcp'));
+mount('mcp', './features/mcp');
 // Los 16 dominios de negocio (features/) ya estan registrados. /electron-shell
 // y /telemetria/runtime.js se conectan desde main.js (no son rutas Express).
 

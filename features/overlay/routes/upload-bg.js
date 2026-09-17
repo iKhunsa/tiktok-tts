@@ -1,12 +1,12 @@
 'use strict';
 
-const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
 const { DATA_BASE } = require('../../../core/paths');
+const { ensureDirSync } = require('../../../core/ensure-dir');
 
 const UPLOADS_DIR = path.join(DATA_BASE, 'uploads');
-if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+ensureDirSync(UPLOADS_DIR);
 
 const uploadStorage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, UPLOADS_DIR),

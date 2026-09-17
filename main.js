@@ -3,6 +3,13 @@
 const { app, globalShortcut } = require('electron');
 const path = require('path');
 
+// Debe ocurrir antes de importar cualquier modulo local: portal-view/store.js
+// carga core/paths.js durante el require y este cachea ambos paths.
+if (app.isPackaged) {
+  process.env.TIKTOK_RESOURCES_PATH = process.resourcesPath;
+}
+process.env.TIKTOK_USER_DATA_PATH = app.getPath('userData');
+
 const { ensureSingleInstance } = require('./electron-shell/single-instance');
 const { createWindow, showMainWindow, waitForServer, PORT } = require('./electron-shell/window');
 const { createTray, buildTrayMenu, showStartupError } = require('./electron-shell/tray');
@@ -16,12 +23,6 @@ const telemetryRuntime = require('./features/telemetria/runtime');
 const glitchtip = require('./electron-shell/glitchtip');
 const aptabase = require('./electron-shell/aptabase');
 const { resolveConfigValue } = require('./electron-shell/resolve-config-value');
-
-// Cuando empaquetado, apunta server.js a extraResources para los assets.
-if (app.isPackaged) {
-  process.env.TIKTOK_RESOURCES_PATH = process.resourcesPath;
-}
-process.env.TIKTOK_USER_DATA_PATH = app.getPath('userData');
 
 // GlitchTip (error tracking) — se inicia lo antes posible, antes de cargar
 // server.js, para captar hasta un fallo de arranque de los dominios. El
