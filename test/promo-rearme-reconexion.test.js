@@ -80,7 +80,7 @@ test('caida total > 5 min SI reinicia el schedule (sesion nueva)', (t) => {
   promo.shutdown();
 });
 
-test('cadencia en estado estable intacta: 15 -> 45 -> 60 -> 90 -> 90', (t) => {
+test('sin actividad, el primer aviso es a 15 min y los siguientes a 90 min', (t) => {
   t.mock.timers.enable({ apis: ['setTimeout', 'Date'] });
   const promo = freshPromo();
   const { bus, logger, fired } = makeHarness();
@@ -90,14 +90,10 @@ test('cadencia en estado estable intacta: 15 -> 45 -> 60 -> 90 -> 90', (t) => {
 
   t.mock.timers.tick(15 * MIN + 1000);
   assert.equal(fired.length, 1, '15 min');
-  t.mock.timers.tick(45 * MIN);
-  assert.equal(fired.length, 2, '+45 min');
-  t.mock.timers.tick(60 * MIN);
-  assert.equal(fired.length, 3, '+60 min');
   t.mock.timers.tick(90 * MIN);
-  assert.equal(fired.length, 4, '+90 min (repeat)');
+  assert.equal(fired.length, 2, '+90 min sin actividad');
   t.mock.timers.tick(90 * MIN);
-  assert.equal(fired.length, 5, '+90 min (repeat)');
+  assert.equal(fired.length, 3, '+90 min sin actividad');
 
   promo.shutdown();
 });
