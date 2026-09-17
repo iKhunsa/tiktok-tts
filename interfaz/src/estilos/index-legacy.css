@@ -1764,15 +1764,26 @@
 
     /* Vista Pro bloqueada (Sonidos/Bot/MCP): la vista real queda visible como
        "demo" -- blureada y sin interaccion -- con un overlay centrado encima. */
-    .vista-bloqueada-demo { position: relative; }
+    .vista-bloqueada-demo,
+    .view.vista-bloqueada-demo {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      max-height: 100vh;
+      overflow: clip;
+    }
     .vista-bloqueada-demo > *:not(.vista-bloqueada-overlay) {
       filter: blur(6px);
       pointer-events: none;
       user-select: none;
     }
     .vista-bloqueada-overlay {
-      position: absolute;
-      inset: 0;
+      position: sticky;
+      top: 0;
+      order: -1;
+      flex: 0 0 100vh;
+      height: 100vh;
+      margin-bottom: -100vh;
       z-index: 5;
       display: flex;
       flex-direction: column;
