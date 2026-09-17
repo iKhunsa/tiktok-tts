@@ -185,7 +185,7 @@ function aplicarBloqueoApp() {
   // cuentas apagado), nunca en la pantalla de login. arrancarAvisosOnboarding
   // es idempotente.
   if (!bloq) arrancarAvisosOnboarding();
-  // Vistas Pro enteras (Sonidos/Bot/MCP): re-evaluar el blur+overlay cada vez
+  // Vistas Pro enteras (Sonidos/Bot/MCP): re-evaluar el aviso visual cada vez
   // que cambia la sesion (login, pago, degradado) sin re-fetchear su estado.
   aplicarBloqueoVista('view-soundpad', 'soundpad');
   aplicarBloqueoVista('view-bot', 'bot-musical');

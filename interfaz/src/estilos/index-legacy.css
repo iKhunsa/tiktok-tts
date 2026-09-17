@@ -1774,8 +1774,8 @@
       line-height: 1;
     }
 
-    /* Vista Pro bloqueada (Sonidos/Bot/MCP): la vista real queda visible como
-       "demo" -- blureada y sin interaccion -- con un overlay centrado encima. */
+    /* Vista Pro bloqueada (Sonidos/Bot/MCP): configuraciones visibles, con
+       aviso compacto que evita interactuar hasta mejorar el plan. */
     .vista-bloqueada-demo,
     .view.vista-bloqueada-demo {
       position: relative;
@@ -1785,7 +1785,7 @@
       overflow: clip;
     }
     .vista-bloqueada-demo > *:not(.vista-bloqueada-overlay) {
-      filter: blur(6px);
+      opacity: 0.58;
       pointer-events: none;
       user-select: none;
     }
@@ -1801,50 +1801,35 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 14px;
+      gap: 6px;
       padding: 24px;
       text-align: center;
-      background: rgba(0, 0, 0, 0.35);
+      background: transparent;
       opacity: 0;
       animation: fadeIn 0.2s ease-out forwards;
     }
     .vista-bloqueada-msg {
-      max-width: 320px;
-      color: var(--text);
-      font-size: var(--text-base);
-      font-weight: 500;
-    }
-    .vista-bloqueada-video-wrap {
-      position: relative;
-      width: min(100%, 640px);
-      aspect-ratio: 16 / 9;
-      max-height: min(50vh, 360px);
-    }
-    .vista-bloqueada-video-placeholder {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: var(--space-2);
-      color: var(--text-muted);
+      margin: 0;
+      max-width: 280px;
+      color: var(--text-secondary);
       font-size: var(--text-sm);
-      background: var(--surface-2);
-      border: 1px dashed var(--border-strong);
-      border-radius: var(--modal-radius);
+      font-weight: 500;
+      text-shadow: 0 1px 2px var(--bg);
     }
-    .vista-bloqueada-video-placeholder img { width: 32px; height: 32px; opacity: 0.5; }
-    .vista-bloqueada-video {
-      display: none;
-      width: 100%;
-      height: 100%;
-      border-radius: var(--modal-radius);
-      background: #000;
+    .vista-bloqueada-link {
+      padding: 2px 0;
+      border: 0;
+      background: transparent;
+      color: var(--accent-link);
+      font: inherit;
+      font-size: var(--text-xs);
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      cursor: pointer;
     }
-    .vista-bloqueada-video-wrap.cargado .vista-bloqueada-video-placeholder { display: none; }
-    .vista-bloqueada-video-wrap.cargado .vista-bloqueada-video { display: block; }
-    .vista-bloqueada-btn { width: auto; padding-left: 24px; padding-right: 24px; }
+    .vista-bloqueada-link:hover { color: var(--text-bright); }
+    .vista-bloqueada-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
 
     /* Badge chico "PRO" junto a un control gateado dentro de una vista libre
        (ej. "Fondo personalizado" en Overlays). */
