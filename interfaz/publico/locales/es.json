@@ -23,6 +23,16 @@
     "bugReport": "Reportar Bug",
     "portalView": "Navegador"
   },
+  "sidebarAccount": {
+    "badgeFree": "FREE",
+    "badgeSinPromos": "SIN PROMO",
+    "badgePro": "PRO",
+    "subtitleFree": "Plan Free",
+    "subtitleSinPromos": "Plan sin promo",
+    "subtitlePro": "Plan Pro",
+    "upgrade": "Mejorar",
+    "managePlan": "Administrar plan"
+  },
   "portalView": {
     "urlPlaceholder": "Escribe una URL",
     "close": "Cerrar",

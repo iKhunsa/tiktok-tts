@@ -8,6 +8,8 @@
  * cuenta. Es el comportamiento por defecto.
  */
 import { crearAlmacen } from './crear-almacen.js';
+import { t } from '../i18n/i18n.js';
+import { abrirPopupPlanes } from '../../componentes/popup-planes.js';
 
 export const almacenSesion = crearAlmacen({
   activo: false, // ¿el server tiene subscriptionsEnabled? (404 => false)
@@ -43,7 +45,6 @@ function normalizar(data) {
 
 export function aplicarSesion(data) {
   almacenSesion.setState(normalizar(data || {}));
-  pintarBadgeSidebar();
 }
 
 /** Carga inicial. 404 => el server no tiene el sistema activo. */
@@ -70,21 +71,24 @@ const VISTA_FEATURE = {
   mcp: 'mcp-agente',
 };
 
-/** Badge "PRO" en Cuenta + candado en los items de modulos Pro bloqueados. */
+/** Bloque de Cuenta + candados en los items de modulos Pro bloqueados. */
 export function pintarBadgeSidebar() {
   const s = almacenSesion.getState();
 
   const cuenta = document.querySelector('.sidebar-item[data-view="cuenta"]');
   if (cuenta) {
-    let badge = cuenta.querySelector('.badge-pro');
-    if (s.plan === 'pro' && !badge) {
-      badge = document.createElement('span');
-      badge.className = 'badge-new badge-pro';
-      badge.textContent = 'PRO';
-      cuenta.appendChild(badge);
-    } else if (s.plan !== 'pro' && badge) {
-      badge.remove();
-    }
+    const planKey = s.plan === 'pro' ? 'Pro' : s.plan === 'sin-promos' ? 'SinPromos' : 'Free';
+    const copy = (selector, key) => {
+      const el = cuenta.querySelector(selector);
+      if (!el) return;
+      el.dataset.i18n = key;
+      el.textContent = t(key);
+    };
+    copy('.sidebar-account-title span', 'nav.cuenta');
+    copy('.sidebar-account-badge', `sidebarAccount.badge${planKey}`);
+    copy('.sidebar-account-subtitle', `sidebarAccount.subtitle${planKey}`);
+    copy('.sidebar-account-cta span', s.plan === 'free' ? 'sidebarAccount.upgrade' : 'sidebarAccount.managePlan');
+    cuenta.querySelector('.sidebar-account-cta img').hidden = s.plan !== 'free';
   }
 
   for (const [vista, featureId] of Object.entries(VISTA_FEATURE)) {
@@ -103,3 +107,11 @@ export function pintarBadgeSidebar() {
     }
   }
 }
+
+/** El bloque completo lleva a planes para Free y al perfil para los planes pagos. */
+export function abrirCuentaDesdeSidebar() {
+  if (almacenSesion.getState().plan === 'free') return abrirPopupPlanes();
+  window.switchView('cuenta');
+}
+
+almacenSesion.subscribe(pintarBadgeSidebar);

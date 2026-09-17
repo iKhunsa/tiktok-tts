@@ -99,7 +99,16 @@
       <a href="/advanced.html?popup=1" target="_blank" rel="noopener" class="sidebar-footer-btn"><img class="icon-inline" src="icons/build.svg" alt=""> <span data-i18n="footer.advanced">Avanzado</span></a>
       <button id="sidebarPortalViewBtn" class="sidebar-footer-btn" onclick="togglePortalView()"><img class="icon-inline" src="icons/public.svg" alt=""> <span data-i18n="footer.portalView">Navegador</span></button>
       <button id="sidebarBugReportBtn" class="sidebar-footer-btn" onclick="openBugReportModal()"><img class="icon-inline" src="icons/warning.svg" alt=""> <span data-i18n="footer.bugReport">Reportar Bug</span></button>
-      <button class="sidebar-footer-btn sidebar-item" data-view="cuenta" onclick="switchView('cuenta')" hidden><img class="icon-inline" src="icons/account_circle.svg" alt=""> <span data-i18n="nav.cuenta">Cuenta</span></button>
+      <button class="sidebar-footer-btn sidebar-item sidebar-account" data-view="cuenta" onclick="abrirCuentaDesdeSidebar()" hidden>
+        <span class="sidebar-account-top">
+          <span class="sidebar-account-title"><img class="icon-inline" src="icons/account_circle.svg" alt=""> <span data-i18n="nav.cuenta"></span></span>
+          <span class="sidebar-account-badge"></span>
+        </span>
+        <span class="sidebar-account-bottom">
+          <span class="sidebar-account-subtitle"></span>
+          <span class="sidebar-account-cta"><img class="icon-inline" src="icons/flash_on.svg" alt=""><span></span></span>
+        </span>
+      </button>
       <div class="lang-selector-row">
         <img class="icon-inline" src="icons/language.svg" alt="" style="opacity:0.6;flex-shrink:0;">
         <select id="langSelect" onchange="setLanguage(this.value)" title="UI Language">
