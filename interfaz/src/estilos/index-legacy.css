@@ -698,7 +698,7 @@
     /* ── SETTINGS PANEL (TTS) ────────────────────────────── */
     .settings-panel {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
       gap: 16px;
       background: var(--bg);
       border: 1px solid var(--border);
@@ -706,7 +706,7 @@
       padding: 22px 26px;
     }
 
-    .setting-group { display: flex; flex-direction: column; gap: 8px; }
+    .setting-group { display: flex; flex-direction: column; min-width: 0; gap: 8px; }
 
     .setting-group label {
       font-size: var(--text-xs);
