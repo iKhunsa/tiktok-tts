@@ -2484,3 +2484,25 @@
     .account-popover-option:hover { background: var(--hover-1); color: var(--text-bright); }
     .account-popover-option:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
     .account-popover-option .icon-inline { width: 18px; height: 18px; opacity: 0.7; }
+
+    /* PortalView deja poco espacio a las vistas en ventanas angostas. */
+    .bot-2col-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+      gap: var(--space-4);
+    }
+
+    @media (max-width: 480px) {
+      #view-chat .chat-header,
+      #view-overlays .cfg-header { flex-wrap: wrap; }
+
+      #view-overlays .cfg-meta { min-width: 0; }
+      #view-overlays .cfg-fields { grid-template-columns: 1fr; }
+      #view-overlays .cfg-field.full { grid-column: auto; }
+      #view-overlays .cfg-url-row { flex-wrap: wrap; }
+      #view-overlays .cfg-url-text { flex-basis: 100%; }
+
+      .mod-tabs { flex-wrap: wrap; }
+      .mod-filters input { min-width: min(200px, 100%); }
+      .mod-actions { flex-wrap: wrap; }
+    }
