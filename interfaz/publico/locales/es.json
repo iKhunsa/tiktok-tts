@@ -1162,6 +1162,7 @@
     },
     "overlayMsg": "Esta función requiere el plan Pro.",
     "overlayBtn": "Ver planes",
+    "upgradeCta": "Mejorá tu plan",
     "badgeInline": "PRO"
   },
   "planesPopup": {
