@@ -1192,6 +1192,7 @@
     "overlayMsg": "This feature requires the Pro plan.",
     "overlayBtn": "See plans",
     "badgeInline": "PRO",
-    "upgradeCta": "Upgrade your plan"
+    "upgradeCta": "Upgrade your plan",
+    "demoVideoSoon": "Demo video coming soon"
   }
 }

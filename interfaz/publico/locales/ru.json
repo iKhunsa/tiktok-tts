@@ -1192,6 +1192,7 @@
     "overlayMsg": "Эта функция доступна только на тарифе Pro.",
     "overlayBtn": "Посмотреть тарифы",
     "badgeInline": "PRO",
-    "upgradeCta": "Улучшить тариф"
+    "upgradeCta": "Улучшить тариф",
+    "demoVideoSoon": "Демо-видео скоро появится"
   }
 }
