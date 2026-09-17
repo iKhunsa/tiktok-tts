@@ -1779,7 +1779,8 @@
     .vista-bloqueada-demo {
       position: relative;
     }
-    .view.active.vista-bloqueada-demo {
+    .view.active.vista-bloqueada-demo,
+    #mcpPanel.vista-bloqueada-demo {
       display: flex;
       flex-direction: column;
       max-height: 100vh;
@@ -1817,6 +1818,30 @@
       font-weight: 500;
       text-shadow: 0 1px 2px var(--bg);
     }
+    .vista-bloqueada-video-wrap {
+      position: relative;
+      width: min(100%, 480px);
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--modal-radius);
+      background: var(--surface-2);
+    }
+    .vista-bloqueada-video-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      color: var(--text-muted);
+      font-size: var(--text-sm);
+    }
+    .vista-bloqueada-video-placeholder img { width: 32px; height: 32px; opacity: 0.5; }
+    .vista-bloqueada-video { display: none; width: 100%; height: 100%; background: #000; }
+    .vista-bloqueada-video-wrap.cargado .vista-bloqueada-video-placeholder { display: none; }
+    .vista-bloqueada-video-wrap.cargado .vista-bloqueada-video { display: block; }
     .vista-bloqueada-link {
       padding: 2px 0;
       border: 0;
