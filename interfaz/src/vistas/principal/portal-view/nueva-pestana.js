@@ -21,6 +21,10 @@ function hostnameDe(input) {
   }
   return null;
 }
+export function nombreAmigableDe(hostname) {
+  const nombre = hostname.replace(/^www\./i, '').split('.')[0];
+  return nombre ? nombre[0].toUpperCase() + nombre.slice(1) : '';
+}
 
 function crearTarjeta(item, removable, onEdit) {
   const row = document.createElement('div'); row.className = 'portal-view-shortcut';
@@ -57,7 +61,7 @@ function crearModal() {
   const render = (query = '') => { const term = query.trim().toLowerCase(); const fragment = document.createDocumentFragment(); for (const raw of (_pvIconList || []).filter((x) => String(x).toLowerCase().includes(term)).slice(0, 300)) { const name = String(raw); const tile = document.createElement('button'); tile.type = 'button'; tile.className = `portal-view-icon-tile${name === chosenIcon ? ' selected' : ''}`; tile.title = name; tile.append(icono(name)); tile.addEventListener('click', () => { chosenIcon = name; preview.src = srcIcono(name); render(search.value); picker.hidden = true; }); fragment.append(tile); } grid.replaceChildren(fragment); };
   const close = () => { backdrop.hidden = true; picker.hidden = true; };
   const open = async (item = null) => { current = item; nameTouched = false; url.value = item?.url || ''; label.value = item?.label || ''; chosenIcon = item?.icon || null; preview.src = srcIcono(chosenIcon); search.value = ''; save.textContent = item ? (t('btn.saveChannel') || 'Guardar') : (t('portalView.addFavorite') || 'Agregar favorito'); backdrop.hidden = false; url.focus(); const icons = await cargarIconos(); if (!current && !chosenIcon && icons.length) { chosenIcon = icons[Math.floor(Math.random() * icons.length)]; preview.src = srcIcono(chosenIcon); } render(); };
-  url.addEventListener('input', () => { if (nameTouched) return; const host = hostnameDe(url.value); if (host) label.value = host; }); label.addEventListener('input', () => { nameTouched = true; });
+  url.addEventListener('input', () => { if (nameTouched) return; const host = hostnameDe(url.value); if (host) label.value = nombreAmigableDe(host); }); label.addEventListener('input', () => { nameTouched = true; });
   iconButton.addEventListener('click', () => { picker.hidden = !picker.hidden; if (!picker.hidden) search.focus(); }); search.addEventListener('input', () => render(search.value)); cancel.addEventListener('click', close); backdrop.addEventListener('pointerdown', (e) => { if (e.target === backdrop) close(); });
   form.addEventListener('submit', async (e) => { e.preventDefault(); if (!url.value.trim()) { showToast(t('toast.portalFavoriteInvalid'), 'error'); return; } const api = window.electronAPI?.portalView; const result = current ? await api?.editFavorite(current.id, { label: label.value, url: url.value, icon: chosenIcon }) : await api?.addFavorite(label.value, url.value, chosenIcon); if (!result?.ok) { showToast(t('toast.portalFavoriteInvalid'), 'error'); return; } close(); });
   return { backdrop, open, close };
@@ -70,5 +74,7 @@ export function crearNuevaPestana() {
 }
 export function actualizarNuevaPestana(el) {
   const { favorites = [] } = almacenPortalView.getState(); const list = el.querySelector('.portal-view-shortcuts-sections'); const modal = el._portalFavoriteModal; const fragment = document.createDocumentFragment();
-  for (const item of favorites) fragment.append(crearTarjeta(item, true, modal.open)); list.replaceChildren(fragment);
+  if (favorites.length) for (const item of favorites) fragment.append(crearTarjeta(item, true, modal.open));
+  else { const ejemplo = crearTarjeta({ url: 'https://www.tiklivetts.es', label: t('portalView.exampleFavorite') }, false); ejemplo.classList.add('portal-view-shortcut--ejemplo'); fragment.append(ejemplo); }
+  list.replaceChildren(fragment);
 }
