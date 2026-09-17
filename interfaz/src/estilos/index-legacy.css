@@ -300,6 +300,7 @@
       margin-top: 6px;
       padding: 10px 12px;
       border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
       background: var(--surface);
       color: var(--text-secondary);
       transition: background var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out), transform var(--dur-press) var(--ease-out);
@@ -317,8 +318,8 @@
     .sidebar-account-bottom { color: var(--text-muted); font-size: var(--text-3xs); }
     .sidebar-account-cta { gap: 4px; color: var(--text-secondary); font-weight: 600; transition: color var(--dur-1) var(--ease-out); }
     .sidebar-account:hover .sidebar-account-cta { color: var(--accent); }
-    .sidebar-account-cta img { width: 12px; height: 12px; opacity: 0.7; transition: filter var(--dur-1) var(--ease-out), opacity var(--dur-1) var(--ease-out); }
-    .sidebar-account:hover .sidebar-account-cta img { filter: brightness(0) saturate(100%) invert(16%) sepia(97%) saturate(3651%) hue-rotate(345deg) brightness(99%) contrast(89%); opacity: 1; }
+    .sidebar-account-cta img { width: 12px; height: 12px; opacity: 0.7; transition: opacity var(--dur-1) var(--ease-out); }
+    .sidebar-account:hover .sidebar-account-cta img { opacity: 1; }
     .sidebar-account-cta img[hidden] { display: none; }
 
     .ad-slot { display: block; margin: 4px 12px; border-radius: var(--radius-sm); overflow: hidden; line-height: 0; }
@@ -2456,7 +2457,7 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
       background: var(--surface-2);
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+      box-shadow: var(--shadow-2);
     }
     .account-popover-header { display: flex; align-items: center; gap: 10px; padding: 8px; }
     .account-popover-header > .icon-inline { width: 28px; height: 28px; opacity: 0.75; }
@@ -2467,8 +2468,8 @@
       display: flex;
       align-items: center;
       width: 100%;
-      gap: 10px;
-      padding: 9px 8px;
+      gap: 9px;
+      padding: 9px 10px;
       border: 0;
       border-radius: var(--radius-sm);
       background: transparent;
