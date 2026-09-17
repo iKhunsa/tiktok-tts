@@ -1791,6 +1791,12 @@
       font-size: var(--text-base);
       font-weight: 500;
     }
+    .vista-bloqueada-video {
+      width: min(100%, 640px);
+      max-height: min(50vh, 360px);
+      border-radius: var(--modal-radius);
+      background: #000;
+    }
     .vista-bloqueada-btn { width: auto; padding-left: 24px; padding-right: 24px; }
 
     /* Badge chico "PRO" junto a un control gateado dentro de una vista libre
