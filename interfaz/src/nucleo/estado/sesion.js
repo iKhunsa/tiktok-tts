@@ -33,7 +33,7 @@ function normalizar(data) {
     activo: true,
     signedIn: !!data.signedIn,
     user: data.user || null,
-    plan: data.plan === 'pro' ? 'pro' : 'free',
+    plan: ['pro', 'sin-promos'].includes(data.plan) ? data.plan : 'free',
     entitlements: Array.isArray(data.entitlements) ? data.entitlements : [],
     expiresAt: data.expiresAt || null,
     subscription: data.subscription || null,
