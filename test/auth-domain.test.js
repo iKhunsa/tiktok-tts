@@ -112,3 +112,16 @@ test('getSesionPublica() (payload del broadcast WS) no filtra email/user-id/subs
 
   estado.cerrar(srv.logger); // no dejar sesion pegada para otros tests del mismo archivo
 });
+
+test('estado de sesion preserva sin-promos y degrada planes desconocidos a free', () => {
+  const estado = require('../features/auth/estado-sesion');
+  const session = { user: { id: 'u1', email: 'streamer@ejemplo.com' }, entitlements: ['sin-promos'] };
+
+  estado.aplicar({ session: { ...session, plan: 'sin-promos' } }, srv.logger);
+  assert.equal(estado.getSesion().plan, 'sin-promos');
+  assert.deepEqual(estado.getSesion().entitlements, ['sin-promos']);
+
+  estado.aplicar({ session: { ...session, plan: 'desconocido' } }, srv.logger);
+  assert.equal(estado.getSesion().plan, 'free');
+  estado.cerrar(srv.logger);
+});

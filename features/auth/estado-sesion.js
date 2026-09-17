@@ -30,7 +30,8 @@ function normalizar(s) {
   return {
     signedIn: true,
     user: { id: s.user.id, email: s.user.email, nombre: s.user.nombre || '' },
-    plan: s.plan === 'pro' ? 'pro' : 'free',
+    // Solo se preservan slugs conocidos: un valor inesperado nunca habilita un plan local.
+    plan: ['pro', 'sin-promos'].includes(s.plan) ? s.plan : 'free',
     entitlements: Array.isArray(s.entitlements) ? s.entitlements.slice() : [],
     expiresAt: s.expiresAt || null,
     subscription: s.subscription || null,
