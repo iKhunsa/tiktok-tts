@@ -55,19 +55,21 @@ function formAuth() {
 
 function planCard(s) {
   const esPro = s.plan === 'pro';
+  const esSinPromos = s.plan === 'sin-promos';
   const sub = s.subscription || {};
   const hasta = sub.currentPeriodEnd ? new Date(sub.currentPeriodEnd).toLocaleDateString() : '';
   let estado;
   if (esPro && sub.cancelAtPeriodEnd) estado = t('cuenta.planProCancels', { fecha: hasta });
   else if (esPro) estado = t('cuenta.planProUntil', { fecha: hasta });
+  else if (esSinPromos) estado = t('cuenta.planSinPromosDesc');
   else estado = t('cuenta.planFreeDesc');
 
   return `
-    <div class="cuenta-card cuenta-plan${esPro ? ' is-pro' : ''}">
+    <div class="cuenta-card cuenta-plan${esPro ? ' is-pro' : esSinPromos ? ' is-sin-promos' : ''}">
       <div class="cuenta-plan-head">
         <img class="icon-inline" src="icons/workspace_premium.svg" alt="">
         <div>
-          <div class="cuenta-plan-name">${esPro ? 'Pro' : t('cuenta.planFree')}</div>
+          <div class="cuenta-plan-name">${esPro ? 'Pro' : esSinPromos ? t('cuenta.planSinPromosName') : t('cuenta.planFree')}</div>
           <div class="cuenta-plan-state">${esc(estado)}</div>
         </div>
       </div>
@@ -76,7 +78,7 @@ function planCard(s) {
     ? (sub.cancelAtPeriodEnd
       ? `<button class="cuenta-btn-primary" id="cuentaResume" data-i18n="cuenta.resume"></button>`
       : `<button class="cuenta-btn-ghost" id="cuentaManage" data-i18n="cuenta.manage"></button>`)
-    : `<button class="cuenta-btn-primary" id="cuentaUpgrade" data-i18n="cuenta.goPro"></button>`}
+    : `<button class="cuenta-btn-primary" id="cuentaUpgrade" data-i18n="${esSinPromos ? 'cuenta.upgradeToPro' : 'cuenta.goPro'}"></button>`}
     </div>`;
 }
 
@@ -141,7 +143,7 @@ export function renderCuentaPanel() {
     showToast(t('cuenta.saved'));
     renderCuentaPanel();
   });
-  el.querySelector('#cuentaUpgrade')?.addEventListener('click', (e) => irACheckout(e.currentTarget));
+  el.querySelector('#cuentaUpgrade')?.addEventListener('click', (e) => irACheckout(e.currentTarget, 'pro'));
   el.querySelector('#cuentaManage')?.addEventListener('click', (e) => cancelarSuscripcion(e.currentTarget));
   el.querySelector('#cuentaResume')?.addEventListener('click', (e) => reanudarSuscripcion(e.currentTarget));
 }
