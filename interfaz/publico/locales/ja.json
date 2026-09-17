@@ -1192,6 +1192,7 @@
     "overlayMsg": "この機能はProプランが必要です。",
     "overlayBtn": "プランを見る",
     "badgeInline": "PRO",
-    "upgradeCta": "プランをアップグレード"
+    "upgradeCta": "プランをアップグレード",
+    "demoVideoSoon": "デモ動画は近日公開"
   }
 }
