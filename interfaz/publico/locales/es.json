@@ -33,6 +33,15 @@
     "upgrade": "Mejorar",
     "managePlan": "Administrar plan"
   },
+  "accountMenu": {
+    "planFree": "Plan Free",
+    "planSinPromos": "Plan sin promo",
+    "planPro": "Plan Pro",
+    "upgradePlan": "Mejorar plan",
+    "advanced": "Avanzado",
+    "donate": "Donar",
+    "myAccount": "Mi cuenta"
+  },
   "portalView": {
     "urlPlaceholder": "Escribe una URL",
     "close": "Cerrar",
