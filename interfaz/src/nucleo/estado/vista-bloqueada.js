@@ -49,12 +49,20 @@ function pintarOverlayBloqueo(el, bloqueada, featureId) {
     overlay = document.createElement('div');
     overlay.className = 'vista-bloqueada-overlay';
     // Convencion para demos: interfaz/publico/videos/demo-<featureId>.mp4.
-    // Vite las sirve desde /videos/; si aun no existe, el listener la oculta.
+    // Vite las sirve desde /videos/; el placeholder queda hasta que carguen.
     overlay.innerHTML =
-      `<video class="vista-bloqueada-video" src="videos/demo-${featureId}.mp4" muted loop playsinline controls autoplay></video>` +
       '<p class="vista-bloqueada-msg" data-i18n="pro.overlayMsg"></p>' +
-      '<button type="button" class="cuenta-btn-primary vista-bloqueada-btn" data-i18n="pro.upgradeCta"></button>';
-    overlay.querySelector('.vista-bloqueada-video').addEventListener('error', (e) => e.currentTarget.remove());
+      '<button type="button" class="cuenta-btn-primary vista-bloqueada-btn" data-i18n="pro.upgradeCta"></button>' +
+      `<div class="vista-bloqueada-video-wrap">
+        <div class="vista-bloqueada-video-placeholder">
+          <img src="icons/play_arrow.svg" alt="">
+          <span data-i18n="pro.demoVideoSoon"></span>
+        </div>
+        <video class="vista-bloqueada-video" src="videos/demo-${featureId}.mp4" muted loop playsinline controls autoplay></video>
+      </div>`;
+    overlay.querySelector('.vista-bloqueada-video').addEventListener('loadeddata', (e) => {
+      e.currentTarget.closest('.vista-bloqueada-video-wrap').classList.add('cargado');
+    });
     overlay.querySelector('.vista-bloqueada-btn').addEventListener('click', abrirPopupPlanes);
     el.appendChild(overlay);
     aplicarTraducciones(overlay);
