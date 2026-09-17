@@ -61,6 +61,7 @@ function planCard(s) {
   let estado;
   if (esPro && sub.cancelAtPeriodEnd) estado = t('cuenta.planProCancels', { fecha: hasta });
   else if (esPro) estado = t('cuenta.planProUntil', { fecha: hasta });
+  else if (esSinPromos && sub.cancelAtPeriodEnd) estado = t('cuenta.planSinPromosCancels', { fecha: hasta });
   else if (esSinPromos) estado = t('cuenta.planSinPromosDesc');
   else estado = t('cuenta.planFreeDesc');
 
@@ -78,7 +79,14 @@ function planCard(s) {
     ? (sub.cancelAtPeriodEnd
       ? `<button class="cuenta-btn-primary" id="cuentaResume" data-i18n="cuenta.resume"></button>`
       : `<button class="cuenta-btn-ghost" id="cuentaManage" data-i18n="cuenta.manage"></button>`)
-    : `<button class="cuenta-btn-primary" id="cuentaUpgrade" data-i18n="${esSinPromos ? 'cuenta.upgradeToPro' : 'cuenta.goPro'}"></button>`}
+    : esSinPromos
+      ? (sub.cancelAtPeriodEnd
+        ? `<button class="cuenta-btn-primary" id="cuentaResume" data-i18n="cuenta.resume"></button>`
+        : `<div class="cuenta-perfil-acciones">
+            <button class="cuenta-btn-primary" id="cuentaUpgrade" data-i18n="cuenta.upgradeToPro"></button>
+            <button class="cuenta-btn-ghost" id="cuentaManage" data-i18n="cuenta.manage"></button>
+          </div>`)
+      : `<button class="cuenta-btn-primary" id="cuentaUpgrade" data-i18n="cuenta.goPro"></button>`}
     </div>`;
 }
 
