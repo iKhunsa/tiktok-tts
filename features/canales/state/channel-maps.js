@@ -30,7 +30,6 @@ function createChannelState() {
     kickWatchdogTimers: new Map(), // slug -> Timeout (watchdog de chat 'silencioso')
     kickReconnectTimers: new Map(), // slug -> Timeout (backoff de reconexion del WS)
     channelWatchdogTimers: new Map(), // 'tiktok:<user>' / 'twitch:<chan>' -> Timeout (stale-watchdog.js)
-    authTokens: { twitch: null },
     obs: {
       ws: null,
       lastParams: null, // { port, password } de la ultima conexion exitosa
@@ -39,16 +38,6 @@ function createChannelState() {
       intentionalClose: false,
       connecting: false,
     },
-    eventsub: {
-      ws: null,
-      keepaliveTimer: null,
-      reconnectTimer: null,
-      reconnectAttempts: 0,
-      stopped: true,
-      followActive: false,
-      seenMsgIds: new Set(),
-    },
-    pendingOAuth: { twitch: null },
   };
 }
 

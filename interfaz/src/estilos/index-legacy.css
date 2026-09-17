@@ -1558,7 +1558,6 @@
     }
     #view-settings .settings-row-flex > input,
     #view-settings .settings-row-flex > .input-wrapper { min-width: 0; }
-    #view-settings #twitchAuthStatusText { flex: 1 1 180px; min-width: 0; }
     #view-settings .settings-section-title.settings-row-flex > span { min-width: 0; }
 
     /* ── MCP (Agente) — sigue el sistema de .settings-* ─────── */

@@ -5,8 +5,7 @@ const TEST_USERS = ['TestUser', 'FanRandom', 'ViewerPro', 'TikToker', 'StreamerF
 function testFollow(deps) {
   return (req, res) => {
     const { bus, logger } = deps;
-    const platform = ['tiktok', 'twitch'].includes(req.query.platform || (req.body && req.body.platform))
-      ? (req.query.platform || req.body.platform) : 'tiktok';
+    const platform = 'tiktok';
     const user = (req.body && req.body.user) || TEST_USERS[Math.floor(Math.random() * TEST_USERS.length)] + Math.floor(Math.random() * 99);
     const userId = (req.body && req.body.userId) || null;
 

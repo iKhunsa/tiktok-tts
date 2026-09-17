@@ -32,12 +32,12 @@ function registerDevTools({ bus, logger, wss }) {
   mcpRegistry.registerTool({
     name: 'dev_status', domain: 'mcp', dev: true, readOnly: true,
     title: '[dev] Full status',
-    description: 'Everything at once: /api/status + channels + platforms + oauth + music queue/engine + moderation stats + overlay stats + mcp info + ws client count.',
+    description: 'Everything at once: /api/status + channels + platforms + music queue/engine + moderation stats + overlay stats + mcp info + ws client count.',
     inputSchema: { type: 'object', properties: {} },
     handler: async () => {
       const paths = [
         ['status', '/api/status'], ['channels', '/api/channels'], ['platforms', '/api/platforms/status'],
-        ['oauth', '/api/oauth/status'], ['musicQueue', '/api/music/queue'], ['musicEngine', '/api/music/engine'],
+        ['musicQueue', '/api/music/queue'], ['musicEngine', '/api/music/engine'],
         ['moderationStats', '/api/moderation/stats'], ['overlayStats', '/api/overlay-stats'],
         ['mcp', '/api/mcp/info'],
       ];
