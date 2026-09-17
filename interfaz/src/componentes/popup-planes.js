@@ -13,6 +13,7 @@ function accion(planActual, plan, actionKey) {
 
 export function abrirPopupPlanes() {
   const { plan } = almacenSesion.getState();
+  const planAlAbrir = plan;
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay show';
   overlay.innerHTML = `
@@ -54,7 +55,14 @@ export function abrirPopupPlanes() {
   document.body.appendChild(overlay);
   aplicarTraducciones(overlay);
 
-  const cerrar = () => overlay.remove();
+  let desuscribir;
+  const cerrar = () => {
+    desuscribir();
+    overlay.remove();
+  };
+  desuscribir = almacenSesion.subscribe(() => {
+    if (almacenSesion.getState().plan !== planAlAbrir) cerrar();
+  });
   overlay.addEventListener('click', (e) => { if (e.target === overlay) cerrar(); });
   overlay.querySelector('.modal-close').addEventListener('click', cerrar);
   overlay.querySelectorAll('[data-plan]').forEach((btn) => {
