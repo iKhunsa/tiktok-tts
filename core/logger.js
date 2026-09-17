@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { ensureDirSync } = require('./ensure-dir');
 
 const DEFAULT_CAP = 250;
 const MAX_SESSION_LOG_BYTES = 480 * 1024 * 1024; // 480MB por archivo de sesion
@@ -32,7 +33,7 @@ function createLogger({ logsDir, cap = DEFAULT_CAP } = {}) {
 
   if (logsDir) {
     try {
-      fs.mkdirSync(logsDir, { recursive: true });
+      ensureDirSync(logsDir);
       const fileName = `session-${new Date().toISOString().replace(/:/g, '-').split('.')[0]}.log`;
       sessionLogPath = path.join(logsDir, fileName);
       stream = fs.createWriteStream(sessionLogPath, { flags: 'a' });

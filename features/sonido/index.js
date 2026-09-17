@@ -2,8 +2,8 @@
 
 const path = require('path');
 const express = require('express');
-const fs = require('fs');
 const { DATA_BASE, RESOURCE_BASE } = require('../../core/paths');
+const { ensureDirSync } = require('../../core/ensure-dir');
 const { createTtsRateLimiterState } = require('./tts/is-rate-limited');
 const { generate } = require('./tts/routes/generate');
 const { voices } = require('./tts/routes/voices');
@@ -48,7 +48,7 @@ module.exports = {
 
   register({ app, bus, logger }) {
     const soundsDir = path.join(DATA_BASE, 'sounds');
-    fs.mkdirSync(soundsDir, { recursive: true });
+    ensureDirSync(soundsDir);
     const soundsConfigPath = path.join(DATA_BASE, 'sounds-config.json');
     app.use('/sounds', express.static(soundsDir));
     app.use('/soundpad-icons', express.static(path.join(RESOURCE_BASE, 'asset', 'icons')));
