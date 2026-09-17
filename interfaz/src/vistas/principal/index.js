@@ -27,7 +27,7 @@ import {
 import { t, tErr } from '../../nucleo/i18n/i18n.js';
 import { iniciarI18nApp, pickLanguage, setLanguage } from './i18n-app.js';
 import { switchView } from './vistas-router.js';
-import { cargarSesion, almacenSesion, appBloqueada } from '../../nucleo/estado/sesion.js';
+import { abrirCuentaDesdeSidebar, cargarSesion, almacenSesion, appBloqueada } from '../../nucleo/estado/sesion.js';
 import { aplicarBloqueoVista, aplicarBadgesInlinePro } from '../../nucleo/estado/vista-bloqueada.js';
 import { iniciarCuenta } from './cuenta/index.js';
 import { iniciarRotacionAnuncioLateral } from './anuncio-lateral.js';
@@ -104,7 +104,7 @@ Object.assign(window, {
   // porque el script viejo tampoco lo era)
   pickLanguage, setLanguage, t, tErr,
   // vistas
-  switchView,
+  switchView, abrirCuentaDesdeSidebar,
   // utils
   copyToClipboard, showKnownIssuesNotice,
   // fondo de overlays

@@ -293,6 +293,34 @@
     }
     .sidebar-footer-btn:hover { background: var(--surface); color: var(--text-secondary); }
 
+    .sidebar-account {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-top: 6px;
+      padding: 10px 12px;
+      border: 1px solid var(--border-subtle);
+      background: var(--surface);
+      color: var(--text-secondary);
+      transition: background var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out), transform var(--dur-press) var(--ease-out);
+    }
+    .sidebar-account:hover { background: var(--surface-raised); border-color: var(--border); }
+    .sidebar-account:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .sidebar-account-top,
+    .sidebar-account-bottom,
+    .sidebar-account-title,
+    .sidebar-account-cta { display: flex; align-items: center; }
+    .sidebar-account-top,
+    .sidebar-account-bottom { justify-content: space-between; gap: 8px; width: 100%; }
+    .sidebar-account-title { gap: 8px; font-size: var(--text-sm); font-weight: 600; color: var(--text-bright); }
+    .sidebar-account-badge { padding: 2px 6px; border: 1px solid var(--border); border-radius: var(--radius-pill); color: var(--text-muted); font-size: var(--text-3xs); font-weight: 700; letter-spacing: 0.35px; line-height: 1.2; }
+    .sidebar-account-bottom { color: var(--text-muted); font-size: var(--text-3xs); }
+    .sidebar-account-cta { gap: 4px; color: var(--text-secondary); font-weight: 600; transition: color var(--dur-1) var(--ease-out); }
+    .sidebar-account:hover .sidebar-account-cta { color: var(--accent); }
+    .sidebar-account-cta img { width: 12px; height: 12px; opacity: 0.7; transition: filter var(--dur-1) var(--ease-out), opacity var(--dur-1) var(--ease-out); }
+    .sidebar-account:hover .sidebar-account-cta img { filter: brightness(0) saturate(100%) invert(16%) sepia(97%) saturate(3651%) hue-rotate(345deg) brightness(99%) contrast(89%); opacity: 1; }
+    .sidebar-account-cta img[hidden] { display: none; }
+
     .ad-slot { display: block; margin: 4px 12px; border-radius: var(--radius-sm); overflow: hidden; line-height: 0; }
     .ad-slot--lateral { flex: 1 1 auto; min-height: 48px; max-height: 461px; position: relative; }
     .ad-slot img { width: 100%; height: auto; display: block; object-fit: contain; }
