@@ -1126,6 +1126,7 @@
     "planFree": "Plan gratuito",
     "planSinPromosName": "Sin promos",
     "planSinPromosDesc": "Tu plan elimina las promociones.",
+    "planSinPromosCancels": "Sin promos · se cancela el {fecha}",
     "planProUntil": "Pro · activo hasta {fecha}",
     "planProCancels": "Pro · se cancela el {fecha}",
     "manage": "Gestionar suscripción",
