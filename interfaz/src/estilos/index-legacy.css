@@ -1776,9 +1776,10 @@
 
     /* Vista Pro bloqueada (Sonidos/Bot/MCP): configuraciones visibles, con
        aviso compacto que evita interactuar hasta mejorar el plan. */
-    .vista-bloqueada-demo,
-    .view.vista-bloqueada-demo {
+    .vista-bloqueada-demo {
       position: relative;
+    }
+    .view.active.vista-bloqueada-demo {
       display: flex;
       flex-direction: column;
       max-height: 100vh;
