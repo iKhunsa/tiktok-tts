@@ -2,7 +2,7 @@
 
 // get_state — snapshot consolidado de la app. Junta los slices que cada dominio
 // registró vía mcpRegistry.registerStateProvider() + algunos pulls directos por
-// el contrato síncrono del bus (config:get, platform-config:get,
+// el contrato síncrono del bus (config:get,
 // canales:tiktok-conectado). Auto-ensamblado: un campo nuevo se agrega en el
 // provider de su dominio, nunca acá.
 

@@ -18,7 +18,6 @@ import {
 } from '../tts/cola-tts.js';
 import { incrementarMsgCount, handleChatData, addSystemMsg } from '../../vistas/principal/chat-ui.js';
 import { setStatus, getSayUsernameConnector } from '../../vistas/principal/modales-avisos.js';
-import { updateOAuthStatusUI, loadOAuthStatusUI } from '../../vistas/principal/oauth-twitch.js';
 import { updateFollowerDisplay } from '../../vistas/principal/configurador-overlays.js';
 import { renderSettingsChannels } from '../../vistas/principal/plataformas.js';
 import { updateOBSStatus, getClipsData, getLocalDateStr, deleteClip, startStreamManual, markClip, obtenerStreamStartTime } from '../../vistas/principal/clips.js';
@@ -146,11 +145,9 @@ function handleMessage(data) {
       break;
 
     case 'follow': {
-      const isTwitchFollow = data.platform === 'twitch';
-      const followEnabled = isTwitchFollow ? options.readTwitchFollow : options.readFollows;
-      if (followEnabled) {
+      if (options.readFollows) {
         const followId = nuevoMsgId();
-        const followText = isTwitchFollow ? t('announce.followTwitch', { user: data.user }) : t('announce.follow', { user: data.user });
+        const followText = t('announce.follow', { user: data.user });
         addSystemMsg(followText, 'join', followId, { iconSrc: 'icons/person_add.svg' });
         speak(followText, followId, data.timestamp);
       }
@@ -191,10 +188,6 @@ function handleMessage(data) {
       }
       break;
 
-    case 'oauth-status-changed':
-      updateOAuthStatusUI(data);
-      break;
-
     case 'like':
       if (options.readLikes) {
         const now = Date.now();
@@ -230,15 +223,6 @@ function handleMessage(data) {
     case 'error':
       setStatus('error', data.message);
       logStorage.addLog('error', 'server', data.message);
-      break;
-
-    case 'twitch-auth-ready':
-      showToast(data.login ? t('toast.twitchAuthAs').replace('{login}', data.login) : t('toast.twitchAuth'));
-      break;
-
-    case 'twitch-auth-error':
-      showToast(data.error || t('toast.twitchAuthError'));
-      loadOAuthStatusUI();
       break;
 
     // Supervisor de continuidad de TikTok (features/canales/tiktok/connect-tiktok-channel.js):

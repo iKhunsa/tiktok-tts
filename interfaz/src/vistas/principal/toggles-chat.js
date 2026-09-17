@@ -84,7 +84,7 @@ export function toggleOption(key, checkbox) {
     readChat: 'chip-chat', readGifts: 'chip-gifts', readGiftAmount: 'chip-gift-amount', readJoins: 'chip-joins',
     readFollows: 'chip-follows', readLikes: 'chip-likes', readShares: 'chip-shares', sayUsername: 'chip-username',
     readTwitchSub: 'chip-twitch-sub', readTwitchCheer: 'chip-twitch-cheer',
-    readTwitchRaid: 'chip-twitch-raid', readTwitchFollow: 'chip-twitch-follow',
+    readTwitchRaid: 'chip-twitch-raid',
   }[key];
   if (chipId) document.getElementById(chipId)?.classList.toggle('active', checkbox.checked);
   appSettings[key] = checkbox.checked;

@@ -45,7 +45,6 @@ function deps() {
   const { createChannelState } = require('../features/canales/state/channel-maps');
   const { createStubLogger } = require('./helpers/stub-logger');
   const state = createChannelState();
-  state.authTokens.twitch = { login: 'bot', accessToken: 'expirado', expiresAt: 0 };
   return { state, bus: new EventEmitter(), logger: createStubLogger() };
 }
 

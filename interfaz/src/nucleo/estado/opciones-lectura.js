@@ -17,5 +17,4 @@ export const options = {
   readTwitchSub: false,
   readTwitchCheer: false,
   readTwitchRaid: false,
-  readTwitchFollow: false,
 };
