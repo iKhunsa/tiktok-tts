@@ -1,6 +1,7 @@
 'use strict';
 
 const { createSessionScheduler } = require('./session-scheduler');
+const { registrarMensaje } = require('./activity-window');
 const { PROMO_ANNOUNCE_TEXT, pickAnnounceText } = require('../../core/announce-texts');
 const entitlements = require('../../core/contracts/entitlements');
 const { getConfigSnapshot } = require('../../core/config-snapshot');
@@ -81,7 +82,14 @@ module.exports = {
       }
     }, 'promo');
 
-    return { rutas: 0, listeners: 1 };
+    // Cuenta mensajes ya deduplicados de todas las plataformas: la promo mide
+    // conversacion real, no viewers ni mensajes crudos reentregados al reconectar.
+    bus.on('chat:mensaje-recibido', (payload) => {
+      if (!payload) return;
+      registrarMensaje();
+    }, 'promo');
+
+    return { rutas: 0, listeners: 2 };
   },
 
   shutdown() {
