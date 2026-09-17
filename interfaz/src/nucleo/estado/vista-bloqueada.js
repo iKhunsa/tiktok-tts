@@ -3,29 +3,20 @@
  * (Sonidos, Bot, MCP). Consumido por 3 dominios de vista distintos -> vive en
  * nucleo/ (regla de modularidad: cruza dominios).
  *
- * El popup se abre solo automaticamente una vez por sesion de la app (Set en
- * memoria, no localStorage) -- cerrarlo deja la vista en modo demo bloqueado,
- * con boton propio para reabrirlo.
+ * El aviso deja la vista en modo demo bloqueado, con boton propio para abrir
+ * la comparacion de planes.
  */
 import { almacenSesion } from './sesion.js';
 import { abrirPopupPlanes } from '../../componentes/popup-planes.js';
 import { aplicarTraducciones } from '../i18n/i18n.js';
 
-const yaMostrado = new Set();
-
-export function aplicarBloqueoVista(elId, featureId, { autoPopup = false } = {}) {
+export function aplicarBloqueoVista(elId, featureId) {
   const s = almacenSesion.getState();
   const el = document.getElementById(elId);
   if (!el) return false;
   const bloqueada = s.activo && !s.entitlements.includes(featureId);
   el.classList.toggle('vista-bloqueada-demo', bloqueada);
   pintarOverlayBloqueo(el, bloqueada, featureId);
-  // El barrido de sesión solo pinta el estado. El popup automático es una
-  // consecuencia explícita de navegar a la vista, no de su visibilidad.
-  if (autoPopup && bloqueada && el.offsetParent !== null && !yaMostrado.has(featureId)) {
-    yaMostrado.add(featureId);
-    abrirPopupPlanes();
-  }
   return bloqueada;
 }
 
