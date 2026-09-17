@@ -1154,5 +1154,32 @@
     "overlayMsg": "Esta función requiere el plan Pro.",
     "overlayBtn": "Ver planes",
     "badgeInline": "PRO"
+  },
+  "planesPopup": {
+    "title": "Elegí el plan que mejor te acompaña",
+    "freeName": "Free",
+    "freePrice": "Gratis",
+    "freeTts": "TTS en 13 idiomas",
+    "freeChat": "Chat de una cuenta por plataforma: TikTok, Twitch, YouTube y Kick",
+    "freeModeration": "Moderación local completa",
+    "freeOverlays": "Overlays para OBS",
+    "freeBugs": "Reporte de bugs",
+    "noAdsName": "Sin Promos",
+    "noAdsPrice": "US$25 por año",
+    "noAdsFree": "Todo lo del plan Free",
+    "noAdsPromos": "Sin avisos promocionales de voz",
+    "chooseNoAds": "Elegir",
+    "proName": "Pro",
+    "proPrice": "US$85 por año",
+    "proNoAds": "Todo lo de Sin Promos",
+    "proMusic": "Bot musical con cola de canciones",
+    "proSoundpad": "Soundpad de efectos de sonido",
+    "proMobile": "Panel de control remoto desde el celular",
+    "proClips": "Marcado de clips en OBS",
+    "proMcp": "Servidor de agente MCP",
+    "proChannels": "Conectá 2 o más canales de la misma plataforma",
+    "proBackgrounds": "Fondos personalizados en los overlays",
+    "choosePro": "Elegir Pro",
+    "currentPlan": "Plan actual"
   }
 }
