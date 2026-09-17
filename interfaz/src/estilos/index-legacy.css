@@ -2468,10 +2468,13 @@
     .cuenta-plan.is-pro::after { inset: 2px; z-index: 0; border-radius: calc(var(--radius-lg) - 2px); background: var(--surface); }
     .cuenta-plan.is-pro > * { position: relative; z-index: 1; }
     @keyframes cuenta-pro-border { to { transform: rotate(360deg); } }
+    /* animation vive en ::before (el gradiente rotando), no en .is-pro mismo
+       -- un pseudo-elemento no hereda animation de su padre, hay que apagarlo
+       explicito ahi para que reduce-motion realmente frene la rotacion. */
     @media (prefers-reduced-motion: reduce) {
-      .cuenta-plan.is-pro { animation: none; }
+      .cuenta-plan.is-pro::before { animation: none; }
     }
-    body.reduce-motion .cuenta-plan.is-pro { animation: none; }
+    body.reduce-motion .cuenta-plan.is-pro::before { animation: none; }
 
     /* Comparador de planes */
     .planes-popup-content { max-width: 980px; }
