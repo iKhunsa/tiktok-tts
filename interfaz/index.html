@@ -989,19 +989,6 @@
           <button class="cfg-btn" id="btnTwitchTour" onclick="event.stopPropagation(); startTwitchTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
         </div>
         <div class="twitch-section-body" id="twitchSectionBody">
-        <div class="settings-panel" id="twitchClientIdGroup" style="grid-template-columns:1fr;">
-          <div class="setting-group">
-            <label>Client ID de Twitch</label>
-            <input type="text" id="twitchOAuthClientId" placeholder="Client ID de tu app en dev.twitch.tv" autocomplete="off"
-                   onchange="saveTwitchClientId(this.value)" />
-          </div>
-        </div>
-        <div class="settings-row-flex" id="twitchConnectRow" style="margin-top:10px;">
-          <button class="btn btn-connect" id="btnConnectTwitchAuth" onclick="connectTwitchAuth()" style="font-size:13px;">Conectar Twitch</button>
-          <button class="btn btn-disconnect" id="btnDisconnectTwitchAuth" onclick="disconnectTwitchAuth()" style="font-size:13px;display:none;">Desconectar</button>
-          <span id="twitchAuthStatusText" style="font-size:12px;color:var(--text-muted);">Sin conectar — solo llegarán sub/bits/raids (sin follows con nombre)</span>
-        </div>
-        <p style="font-size:11px;color:var(--text-muted);margin-top:8px;">Sub, bits y raids ya funcionan sin conectar nada. Conectar solo habilita follows con nombre real.</p>
         <div class="toggles-row" id="twitchTogglesRow" style="margin-top:12px;">
           <label class="toggle-chip" id="chip-twitch-sub">
             <input type="checkbox" onchange="toggleOption('readTwitchSub', this)" /> 🟣 Anunciar subs
@@ -1012,15 +999,11 @@
           <label class="toggle-chip" id="chip-twitch-raid">
             <input type="checkbox" onchange="toggleOption('readTwitchRaid', this)" /> 🚀 Anunciar raids
           </label>
-          <label class="toggle-chip" id="chip-twitch-follow">
-            <input type="checkbox" onchange="toggleOption('readTwitchFollow', this)" /> 💜 Anunciar follows
-          </label>
         </div>
         <div id="twitchTestRow" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
           <button class="cfg-btn" onclick="testAlertType('sub')">Test sub</button>
           <button class="cfg-btn" onclick="testAlertType('cheer')">Test bits</button>
           <button class="cfg-btn" onclick="testAlertType('raid')">Test raid</button>
-          <button class="cfg-btn" onclick="testSocialAlert('follow', 'twitch')">Test follow twitch</button>
         </div>
         </div>
       </div>

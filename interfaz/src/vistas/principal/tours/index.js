@@ -223,8 +223,6 @@ export function startTwitchTour() {
     ...driverTourDefaults(),
     steps: [
       { element: '#settingsSectionTwitch .settings-section-title', popover: { title: t('twitchTour.introTitle'), description: t('twitchTour.introDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inSettings },
-      { element: '#twitchClientIdGroup', popover: { title: t('twitchTour.clientIdTitle'), description: t('twitchTour.clientIdDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inSettings },
-      { element: '#twitchConnectRow', popover: { title: t('twitchTour.connectTitle'), description: t('twitchTour.connectDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inSettings },
       { element: '#twitchTogglesRow', popover: { title: t('twitchTour.togglesTitle'), description: t('twitchTour.togglesDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inSettings },
       { element: '#twitchTestRow', popover: { title: t('twitchTour.testTitle'), description: t('twitchTour.testDesc'), side: 'top', align: 'start' }, onHighlightStarted: inSettings },
     ],

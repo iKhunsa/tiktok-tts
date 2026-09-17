@@ -38,7 +38,6 @@ export const DEFAULT_SETTINGS = {
   readTwitchSub: false,
   readTwitchCheer: false,
   readTwitchRaid: false,
-  readTwitchFollow: false,
   sayUsername: true,
   sayUsernameConnector: true,
   chatTogglesCollapsed: true,
@@ -127,7 +126,7 @@ export function applySettings() {
     readChat: 'chip-chat', readGifts: 'chip-gifts', readGiftAmount: 'chip-gift-amount', readJoins: 'chip-joins',
     readFollows: 'chip-follows', readLikes: 'chip-likes', readShares: 'chip-shares', sayUsername: 'chip-username',
     readTwitchSub: 'chip-twitch-sub', readTwitchCheer: 'chip-twitch-cheer',
-    readTwitchRaid: 'chip-twitch-raid', readTwitchFollow: 'chip-twitch-follow',
+    readTwitchRaid: 'chip-twitch-raid',
   };
   for (const [key, chipId] of Object.entries(chipMap)) {
     const val = appSettings[key];
