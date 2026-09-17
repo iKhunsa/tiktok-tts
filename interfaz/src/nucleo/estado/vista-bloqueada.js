@@ -1,5 +1,5 @@
 /**
- * Bloqueo visual (blur + overlay + popup de venta) para vistas Pro enteras
+ * Bloqueo visual + aviso de upgrade para vistas Pro enteras
  * (Sonidos, Bot, MCP). Consumido por 3 dominios de vista distintos -> vive en
  * nucleo/ (regla de modularidad: cruza dominios).
  *
@@ -13,18 +13,16 @@ import { aplicarTraducciones } from '../i18n/i18n.js';
 
 const yaMostrado = new Set();
 
-export function aplicarBloqueoVista(elId, featureId) {
+export function aplicarBloqueoVista(elId, featureId, { autoPopup = false } = {}) {
   const s = almacenSesion.getState();
   const el = document.getElementById(elId);
   if (!el) return false;
   const bloqueada = s.activo && !s.entitlements.includes(featureId);
   el.classList.toggle('vista-bloqueada-demo', bloqueada);
-  pintarOverlayBloqueo(el, bloqueada, featureId);
-  // El popup automatico solo tiene sentido si el usuario esta viendo la
-  // vista de verdad (offsetParent es null mientras .view no tiene .active) --
-  // sin este chequeo, cambios de sesion en cualquier otra pantalla (ej. el
-  // arranque de la app, todavia deslogueada) lo dispararian de la nada.
-  if (bloqueada && el.offsetParent !== null && !yaMostrado.has(featureId)) {
+  pintarOverlayBloqueo(el, bloqueada);
+  // El barrido de sesión solo pinta el estado. El popup automático es una
+  // consecuencia explícita de navegar a la vista, no de su visibilidad.
+  if (autoPopup && bloqueada && el.offsetParent !== null && !yaMostrado.has(featureId)) {
     yaMostrado.add(featureId);
     abrirPopupPlanes();
   }
@@ -43,27 +41,15 @@ export function aplicarBadgesInlinePro() {
   document.querySelectorAll('.pro-inline-badge').forEach((b) => { b.hidden = !bloqueada; });
 }
 
-function pintarOverlayBloqueo(el, bloqueada, featureId) {
+function pintarOverlayBloqueo(el, bloqueada) {
   let overlay = el.querySelector(':scope > .vista-bloqueada-overlay');
   if (bloqueada && !overlay) {
     overlay = document.createElement('div');
     overlay.className = 'vista-bloqueada-overlay';
-    // Convencion para demos: interfaz/publico/videos/demo-<featureId>.mp4.
-    // Vite las sirve desde /videos/; el placeholder queda hasta que carguen.
     overlay.innerHTML =
       '<p class="vista-bloqueada-msg" data-i18n="pro.overlayMsg"></p>' +
-      '<button type="button" class="cuenta-btn-primary vista-bloqueada-btn" data-i18n="pro.upgradeCta"></button>' +
-      `<div class="vista-bloqueada-video-wrap">
-        <div class="vista-bloqueada-video-placeholder">
-          <img src="icons/play_arrow.svg" alt="">
-          <span data-i18n="pro.demoVideoSoon"></span>
-        </div>
-        <video class="vista-bloqueada-video" src="videos/demo-${featureId}.mp4" muted loop playsinline controls autoplay></video>
-      </div>`;
-    overlay.querySelector('.vista-bloqueada-video').addEventListener('loadeddata', (e) => {
-      e.currentTarget.closest('.vista-bloqueada-video-wrap').classList.add('cargado');
-    });
-    overlay.querySelector('.vista-bloqueada-btn').addEventListener('click', abrirPopupPlanes);
+      '<button type="button" class="vista-bloqueada-link" data-i18n="pro.upgradeCta"></button>';
+    overlay.querySelector('.vista-bloqueada-link').addEventListener('click', abrirPopupPlanes);
     el.appendChild(overlay);
     aplicarTraducciones(overlay);
   } else if (!bloqueada && overlay) {
