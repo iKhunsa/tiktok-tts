@@ -59,7 +59,7 @@ function flush(options) {
   return runtime.transport.flush(options).catch(() => false);
 }
 
-function init({ url, token, appVersion, dataDir, bus, logger }) {
+function init({ url, token, appVersion, dataDir, creatorDataDir = dataDir, bus, logger }) {
   if (runtime.enabled) return true;
   if (!url) return false; // sin servidor configurado: telemetria desactivada
 
@@ -69,7 +69,7 @@ function init({ url, token, appVersion, dataDir, bus, logger }) {
   try {
     runtime.identity = { machineId: machineId(), sessionId: sessionId(), os: osInfo() };
     runtime.buffer = new Buffer(dataDir, logger);
-    runtime.creators = new CreatorCache(dataDir, logger);
+    runtime.creators = new CreatorCache(creatorDataDir, logger);
     runtime.transport = new Transport({
       url, token, buffer: runtime.buffer, identity: runtime.identity, appVersion,
       onDirectives: handleDirectives, logger,
@@ -99,6 +99,11 @@ function init({ url, token, appVersion, dataDir, bus, logger }) {
   return true;
 }
 
+function switchCreatorDataDir(dataDir) {
+  if (!runtime.enabled) return;
+  runtime.creators = new CreatorCache(dataDir, runtime.logger);
+}
+
 async function shutdown({ timeoutMs = 1500 } = {}) {
   if (!runtime.enabled) return;
 
@@ -121,5 +126,6 @@ module.exports = {
   markPlatform,
   platformsUsed,
   sessionMinutes,
+  switchCreatorDataDir,
   get enabled() { return runtime.enabled; },
 };

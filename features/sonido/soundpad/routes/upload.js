@@ -29,8 +29,10 @@ function createUploadMiddleware(soundsDir) {
 }
 
 function upload(deps) {
-  const uploadMiddleware = createUploadMiddleware(deps.soundsDir);
   return (req, res) => {
+    const dir = deps.soundsDir();
+    fs.mkdirSync(dir, { recursive: true });
+    const uploadMiddleware = createUploadMiddleware(dir);
     uploadMiddleware.single('audio')(req, res, (err) => {
       if (err) {
         const isUnsupportedType = /MP3, WAV, OGG, WEBM/.test(err.message || '');
@@ -41,7 +43,7 @@ function upload(deps) {
       }
       if (!req.file) return res.status(400).json({ error: 'No se recibió archivo de audio', errorKey: 'errors.noAudioFile' });
 
-      const sounds = loadSounds(deps.soundsConfigPath, deps.logger);
+      const sounds = loadSounds(deps.soundsConfigPath(), deps.logger);
       if (sounds.length >= 24) {
         fs.unlink(req.file.path, (err2) => {
           if (err2) {
@@ -66,7 +68,7 @@ function upload(deps) {
         createdAt: Date.now(),
       };
       sounds.push(entry);
-      saveSounds(deps.soundsConfigPath, sounds, deps.logger);
+      saveSounds(deps.soundsConfigPath(), sounds, deps.logger);
       syncSoundPadsToMobileState(deps);
       res.json(entry);
     });
