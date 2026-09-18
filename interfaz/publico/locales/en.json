@@ -1120,7 +1120,10 @@
     "confirmCancelNo": "Go back",
     "resume": "Resume subscription",
     "resumed": "Your Pro subscription stays active — the cancellation was undone.",
-    "planSinPromosCancels": "No promotions · cancels on {fecha}"
+    "planSinPromosCancels": "No promotions · cancels on {fecha}",
+    "changePhoto": "Change photo",
+    "removePhoto": "Remove photo",
+    "photoError": "Couldn't save the photo"
   },
   "sidebarAccount": {
     "badgeFree": "FREE",

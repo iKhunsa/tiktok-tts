@@ -1120,7 +1120,10 @@
     "confirmCancelNo": "Zurück",
     "resume": "Abo fortsetzen",
     "resumed": "Dein Pro-Abo bleibt aktiv — die Kündigung wurde rückgängig gemacht.",
-    "planSinPromosCancels": "Ohne Werbung · endet am {fecha}"
+    "planSinPromosCancels": "Ohne Werbung · endet am {fecha}",
+    "changePhoto": "Foto ändern",
+    "removePhoto": "Foto entfernen",
+    "photoError": "Foto konnte nicht gespeichert werden"
   },
   "sidebarAccount": {
     "badgeFree": "FREE",
