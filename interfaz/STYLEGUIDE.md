@@ -1,6 +1,6 @@
 # Guía de estilo de la interfaz
 
-Referencia rápida para mantener consistente la UI ESM/Vite de TikTok TTS. Reutilizar tokens y clases existentes antes de añadir CSS.
+Referencia rápida para mantener consistente la UI ESM/Vite de TikLiveTTS. Reutilizar tokens y clases existentes antes de añadir CSS.
 
 ## Colores
 

@@ -5,7 +5,7 @@ const { openExternalSafe } = require('./open-external');
 
 function buildTrayMenu({ onOpen, onInstallUpdate, onQuit }, updateVersion = null) {
   const items = [
-    { label: 'Abrir TikTok TTS', click: onOpen },
+    { label: 'Abrir TikLiveTTS', click: onOpen },
     { type: 'separator' },
   ];
 
@@ -27,7 +27,7 @@ function createTray({ iconPath, logger, onOpen, onInstallUpdate, onQuit }) {
   try {
     const icon = nativeImage.createFromPath(iconPath);
     const tray = new Tray(icon);
-    tray.setToolTip('TikTok TTS');
+    tray.setToolTip('TikLiveTTS');
     tray.setContextMenu(buildTrayMenu({ onOpen, onInstallUpdate, onQuit }));
     tray.on('double-click', onOpen);
     return tray;
@@ -43,7 +43,7 @@ function createTray({ iconPath, logger, onOpen, onInstallUpdate, onQuit }) {
 function showStartupError(error) {
   return dialog.showMessageBox({
     type: 'error',
-    title: 'TikTok TTS - Error de inicio',
+    title: 'TikLiveTTS - Error de inicio',
     message: 'Hubo un error al iniciar la aplicacion.',
     detail: `${error.message}\n\nSi el problema persiste, descarga la ultima version desde GitHub.`,
     buttons: ['Descargar ultima version', 'Cerrar'],

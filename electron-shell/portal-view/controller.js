@@ -17,7 +17,7 @@ const DEFAULT_MIN_SIZE = [900, 600];
 // RESUELTO (fase 6, re-verificado en vivo): el titulo de la BrowserWindow ya
 // no se pisa con el <title> de la pagina de terceros al navegar una pestaña —
 // se probo navegando a tiktok.com/Twitch/IANA con el panel abierto y el
-// titulo de la ventana ("TikTok Live TTS") se mantuvo estable en todos los
+// titulo de la ventana ("TikLiveTTS") se mantuvo estable en todos los
 // casos. El problema documentado en fases 1-2 ya no se reproduce (ningun
 // codigo de este archivo llama setTitle() ni escucha page-title-updated del
 // webContents principal — solo tab-pool.js escucha el evento en el
