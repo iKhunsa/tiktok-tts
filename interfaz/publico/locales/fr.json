@@ -18,7 +18,7 @@
   },
   "bugReport": {
     "title": "Signaler un problème",
-    "guide": "Vous avez un problème ? 1) Essayez de le reproduire à nouveau. 2) Remplissez ce formulaire en racontant ce qui s'est passé avec vos propres mots. 3) À l'envoi, c'est transmis automatiquement à l'équipe avec le journal technique de votre session (sans mots de passe ni données sensibles).",
+    "guide": "Un problème ? 1) Essayez de le reproduire. 2) Dites-nous ce qui s'est passé dans ce formulaire. 3) À l'envoi, l'équipe le reçoit avec le journal technique de votre session ; il ne contient ni mot de passe ni donnée sensible.",
     "discordNickLabel": "Votre pseudo Discord",
     "discordNickPlaceholder": "utilisateur#0000",
     "channelLinkLabel": "Lien de votre chaîne (TikTok/Twitch/YouTube)",
@@ -958,7 +958,8 @@
     "reorderLabel": "Réordonner :",
     "mediaPlaceholder": "Aperçu à venir",
     "comingSoon": "Bientôt disponible",
-    "comingSoonDesc": "Nous travaillons sur de nouveaux outils."
+    "comingSoonDesc": "Nous travaillons sur de nouveaux outils.",
+    "suggestIdea": "Une idée ? Suggérez une fonctionnalité"
   },
   "errors": {
     "textRequired": "Texte requis",

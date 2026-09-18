@@ -18,7 +18,7 @@
   },
   "bugReport": {
     "title": "Report a problem",
-    "guide": "Got a problem? 1) Try to reproduce it again. 2) Fill out this form describing what happened in your own words. 3) On submit, it's sent automatically to the team along with your session's technical log (no passwords or sensitive data included).",
+    "guide": "Got a problem? 1) Try to reproduce it. 2) Tell us what happened in this form. 3) When you send it, the team receives it with your session's technical log; it contains no passwords or sensitive data.",
     "discordNickLabel": "Your Discord nickname",
     "discordNickPlaceholder": "user#0000",
     "channelLinkLabel": "Your channel link (TikTok/Twitch/YouTube)",
@@ -987,7 +987,8 @@
     "reorderLabel": "Reorder:",
     "mediaPlaceholder": "Preview coming soon",
     "comingSoon": "More coming soon",
-    "comingSoonDesc": "We're working on new tools."
+    "comingSoonDesc": "We're working on new tools.",
+    "suggestIdea": "Have an idea? Suggest a feature"
   },
   "mcp": {
     "title": "MCP Agent",
