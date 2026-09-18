@@ -25,6 +25,7 @@ export const almacenSesion = crearAlmacen({
   subscription: null,
   degraded: false,
 });
+let sesionHidratada = false;
 
 /** Con el sistema de cuentas activo, nadie usa la app sin sesión: hay que
  * registrarse o iniciar sesión. Con el sistema apagado (flag off / sin
@@ -48,8 +49,17 @@ function normalizar(data) {
 }
 
 export function aplicarSesion(data) {
+  const anterior = almacenSesion.getState().user?.id || 'anonymous';
   almacenSesion.setState(normalizar(data || {}));
+  const actual = almacenSesion.getState().user?.id || 'anonymous';
   migrarDatosLegacy();
+  // El renderer tiene caches de chat, cola TTS, clips, plataformas y widgets
+  // que no comparten un reset seguro. Recargar tras un cambio real elimina la
+  // ventana donde una escritura vieja podria caer en la cuenta nueva.
+  if (sesionHidratada && anterior !== actual) {
+    window.location.reload();
+    return;
+  }
   loadSettings();
   applySettings();
   window.renderPluginStore?.();
@@ -61,12 +71,15 @@ export async function cargarSesion() {
     const r = await fetch('/api/auth/session');
     if (r.status === 404) {
       almacenSesion.setState({ activo: false });
+      sesionHidratada = true;
       return;
     }
-    if (!r.ok) { almacenSesion.setState({ activo: true, degraded: true }); return; }
+    if (!r.ok) { almacenSesion.setState({ activo: true, degraded: true }); sesionHidratada = true; return; }
     aplicarSesion(await r.json());
+    sesionHidratada = true;
   } catch (_) {
     almacenSesion.setState({ activo: true, degraded: true });
+    sesionHidratada = true;
   }
 }
 

@@ -8,7 +8,7 @@ const { createPolicy } = require('./policy');
 const moderacionPolicyContract = require('../../core/contracts/moderacion-policy');
 const mcpRegistry = require('../../core/contracts/mcp-registry');
 const { resolveModTarget, resolveUntil } = require('./apply-mod-action');
-const { DATA_BASE } = require('../../core/paths');
+const { accountDataDir } = require('../../core/account-data-path');
 
 const { preview } = require('./routes/preview');
 const { viewers } = require('./routes/viewers');
@@ -35,11 +35,20 @@ module.exports = {
   name: 'moderacion',
 
   register({ app, bus, logger }) {
-    const store = createModerationStore({ dataDir: DATA_BASE, logger });
+    const store = createModerationStore({ dataDir: accountDataDir(), logger });
     storeInstance = store;
     const blockedMatchersState = createBlockedMatchersState();
     const dupState = createDuplicateTrackerState();
     loadBlockedWordsFromFile(blockedMatchersState, logger);
+
+    bus.on('account:changing', () => store.flush(), 'moderacion');
+    bus.on('account:changed', () => {
+      store.switchDataDir(accountDataDir());
+      blockedMatchersState.blockedWords.clear();
+      blockedMatchersState.cache = null;
+      loadBlockedWordsFromFile(blockedMatchersState, logger);
+      bus.emit('ws:broadcast', { type: 'moderation-reset' });
+    }, 'moderacion');
 
     const deps = { app, bus, logger, store, blockedMatchersState, dupState };
 

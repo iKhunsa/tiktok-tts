@@ -31,6 +31,10 @@ module.exports = {
     channelState = state;
     const rateLimiterState = createRateLimiterState();
     const deps = { state, bus, logger };
+    // La identidad cambia sin reiniciar el proceso: los Maps se vacian antes
+    // de apuntar los stores al namespace nuevo para que ningun callback viejo
+    // siga emitiendo eventos del streamer anterior.
+    bus.on('account:changing', () => module.exports.shutdown(), 'canales');
 
     const rateLimit = connectRateLimiter(rateLimiterState, logger);
 
@@ -183,6 +187,7 @@ module.exports = {
       state.obs.intentionalClose = true;
       try { state.obs.ws.close(); } catch (_) { /* best-effort */ }
     }
+    state.obs.lastParams = null;
 
     for (const timer of state.kickWatchdogTimers.values()) clearTimeout(timer);
     state.kickWatchdogTimers.clear();

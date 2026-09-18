@@ -1,6 +1,6 @@
 'use strict';
 
-const { createState, SWEEP_MS } = require('./state');
+const { createState, setDataDir, SWEEP_MS } = require('./state');
 const { keyFor } = require('./key-for');
 const { parseKey } = require('./parse-key');
 const { load } = require('./load');
@@ -54,6 +54,12 @@ function createModerationStore(opts = {}) {
     clearAll: () => clearAll(state),
     load: () => load(state),
     flush: () => flush(state),
+    switchDataDir: (dataDir) => {
+      flush(state);
+      setDataDir(state, dataDir);
+      state.dirty = false;
+      load(state);
+    },
     sweepExpired: () => sweepExpired(state),
     shutdown: () => shutdown(state),
     get size() { return state.viewers.size; },
