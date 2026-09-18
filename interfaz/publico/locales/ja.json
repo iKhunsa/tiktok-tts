@@ -18,7 +18,7 @@
   },
   "bugReport": {
     "title": "問題を報告",
-    "guide": "問題がありますか？1）もう一度再現してみてください。2）このフォームに、何が起きたかをご自身の言葉で記入してください。3）送信すると、セッションの技術ログと一緒に自動的にチームへ送られます（パスワードや機密情報は含まれません）。",
+    "guide": "問題がありますか？1）再現できるか試してください。2）このフォームで何が起きたか教えてください。3）送信すると、セッションの技術ログと一緒にチームへ届きます。パスワードや機密情報は含まれません。",
     "discordNickLabel": "あなたのDiscordニックネーム",
     "discordNickPlaceholder": "ユーザー#0000",
     "channelLinkLabel": "あなたのチャンネルリンク（TikTok/Twitch/YouTube）",
@@ -961,7 +961,8 @@
     "reorderLabel": "並べ替え:",
     "mediaPlaceholder": "プレビューは近日公開",
     "comingSoon": "近日追加予定",
-    "comingSoonDesc": "新しいツールを開発中です。"
+    "comingSoonDesc": "新しいツールを開発中です。",
+    "suggestIdea": "アイデアがありますか？機能を提案する"
   },
   "errors": {
     "textRequired": "テキストを入力してください",
