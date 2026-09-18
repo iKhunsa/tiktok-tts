@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { UPLOADS_DIR } = require('./upload-bg');
+const { uploadsDir } = require('./upload-bg');
 
 function deleteBg(logger) {
   return (req, res) => {
@@ -11,8 +11,9 @@ function deleteBg(logger) {
       return res.status(400).json({ error: 'Se requiere filename' });
     }
     const safeName = path.basename(filename);
-    const filePath = path.resolve(UPLOADS_DIR, safeName);
-    if (!filePath.startsWith(path.resolve(UPLOADS_DIR))) {
+    const dir = uploadsDir();
+    const filePath = path.resolve(dir, safeName);
+    if (!filePath.startsWith(path.resolve(dir))) {
       return res.status(403).json({ error: 'Forbidden' });
     }
     try {
