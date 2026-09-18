@@ -23,6 +23,8 @@ const DEFAULT_CONFIG = {
   a11yUiFontScale: 1,
   a11yHighContrast: false,
   ttsSlowSpeech: false,
+  // Plantillas propias de avisos ({usuario}, {regalo}, ...) por evento; vacio = texto estandar.
+  announceTemplates: {},
   // true = el TTS lee a todo el mundo (comportamiento historico).
   // false = solo lee a seguidores y a la whitelist manual.
   ttsReadNonFollowers: true,

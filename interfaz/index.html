@@ -170,6 +170,21 @@
           <input type="checkbox" onchange="toggleOption('readChat', this)" />
           <img class="icon-inline" src="icons/chat.svg" alt=""> <span data-i18n="toggle.readChat">Leer comentarios</span>
         </label>
+        <!-- Único chip cuyo estado vive en el servidor (config.json) y no en
+             appSettings: el filtro se aplica server-side antes del broadcast. -->
+        <label class="toggle-chip" id="chip-nonfollowers">
+          <input type="checkbox" id="ttsReadNonFollowersToggle" onchange="setReadNonFollowers(this.checked)" />
+          <img class="icon-inline" src="icons/person_add.svg" alt=""> <span data-i18n="toggle.readNonFollowers">Leer a no seguidores</span>
+        </label>
+        <label class="toggle-chip" id="chip-username">
+          <input type="checkbox" onchange="toggleOption('sayUsername', this)" />
+          <img class="icon-inline" src="icons/label.svg" alt=""> <span data-i18n="toggle.sayUsername">Decir nombre</span>
+        </label>
+        <label class="toggle-chip" id="chip-username-connector" style="width:max-content;">
+          <input type="checkbox" id="sayUsernameConnectorToggle" onchange="toggleSayUsernameConnector(this)" />
+          <img class="icon-inline" src="icons/record_voice_over.svg" alt=""> <span data-i18n="toggle.sayUsernameConnector">+ "dice"</span>
+        </label>
+        <div class="toggles-sep" role="separator"></div>
         <label class="toggle-chip" id="chip-gifts">
           <input type="checkbox" onchange="toggleOption('readGifts', this)" />
           <img class="icon-inline" src="icons/card_giftcard.svg" alt=""> <span data-i18n="toggle.readGifts">Anunciar regalos</span>
@@ -193,20 +208,6 @@
         <label class="toggle-chip" id="chip-shares">
           <input type="checkbox" onchange="toggleOption('readShares', this)" />
           <img class="icon-inline" src="icons/public.svg" alt=""> <span data-i18n="toggle.readShares">Anunciar compartidos</span>
-        </label>
-        <label class="toggle-chip" id="chip-username">
-          <input type="checkbox" onchange="toggleOption('sayUsername', this)" />
-          <img class="icon-inline" src="icons/label.svg" alt=""> <span data-i18n="toggle.sayUsername">Decir nombre</span>
-        </label>
-        <!-- Único chip cuyo estado vive en el servidor (config.json) y no en
-             appSettings: el filtro se aplica server-side antes del broadcast. -->
-        <label class="toggle-chip" id="chip-nonfollowers">
-          <input type="checkbox" id="ttsReadNonFollowersToggle" onchange="setReadNonFollowers(this.checked)" />
-          <img class="icon-inline" src="icons/person_add.svg" alt=""> <span data-i18n="toggle.readNonFollowers">Leer a no seguidores</span>
-        </label>
-        <label class="toggle-chip" id="chip-username-connector" style="width:max-content;">
-          <input type="checkbox" id="sayUsernameConnectorToggle" onchange="toggleSayUsernameConnector(this)" />
-          <img class="icon-inline" src="icons/record_voice_over.svg" alt=""> <span data-i18n="toggle.sayUsernameConnector">+ "dice"</span>
         </label>
       </div>
       </div>

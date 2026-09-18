@@ -787,6 +787,9 @@
       margin-bottom: 16px;
     }
 
+    /* Linea fina que separa los toggles de solo lectura de los de anuncio. */
+    .toggles-sep { flex-basis: 100%; height: 1px; background: var(--border); opacity: .6; margin: 2px 0; }
+
     /* Caja colapsable de los 10 toggle chips de "qué se lee".
        Misma superficie que .chat-section (fondo + borde), ancho completo del
        área de trabajo. El resumen de texto queda visible también expandido. */
