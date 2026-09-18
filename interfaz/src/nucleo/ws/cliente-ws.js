@@ -128,7 +128,7 @@ function handleMessage(data) {
         const giftId = nuevoMsgId();
         const giftVars = { user: data.user, count: data.repeatCount, gift: data.giftName, amount: data.usdValue };
         const tplVars = { usuario: data.user, cantidad: data.repeatCount, regalo: data.giftName, monto: data.usdValue };
-        const giftBase = resolverAnuncio(announceTemplates, 'gift', tplVars, () => t('announce.gift', giftVars));
+        const giftBase = resolverAnuncio(announceTemplates, 'gift', { ...tplVars, monto: undefined }, () => t('announce.gift', giftVars));
         const giftText = (options.readGiftAmount && data.usdValue)
           ? resolverAnuncio(announceTemplates, 'giftUsd', tplVars, () => t('announce.giftUsd', giftVars))
           : giftBase;
