@@ -6,6 +6,7 @@ function disconnectObs(deps) {
   const { state, bus, logger } = deps;
   state.obs.intentionalClose = true;
   clearObsReconnect(deps);
+  state.obs.lastParams = null;
   if (state.obs.ws) {
     try { state.obs.ws.close(); } catch (_) { /* best-effort */ }
     state.obs.ws = null;

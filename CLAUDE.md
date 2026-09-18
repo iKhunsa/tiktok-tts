@@ -635,6 +635,14 @@ Todo dato del streamer se guarda por `user.id`: renderer mediante
 claves/rutas globales para datos de cuenta. Los datos de instalación (sesión,
 telemetría, logs y binarios) permanecen en `DATA_BASE`.
 
+La transición se anuncia como `account:changing` (flush y desconexión) y
+`account:changed` (contexto y recarga). Los dominios no importan auth: escuchan
+ese bus. `config.json`, `moderation.json`, uploads, soundpad, PortalView y la
+cache de identidad de telemetría son por cuenta; `installation-config.json`
+conserva globales `subscriptionsEnabled` y los flags MCP. El renderer recarga
+la ventana tras un cambio efectivo de `user.id`, para no reutilizar caches,
+cola TTS ni estado visual de la cuenta anterior.
+
 ## graphify
 
 

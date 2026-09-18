@@ -6,11 +6,15 @@
 // seguro y evita que /electron-shell tenga que coordinar el orden.
 const { track, creatorCache, markPlatform, platformsUsed } = require('./runtime');
 const connectors = require('./connectors');
+const { accountDataDir } = require('../../core/account-data-path');
 
 module.exports = {
   name: 'telemetria',
 
   register({ bus, logger }) {
+    bus.on('account:changed', () => {
+      require('./runtime').switchCreatorDataDir(accountDataDir());
+    }, 'telemetria');
     let attached = 0;
     for (const connector of connectors) {
       try {
