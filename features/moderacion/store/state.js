@@ -14,11 +14,10 @@ const SWEEP_MS = 15 * 60 * 1000;
 const PLATFORMS = ['tiktok', 'twitch', 'youtube', 'kick'];
 
 function createState({ dataDir, logger, maxViewers = 5000, purgeTarget = 4000 }) {
-  const filePath = path.join(dataDir, FILE_NAME);
   return {
     logger,
-    filePath,
-    tmpPath: `${filePath}.tmp`,
+    filePath: path.join(dataDir, FILE_NAME),
+    tmpPath: path.join(dataDir, `${FILE_NAME}.tmp`),
     viewers: new Map(),
     dirty: false,
     debounceTimer: null,
@@ -29,4 +28,9 @@ function createState({ dataDir, logger, maxViewers = 5000, purgeTarget = 4000 })
   };
 }
 
-module.exports = { createState, SCHEMA_VERSION, PLATFORMS, DEBOUNCE_MS, MAX_DELAY_MS, SWEEP_MS };
+function setDataDir(state, dataDir) {
+  state.filePath = path.join(dataDir, FILE_NAME);
+  state.tmpPath = `${state.filePath}.tmp`;
+}
+
+module.exports = { createState, setDataDir, SCHEMA_VERSION, PLATFORMS, DEBOUNCE_MS, MAX_DELAY_MS, SWEEP_MS };

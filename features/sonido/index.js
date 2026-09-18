@@ -1,8 +1,10 @@
 'use strict';
 
 const path = require('path');
+const fs = require('fs');
 const express = require('express');
 const { DATA_BASE, RESOURCE_BASE } = require('../../core/paths');
+const { accountDataPath, getActiveAccount } = require('../../core/account-data-path');
 const { ensureDirSync } = require('../../core/ensure-dir');
 const { createTtsRateLimiterState } = require('./tts/is-rate-limited');
 const { generate } = require('./tts/routes/generate');
@@ -43,14 +45,29 @@ const { attachSoundpadShortcuts } = require('./soundpad/shortcuts');
 
 let engineInstance = null;
 
+function migrateLegacySoundpad(soundsDir, soundsConfigPath) {
+  const marker = path.join(DATA_BASE, 'soundpad-account-migrated-v1.json');
+  const legacyDir = path.join(DATA_BASE, 'sounds');
+  const legacyConfig = path.join(DATA_BASE, 'sounds-config.json');
+  if (getActiveAccount() === 'anonymous' || fs.existsSync(marker)) return;
+  const destination = soundsDir();
+  if (fs.existsSync(legacyDir) && !fs.existsSync(destination)) fs.cpSync(legacyDir, destination, { recursive: true });
+  if (fs.existsSync(legacyConfig) && !fs.existsSync(soundsConfigPath())) fs.copyFileSync(legacyConfig, soundsConfigPath());
+  fs.writeFileSync(marker, JSON.stringify({ soundpad: true, migratedAt: Date.now() }), 'utf8');
+}
+
 module.exports = {
   name: 'sonido',
 
   register({ app, bus, logger }) {
-    const soundsDir = path.join(DATA_BASE, 'sounds');
-    ensureDirSync(soundsDir);
-    const soundsConfigPath = path.join(DATA_BASE, 'sounds-config.json');
-    app.use('/sounds', express.static(soundsDir));
+    const soundsDir = () => accountDataPath('sounds');
+    const soundsConfigPath = () => accountDataPath('sounds-config.json');
+    migrateLegacySoundpad(soundsDir, soundsConfigPath);
+    app.use('/sounds', (req, res, next) => {
+      const dir = soundsDir();
+      ensureDirSync(dir);
+      return express.static(dir)(req, res, next);
+    });
     app.use('/soundpad-icons', express.static(path.join(RESOURCE_BASE, 'asset', 'icons')));
 
     const musicState = createMusicState();
