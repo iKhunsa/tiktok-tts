@@ -26,7 +26,7 @@ export function cmd(action, extra = {}) {
       }
       const toasts = {
         skip: t('mobile3.msgSkipped'),
-        clear: t('mobile3.queueCleared'),
+        clear: t('mobile3.chatAndQueueCleared'),
         markClip: t('mobile3.clipMarked'),
         emergency: t('mobile3.emergencyMode'),
         soloChat: t('mobile3.onlyChatActivated'),

@@ -20,7 +20,7 @@ import { loadSettings, applySettings, appSettings } from '../../nucleo/estado/aj
 import { loadRuntimeConfig } from '../../nucleo/estado/config-runtime.js';
 import { connectWS } from '../../nucleo/ws/cliente-ws.js';
 import {
-  updateQueueBadge, skipCurrentTTS, clearTTSQueue, togglePauseTts, toggleGlobalTTS,
+  updateQueueBadge, skipCurrentTTS, togglePauseTts, toggleGlobalTTS,
   enableEmergencyTTSMode, updateRate, updateVol,
 } from '../../nucleo/tts/cola-tts.js';
 
@@ -52,7 +52,7 @@ import {
   toggleDictFilter, toggleSayUsernameConnector, updateConnectorChipState, selectVoice,
   loadVoices, testVoice, iniciarCierreDropdownVoces,
 } from './voces.js';
-import { escapeHtml, initChatScrollFollow, clearChat } from './chat-ui.js';
+import { escapeHtml, initChatScrollFollow, clearChatAndQueue } from './chat-ui.js';
 import {
   openDonationsModal, closeDonationsModal,
   openBugReportModal, closeBugReportModal, submitBugReport, openDictLangModal,
@@ -118,7 +118,7 @@ Object.assign(window, {
   toggleVoiceDropdown, toggleLangFilter, toggleDictFilter, toggleSayUsernameConnector,
   selectVoice, testVoice,
   // chat / tts
-  clearChat, skipCurrentTTS, clearTTSQueue, togglePauseTts, toggleGlobalTTS,
+  clearChatAndQueue, skipCurrentTTS, togglePauseTts, toggleGlobalTTS,
   enableEmergencyTTSMode, updateRate, updateVol,
   // modales y avisos
   openDonationsModal, closeDonationsModal,
