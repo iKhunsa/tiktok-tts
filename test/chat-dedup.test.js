@@ -133,3 +133,11 @@ test('Twitch fallback (sin tag id): dedup por tmi-sent-ts + texto', () => {
   emit({ platform: 'twitch', channel: 'x', raw: mk('1700000200000') }); // 200s despues -> nuevo
   assert.equal(permitidos.length, 2);
 });
+
+test('TikTok: emoji unicode y [token] se muestran en el chat pero el TTS no los lee', () => {
+  const { tiktok, permitidos } = setup();
+  tiktok('eva', 'hola 😀 [rosa] <b>x</b>');
+  const p = permitidos[0];
+  assert.equal(p.comment, 'hola 😀 :rosa: <b>x</b>');
+  assert.equal(p.ttsComment, 'hola b x /b');
+});
