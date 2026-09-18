@@ -63,7 +63,7 @@ function createWindow({ iconPath, onClose, bus }) {
     minWidth: 900,
     minHeight: 600,
     icon: iconPath,
-    title: 'TikTok TTS',
+    title: 'TikLiveTTS',
     show: false,
     webPreferences: {
       nodeIntegration: false,
@@ -110,7 +110,7 @@ function createWindow({ iconPath, onClose, bus }) {
           minHeight: 600,
           icon: iconPath,
           autoHideMenuBar: true,
-          title: 'TikLive TTS — Pago',
+          title: 'TikLiveTTS — Pago',
           // Sin preload: es la pagina de pago de un tercero, no expone el
           // puente IPC de la app (electronAPI) ahi adentro.
           webPreferences: {

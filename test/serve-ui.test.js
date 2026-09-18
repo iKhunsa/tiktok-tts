@@ -17,7 +17,7 @@ const RES = fs.mkdtempSync(path.join(os.tmpdir(), 'tts-pkg-res-'));
 fs.mkdirSync(path.join(RES, 'public', 'assets'), { recursive: true });
 fs.writeFileSync(
   path.join(RES, 'public', 'index.html'),
-  '<!doctype html><title>TikTok TTS</title><main data-marker="SERVE_UI_FIXTURE"></main>',
+  '<!doctype html><title>TikLiveTTS</title><main data-marker="SERVE_UI_FIXTURE"></main>',
 );
 fs.writeFileSync(path.join(RES, 'public', 'advanced.html'), '<!doctype html><title>avanzada</title>');
 fs.writeFileSync(path.join(RES, 'public', 'overlay-chat.html'), '<!doctype html><title>overlay</title>');

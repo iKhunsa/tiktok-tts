@@ -1,4 +1,4 @@
-# Palabras Prohibidas — TikTok Live TTS
+# Palabras Prohibidas — TikLiveTTS
 
 Edita este archivo directamente o usa la web en `/advanced.html`.
 Las palabras se comparan en minúsculas, sin importar acentos.
