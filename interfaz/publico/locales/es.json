@@ -622,6 +622,8 @@
     "join": "{user} entró al live",
     "follow": "{user} te acaba de seguir",
     "like": "{user} dio {count} likes",
+    "likeOne": "{user} dio {count} like",
+    "likeFew": "{user} dio {count} likes",
     "share": "{user} está compartiendo el live"
   },
   "toast": {

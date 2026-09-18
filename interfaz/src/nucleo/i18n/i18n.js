@@ -22,6 +22,15 @@ export function t(key, vars) {
   return val.replace(/\{(\w+)\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : `{${k}}`));
 }
 
+/** Aviso de likes con plural correcto del idioma activo (one/few/other). */
+export function tLike(user, count) {
+  const n = Number(count) || 1;
+  let cat = 'other';
+  try { cat = new Intl.PluralRules(_lang).select(n); } catch (_) { /* noop */ }
+  const key = cat === 'one' ? 'announce.likeOne' : cat === 'few' ? 'announce.likeFew' : 'announce.like';
+  return t(key, { user, count: n });
+}
+
 /** Traduce el error de una respuesta de API: prefiere errorKey sobre error literal. */
 export function tErr(data, fallbackKey) {
   const key = data && data.errorKey;

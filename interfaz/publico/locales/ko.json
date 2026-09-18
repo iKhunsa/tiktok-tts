@@ -583,6 +583,8 @@
     "join": "{user}님이 방송에 입장했습니다",
     "follow": "{user}님이 방금 팔로우했습니다",
     "like": "{user}님이 좋아요 {count}개를 눌렀습니다",
+    "likeOne": "{user}님이 좋아요 {count}개를 눌렀습니다",
+    "likeFew": "{user}님이 좋아요 {count}개를 눌렀습니다",
     "share": "{user}님이 방송을 공유하고 있습니다"
   },
   "toast": {
