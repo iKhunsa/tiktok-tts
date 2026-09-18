@@ -128,6 +128,8 @@
     "title": "ライブチャット",
     "empty": "ライブに接続または配信を開始して<br>ここでチャットを確認",
     "speaking": "読み上げ中...",
+
+    "gotoSpeaking": "読み上げ中のメッセージへ移動",
     "queue": "キュー：{n} 件",
     "followerBadge": "フォロワー",
     "mutedBadge": "ミュート中：TTSは読みません",

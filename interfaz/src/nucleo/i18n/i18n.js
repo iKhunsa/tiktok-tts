@@ -63,6 +63,10 @@ export function aplicarTraducciones(raiz = document) {
     const val = t(el.dataset.i18nTitle);
     if (val !== el.dataset.i18nTitle) el.title = val;
   });
+  raiz.querySelectorAll('[data-i18n-aria-label]').forEach((el) => {
+    const val = t(el.dataset.i18nAriaLabel);
+    if (val !== el.dataset.i18nAriaLabel) el.setAttribute('aria-label', val);
+  });
 }
 
 /** Carga /locales/<lang>.json con fallback a es.json. No aplica al DOM. */
