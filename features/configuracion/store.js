@@ -2,12 +2,12 @@
 
 const fs = require('fs');
 const path = require('path');
-const { DATA_BASE, RESOURCE_BASE } = require('../../core/paths');
+const { RESOURCE_BASE } = require('../../core/paths');
+const { accountDataPath } = require('../../core/account-data-path');
 const { DEFAULT_CONFIG } = require('./default-config');
 const { applyConfigPatch } = require('./apply-patch');
 
-const CONFIG_FILE = path.join(DATA_BASE, 'config.json');
-const CONFIG_TMP_FILE = `${CONFIG_FILE}.tmp`;
+function configFile() { return accountDataPath('config.json'); }
 // Override de defaults opcional para builds de distribucion especial (ej. el
 // draft de QA con subscriptionsEnabled:true para que los testers vean "Cuenta"
 // sin editar config.json a mano). Mismo patron que cuentas-config.json: un
@@ -35,24 +35,26 @@ function createConfigStore(logger) {
 
   function save() {
     try {
-      fs.writeFileSync(CONFIG_TMP_FILE, `${JSON.stringify(config, null, 2)}\n`, 'utf8');
-      fs.renameSync(CONFIG_TMP_FILE, CONFIG_FILE);
+      const file = configFile();
+      fs.writeFileSync(`${file}.tmp`, `${JSON.stringify(config, null, 2)}\n`, 'utf8');
+      fs.renameSync(`${file}.tmp`, file);
       logger.log(
         'info', 'configuracion', 'configuracion/store.js#save', 'configuracion.store.guardado',
-        `config.json guardado en ${CONFIG_FILE}`, { path: CONFIG_FILE }
+        `config.json guardado en ${file}`, { path: file }
       );
     } catch (error) {
       logger.log(
         'error', 'configuracion', 'configuracion/store.js#save', 'configuracion.store.guardado_fallido',
-        `No se pudo guardar config.json: ${error.message}`, { path: CONFIG_FILE, error: error.message, stack: error.stack }
+        `No se pudo guardar config.json: ${error.message}`, { path: configFile(), error: error.message, stack: error.stack }
       );
     }
   }
 
   function load() {
     try {
-      if (!fs.existsSync(CONFIG_FILE)) return;
-      const parsed = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'));
+      const file = configFile();
+      if (!fs.existsSync(file)) return;
+      const parsed = JSON.parse(fs.readFileSync(file, 'utf8'));
       const { rejected } = applyConfigPatch(config, parsed);
       if (rejected.length) {
         logger.log(
@@ -68,7 +70,7 @@ function createConfigStore(logger) {
     } catch (error) {
       logger.log(
         'warn', 'configuracion', 'configuracion/store.js#load', 'configuracion.store.carga_fallida',
-        `No se pudo cargar config.json, se usa DEFAULT_CONFIG: ${error.message}`, { path: CONFIG_FILE, error: error.message }
+        `No se pudo cargar config.json, se usa DEFAULT_CONFIG: ${error.message}`, { path: configFile(), error: error.message }
       );
     }
   }
@@ -77,8 +79,14 @@ function createConfigStore(logger) {
     config,
     save,
     load,
+    resetAndLoad: () => {
+      Object.assign(config, JSON.parse(JSON.stringify(DEFAULT_CONFIG)));
+      const override = leerOverrideDefaults();
+      if (override) applyConfigPatch(config, override);
+      load();
+    },
     applyPatch: (input) => applyConfigPatch(config, input),
   };
 }
 
-module.exports = { createConfigStore, CONFIG_FILE };
+module.exports = { createConfigStore, configFile };
