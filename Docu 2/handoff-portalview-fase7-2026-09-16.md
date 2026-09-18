@@ -11,7 +11,7 @@ Este documento es para que otra IA (o la misma, en otra sesión) retome **solo l
 
 ## 0. Qué es PortalView
 
-Navegador embebido en split-view dentro de TikTok TTS (Electron `WebContentsView`, split-view real dentro de la misma ventana — nunca ventana flotante, nunca `<iframe>`). El plan de arquitectura original completo está en `C:\Users\liber\.claude\plans\genera-un-plan-donde-piped-boot.md` (7 fases, todas las decisiones de diseño/seguridad ya justificadas ahí — **leerlo si hace falta contexto de por qué algo se hizo como se hizo**).
+Navegador embebido en split-view dentro de TikLiveTTS (Electron `WebContentsView`, split-view real dentro de la misma ventana — nunca ventana flotante, nunca `<iframe>`). El plan de arquitectura original completo está en `C:\Users\liber\.claude\plans\genera-un-plan-donde-piped-boot.md` (7 fases, todas las decisiones de diseño/seguridad ya justificadas ahí — **leerlo si hace falta contexto de por qué algo se hizo como se hizo**).
 
 Sirve de base para dos cosas futuras (fuera de alcance de todas las fases actuales, no tocar):
 1. Login-por-cuenta (TikTok/Twitch/Kick) vía cookies persistentes de la partición de Electron.

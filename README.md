@@ -1,4 +1,4 @@
-# TikTok TTS — Live Chat Text-to-Speech
+# TikLiveTTS — Live Chat Text-to-Speech
 
 App de escritorio para Windows que lee en voz alta el chat de tus directos en tiempo real. Todo se controla desde la app; añade los overlays a OBS como *Browser Source*.
 
@@ -20,9 +20,9 @@ App de escritorio para Windows que lee en voz alta el chat de tus directos en ti
 ## Descarga e instalación
 
 1. Ve a [Releases](https://github.com/iKhunsa/tiktok-tts/releases/latest).
-2. Descarga `TikTok-TTS-Setup-x.x.x.exe`.
+2. Descarga `TikLiveTTS-Setup-x.x.x.exe`.
 3. Ejecuta el instalador: no requiere Node.js ni permisos de administrador.
-4. La app se instala en `%LOCALAPPDATA%\TikTok TTS\` y crea accesos directos en el escritorio y el menú Inicio.
+4. La app se instala en `%LOCALAPPDATA%\TikLiveTTS\` y crea accesos directos en el escritorio y el menú Inicio.
 
 > ⚠️ El instalador no está firmado, por lo que Windows Defender puede mostrar un aviso la primera vez. Haz clic en **Más información → Ejecutar de todas formas**.
 
@@ -64,7 +64,7 @@ La app busca actualizaciones al abrirse y las descarga en segundo plano. Cuando 
 
 ## Desinstalar
 
-Configuración de Windows → Aplicaciones → TikTok TTS → Desinstalar.
+Configuración de Windows → Aplicaciones → TikLiveTTS → Desinstalar.
 
 ## Contribuir
 

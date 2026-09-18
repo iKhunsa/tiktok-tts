@@ -44,7 +44,7 @@ function reportBug(logger, bus) {
         { name: 'SO', value: `${os.platform()} ${os.release()}`, inline: true },
         { name: 'Que paso', value: String(description).slice(0, 1000) },
       ],
-      footer: { text: 'TikTok TTS — Reporte de bug' },
+      footer: { text: 'TikLiveTTS — Reporte de bug' },
       timestamp: new Date().toISOString(),
     };
     if (extra) embed.fields.push({ name: 'Info adicional', value: String(extra).slice(0, 1000) });

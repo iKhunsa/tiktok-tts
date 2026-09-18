@@ -40,7 +40,7 @@ function saveBlockedWordsToFile(state, logger) {
   try {
     const sorted = [...state.blockedWords].sort((a, b) => a.localeCompare(b));
     const lines = [
-      '# Palabras Prohibidas — TikTok Live TTS',
+      '# Palabras Prohibidas — TikLiveTTS',
       '',
       'Edita este archivo directamente o usa la web en `/advanced.html`.',
       'Las palabras se comparan en minusculas, sin importar acentos.',

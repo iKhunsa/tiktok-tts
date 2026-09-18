@@ -1,4 +1,4 @@
-# Handoff — TikLive TTS · Bugs de canales / replay / observabilidad
+# Handoff — TikLiveTTS · Bugs de canales / replay / observabilidad
 
 Última actualización: 2026-09-10 por orquestador (Etapas 1-3 completas; tarea 09 resuelta como aceptada)
 

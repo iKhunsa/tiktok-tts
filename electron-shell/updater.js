@@ -42,7 +42,7 @@ function setupAutoUpdater({ app, bus, logger, getMainWindow, getTray, buildTrayM
     // Fallback de dialogo nativo — garantizado sin importar el estado del preload/banner.
     dialog.showMessageBox({
       type: 'info',
-      title: 'TikTok TTS — Actualización lista',
+      title: 'TikLiveTTS — Actualización lista',
       message: `v${info.version} descargada y lista para instalar.`,
       detail: 'La app se reiniciará sola (no requiere reiniciar el PC).\n¿Instalar ahora?',
       buttons: ['Instalar ahora', 'Después'],

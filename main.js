@@ -3,6 +3,10 @@
 const { app, globalShortcut } = require('electron');
 const path = require('path');
 
+app.setName('TikLiveTTS');
+// Conserva los datos y sesiones de instalaciones previas tras cambiar productName.
+app.setPath('userData', path.join(app.getPath('appData'), 'tiktok-live-tts'));
+
 // Debe ocurrir antes de importar cualquier modulo local: portal-view/store.js
 // carga core/paths.js durante el require y este cachea ambos paths.
 if (app.isPackaged) {
