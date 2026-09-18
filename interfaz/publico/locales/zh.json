@@ -1120,7 +1120,10 @@
     "confirmCancelNo": "返回",
     "resume": "恢复订阅",
     "resumed": "你的 Pro 订阅保持有效——取消操作已撤销。",
-    "planSinPromosCancels": "无推广 · 将于 {fecha} 取消"
+    "planSinPromosCancels": "无推广 · 将于 {fecha} 取消",
+    "changePhoto": "更换头像",
+    "removePhoto": "移除头像",
+    "photoError": "无法保存头像"
   },
   "sidebarAccount": {
     "badgeFree": "免费",

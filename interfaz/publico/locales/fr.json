@@ -1120,7 +1120,10 @@
     "confirmCancelNo": "Retour",
     "resume": "Reprendre l'abonnement",
     "resumed": "Votre abonnement Pro reste actif — l'annulation a été annulée.",
-    "planSinPromosCancels": "Sans promotions · résiliation le {fecha}"
+    "planSinPromosCancels": "Sans promotions · résiliation le {fecha}",
+    "changePhoto": "Changer la photo",
+    "removePhoto": "Supprimer la photo",
+    "photoError": "Impossible d'enregistrer la photo"
   },
   "sidebarAccount": {
     "badgeFree": "FREE",

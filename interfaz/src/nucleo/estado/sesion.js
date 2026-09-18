@@ -11,6 +11,7 @@ import { crearAlmacen } from './crear-almacen.js';
 import { t } from '../i18n/i18n.js';
 import { abrirPopupPlanes } from '../../componentes/popup-planes.js';
 import { toggleAccountPopover } from '../../componentes/popover-cuenta.js';
+import { obtenerAvatarPerfil } from './avatar-perfil.js';
 
 export const almacenSesion = crearAlmacen({
   activo: false, // ¿el server tiene subscriptionsEnabled? (404 => false)
@@ -89,6 +90,12 @@ export function pintarBadgeSidebar() {
     copy('.sidebar-account-badge', `sidebarAccount.badge${planKey}`);
     copy('.sidebar-account-subtitle', `sidebarAccount.subtitle${planKey}`);
     copy('.sidebar-account-cta span', s.plan === 'free' ? 'sidebarAccount.upgrade' : 'sidebarAccount.managePlan');
+    const avatar = obtenerAvatarPerfil();
+    const icono = cuenta.querySelector('.sidebar-account-title > img.icon-inline');
+    if (icono) {
+      icono.src = avatar || 'icons/account_circle.svg';
+      icono.classList.toggle('sidebar-account-avatar', !!avatar);
+    }
     cuenta.querySelector('.sidebar-account-cta img').hidden = s.plan !== 'free';
     const cta = cuenta.querySelector('.sidebar-account-cta');
     cuenta.onclick = () => toggleAccountPopover(cuenta);

@@ -1139,7 +1139,10 @@
     "confirmCancelYes": "Sí, cancelar",
     "confirmCancelNo": "Volver",
     "resume": "Reanudar suscripción",
-    "resumed": "Tu suscripción Pro sigue activa — la cancelación se deshizo."
+    "resumed": "Tu suscripción Pro sigue activa — la cancelación se deshizo.",
+    "changePhoto": "Cambiar foto",
+    "removePhoto": "Quitar foto",
+    "photoError": "No se pudo guardar la foto"
   },
   "pro": {
     "popupTitle": "Desbloqueá esta función con Pro",
