@@ -185,6 +185,12 @@ function aplicarBloqueoApp() {
   aplicarBadgesInlinePro();
 }
 
+function mostrarVersionApp() {
+  const version = document.getElementById('sidebarAppVersion');
+  if (!version || !window.electronAPI?.getAppVersion) return;
+  window.electronAPI.getAppVersion().then((value) => { version.textContent = `v${value}`; }).catch(() => {});
+}
+
 function iniciarArranque() {
   iniciarRotacionAnuncioLateral();
   iniciarCapturaErroresCliente();
@@ -205,6 +211,7 @@ function iniciarArranque() {
   loadSettings();
   applySettings();
   loadRuntimeConfig();
+  mostrarVersionApp();
   iniciarCuenta();
   // Puente para interfaz/publico/plugin-store/ (scripts clasicos, sin import
   // ES) -- mismo patron que window.refreshPluginStoreTexts/__langReady.
