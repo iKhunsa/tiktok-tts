@@ -198,6 +198,27 @@ body.divisor-resizing {
 .portal-view-toolbar .portal-view-favorite-toggle {
   transition: background-color var(--dur-1) var(--ease-out), transform var(--dur-1) var(--ease-out);
 }
+.portal-view-toolbar-icon {
+  display: block;
+  width: 14px;
+  height: 14px;
+  background-color: var(--text-bright);
+  mask: center / contain no-repeat;
+  transition: background-color var(--dur-1) var(--ease-out);
+}
+.portal-view-close-session-icon { mask-image: url('/icons/power_settings_new.svg'); }
+.portal-view-favorite-icon { mask-image: url('/icons/star_border.svg'); }
+.portal-view-favorite-toggle:hover:not(:disabled) .portal-view-favorite-icon,
+.portal-view-favorite-toggle.is-favorite .portal-view-favorite-icon {
+  background-color: var(--warn);
+}
+.portal-view-favorite-toggle.is-favorite .portal-view-favorite-icon { mask-image: url('/icons/star.svg'); }
+@media (prefers-reduced-motion: reduce) {
+  .portal-view-toolbar .portal-view-favorite-toggle,
+  .portal-view-toolbar-icon { transition: none; }
+}
+body.reduce-motion .portal-view-toolbar .portal-view-favorite-toggle,
+body.reduce-motion .portal-view-toolbar-icon { transition: none; }
 .portal-view-toolbar .icon-btn:disabled {
   opacity: .35;
 }
