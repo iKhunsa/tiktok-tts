@@ -314,7 +314,17 @@
     .sidebar-account-top,
     .sidebar-account-bottom { justify-content: space-between; gap: 8px; width: 100%; }
     .sidebar-account-title { gap: 8px; font-size: var(--text-sm); font-weight: 600; color: var(--text-bright); }
+    @property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+    @keyframes rotateRainbow { to { --angle: 360deg; } }
     .sidebar-account-badge { padding: 2px 6px; border: 1px solid var(--border); border-radius: var(--radius-pill); color: var(--text-muted); font-size: var(--text-3xs); font-weight: 700; letter-spacing: 0.35px; line-height: 1.2; }
+    .sidebar-account-badge[data-i18n="sidebarAccount.badgePro"] { position: relative; border-color: transparent; background: transparent; }
+    .sidebar-account-badge[data-i18n="sidebarAccount.badgePro"]::before {
+      content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 2px;
+      background: conic-gradient(from var(--angle), #ff0000, #ff8000, #ffff00, #00ff00, #00ffff, #0080ff, #8000ff, #ff00ff, #ff0000);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
+      animation: rotateRainbow 3s linear infinite;
+    }
     .sidebar-account-bottom { color: var(--text-muted); font-size: var(--text-3xs); }
     .sidebar-account-cta { gap: 4px; color: var(--text-secondary); font-weight: 600; transition: color var(--dur-1) var(--ease-out); }
     .sidebar-account:hover .sidebar-account-cta { color: var(--accent); }
@@ -2494,28 +2504,19 @@
     .cuenta-plan.is-pro .cuenta-plan-head .icon-inline { opacity: 1; }
     .cuenta-plan-name { font-size: var(--text-md); font-weight: 650; color: var(--text-bright); }
     .cuenta-plan-state { font-size: var(--text-xs); color: var(--text-muted); margin-top: 2px; }
-    .cuenta-plan.is-pro {
-      position: relative;
-      overflow: hidden;
-      border: 0;
-      background: transparent;
-    }
-    .cuenta-plan.is-pro::before,
-    .cuenta-plan.is-pro::after { content: ''; position: absolute; pointer-events: none; }
+    .cuenta-plan.is-pro { position: relative; }
     .cuenta-plan.is-pro::before {
-      inset: -100%;
-      background: conic-gradient(#d97706, #84cc16, #38bdf8, #8b5cf6, #f43f5e, #d97706);
-      animation: cuenta-pro-border 12s linear infinite;
+      content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 2px;
+      background: conic-gradient(from var(--angle), #ff0000, #ff8000, #ffff00, #00ff00, #00ffff, #0080ff, #8000ff, #ff00ff, #ff0000);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
+      animation: rotateRainbow 3s linear infinite;
     }
-    .cuenta-plan.is-pro::after { inset: 2px; z-index: 0; border-radius: calc(var(--radius-lg) - 2px); background: var(--surface); }
-    .cuenta-plan.is-pro > * { position: relative; z-index: 1; }
-    @keyframes cuenta-pro-border { to { transform: rotate(360deg); } }
-    /* animation vive en ::before (el gradiente rotando), no en .is-pro mismo
-       -- un pseudo-elemento no hereda animation de su padre, hay que apagarlo
-       explicito ahi para que reduce-motion realmente frene la rotacion. */
     @media (prefers-reduced-motion: reduce) {
+      .sidebar-account-badge[data-i18n="sidebarAccount.badgePro"]::before,
       .cuenta-plan.is-pro::before { animation: none; }
     }
+    body.reduce-motion .sidebar-account-badge[data-i18n="sidebarAccount.badgePro"]::before,
     body.reduce-motion .cuenta-plan.is-pro::before { animation: none; }
 
     /* Comparador de planes */
