@@ -1774,19 +1774,11 @@
     #mcpPanel.vista-bloqueada-demo {
       display: flex;
       flex-direction: column;
-      max-height: 100vh;
-      overflow: clip;
     }
     .vista-bloqueada-demo > *:not(.vista-bloqueada-overlay) {
       opacity: 0.58;
       pointer-events: none;
       user-select: none;
-    }
-    /* Soundpad puede contener una grilla de hasta 24 tiles; en la demo
-       limitada al viewport, la card debe recortarla como las demás vistas. */
-    #view-soundpad.vista-bloqueada-demo > .cfg-card {
-      min-height: 0;
-      overflow: hidden;
     }
     .vista-bloqueada-overlay {
       position: sticky;
