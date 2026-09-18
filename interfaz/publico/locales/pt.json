@@ -1093,7 +1093,10 @@
     "confirmCancelNo": "Voltar",
     "resume": "Reativar assinatura",
     "resumed": "Sua assinatura Pro continua ativa — o cancelamento foi desfeito.",
-    "planSinPromosCancels": "Sem promoções · cancela em {fecha}"
+    "planSinPromosCancels": "Sem promoções · cancela em {fecha}",
+    "changePhoto": "Alterar foto",
+    "removePhoto": "Remover foto",
+    "photoError": "Não foi possível salvar a foto"
   },
   "sidebarAccount": {
     "badgeFree": "FREE",

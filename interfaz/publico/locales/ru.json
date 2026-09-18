@@ -1093,7 +1093,10 @@
     "confirmCancelNo": "Назад",
     "resume": "Возобновить подписку",
     "resumed": "Ваша подписка Pro остаётся активной — отмена отменена.",
-    "planSinPromosCancels": "Без рекламы · отменяется {fecha}"
+    "planSinPromosCancels": "Без рекламы · отменяется {fecha}",
+    "changePhoto": "Изменить фото",
+    "removePhoto": "Удалить фото",
+    "photoError": "Не удалось сохранить фото"
   },
   "sidebarAccount": {
     "badgeFree": "БЕСПЛАТНО",

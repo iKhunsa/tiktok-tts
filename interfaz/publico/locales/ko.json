@@ -1093,7 +1093,10 @@
     "confirmCancelNo": "돌아가기",
     "resume": "구독 재개",
     "resumed": "Pro 구독이 계속 활성 상태입니다 — 취소가 취소되었습니다.",
-    "planSinPromosCancels": "프로모션 없음 · {fecha}에 해지"
+    "planSinPromosCancels": "프로모션 없음 · {fecha}에 해지",
+    "changePhoto": "사진 변경",
+    "removePhoto": "사진 삭제",
+    "photoError": "사진을 저장할 수 없습니다"
   },
   "sidebarAccount": {
     "badgeFree": "무료",
