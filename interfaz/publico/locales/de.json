@@ -128,6 +128,8 @@
     "title": "Live-Chat",
     "empty": "Verbinde dich mit deinem Live oder starte einen Stream,<br>um deinen Chat hier zu sehen",
     "speaking": "Liest...",
+
+    "gotoSpeaking": "Zur gelesenen Nachricht springen",
     "queue": "Warteschlange: {n} Nachrichten",
     "followerBadge": "Follower",
     "mutedBadge": "Stumm: TTS überspringt ihn",

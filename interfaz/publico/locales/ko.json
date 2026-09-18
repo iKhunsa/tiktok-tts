@@ -128,6 +128,8 @@
     "title": "라이브 채팅",
     "empty": "라이브에 연결하거나 방송을 시작해<br>여기서 채팅을 확인하세요",
     "speaking": "읽는 중...",
+
+    "gotoSpeaking": "읽고 있는 메시지로 이동",
     "queue": "대기열: {n}개",
     "followerBadge": "팔로워",
     "mutedBadge": "음소거: TTS가 읽지 않음",
