@@ -62,7 +62,9 @@
     "favoriteLabelPlaceholder": "Nome",
     "favoriteUrlPlaceholder": "URL",
     "removeFavorite": "Remover favorito",
-    "closeSession": "Encerrar sessão de navegação"
+    "closeSession": "Encerrar sessão de navegação",
+    "favAdd": "Adicionar aos favoritos",
+    "favRemove": "Remover dos favoritos"
   },
   "toggle": {
     "readChat": "Ler comentários",

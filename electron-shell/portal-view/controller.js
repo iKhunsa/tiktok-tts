@@ -6,6 +6,7 @@ const { createTabPool } = require('./tab-pool');
 const { attachDownloadHandling } = require('./downloads');
 const { computeBounds, clampPanelWidth, attachResizeListener } = require('./bounds');
 const { loadPortalViewData, scheduleFlush, flushSync } = require('./store');
+const { normalizeUrl, findFavoriteByUrl } = require('./favorites');
 const portalViewContract = require('../../core/contracts/portal-view');
 const {
   DEFAULT_PANEL_WIDTH_PCT, CONTENT_TOP_OFFSET_PX, MAX_TABS, COMBINED_MIN_WIDTH_PX, DEFAULT_FAVORITE_ICON,
@@ -83,6 +84,7 @@ function createPortalViewController({ mainWindow, logger }) {
       tabs: tabs.map((t) => ({
         id: t.id, url: t.url, title: t.title, isLoading: t.isLoading,
         canGoBack: t.canGoBack, canGoForward: t.canGoForward, crashed: !!t.crashed,
+        isFavorite: !!findFavoriteByUrl(favorites, normalizeUrl(t.url)),
       })),
       panelWidthPct,
       favorites,
@@ -290,7 +292,7 @@ function createPortalViewController({ mainWindow, logger }) {
   function addFavorite(label, url, icon) {
     const cleanUrl = normalizeUrl(url);
     const cleanLabel = typeof label === 'string' ? label.trim().slice(0, 60) : '';
-    if (!cleanUrl || !cleanLabel) return { ok: false, error: 'invalid_favorite' };
+    if (!cleanUrl || !cleanLabel || findFavoriteByUrl(favorites, cleanUrl)) return { ok: false, error: 'invalid_favorite' };
     const favorite = {
       id: `fav_${crypto.randomUUID()}`, label: cleanLabel, url: cleanUrl,
       icon: typeof icon === 'string' && icon ? icon : DEFAULT_FAVORITE_ICON,
@@ -313,12 +315,22 @@ function createPortalViewController({ mainWindow, logger }) {
     if (!favorite) return { ok: false, error: 'invalid_favorite' };
     const cleanUrl = normalizeUrl(url);
     const cleanLabel = typeof label === 'string' ? label.trim().slice(0, 60) : '';
-    if (!cleanUrl || !cleanLabel) return { ok: false, error: 'invalid_favorite' };
+    if (!cleanUrl || !cleanLabel || findFavoriteByUrl(favorites, cleanUrl, id)) return { ok: false, error: 'invalid_favorite' };
     favorite.label = cleanLabel;
     favorite.url = cleanUrl;
     if (typeof icon === 'string' && icon) favorite.icon = icon;
     broadcastState();
     return { ok: true, favorite };
+  }
+
+  function toggleFavorite(tabId) {
+    const tab = pool.getTab(tabId);
+    const url = normalizeUrl(tab?.url);
+    if (!url) return { ok: false, error: 'invalid_favorite' };
+    const favorite = findFavoriteByUrl(favorites, url);
+    if (favorite) return removeFavorite(favorite.id);
+    const hostname = new URL(url).hostname.replace(/^www\./i, '').split('.')[0];
+    return addFavorite((tab.title || (hostname && `${hostname[0].toUpperCase()}${hostname.slice(1)}`)).trim(), url);
   }
 
   function newTab(url) {
@@ -397,22 +409,9 @@ function createPortalViewController({ mainWindow, logger }) {
 
   return {
     show, hide, navigate, newTab, closeTab, switchTab,
-    goBack, goForward, reload, addFavorite, removeFavorite, editFavorite,
+    goBack, goForward, reload, addFavorite, removeFavorite, editFavorite, toggleFavorite,
     resizePanel, setPanelWidth, getState, closeSession, destroyAll,
   };
-}
-
-function normalizeUrl(input) {
-  if (!input) return null;
-  const trimmed = input.trim();
-  if (!trimmed) return null;
-  for (const candidate of [trimmed, `https://${trimmed}`]) {
-    try {
-      const url = new URL(candidate);
-      if (url.protocol === 'http:' || url.protocol === 'https:') return url.href;
-    } catch (_) { /* probar siguiente candidato */ }
-  }
-  return null;
 }
 
 module.exports = { createPortalViewController };

@@ -188,6 +188,16 @@ body.divisor-resizing {
 .portal-view-toolbar .icon-btn:hover:not(:disabled) {
   background: var(--hover-1);
 }
+.portal-view-toolbar .portal-view-favorite-toggle:active:not(:disabled) {
+  transform: scale(.97);
+}
+.portal-view-toolbar .portal-view-favorite-toggle:focus-visible {
+  outline: 1px solid var(--brand);
+  outline-offset: 1px;
+}
+.portal-view-toolbar .portal-view-favorite-toggle {
+  transition: background-color var(--dur-1) var(--ease-out), transform var(--dur-1) var(--ease-out);
+}
 .portal-view-toolbar .icon-btn:disabled {
   opacity: .35;
 }
