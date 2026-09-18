@@ -990,7 +990,8 @@
     "mediaPlaceholder": "Preview coming soon",
     "comingSoon": "More coming soon",
     "comingSoonDesc": "We're working on new tools.",
-    "suggestIdea": "Have an idea? Suggest a feature"
+    "suggestIdea": "Have an idea? Suggest a feature",
+    "suggestIdeaDesc": "Tell us what tool you would like to use."
   },
   "mcp": {
     "title": "MCP Agent",

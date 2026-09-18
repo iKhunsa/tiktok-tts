@@ -51,17 +51,23 @@ function renderPluginGrid() {
   });
 
   const comingSoon = document.createElement('div');
-  comingSoon.className = 'store-card store-card-soon';
+  comingSoon.className = 'store-card';
   comingSoon.innerHTML = `
-    <div class="store-card-soon-copy">
-      <div class="store-card-icon"><img src="icons/build.svg" alt=""></div>
-      <div class="store-card-name">${t('store.comingSoon')}</div>
-      <div class="store-card-desc">${t('store.comingSoonDesc')}</div>
-    </div>
-    <a class="store-card-idea" href="${IDEAS_FORM_URL}" target="_blank" rel="noopener">
-      <img src="icons/lightbulb.svg" alt=""> <span>${t('store.suggestIdea')}</span>
-    </a>`;
+    <div class="store-card-icon"><img src="icons/build.svg" alt=""></div>
+    <div class="store-card-name">${t('store.comingSoon')}</div>
+    <div class="store-card-desc">${t('store.comingSoonDesc')}</div>`;
   container.appendChild(comingSoon);
+
+  const idea = document.createElement('a');
+  idea.className = 'store-card';
+  idea.href = IDEAS_FORM_URL;
+  idea.target = '_blank';
+  idea.rel = 'noopener';
+  idea.innerHTML = `
+    <div class="store-card-icon"><img src="icons/lightbulb.svg" alt=""></div>
+    <div class="store-card-name">${t('store.suggestIdea')}</div>
+    <div class="store-card-desc">${t('store.suggestIdeaDesc')}</div>`;
+  container.appendChild(idea);
 }
 
 // ── Drag & drop estilo Trello: soltar una card sobre otra la inserta antes

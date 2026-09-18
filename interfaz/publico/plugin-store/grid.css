@@ -46,6 +46,9 @@ body.reduce-motion .store-grid .store-card { animation: none; }
   color: inherit;
 }
 .store-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-lift, 0 12px 24px -14px rgba(0,0,0,0.5)); }
+.store-card:active { transform: translateY(-1px) scale(.99); }
+.store-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+a.store-card { text-decoration: none; }
 .store-card-icon {
   width: 40px; height: 40px; border-radius: 10px;
   background: var(--bg); border: 1px solid var(--border);
@@ -70,14 +73,7 @@ body.reduce-motion .store-grid .store-card { animation: none; }
   background: var(--brand-a15, rgba(255,59,92,0.15)); color: var(--brand, #ff3b5c);
 }
 
-.store-card-soon { flex-direction: row; align-items: center; justify-content: space-between; cursor: default; opacity: .55; border-style: dashed; }
-.store-card-soon-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
-.store-card-idea { display: flex; align-items: center; gap: 6px; padding: 7px 9px; border: 1px solid var(--border); border-radius: 8px; color: var(--text); font: inherit; font-size: 12px; font-weight: 600; line-height: 1.2; text-decoration: none; transition: border-color .15s, background-color .15s; }
-.store-card-idea:hover, .store-card-idea:focus-visible { border-color: var(--accent); background-color: var(--hover, rgba(255,255,255,.06)); }
-.store-card-idea img { width: 16px; height: 16px; }
-.store-card-soon:hover { border-color: var(--border); transform: none; box-shadow: none; }
-
-.store-card { cursor: grab; }
+.store-card[draggable="true"] { cursor: grab; }
 .store-card.dragging { opacity: .4; cursor: grabbing; }
 .store-card.drag-over-before { box-shadow: inset 3px 0 0 var(--accent); }
 .store-card.drag-over-after { box-shadow: inset -3px 0 0 var(--accent); }

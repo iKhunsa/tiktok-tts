@@ -961,7 +961,8 @@
     "mediaPlaceholder": "プレビューは近日公開",
     "comingSoon": "近日追加予定",
     "comingSoonDesc": "新しいツールを開発中です。",
-    "suggestIdea": "アイデアがありますか？機能を提案する"
+    "suggestIdea": "アイデアがありますか？機能を提案する",
+    "suggestIdeaDesc": "使いたいツールを教えてください。"
   },
   "errors": {
     "textRequired": "テキストを入力してください",

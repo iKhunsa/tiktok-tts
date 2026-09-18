@@ -961,7 +961,8 @@
     "mediaPlaceholder": "미리보기 준비 중",
     "comingSoon": "더 많은 기능 준비 중",
     "comingSoonDesc": "새로운 도구를 준비하고 있습니다.",
-    "suggestIdea": "아이디어가 있나요? 기능 제안하기"
+    "suggestIdea": "아이디어가 있나요? 기능 제안하기",
+    "suggestIdeaDesc": "사용하고 싶은 도구를 알려주세요."
   },
   "errors": {
     "textRequired": "텍스트가 필요합니다",
