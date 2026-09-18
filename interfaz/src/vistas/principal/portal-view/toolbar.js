@@ -62,11 +62,11 @@ export function crearToolbar() {
     <input type="text" class="portal-view-url" id="portalViewUrl"
       data-i18n-placeholder="portalView.urlPlaceholder" placeholder="Escribe una URL">
     <button type="button" class="icon-btn portal-view-favorite-toggle" id="portalViewFavoriteBtn">
-      <img class="icon-inline" alt="">
+      <span class="portal-view-toolbar-icon portal-view-favorite-icon" aria-hidden="true"></span>
     </button>
     <button type="button" class="icon-btn" id="portalViewCloseSessionBtn"
       data-i18n-title="portalView.closeSession" title="Cerrar sesión de navegación">
-      <img class="icon-inline" src="icons/power_settings_new.svg" alt="">
+      <span class="portal-view-toolbar-icon portal-view-close-session-icon" aria-hidden="true"></span>
     </button>
     <button type="button" class="icon-btn" id="portalViewCloseBtn"
       data-i18n-title="portalView.close" title="Cerrar">
@@ -105,5 +105,5 @@ export function actualizarToolbar(el) {
   favoriteBtn.disabled = !/^https?:\/\//.test(tab?.url || '');
   favoriteBtn.title = t(favorite ? 'portalView.favRemove' : 'portalView.favAdd');
   favoriteBtn.setAttribute('aria-label', favoriteBtn.title);
-  favoriteBtn.querySelector('img').src = `icons/${favorite ? 'star.svg' : 'star_border.svg'}`;
+  favoriteBtn.classList.toggle('is-favorite', favorite);
 }
