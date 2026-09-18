@@ -59,7 +59,9 @@
     "favoriteLabelPlaceholder": "Nombre",
     "favoriteUrlPlaceholder": "URL",
     "removeFavorite": "Quitar favorito",
-    "closeSession": "Cerrar sesión de navegación"
+    "closeSession": "Cerrar sesión de navegación",
+    "favAdd": "Guardar en favoritos",
+    "favRemove": "Quitar de favoritos"
   },
   "bugReport": {
     "title": "Reportar un problema",

@@ -1,4 +1,5 @@
 import { almacenPortalView } from './estado.js';
+import { t } from '../../../nucleo/i18n/i18n.js';
 
 function activeTab() {
   const { tabs, activeTabId } = almacenPortalView.getState();
@@ -37,6 +38,11 @@ function handleCloseSession() {
   window.electronAPI?.portalView?.closeSession();
 }
 
+function handleFavorite() {
+  const tab = activeTab();
+  if (tab) window.electronAPI?.portalView?.toggleFavorite(tab.id);
+}
+
 export function crearToolbar() {
   const el = document.createElement('div');
   el.className = 'portal-view-toolbar';
@@ -55,6 +61,9 @@ export function crearToolbar() {
     </button>
     <input type="text" class="portal-view-url" id="portalViewUrl"
       data-i18n-placeholder="portalView.urlPlaceholder" placeholder="Escribe una URL">
+    <button type="button" class="icon-btn portal-view-favorite-toggle" id="portalViewFavoriteBtn">
+      <img class="icon-inline" alt="">
+    </button>
     <button type="button" class="icon-btn" id="portalViewCloseSessionBtn"
       data-i18n-title="portalView.closeSession" title="Cerrar sesión de navegación">
       <img class="icon-inline" src="icons/power_settings_new.svg" alt="">
@@ -68,6 +77,7 @@ export function crearToolbar() {
   el.querySelector('#portalViewBackBtn').addEventListener('click', handleBack);
   el.querySelector('#portalViewForwardBtn').addEventListener('click', handleForward);
   el.querySelector('#portalViewReloadBtn').addEventListener('click', handleReload);
+  el.querySelector('#portalViewFavoriteBtn').addEventListener('click', handleFavorite);
   el.querySelector('#portalViewCloseSessionBtn').addEventListener('click', handleCloseSession);
   el.querySelector('#portalViewCloseBtn').addEventListener('click', handleClose);
 
@@ -90,4 +100,10 @@ export function actualizarToolbar(el) {
   }
   el.querySelector('#portalViewBackBtn').disabled = !tab?.canGoBack;
   el.querySelector('#portalViewForwardBtn').disabled = !tab?.canGoForward;
+  const favorite = !!tab?.isFavorite;
+  const favoriteBtn = el.querySelector('#portalViewFavoriteBtn');
+  favoriteBtn.disabled = !/^https?:\/\//.test(tab?.url || '');
+  favoriteBtn.title = t(favorite ? 'portalView.favRemove' : 'portalView.favAdd');
+  favoriteBtn.setAttribute('aria-label', favoriteBtn.title);
+  favoriteBtn.querySelector('img').src = `icons/${favorite ? 'star.svg' : 'star_border.svg'}`;
 }

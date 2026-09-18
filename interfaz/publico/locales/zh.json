@@ -62,7 +62,9 @@
     "favoriteLabelPlaceholder": "名称",
     "favoriteUrlPlaceholder": "URL",
     "removeFavorite": "删除收藏",
-    "closeSession": "关闭浏览会话"
+    "closeSession": "关闭浏览会话",
+    "favAdd": "添加到收藏夹",
+    "favRemove": "从收藏夹中移除"
   },
   "toggle": {
     "readChat": "朗读评论",
