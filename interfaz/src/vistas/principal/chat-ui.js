@@ -35,7 +35,6 @@ export function renderTextWithEmotes(text, emotes) {
 }
 
 const COLORS = ['#fe2c55', '#25f4ee', '#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#ff922b'];
-const MAX_CHAT_MESSAGES = 500;
 const MAX_USER_COLORS = 2000;
 const colorMap = new Map();
 
@@ -90,8 +89,29 @@ function appendChatNode(node) {
   const log = document.getElementById('chatLog');
   if (!log) return;
   log.appendChild(node);
-  while (log.children.length > MAX_CHAT_MESSAGES) log.firstElementChild?.remove();
+  podarChat(log);
   chatFollowSpeaking();
+}
+
+// Tope de nodos del log: sin el, una sesion larga acumula decenas de miles
+// de mensajes en el DOM. Si el usuario esta leyendo hacia arriba se
+// compensa el scroll con la altura podada para que la vista no salte.
+const MAX_CHAT_NODES = 300;
+
+function podarChat(log) {
+  let altoPodado = 0;
+  while (log.childElementCount > MAX_CHAT_NODES) {
+    const primero = log.firstElementChild;
+    if (!chatFollow) altoPodado += primero.offsetHeight;
+    primero.remove();
+  }
+  if (altoPodado) {
+    const behavior = log.style.scrollBehavior;
+    log.style.scrollBehavior = 'auto'; // #chatLog es smooth: sin esto la compensacion se anima
+    chatSelfScrollAt = performance.now();
+    log.scrollTop = Math.max(0, log.scrollTop - altoPodado);
+    log.style.scrollBehavior = behavior;
+  }
 }
 
 function chatPauseFollow() {

@@ -2,6 +2,7 @@ import { cargarLocaleOverlay, t, aplicarI18nOverlay } from './compartido/i18n-ov
 import { leerParametros, aplicarParametrosVisuales } from './compartido/parametros.js';
 import { conectarWSOverlay } from './compartido/ws-cliente.js';
 import { registrarErroresOverlay } from './compartido/registrar-errores.js';
+import { crearCreditos } from './compartido/creditos-agregados.js';
 
 registrarErroresOverlay();
 
@@ -13,8 +14,10 @@ const baseSpeed = hasManualSpeed ? _s : 40;
 if (hasManualSpeed) document.documentElement.style.setProperty('--speed', _s + 's');
 
 const track = document.getElementById('track');
-const MAX_CREDITS_PER_TYPE = 50;
-let credits = { donors: [], followers: [], sharers: [] };
+const credits = crearCreditos();
+const RENDER_MS = 2000;
+let ultimoRender = 0;
+let renderTimer = null;
 
 function buildRows(list) {
   return list.map((item) => {
@@ -37,19 +40,6 @@ function buildRows(list) {
   });
 }
 
-function normalizeCredits(value) {
-  return ['donors', 'followers', 'sharers'].reduce((result, type) => {
-    result[type] = Array.isArray(value?.[type]) ? value[type].slice(-MAX_CREDITS_PER_TYPE) : [];
-    return result;
-  }, {});
-}
-
-function addCredit(type, value) {
-  const list = credits[type];
-  list.push(value);
-  if (list.length > MAX_CREDITS_PER_TYPE) list.splice(0, list.length - MAX_CREDITS_PER_TYPE);
-}
-
 function renderTrack() {
   track.innerHTML = '';
   const sections = [];
@@ -57,19 +47,19 @@ function renderTrack() {
   if (credits.donors.length) {
     sections.push({
       label: t('overlayStr.donations'),
-      items: credits.donors.map((d) => ({ icon: '🎁', name: d.user, badge: `x${d.count} ${d.giftName}` })),
+      items: credits.donors.map((d) => ({ icon: '🎁', name: d.nombre, badge: [...d.regalos].map(([g, n]) => `x${n} ${g}`).join(', ') })),
     });
   }
   if (credits.followers.length) {
     sections.push({
       label: t('overlayStr.newFollowersSect'),
-      items: credits.followers.map((f) => ({ icon: '💜', name: f.user, badge: '' })),
+      items: credits.followers.map((f) => ({ icon: '💜', name: f.nombre, badge: '' })),
     });
   }
   if (credits.sharers.length) {
     sections.push({
       label: t('overlayStr.sharedSect'),
-      items: credits.sharers.map((s) => ({ icon: '🔗', name: s.user, badge: '' })),
+      items: credits.sharers.map((s) => ({ icon: '🔗', name: s.nombre, badge: '' })),
     });
   }
 
@@ -102,24 +92,35 @@ function renderTrack() {
 fetch('/api/overlay-stats')
   .then((r) => r.json())
   .then((d) => {
-    if (d.credits) credits = normalizeCredits(d.credits);
+    if (d.credits) credits.cargar(d.credits);
     renderTrack();
   })
   .catch(() => renderTrack());
 
+// Como mucho un render cada RENDER_MS: una rafaga de gifts/follows no
+// reconstruye el DOM (y reinicia el scroll) por cada evento.
+function pedirRender() {
+  if (renderTimer) return;
+  renderTimer = setTimeout(() => {
+    renderTimer = null;
+    ultimoRender = Date.now();
+    renderTrack();
+  }, Math.max(0, RENDER_MS - (Date.now() - ultimoRender)));
+}
+
 function alManejarMensaje(d) {
   if (d.type === 'gift') {
-    addCredit('donors', { user: d.user, giftName: d.giftName, count: d.repeatCount || 1 });
-    renderTrack();
+    credits.agregarDonante({ user: d.user, giftName: d.giftName, count: d.repeatCount || 1 });
+    pedirRender();
   } else if (d.type === 'follow') {
-    addCredit('followers', { user: d.user });
-    renderTrack();
+    credits.agregarSeguidor({ user: d.user });
+    pedirRender();
   } else if (d.type === 'share') {
-    addCredit('sharers', { user: d.user });
-    renderTrack();
+    credits.agregarSharer({ user: d.user });
+    pedirRender();
   } else if (d.type === 'connected' && d.isFirst) {
-    credits = { donors: [], followers: [], sharers: [] };
-    renderTrack();
+    credits.vaciar();
+    pedirRender();
   } else if (d.type === 'config-updated') {
     aplicarA11y(d.config || {});
   }
