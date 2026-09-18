@@ -6,6 +6,15 @@ function isStringArray(v) {
   return Array.isArray(v) && v.every((item) => typeof item === 'string');
 }
 
+// Espejo de ANUNCIO_VARS/ANUNCIO_MAX_LEN (interfaz/src/nucleo/i18n/plantilla-anuncio.js).
+const ANNOUNCE_KEYS = ['gift', 'giftUsd', 'join', 'follow', 'like', 'share'];
+const ANNOUNCE_MAX_LEN = 120;
+
+function isAnnounceTemplates(v) {
+  return !!v && typeof v === 'object' && !Array.isArray(v)
+    && Object.entries(v).every(([k, x]) => ANNOUNCE_KEYS.includes(k) && typeof x === 'string' && x.length <= ANNOUNCE_MAX_LEN);
+}
+
 // Migracion 1:1 de CONFIG_VALIDATORS (backend-viejo/server.js:639-666). No se
 // agregan ni quitan claves en esta fase.
 const CONFIG_VALIDATORS = {
@@ -34,6 +43,7 @@ const CONFIG_VALIDATORS = {
   a11yReduceMotion: (v) => typeof v === 'boolean',
   a11yUiFontScale: (v) => [1, 1.15, 1.3, 1.5].includes(v),
   a11yHighContrast: (v) => typeof v === 'boolean',
+  announceTemplates: isAnnounceTemplates,
   ttsSlowSpeech: (v) => typeof v === 'boolean',
   ttsReadNonFollowers: (v) => typeof v === 'boolean',
   mcpEnabled: (v) => typeof v === 'boolean',
@@ -44,4 +54,4 @@ const CONFIG_VALIDATORS = {
     && ['tiktok', 'twitch', 'youtube', 'kick'].every((p) => Array.isArray(v[p]) && v[p].every((x) => typeof x === 'string')),
 };
 
-module.exports = { CONFIG_VALIDATORS, isStringArray };
+module.exports = { CONFIG_VALIDATORS, isStringArray, isAnnounceTemplates };
