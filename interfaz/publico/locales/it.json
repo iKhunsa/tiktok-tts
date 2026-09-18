@@ -128,6 +128,8 @@
     "title": "Chat in diretta",
     "empty": "Connettiti al tuo Live o avvia una diretta<br>per vedere qui la tua chat",
     "speaking": "Leggendo...",
+
+    "gotoSpeaking": "Vai al messaggio in lettura",
     "queue": "Coda: {n} messaggi",
     "followerBadge": "Follower",
     "mutedBadge": "Silenziato: il TTS lo salta",

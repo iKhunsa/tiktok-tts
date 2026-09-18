@@ -128,6 +128,8 @@
     "title": "Chat ao vivo",
     "empty": "Conecte-se ou transmita sua Live<br>para ver seu chat aqui",
     "speaking": "Lendo...",
+
+    "gotoSpeaking": "Ir para a mensagem em leitura",
     "queue": "Fila: {n} mensagens",
     "followerBadge": "Seguidor",
     "mutedBadge": "Silenciado: o TTS não lê",

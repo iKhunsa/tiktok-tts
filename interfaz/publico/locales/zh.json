@@ -128,6 +128,8 @@
     "title": "实时聊天",
     "empty": "连接或开启你的直播<br>即可在此查看聊天",
     "speaking": "正在朗读...",
+
+    "gotoSpeaking": "跳转到正在朗读的消息",
     "queue": "队列：{n} 条消息",
     "followerBadge": "关注者",
     "mutedBadge": "已静音：TTS 不朗读",
