@@ -961,7 +961,8 @@
     "mediaPlaceholder": "预览即将推出",
     "comingSoon": "更多即将推出",
     "comingSoonDesc": "我们正在开发新工具。",
-    "suggestIdea": "有想法吗？建议一项功能"
+    "suggestIdea": "有想法吗？建议一项功能",
+    "suggestIdeaDesc": "告诉我们您希望使用什么工具。"
   },
   "errors": {
     "textRequired": "需要输入文本",

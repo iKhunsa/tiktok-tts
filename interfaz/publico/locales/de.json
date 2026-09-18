@@ -961,7 +961,8 @@
     "mediaPlaceholder": "Vorschau folgt in Kürze",
     "comingSoon": "Bald mehr",
     "comingSoonDesc": "Wir arbeiten an neuen Tools.",
-    "suggestIdea": "Hast du eine Idee? Schlage eine Funktion vor"
+    "suggestIdea": "Hast du eine Idee? Schlage eine Funktion vor",
+    "suggestIdeaDesc": "Sag uns, welches Tool du nutzen möchtest."
   },
   "errors": {
     "textRequired": "Text erforderlich",
