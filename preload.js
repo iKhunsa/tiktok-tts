@@ -59,6 +59,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     addFavorite: (label, url, icon) => ipcRenderer.invoke('portal:add-favorite', { label, url, icon }),
     removeFavorite: (id) => ipcRenderer.invoke('portal:remove-favorite', { id }),
     editFavorite: (id, { label, url, icon }) => ipcRenderer.invoke('portal:edit-favorite', { id, label, url, icon }),
+    toggleFavorite: (tabId) => ipcRenderer.invoke('portal:toggle-favorite', { tabId }),
     closeSession: () => ipcRenderer.invoke('portal:close-session'),
     onStateChanged: (cb) => on('portal:state-changed', (_e, state) => cb(state)),
     offStateChanged: (cb) => off('portal:state-changed', cb),
