@@ -5,12 +5,13 @@ const express = require('express');
 const { RESOURCE_BASE } = require('../../core/paths');
 const { createOverlayState } = require('./state/overlay-state');
 const { resetOverlayState } = require('./state/reset');
+const { addDonor, addFollower, addSharer } = require('./state/credits');
 const { setFollowerBaseForChannel } = require('./state/set-follower-base');
 const { recomputeFollowerBase } = require('./state/recompute-follower-base');
 const { extractFollowerCount } = require('./state/extract-follower-count');
 const { startFollowerRefresh, stopFollowerRefresh } = require('./state/follower-refresh-timer');
 const { computeGiftUsd } = require('./compute-gift-usd');
-const { pushBounded, purgeTopLikersIfNeeded } = require('./state/bounded-push');
+const { purgeTopLikersIfNeeded } = require('./state/bounded-push');
 const { cleanNick } = require('./clean-nick');
 const mcpRegistry = require('../../core/contracts/mcp-registry');
 const { getConfigSnapshot } = require('../../core/config-snapshot');
@@ -48,7 +49,7 @@ module.exports = {
       // reemplaza al repeatCount de tiktok-live-connector.
       const repeatCount = data.groupCount || 1;
       const { usdValue } = computeGiftUsd(logger, { giftName: data.giftName, repeatCount, diamondCount: data.diamondCount || 0 });
-      pushBounded(state.credits.donors, { user, giftName: data.giftName, count: repeatCount, ts: Date.now() });
+      addDonor(state.credits, { platform: payload.platform, userId: data.uniqueId, user, giftName: data.giftName, count: repeatCount });
       bus.emit('ws:broadcast', {
         type: 'gift', user, giftName: data.giftName, giftId: data.giftId,
         giftPictureUrl: data.giftPictureUrl || null, repeatCount, usdValue, timestamp: Date.now(),
@@ -57,7 +58,7 @@ module.exports = {
 
     bus.on('canal:follow', (payload) => {
       const user = cleanNick(payload.nick, payload.userId);
-      pushBounded(state.credits.followers, { user, ts: Date.now() });
+      addFollower(state.credits, { platform: payload.platform, userId: payload.userId, user });
       bus.emit('ws:broadcast', { type: 'follow', platform: payload.platform, user, userId: payload.userId || null, timestamp: Date.now() });
       if (payload.platform === 'tiktok') state.followCount += 1;
     }, 'overlay');
@@ -89,8 +90,7 @@ module.exports = {
       const { platform, channel, kind, raw, userId, nick } = payload;
       if (kind === 'share') {
         const user = cleanNick(nick, userId);
-        pushBounded(state.sharers, { user, ts: Date.now() });
-        pushBounded(state.credits.sharers, { user, ts: Date.now() });
+        addSharer(state.credits, { platform, userId, user });
         bus.emit('ws:broadcast', { type: 'share', platform, user, timestamp: Date.now() });
       } else if (kind === 'join') {
         bus.emit('ws:broadcast', { type: 'join', platform, user: cleanNick(nick, userId), userId: userId || null, timestamp: Date.now() });
@@ -154,8 +154,8 @@ module.exports = {
           followCount: state.followCount,
           baseFollowerCount: state.baseFollowerCount,
           topLikers,
-          recentSharers: state.sharers.slice(-10).map((s) => s.user),
-          recentDonors: state.credits.donors.slice(-10),
+          recentSharers: [...state.credits.sharers.values()].slice(-10).map((s) => s.user),
+          recentDonors: [...state.credits.donors.values()].slice(-10),
         },
       };
     };
