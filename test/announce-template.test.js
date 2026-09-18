@@ -13,6 +13,15 @@ test('plantilla valida sustituye variables', async () => {
   assert.equal(resolverAnuncio({ gift: '{usuario} manda {cantidad} {regalo}' }, 'gift', { usuario: 'A', cantidad: 2, regalo: 'Rosa' }, std), 'A manda 2 Rosa');
 });
 
+test('frase simple: antepone usuario y agrega datos del evento', async () => {
+  const { resolverAnuncio } = await load();
+  assert.equal(resolverAnuncio({ join: 'cayo a la fiesta' }, 'join', { usuario: 'Ana' }, std), 'Ana cayo a la fiesta');
+  assert.equal(resolverAnuncio({ gift: 'se la comio' }, 'gift', { usuario: 'Ana', cantidad: 2, regalo: 'Rosa' }, std), 'Ana se la comio, 2 Rosa');
+  assert.equal(resolverAnuncio({ gift: 'se la comio' }, 'giftUsd', { usuario: 'Ana', cantidad: 2, regalo: 'Rosa', monto: 1 }, std), 'Ana se la comio, 2 Rosa 1 USD');
+  assert.equal(resolverAnuncio({ like: 'lo da todo' }, 'like', { usuario: 'Ana', cantidad: 15 }, std), 'Ana lo da todo, 15');
+  assert.equal(resolverAnuncio({ join: 'hola' }, 'join', {}, std), 'ESTANDAR');
+});
+
 test('vacia, ausente, invalida o con variable ajena -> texto estandar', async () => {
   const { resolverAnuncio } = await load();
   const v = { usuario: 'Ana' };
