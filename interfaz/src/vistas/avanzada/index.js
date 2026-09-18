@@ -8,6 +8,7 @@ import { cargarIdioma, idiomaGuardado, aplicarTraducciones, t, tErr } from '../.
 
 import { toggleRateLimit, saveRateLimit } from './rate-limit.js';
 import { saveGeneral } from './config-general.js';
+import { cargarPlantillas, saveAnnounceTemplates } from './plantillas-anuncio.js';
 import { saveAccessibility } from './accesibilidad.js';
 import { addBlockedWord, loadBlockedWords, saveBlockedWords } from './palabras-bloqueadas.js';
 import { loadMdContent, saveMdContent, uploadMdFile, downloadMd } from './editor-md.js';
@@ -20,7 +21,7 @@ import { iniciarCargaInicial } from './carga-inicial.js';
 Object.assign(window, {
   t, tErr,
   toggleRateLimit, saveRateLimit,
-  saveGeneral,
+  saveGeneral, saveAnnounceTemplates,
   saveAccessibility,
   addBlockedWord, saveBlockedWords,
   loadMdContent, saveMdContent, uploadMdFile, downloadMd,
@@ -36,7 +37,7 @@ async function iniciarI18n() {
 
 function iniciarArranque() {
   iniciarCapturaErroresCliente();
-  iniciarI18n();
+  iniciarI18n().then(cargarPlantillas);
   iniciarCargaInicial();
   loadBlockedWords();
   loadMdContent();

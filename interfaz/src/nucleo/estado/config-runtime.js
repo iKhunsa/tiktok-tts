@@ -25,6 +25,11 @@ export let MAX_QUEUE_SIZE = 15;
 export let langFilterEnabled = false;
 export let dictFilterEnabled = false;
 export let allowedExtraLangs = [];
+export let announceTemplates = {};
+
+export function applyAnnounceTemplates(cfg) {
+  announceTemplates = (cfg && cfg.announceTemplates && typeof cfg.announceTemplates === 'object') ? cfg.announceTemplates : {};
+}
 
 const MIGRACION_LANGFILTER_FLAG = 'tikliveTTS_langFilterMigrated_v1';
 
@@ -70,6 +75,7 @@ export async function loadRuntimeConfig() {
     applyA11yConfig(cfg);
     applyReadNonFollowers(cfg);
     applyFiltroIdiomaConfig(cfg);
+    applyAnnounceTemplates(cfg);
   } catch (e) { /* config no disponible aun; se reintenta en el proximo ciclo */ }
 }
 
