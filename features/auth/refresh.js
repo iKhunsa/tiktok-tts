@@ -50,8 +50,14 @@ function crearRefresh({ cliente, bus, logger }) {
   }
 
   function emitirCambio(antes, ahora) {
+    const cuentaAntes = antes.user?.id || 'anonymous';
+    const cuentaAhora = ahora.user?.id || 'anonymous';
+    if (cuentaAntes !== cuentaAhora) {
+      bus.emit('account:changing', { previous: cuentaAntes, current: cuentaAhora });
+      bus.emit('account:changed', { previous: cuentaAntes, current: cuentaAhora });
+    }
     if (antes.signedIn === ahora.signedIn && antes.plan === ahora.plan && antes.degraded === ahora.degraded
-      && mismosEntitlements(antes.entitlements, ahora.entitlements)) return;
+      && mismosEntitlements(antes.entitlements, ahora.entitlements) && cuentaAntes === cuentaAhora) return;
     bus.emit('auth:actualizado', { signedIn: ahora.signedIn, plan: ahora.plan });
     bus.emit('ws:broadcast', { type: 'auth-updated', session: estado.getSesionPublica() });
   }

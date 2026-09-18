@@ -2,6 +2,7 @@
 
 const { session } = require('electron');
 const { PARTITION_NAME } = require('./constants');
+const { safeAccountId } = require('../../core/account-data-path');
 
 // Deniega por defecto todo lo que un sitio de terceros podria pedir sin que
 // el usuario lo haya buscado explicitamente — PortalView carga TikTok/Twitch/
@@ -23,14 +24,16 @@ function attachPermissionHandling(sess) {
 // Particion persistente unica ('persist:' = sobrevive a reinicios de la app).
 // Unico lugar donde se resuelve el nombre — el dia que exista login-por-cuenta,
 // cambia aca (ej. particion por cuenta) y en ningun otro lado.
-let _session = null;
+const sessions = new Map();
 
-function getPortalViewSession() {
-  if (!_session) {
-    _session = session.fromPartition(PARTITION_NAME);
-    attachPermissionHandling(_session);
+function getPortalViewSession(accountId = 'anonymous') {
+  const partition = `${PARTITION_NAME}-${safeAccountId(accountId)}`;
+  if (!sessions.has(partition)) {
+    const portalSession = session.fromPartition(partition);
+    attachPermissionHandling(portalSession);
+    sessions.set(partition, portalSession);
   }
-  return _session;
+  return sessions.get(partition);
 }
 
 module.exports = { getPortalViewSession };

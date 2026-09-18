@@ -629,6 +629,14 @@ referencia histórica y para entender decisiones de arquitectura:
 
 ## graphify
 
+## Datos por cuenta
+
+Todo dato del streamer se guarda por `user.id`: renderer mediante
+`interfaz/src/nucleo/estado/datos-por-cuenta.js` y proceso principal mediante
+`core/account-data-path.js`. Sin sesión se usa `anonymous`; nunca reutilizar
+claves/rutas globales para datos de cuenta. Los datos de instalación (sesión,
+telemetría, logs y binarios) permanecen en `DATA_BASE`.
+
 This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
 
 Rules:
