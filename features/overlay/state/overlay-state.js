@@ -12,11 +12,11 @@ function createOverlayState() {
     // /canales) — /overlay no puede leer el Map privado de /canales.
     activeTiktokChannels: new Set(),
     topLikers: new Map(),
-    sharers: [],
     credits: {
-      donors: [],
-      followers: [],
-      sharers: [],
+      // Agregados por usuario (ver credits.js), no un push por evento.
+      donors: new Map(),
+      followers: new Map(),
+      sharers: new Map(),
     },
     followerRefreshTimer: null,
   };
