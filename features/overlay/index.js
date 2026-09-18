@@ -23,9 +23,6 @@ const { deleteBg } = require('./routes/delete-bg');
 const { testGift } = require('./routes/test-gift');
 const { testFollow } = require('./routes/test-follow');
 const { testShare } = require('./routes/test-share');
-const { testSub } = require('./routes/test-sub');
-const { testCheer } = require('./routes/test-cheer');
-const { testRaid } = require('./routes/test-raid');
 const { testLikes } = require('./routes/test-likes');
 
 const LIKE_DEBOUNCE_FALLBACK_MS = 1500;
@@ -97,17 +94,6 @@ module.exports = {
         bus.emit('ws:broadcast', { type: 'share', platform, user, timestamp: Date.now() });
       } else if (kind === 'join') {
         bus.emit('ws:broadcast', { type: 'join', platform, user: cleanNick(nick, userId), userId: userId || null, timestamp: Date.now() });
-      } else if (kind && kind.startsWith('sub-')) {
-        const subType = { 'sub-nueva': 'new', 'sub-resub': 'resub', 'sub-regalo': 'gift', 'sub-misterio': 'mysterygift', 'sub-upgrade': 'upgrade' }[kind] || 'new';
-        const { username, message, ...rest } = raw || {};
-        bus.emit('ws:broadcast', {
-          type: 'sub', platform, subType, user: cleanNick(username, null), channel,
-          message: message || '', timestamp: Date.now(), ...rest,
-        });
-      } else if (kind === 'cheer') {
-        bus.emit('ws:broadcast', { type: 'cheer', platform, user: cleanNick(raw.username, null), bits: raw.bits || 0, message: raw.message || '', channel, timestamp: Date.now() });
-      } else if (kind === 'raid') {
-        bus.emit('ws:broadcast', { type: 'raid', platform, user: cleanNick(raw.username, null), viewers: raw.viewers || 0, channel, timestamp: Date.now() });
       } else if (kind === 'superchat') {
         const authorName = raw.author && raw.author.name;
         bus.emit('ws:broadcast', {
@@ -158,9 +144,6 @@ module.exports = {
     app.post('/api/test/gift', testGift(deps));
     app.post('/api/test/follow', testFollow(deps));
     app.post('/api/test/share', testShare(deps));
-    app.post('/api/test/sub', testSub(deps));
-    app.post('/api/test/cheer', testCheer(deps));
-    app.post('/api/test/raid', testRaid(deps));
     app.post('/api/test/likes', testLikes(deps));
 
     // ── MCP ──────────────────────────────────────────────────────────────

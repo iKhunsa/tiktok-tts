@@ -496,18 +496,6 @@
     "noFollowers": "暂无粉丝",
     "sharedList": "分享",
     "noShared": "暂无分享",
-    "tierPrime": "Prime",
-    "tierGeneric": "订阅",
-    "tierLabel": "{tier} 级",
-    "subResub": "续订",
-    "subMonths": "{months} 个月订阅",
-    "subGifted": "赠阅",
-    "subGiftedTo": "送给 @{recipient}",
-    "subsGifted": "批量赠阅",
-    "subsGiftedCount": "{count} 份订阅送给聊天区",
-    "subUpgrade": "订阅升级",
-    "subNew": "新订阅",
-    "raidJoined": "带着自己的社区来了",
     "anonymous": "匿名",
     "giftFrom": "来自 @{user}",
     "topLikers": "点赞排行榜"
@@ -593,13 +581,6 @@
     "giftUsd": "{user} 送出了 {count} 个 {gift}，约合 {amount} 美元",
     "join": "{user} 加入了直播",
     "follow": "{user} 刚刚关注了你",
-    "subResub": "{user} 续订了订阅，共 {months} 个月",
-    "subGift": "{user} 为 {recipient} 赠送了订阅",
-    "subMysteryGift": "{user} 向聊天区赠送了 {count} 份订阅",
-    "subUpgrade": "{user} 升级了订阅",
-    "subNew": "{user} 在 Twitch 上订阅了",
-    "cheer": "{user} 发送了 {bits} 个 Bits",
-    "raid": "{user} 带着 {viewers} 位观众发起了突袭",
     "like": "{user} 点了 {count} 个赞",
     "share": "{user} 正在分享直播"
   },
@@ -880,14 +861,6 @@
     "musicPauseDesc": "用于暂停或恢复聊天通过 !p 命令点播的音乐（默认 F11）。",
     "musicSkipTitle": "跳过机器人歌曲",
     "musicSkipDesc": "用于跳过音乐机器人当前播放的歌曲（默认 F12）。"
-  },
-  "twitchTour": {
-    "introTitle": "Twitch — 直播提醒",
-    "introDesc": "Twitch alerts for subs, bits and raids.",
-    "togglesTitle": "要播报的内容",
-    "togglesDesc": "分别开启或关闭每种提醒类型：订阅、比特币、突袭和关注。",
-    "testTitle": "测试提醒",
-    "testDesc": "手动触发每种提醒，查看/听效果，无需等待直播中真实发生。"
   },
   "clipsTour": {
     "introTitle": "剪辑标记",

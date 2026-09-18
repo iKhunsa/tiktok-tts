@@ -113,17 +113,6 @@ export async function testSocialAlert(eventType, platform) {
   }
 }
 
-export async function testAlertType(kind) {
-  try {
-    const res = await fetch(`/api/test/${kind}`, { method: 'POST' });
-    const data = await res.json();
-    if (data.success) showToast(`Alerta de prueba: ${data.user}`);
-    else showToast(t('toast.testError'));
-  } catch (e) {
-    showToast(t('toast.testError'));
-  }
-}
-
 export function updateSocialOverlayUrl() {
   const followImg = (document.getElementById('cfg-social-follow-img')?.value || '').trim();
   const shareImg = (document.getElementById('cfg-social-share-img')?.value || '').trim();

@@ -496,18 +496,6 @@
     "noFollowers": "Sem seguidores ainda",
     "sharedList": "Compartilhados",
     "noShared": "Sem compartilhamentos ainda",
-    "tierPrime": "Prime",
-    "tierGeneric": "Sub",
-    "tierLabel": "Tier {tier}",
-    "subResub": "RESUB",
-    "subMonths": "{months} meses de sub",
-    "subGifted": "SUB PRESENTEADA",
-    "subGiftedTo": "para @{recipient}",
-    "subsGifted": "SUBS PRESENTEADAS",
-    "subsGiftedCount": "{count} subs para o chat",
-    "subUpgrade": "UPGRADE DE SUB",
-    "subNew": "NOVA INSCRIÇÃO",
-    "raidJoined": "chega com sua comunidade",
     "anonymous": "Anônimo",
     "giftFrom": "de @{user}",
     "topLikers": "Top Likers"
@@ -593,13 +581,6 @@
     "giftUsd": "{user} enviou {count} {gift}, equivalente a ${amount} dólares",
     "join": "{user} entrou na live",
     "follow": "{user} acabou de te seguir",
-    "subResub": "{user} renovou a inscrição, {months} meses",
-    "subGift": "{user} presenteou uma inscrição para {recipient}",
-    "subMysteryGift": "{user} presenteou {count} inscrições para o chat",
-    "subUpgrade": "{user} fez upgrade da inscrição",
-    "subNew": "{user} se inscreveu na Twitch",
-    "cheer": "{user} enviou {bits} bits",
-    "raid": "{user} fez um raid com {viewers} espectadores",
     "like": "{user} deu {count} curtidas",
     "share": "{user} está compartilhando a live"
   },
@@ -880,14 +861,6 @@
     "musicPauseDesc": "Atalho para pausar ou retomar a música pedida pelo chat com o comando !p (padrão F11).",
     "musicSkipTitle": "Pular música do bot",
     "musicSkipDesc": "Atalho para pular a música que está tocando agora no bot de música (padrão F12)."
-  },
-  "twitchTour": {
-    "introTitle": "Twitch — alertas ao vivo",
-    "introDesc": "Twitch alerts for subs, bits and raids.",
-    "togglesTitle": "O que anunciar",
-    "togglesDesc": "Ative ou desative cada tipo de alerta separadamente: subs, bits, raids e follows.",
-    "testTitle": "Testar alertas",
-    "testDesc": "Dispare cada alerta manualmente para ver/ouvir como fica, sem esperar que aconteça de verdade na live."
   },
   "clipsTour": {
     "introTitle": "Marcadores de Clipe",
