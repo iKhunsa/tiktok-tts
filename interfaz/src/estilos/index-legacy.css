@@ -1182,16 +1182,16 @@
     }
     .speaking-goto:hover { background: var(--surface-speaking); }
     .speaking-goto:active { transform: scale(0.94); }
-    .speaking-goto:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .speaking-goto:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
     .speaking-goto:disabled { opacity: 0.4; cursor: default; pointer-events: none; }
     .chat-msg.goto-flash { animation: gotoFlash 1.2s ease-out; }
     @keyframes gotoFlash {
-      0%, 40% { box-shadow: inset 0 0 0 2px var(--accent); }
+      0%, 40% { box-shadow: inset 0 0 0 2px var(--brand); }
       100% { box-shadow: inset 0 0 0 2px transparent; }
     }
     @media (prefers-reduced-motion: reduce) {
       .speaking-goto { transition: none; }
-      .chat-msg.goto-flash { animation: none; box-shadow: inset 0 0 0 2px var(--accent); }
+      .chat-msg.goto-flash { animation: none; box-shadow: inset 0 0 0 2px var(--brand); }
     }
     .wave { display: flex; align-items: center; gap: 2px; }
     .wave span {
