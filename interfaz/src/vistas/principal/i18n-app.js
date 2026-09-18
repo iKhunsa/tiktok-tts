@@ -1,3 +1,4 @@
+import { cargarPlantillas } from './plantillas-anuncio.js';
 import { cargarIdioma, setIdioma, idiomaGuardado, aplicarTraducciones, detectarIdiomaNavegador, t } from '../../nucleo/i18n/i18n.js';
 import { updateChatTogglesSummary, renderChatTogglesState } from './toggles-chat.js';
 import { ttsPaused } from '../../nucleo/tts/cola-tts.js';
@@ -62,6 +63,7 @@ async function loadLanguage(lang) {
   updateChatTogglesSummary();
   if (typeof window.refreshPluginStoreTexts === 'function') window.refreshPluginStoreTexts();
   retranslateDynamic();
+  cargarPlantillas();
   const sel = document.getElementById('langSelect');
   if (sel) sel.value = lang;
   document.documentElement.lang = lang;
