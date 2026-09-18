@@ -583,6 +583,8 @@
     "join": "{user} ist dem Live beigetreten",
     "follow": "{user} folgt dir gerade",
     "like": "{user} hat {count} Likes gegeben",
+    "likeOne": "{user} hat {count} Like gegeben",
+    "likeFew": "{user} hat {count} Likes gegeben",
     "share": "{user} teilt den Live-Stream"
   },
   "toast": {

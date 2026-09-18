@@ -583,6 +583,8 @@
     "join": "{user} 加入了直播",
     "follow": "{user} 刚刚关注了你",
     "like": "{user} 点了 {count} 个赞",
+    "likeOne": "{user} 点了 {count} 个赞",
+    "likeFew": "{user} 点了 {count} 个赞",
     "share": "{user} 正在分享直播"
   },
   "toast": {

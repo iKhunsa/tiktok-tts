@@ -5,7 +5,7 @@
  * el unico traductor bus->WS. Portado 1:1 desde la seccion WEBSOCKET +
  * CHAT HANDLER de index.html, sin refactor de logica.
  */
-import { t } from '../i18n/i18n.js';
+import { t, tLike } from '../i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
 import { logStorage } from '../log-storage.js';
 import { appSettings, saveSettings } from '../estado/ajustes-app.js';
@@ -161,7 +161,7 @@ function handleMessage(data) {
         if (now - last >= LIKE_COOLDOWN_MS) {
           likeCooldownMap.set(data.user, now);
           const likeId = nuevoMsgId();
-          const likeText = t('announce.like', { user: data.user, count: data.likeCount });
+          const likeText = tLike(data.user, data.likeCount);
           addSystemMsg(likeText, 'join', likeId, { iconSrc: 'icons/thumb_up.svg' });
           speak(likeText, likeId, data.timestamp);
         }
