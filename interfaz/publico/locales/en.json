@@ -496,18 +496,6 @@
     "noFollowers": "No followers yet",
     "sharedList": "Shared",
     "noShared": "No shares yet",
-    "tierPrime": "Prime",
-    "tierGeneric": "Sub",
-    "tierLabel": "Tier {tier}",
-    "subResub": "RESUBSCRIPTION",
-    "subMonths": "{months} months subbed",
-    "subGifted": "GIFTED SUB",
-    "subGiftedTo": "to @{recipient}",
-    "subsGifted": "GIFTED SUBS",
-    "subsGiftedCount": "{count} subs for the chat",
-    "subUpgrade": "SUB UPGRADE",
-    "subNew": "NEW SUBSCRIPTION",
-    "raidJoined": "is raiding with their community",
     "anonymous": "Anonymous",
     "giftFrom": "from @{user}",
     "topLikers": "Top Likers"
@@ -593,13 +581,6 @@
     "giftUsd": "{user} sent {count} {gift}, worth ${amount} dollars",
     "join": "{user} joined the live",
     "follow": "{user} just followed you",
-    "subResub": "{user} resubscribed, {months} months",
-    "subGift": "{user} gifted a sub to {recipient}",
-    "subMysteryGift": "{user} gifted {count} subs to chat",
-    "subUpgrade": "{user} upgraded their sub",
-    "subNew": "{user} subscribed on Twitch",
-    "cheer": "{user} sent {bits} bits",
-    "raid": "{user} raided with {viewers} viewers",
     "like": "{user} gave {count} likes",
     "share": "{user} is sharing the live"
   },
@@ -909,14 +890,6 @@
     "musicPauseDesc": "Shortcut to pause or resume the music requested by chat via the !p command (default F11).",
     "musicSkipTitle": "Skip bot song",
     "musicSkipDesc": "Shortcut to skip the song currently playing in the music bot (default F12)."
-  },
-  "twitchTour": {
-    "introTitle": "Twitch — live alerts",
-    "introDesc": "Twitch alerts for subs, bits and raids.",
-    "togglesTitle": "What to announce",
-    "togglesDesc": "Turn each alert type on or off separately: subs, bits, raids and follows.",
-    "testTitle": "Test alerts",
-    "testDesc": "Fire each alert manually to see/hear how it looks, without waiting for it to actually happen on stream."
   },
   "clipsTour": {
     "introTitle": "Clip Markers",

@@ -76,17 +76,17 @@ function registerDevTools({ bus, logger, wss }) {
   mcpRegistry.registerTool({
     name: 'dev_inject_event', domain: 'mcp', dev: true,
     title: '[dev] Inject stream event',
-    description: 'Fire a synthetic stream event: gift | follow | share | sub | cheer | raid | likes. Runs the real overlay/telemetry chain.',
+    description: 'Fire a synthetic stream event: gift | follow | share | likes. Runs the real overlay/telemetry chain.',
     inputSchema: {
       type: 'object', required: ['kind'],
       properties: {
-        kind: { type: 'string', description: 'gift|follow|share|sub|cheer|raid|likes' },
+        kind: { type: 'string', description: 'gift|follow|share|likes' },
         platform: { type: 'string', description: 'for follow: tiktok|twitch' },
         user: { type: 'string' },
       },
     },
     handler: (a) => {
-      const KINDS = new Set(['gift', 'follow', 'share', 'sub', 'cheer', 'raid', 'likes']);
+      const KINDS = new Set(['gift', 'follow', 'share', 'likes']);
       if (!KINDS.has(a.kind)) return { ok: false, reason: 'kind_invalido', validos: [...KINDS] };
       const body = a.kind === 'follow' ? { platform: a.platform, user: a.user } : (a.user ? { user: a.user } : undefined);
       return selfCall(`/api/test/${a.kind}`, body || {});

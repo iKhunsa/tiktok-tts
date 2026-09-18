@@ -496,18 +496,6 @@
     "noFollowers": "Пока нет подписчиков",
     "sharedList": "Поделились",
     "noShared": "Пока нет репостов",
-    "tierPrime": "Prime",
-    "tierGeneric": "Саб",
-    "tierLabel": "Уровень {tier}",
-    "subResub": "ПРОДЛЕНИЕ",
-    "subMonths": "{months} мес. подписки",
-    "subGifted": "ПОДАРЕННЫЙ САБ",
-    "subGiftedTo": "для @{recipient}",
-    "subsGifted": "ПОДАРЕННЫЕ САБЫ",
-    "subsGiftedCount": "{count} сабов для чата",
-    "subUpgrade": "УЛУЧШЕНИЕ САБА",
-    "subNew": "НОВАЯ ПОДПИСКА",
-    "raidJoined": "приходит со своим сообществом",
     "anonymous": "Аноним",
     "giftFrom": "от @{user}",
     "topLikers": "Топ лайкеров"
@@ -593,13 +581,6 @@
     "giftUsd": "{user} отправил(а) {count} {gift}, это примерно {amount} долларов",
     "join": "{user} зашёл(зашла) на стрим",
     "follow": "{user} только что подписался(лась) на вас",
-    "subResub": "{user} продлил(а) подписку, {months} мес.",
-    "subGift": "{user} подарил(а) подписку {recipient}",
-    "subMysteryGift": "{user} подарил(а) {count} подписок чату",
-    "subUpgrade": "{user} улучшил(а) подписку",
-    "subNew": "{user} оформил(а) подписку на Twitch",
-    "cheer": "{user} отправил(а) {bits} битов",
-    "raid": "{user} сделал(а) рейд с {viewers} зрителями",
     "like": "{user} поставил(а) {count} лайков",
     "share": "{user} делится стримом"
   },
@@ -880,14 +861,6 @@
     "musicPauseDesc": "Горячая клавиша для паузы или возобновления музыки, заказанной чатом через команду !p (по умолчанию F11).",
     "musicSkipTitle": "Пропустить трек бота",
     "musicSkipDesc": "Горячая клавиша для пропуска трека, который сейчас играет в музыкальном боте (по умолчанию F12)."
-  },
-  "twitchTour": {
-    "introTitle": "Twitch — алерты в прямом эфире",
-    "introDesc": "Twitch alerts for subs, bits and raids.",
-    "togglesTitle": "Что объявлять",
-    "togglesDesc": "Включайте или отключайте каждый тип алерта отдельно: сабы, биты, рейды и фолловы.",
-    "testTitle": "Проверить алерты",
-    "testDesc": "Запускайте каждый алерт вручную, чтобы увидеть/услышать, как он выглядит, не дожидаясь реального события в эфире."
   },
   "clipsTour": {
     "introTitle": "Маркеры клипов",

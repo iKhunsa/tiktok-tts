@@ -496,18 +496,6 @@
     "noFollowers": "Nessun follower ancora",
     "sharedList": "Condivisi",
     "noShared": "Nessuna condivisione ancora",
-    "tierPrime": "Prime",
-    "tierGeneric": "Sub",
-    "tierLabel": "Tier {tier}",
-    "subResub": "RINNOVO ABBONAMENTO",
-    "subMonths": "{months} mesi di abbonamento",
-    "subGifted": "ABBONAMENTO REGALATO",
-    "subGiftedTo": "per @{recipient}",
-    "subsGifted": "ABBONAMENTI REGALATI",
-    "subsGiftedCount": "{count} abbonamenti per la chat",
-    "subUpgrade": "MIGLIORAMENTO ABBONAMENTO",
-    "subNew": "NUOVO ABBONAMENTO",
-    "raidJoined": "arriva con la sua community",
     "anonymous": "Anonimo",
     "giftFrom": "da @{user}",
     "topLikers": "Top Likers"
@@ -593,13 +581,6 @@
     "giftUsd": "{user} ha inviato {count} {gift}, pari a ${amount} dollari",
     "join": "{user} è entrato nella diretta",
     "follow": "{user} ti ha appena seguito",
-    "subResub": "{user} si è riabbonato, {months} mesi",
-    "subGift": "{user} ha regalato un abbonamento a {recipient}",
-    "subMysteryGift": "{user} ha regalato {count} abbonamenti alla chat",
-    "subUpgrade": "{user} ha aggiornato il suo abbonamento",
-    "subNew": "{user} si è abbonato su Twitch",
-    "cheer": "{user} ha inviato {bits} bit",
-    "raid": "{user} ha fatto un raid con {viewers} spettatori",
     "like": "{user} ha messo {count} like",
     "share": "{user} sta condividendo la diretta"
   },
@@ -880,14 +861,6 @@
     "musicPauseDesc": "Scorciatoia per mettere in pausa o riprendere la musica richiesta dalla chat con il comando !p (default F11).",
     "musicSkipTitle": "Salta canzone del bot",
     "musicSkipDesc": "Scorciatoia per saltare la canzone in riproduzione nel bot musicale (default F12)."
-  },
-  "twitchTour": {
-    "introTitle": "Twitch — avvisi live",
-    "introDesc": "Twitch alerts for subs, bits and raids.",
-    "togglesTitle": "Cosa annunciare",
-    "togglesDesc": "Attiva o disattiva ogni tipo di avviso separatamente: sub, bit, raid e follow.",
-    "testTitle": "Prova avvisi",
-    "testDesc": "Attiva manualmente ogni avviso per vedere/sentire come appare, senza aspettare che accada davvero durante lo stream."
   },
   "clipsTour": {
     "introTitle": "Marcatori Clip",

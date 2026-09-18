@@ -496,18 +496,6 @@
     "noFollowers": "まだフォロワーがいません",
     "sharedList": "シェア",
     "noShared": "まだシェアがありません",
-    "tierPrime": "Prime",
-    "tierGeneric": "サブ",
-    "tierLabel": "ティア {tier}",
-    "subResub": "リサブ",
-    "subMonths": "{months}ヶ月継続",
-    "subGifted": "ギフトサブ",
-    "subGiftedTo": "@{recipient} へ",
-    "subsGifted": "複数ギフトサブ",
-    "subsGiftedCount": "チャットに{count}件のサブ",
-    "subUpgrade": "サブアップグレード",
-    "subNew": "新規サブスク",
-    "raidJoined": "コミュニティと一緒に参加",
     "anonymous": "匿名",
     "giftFrom": "@{user} から",
     "topLikers": "トップいいね"
@@ -593,13 +581,6 @@
     "giftUsd": "{user}さんが{gift}を{count}個送りました（約{amount}ドル相当）",
     "join": "{user}さんが配信に参加しました",
     "follow": "{user}さんがフォローしました",
-    "subResub": "{user}さんが再登録しました（{months}ヶ月）",
-    "subGift": "{user}さんが{recipient}さんにサブスクをギフトしました",
-    "subMysteryGift": "{user}さんがチャットに{count}件のサブスクをギフトしました",
-    "subUpgrade": "{user}さんがサブスクをアップグレードしました",
-    "subNew": "{user}さんがTwitchでサブスクしました",
-    "cheer": "{user}さんが{bits}ビットを送りました",
-    "raid": "{user}さんが{viewers}人と一緒にレイドしました",
     "like": "{user}さんが{count}件のいいねをしました",
     "share": "{user}さんが配信をシェアしています"
   },
@@ -880,14 +861,6 @@
     "musicPauseDesc": "!pコマンドでチャットがリクエストした音楽を一時停止・再開するショートカット（デフォルトF11）。",
     "musicSkipTitle": "ボットの曲をスキップ",
     "musicSkipDesc": "音楽ボットで現在再生中の曲をスキップするショートカット（デフォルトF12）。"
-  },
-  "twitchTour": {
-    "introTitle": "Twitch — ライブアラート",
-    "introDesc": "Twitch alerts for subs, bits and raids.",
-    "togglesTitle": "何を通知するか",
-    "togglesDesc": "サブスク、ビッツ、レイド、フォローをそれぞれ個別にオン・オフできます。",
-    "testTitle": "アラートをテスト",
-    "testDesc": "配信で実際に起こるのを待たずに、各アラートを手動で発生させて見た目や音を確認できます。"
   },
   "clipsTour": {
     "introTitle": "クリップマーカー",

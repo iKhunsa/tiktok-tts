@@ -35,11 +35,11 @@ import { copyToClipboard, showKnownIssuesNotice } from './utils-app.js';
 import { uploadBg, removeBg } from './subida-fondo.js';
 import {
   buildOverlayUrl, updateOverlayUrl, onCfgChange, onChatPlatformChange, copyCfgUrl,
-  updateFollowerDisplay, testGiftAlert, testSocialAlert, testAlertType,
+  updateFollowerDisplay, testGiftAlert, testSocialAlert,
   updateSocialOverlayUrl, copySocialAlertUrl, testTopLikers,
 } from './configurador-overlays.js';
 import {
-  toggleChatToggles, toggleTwitchSection, toggleOption, setSoloChatMode,
+  toggleChatToggles, toggleOption, setSoloChatMode,
   iniciarObservadorTogglesChat,
 } from './toggles-chat.js';
 import {
@@ -89,7 +89,7 @@ import {
 import {
   startModerationTour, startSoundpadTour, startBotTour, startPluginStoreTour,
   startChatActionsTour, startClipsTour, startOverlaysTour, startVoiceTour,
-  startShortcutsTour, startTwitchTour,
+  startShortcutsTour,
 } from './tours/index.js';
 import { iniciarPortalView, togglePortalView } from './portal-view/index.js';
 
@@ -107,9 +107,9 @@ Object.assign(window, {
   uploadBg, removeBg,
   // configurador de overlays
   onCfgChange, onChatPlatformChange, copyCfgUrl, testGiftAlert, testSocialAlert,
-  testAlertType, copySocialAlertUrl, testTopLikers, updateSocialOverlayUrl,
+  copySocialAlertUrl, testTopLikers, updateSocialOverlayUrl,
   // toggles de chat
-  toggleChatToggles, toggleTwitchSection, toggleOption, setSoloChatMode,
+  toggleChatToggles, toggleOption, setSoloChatMode,
   // atajos de teclado
   startCapturingShortcut, clearTtsShortcut, applyTtsShortcutPreset,
   // config runtime
@@ -147,7 +147,7 @@ Object.assign(window, {
   // tours
   startModerationTour, startSoundpadTour, startBotTour, startPluginStoreTour,
   startChatActionsTour, startClipsTour, startOverlaysTour, startVoiceTour,
-  startShortcutsTour, startTwitchTour,
+  startShortcutsTour,
   // usadas por markup construido en JS (template strings con onclick="...")
   escapeHtml,
   // portal view (navegador embebido)
