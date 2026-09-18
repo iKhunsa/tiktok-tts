@@ -627,8 +627,6 @@ referencia histórica y para entender decisiones de arquitectura:
 - `logging-errores-propuesta.md` — spec de logging (esquema de evento, eventos por dominio).
 - `mapa-funciones-actual.md` — inventario función-por-función del backend monolítico original (usado como checklist de paridad en la Fase 13 de cierre).
 
-## graphify
-
 ## Datos por cuenta
 
 Todo dato del streamer se guarda por `user.id`: renderer mediante
@@ -636,6 +634,9 @@ Todo dato del streamer se guarda por `user.id`: renderer mediante
 `core/account-data-path.js`. Sin sesión se usa `anonymous`; nunca reutilizar
 claves/rutas globales para datos de cuenta. Los datos de instalación (sesión,
 telemetría, logs y binarios) permanecen en `DATA_BASE`.
+
+## graphify
+
 
 This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
 
