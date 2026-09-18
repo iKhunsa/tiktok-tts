@@ -2,7 +2,7 @@
 
 const { resolveDisplayName } = require('./resolve-display-name');
 const { cleanName } = require('./clean-name');
-const { sanitizeForTTS } = require('./sanitize-for-tts');
+const { sanitizeForTTS, sanitizeForChat } = require('./sanitize-for-tts');
 const { normalizeForModeration } = require('./normalize-for-moderation');
 const { isAdminIdentity } = require('./is-admin-identity');
 const { normalizeAggressive } = require('./normalize-aggressive');
@@ -117,7 +117,7 @@ function extractTiktokMessage(raw) {
     // libre, spoofeable — ver bug de is-admin-identity.js). Mismo valor que
     // userId acá, explícito para no confundirlo con el nickname de arriba.
     stableHandle: raw.uniqueId || null,
-    comment: sanitizeForTTS(comment),
+    comment: sanitizeForChat(comment.replace(/\[([A-Za-z]{1,20})\]/g, ':$1:')),
     // Siempre string (aunque quede vacio si el mensaje era solo emojis de
     // TikTok) — nunca undefined, para que el front no caiga de vuelta a
     // `comment` y termine leyendo `[Happy]` en voz alta.
@@ -171,7 +171,7 @@ function extractTwitchMessage(raw) {
     // NUNCA display-name (cosmetico, el espectador lo setea a lo que quiera
     // y puede copiar el nombre del admin — ver bug de is-admin-identity.js).
     stableHandle: tags.username || null,
-    comment: sanitizeForTTS(displayText),
+    comment: sanitizeForChat(displayText),
     ttsComment: sanitizeForTTS(ttsText),
     emotes: Object.keys(emotes).length > 0 ? emotes : undefined,
     ytMsgId: undefined,
@@ -207,7 +207,7 @@ function extractYoutubeMessage(item) {
     // TikTok. No es un fix completo para esta plataforma, es la mejor
     // proteccion posible con el dato disponible.
     stableHandle: (item.author && item.author.name) || null,
-    comment: sanitizeForTTS(displayText),
+    comment: sanitizeForChat(displayText),
     // Siempre string (aunque quede vacio si el mensaje es solo emojis/stickers) —
     // nunca undefined, para que el front no caiga de vuelta a `comment` y termine
     // leyendo el token crudo `:nombre:` en voz alta.
@@ -246,7 +246,7 @@ function extractKickMessage(raw) {
     // de arriba — Kick no separa nickname de username (a diferencia de
     // Twitch/TikTok), asi que ya es el identificador estable de la cuenta.
     stableHandle: raw.username || null,
-    comment: sanitizeForTTS(displayText),
+    comment: sanitizeForChat(displayText),
     // Siempre string (aunque quede vacio si el mensaje es solo emotes/emoji) —
     // nunca undefined, para que el front no caiga de vuelta a `comment` y
     // termine leyendo el token crudo `:nombre:` o el emoji en voz alta.
