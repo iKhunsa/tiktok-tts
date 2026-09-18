@@ -28,8 +28,8 @@ const DEFAULT_MIN_SIZE = [900, 600];
 
 // Orquesta session + tab-pool + bounds. Estados: CLOSED (nunca se mostro) |
 // BACKGROUND (existe, oculto, sesion viva) | VISIBLE (attached al contentView).
-function createPortalViewController({ mainWindow, logger }) {
-  const portalSession = getPortalViewSession();
+function createPortalViewController({ mainWindow, logger, accountId = 'anonymous' }) {
+  const portalSession = getPortalViewSession(accountId);
   const persisted = loadPortalViewData(logger);
   const favorites = persisted.favorites;
   let mode = 'CLOSED';

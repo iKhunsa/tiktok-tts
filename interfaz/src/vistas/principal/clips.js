@@ -2,6 +2,7 @@ import { t } from '../../nucleo/i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
 import { tErr } from '../../nucleo/i18n/i18n.js';
 import { sendStateSync } from '../../nucleo/tts/cola-tts.js';
+import * as datosPorCuenta from '../../nucleo/estado/datos-por-cuenta.js';
 
 const CLIPS_KEY = 'tikliveTTS_clips_v1';
 let streamStartTime = null;
@@ -13,10 +14,10 @@ let obsConnected = false;
 export function obtenerStreamStartTime() { return streamStartTime; }
 
 export function getClipsData() {
-  try { return JSON.parse(localStorage.getItem(CLIPS_KEY) || '{}'); } catch (e) { return {}; }
+  try { return JSON.parse(datosPorCuenta.get(CLIPS_KEY) || '{}'); } catch (e) { return {}; }
 }
 function saveClipsData(data) {
-  try { localStorage.setItem(CLIPS_KEY, JSON.stringify(data)); } catch (e) { /* noop */ }
+  datosPorCuenta.set(CLIPS_KEY, JSON.stringify(data));
 }
 export function getLocalDateStr() {
   const d = new Date();
@@ -117,7 +118,7 @@ function updateClipLabel(dateStr, id, label) {
 
 export function clearAllClips() {
   if (!confirm(t('clips2.confirmClearAll'))) return;
-  localStorage.removeItem(CLIPS_KEY);
+  datosPorCuenta.remove(CLIPS_KEY);
   renderClipsHistory();
 }
 

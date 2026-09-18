@@ -1,8 +1,9 @@
 const AVATAR_KEY = 'tikliveTTS_profileAvatar';
 const TIPOS_PERMITIDOS = new Set(['image/png', 'image/jpeg', 'image/webp']);
+import * as datosPorCuenta from './datos-por-cuenta.js';
 
 export function obtenerAvatarPerfil() {
-  try { return localStorage.getItem(AVATAR_KEY) || ''; } catch (_) { return ''; }
+  return datosPorCuenta.get(AVATAR_KEY) || '';
 }
 
 export async function guardarAvatarPerfil(file) {
@@ -21,7 +22,7 @@ export async function guardarAvatarPerfil(file) {
     canvas.height = Math.max(1, Math.round(imagen.naturalHeight * escala));
     canvas.getContext('2d').drawImage(imagen, 0, 0, canvas.width, canvas.height);
     const avatar = canvas.toDataURL('image/webp', 0.9);
-    localStorage.setItem(AVATAR_KEY, avatar);
+    datosPorCuenta.set(AVATAR_KEY, avatar);
     return avatar;
   } finally {
     URL.revokeObjectURL(url);
@@ -29,5 +30,5 @@ export async function guardarAvatarPerfil(file) {
 }
 
 export function quitarAvatarPerfil() {
-  try { localStorage.removeItem(AVATAR_KEY); } catch (_) { /* localStorage no disponible */ }
+  datosPorCuenta.remove(AVATAR_KEY);
 }

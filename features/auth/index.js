@@ -69,6 +69,9 @@ module.exports = {
 
     const cliente = crearCliente(urlServicio);
     estado.hidratarDesdeDisco();
+    // Configuracion y los demas dominios ya montaron sobre anonymous: antes de
+    // iniciar refresh, apuntalos a la cuenta persistida y rehidratarlos.
+    bus.emit('account:changed', { previous: 'anonymous', current: estado.getSesion().user?.id || 'anonymous' });
     const refresh = crearRefresh({ cliente, bus, logger });
 
     const nRutas = rutas.montar({ app, cliente, logger, subscriptionsEnabled, refresh });

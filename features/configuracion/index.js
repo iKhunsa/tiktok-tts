@@ -30,6 +30,11 @@ module.exports = {
   register({ app, wss, bus, logger }) {
     const configStore = createConfigStore(logger);
     configStore.load();
+    bus.on('account:changed', () => {
+      configStore.resetAndLoad();
+      bus.emit('config:actualizado', { keysChanged: Object.keys(configStore.config) });
+      bus.emit('ws:broadcast', { type: 'config-updated', config: getSafeConfig(configStore.config) });
+    }, 'configuracion');
 
     // Contrato de lectura sincrona (documentado en fase-02-configuracion.md,
     // seccion Riesgos): otros dominios piden 'config:get' via bus y reciben

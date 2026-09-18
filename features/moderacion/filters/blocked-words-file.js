@@ -2,20 +2,22 @@
 
 const fs = require('fs');
 const path = require('path');
-const { RESOURCE_BASE, DATA_BASE } = require('../../../core/paths');
+const { RESOURCE_BASE } = require('../../../core/paths');
+const { accountDataPath } = require('../../../core/account-data-path');
 const { atomicWriteFileSync } = require('../../../core/atomic-write');
 const { invalidateBlockedMatchers } = require('./blocked-matchers');
 
 const DEFAULT_BLOCKED_WORDS_FILE = path.join(RESOURCE_BASE, 'blocked-words.md');
-const BLOCKED_WORDS_FILE = path.join(DATA_BASE, 'blocked-words.md');
+function blockedWordsFile() { return accountDataPath('blocked-words.md'); }
 
 function loadBlockedWordsFromFile(state, logger) {
   try {
-    if (!fs.existsSync(BLOCKED_WORDS_FILE) && fs.existsSync(DEFAULT_BLOCKED_WORDS_FILE)) {
-      fs.copyFileSync(DEFAULT_BLOCKED_WORDS_FILE, BLOCKED_WORDS_FILE);
+    const file = blockedWordsFile();
+    if (!fs.existsSync(file) && fs.existsSync(DEFAULT_BLOCKED_WORDS_FILE)) {
+      fs.copyFileSync(DEFAULT_BLOCKED_WORDS_FILE, file);
     }
-    if (!fs.existsSync(BLOCKED_WORDS_FILE)) return;
-    const content = fs.readFileSync(BLOCKED_WORDS_FILE, 'utf-8');
+    if (!fs.existsSync(file)) return;
+    const content = fs.readFileSync(file, 'utf-8');
     for (const line of content.split(/\r?\n/)) {
       const trimmed = line.trim();
       if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
@@ -31,7 +33,7 @@ function loadBlockedWordsFromFile(state, logger) {
   } catch (error) {
     logger.log(
       'error', 'moderacion', 'moderacion/filters/blocked-words-file.js#loadBlockedWordsFromFile', 'moderacion.palabras.carga_fallida',
-      `No se pudo cargar blocked-words.md: ${error.message}`, { path: BLOCKED_WORDS_FILE, error: error.message, stack: error.stack }
+      `No se pudo cargar blocked-words.md: ${error.message}`, { path: blockedWordsFile(), error: error.message, stack: error.stack }
     );
   }
 }
@@ -48,7 +50,7 @@ function saveBlockedWordsToFile(state, logger) {
     ];
     for (const word of sorted) lines.push(`- ${word}`);
     lines.push('');
-    atomicWriteFileSync(BLOCKED_WORDS_FILE, lines.join('\n'));
+    atomicWriteFileSync(blockedWordsFile(), lines.join('\n'));
     logger.log(
       'info', 'moderacion', 'moderacion/filters/blocked-words-file.js#saveBlockedWordsToFile', 'moderacion.palabras.guardado',
       `blocked-words.md guardado con ${sorted.length} palabra(s)`, { count: sorted.length }
@@ -56,9 +58,9 @@ function saveBlockedWordsToFile(state, logger) {
   } catch (error) {
     logger.log(
       'error', 'moderacion', 'moderacion/filters/blocked-words-file.js#saveBlockedWordsToFile', 'moderacion.palabras.guardado_fallido',
-      `No se pudo guardar blocked-words.md: ${error.message}`, { path: BLOCKED_WORDS_FILE, error: error.message, stack: error.stack }
+      `No se pudo guardar blocked-words.md: ${error.message}`, { path: blockedWordsFile(), error: error.message, stack: error.stack }
     );
   }
 }
 
-module.exports = { loadBlockedWordsFromFile, saveBlockedWordsToFile, BLOCKED_WORDS_FILE };
+module.exports = { loadBlockedWordsFromFile, saveBlockedWordsToFile, blockedWordsFile };

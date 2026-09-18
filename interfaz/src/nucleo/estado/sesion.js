@@ -12,6 +12,8 @@ import { t } from '../i18n/i18n.js';
 import { abrirPopupPlanes } from '../../componentes/popup-planes.js';
 import { toggleAccountPopover } from '../../componentes/popover-cuenta.js';
 import { obtenerAvatarPerfil } from './avatar-perfil.js';
+import { migrarDatosLegacy } from './datos-por-cuenta.js';
+import { loadSettings, applySettings } from './ajustes-app.js';
 
 export const almacenSesion = crearAlmacen({
   activo: false, // ¿el server tiene subscriptionsEnabled? (404 => false)
@@ -47,6 +49,10 @@ function normalizar(data) {
 
 export function aplicarSesion(data) {
   almacenSesion.setState(normalizar(data || {}));
+  migrarDatosLegacy();
+  loadSettings();
+  applySettings();
+  window.renderPluginStore?.();
 }
 
 /** Carga inicial. 404 => el server no tiene el sistema activo. */

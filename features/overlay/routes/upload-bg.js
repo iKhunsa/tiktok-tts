@@ -2,14 +2,17 @@
 
 const path = require('path');
 const multer = require('multer');
-const { DATA_BASE } = require('../../../core/paths');
+const { accountDataPath } = require('../../../core/account-data-path');
 const { ensureDirSync } = require('../../../core/ensure-dir');
 
-const UPLOADS_DIR = path.join(DATA_BASE, 'uploads');
-ensureDirSync(UPLOADS_DIR);
+function uploadsDir() { return accountDataPath('uploads'); }
 
 const uploadStorage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, UPLOADS_DIR),
+  destination: (_req, _file, cb) => {
+    const dir = uploadsDir();
+    ensureDirSync(dir);
+    cb(null, dir);
+  },
   filename: (_req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase() || '.png';
     const name = `bg_${Date.now()}_${Math.random().toString(36).slice(2, 8)}${ext}`;
@@ -48,4 +51,4 @@ function uploadBg(logger) {
   };
 }
 
-module.exports = { uploadBg, UPLOADS_DIR };
+module.exports = { uploadBg, uploadsDir };

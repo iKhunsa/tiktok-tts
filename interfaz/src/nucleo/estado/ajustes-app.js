@@ -15,6 +15,7 @@ import { renderChatTogglesState } from '../../vistas/principal/toggles-chat.js';
 import { updateConnectorChipState } from '../../vistas/principal/voces.js';
 import { updateBgPreview } from '../../vistas/principal/subida-fondo.js';
 import { updateOverlayUrl, updateSocialOverlayUrl } from '../../vistas/principal/configurador-overlays.js';
+import * as datosPorCuenta from './datos-por-cuenta.js';
 
 // Circular import a proposito: los 4 modulos de arriba importan
 // `appSettings`/`saveSettings` de este archivo. Es seguro porque todas las
@@ -92,7 +93,7 @@ export function deepMerge(defaults, saved) {
 
 export function loadSettings() {
   try {
-    const raw = localStorage.getItem(SETTINGS_KEY);
+    const raw = datosPorCuenta.get(SETTINGS_KEY);
     appSettings = raw ? deepMerge(DEFAULT_SETTINGS, JSON.parse(raw)) : JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
   } catch (e) {
     console.warn('[settings] localStorage corrupto, usando valores por defecto', e);
@@ -101,7 +102,7 @@ export function loadSettings() {
 }
 
 export function saveSettings() {
-  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings)); } catch (e) { /* localStorage no disponible */ }
+  datosPorCuenta.set(SETTINGS_KEY, JSON.stringify(appSettings));
 }
 
 /**
