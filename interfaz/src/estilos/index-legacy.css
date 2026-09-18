@@ -838,25 +838,6 @@
     #btnChatTogglesAdjust img { transition: transform 0.2s; }
     .chat-toggles-box.expanded #btnChatTogglesAdjust img { transform: rotate(180deg); }
 
-    /* Sección Twitch colapsable — colapsada por defecto (appSettings.twitchSectionCollapsed). */
-    .twitch-section-body {
-      max-height: 0;
-      opacity: 0;
-      overflow: hidden;
-      pointer-events: none;
-      transition: max-height var(--dur-3) var(--ease-out), opacity var(--dur-2) var(--ease-out);
-    }
-    #settingsSectionTwitch.expanded .twitch-section-body {
-      max-height: 900px;
-      opacity: 1;
-      pointer-events: auto;
-    }
-    #twitchSectionChevron { transition: transform 0.2s; vertical-align: middle; }
-    #settingsSectionTwitch.expanded #twitchSectionChevron { transform: rotate(180deg); }
-    @media (prefers-reduced-motion: reduce) {
-      .twitch-section-body { transition: opacity var(--dur-1) linear; }
-    }
-
     .toggle-chip {
       display: flex;
       align-items: center;

@@ -496,18 +496,6 @@
     "noFollowers": "Pas encore d'abonnés",
     "sharedList": "Partagés",
     "noShared": "Pas encore de partages",
-    "tierPrime": "Prime",
-    "tierGeneric": "Abo",
-    "tierLabel": "Palier {tier}",
-    "subResub": "RÉABONNEMENT",
-    "subMonths": "{months} mois de sub",
-    "subGifted": "SUB OFFERT",
-    "subGiftedTo": "pour @{recipient}",
-    "subsGifted": "SUBS OFFERTS",
-    "subsGiftedCount": "{count} subs pour le chat",
-    "subUpgrade": "AMÉLIORATION DE SUB",
-    "subNew": "NOUVEL ABONNEMENT",
-    "raidJoined": "arrive avec sa communauté",
     "anonymous": "Anonyme",
     "giftFrom": "de @{user}",
     "topLikers": "Top Likers"
@@ -593,13 +581,6 @@
     "giftUsd": "{user} a envoyé {count} {gift}, soit ${amount} dollars",
     "join": "{user} a rejoint le live",
     "follow": "{user} vient de vous suivre",
-    "subResub": "{user} s'est réabonné, {months} mois",
-    "subGift": "{user} a offert un abonnement à {recipient}",
-    "subMysteryGift": "{user} a offert {count} abonnements au chat",
-    "subUpgrade": "{user} a amélioré son abonnement",
-    "subNew": "{user} s'est abonné sur Twitch",
-    "cheer": "{user} a envoyé {bits} bits",
-    "raid": "{user} a fait un raid avec {viewers} spectateurs",
     "like": "{user} a donné {count} likes",
     "share": "{user} partage le live"
   },
@@ -880,14 +861,6 @@
     "musicPauseDesc": "Raccourci pour mettre en pause ou reprendre la musique demandée par le chat via la commande !p (par défaut F11).",
     "musicSkipTitle": "Passer la chanson du bot",
     "musicSkipDesc": "Raccourci pour passer la chanson en cours dans le bot musical (par défaut F12)."
-  },
-  "twitchTour": {
-    "introTitle": "Twitch — alertes en direct",
-    "introDesc": "Twitch alerts for subs, bits and raids.",
-    "togglesTitle": "Quoi annoncer",
-    "togglesDesc": "Activez ou désactivez chaque type d'alerte séparément : subs, bits, raids et follows.",
-    "testTitle": "Tester les alertes",
-    "testDesc": "Déclenchez chaque alerte manuellement pour voir/entendre son rendu, sans attendre qu'elle arrive vraiment en direct."
   },
   "clipsTour": {
     "introTitle": "Marqueurs de Clip",

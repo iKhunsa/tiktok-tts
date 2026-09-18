@@ -496,18 +496,6 @@
     "noFollowers": "아직 팔로워 없음",
     "sharedList": "공유",
     "noShared": "아직 공유 없음",
-    "tierPrime": "프라임",
-    "tierGeneric": "구독",
-    "tierLabel": "티어 {tier}",
-    "subResub": "재구독",
-    "subMonths": "구독 {months}개월",
-    "subGifted": "구독 선물",
-    "subGiftedTo": "@{recipient}님에게",
-    "subsGifted": "구독 선물",
-    "subsGiftedCount": "채팅에 구독 {count}개",
-    "subUpgrade": "구독 업그레이드",
-    "subNew": "신규 구독",
-    "raidJoined": "커뮤니티와 함께 도착했습니다",
     "anonymous": "익명",
     "giftFrom": "@{user}님으로부터",
     "topLikers": "탑 라이커"
@@ -593,13 +581,6 @@
     "giftUsd": "{user}님이 {gift}을(를) {count}개 보냈습니다 (약 {amount}달러)",
     "join": "{user}님이 방송에 입장했습니다",
     "follow": "{user}님이 방금 팔로우했습니다",
-    "subResub": "{user}님이 재구독했습니다, {months}개월",
-    "subGift": "{user}님이 {recipient}님에게 구독을 선물했습니다",
-    "subMysteryGift": "{user}님이 채팅에 구독 {count}개를 선물했습니다",
-    "subUpgrade": "{user}님이 구독을 업그레이드했습니다",
-    "subNew": "{user}님이 Twitch에서 구독했습니다",
-    "cheer": "{user}님이 {bits} 비트를 보냈습니다",
-    "raid": "{user}님이 시청자 {viewers}명과 함께 레이드했습니다",
     "like": "{user}님이 좋아요 {count}개를 눌렀습니다",
     "share": "{user}님이 방송을 공유하고 있습니다"
   },
@@ -880,14 +861,6 @@
     "musicPauseDesc": "!p 명령으로 채팅이 요청한 음악을 일시정지하거나 재개하는 단축키(기본값 F11).",
     "musicSkipTitle": "봇 노래 건너뛰기",
     "musicSkipDesc": "음악 봇에서 현재 재생 중인 노래를 건너뛰는 단축키(기본값 F12)."
-  },
-  "twitchTour": {
-    "introTitle": "Twitch — 라이브 알림",
-    "introDesc": "Twitch alerts for subs, bits and raids.",
-    "togglesTitle": "무엇을 알릴지",
-    "togglesDesc": "구독, 비트, 레이드, 팔로우를 각각 개별적으로 켜고 끌 수 있습니다.",
-    "testTitle": "알림 테스트",
-    "testDesc": "실제 방송에서 일어나길 기다리지 않고 각 알림을 수동으로 발생시켜 모습과 소리를 확인하세요."
   },
   "clipsTour": {
     "introTitle": "클립 마커",

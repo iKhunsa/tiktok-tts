@@ -983,31 +983,6 @@
         </div>
       </div>
 
-      <div class="settings-section" id="settingsSectionTwitch">
-        <div class="settings-section-title settings-row-flex twitch-collapse-header" id="twitchSectionHeader" role="button" tabindex="0" style="justify-content:space-between;cursor:pointer;" onclick="toggleTwitchSection()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleTwitchSection();}">
-          <span style="color:#9146FF;">💜 Twitch — alertas en vivo <img class="icon-inline" src="icons/expand_more.svg" alt="" id="twitchSectionChevron"></span>
-          <button class="cfg-btn" id="btnTwitchTour" onclick="event.stopPropagation(); startTwitchTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
-        </div>
-        <div class="twitch-section-body" id="twitchSectionBody">
-        <div class="toggles-row" id="twitchTogglesRow" style="margin-top:12px;">
-          <label class="toggle-chip" id="chip-twitch-sub">
-            <input type="checkbox" onchange="toggleOption('readTwitchSub', this)" /> 🟣 Anunciar subs
-          </label>
-          <label class="toggle-chip" id="chip-twitch-cheer">
-            <input type="checkbox" onchange="toggleOption('readTwitchCheer', this)" /> 💎 Anunciar bits
-          </label>
-          <label class="toggle-chip" id="chip-twitch-raid">
-            <input type="checkbox" onchange="toggleOption('readTwitchRaid', this)" /> 🚀 Anunciar raids
-          </label>
-        </div>
-        <div id="twitchTestRow" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
-          <button class="cfg-btn" onclick="testAlertType('sub')">Test sub</button>
-          <button class="cfg-btn" onclick="testAlertType('cheer')">Test bits</button>
-          <button class="cfg-btn" onclick="testAlertType('raid')">Test raid</button>
-        </div>
-        </div>
-      </div>
-
       <div class="settings-section">
         <div class="settings-section-title" data-i18n="settings.advanced">Configuración avanzada</div>
         <a href="/advanced.html?popup=1" target="_blank" rel="noopener" class="btn-nav" data-i18n="btn.openAdvanced"><img class="icon-inline" src="icons/build.svg" alt=""> Abrir panel avanzado (filtros, rate limit, logs) →</a>

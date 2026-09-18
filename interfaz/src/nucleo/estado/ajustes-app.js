@@ -11,7 +11,7 @@
  */
 import { options } from './opciones-lectura.js';
 import { setFieldVal, setChecked, paintRangeFill } from '../../componentes/campos-formulario.js';
-import { renderChatTogglesState, renderTwitchSectionState } from '../../vistas/principal/toggles-chat.js';
+import { renderChatTogglesState } from '../../vistas/principal/toggles-chat.js';
 import { updateConnectorChipState } from '../../vistas/principal/voces.js';
 import { updateBgPreview } from '../../vistas/principal/subida-fondo.js';
 import { updateOverlayUrl, updateSocialOverlayUrl } from '../../vistas/principal/configurador-overlays.js';
@@ -35,13 +35,9 @@ export const DEFAULT_SETTINGS = {
   readFollows: false,
   readLikes: false,
   readShares: false,
-  readTwitchSub: false,
-  readTwitchCheer: false,
-  readTwitchRaid: false,
   sayUsername: true,
   sayUsernameConnector: true,
   chatTogglesCollapsed: true,
-  twitchSectionCollapsed: true,
   // langFilterEnabled/dictFilterEnabled/allowedExtraLangs NO viven aca
   // (fase-05): fuente unica de verdad = config.json del servidor, ver
   // nucleo/estado/config-runtime.js. Antes duplicaban esas 3 claves con
@@ -125,8 +121,6 @@ export function applySettings() {
   const chipMap = {
     readChat: 'chip-chat', readGifts: 'chip-gifts', readGiftAmount: 'chip-gift-amount', readJoins: 'chip-joins',
     readFollows: 'chip-follows', readLikes: 'chip-likes', readShares: 'chip-shares', sayUsername: 'chip-username',
-    readTwitchSub: 'chip-twitch-sub', readTwitchCheer: 'chip-twitch-cheer',
-    readTwitchRaid: 'chip-twitch-raid',
   };
   for (const [key, chipId] of Object.entries(chipMap)) {
     const val = appSettings[key];
@@ -146,7 +140,6 @@ export function applySettings() {
   updateConnectorChipState();
 
   renderChatTogglesState();
-  renderTwitchSectionState();
 
   // langFilterToggle/dictFilterToggle ya NO se hidratan aca: los pinta
   // config-runtime.js#applyFiltroIdiomaConfig() con el valor real del
