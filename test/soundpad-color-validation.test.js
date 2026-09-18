@@ -16,7 +16,7 @@ after(() => fs.rmSync(tmp, { recursive: true, force: true }));
 function handlerDeps() {
   fs.writeFileSync(configPath, JSON.stringify([{ id: 's1', name: 'Sonido', color: '#3ecf8e' }]));
   return {
-    soundsConfigPath: configPath,
+    soundsConfigPath: () => configPath,
     logger: { log() {} },
     bus: { emit() {} },
   };
