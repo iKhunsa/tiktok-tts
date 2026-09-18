@@ -219,6 +219,7 @@
     .sidebar-brand {
       display: flex;
       align-items: center;
+      position: relative;
       padding: 4px 10px 20px;
       border-bottom: 1px solid var(--border-subtle);
       margin-bottom: 14px;
@@ -230,6 +231,8 @@
       height: auto;
       display: block;
     }
+
+    .sidebar-app-version { position: absolute; right: 10px; bottom: 4px; color: var(--text-muted); font-size: var(--text-3xs); line-height: 1; }
 
     .sidebar-nav {
       flex: 0 0 auto;
@@ -320,7 +323,7 @@
     .sidebar-account-badge { padding: 2px 6px; border: 1px solid var(--border); border-radius: var(--radius-pill); color: var(--text-muted); font-size: var(--text-3xs); font-weight: 700; letter-spacing: 0.35px; line-height: 1.2; }
     .sidebar-account-badge[data-i18n="sidebarAccount.badgePro"] { position: relative; border-color: transparent; background: transparent; }
     .sidebar-account-badge[data-i18n="sidebarAccount.badgePro"]::before {
-      content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 2px;
+      content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px;
       background: conic-gradient(from var(--angle), #ff0000, #ff8000, #ffff00, #00ff00, #00ffff, #0080ff, #8000ff, #ff00ff, #ff0000);
       -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
