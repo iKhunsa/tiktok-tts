@@ -133,6 +133,21 @@ export function initChatScrollFollow() {
   log.addEventListener('wheel', (e) => { if (e.deltaY < 0) chatPauseFollow(); }, { passive: true });
 }
 
+/** Boton del banner #speakingNow: centra el mensaje en lectura y lo resalta. */
+export function initSpeakingGoto() {
+  const btn = document.getElementById('speakingGoto');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    const el = chatSpeakingEl();
+    if (!el) { btn.disabled = true; return; } // purgado por el tope de nodos
+    chatScrollTo(() => el.scrollIntoView({ block: 'center', behavior: 'smooth' }));
+    el.classList.remove('goto-flash');
+    void el.offsetWidth; // reinicia la animacion si se pulsa dos veces
+    el.classList.add('goto-flash');
+    setTimeout(() => el.classList.remove('goto-flash'), 1200);
+  });
+}
+
 export function addChatMsg(data, msgId) {
   const empty = document.getElementById('emptyState');
   if (empty) empty.remove();

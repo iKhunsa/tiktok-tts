@@ -52,7 +52,7 @@ import {
   toggleDictFilter, toggleSayUsernameConnector, updateConnectorChipState, selectVoice,
   loadVoices, testVoice, iniciarCierreDropdownVoces,
 } from './voces.js';
-import { escapeHtml, initChatScrollFollow, clearChatAndQueue } from './chat-ui.js';
+import { escapeHtml, initChatScrollFollow, initSpeakingGoto, clearChatAndQueue } from './chat-ui.js';
 import {
   openDonationsModal, closeDonationsModal,
   openBugReportModal, closeBugReportModal, submitBugReport, openDictLangModal,
@@ -204,6 +204,7 @@ function iniciarArranque() {
 
   document.addEventListener('DOMContentLoaded', () => {
     initChatScrollFollow();
+    initSpeakingGoto();
     document.querySelectorAll('.cfg-field input[type="range"], #rateRange, #volRange').forEach(paintRangeFill);
   });
 

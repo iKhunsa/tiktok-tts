@@ -374,6 +374,8 @@ async function _processQueueOnce() {
 function showSpeakingIndicator(text) {
   const el = document.getElementById('speakingNow');
   if (el) el.classList.add('visible');
+  const goto = document.getElementById('speakingGoto');
+  if (goto) goto.disabled = !currentMsgId || !document.getElementById(currentMsgId);
   const txt = document.getElementById('speakingText');
   if (txt) txt.textContent = text.length > 60 ? text.substring(0, 60) + '…' : text;
 }
