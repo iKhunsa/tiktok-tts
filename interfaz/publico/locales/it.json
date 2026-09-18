@@ -1093,7 +1093,10 @@
     "confirmCancelNo": "Indietro",
     "resume": "Riattiva abbonamento",
     "resumed": "Il tuo abbonamento Pro resta attivo: la cancellazione è stata annullata.",
-    "planSinPromosCancels": "Senza promozioni · si annulla il {fecha}"
+    "planSinPromosCancels": "Senza promozioni · si annulla il {fecha}",
+    "changePhoto": "Cambia foto",
+    "removePhoto": "Rimuovi foto",
+    "photoError": "Impossibile salvare la foto"
   },
   "sidebarAccount": {
     "badgeFree": "FREE",

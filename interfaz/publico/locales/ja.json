@@ -1093,7 +1093,10 @@
     "confirmCancelNo": "戻る",
     "resume": "サブスクリプションを再開",
     "resumed": "Proサブスクリプションは有効のままです。解約は取り消されました。",
-    "planSinPromosCancels": "プロモーションなし · {fecha} に解約"
+    "planSinPromosCancels": "プロモーションなし · {fecha} に解約",
+    "changePhoto": "写真を変更",
+    "removePhoto": "写真を削除",
+    "photoError": "写真を保存できませんでした"
   },
   "sidebarAccount": {
     "badgeFree": "無料",

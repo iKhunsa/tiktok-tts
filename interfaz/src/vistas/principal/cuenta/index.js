@@ -6,7 +6,8 @@
  */
 import { t, aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
 import { showToast } from '../../../componentes/toast.js';
-import { almacenSesion, aplicarSesion } from '../../../nucleo/estado/sesion.js';
+import { almacenSesion, aplicarSesion, pintarBadgeSidebar } from '../../../nucleo/estado/sesion.js';
+import { guardarAvatarPerfil, obtenerAvatarPerfil, quitarAvatarPerfil } from '../../../nucleo/estado/avatar-perfil.js';
 import { pedir, toastError } from './api.js';
 import { irACheckout } from './checkout.js';
 import { escaparAtributo as esc } from '../../../../compartido/escapar-html.js';
@@ -96,7 +97,8 @@ function panelPerfil(s) {
   return `
     <div class="cuenta-card cuenta-perfil">
       <div class="cuenta-perfil-head">
-        <div class="cuenta-avatar">${inicial}</div>
+        <div class="cuenta-avatar" role="button" tabindex="0" data-inicial="${inicial}">${inicial}</div>
+        <input type="file" id="cuentaAvatarInput" accept="image/png,image/jpeg,image/webp" hidden>
         <div class="cuenta-perfil-id">
           <div class="cuenta-perfil-nombre">${esc(u.nombre) || t('cuenta.noName')}</div>
           <div class="cuenta-perfil-email">${esc(u.email)}</div>
@@ -107,6 +109,8 @@ function panelPerfil(s) {
         <input type="text" id="cuentaNombre" autocomplete="name" value="${esc(u.nombre)}">
       </div>
       <div class="cuenta-perfil-acciones">
+        <button class="cuenta-btn-ghost" id="cuentaElegirAvatar" data-i18n="cuenta.changePhoto"></button>
+        <button class="cuenta-btn-ghost" id="cuentaQuitarAvatar" data-i18n="cuenta.removePhoto"></button>
         <button class="cuenta-btn-ghost" id="cuentaGuardarNombre" data-i18n="cuenta.save"></button>
         <button class="cuenta-btn-ghost cuenta-btn-danger" id="cuentaLogout" data-i18n="cuenta.logout"></button>
       </div>
@@ -137,6 +141,42 @@ export function renderCuentaPanel() {
     el.querySelector('input')?.focus();
     return;
   }
+
+  const avatar = el.querySelector('.cuenta-avatar');
+  const inputAvatar = el.querySelector('#cuentaAvatarInput');
+  const pintarAvatar = (foto = obtenerAvatarPerfil()) => {
+    avatar.replaceChildren();
+    if (foto) {
+      const img = document.createElement('img');
+      img.src = foto;
+      img.alt = '';
+      avatar.appendChild(img);
+    } else avatar.textContent = avatar.dataset.inicial;
+    avatar.classList.toggle('has-image', !!foto);
+    el.querySelector('#cuentaQuitarAvatar').hidden = !foto;
+  };
+  avatar.setAttribute('aria-label', t('cuenta.changePhoto'));
+  pintarAvatar();
+  const elegirAvatar = () => inputAvatar.click();
+  avatar.addEventListener('click', elegirAvatar);
+  avatar.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); elegirAvatar(); } });
+  el.querySelector('#cuentaElegirAvatar').addEventListener('click', elegirAvatar);
+  inputAvatar.addEventListener('change', async () => {
+    try {
+      const foto = await guardarAvatarPerfil(inputAvatar.files[0]);
+      pintarAvatar(foto);
+      pintarBadgeSidebar();
+    } catch (_) {
+      showToast(t('cuenta.photoError'));
+    } finally {
+      inputAvatar.value = '';
+    }
+  });
+  el.querySelector('#cuentaQuitarAvatar').addEventListener('click', () => {
+    quitarAvatarPerfil();
+    pintarAvatar();
+    pintarBadgeSidebar();
+  });
 
   el.querySelector('#cuentaLogout').addEventListener('click', async () => {
     await pedir('/api/auth/logout', { method: 'POST' });
