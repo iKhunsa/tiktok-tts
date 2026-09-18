@@ -1,4 +1,4 @@
-# Guía de contribución — TikTok TTS
+# Guía de contribución — TikLiveTTS
 
 ¡Gracias por querer aportar! Esta guía explica cómo levantar el proyecto y cómo enviar cambios.
 

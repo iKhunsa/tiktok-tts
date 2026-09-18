@@ -1,7 +1,7 @@
 {
   "name": "tiktok-live-tts",
   "version": "1.9.5",
-  "description": "TikTok Live Chat TTS Reader",
+  "description": "TikLiveTTS Live Chat Text-to-Speech Reader",
   "author": "iKhunsa",
   "main": "main.js",
   "scripts": {
@@ -23,7 +23,8 @@
   },
   "build": {
     "appId": "com.tiktok-tts.app",
-    "productName": "TikTok TTS",
+    "productName": "TikLiveTTS",
+    "artifactName": "TikLiveTTS-Setup-${version}.${ext}",
     "publish": {
       "provider": "github",
       "owner": "iKhunsa",
@@ -41,7 +42,8 @@
       "oneClick": false,
       "perMachine": false,
       "allowToChangeInstallationDirectory": false,
-      "shortcutName": "TikTok TTS",
+      "shortcutName": "TikLiveTTS",
+      "uninstallDisplayName": "TikLiveTTS",
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true
     },

@@ -1,4 +1,4 @@
-# Orquestador — sistema de suscripción freemium (TikLive TTS)
+# Orquestador — sistema de suscripción freemium (TikLiveTTS)
 
 Plan agéntico de Nivel 1. Este documento es el índice del set y la especificación
 del **agente orquestador**: define las fases en orden de dependencia, quién es
@@ -14,7 +14,7 @@ Los planes de subagente (`01`–`06`) usan **checkboxes numerados** en las tarea
 
 ## Contexto del proyecto
 
-TikLive TTS es una app Electron de escritorio (repo `iKhunsa/tiktok-tts`) que hoy
+TikLiveTTS es una app Electron de escritorio (repo `iKhunsa/tiktok-tts`) que hoy
 se instala y se usa **sin registro de usuarios** — no hay tabla de usuarios en
 ningún lado. Se quiere pasar a **freemium**:
 

@@ -1,4 +1,4 @@
-# TikTok TTS — Contexto del Proyecto para IA
+# TikLiveTTS — Contexto del Proyecto para IA
 
 ## Qué es
 
@@ -331,8 +331,8 @@ cubierto ahora por `test/serve-ui.test.js`.
 ## Paths críticos en producción (packaged)
 
 ```
-%LOCALAPPDATA%\TikTok TTS\
-  TikTok TTS.exe
+%LOCALAPPDATA%\TikLiveTTS\
+  TikLiveTTS.exe
   resources\
     app.asar              ← main.js + server.js + los 17 dominios + electron-shell/ + telemetria/ + node_modules (interfaz/ fuente NO viaja, solo su build)
     gifts\                ← 810 PNGs de regalos TikTok (188 MB)
