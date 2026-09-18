@@ -1828,11 +1828,12 @@
     }
     .vista-bloqueada-overlay:hover { background-color: rgba(0, 0, 0, 0.15); }
     .vista-bloqueada-msg {
-      margin: 0;
+      margin: 4px 0 0;
       max-width: 280px;
-      color: var(--text-secondary);
+      color: var(--text-bright);
       font-size: var(--text-sm);
       font-weight: 500;
+      line-height: 1.5;
       text-shadow: 0 1px 2px var(--bg);
     }
     .vista-bloqueada-video-wrap {
@@ -1852,10 +1853,19 @@
       align-items: center;
       justify-content: center;
       gap: var(--space-2);
-      color: var(--text-muted);
+      padding: var(--space-4);
+      background: linear-gradient(135deg, var(--surface-3), var(--surface-1));
+      color: var(--text-secondary);
       font-size: var(--text-sm);
     }
-    .vista-bloqueada-video-placeholder img { width: 32px; height: 32px; opacity: 0.5; }
+    .vista-bloqueada-video-placeholder img {
+      width: 40px;
+      height: 40px;
+      padding: 10px;
+      border: 1px solid var(--text-bright-a30);
+      border-radius: 50%;
+      background: var(--surface-raised);
+    }
     .vista-bloqueada-video { display: none; width: 100%; height: 100%; background: #000; }
     .vista-bloqueada-video-wrap.cargado .vista-bloqueada-video-placeholder { display: none; }
     .vista-bloqueada-video-wrap.cargado .vista-bloqueada-video { display: block; }
