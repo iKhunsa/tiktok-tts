@@ -18,7 +18,7 @@
   },
   "bugReport": {
     "title": "报告问题",
-    "guide": "遇到问题了吗？1）先尝试重新复现一次。2）用你自己的话填写这份表单，说明发生了什么。3）提交后会自动连同本次会话的技术日志一起发送给团队（不包含密码或敏感信息）。",
+    "guide": "遇到问题了吗？1）请尝试复现它。2）在这份表单中告诉我们发生了什么。3）提交后，团队会收到你的报告及本次会话的技术日志；其中不包含密码或敏感信息。",
     "discordNickLabel": "你的 Discord 昵称",
     "discordNickPlaceholder": "用户#0000",
     "channelLinkLabel": "你的频道链接（TikTok/Twitch/YouTube）",
@@ -961,7 +961,8 @@
     "reorderLabel": "重新排序：",
     "mediaPlaceholder": "预览即将推出",
     "comingSoon": "更多即将推出",
-    "comingSoonDesc": "我们正在开发新工具。"
+    "comingSoonDesc": "我们正在开发新工具。",
+    "suggestIdea": "有想法吗？建议一项功能"
   },
   "errors": {
     "textRequired": "需要输入文本",

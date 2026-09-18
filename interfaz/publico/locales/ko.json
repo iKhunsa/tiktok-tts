@@ -18,7 +18,7 @@
   },
   "bugReport": {
     "title": "문제 신고",
-    "guide": "문제가 있으신가요? 1) 다시 한번 재현해 보세요. 2) 무슨 일이 있었는지 직접 작성해서 이 양식을 채워주세요. 3) 제출하면 세션의 기술 로그와 함께 자동으로 팀에 전송됩니다 (비밀번호나 민감한 정보는 포함되지 않습니다).",
+    "guide": "문제가 있나요? 1) 재현해 보세요. 2) 이 양식에 무슨 일이 있었는지 알려주세요. 3) 제출하면 팀이 세션의 기술 로그와 함께 받습니다. 비밀번호나 민감한 정보는 포함되지 않습니다.",
     "discordNickLabel": "Discord 닉네임",
     "discordNickPlaceholder": "사용자#0000",
     "channelLinkLabel": "채널 링크 (TikTok/Twitch/YouTube)",
@@ -961,7 +961,8 @@
     "reorderLabel": "순서 변경:",
     "mediaPlaceholder": "미리보기 준비 중",
     "comingSoon": "더 많은 기능 준비 중",
-    "comingSoonDesc": "새로운 도구를 준비하고 있습니다."
+    "comingSoonDesc": "새로운 도구를 준비하고 있습니다.",
+    "suggestIdea": "아이디어가 있나요? 기능 제안하기"
   },
   "errors": {
     "textRequired": "텍스트가 필요합니다",
