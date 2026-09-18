@@ -14,7 +14,7 @@ import { applyA11yConfig, applyReadNonFollowers, applyFiltroIdiomaConfig } from 
 import { cargarSesion } from '../estado/sesion.js';
 import {
   ttsPaused, setTtsGlobalEnabled, togglePauseTts, skipCurrentTTS,
-  clearTTSQueue, enableEmergencyTTSMode, sendStateSync, speak,
+  enableEmergencyTTSMode, sendStateSync, speak,
 } from '../tts/cola-tts.js';
 import { incrementarMsgCount, handleChatData, addSystemMsg } from '../../vistas/principal/chat-ui.js';
 import { setStatus, getSayUsernameConnector } from '../../vistas/principal/modales-avisos.js';
@@ -254,7 +254,7 @@ function handleMessage(data) {
       } else if (data.action === 'skip') {
         skipCurrentTTS();
       } else if (data.action === 'clear') {
-        clearTTSQueue();
+        window.clearChatAndQueue?.();
       } else if (data.action === 'emergency') {
         enableEmergencyTTSMode();
       } else if (data.action === 'markClip') {

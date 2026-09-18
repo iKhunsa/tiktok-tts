@@ -227,7 +227,7 @@ export function addSystemMsg(text, type, msgId, { iconSrc = '', accentText = '' 
   appendChatNode(div);
 }
 
-export function clearChat() {
+export function clearChatAndQueue() {
   stopCurrentTTS({ clearQueue: true });
   resetTtsCounters();
   document.getElementById('chatLog').innerHTML = `
