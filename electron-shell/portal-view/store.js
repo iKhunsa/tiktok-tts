@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { DATA_BASE } = require('../../core/paths');
+const { accountDataPath } = require('../../core/account-data-path');
 const { atomicWriteFileSync } = require('../../core/atomic-write');
 
 // Metadata de UI (favoritos, pestanas abiertas, ancho del panel) — nunca
@@ -10,7 +10,7 @@ const { atomicWriteFileSync } = require('../../core/atomic-write');
 // archivo alcanza: puñado de campos planos, no justifica fraccionar como
 // features/moderacion/store/ (miles de records con purge/LRU).
 const SCHEMA_VERSION = 1;
-const FILE_PATH = path.join(DATA_BASE, 'portal-view.json');
+function filePath() { return accountDataPath('portal-view.json'); }
 const DEBOUNCE_MS = 2000;
 const MAX_DELAY_MS = 10000;
 
@@ -22,8 +22,8 @@ let maxDelayTimer = null;
 // Nunca lanza — se invoca al construir el controller, un throw aca rompería el arranque.
 function loadPortalViewData(logger) {
   try {
-    if (!fs.existsSync(FILE_PATH)) return { ...DEFAULT_DATA };
-    const parsed = JSON.parse(fs.readFileSync(FILE_PATH, 'utf8'));
+    if (!fs.existsSync(filePath())) return { ...DEFAULT_DATA };
+    const parsed = JSON.parse(fs.readFileSync(filePath(), 'utf8'));
     if (Number(parsed.version) !== SCHEMA_VERSION) return { ...DEFAULT_DATA };
     return {
       panelWidthPct: typeof parsed.panelWidthPct === 'number' ? parsed.panelWidthPct : null,
@@ -51,7 +51,7 @@ function writeSync(data, logger) {
   clearTimers();
   const payload = { version: SCHEMA_VERSION, savedAt: Date.now(), ...data };
   try {
-    atomicWriteFileSync(FILE_PATH, JSON.stringify(payload));
+    atomicWriteFileSync(filePath(), JSON.stringify(payload));
   } catch (error) {
     logger?.log(
       'error', 'portal-view', 'portal-view/store.js#writeSync', 'portalview.store.guardado_fallido',

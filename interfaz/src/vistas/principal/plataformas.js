@@ -1,5 +1,6 @@
 import { t } from '../../nucleo/i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
+import * as datosPorCuenta from '../../nucleo/estado/datos-por-cuenta.js';
 
 const PLATFORM_CHANNELS_KEY = 'tikliveTTS_platforms_v1';
 export const PLATFORMS = ['tiktok', 'twitch', 'youtube', 'kick'];
@@ -8,7 +9,7 @@ const PLATFORM_ICONS = { tiktok: 'icons/tiktok.svg', twitch: 'icons/sports_espor
 
 function loadPlatformChannels() {
   try {
-    const raw = JSON.parse(localStorage.getItem(PLATFORM_CHANNELS_KEY) || '{}');
+    const raw = JSON.parse(datosPorCuenta.get(PLATFORM_CHANNELS_KEY) || '{}');
     const normalized = normalizeSavedChannels(raw);
     if (JSON.stringify(raw) !== JSON.stringify(normalized)) savePlatformChannels(normalized);
     return normalized;
@@ -18,7 +19,7 @@ function loadPlatformChannels() {
 }
 
 function savePlatformChannels(data) {
-  try { localStorage.setItem(PLATFORM_CHANNELS_KEY, JSON.stringify(normalizeSavedChannels(data))); } catch (e) { /* noop */ }
+  datosPorCuenta.set(PLATFORM_CHANNELS_KEY, JSON.stringify(normalizeSavedChannels(data)));
 }
 
 function normalizeSavedChannels(data = {}) {

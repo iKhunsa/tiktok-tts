@@ -27,7 +27,7 @@ function normalizeSidebarPrefs(data) {
 
 function loadSidebarPrefs() {
   try {
-    const raw = JSON.parse(localStorage.getItem(SIDEBAR_PREFS_KEY) || 'null');
+    const raw = JSON.parse(window.__datosPorCuenta?.get(SIDEBAR_PREFS_KEY) || 'null');
     const normalized = normalizeSidebarPrefs(raw);
     if (JSON.stringify(raw) !== JSON.stringify(normalized)) saveSidebarPrefs(normalized);
     return normalized;
@@ -37,5 +37,5 @@ function loadSidebarPrefs() {
 }
 
 function saveSidebarPrefs(prefs) {
-  try { localStorage.setItem(SIDEBAR_PREFS_KEY, JSON.stringify(normalizeSidebarPrefs(prefs))); } catch (e) { /* best-effort */ }
+  window.__datosPorCuenta?.set(SIDEBAR_PREFS_KEY, JSON.stringify(normalizeSidebarPrefs(prefs)));
 }

@@ -27,6 +27,7 @@ const telemetryRuntime = require('./features/telemetria/runtime');
 const glitchtip = require('./electron-shell/glitchtip');
 const aptabase = require('./electron-shell/aptabase');
 const { resolveConfigValue } = require('./electron-shell/resolve-config-value');
+const { getActiveAccount } = require('./core/account-data-path');
 
 // GlitchTip (error tracking) — se inicia lo antes posible, antes de cargar
 // server.js, para captar hasta un fallo de arranque de los dominios. El
@@ -149,8 +150,18 @@ app.whenReady().then(() => {
       },
     });
 
-    portalView = createPortalViewController({ mainWindow, logger });
+    portalView = createPortalViewController({ mainWindow, logger, accountId: getActiveAccount() });
     portalViewIpcHandles = attachPortalViewIpc({ controller: portalView });
+    bus.on('account:changing', () => {
+      if (!portalView) return;
+      portalView.destroyAll();
+      portalViewIpcHandles?.dispose();
+      portalView = null;
+    }, 'electron-shell');
+    bus.on('account:changed', ({ current }) => {
+      portalView = createPortalViewController({ mainWindow, logger, accountId: current });
+      portalViewIpcHandles = attachPortalViewIpc({ controller: portalView });
+    }, 'electron-shell');
 
     tray = createTray({ iconPath: ICON_PATH, logger, ...trayCallbacks() });
 

@@ -36,7 +36,7 @@ module.exports = {
     const deps = { state, bus, logger };
 
     app.use('/gifts', express.static(path.join(RESOURCE_BASE, 'gifts')));
-    app.use('/uploads', express.static(require('./routes/upload-bg').UPLOADS_DIR));
+    app.use('/uploads', (req, res, next) => express.static(require('./routes/upload-bg').uploadsDir())(req, res, next));
 
     // ── Consumo puro de eventos de /canales y /chat ──────────────────────────
     bus.on('canal:gift', (payload) => {

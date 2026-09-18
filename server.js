@@ -9,11 +9,13 @@ const { createLogger } = require('./core/logger');
 const { registerDomain } = require('./core/register-domain');
 const { attachBroadcast } = require('./core/broadcast');
 const { DATA_BASE } = require('./core/paths');
+const { attachAccountDataPath } = require('./core/account-data-path');
 
 const PORT = process.env.PORT || 3000;
 
 const logger = createLogger({ logsDir: path.join(DATA_BASE, 'logs') });
 const bus = createEventBus(logger);
+attachAccountDataPath(bus);
 logger.attachBus(bus);
 
 const app = createApp(bus);
