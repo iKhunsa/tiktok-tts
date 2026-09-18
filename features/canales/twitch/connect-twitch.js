@@ -82,51 +82,6 @@ async function connectTwitchLocked(deps, tmi, channel, attempt) {
     bus.emit('canal:mensaje-crudo', { platform: 'twitch', channel, raw: { tags, message: message.trim() } });
   });
 
-  const planToTier = (methods) => {
-    if (!methods) return { tier: null, tierLabel: '', isPrime: false };
-    const isPrime = !!methods.prime || methods.plan === 'Prime';
-    const tier = isPrime ? 'prime' : ({ 1000: 1, 2000: 2, 3000: 3 })[methods.plan] || null;
-    return { tier, tierLabel: methods.planName || '', isPrime };
-  };
-  const emitEspecial = (kind, raw) => bus.emit('canal:evento-especial', { platform: 'twitch', channel, kind, raw });
-
-  // No bindear 'sub' ni 'subanniversary': tmi.js los emite junto con
-  // 'subscription'/'resub' respectivamente y dispararian doble alerta.
-  client.on('subscription', (_ch, username, methods, message) => {
-    emitEspecial('sub-nueva', { username, message, ...planToTier(methods) });
-  });
-  client.on('resub', (_ch, username, streakMonths, message, tags, methods) => {
-    const months = parseInt(tags && tags['msg-param-cumulative-months'], 10) || streakMonths || 0;
-    emitEspecial('sub-resub', { username, months, streakMonths: streakMonths || 0, message, ...planToTier(methods) });
-  });
-  client.on('subgift', (_ch, username, _streak, recipient, methods) => {
-    emitEspecial('sub-regalo', { username, recipient, ...planToTier(methods) });
-  });
-  client.on('anonsubgift', (_ch, _streak, recipient, methods) => {
-    emitEspecial('sub-regalo', { username: null, recipient, isAnonymous: true, ...planToTier(methods) });
-  });
-  client.on('submysterygift', (_ch, username, numbOfSubs, methods) => {
-    emitEspecial('sub-misterio', { username, giftCount: numbOfSubs || 1, ...planToTier(methods) });
-  });
-  client.on('anonsubmysterygift', (_ch, numbOfSubs, methods) => {
-    emitEspecial('sub-misterio', { username: null, giftCount: numbOfSubs || 1, isAnonymous: true, ...planToTier(methods) });
-  });
-  client.on('primepaidupgrade', (_ch, username, methods) => {
-    emitEspecial('sub-upgrade', { username, ...planToTier(methods) });
-  });
-  client.on('giftpaidupgrade', (_ch, username, sender) => {
-    emitEspecial('sub-upgrade', { username, sender });
-  });
-  client.on('anongiftpaidupgrade', (_ch, username) => {
-    emitEspecial('sub-upgrade', { username });
-  });
-  client.on('cheer', (_ch, tags, message) => {
-    emitEspecial('cheer', { username: tags['display-name'] || tags.username, bits: parseInt(tags.bits, 10) || 0, message });
-  });
-  client.on('raided', (_ch, username, viewers) => {
-    emitEspecial('raid', { username, viewers: parseInt(viewers, 10) || 0 });
-  });
-
   client.on('disconnected', () => {
     // Guard de identidad (mismo patron que onStale): si este client ya no es
     // la entrada vigente del Map (perdio la carrera de connectTwitch contra

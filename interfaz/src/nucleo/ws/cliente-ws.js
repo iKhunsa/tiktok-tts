@@ -154,40 +154,6 @@ function handleMessage(data) {
       break;
     }
 
-    case 'sub': {
-      if (options.readTwitchSub) {
-        const subId = nuevoMsgId();
-        const subVars = { user: data.user, months: data.months || 0, recipient: data.recipient, count: data.giftCount };
-        let subText;
-        if (data.subType === 'resub') subText = t('announce.subResub', subVars);
-        else if (data.subType === 'gift') subText = t('announce.subGift', subVars);
-        else if (data.subType === 'mysterygift') subText = t('announce.subMysteryGift', subVars);
-        else if (data.subType === 'upgrade') subText = t('announce.subUpgrade', subVars);
-        else subText = t('announce.subNew', subVars);
-        addSystemMsg(subText, 'gift', subId, { iconSrc: 'icons/card_giftcard.svg' });
-        speak(subText, subId, data.timestamp);
-      }
-      break;
-    }
-
-    case 'cheer':
-      if (options.readTwitchCheer) {
-        const cheerId = nuevoMsgId();
-        const cheerText = t('announce.cheer', { user: data.user, bits: data.bits });
-        addSystemMsg(cheerText, 'gift', cheerId, { iconSrc: 'icons/card_giftcard.svg' });
-        speak(cheerText, cheerId, data.timestamp);
-      }
-      break;
-
-    case 'raid':
-      if (options.readTwitchRaid) {
-        const raidId = nuevoMsgId();
-        const raidText = t('announce.raid', { user: data.user, viewers: data.viewers });
-        addSystemMsg(raidText, 'join', raidId, { iconSrc: 'icons/emoji_people.svg' });
-        speak(raidText, raidId, data.timestamp);
-      }
-      break;
-
     case 'like':
       if (options.readLikes) {
         const now = Date.now();

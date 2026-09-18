@@ -51,28 +51,6 @@ export function expandChatToggles() {
   renderChatTogglesState();
 }
 
-export function renderTwitchSectionState() {
-  const sec = document.getElementById('settingsSectionTwitch');
-  if (!sec) return;
-  sec.classList.toggle('expanded', !appSettings.twitchSectionCollapsed);
-  const hdr = document.getElementById('twitchSectionHeader');
-  if (hdr) hdr.setAttribute('aria-expanded', String(!appSettings.twitchSectionCollapsed));
-}
-
-export function toggleTwitchSection() {
-  appSettings.twitchSectionCollapsed = !appSettings.twitchSectionCollapsed;
-  saveSettings();
-  renderTwitchSectionState();
-}
-
-/** Fuerza la seccion expandida (driver.js no posiciona popovers sobre un elemento colapsado de altura cero). */
-export function expandTwitchSection() {
-  if (!appSettings.twitchSectionCollapsed) return;
-  appSettings.twitchSectionCollapsed = false;
-  saveSettings();
-  renderTwitchSectionState();
-}
-
 /**
  * Un solo enganche: cualquier cambio de .active en los chips (toggleOption,
  * setReadNonFollowers, applySettings, setSoloChatMode, emergencia, remote-cmd)
@@ -83,8 +61,6 @@ export function toggleOption(key, checkbox) {
   const chipId = {
     readChat: 'chip-chat', readGifts: 'chip-gifts', readGiftAmount: 'chip-gift-amount', readJoins: 'chip-joins',
     readFollows: 'chip-follows', readLikes: 'chip-likes', readShares: 'chip-shares', sayUsername: 'chip-username',
-    readTwitchSub: 'chip-twitch-sub', readTwitchCheer: 'chip-twitch-cheer',
-    readTwitchRaid: 'chip-twitch-raid',
   }[key];
   if (chipId) document.getElementById(chipId)?.classList.toggle('active', checkbox.checked);
   appSettings[key] = checkbox.checked;

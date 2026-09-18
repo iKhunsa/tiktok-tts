@@ -5,7 +5,7 @@
  */
 import { t } from '../../../nucleo/i18n/i18n.js';
 import { switchView } from '../vistas-router.js';
-import { expandChatToggles, expandTwitchSection } from '../toggles-chat.js';
+import { expandChatToggles } from '../toggles-chat.js';
 import { closeDictLangModal, openDictLangModal } from '../modales-avisos.js';
 
 export function driverTourDefaults() {
@@ -42,7 +42,6 @@ export function startModerationTour() {
     ],
   }).drive();
 }
-
 export function startSoundpadTour() {
   if (!(window.driver && window.driver.js)) return;
   const inSoundpad = () => switchView('soundpad');
@@ -210,21 +209,6 @@ export function startShortcutsTour() {
       { element: '#scGroupClear', popover: { title: t('shortcutsTour.clearTitle'), description: t('shortcutsTour.clearDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inSettings },
       { element: '#scGroupMusicPause', popover: { title: t('shortcutsTour.musicPauseTitle'), description: t('shortcutsTour.musicPauseDesc'), side: 'top', align: 'start' }, onHighlightStarted: inSettings },
       { element: '#scGroupMusicSkip', popover: { title: t('shortcutsTour.musicSkipTitle'), description: t('shortcutsTour.musicSkipDesc'), side: 'top', align: 'start' }, onHighlightStarted: inSettings },
-    ],
-  }).drive();
-}
-
-export function startTwitchTour() {
-  if (!(window.driver && window.driver.js)) return;
-  expandTwitchSection();
-  const inSettings = () => switchView('settings');
-
-  window.driver.js.driver({
-    ...driverTourDefaults(),
-    steps: [
-      { element: '#settingsSectionTwitch .settings-section-title', popover: { title: t('twitchTour.introTitle'), description: t('twitchTour.introDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inSettings },
-      { element: '#twitchTogglesRow', popover: { title: t('twitchTour.togglesTitle'), description: t('twitchTour.togglesDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inSettings },
-      { element: '#twitchTestRow', popover: { title: t('twitchTour.testTitle'), description: t('twitchTour.testDesc'), side: 'top', align: 'start' }, onHighlightStarted: inSettings },
     ],
   }).drive();
 }

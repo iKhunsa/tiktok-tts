@@ -74,6 +74,25 @@ test('connect() que rechaza con un string se propaga como Error con message real
   );
 });
 
+test('Twitch conserva mensajes de chat y no registra listeners de alertas', async () => {
+  await withStubTmi(
+    () => Promise.resolve(['irc-ws.chat.twitch.tv', 6667]),
+    async (connectTwitch, { instances }) => {
+      const d = deps();
+      const rawMessages = [];
+      d.bus.on('canal:mensaje-crudo', (payload) => rawMessages.push(payload));
+      await connectTwitch(d, 'kintsu99');
+
+      assert.equal(instances[0].listenerCount('subscription'), 0);
+      assert.equal(instances[0].listenerCount('cheer'), 0);
+      assert.equal(instances[0].listenerCount('raided'), 0);
+      instances[0].emit('message', '#kintsu99', {}, 'hola', false);
+      assert.equal(rawMessages.length, 1);
+      assert.equal(rawMessages[0].raw.message, 'hola');
+    }
+  );
+});
+
 test('reconexion tras disconnect: el log trae el motivo real, nunca "undefined"', async (t) => {
   t.mock.timers.enable({ apis: ['setTimeout'] });
   await withStubTmi(

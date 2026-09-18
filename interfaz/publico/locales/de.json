@@ -496,18 +496,6 @@
     "noFollowers": "Noch keine Follower",
     "sharedList": "Geteilt",
     "noShared": "Noch keine Teilungen",
-    "tierPrime": "Prime",
-    "tierGeneric": "Sub",
-    "tierLabel": "Stufe {tier}",
-    "subResub": "RESUB",
-    "subMonths": "{months} Monate Sub",
-    "subGifted": "GESCHENKTES SUB",
-    "subGiftedTo": "für @{recipient}",
-    "subsGifted": "GESCHENKTE SUBS",
-    "subsGiftedCount": "{count} Subs für den Chat",
-    "subUpgrade": "SUB-UPGRADE",
-    "subNew": "NEUES ABO",
-    "raidJoined": "kommt mit seiner Community",
     "anonymous": "Anonym",
     "giftFrom": "von @{user}",
     "topLikers": "Top Likers"
@@ -593,13 +581,6 @@
     "giftUsd": "{user} hat {count} {gift} gesendet, im Wert von ${amount} Dollar",
     "join": "{user} ist dem Live beigetreten",
     "follow": "{user} folgt dir gerade",
-    "subResub": "{user} hat erneut abonniert, {months} Monate",
-    "subGift": "{user} hat ein Abo an {recipient} verschenkt",
-    "subMysteryGift": "{user} hat {count} Abos an den Chat verschenkt",
-    "subUpgrade": "{user} hat sein Abo aufgewertet",
-    "subNew": "{user} hat auf Twitch abonniert",
-    "cheer": "{user} hat {bits} Bits gesendet",
-    "raid": "{user} hat mit {viewers} Zuschauern geraidet",
     "like": "{user} hat {count} Likes gegeben",
     "share": "{user} teilt den Live-Stream"
   },
@@ -880,14 +861,6 @@
     "musicPauseDesc": "Kürzel, um die vom Chat mit !p angeforderte Musik zu pausieren oder fortzusetzen (Standard F11).",
     "musicSkipTitle": "Bot-Song überspringen",
     "musicSkipDesc": "Kürzel, um den aktuell im Musik-Bot laufenden Song zu überspringen (Standard F12)."
-  },
-  "twitchTour": {
-    "introTitle": "Twitch — Live-Alerts",
-    "introDesc": "Twitch alerts for subs, bits and raids.",
-    "togglesTitle": "Was angesagt wird",
-    "togglesDesc": "Schalte jeden Alert-Typ einzeln ein oder aus: Subs, Bits, Raids und Follows.",
-    "testTitle": "Alerts testen",
-    "testDesc": "Löse jeden Alert manuell aus, um zu sehen/hören, wie er aussieht — ohne zu warten, bis er wirklich im Stream passiert."
   },
   "clipsTour": {
     "introTitle": "Clip-Marker",
