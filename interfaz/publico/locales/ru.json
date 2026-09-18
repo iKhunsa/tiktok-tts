@@ -62,7 +62,9 @@
     "favoriteLabelPlaceholder": "Название",
     "favoriteUrlPlaceholder": "URL",
     "removeFavorite": "Удалить из избранного",
-    "closeSession": "Закрыть сеанс просмотра"
+    "closeSession": "Закрыть сеанс просмотра",
+    "favAdd": "Добавить в избранное",
+    "favRemove": "Удалить из избранного"
   },
   "toggle": {
     "readChat": "Читать комментарии",

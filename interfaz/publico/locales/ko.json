@@ -62,7 +62,9 @@
     "favoriteLabelPlaceholder": "이름",
     "favoriteUrlPlaceholder": "URL",
     "removeFavorite": "즐겨찾기 삭제",
-    "closeSession": "브라우징 세션 종료"
+    "closeSession": "브라우징 세션 종료",
+    "favAdd": "즐겨찾기에 추가",
+    "favRemove": "즐겨찾기에서 제거"
   },
   "toggle": {
     "readChat": "댓글 읽기",

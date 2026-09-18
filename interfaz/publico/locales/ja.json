@@ -62,7 +62,9 @@
     "favoriteLabelPlaceholder": "名前",
     "favoriteUrlPlaceholder": "URL",
     "removeFavorite": "お気に入りを削除",
-    "closeSession": "ブラウジングセッションを終了"
+    "closeSession": "ブラウジングセッションを終了",
+    "favAdd": "お気に入りに追加",
+    "favRemove": "お気に入りから削除"
   },
   "toggle": {
     "readChat": "コメントを読む",
