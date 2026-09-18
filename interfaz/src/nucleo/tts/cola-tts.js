@@ -155,7 +155,7 @@ export function skipCurrentTTS() {
   }
 }
 
-export function clearTTSQueue() {
+export function clearPendingTTS() {
   const cleared = speechQueue.length + (isSpeaking ? 1 : 0);
   stopCurrentTTS({ clearQueue: true });
   ttsDroppedCount = 0;
@@ -175,7 +175,7 @@ export function enableEmergencyTTSMode() {
   });
   applySettings();
   saveSettings();
-  clearTTSQueue();
+  clearPendingTTS();
   sendStateSync();
   showToast(t('toast.emergencyActive'));
 }
@@ -383,8 +383,8 @@ function hideSpeakingIndicator() {
   if (el) el.classList.remove('visible');
 }
 
-/** Usado tambien por clearChat() (chat-ui.js), que limpia el log visible
- * y la cola TTS a la vez sin pasar por clearTTSQueue() (esa muestra un
+/** Usado tambien por clearChatAndQueue() (chat-ui.js), que limpia el log visible
+ * y la cola TTS a la vez sin pasar por clearPendingTTS() (esa muestra un
  * toast de "cola vaciada" que no aplica al limpiar el chat). */
 export function resetTtsCounters() {
   ttsDroppedCount = 0;

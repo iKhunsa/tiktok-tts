@@ -2,7 +2,8 @@ import { appSettings, saveSettings } from '../../nucleo/estado/ajustes-app.js';
 import { t } from '../../nucleo/i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
 import { escaparHtml as escapeHtml } from '../../../compartido/escapar-html.js';
-import { togglePauseTts, skipCurrentTTS, clearTTSQueue } from '../../nucleo/tts/cola-tts.js';
+import { togglePauseTts, skipCurrentTTS } from '../../nucleo/tts/cola-tts.js';
+import { clearChatAndQueue } from './chat-ui.js';
 import { musicTogglePause, musicSkip } from './bot-musica.js';
 
 export let capturingShortcutFor = null; // 'pause' | 'skip' | 'clear' | 'musicPause' | 'musicSkip' | null
@@ -10,7 +11,7 @@ export let capturingShortcutFor = null; // 'pause' | 'skip' | 'clear' | 'musicPa
 const TTS_SHORTCUT_ACTIONS = {
   pause: { settingKey: 'pauseShortcut', inputId: 'pauseShortcutInput', hintId: 'pauseShortcutHint', run: () => togglePauseTts() },
   skip: { settingKey: 'skipShortcut', inputId: 'skipShortcutInput', hintId: 'skipShortcutHint', run: () => skipCurrentTTS() },
-  clear: { settingKey: 'clearShortcut', inputId: 'clearShortcutInput', hintId: 'clearShortcutHint', run: () => clearTTSQueue() },
+  clear: { settingKey: 'clearShortcut', inputId: 'clearShortcutInput', hintId: 'clearShortcutHint', run: () => clearChatAndQueue() },
   musicPause: { settingKey: 'musicPauseShortcut', inputId: 'musicPauseShortcutInput', hintId: 'musicPauseShortcutHint', run: () => musicTogglePause() },
   musicSkip: { settingKey: 'musicSkipShortcut', inputId: 'musicSkipShortcutInput', hintId: 'musicSkipShortcutHint', run: () => musicSkip() },
 };
