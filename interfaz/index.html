@@ -147,9 +147,8 @@
           </span>
         </button>
         <button class="cfg-btn" onclick="skipCurrentTTS()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> <span data-i18n="btn.skipCurrent">Saltar actual</span></button>
-        <button class="cfg-btn danger" onclick="clearTTSQueue()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="btn.clearQueue">Vaciar cola</span></button>
+        <button class="cfg-btn danger" onclick="clearChatAndQueue()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="btn.clearChatAndQueue">Limpiar chat y cola</span></button>
         <button class="cfg-btn icon-only warn" onclick="enableEmergencyTTSMode()" data-i18n-title="btn.emergency" title="Modo emergencia"><img class="icon-inline" src="icons/warning-amber.svg" alt=""></button>
-        <button class="cfg-btn icon-only danger" onclick="clearChat()" data-i18n-title="btn.clearChat" title="Limpiar"><img class="icon-inline" src="icons/delete.svg" alt=""></button>
         <button class="cfg-btn icon-only" id="btnBlockedWordsShortcut" onclick="openBlockWordModal()" data-i18n-title="btn.blockedWordsShortcut" title="Palabras bloqueadas"><img class="icon-inline" src="icons/filter_none.svg" alt=""></button>
       </div>
 
@@ -223,7 +222,7 @@
         <div id="chatLog">
           <div class="empty-state" id="emptyState">
             <div class="empty-icon"><img class="icon-inline" src="icons/mic.svg" alt=""></div>
-            <div class="empty-text" data-i18n-html="chat.empty">Conecta tu TikTok Live<br>para ver el chat aquí</div>
+            <div class="empty-text" data-i18n-html="chat.empty">Conectá o transmití tu Live<br>para ver tu chat acá</div>
           </div>
         </div>
         <div class="speaking-now" id="speakingNow">
@@ -911,7 +910,7 @@
           <div class="setting-group" id="scGroupClear">
             <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
               <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
-              <span data-i18n="label.clearQueueShortcut">Limpiar cola</span>
+              <span data-i18n="label.clearChatAndQueueShortcut">Limpiar chat y cola</span>
             </label>
             <div class="settings-row-flex">
               <input id="clearShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" placeholder="Clic aquí y presiona teclas..."
