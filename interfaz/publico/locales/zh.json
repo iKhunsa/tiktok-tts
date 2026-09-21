@@ -38,7 +38,7 @@
     "tourDesc": "每次遇到问题时点这个按钮告诉我。",
     "tourDone": "知道了"
   },
-  "ideas": {"sidebarEntry":"建议想法","title":"为 TikLiveTTS 提出想法","subtitle":"想改进应用吗？告诉我们问题和你的解决方式。我们优先考虑对许多主播有用的功能。","hint":"无需技术细节：请尽量简单说明。","problemLabel":"你想解决什么问题？","problemPlaceholder":"告诉我们目前发生了什么。","ideaLabel":"你的想法是什么？","ideaPlaceholder":"说明你希望 TikLiveTTS 做什么。","audienceLabel":"谁会觉得它有用？","audiencePlaceholder":"选择一个选项","audienceAlmostAll":"几乎所有主播","audienceMany":"许多主播","audienceSome":"某些类型的主播","audienceLikeMe":"主要是像我一样的主播","audienceUnsure":"我不确定","useCaseLabel":"你何时会使用它？","useCasePlaceholder":"举一个会有帮助的例子。","reasonLabel":"为什么值得添加？","reasonPlaceholder":"也想想它如何帮助其他用户。","similarLabel":"你知道有类似功能的应用吗？","optional":"（可选）","similarPlaceholder":"名称或链接","submit":"发送想法","sending":"正在发送...","sent":"谢谢！你的想法已发送。","errorRequired":"请完成必填字段。","errorSend":"无法发送想法，请重试。","close":"关闭"},
+  "ideas": {"sidebarEntry":"建议想法","title":"为 TikLiveTTS 提出想法","subtitle":"想改进应用吗？告诉我们问题和你的解决方式。我们优先考虑对许多主播有用的功能。","hint":"无需技术细节：请尽量简单说明。","problemLabel":"你想解决什么问题？","problemPlaceholder":"告诉我们目前发生了什么。","ideaLabel":"你的想法是什么？","ideaPlaceholder":"说明你希望 TikLiveTTS 做什么。","audienceLabel":"谁会觉得它有用？","audiencePlaceholder":"选择一个选项","audienceAlmostAll":"几乎所有主播","audienceMany":"许多主播","audienceSome":"某些类型的主播","audienceLikeMe":"主要是像我一样的主播","audienceUnsure":"我不确定","useCaseLabel":"你何时会使用它？","useCasePlaceholder":"举一个会有帮助的例子。","reasonLabel":"为什么值得添加？","reasonPlaceholder":"也想想它如何帮助其他用户。","similarLabel":"你知道有类似功能的应用吗？","optional":"（可选）","similarPlaceholder":"名称或链接","submit":"发送想法","sending":"正在发送...","sent":"谢谢！你的想法已发送。","errorRequired":"请完成必填字段。","errorSend":"无法发送想法，请重试。","close":"关闭","charCount":"{count}/{max}","thanksTitle":"感谢你的想法！","thanksText":"我们会审核它，持续改进 TikLiveTTS。"},
   "footer": {
     "donate": "捐赠",
     "newBadge": "新",
