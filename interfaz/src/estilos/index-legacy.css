@@ -720,6 +720,20 @@
       padding: 22px 26px;
     }
 
+    #settingsSectionVoice .settings-panel {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    #voiceAnnounceGroup { grid-column: 1 / -1; }
+
+    @media (max-width: 1200px) {
+      #settingsSectionVoice .settings-panel { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 700px) {
+      #settingsSectionVoice .settings-panel { grid-template-columns: 1fr; gap: 14px; padding: 18px; }
+    }
+
     .setting-group { display: flex; flex-direction: column; min-width: 0; gap: 8px; }
 
     .setting-group label {
