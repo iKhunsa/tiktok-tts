@@ -14,6 +14,10 @@
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+@keyframes lightbulbGlow {
+  0%, 100% { opacity: .8; filter: drop-shadow(0 0 0 transparent); }
+  50% { opacity: 1; filter: drop-shadow(0 0 5px #FFBB00); }
+}
 .store-grid .store-card { animation: storeCardIn .28s var(--ease-out, ease-out) both; }
 .store-grid .store-card:nth-child(1) { animation-delay: 20ms; }
 .store-grid .store-card:nth-child(2) { animation-delay: 60ms; }
@@ -26,9 +30,11 @@
 @media (prefers-reduced-motion: reduce) {
   .store-grid { animation: none; }
   .store-grid .store-card { animation: none; }
+  .store-grid .store-card-icon-lightbulb { animation: none; }
 }
 body.reduce-motion .store-grid,
-body.reduce-motion .store-grid .store-card { animation: none; }
+body.reduce-motion .store-grid .store-card,
+body.reduce-motion .store-grid .store-card-icon-lightbulb { animation: none; }
 .store-card {
   position: relative;
   display: flex;
@@ -55,6 +61,7 @@ a.store-card { text-decoration: none; }
   display: flex; align-items: center; justify-content: center;
 }
 .store-card-icon img { width: 20px; height: 20px; opacity: 0.9; }
+.store-card-icon .store-card-icon-lightbulb { animation: lightbulbGlow 2.8s ease-in-out infinite; }
 .store-card-name { font-size: 14px; font-weight: 600; color: var(--text); }
 .store-card-desc { font-size: 12px; color: var(--text-muted); line-height: 1.45; }
 .store-card-badge {
