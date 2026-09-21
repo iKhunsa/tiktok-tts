@@ -923,7 +923,9 @@
     "obsTitle": "OBS connection (optional)",
     "obsDesc": "If you connect OBS via WebSocket here, every clip you mark also automatically saves the OBS replay buffer, in addition to the marker in the app.",
     "historyTitle": "Marker history",
-    "historyDesc": "Every clip you mark is listed here with its elapsed time and real timestamp, so you can later find those moments in your recording or in OBS."
+    "historyDesc": "Every clip you mark is listed here with its elapsed time and real timestamp, so you can later find those moments in your recording or in OBS.",
+    "mobileTitle": "Mark from your phone",
+    "mobileDesc": "Scan this QR code, open Control in the mobile panel, and tap Mark Clip. The button becomes available after you start the timer in the app."
   },
   "pluginStoreTour": {
     "introTitle": "Plugin Store",

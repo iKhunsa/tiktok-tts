@@ -913,7 +913,9 @@
     "obsTitle": "Conexión OBS (opcional)",
     "obsDesc": "Si conectás OBS por WebSocket acá, cada vez que marques un clip también se guarda automáticamente el replay buffer de OBS, además del marcador en la app.",
     "historyTitle": "Historial de marcadores",
-    "historyDesc": "Todos los clips marcados quedan listados acá con su tiempo transcurrido y hora real, para que después busques esos momentos en tu grabación u OBS."
+    "historyDesc": "Todos los clips marcados quedan listados acá con su tiempo transcurrido y hora real, para que después busques esos momentos en tu grabación u OBS.",
+    "mobileTitle": "Marcá desde el celular",
+    "mobileDesc": "Escaneá este QR, abrí Control en el panel móvil y tocá Marcar Clip. El botón se habilita cuando inicies el temporizador en la app."
   },
   "pluginStoreTour": {
     "introTitle": "Tienda de Plugins",

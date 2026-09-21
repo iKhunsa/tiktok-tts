@@ -10,6 +10,10 @@ import { expandChatToggles } from '../toggles-chat.js';
 import { closeDictLangModal, openDictLangModal } from '../modales-avisos.js';
 export { startChannelsTour } from './channels-tour.js';
 
+export { startBotTour } from './music-bot-tour.js';
+export { startSoundpadTour } from './soundpad-tour.js';
+export { startClipsTour } from './clips-tour.js';
+
 export function driverTourDefaults() {
   return sharedDriverTourDefaults();
 }
@@ -41,39 +45,6 @@ export function startModerationTour() {
     ],
   }).drive();
 }
-export function startSoundpadTour() {
-  if (!(window.driver && window.driver.js)) return;
-  const inSoundpad = () => switchView('soundpad');
-
-  window.driver.js.driver({
-    ...driverTourDefaults(),
-    steps: [
-      { element: '#view-soundpad .view-header', popover: { title: t('soundTour.introTitle'), description: t('soundTour.introDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inSoundpad },
-      { element: '#spUploadBtn', popover: { title: t('soundTour.uploadTitle'), description: t('soundTour.uploadDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inSoundpad },
-      { element: '#view-soundpad .cfg-card', popover: { title: t('soundTour.deckTitle'), description: t('soundTour.deckDesc'), side: 'top', align: 'start' }, onHighlightStarted: inSoundpad },
-      { element: '#view-soundpad .cfg-card', popover: { title: t('soundTour.shortcutTitle'), description: t('soundTour.shortcutDesc'), side: 'top', align: 'start' }, onHighlightStarted: inSoundpad },
-      { element: '#view-soundpad .btn-test', popover: { title: t('soundTour.testTitle'), description: t('soundTour.testDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inSoundpad },
-      { element: '#spCount', popover: { title: t('soundTour.limitTitle'), description: t('soundTour.limitDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inSoundpad },
-    ],
-  }).drive();
-}
-
-export function startBotTour() {
-  if (!(window.driver && window.driver.js)) return;
-  const inBot = () => switchView('bot');
-
-  window.driver.js.driver({
-    ...driverTourDefaults(),
-    steps: [
-      { element: '#view-bot .view-header', popover: { title: t('botTour.introTitle'), description: t('botTour.introDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inBot },
-      { element: '#music-now-playing-card', popover: { title: t('botTour.nowPlayingTitle'), description: t('botTour.nowPlayingDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inBot },
-      { element: '#music-queue-list', popover: { title: t('botTour.queueTitle'), description: t('botTour.queueDesc'), side: 'top', align: 'start' }, onHighlightStarted: inBot },
-      { element: '#playlistTextarea', popover: { title: t('botTour.playlistTitle'), description: t('botTour.playlistDesc'), side: 'top', align: 'start' }, onHighlightStarted: inBot },
-      { element: '#musicBanInput', popover: { title: t('botTour.settingsTitle'), description: t('botTour.settingsDesc'), side: 'top', align: 'start' }, onHighlightStarted: inBot },
-    ],
-  }).drive();
-}
-
 export function startPluginStoreTour() {
   if (!(window.driver && window.driver.js)) return;
 
@@ -132,22 +103,6 @@ export function startChatActionsTour() {
       { element: '#btn-connect-all-chat', popover: { title: t('chatActionsTour.connectTitle'), description: t('chatActionsTour.connectDesc'), side: 'bottom', align: 'end' }, onHighlightStarted: inChatActions },
       { element: '#chatLog', popover: { title: t('chatActionsTour.logTitle'), description: t('chatActionsTour.logDesc'), side: 'top', align: 'start' }, onHighlightStarted: inChatActions },
       { element: '#speakingGoto', popover: { title: t('tour.speakingNowTitle'), description: t('tour.speakingNowDesc'), side: 'top', align: 'start' }, onHighlightStarted: inChatActions },
-    ],
-  }).drive();
-}
-
-export function startClipsTour() {
-  if (!(window.driver && window.driver.js)) return;
-  const inClips = () => switchView('clips');
-
-  window.driver.js.driver({
-    ...driverTourDefaults(),
-    steps: [
-      { element: '#view-clips .view-header', popover: { title: t('clipsTour.introTitle'), description: t('clipsTour.introDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inClips },
-      { element: '#btnStartStream', popover: { title: t('clipsTour.startTitle'), description: t('clipsTour.startDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inClips },
-      { element: '#btnMarkClip', popover: { title: t('clipsTour.markTitle'), description: t('clipsTour.markDesc'), side: 'top', align: 'start' }, onHighlightStarted: inClips },
-      { element: '#obsStatusDot', popover: { title: t('clipsTour.obsTitle'), description: t('clipsTour.obsDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inClips },
-      { element: '#clipsHistory', popover: { title: t('clipsTour.historyTitle'), description: t('clipsTour.historyDesc'), side: 'top', align: 'start' }, onHighlightStarted: inClips },
     ],
   }).drive();
 }
