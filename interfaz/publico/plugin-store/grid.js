@@ -1,8 +1,5 @@
 'use strict';
 
-// TODO: reemplazar con la URL publicada del formulario de ideas.
-const IDEAS_FORM_URL = 'https://forms.gle/REEMPLAZAR';
-
 // ── Grid de la Tienda de plugins (vista tipo "All apps") ─────────────────
 function showPluginGrid() {
   _pluginStoreDetailId = null;
@@ -58,11 +55,10 @@ function renderPluginGrid() {
     <div class="store-card-desc">${t('store.comingSoonDesc')}</div>`;
   container.appendChild(comingSoon);
 
-  const idea = document.createElement('a');
+  const idea = document.createElement('button');
+  idea.type = 'button';
   idea.className = 'store-card';
-  idea.href = IDEAS_FORM_URL;
-  idea.target = '_blank';
-  idea.rel = 'noopener';
+  idea.onclick = () => window.openIdeaModal?.();
   idea.innerHTML = `
     <div class="store-card-icon"><img class="store-card-icon-lightbulb" src="icons/lightbulb.svg" alt=""></div>
     <div class="store-card-name">${t('store.suggestIdea')}</div>
