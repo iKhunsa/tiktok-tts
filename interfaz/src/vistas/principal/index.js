@@ -89,7 +89,7 @@ import {
 import {
   startModerationTour, startSoundpadTour, startBotTour, startPluginStoreTour,
   startChatActionsTour, startClipsTour, startOverlaysTour, startVoiceTour,
-  startShortcutsTour, startChannelsTour, iniciarTutorialesDeSeccion,
+  startShortcutsTour, startChannelsTour,
 } from './tours/index.js';
 import { iniciarPortalView, togglePortalView } from './portal-view/index.js';
 
@@ -195,7 +195,6 @@ function iniciarArranque() {
   iniciarRotacionAnuncioLateral();
   iniciarCapturaErroresCliente();
   iniciarI18nApp();
-  window.__langReady.then(iniciarTutorialesDeSeccion);
   iniciarModalesYAvisos();
   iniciarMenusModeracion();
   iniciarObservadorTogglesChat();
