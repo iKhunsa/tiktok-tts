@@ -4,7 +4,7 @@
  * son scripts clasicos, no modulos ESM — no se tocaron en esta migracion).
  */
 import { t } from '../../../nucleo/i18n/i18n.js';
-import { driverTourDefaults as sharedDriverTourDefaults, addSectionTutorials } from '../../../nucleo/tours/driver.js';
+import { driverTourDefaults as sharedDriverTourDefaults } from '../../../nucleo/tours/driver.js';
 import { switchView } from '../vistas-router.js';
 import { expandChatToggles } from '../toggles-chat.js';
 import { closeDictLangModal, openDictLangModal } from '../modales-avisos.js';
@@ -20,16 +20,6 @@ export { startPluginStoreTour } from './plugin-store-tour.js';
 export function driverTourDefaults() {
   return sharedDriverTourDefaults();
 }
-
-export function iniciarTutorialesDeSeccion() {
-  addSectionTutorials({
-    selector: '.view-header, .settings-section-title',
-    buttonClass: 'cfg-btn',
-  });
-}
-
-
-
 
 export function startChatActionsTour() {
   if (!(window.driver && window.driver.js)) return;
