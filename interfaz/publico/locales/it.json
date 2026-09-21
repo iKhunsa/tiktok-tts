@@ -1181,5 +1181,14 @@
     "badgeInline": "PRO",
     "upgradeCta": "Passa a un piano superiore",
     "demoVideoSoon": "Video dimostrativo in arrivo"
+  },
+  "channelsTour": {
+    "introTitle": "Canali collegati", "introDesc": "Salva i canali prima di collegarli alla chat in diretta.",
+    "listTitle": "Canali salvati", "listDesc": "Qui vedi ogni canale e il suo stato. Rimuovi quelli che non usi più.",
+    "addTitle": "Aggiungi canale", "addDesc": "Apri questo modulo per salvare un altro canale.",
+    "platformTitle": "Scegli la piattaforma", "platformDesc": "Seleziona TikTok, Twitch, YouTube o Kick prima di inserire il canale.",
+    "channelTitle": "Inserisci il canale", "channelDesc": "Inserisci utente o link. Per YouTube puoi usare anche @canale o Channel ID.",
+    "saveTitle": "Salva", "saveDesc": "Salvalo per averlo pronto. Salvare non avvia una connessione.",
+    "connectTitle": "Connetti tutto", "connectDesc": "Da Chat, questo pulsante collega i canali salvati quando sono in diretta."
   }
 }
