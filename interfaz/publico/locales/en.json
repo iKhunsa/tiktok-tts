@@ -702,7 +702,7 @@
     "sectionTitle": "Section tutorial",
     "sectionDesc": "These are the main controls in this section.",
     "speakingNowTitle": "Message being read",
-    "speakingNowDesc": "Shows the current message; use its button to find it in chat.",
+    "speakingNowDesc": "When TTS reads a message, a banner appears above this queue; its button on the right takes you to it in chat.",
     "announceTitle": "Custom announcement text",
     "announceDesc": "Customize the ending of each announcement without changing its automatic data."
   },
