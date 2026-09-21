@@ -1799,6 +1799,41 @@
 
     .modal-content h3 { margin: 0 0 8px; font-size: var(--text-base); color: var(--text); font-weight: 500; }
 
+    .idea-modal-content { max-height: calc(100vh - 48px); padding: 28px; }
+    .idea-modal-content h2 { margin-bottom: 18px; }
+    .idea-modal-content .bugreport-guide { margin-bottom: 12px; padding: 10px 12px; }
+    .idea-modal-content .bugreport-fields { gap: 12px; }
+    .idea-modal-content .cfg-field { gap: 5px; }
+    .idea-modal-content .cfg-field :is(input, textarea):focus-visible,
+    .idea-modal-content .modal-close:focus-visible { outline: 2px solid var(--brand-a40); outline-offset: 2px; border-color: var(--brand-a40); }
+    .idea-required { color: var(--accent); margin-left: 2px; }
+    .idea-char-count { align-self: flex-end; color: var(--text-muted); font-size: var(--text-3xs); }
+    .idea-audience { border: 0; margin: 0; padding: 0; min-width: 0; }
+    .idea-audience legend { font-size: var(--text-2xs); font-weight: 500; color: var(--text-secondary); letter-spacing: .2px; padding: 0; }
+    .idea-audience-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+    .idea-audience-option { position: relative; display: flex; align-items: center; min-height: 38px; padding: 8px 10px; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--bg-button); color: var(--text-secondary); cursor: pointer; font-size: var(--text-2xs); transition: border-color .18s ease-out, background-color .18s ease-out, color .18s ease-out, transform .12s ease-out; }
+    .idea-audience-option:last-child { grid-column: span 2; }
+    .idea-audience-option input { position: absolute; opacity: 0; }
+    .idea-audience-option:hover { border-color: var(--brand-a40); color: var(--text); }
+    .idea-audience-option:active { transform: scale(.98); }
+    .idea-audience-option:has(input:checked) { border-color: var(--accent); background: var(--brand-a10); color: var(--text); }
+    .idea-audience-option:has(input:focus-visible) { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
+    .idea-submit-spinner { display: inline-block; width: 12px; height: 12px; margin-right: 7px; vertical-align: -2px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: ideaSpin .7s linear infinite; }
+    .idea-thanks { min-height: 250px; display: grid; place-content: center; text-align: center; gap: 9px; animation: ideaThanks .2s ease-out; }
+    .idea-thanks .icon-inline { width: 42px; height: 42px; margin: 0 auto 4px; filter: invert(35%) sepia(98%) saturate(1884%) hue-rotate(338deg); }
+    .idea-thanks p { margin: 0; color: var(--text-secondary); font-size: var(--text-sm); }
+    .modal-overlay.show#ideaModal { animation: fadeIn .2s ease-out; }
+    .modal-overlay.show#ideaModal .idea-modal-content { animation: ideaModalIn .22s ease-out; }
+    .modal-overlay.show#ideaModal.closing { animation: ideaModalOut .15s ease-out forwards; }
+    .modal-overlay.show#ideaModal.closing .idea-modal-content { animation: ideaModalOut .15s ease-out forwards; }
+    @keyframes ideaModalIn { from { opacity: 0; transform: translateY(8px) scale(.985); } to { opacity: 1; transform: none; } }
+    @keyframes ideaModalOut { to { opacity: 0; transform: translateY(4px) scale(.99); } }
+    @keyframes ideaThanks { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+    @keyframes ideaSpin { to { transform: rotate(360deg); } }
+    @media (max-width: 520px) { .idea-modal-content { width: calc(100% - 24px); padding: 24px 18px; } .idea-audience-grid { grid-template-columns: 1fr; } .idea-audience-option:last-child { grid-column: auto; } }
+    @media (prefers-reduced-motion: reduce) { .modal-overlay.show#ideaModal, .modal-overlay.show#ideaModal .idea-modal-content, .idea-thanks, .idea-submit-spinner { animation: none !important; } .idea-audience-option { transition: none; } }
+    body.reduce-motion .modal-overlay.show#ideaModal, body.reduce-motion .modal-overlay.show#ideaModal .idea-modal-content, body.reduce-motion .idea-thanks, body.reduce-motion .idea-submit-spinner { animation: none !important; }
+
     .notice-icon-badge {
       margin: 0 auto 18px;
       display: flex;
