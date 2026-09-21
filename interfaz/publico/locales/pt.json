@@ -670,8 +670,6 @@
     "prev": "Voltar",
     "done": "Concluído",
     "viewTutorial": "Ver tutorial",
-    "sectionTitle": "Tutorial desta seção",
-    "sectionDesc": "Estes são os controles principais desta seção.",
     "speakingNowTitle": "Mensagem sendo lida",
     "speakingNowDesc": "Quando o TTS lê uma mensagem, um banner aparece acima desta fila; o botão à direita leva você até ela no chat.",
     "announceTitle": "Textos de anúncio personalizados",

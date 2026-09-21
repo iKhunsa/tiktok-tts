@@ -90,8 +90,6 @@
     "prev": "Atrás",
     "done": "Listo",
     "viewTutorial": "Ver tutorial",
-    "sectionTitle": "Tutorial de esta sección",
-    "sectionDesc": "Estos son los controles principales de esta sección.",
     "speakingNowTitle": "Mensaje en lectura",
     "speakingNowDesc": "Cuando el TTS lea un mensaje, aparecerá sobre esta cola un banner; su botón a la derecha te lleva al mensaje en el chat.",
     "announceTitle": "Textos de anuncio propios",

@@ -670,8 +670,6 @@
     "prev": "Précédent",
     "done": "Terminé",
     "viewTutorial": "Voir le tutoriel",
-    "sectionTitle": "Tutoriel de cette section",
-    "sectionDesc": "Voici les principaux contrôles de cette section.",
     "speakingNowTitle": "Message en cours de lecture",
     "speakingNowDesc": "Quand le TTS lit un message, une bannière apparaît au-dessus de cette file ; son bouton à droite vous mène au message dans le chat.",
     "announceTitle": "Textes d'annonce personnalisés",
