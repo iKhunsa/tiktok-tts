@@ -670,8 +670,6 @@
     "prev": "戻る",
     "done": "完了",
     "viewTutorial": "チュートリアルを見る",
-    "sectionTitle": "このセクションのチュートリアル",
-    "sectionDesc": "このセクションの主な操作です。",
     "speakingNowTitle": "読み上げ中のメッセージ",
     "speakingNowDesc": "TTSがメッセージを読み上げると、このキューの上にバナーが表示されます。右側のボタンでチャット内のそのメッセージへ移動できます。",
     "announceTitle": "カスタム告知テキスト",

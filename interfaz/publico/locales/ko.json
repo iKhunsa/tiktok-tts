@@ -670,8 +670,6 @@
     "prev": "이전",
     "done": "완료",
     "viewTutorial": "튜토리얼 보기",
-    "sectionTitle": "이 섹션 튜토리얼",
-    "sectionDesc": "이 섹션의 주요 제어 기능입니다.",
     "speakingNowTitle": "읽는 중인 메시지",
     "speakingNowDesc": "TTS가 메시지를 읽으면 이 대기열 위에 배너가 나타납니다. 오른쪽 버튼으로 채팅의 해당 메시지로 이동할 수 있습니다.",
     "announceTitle": "사용자 지정 알림 문구",

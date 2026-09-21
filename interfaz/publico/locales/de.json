@@ -670,8 +670,6 @@
     "prev": "Zurück",
     "done": "Fertig",
     "viewTutorial": "Tutorial ansehen",
-    "sectionTitle": "Tutorial für diesen Bereich",
-    "sectionDesc": "Dies sind die wichtigsten Bedienelemente dieses Bereichs.",
     "speakingNowTitle": "Aktuell vorgelesene Nachricht",
     "speakingNowDesc": "Wenn die TTS eine Nachricht vorliest, erscheint über dieser Warteschlange ein Banner; die Schaltfläche rechts führt dich zur Nachricht im Chat.",
     "announceTitle": "Eigene Ankündigungstexte",

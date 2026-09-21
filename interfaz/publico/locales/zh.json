@@ -670,8 +670,6 @@
     "prev": "上一步",
     "done": "完成",
     "viewTutorial": "查看教程",
-    "sectionTitle": "本节教程",
-    "sectionDesc": "这是本节的主要控件。",
     "speakingNowTitle": "正在朗读的消息",
     "speakingNowDesc": "当 TTS 朗读消息时，此队列上方会出现横幅；右侧按钮可带你前往聊天中的该消息。",
     "announceTitle": "自定义公告文本",
