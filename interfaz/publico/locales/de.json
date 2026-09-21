@@ -669,7 +669,13 @@
     "next": "Weiter",
     "prev": "Zurück",
     "done": "Fertig",
-    "viewTutorial": "Tutorial ansehen"
+    "viewTutorial": "Tutorial ansehen",
+    "sectionTitle": "Tutorial für diesen Bereich",
+    "sectionDesc": "Dies sind die wichtigsten Bedienelemente dieses Bereichs.",
+    "speakingNowTitle": "Aktuell vorgelesene Nachricht",
+    "speakingNowDesc": "Zeigt die aktuelle Nachricht; über die Schaltfläche findest du sie im Chat.",
+    "announceTitle": "Eigene Ankündigungstexte",
+    "announceDesc": "Passe das Ende jeder Ankündigung an, ohne die automatischen Daten zu ändern."
   },
   "onboarding": {
     "step1Title": "Geh zuerst zu Einstellungen",

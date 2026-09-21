@@ -669,7 +669,13 @@
     "next": "次へ",
     "prev": "戻る",
     "done": "完了",
-    "viewTutorial": "チュートリアルを見る"
+    "viewTutorial": "チュートリアルを見る",
+    "sectionTitle": "このセクションのチュートリアル",
+    "sectionDesc": "このセクションの主な操作です。",
+    "speakingNowTitle": "読み上げ中のメッセージ",
+    "speakingNowDesc": "現在のメッセージを表示します。ボタンでチャット内の位置を確認できます。",
+    "announceTitle": "カスタム告知テキスト",
+    "announceDesc": "自動データを変えずに、各告知の末尾をカスタマイズできます。"
   },
   "onboarding": {
     "step1Title": "まず「設定」に移動してください",

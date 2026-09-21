@@ -698,7 +698,13 @@
     "next": "Next",
     "prev": "Back",
     "done": "Done",
-    "viewTutorial": "Show tutorial"
+    "viewTutorial": "Show tutorial",
+    "sectionTitle": "Section tutorial",
+    "sectionDesc": "These are the main controls in this section.",
+    "speakingNowTitle": "Message being read",
+    "speakingNowDesc": "Shows the current message; use its button to find it in chat.",
+    "announceTitle": "Custom announcement text",
+    "announceDesc": "Customize the ending of each announcement without changing its automatic data."
   },
   "onboarding": {
     "step1Title": "First, go to Settings",
