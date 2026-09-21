@@ -674,6 +674,8 @@
     .btn-connect:hover { opacity: 0.85; }
     .btn-connect:active:not(:disabled), .btn-disconnect:active { transform: scale(0.97); }
     .btn-connect:disabled { opacity: 0.45; cursor: not-allowed; }
+    /* texto blanco sobre el rojo en los envios de los modales de idea y de reporte (el resto de .btn-connect sigue en negro) */
+    #ideaSubmitBtn, #bugReportSubmitBtn { color: #fff; }
     .btn-disconnect { background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border); transition: border-color var(--dur-2) var(--ease-out), transform var(--dur-press) var(--ease-out); }
     .btn-disconnect:hover { border-color: var(--border-strong); }
 
