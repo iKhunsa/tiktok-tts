@@ -673,7 +673,7 @@
     "sectionTitle": "Tutorial für diesen Bereich",
     "sectionDesc": "Dies sind die wichtigsten Bedienelemente dieses Bereichs.",
     "speakingNowTitle": "Aktuell vorgelesene Nachricht",
-    "speakingNowDesc": "Zeigt die aktuelle Nachricht; über die Schaltfläche findest du sie im Chat.",
+    "speakingNowDesc": "Wenn die TTS eine Nachricht vorliest, erscheint über dieser Warteschlange ein Banner; die Schaltfläche rechts führt dich zur Nachricht im Chat.",
     "announceTitle": "Eigene Ankündigungstexte",
     "announceDesc": "Passe das Ende jeder Ankündigung an, ohne die automatischen Daten zu ändern."
   },

@@ -673,7 +673,7 @@
     "sectionTitle": "本节教程",
     "sectionDesc": "这是本节的主要控件。",
     "speakingNowTitle": "正在朗读的消息",
-    "speakingNowDesc": "显示当前消息；使用按钮可在聊天中找到它。",
+    "speakingNowDesc": "当 TTS 朗读消息时，此队列上方会出现横幅；右侧按钮可带你前往聊天中的该消息。",
     "announceTitle": "自定义公告文本",
     "announceDesc": "自定义每条公告的结尾，同时保留自动数据。"
   },
