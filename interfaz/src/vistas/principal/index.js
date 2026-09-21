@@ -89,7 +89,7 @@ import {
 import {
   startModerationTour, startSoundpadTour, startBotTour, startPluginStoreTour,
   startChatActionsTour, startClipsTour, startOverlaysTour, startVoiceTour,
-  startShortcutsTour, iniciarTutorialesDeSeccion,
+  startShortcutsTour, startChannelsTour, iniciarTutorialesDeSeccion,
 } from './tours/index.js';
 import { iniciarPortalView, togglePortalView } from './portal-view/index.js';
 
@@ -147,7 +147,7 @@ Object.assign(window, {
   // tours
   startModerationTour, startSoundpadTour, startBotTour, startPluginStoreTour,
   startChatActionsTour, startClipsTour, startOverlaysTour, startVoiceTour,
-  startShortcutsTour,
+  startShortcutsTour, startChannelsTour,
   // usadas por markup construido en JS (template strings con onclick="...")
   escapeHtml,
   // portal view (navegador embebido)

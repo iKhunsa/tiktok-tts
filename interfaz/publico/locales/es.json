@@ -1181,5 +1181,14 @@
     "proBackgrounds": "Fondos personalizados en los overlays",
     "choosePro": "Elegir Pro",
     "currentPlan": "Plan actual"
+  },
+  "channelsTour": {
+    "introTitle": "Canales vinculados", "introDesc": "Guardá tus canales antes de conectarlos al chat en vivo.",
+    "listTitle": "Canales guardados", "listDesc": "Acá ves cada canal y su estado. Podés quitar los que ya no uses.",
+    "addTitle": "Agregar canal", "addDesc": "Abrí este formulario para guardar otro canal.",
+    "platformTitle": "Elegí la plataforma", "platformDesc": "Seleccioná TikTok, Twitch, YouTube o Kick antes de escribir el canal.",
+    "channelTitle": "Escribí el canal", "channelDesc": "Ingresá el usuario o enlace del canal. Para YouTube también podés usar @canal o Channel ID.",
+    "saveTitle": "Guardar", "saveDesc": "Guardalo para que quede listo. Guardar no inicia una conexión.",
+    "connectTitle": "Conectar todo", "connectDesc": "Desde Chat, este botón conecta los canales guardados cuando estén en vivo."
   }
 }

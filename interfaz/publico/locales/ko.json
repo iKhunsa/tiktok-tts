@@ -1181,5 +1181,14 @@
     "badgeInline": "PRO",
     "upgradeCta": "플랜 업그레이드",
     "demoVideoSoon": "데모 영상 준비 중"
+  },
+  "channelsTour": {
+    "introTitle": "연결된 채널", "introDesc": "라이브 채팅에 연결하기 전에 채널을 저장하세요.",
+    "listTitle": "저장된 채널", "listDesc": "여기서 각 채널과 상태를 확인합니다. 더 이상 쓰지 않는 채널은 제거하세요.",
+    "addTitle": "채널 추가", "addDesc": "이 양식을 열어 다른 채널을 저장하세요.",
+    "platformTitle": "플랫폼 선택", "platformDesc": "채널을 입력하기 전에 TikTok, Twitch, YouTube 또는 Kick을 선택하세요.",
+    "channelTitle": "채널 입력", "channelDesc": "사용자 이름 또는 링크를 입력하세요. YouTube는 @채널이나 Channel ID도 사용할 수 있습니다.",
+    "saveTitle": "저장", "saveDesc": "준비되도록 저장합니다. 저장만으로 연결되지는 않습니다.",
+    "connectTitle": "모두 연결", "connectDesc": "채팅에서 이 버튼은 저장된 채널이 라이브일 때 연결합니다."
   }
 }

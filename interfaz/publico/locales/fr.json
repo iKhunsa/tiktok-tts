@@ -1181,5 +1181,14 @@
     "badgeInline": "PRO",
     "upgradeCta": "Améliorez votre forfait",
     "demoVideoSoon": "Vidéo de démonstration bientôt disponible"
+  },
+  "channelsTour": {
+    "introTitle": "Chaînes liées", "introDesc": "Enregistrez vos chaînes avant de les connecter au chat en direct.",
+    "listTitle": "Chaînes enregistrées", "listDesc": "Voyez chaque chaîne et son état ici. Retirez celles que vous n'utilisez plus.",
+    "addTitle": "Ajouter une chaîne", "addDesc": "Ouvrez ce formulaire pour enregistrer une autre chaîne.",
+    "platformTitle": "Choisissez la plateforme", "platformDesc": "Sélectionnez TikTok, Twitch, YouTube ou Kick avant de saisir la chaîne.",
+    "channelTitle": "Saisissez la chaîne", "channelDesc": "Saisissez le nom d'utilisateur ou le lien. Pour YouTube, utilisez aussi @chaîne ou Channel ID.",
+    "saveTitle": "Enregistrer", "saveDesc": "Enregistrez-la pour la préparer. Cela ne lance pas de connexion.",
+    "connectTitle": "Tout connecter", "connectDesc": "Depuis le Chat, ce bouton connecte les chaînes enregistrées lorsqu'elles sont en direct."
   }
 }
