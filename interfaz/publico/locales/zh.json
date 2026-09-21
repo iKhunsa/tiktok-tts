@@ -894,7 +894,9 @@
     "obsTitle": "OBS连接（可选）",
     "obsDesc": "如果在这里通过WebSocket连接OBS，每次标记剪辑时也会自动保存OBS的回放缓冲，除了应用内的标记。",
     "historyTitle": "标记历史",
-    "historyDesc": "所有标记的剪辑都会列在这里，包含经过时间和真实时间戳，方便你之后在录像或OBS中找到这些瞬间。"
+    "historyDesc": "所有标记的剪辑都会列在这里，包含经过时间和真实时间戳，方便你之后在录像或OBS中找到这些瞬间。",
+    "mobileTitle": "用手机标记",
+    "mobileDesc": "扫描此二维码，在手机面板中打开控制，然后点按标记剪辑。启动应用中的计时器后，此按钮才会可用。"
   },
   "pluginStoreTour": {
     "introTitle": "插件商店",
