@@ -2620,6 +2620,8 @@
       gap: var(--space-4);
     }
 
+    .bot-2col-grid + .cfg-card { margin-top: var(--space-4); }
+
     @media (max-width: 480px) {
       #view-chat .chat-header,
       #view-overlays .cfg-header { flex-wrap: wrap; }
