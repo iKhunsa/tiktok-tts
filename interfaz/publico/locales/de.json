@@ -1181,5 +1181,14 @@
     "badgeInline": "PRO",
     "upgradeCta": "Plan upgraden",
     "demoVideoSoon": "Demo-Video folgt in Kürze"
+  },
+  "channelsTour": {
+    "introTitle": "Verknüpfte Kanäle", "introDesc": "Speichere deine Kanäle, bevor du sie mit dem Live-Chat verbindest.",
+    "listTitle": "Gespeicherte Kanäle", "listDesc": "Hier siehst du jeden Kanal und seinen Status. Entferne Kanäle, die du nicht mehr nutzt.",
+    "addTitle": "Kanal hinzufügen", "addDesc": "Öffne dieses Formular, um einen weiteren Kanal zu speichern.",
+    "platformTitle": "Plattform wählen", "platformDesc": "Wähle TikTok, Twitch, YouTube oder Kick, bevor du den Kanal eingibst.",
+    "channelTitle": "Kanal eingeben", "channelDesc": "Gib Benutzername oder Link ein. Für YouTube gehen auch @Kanal oder Channel ID.",
+    "saveTitle": "Speichern", "saveDesc": "Speichere ihn, damit er bereit ist. Das startet keine Verbindung.",
+    "connectTitle": "Alle verbinden", "connectDesc": "In Chat verbindet dieser Button gespeicherte Kanäle, wenn sie live sind."
   }
 }

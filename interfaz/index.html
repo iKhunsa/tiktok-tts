@@ -742,13 +742,14 @@
       </div>
 
       <!-- CANALES VINCULADOS -->
-      <div class="settings-section">
+      <div class="settings-section" id="settingsSectionChannels">
         <div class="settings-section-title settings-row-flex" style="justify-content:space-between;">
           <span data-i18n="settings.channels">Canales vinculados</span>
           <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
             <button class="btn-supabase-primary" id="btn-toggle-add-channel" onclick="toggleAddChannelForm()">
               ＋ Agregar canal
             </button>
+            <button class="cfg-btn" id="btnChannelsTour" onclick="startChannelsTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
           </div>
         </div>
         <div id="settings-channels-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:20px;margin-bottom:4px;"></div>
