@@ -894,7 +894,9 @@
     "obsTitle": "Connessione OBS (opzionale)",
     "obsDesc": "Se colleghi OBS via WebSocket qui, ogni volta che segni un clip si salva automaticamente anche il replay buffer di OBS, oltre al marcatore nell'app.",
     "historyTitle": "Cronologia marcatori",
-    "historyDesc": "Tutti i clip segnati vengono elencati qui con il tempo trascorso e l'orario reale, per ritrovare quei momenti nella registrazione o in OBS."
+    "historyDesc": "Tutti i clip segnati vengono elencati qui con il tempo trascorso e l'orario reale, per ritrovare quei momenti nella registrazione o in OBS.",
+    "mobileTitle": "Segna dal telefono",
+    "mobileDesc": "Scansiona questo QR, apri Controllo nel pannello mobile e tocca Segna clip. Il pulsante si abilita dopo aver avviato il timer nell'app."
   },
   "pluginStoreTour": {
     "introTitle": "Negozio di plugin",

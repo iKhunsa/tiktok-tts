@@ -894,7 +894,9 @@
     "obsTitle": "OBS-Verbindung (optional)",
     "obsDesc": "Wenn du hier OBS per WebSocket verbindest, speichert jeder markierte Clip automatisch auch den OBS-Replay-Buffer, zusätzlich zum Marker in der App.",
     "historyTitle": "Marker-Verlauf",
-    "historyDesc": "Alle markierten Clips werden hier mit verstrichener Zeit und echtem Zeitstempel aufgelistet, damit du diese Momente später in deiner Aufnahme oder in OBS findest."
+    "historyDesc": "Alle markierten Clips werden hier mit verstrichener Zeit und echtem Zeitstempel aufgelistet, damit du diese Momente später in deiner Aufnahme oder in OBS findest.",
+    "mobileTitle": "Vom Handy markieren",
+    "mobileDesc": "Scanne diesen QR-Code, öffne Steuerung im mobilen Panel und tippe auf Clip markieren. Der Button wird aktiv, nachdem du den Timer in der App gestartet hast."
   },
   "pluginStoreTour": {
     "introTitle": "Plugin-Store",
