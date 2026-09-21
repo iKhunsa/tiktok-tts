@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 
 const CONFIGS = [
-  { file: 'webhook-config.generated.json', data: () => ({ discordWebhookUrl: null }) },
+  { file: 'webhook-config.generated.json', data: () => ({ discordWebhookUrl: null, discordIdeasWebhookUrl: null }) },
   { file: 'telemetry-config.generated.json', data: () => ({ url: null, token: null }) },
   {
     file: 'aptabase-config.generated.json',

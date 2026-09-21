@@ -382,6 +382,10 @@ function attach(bus, logger) {
     } catch (_) { /* noop */ }
   });
 
+  bus.on('ideas:enviada', () => {
+    try { track('idea_sent', {}); } catch (_) { /* noop */ }
+  });
+
   // Idioma de UI (Fase 3 — llega del renderer vía IPC telemetry:track).
   bus.on('ui:language-set', (lang) => {
     try {

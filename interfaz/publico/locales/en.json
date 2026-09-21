@@ -38,6 +38,9 @@
     "tourDesc": "Click this button any time you run into a problem to let me know.",
     "tourDone": "Got it"
   },
+  "ideas": {
+    "sidebarEntry": "Suggest an idea", "title": "Suggest an idea for TikLiveTTS", "subtitle": "Have an idea to improve the app? Tell us the problem and how you would solve it. We prioritize features useful to many streamers.", "hint": "No technical details needed: explain it as simply as you can.", "problemLabel": "What problem do you want to solve?", "problemPlaceholder": "Tell us what happens today.", "ideaLabel": "What is your idea?", "ideaPlaceholder": "Explain what you would like TikLiveTTS to do.", "audienceLabel": "Who would find it useful?", "audiencePlaceholder": "Choose an option", "audienceAlmostAll": "Almost any streamer", "audienceMany": "Many streamers", "audienceSome": "Some types of streamers", "audienceLikeMe": "Mostly streamers like me", "audienceUnsure": "I'm not sure", "useCaseLabel": "When would you use it?", "useCasePlaceholder": "Give us an example of when it would help.", "reasonLabel": "Why would it be worth adding?", "reasonPlaceholder": "Think about how it could help other users too.", "similarLabel": "Do you know an app with something similar?", "optional": "(optional)", "similarPlaceholder": "Name or link", "submit": "Send idea", "sending": "Sending...", "sent": "Thanks! Your idea was sent.", "errorRequired": "Complete the required fields.", "errorSend": "Could not send the idea. Try again.", "close": "Close"
+  },
   "footer": {
     "donate": "Donate",
     "newBadge": "New",
@@ -686,7 +689,7 @@
     "serviceUnavailable": "Account service unavailable. Try again shortly.",
     "generic": "Something went wrong. Try again.",
     "weakPassword": "The password is too short.",
-    "passwordMismatch": "Passwords don't match."
+    "passwordMismatch": "Passwords don't match.", "ideasRequired": "Complete the required idea fields.", "ideasInvalidAudience": "Choose a valid audience.", "ideasRateLimited": "Wait a minute before sending another idea.", "ideasUnavailable": "Suggestions are temporarily unavailable.", "ideasSendFailed": "Could not send the idea. Try again."
   },
   "dictLang": {
     "title": "Allowed languages",
