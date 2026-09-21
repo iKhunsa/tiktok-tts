@@ -1,75 +1,132 @@
-# TikLiveTTS — Live Chat Text-to-Speech
+# TikLiveTTS
 
-App de escritorio para Windows que lee en voz alta el chat de tus directos en tiempo real. Todo se controla desde la app; añade los overlays a OBS como *Browser Source*.
+[![Release](https://img.shields.io/github/v/release/iKhunsa/tiktok-tts?display_name=tag&sort=semver)](https://github.com/iKhunsa/tiktok-tts/releases/latest)
+[![Build & Release](https://github.com/iKhunsa/tiktok-tts/actions/workflows/release.yml/badge.svg)](https://github.com/iKhunsa/tiktok-tts/actions/workflows/release.yml)
+[![License](https://img.shields.io/github/license/iKhunsa/tiktok-tts)](LICENSE)
+[![Electron](https://img.shields.io/badge/Electron-41-47848F?logo=electron&logoColor=white)](https://www.electronjs.org/)
 
-## Características
+**TikLiveTTS** is a Windows desktop app that reads live chat aloud while you stream. Connect TikTok Live, Twitch, YouTube, or Kick, manage everything from one native app, and add browser-source overlays to OBS.
 
-- 🔊 **TTS en tiempo real** con un único narrador, cola ordenada por hora de llegada y voces de Google TTS en 13 idiomas y variantes regionales.
-- 🌐 **Chat multistream:** conecta TikTok Live, Twitch, YouTube y Kick; cada mensaje conserva el badge de su plataforma.
-- 🛡️ **Moderación local de espectadores:** consulta seguidores y participantes, silencia o bloquea usuarios y aplica filtros anti-spam, palabras bloqueadas y filtro de idioma.
-- 🎁 **Overlays para OBS:** alertas de regalos, follows y shares; contadores de likes y seguidores; chat, listas sociales y créditos. Personaliza su fondo con tu propia imagen.
-- 🎵 **Bot musical** con pedidos desde el chat y playlist, más **Soundpad** con efectos y atajos globales.
-- 📱 **Panel móvil:** controla la app a distancia desde el teléfono.
-- 🖥️ **PortalView:** navegador integrado con pestañas para abrir y administrar tus herramientas de streaming sin salir de la app.
-- ⌨️ **Atajos y OBS:** controla la cola TTS y marca clips en OBS con `Ctrl+Shift+M`.
-- 🤖 **Servidor MCP para agentes:** usuarios avanzados pueden conectar Claude Desktop o Claude Code para consultar el stream, moderar y controlar herramientas desde un agente.
-- 💳 **Planes opcionales:** Free incluye TTS, chat de una cuenta por plataforma, moderación y overlays; **Sin Promos** elimina los avisos promocionales por US$25/año; **Pro** desbloquea las funciones avanzadas por US$85/año.
-- ☕ **Donaciones:** apoya el proyecto mediante Ko-fi o PayPal si te resulta útil.
-- 🔄 **Actualizaciones automáticas** desde GitHub Releases.
+## Highlights
 
-## Descarga e instalación
+- Real-time Google TTS with a single, timestamp-ordered speech queue and 13 languages or regional variants.
+- Multi-platform chat for TikTok Live, Twitch, YouTube, and Kick, with a platform badge on every message.
+- Local moderation: spam and language filters, blocked words, viewer records, mute, and ban controls.
+- OBS-ready overlays for alerts, likes, followers, unified chat, social events, and credits.
+- Music requests, Soundpad effects, global shortcuts, and OBS clip markers.
+- A mobile control panel, built-in PortalView browser, automatic updates, and optional MCP tools for advanced agent control.
 
-1. Ve a [Releases](https://github.com/iKhunsa/tiktok-tts/releases/latest).
-2. Descarga `TikLiveTTS-Setup-x.x.x.exe`.
-3. Ejecuta el instalador: no requiere Node.js ni permisos de administrador.
-4. La app se instala en `%LOCALAPPDATA%\TikLiveTTS\` y crea accesos directos en el escritorio y el menú Inicio.
+## Download
 
-> ⚠️ El instalador no está firmado, por lo que Windows Defender puede mostrar un aviso la primera vez. Haz clic en **Más información → Ejecutar de todas formas**.
+Get the latest Windows installer from [GitHub Releases](https://github.com/iKhunsa/tiktok-tts/releases/latest). Node.js is not required to use the app.
 
-## Cómo usar
+The installer is currently unsigned, so Windows may show a first-run SmartScreen warning. Select **More info** and then **Run anyway** if you trust the release.
 
-1. Abre la app e inicia sesión o usa el plan Free.
-2. Añade tu canal de TikTok, Twitch, YouTube o Kick y pulsa **Conectar**. Para YouTube, el canal debe estar en directo.
-3. Ajusta la voz, idioma y filtros desde **Ajustes**; el chat empezará a leerse al conectarse.
-4. Si usas OBS, copia la URL del overlay deseado desde la sección **Overlays** y pégala como **Fuente de navegador**. Mantén la app abierta mientras transmites.
+## Quick start
 
-### Overlays para OBS
+1. Open TikLiveTTS and sign in, or use the Free plan.
+2. Add your TikTok, Twitch, YouTube, or Kick channel and select **Connect**.
+3. Choose a language, voice, and filters in Settings.
+4. In OBS, add the overlay URL shown by the app as a **Browser Source**. Keep TikLiveTTS running while streaming.
 
-| Overlay | URL |
+> YouTube chat requires an active live stream.
+
+## Tech stack
+
+| Layer | Technology |
 | --- | --- |
-| Alertas de regalos | `http://localhost:3000/overlay-alertas.html` |
-| Contador de likes | `http://localhost:3000/overlay-likes.html` |
-| Contador de seguidores | `http://localhost:3000/overlay-seguidores.html` |
-| Follows y shares | `http://localhost:3000/overlay-social.html` |
-| Créditos | `http://localhost:3000/overlay-creditos.html` |
-| Chat unificado | `http://localhost:3000/overlay-chat.html` |
+| Desktop | Electron |
+| App server | Express + WebSocket (`ws`) |
+| Frontend | Vanilla ESM + Vite |
+| Live chat | TikTok Live client, `tmi.js`, `youtube-chat`, Kick WebSocket |
+| Text-to-speech | Google Translate TTS |
+| Packaging | electron-builder + NSIS |
+| Delivery | GitHub Actions + GitHub Releases |
 
-En OBS: `Fuentes → + → Fuente de navegador → pegar URL`.
+## Architecture
 
-## Actualizaciones automáticas
+Electron starts a local Express/WebSocket server and loads the UI from it. The backend is organized by domain under `features/`; domains communicate through a shared event bus or narrow contracts. The Vite-built frontend powers the desktop UI, mobile panel, and OBS overlays.
 
-La app busca actualizaciones al abrirse y las descarga en segundo plano. Cuando estén listas, podrás instalarlas sin reiniciar el PC. Consulta los cambios en [CHANGELOG.md](CHANGELOG.md).
+```text
+Electron shell
+  ├─ Express + WebSocket server
+  │   ├─ core/          event bus, HTTP, logging, contracts
+  │   └─ features/      channels, chat, moderation, overlays, sound, and more
+  └─ Vite frontend      desktop UI, mobile panel, OBS overlays
+```
 
-## Solución de problemas
+## Project layout
 
-**La app no encuentra el live** — verifica que el canal esté en directo y prueba el usuario sin `@`.
+```text
+core/             Application kernel and shared contracts
+electron-shell/   Window, tray, updates, IPC, and desktop integrations
+features/         Backend domains
+interfaz/         Vite frontend source and static assets
+gifts/            TikTok gift images
+sounds/           Bundled sound assets
+test/             Node test suite
+```
 
-**No hay audio** — Google TTS requiere internet; revisa tu conexión y el volumen del sistema.
+## Development
 
-**El overlay no carga en OBS** — deja la app abierta, incluso si está minimizada.
+### Prerequisites
 
-**El chat de YouTube no aparece** — el canal debe estar transmitiendo en vivo.
+- Node.js 22+
+- npm
+- Windows is required to create the NSIS installer
 
-**Al cerrar la ventana no se cierra la app** — se minimiza a la bandeja del sistema. Haz clic derecho en el icono y elige **Salir**.
+```bash
+git clone https://github.com/iKhunsa/tiktok-tts.git
+cd tiktok-tts
+npm ci
+```
 
-## Desinstalar
+Run the full desktop app:
 
-Configuración de Windows → Aplicaciones → TikLiveTTS → Desinstalar.
+```bash
+npm run electron
+```
 
-## Contribuir
+For frontend and server development with a Vite build watcher:
 
-¿Quieres aportar? Revisa los [issues abiertos](https://github.com/iKhunsa/tiktok-tts/issues) y la [guía de contribución](CONTRIBUTING.md).
+```bash
+npm run dev:all
+```
 
-## Licencia
+Other useful commands:
 
-[MIT](LICENSE)
+```bash
+npm run lint
+npm test
+npm run build:front
+npm run serve
+```
+
+## Build and release
+
+Build a local Windows installer:
+
+```bash
+npm run build:electron
+```
+
+Maintainers release a new version by updating `package.json` and `CHANGELOG.md`, then pushing a version tag:
+
+```bash
+git tag vX.Y.Z
+git push origin main --tags
+```
+
+GitHub Actions runs linting and tests, builds the installer, and creates a draft GitHub Release. Publish it when ready:
+
+```bash
+gh release edit vX.Y.Z --draft=false
+```
+
+## Contributing
+
+Contributions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md), create a focused branch, run `npm run lint` and `npm test`, then open a pull request against `main`.
+
+## License
+
+Released under the [MIT License](LICENSE).
