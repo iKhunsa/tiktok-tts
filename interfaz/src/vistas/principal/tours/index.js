@@ -4,22 +4,20 @@
  * son scripts clasicos, no modulos ESM — no se tocaron en esta migracion).
  */
 import { t } from '../../../nucleo/i18n/i18n.js';
+import { driverTourDefaults as sharedDriverTourDefaults, addSectionTutorials } from '../../../nucleo/tours/driver.js';
 import { switchView } from '../vistas-router.js';
 import { expandChatToggles } from '../toggles-chat.js';
 import { closeDictLangModal, openDictLangModal } from '../modales-avisos.js';
 
 export function driverTourDefaults() {
-  return {
-    showProgress: true,
-    allowClose: true,
-    overlayOpacity: 0.65,
-    stagePadding: 6,
-    popoverOffset: 12,
-    nextBtnText: t('tour.next'),
-    prevBtnText: t('tour.prev'),
-    doneBtnText: t('tour.done'),
-    progressText: '{{current}}/{{total}}',
-  };
+  return sharedDriverTourDefaults();
+}
+
+export function iniciarTutorialesDeSeccion() {
+  addSectionTutorials({
+    selector: '.view-header, .settings-section-title',
+    buttonClass: 'cfg-btn',
+  });
 }
 
 export function startModerationTour() {
@@ -133,6 +131,7 @@ export function startChatActionsTour() {
       { element: 'button[onclick="clearChatAndQueue()"]', popover: { title: t('chatActionsTour.clearTitle'), description: t('chatActionsTour.clearDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inChatActions },
       { element: '#btnBlockedWordsShortcut', popover: { title: t('chatActionsTour.blockedTitle'), description: t('chatActionsTour.blockedDesc'), side: 'bottom', align: 'end' }, onHighlightStarted: inChatActions },
       { element: '#btn-connect-all-chat', popover: { title: t('chatActionsTour.connectTitle'), description: t('chatActionsTour.connectDesc'), side: 'bottom', align: 'end' }, onHighlightStarted: inChatActions },
+      { element: '#speakingNow', popover: { title: t('tour.speakingNowTitle'), description: t('tour.speakingNowDesc'), side: 'top', align: 'start' }, onHighlightStarted: inChatActions },
       { element: '#chatLog', popover: { title: t('chatActionsTour.logTitle'), description: t('chatActionsTour.logDesc'), side: 'top', align: 'start' }, onHighlightStarted: inChatActions },
     ],
   }).drive();
@@ -189,6 +188,7 @@ export function startVoiceTour() {
       { element: '#voiceVolGroup', popover: { title: t('voiceTour.volTitle'), description: t('voiceTour.volDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inSettings },
       { element: '#voiceLangFilterGroup', popover: { title: t('voiceTour.charFilterTitle'), description: t('voiceTour.charFilterDesc'), side: 'top', align: 'start' }, onHighlightStarted: inSettings },
       { element: '#voiceDictFilterGroup', popover: { title: t('voiceTour.wordFilterTitle'), description: t('voiceTour.wordFilterDesc'), side: 'top', align: 'start' }, onHighlightStarted: inSettings },
+      { element: '#announceTplFields', popover: { title: t('tour.announceTitle'), description: t('tour.announceDesc'), side: 'top', align: 'start' }, onHighlightStarted: inSettings },
       { element: '#dictLangModal .modal-content', popover: { title: t('voiceTour.dictModalTitle'), description: t('voiceTour.dictModalDesc'), side: 'left', align: 'start' }, onHighlightStarted: () => { inSettings(); openDictLangModal(); } },
     ],
   }).drive();

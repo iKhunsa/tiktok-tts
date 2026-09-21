@@ -89,7 +89,13 @@
     "next": "Siguiente",
     "prev": "Atrás",
     "done": "Listo",
-    "viewTutorial": "Ver tutorial"
+    "viewTutorial": "Ver tutorial",
+    "sectionTitle": "Tutorial de esta sección",
+    "sectionDesc": "Estos son los controles principales de esta sección.",
+    "speakingNowTitle": "Mensaje en lectura",
+    "speakingNowDesc": "Muestra el mensaje actual; usá su botón para ir a ese mensaje en el chat.",
+    "announceTitle": "Textos de anuncio propios",
+    "announceDesc": "Personalizá el final de cada anuncio sin cambiar sus datos automáticos."
   },
   "onboarding": {
     "step1Title": "Primero, andá a Configuración",

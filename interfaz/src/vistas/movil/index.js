@@ -13,6 +13,7 @@ import { padPlay } from './soundpad.js';
 import { switchTab } from './tabs.js';
 import { cmd } from './comandos.js';
 import { mMusicToggle, mMusicSkip, mMusicVolume, mPlaylistToggle, mInit } from './bot-musica.js';
+import { addSectionTutorials } from '../../nucleo/tours/driver.js';
 
 // ─── Puente onclick/oninput: el markup los invoca como globales ───────────
 Object.assign(window, {
@@ -25,6 +26,7 @@ async function iniciarI18n() {
   const lang = idiomaGuardado() || 'es';
   await cargarIdioma(lang);
   aplicarTraducciones();
+  addSectionTutorials({ selector: '.tab-panel', buttonClass: 'full-btn' });
   connectWS();
 }
 
