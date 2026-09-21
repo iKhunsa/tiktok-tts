@@ -1181,5 +1181,14 @@
     "badgeInline": "PRO",
     "upgradeCta": "プランをアップグレード",
     "demoVideoSoon": "デモ動画は近日公開"
+  },
+  "channelsTour": {
+    "introTitle": "連携チャンネル", "introDesc": "ライブチャットに接続する前にチャンネルを保存します。",
+    "listTitle": "保存済みチャンネル", "listDesc": "各チャンネルと状態をここで確認できます。使わないものは削除できます。",
+    "addTitle": "チャンネルを追加", "addDesc": "このフォームを開いて別のチャンネルを保存します。",
+    "platformTitle": "プラットフォームを選択", "platformDesc": "チャンネルを入力する前に TikTok、Twitch、YouTube、Kick を選びます。",
+    "channelTitle": "チャンネルを入力", "channelDesc": "ユーザー名またはリンクを入力します。YouTube では @チャンネルや Channel ID も使えます。",
+    "saveTitle": "保存", "saveDesc": "準備のために保存します。保存だけでは接続されません。",
+    "connectTitle": "すべて接続", "connectDesc": "チャット画面で、このボタンは保存済みチャンネルが配信中に接続します。"
   }
 }

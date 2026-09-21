@@ -1181,5 +1181,14 @@
     "badgeInline": "PRO",
     "upgradeCta": "升级你的套餐",
     "demoVideoSoon": "演示视频即将上线"
+  },
+  "channelsTour": {
+    "introTitle": "已关联频道", "introDesc": "先保存频道，再将其连接到直播聊天。",
+    "listTitle": "已保存频道", "listDesc": "在这里查看每个频道及其状态。不再使用的频道可以移除。",
+    "addTitle": "添加频道", "addDesc": "打开此表单以保存另一个频道。",
+    "platformTitle": "选择平台", "platformDesc": "输入频道前，选择 TikTok、Twitch、YouTube 或 Kick。",
+    "channelTitle": "输入频道", "channelDesc": "输入用户名或链接。YouTube 也可使用 @频道或 Channel ID。",
+    "saveTitle": "保存", "saveDesc": "保存后即可使用。保存不会开始连接。",
+    "connectTitle": "全部连接", "connectDesc": "在聊天页，此按钮会在已保存频道直播时连接它们。"
   }
 }
