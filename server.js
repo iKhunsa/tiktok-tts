@@ -42,6 +42,7 @@ mount('configuracion', './features/configuracion');
 mount('auth', './features/auth');
 mount('idioma', './features/idioma');
 mount('reporte-bug', './features/reporte-bug');
+mount('sugerencias', './features/sugerencias');
 mount('moderacion', './features/moderacion');
 mount('canales', './features/canales');
 mount('chat', './features/chat');

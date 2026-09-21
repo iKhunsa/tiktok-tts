@@ -264,6 +264,7 @@ export function iniciarModalesYAvisos() {
       document.getElementById('donationNoticeModal').classList.remove('show');
       document.getElementById('dictLangModal').classList.remove('show');
       document.getElementById('bugReportModal').classList.remove('show');
+      document.getElementById('ideaModal').classList.remove('show');
       document.getElementById('bugReportNoticeModal').classList.remove('show');
       document.getElementById('onboardingWelcomeModal').classList.remove('show');
       document.getElementById('onboardingCompleteModal').classList.remove('show');

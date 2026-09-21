@@ -60,6 +60,7 @@ import {
   openBugReportFromNotice, closeOnboardingWelcome, closeOnboardingComplete, startOnboardingTour,
   iniciarModalesYAvisos, arrancarAvisosOnboarding,
 } from './modales-avisos.js';
+import { closeIdeaModal, openIdeaModal, submitIdea } from './ideas/modal.js';
 import { loadMobileURL, copyMobileURL, refreshMobileQR } from './mobile-remote.js';
 import {
   markClip, clearAllClips, startStreamManual, stopStream, connectOBSFromUI,
@@ -123,6 +124,7 @@ Object.assign(window, {
   // modales y avisos
   openDonationsModal, closeDonationsModal,
   openBugReportModal, closeBugReportModal, submitBugReport, openDictLangModal,
+  openIdeaModal, closeIdeaModal, submitIdea,
   closeDictLangModal, closeDonationNotice, openDonationsFromNotice, closeBugReportNotice,
   openBugReportFromNotice, closeOnboardingWelcome, closeOnboardingComplete, startOnboardingTour,
   // movil remoto

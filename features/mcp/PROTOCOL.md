@@ -47,7 +47,9 @@ Se hace cumplir en 3 capas:
    Al agregar una feature con escritura, sumala a esa lista.
 3. **Lint** — `node scripts/check-mcp.js` (corre en `npm test`): grep de cada
    `features/*/index.js`; si tiene `app.post(`/`app.patch(`/`app.delete(` pero
-   no `mcp.registerTool(`, falla con el nombre del dominio.
+   no `mcp.registerTool(`, falla con el nombre del dominio. `reporte-bug` y
+   `sugerencias` son excepciones: ambos hacen posts externos por decisión
+   manual de la persona usuaria y no deben ser acciones autónomas de un agente.
 
 ## Checklist de PR (copiar a CONTRIBUTING.md)
 
