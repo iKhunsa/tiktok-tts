@@ -1232,7 +1232,7 @@
 
 <!-- ══ MODAL: Donaciones ════════════════════════════════ -->
 <div id="donationsModal" class="modal-overlay" onclick="closeDonationsModal(event)">
-  <div class="modal-content idea-modal-content" onclick="event.stopPropagation()">
+  <div class="modal-content" onclick="event.stopPropagation()">
     <button class="modal-close" onclick="closeDonationsModal()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
     <h2><img class="icon-inline" src="icons/favorite-red.svg" alt=""> <span data-i18n="donations.title">Apoya mi contenido</span></h2>
 
@@ -1425,7 +1425,7 @@
 
 <!-- ══ MODAL: Sugerir idea ═══════════════════════════════ -->
 <div id="ideaModal" class="modal-overlay" onclick="closeIdeaModal(event)" role="dialog" aria-modal="true" aria-labelledby="ideaModalTitle">
-  <div class="modal-content" onclick="event.stopPropagation()">
+  <div class="modal-content idea-modal-content" onclick="event.stopPropagation()">
     <button class="modal-close" onclick="closeIdeaModal()" data-i18n-aria-label="ideas.close" aria-label="Cerrar"><img class="icon-inline" src="icons/close.svg" alt=""></button>
     <h2 id="ideaModalTitle"><img class="icon-inline" src="icons/lightbulb.svg" alt=""> <span data-i18n="ideas.title">Sugerí una idea para TikLiveTTS</span></h2>
     <p class="bugreport-guide" data-i18n="ideas.subtitle">¿Tenés una idea para mejorar la app? Contanos el problema y cómo te gustaría resolverlo. Priorizamos funciones útiles para muchos streamers.</p>

@@ -1819,6 +1819,8 @@
     .idea-audience-option:has(input:checked) { border-color: var(--accent); background: var(--brand-a10); color: var(--text); }
     .idea-audience-option:has(input:focus-visible) { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
     .idea-submit-spinner { display: inline-block; width: 12px; height: 12px; margin-right: 7px; vertical-align: -2px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: ideaSpin .7s linear infinite; }
+    /* display:grid/flex de las reglas de abajo anula el atributo hidden: se fuerza */
+    .idea-modal-content [hidden] { display: none !important; }
     .idea-thanks { min-height: 250px; display: grid; place-content: center; text-align: center; gap: 9px; animation: ideaThanks .2s ease-out; }
     .idea-thanks .icon-inline { width: 42px; height: 42px; margin: 0 auto 4px; filter: invert(35%) sepia(98%) saturate(1884%) hue-rotate(338deg); }
     .idea-thanks p { margin: 0; color: var(--text-secondary); font-size: var(--text-sm); }
