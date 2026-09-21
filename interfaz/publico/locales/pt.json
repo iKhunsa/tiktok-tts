@@ -38,6 +38,7 @@
     "tourDesc": "Aperte este botão sempre que tiver um problema para me avisar.",
     "tourDone": "Entendi"
   },
+  "ideas": {"sidebarEntry":"Sugerir uma ideia","title":"Sugira uma ideia para TikLiveTTS","subtitle":"Tem uma ideia para melhorar o app? Conte o problema e como gostaria de resolvê-lo. Priorizamos recursos úteis para muitos streamers.","hint":"Não precisa explicar detalhes técnicos: conte da forma mais simples possível.","problemLabel":"Que problema você quer resolver?","problemPlaceholder":"Conte o que acontece hoje.","ideaLabel":"Qual é a sua ideia?","ideaPlaceholder":"Explique o que gostaria que o TikLiveTTS fizesse.","audienceLabel":"Para quem seria útil?","audiencePlaceholder":"Escolha uma opção","audienceAlmostAll":"Quase qualquer streamer","audienceMany":"Muitos streamers","audienceSome":"Alguns tipos de streamers","audienceLikeMe":"Principalmente streamers como eu","audienceUnsure":"Não tenho certeza","useCaseLabel":"Quando você usaria?","useCasePlaceholder":"Dê um exemplo de quando ajudaria.","reasonLabel":"Por que valeria a pena adicionar?","reasonPlaceholder":"Pense também em como ajudaria outros usuários.","similarLabel":"Conhece algum app com algo parecido?","optional":"(opcional)","similarPlaceholder":"Nome ou link","submit":"Enviar ideia","sending":"Enviando...","sent":"Obrigado! Sua ideia foi enviada.","errorRequired":"Preencha os campos obrigatórios.","errorSend":"Não foi possível enviar a ideia. Tente novamente.","close":"Fechar"},
   "footer": {
     "donate": "Doar",
     "newBadge": "Novo",
@@ -1012,7 +1013,7 @@
     "serviceUnavailable": "Serviço de contas indisponível. Tente novamente em breve.",
     "generic": "Ocorreu um erro. Tente novamente.",
     "weakPassword": "A senha é muito curta.",
-    "passwordMismatch": "As senhas não coincidem."
+    "passwordMismatch": "As senhas não coincidem.", "ideasRequired":"Preencha os campos obrigatórios da ideia.","ideasInvalidAudience":"Escolha um público válido.","ideasRateLimited":"Aguarde um minuto antes de enviar outra ideia.","ideasUnavailable":"As sugestões estão temporariamente indisponíveis.","ideasSendFailed":"Não foi possível enviar a ideia. Tente novamente."
   },
   "mcp": {
     "title": "Agente MCP",

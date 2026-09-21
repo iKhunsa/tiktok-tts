@@ -38,6 +38,7 @@
     "tourDesc": "Cliquez sur ce bouton chaque fois que vous avez un problème pour me le signaler.",
     "tourDone": "Compris"
   },
+  "ideas": {"sidebarEntry":"Suggérer une idée","title":"Suggérez une idée pour TikLiveTTS","subtitle":"Vous avez une idée pour améliorer l'app ? Décrivez le problème et votre solution. Nous privilégions les fonctions utiles à beaucoup de streamers.","hint":"Pas besoin de détails techniques : expliquez simplement.","problemLabel":"Quel problème voulez-vous résoudre ?","problemPlaceholder":"Dites-nous ce qui se passe aujourd'hui.","ideaLabel":"Quelle est votre idée ?","ideaPlaceholder":"Expliquez ce que vous aimeriez que TikLiveTTS fasse.","audienceLabel":"À qui cela serait utile ?","audiencePlaceholder":"Choisissez une option","audienceAlmostAll":"Presque tous les streamers","audienceMany":"De nombreux streamers","audienceSome":"Certains types de streamers","audienceLikeMe":"Surtout des streamers comme moi","audienceUnsure":"Je ne suis pas sûr","useCaseLabel":"Quand l'utiliseriez-vous ?","useCasePlaceholder":"Donnez un exemple où cela vous aiderait.","reasonLabel":"Pourquoi cela vaudrait la peine de l'ajouter ?","reasonPlaceholder":"Pensez aussi à son aide pour les autres utilisateurs.","similarLabel":"Connaissez-vous une app similaire ?","optional":"(facultatif)","similarPlaceholder":"Nom ou lien","submit":"Envoyer l'idée","sending":"Envoi...","sent":"Merci ! Votre idée a été envoyée.","errorRequired":"Remplissez les champs obligatoires.","errorSend":"Impossible d'envoyer l'idée. Réessayez.","close":"Fermer"},
   "footer": {
     "donate": "Faire un don",
     "newBadge": "Nouveau",
@@ -1012,7 +1013,7 @@
     "serviceUnavailable": "Service de comptes indisponible. Réessayez bientôt.",
     "generic": "Une erreur s'est produite. Réessayez.",
     "weakPassword": "Le mot de passe est trop court.",
-    "passwordMismatch": "Les mots de passe ne correspondent pas."
+    "passwordMismatch": "Les mots de passe ne correspondent pas.", "ideasRequired":"Remplissez les champs obligatoires de l'idée.","ideasInvalidAudience":"Choisissez un public valide.","ideasRateLimited":"Attendez une minute avant d'envoyer une autre idée.","ideasUnavailable":"Les suggestions sont temporairement indisponibles.","ideasSendFailed":"Impossible d'envoyer l'idée. Réessayez."
   },
   "mcp": {
     "title": "Agent MCP",

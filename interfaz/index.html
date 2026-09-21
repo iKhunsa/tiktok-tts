@@ -98,6 +98,7 @@
     <div class="sidebar-footer">
       <button id="sidebarPortalViewBtn" class="sidebar-footer-btn" onclick="togglePortalView()"><img class="icon-inline" src="icons/public.svg" alt=""> <span data-i18n="footer.portalView">Navegador</span></button>
       <button id="sidebarBugReportBtn" class="sidebar-footer-btn" onclick="openBugReportModal()"><img class="icon-inline" src="icons/warning.svg" alt=""> <span data-i18n="footer.bugReport">Reportar Bug</span></button>
+      <button id="sidebarIdeaBtn" class="sidebar-footer-btn" onclick="openIdeaModal()"><img class="icon-inline" src="icons/lightbulb.svg" alt=""> <span data-i18n="ideas.sidebarEntry">Sugerir una idea</span></button>
       <button class="sidebar-footer-btn sidebar-item sidebar-account" data-view="cuenta" hidden>
         <span class="sidebar-account-top">
           <span class="sidebar-account-title"><img class="icon-inline" src="icons/account_circle.svg" alt=""> <span data-i18n="nav.cuenta"></span></span>
@@ -1419,6 +1420,25 @@
       <span data-i18n="bugReport.discordHint">¿Es solo una duda rápida? </span>
       <a href="https://discord.com/invite/mwY859tcQK" target="_blank" style="color:var(--accent);" data-i18n="bugReport.discordLink">Únete a nuestro Discord</a>
     </p>
+  </div>
+</div>
+
+<!-- ══ MODAL: Sugerir idea ═══════════════════════════════ -->
+<div id="ideaModal" class="modal-overlay" onclick="closeIdeaModal(event)" role="dialog" aria-modal="true" aria-labelledby="ideaModalTitle">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeIdeaModal()" data-i18n-aria-label="ideas.close" aria-label="Cerrar"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <h2 id="ideaModalTitle"><img class="icon-inline" src="icons/lightbulb.svg" alt=""> <span data-i18n="ideas.title">Sugerí una idea para TikLiveTTS</span></h2>
+    <p class="bugreport-guide" data-i18n="ideas.subtitle">¿Tenés una idea para mejorar la app? Contanos el problema y cómo te gustaría resolverlo. Priorizamos funciones útiles para muchos streamers.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin:-10px 0 18px;" data-i18n="ideas.hint">No hace falta explicar detalles técnicos: contalo de la forma más simple posible.</p>
+    <form id="ideaForm" class="bugreport-fields" onsubmit="submitIdea(event)">
+      <div class="cfg-field"><label for="ideaProblem" data-i18n="ideas.problemLabel">¿Qué problema querés resolver?</label><textarea id="ideaProblem" rows="3" maxlength="2000" required data-i18n-placeholder="ideas.problemPlaceholder" placeholder="Contanos qué te pasa hoy."></textarea></div>
+      <div class="cfg-field"><label for="ideaDescription" data-i18n="ideas.ideaLabel">¿Cuál es tu idea?</label><textarea id="ideaDescription" rows="3" maxlength="2000" required data-i18n-placeholder="ideas.ideaPlaceholder" placeholder="Explicanos qué te gustaría que hiciera TikLiveTTS."></textarea></div>
+      <div class="cfg-field"><label for="ideaAudience" data-i18n="ideas.audienceLabel">¿A quién le serviría?</label><select id="ideaAudience" required><option value="" data-i18n="ideas.audiencePlaceholder">Elegí una opción</option><option value="casi-todos" data-i18n="ideas.audienceAlmostAll">Casi cualquier streamer</option><option value="muchos" data-i18n="ideas.audienceMany">Muchos streamers</option><option value="algunos" data-i18n="ideas.audienceSome">Algunos tipos de streamers</option><option value="como-yo" data-i18n="ideas.audienceLikeMe">Principalmente streamers como yo</option><option value="no-seguro" data-i18n="ideas.audienceUnsure">No estoy seguro</option></select></div>
+      <div class="cfg-field"><label for="ideaUseCase" data-i18n="ideas.useCaseLabel">¿Cuándo la usarías?</label><textarea id="ideaUseCase" rows="2" maxlength="2000" required data-i18n-placeholder="ideas.useCasePlaceholder" placeholder="Danos un ejemplo de cuándo te serviría."></textarea></div>
+      <div class="cfg-field"><label for="ideaReason" data-i18n="ideas.reasonLabel">¿Por qué valdría la pena agregarla?</label><textarea id="ideaReason" rows="2" maxlength="2000" required data-i18n-placeholder="ideas.reasonPlaceholder" placeholder="Pensá también cómo podría ayudar a otros usuarios."></textarea></div>
+      <div class="cfg-field"><label for="ideaSimilarApp" data-i18n="ideas.similarLabel">¿Conocés una app con algo parecido? <span data-i18n="ideas.optional">(opcional)</span></label><input id="ideaSimilarApp" type="text" maxlength="2000" data-i18n-placeholder="ideas.similarPlaceholder" placeholder="Nombre o enlace"></div>
+      <div style="display:flex;justify-content:center;margin-top:4px;"><button class="btn btn-connect" id="ideaSubmitBtn" type="submit" data-i18n="ideas.submit">Enviar idea</button></div>
+    </form>
   </div>
 </div>
 

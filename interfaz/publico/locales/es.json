@@ -63,6 +63,9 @@
     "favAdd": "Guardar en favoritos",
     "favRemove": "Quitar de favoritos"
   },
+  "ideas": {
+    "sidebarEntry": "Sugerir una idea", "title": "Sugerí una idea para TikLiveTTS", "subtitle": "¿Tenés una idea para mejorar la app? Contanos el problema y cómo te gustaría resolverlo. Priorizamos funciones útiles para muchos streamers.", "hint": "No hace falta explicar detalles técnicos: contalo de la forma más simple posible.", "problemLabel": "¿Qué problema querés resolver?", "problemPlaceholder": "Contanos qué te pasa hoy.", "ideaLabel": "¿Cuál es tu idea?", "ideaPlaceholder": "Explicanos qué te gustaría que hiciera TikLiveTTS.", "audienceLabel": "¿A quién le serviría?", "audiencePlaceholder": "Elegí una opción", "audienceAlmostAll": "Casi cualquier streamer", "audienceMany": "Muchos streamers", "audienceSome": "Algunos tipos de streamers", "audienceLikeMe": "Principalmente streamers como yo", "audienceUnsure": "No estoy seguro", "useCaseLabel": "¿Cuándo la usarías?", "useCasePlaceholder": "Danos un ejemplo de cuándo te serviría.", "reasonLabel": "¿Por qué valdría la pena agregarla?", "reasonPlaceholder": "Pensá también cómo podría ayudar a otros usuarios.", "similarLabel": "¿Conocés una app con algo parecido?", "optional": "(opcional)", "similarPlaceholder": "Nombre o enlace", "submit": "Enviar idea", "sending": "Enviando...", "sent": "¡Gracias! Tu idea fue enviada.", "errorRequired": "Completá los campos obligatorios.", "errorSend": "No se pudo enviar la idea. Probá de nuevo.", "close": "Cerrar"
+  },
   "bugReport": {
     "title": "Reportar un problema",
     "guide": "¿Tenés un problema? 1) Intentá reproducirlo. 2) Contanos qué pasó en este formulario. 3) Al enviarlo, le llega al equipo junto con el registro técnico de tu sesión; no incluye contraseñas ni datos sensibles.",
@@ -1031,7 +1034,7 @@
     "serviceUnavailable": "Servicio de cuentas no disponible. Probá de nuevo en un rato.",
     "generic": "Ocurrió un error. Probá de nuevo.",
     "weakPassword": "La contraseña es demasiado corta.",
-    "passwordMismatch": "Las contraseñas no coinciden."
+    "passwordMismatch": "Las contraseñas no coinciden.", "ideasRequired": "Completá los campos obligatorios de la idea.", "ideasInvalidAudience": "Elegí una audiencia válida.", "ideasRateLimited": "Esperá un minuto antes de enviar otra idea.", "ideasUnavailable": "Las sugerencias no están disponibles temporalmente.", "ideasSendFailed": "No se pudo enviar la idea. Probá de nuevo."
   },
   "mcp": {
     "title": "Agente MCP",

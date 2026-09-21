@@ -82,6 +82,8 @@ test('GARANTÍA: todo dominio con rutas de escritura registra ≥1 tool', () => 
   // Dominios que montan POST/PATCH/DELETE y por tanto deben aparecer como
   // t.domain de alguna tool. Al agregar una feature con escritura, sumala acá
   // y registrale su tool — si no, este test falla (ese es el punto).
+  // reporte-bug y sugerencias son posts externos iniciados manualmente y
+  // estan exentos en scripts/check-mcp.js.
   const CON_ESCRITURA = ['moderacion', 'canales', 'sonido', 'configuracion', 'overlay', 'movil', 'auth'];
   const dominiosConTool = new Set(registry.listTools().map((t) => t.domain));
   const faltan = CON_ESCRITURA.filter((d) => !dominiosConTool.has(d));
