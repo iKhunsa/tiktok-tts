@@ -38,6 +38,7 @@
     "tourDesc": "問題があったらいつでもこのボタンを押して教えてください。",
     "tourDone": "わかりました"
   },
+  "ideas": {"sidebarEntry":"アイデアを提案","title":"TikLiveTTS にアイデアを提案","subtitle":"アプリを改善するアイデアはありますか？問題と解決方法を教えてください。多くの配信者に役立つ機能を優先します。","hint":"技術的な詳細は不要です。簡単に説明してください。","problemLabel":"どの問題を解決したいですか？","problemPlaceholder":"今何が起きているか教えてください。","ideaLabel":"あなたのアイデアは？","ideaPlaceholder":"TikLiveTTS にしてほしいことを説明してください。","audienceLabel":"誰に役立ちますか？","audiencePlaceholder":"選択してください","audienceAlmostAll":"ほぼすべての配信者","audienceMany":"多くの配信者","audienceSome":"一部の配信者","audienceLikeMe":"主に私のような配信者","audienceUnsure":"わかりません","useCaseLabel":"いつ使いますか？","useCasePlaceholder":"役立つ場面の例を教えてください。","reasonLabel":"なぜ追加する価値がありますか？","reasonPlaceholder":"他の利用者への役立ち方も考えてください。","similarLabel":"似た機能のアプリを知っていますか？","optional":"（任意）","similarPlaceholder":"名前またはリンク","submit":"アイデアを送信","sending":"送信中...","sent":"ありがとうございます！アイデアを送信しました。","errorRequired":"必須項目を入力してください。","errorSend":"アイデアを送信できませんでした。もう一度お試しください。","close":"閉じる"},
   "footer": {
     "donate": "寄付",
     "newBadge": "新着",
@@ -1012,7 +1013,7 @@
     "serviceUnavailable": "アカウントサービスを利用できません。しばらくして再試行してください。",
     "generic": "エラーが発生しました。再試行してください。",
     "weakPassword": "パスワードが短すぎます。",
-    "passwordMismatch": "パスワードが一致しません。"
+    "passwordMismatch": "パスワードが一致しません。", "ideasRequired":"必須のアイデア項目を入力してください。","ideasInvalidAudience":"有効な対象者を選択してください。","ideasRateLimited":"次のアイデアを送る前に1分待ってください。","ideasUnavailable":"提案は一時的に利用できません。","ideasSendFailed":"アイデアを送信できませんでした。もう一度お試しください。"
   },
   "mcp": {
     "title": "MCP エージェント",
