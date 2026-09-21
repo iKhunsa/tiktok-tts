@@ -15,6 +15,7 @@ import { downloadAllLogs } from './logs.js';
 import { refreshStatus, iniciarPollingEstado } from './estado-servidor.js';
 import { focusHashPanel, iniciarModoPopup } from './deep-link.js';
 import { iniciarCargaInicial } from './carga-inicial.js';
+import { addSectionTutorials } from '../../nucleo/tours/driver.js';
 
 // ─── Puente onclick/onchange: el markup los invoca como globales ──────────
 Object.assign(window, {
@@ -32,6 +33,7 @@ async function iniciarI18n() {
   const lang = idiomaGuardado() || 'es';
   await cargarIdioma(lang);
   aplicarTraducciones();
+  addSectionTutorials({ selector: '.panel-title', buttonClass: 'btn-refresh' });
 }
 
 function iniciarArranque() {

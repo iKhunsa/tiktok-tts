@@ -669,7 +669,13 @@
     "next": "Avanti",
     "prev": "Indietro",
     "done": "Fatto",
-    "viewTutorial": "Mostra tutorial"
+    "viewTutorial": "Mostra tutorial",
+    "sectionTitle": "Tutorial della sezione",
+    "sectionDesc": "Questi sono i controlli principali di questa sezione.",
+    "speakingNowTitle": "Messaggio in lettura",
+    "speakingNowDesc": "Mostra il messaggio corrente; usa il pulsante per trovarlo nella chat.",
+    "announceTitle": "Testi di annuncio personalizzati",
+    "announceDesc": "Personalizza la fine di ogni annuncio senza cambiare i dati automatici."
   },
   "onboarding": {
     "step1Title": "Prima, vai su Impostazioni",
