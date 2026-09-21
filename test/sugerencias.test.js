@@ -2,7 +2,7 @@
 
 const { test, afterEach } = require('node:test');
 const assert = require('node:assert/strict');
-const { buildEmbed, reportIdea, resetRateLimit, validateIdea } = require('../features/sugerencias/routes/report-idea');
+const { buildEmbed, buildThreadName, reportIdea, resetRateLimit, validateIdea } = require('../features/sugerencias/routes/report-idea');
 const { postIdeasWebhook } = require('../features/sugerencias/discord/post-webhook');
 
 const valid = { problema: '  problema  ', idea: 'idea', audiencia: 'muchos', casoUso: 'en vivo', motivo: 'ayuda', appSimilar: 'app' };
@@ -33,6 +33,35 @@ test('el webhook evita menciones y no hace red real', async () => {
   global.fetch = async (_url, options) => { payload = JSON.parse(options.body); return { ok: true, status: 204 }; };
   try { await postIdeasWebhook('mock-url', buildEmbed(valid)); } finally { global.fetch = oldFetch; }
   assert.deepEqual(payload.allowed_mentions, { parse: [] });
+});
+
+test('un foro de Discord recibe thread_name; un canal normal reintenta sin hilo', async () => {
+  const oldFetch = global.fetch;
+  const payloads = [];
+  const reply = (status, body) => ({ ok: status < 300, status, json: async () => body });
+  try {
+    global.fetch = async (_url, options) => { payloads.push(JSON.parse(options.body)); return reply(204); };
+    await postIdeasWebhook('mock-url', buildEmbed(valid), { threadName: buildThreadName(valid) });
+    assert.equal(payloads[0].thread_name, 'Idea: idea');
+
+    payloads.length = 0;
+    global.fetch = async (_url, options) => {
+      payloads.push(JSON.parse(options.body));
+      return payloads.length === 1 ? reply(400, { code: 220003 }) : reply(204);
+    };
+    await postIdeasWebhook('mock-url', buildEmbed(valid), { threadName: 'Idea: x' });
+    assert.equal(payloads.length, 2);
+    assert.equal(payloads[1].thread_name, undefined);
+
+    global.fetch = async () => reply(400, { code: 50035 });
+    await assert.rejects(postIdeasWebhook('mock-url', buildEmbed(valid), { threadName: 'Idea: x' }), /HTTP 400/);
+  } finally { global.fetch = oldFetch; }
+});
+
+test('el título del hilo cabe en 100 caracteres y en una línea', () => {
+  const name = buildThreadName({ idea: `a\n\n${'b'.repeat(500)}` });
+  assert.ok(name.length <= 100);
+  assert.ok(!name.includes('\n'));
 });
 
 test('controla URL ausente y rate limit sin llamar al webhook', async () => {
