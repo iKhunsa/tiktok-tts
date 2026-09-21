@@ -673,7 +673,7 @@
     "sectionTitle": "Tutoriel de cette section",
     "sectionDesc": "Voici les principaux contrôles de cette section.",
     "speakingNowTitle": "Message en cours de lecture",
-    "speakingNowDesc": "Affiche le message actuel ; utilisez son bouton pour le retrouver dans le chat.",
+    "speakingNowDesc": "Quand le TTS lit un message, une bannière apparaît au-dessus de cette file ; son bouton à droite vous mène au message dans le chat.",
     "announceTitle": "Textes d'annonce personnalisés",
     "announceDesc": "Personnalisez la fin de chaque annonce sans modifier ses données automatiques."
   },
