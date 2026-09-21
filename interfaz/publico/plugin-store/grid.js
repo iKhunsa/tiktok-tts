@@ -64,7 +64,7 @@ function renderPluginGrid() {
   idea.target = '_blank';
   idea.rel = 'noopener';
   idea.innerHTML = `
-    <div class="store-card-icon"><img src="icons/lightbulb.svg" alt=""></div>
+    <div class="store-card-icon"><img class="store-card-icon-lightbulb" src="icons/lightbulb.svg" alt=""></div>
     <div class="store-card-name">${t('store.suggestIdea')}</div>
     <div class="store-card-desc">${t('store.suggestIdeaDesc')}</div>`;
   container.appendChild(idea);
