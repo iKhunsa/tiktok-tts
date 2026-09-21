@@ -1,6 +1,6 @@
 {
   "name": "tiktok-live-tts",
-  "version": "1.9.5",
+  "version": "1.10.0",
   "description": "TikLiveTTS Live Chat Text-to-Speech Reader",
   "author": "iKhunsa",
   "main": "main.js",
