@@ -5,6 +5,7 @@ import { showToast } from '../../componentes/toast.js';
 import { switchView } from './vistas-router.js';
 import { driverTourDefaults } from './tours/index.js';
 import { spCancelCapture, spResetDeleteBtn } from './soundpad.js';
+import { closeIdeaModal } from './ideas/modal.js';
 
 export function setStatus(type, text) {
   const dot = document.getElementById('statusDot');
@@ -264,7 +265,7 @@ export function iniciarModalesYAvisos() {
       document.getElementById('donationNoticeModal').classList.remove('show');
       document.getElementById('dictLangModal').classList.remove('show');
       document.getElementById('bugReportModal').classList.remove('show');
-      document.getElementById('ideaModal').classList.remove('show');
+      closeIdeaModal();
       document.getElementById('bugReportNoticeModal').classList.remove('show');
       document.getElementById('onboardingWelcomeModal').classList.remove('show');
       document.getElementById('onboardingCompleteModal').classList.remove('show');
