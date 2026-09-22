@@ -520,7 +520,9 @@
     "copyAddress": "Adresse kopieren",
     "btcNative": "Natives Bitcoin",
     "kofiDesc": "Unterstütze mich mit einem Kaffee",
-    "paypalDesc": "Direkte Spende über PayPal"
+    "paypalDesc": "Direkte Spende über PayPal",
+    "subtitle": "Deine Unterstützung hilft mir, weiterhin Inhalte zu erstellen...",
+    "supportersNote": "Unglaubliche Menschen schaffen Unglaubliches"
   },
   "notice": {
     "donationsTitle": "Neue Wege, das Projekt zu unterstützen",

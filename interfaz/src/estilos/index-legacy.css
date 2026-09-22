@@ -1961,12 +1961,18 @@
     .pro-inline-badge[hidden] { display: none; }
     .confetti-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2000000000; }
 
+    #donationsModal .modal-content { max-width: 780px; padding: var(--space-7); }
+    #donationsModal h2 { display: flex; align-items: center; gap: var(--space-2); margin: 0 36px var(--space-2) 0; }
+    .donations-subtitle { margin: 0 0 var(--space-6); color: var(--text-secondary); font-size: var(--text-sm); line-height: 1.5; }
+    .donations-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 0.7fr); gap: var(--space-7); align-items: center; }
+    .donations-methods { display: grid; gap: var(--space-3); }
+
     .qr-card {
       background: var(--surface-2);
       border: 1px solid var(--hover-20);
       border-radius: var(--radius-md);
-      padding: 24px;
-      margin: 20px 0;
+      padding: var(--space-4);
+      margin: 0;
     }
 
     .donation-section { text-align: center; }
@@ -1981,7 +1987,7 @@
       border-radius: var(--radius-xs);
       font-size: var(--text-sm);
       font-family: 'Source Code Pro', monospace;
-      margin: 12px 0;
+      margin: var(--space-3) 0;
       cursor: text;
       transition: border-color 0.2s;
       outline: none;
@@ -2000,7 +2006,7 @@
       font-weight: 500;
       font-size: var(--text-base);
       transition: opacity 0.2s;
-      margin-top: 12px;
+      margin-top: var(--space-3);
       font-family: 'Inter', sans-serif;
     }
 
@@ -2009,20 +2015,33 @@
     .donation-link-card {
       display: block;
       border-radius: var(--radius-md);
-      padding: 20px 24px;
-      margin: 20px 0;
+      padding: var(--space-4);
+      margin: 0;
       text-decoration: none;
       transition: border-color 0.2s, background 0.2s;
     }
 
-    .donation-link-card h3 { display: flex; align-items: center; gap: 8px; }
-    .donation-link-card h3 .ext-arrow { margin-left: auto; color: var(--text-muted); font-size: var(--text-sm); }
+    .donation-link-card h3, .qr-card h3 { display: flex; align-items: center; gap: var(--space-2); }
+    .donation-card-icon { width: 20px; height: 20px; filter: brightness(0) invert(1); opacity: 0.8; }
+    .donation-link-card h3 .ext-arrow { width: 18px; height: 18px; margin-left: auto; filter: brightness(0) invert(1); opacity: 0.55; }
     .donation-link-card p { margin: 0; font-size: var(--text-sm); color: var(--text-muted); }
 
     .donation-link-card.kofi,
     .donation-link-card.paypal { background: var(--surface-2); border: 1px solid var(--hover-20); }
     .donation-link-card.kofi:hover,
     .donation-link-card.paypal:hover { background: var(--border-subtle); border-color: rgba(255, 255, 255, 0.4); }
+    .donation-link-card:focus-visible, .btn-copy:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    .donations-aside { display: grid; justify-items: center; gap: var(--space-4); text-align: center; }
+    .donations-aside > img { width: min(100%, 220px); height: auto; }
+    .donations-aside p { margin: 0; color: var(--text-secondary); font-size: var(--text-sm); line-height: 1.5; }
+    .donations-aside p .icon-inline { width: 1.1em; height: 1.1em; }
+
+    @media (max-width: 620px) {
+      #donationsModal .modal-content { padding: var(--space-6) var(--space-4); }
+      .donations-layout { grid-template-columns: 1fr; gap: var(--space-6); }
+      .donations-aside > img { width: min(100%, 180px); }
+    }
 
     #donationNoticeModal p { margin: 0 0 24px; font-size: var(--text-base); color: var(--text-secondary); line-height: 1.6; }
 

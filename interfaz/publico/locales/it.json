@@ -520,7 +520,9 @@
     "copyAddress": "Copia indirizzo",
     "btcNative": "Bitcoin Nativo",
     "kofiDesc": "Supportami con un caffè",
-    "paypalDesc": "Donazione diretta via PayPal"
+    "paypalDesc": "Donazione diretta via PayPal",
+    "subtitle": "Il tuo supporto mi aiuta a continuare a creare contenuti...",
+    "supportersNote": "Persone incredibili fanno cose incredibili"
   },
   "notice": {
     "donationsTitle": "Nuovi modi per supportare il progetto",
