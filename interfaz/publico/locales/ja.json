@@ -1114,6 +1114,7 @@
     "confirmCancelTitle": "Proプランを解約しますか？",
     "confirmCancelYes": "はい、解約する",
     "confirmCancelNo": "戻る",
+    "confirmCancelNotice": "お支払い済みの期間が終了するまで、アカウントは引き続き有効です。",
     "resume": "サブスクリプションを再開",
     "resumed": "Proサブスクリプションは有効のままです。解約は取り消されました。",
     "planSinPromosCancels": "プロモーションなし · {fecha} に解約",

@@ -1114,6 +1114,7 @@
     "confirmCancelTitle": "Pro-Abo kündigen?",
     "confirmCancelYes": "Ja, kündigen",
     "confirmCancelNo": "Zurück",
+    "confirmCancelNotice": "Dein Konto bleibt bis zum Ende des bereits bezahlten Zeitraums aktiv.",
     "resume": "Abo fortsetzen",
     "resumed": "Dein Pro-Abo bleibt aktiv — die Kündigung wurde rückgängig gemacht.",
     "planSinPromosCancels": "Ohne Werbung · endet am {fecha}",

@@ -1847,6 +1847,19 @@
       line-height: 1;
     }
 
+    .cuenta-cancel-modal { display: grid; grid-template-columns: minmax(0, 1fr) minmax(190px, .72fr); max-width: 700px; padding: 0; overflow: hidden; }
+    .cuenta-cancel-copy { padding: 32px; }
+    .cuenta-cancel-copy .modal-close { position: static; margin: -8px -8px 8px auto; }
+    .cuenta-cancel-copy .modal-close:focus-visible { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
+    .cuenta-cancel-copy .notice-icon-badge { width: 38px; height: 38px; margin: 0 0 16px; border-radius: 50%; background: rgba(239,68,68,.12); }
+    .cuenta-cancel-copy .notice-icon-badge .icon-inline { width: 20px; height: 20px; filter: invert(35%) sepia(98%) saturate(1884%) hue-rotate(338deg); }
+    .cuenta-cancel-copy h2 { margin-bottom: 16px; }
+    .cuenta-cancel-notice { display: flex; align-items: flex-start; gap: 7px; margin: 16px 0 0; color: var(--text-muted); font-size: var(--text-xs); line-height: 1.45; }
+    .cuenta-cancel-notice .icon-inline { flex: 0 0 14px; width: 14px; height: 14px; margin-top: 2px; opacity: .7; filter: invert(1); }
+    .cuenta-cancel-image { display: grid; place-items: center; padding: 24px; background: var(--surface); }
+    .cuenta-cancel-image img { width: 100%; max-width: 220px; height: auto; }
+    @media (max-width: 520px) { .cuenta-cancel-modal { display: block; width: calc(100% - 24px); } .cuenta-cancel-image { display: none; } .cuenta-cancel-copy { padding: 24px 18px; } }
+
     /* Vista Pro bloqueada (Sonidos/Bot/MCP): configuraciones visibles, con
        aviso compacto que evita interactuar hasta mejorar el plan. */
     .vista-bloqueada-demo {

@@ -1114,6 +1114,7 @@
     "confirmCancelTitle": "Annuler votre abonnement Pro ?",
     "confirmCancelYes": "Oui, annuler",
     "confirmCancelNo": "Retour",
+    "confirmCancelNotice": "Votre compte restera actif jusqu’à la fin de la période déjà payée.",
     "resume": "Reprendre l'abonnement",
     "resumed": "Votre abonnement Pro reste actif — l'annulation a été annulée.",
     "planSinPromosCancels": "Sans promotions · résiliation le {fecha}",

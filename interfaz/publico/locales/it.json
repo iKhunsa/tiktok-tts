@@ -1114,6 +1114,7 @@
     "confirmCancelTitle": "Annullare il tuo piano Pro?",
     "confirmCancelYes": "Sì, annulla",
     "confirmCancelNo": "Indietro",
+    "confirmCancelNotice": "Il tuo account rimarrà attivo fino al termine del periodo già pagato.",
     "resume": "Riattiva abbonamento",
     "resumed": "Il tuo abbonamento Pro resta attivo: la cancellazione è stata annullata.",
     "planSinPromosCancels": "Senza promozioni · si annulla il {fecha}",
