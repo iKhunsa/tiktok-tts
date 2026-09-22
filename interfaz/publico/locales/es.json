@@ -1136,6 +1136,7 @@
     "confirmCancelTitle": "¿Cancelar tu plan Pro?",
     "confirmCancelYes": "Sí, cancelar",
     "confirmCancelNo": "Volver",
+    "confirmCancelNotice": "Tu cuenta seguirá activa hasta terminar el período pagado.",
     "resume": "Reanudar suscripción",
     "resumed": "Tu suscripción Pro sigue activa — la cancelación se deshizo.",
     "changePhoto": "Cambiar foto",

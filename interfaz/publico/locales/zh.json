@@ -1114,6 +1114,7 @@
     "confirmCancelTitle": "要取消你的 Pro 订阅吗？",
     "confirmCancelYes": "是的，取消",
     "confirmCancelNo": "返回",
+    "confirmCancelNotice": "你的帐户将在已付费周期结束前保持有效。",
     "resume": "恢复订阅",
     "resumed": "你的 Pro 订阅保持有效——取消操作已撤销。",
     "planSinPromosCancels": "无推广 · 将于 {fecha} 取消",

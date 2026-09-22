@@ -1114,6 +1114,7 @@
     "confirmCancelTitle": "Pro 요금제를 취소하시겠습니까?",
     "confirmCancelYes": "예, 취소합니다",
     "confirmCancelNo": "돌아가기",
+    "confirmCancelNotice": "이미 결제한 기간이 끝날 때까지 계정은 계속 활성 상태로 유지됩니다.",
     "resume": "구독 재개",
     "resumed": "Pro 구독이 계속 활성 상태입니다 — 취소가 취소되었습니다.",
     "planSinPromosCancels": "프로모션 없음 · {fecha}에 해지",

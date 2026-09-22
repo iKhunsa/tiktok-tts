@@ -1116,6 +1116,7 @@
     "confirmCancelTitle": "Cancel your Pro plan?",
     "confirmCancelYes": "Yes, cancel",
     "confirmCancelNo": "Go back",
+    "confirmCancelNotice": "Your account will remain active until the end of your paid period.",
     "resume": "Resume subscription",
     "resumed": "Your Pro subscription stays active — the cancellation was undone.",
     "planSinPromosCancels": "No promotions · cancels on {fecha}",

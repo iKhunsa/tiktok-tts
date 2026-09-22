@@ -1114,6 +1114,7 @@
     "confirmCancelTitle": "Отменить подписку Pro?",
     "confirmCancelYes": "Да, отменить",
     "confirmCancelNo": "Назад",
+    "confirmCancelNotice": "Ваша учётная запись останется активной до конца оплаченного периода.",
     "resume": "Возобновить подписку",
     "resumed": "Ваша подписка Pro остаётся активной — отмена отменена.",
     "planSinPromosCancels": "Без рекламы · отменяется {fecha}",
