@@ -1856,8 +1856,9 @@
     .cuenta-cancel-copy h2 { margin-bottom: 16px; }
     .cuenta-cancel-notice { display: flex; align-items: flex-start; gap: 7px; margin: 16px 0 0; color: var(--text-muted); font-size: var(--text-xs); line-height: 1.45; }
     .cuenta-cancel-notice .icon-inline { flex: 0 0 14px; width: 14px; height: 14px; margin-top: 2px; opacity: .7; filter: invert(1); }
-    .cuenta-cancel-image { display: grid; place-items: center; padding: 24px; background: var(--surface); }
-    .cuenta-cancel-image img { width: 100%; max-width: 220px; height: auto; }
+    .cuenta-cancel-image { position: relative; isolation: isolate; display: grid; place-items: center; padding: var(--space-4); }
+    .cuenta-cancel-image::before { content: ''; position: absolute; inset: 0; z-index: -1; background: radial-gradient(circle, var(--danger-a30), transparent 70%); }
+    .cuenta-cancel-image img { width: 100%; max-width: 100%; height: auto; }
     @media (max-width: 520px) { .cuenta-cancel-modal { display: block; width: calc(100% - 24px); } .cuenta-cancel-image { display: none; } .cuenta-cancel-copy { padding: 24px 18px; } }
 
     /* Vista Pro bloqueada (Sonidos/Bot/MCP): configuraciones visibles, con
@@ -1977,7 +1978,8 @@
     #donationsModal .modal-content { max-width: 780px; padding: var(--space-7); }
     #donationsModal h2 { display: flex; align-items: center; gap: var(--space-2); margin: 0 36px var(--space-2) 0; }
     .donations-subtitle { margin: 0 0 var(--space-6); color: var(--text-secondary); font-size: var(--text-sm); line-height: 1.5; }
-    .donations-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 0.7fr); gap: var(--space-7); align-items: center; }
+    .donations-mascot { width: calc(var(--space-8) + var(--space-4)); height: calc(var(--space-8) + var(--space-4)); object-fit: contain; }
+    .donations-layout { display: grid; gap: var(--space-6); }
     .donations-methods { display: grid; gap: var(--space-3); }
 
     .qr-card {
@@ -2045,15 +2047,12 @@
     .donation-link-card.paypal:hover { background: var(--border-subtle); border-color: rgba(255, 255, 255, 0.4); }
     .donation-link-card:focus-visible, .btn-copy:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-    .donations-aside { display: grid; justify-items: center; gap: var(--space-4); text-align: center; }
-    .donations-aside > img { width: min(100%, 220px); height: auto; }
+    .donations-aside { text-align: center; }
     .donations-aside p { margin: 0; color: var(--text-secondary); font-size: var(--text-sm); line-height: 1.5; }
     .donations-aside p .icon-inline { width: 1.1em; height: 1.1em; }
 
     @media (max-width: 620px) {
       #donationsModal .modal-content { padding: var(--space-6) var(--space-4); }
-      .donations-layout { grid-template-columns: 1fr; gap: var(--space-6); }
-      .donations-aside > img { width: min(100%, 180px); }
     }
 
     #donationNoticeModal p { margin: 0 0 24px; font-size: var(--text-base); color: var(--text-secondary); line-height: 1.6; }
