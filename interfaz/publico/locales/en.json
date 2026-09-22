@@ -522,7 +522,9 @@
     "copyAddress": "Copy address",
     "btcNative": "Native Bitcoin",
     "kofiDesc": "Buy me a coffee",
-    "paypalDesc": "Direct donation via PayPal"
+    "paypalDesc": "Direct donation via PayPal",
+    "subtitle": "Your support helps me keep creating content...",
+    "supportersNote": "Amazing people make amazing things"
   },
   "notice": {
     "donationsTitle": "New ways to support the project",
