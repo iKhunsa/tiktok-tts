@@ -58,7 +58,8 @@ function abrirModalBloqueo(featureId) {
       <button class="modal-close" type="button"><img class="icon-inline" src="icons/close.svg" alt=""></button>
       <div class="vista-bloqueada-video-wrap">
         ${videoId
-    ? `<iframe class="vista-bloqueada-video" src="https://www.youtube.com/embed/${videoId}?modestbranding=1&rel=0&iv_load_policy=3" title="YouTube" allowfullscreen></iframe>`
+    ? `<iframe class="vista-bloqueada-video" src="https://www.youtube.com/embed/${videoId}?modestbranding=1&rel=0&iv_load_policy=3&controls=0" title="YouTube" allowfullscreen></iframe>
+           <button class="vista-bloqueada-fullscreen" type="button" aria-label="Fullscreen"><img src="icons/open_in_full.svg" alt=""></button>`
     : `<div class="vista-bloqueada-video-placeholder"><img src="icons/play_arrow.svg" alt=""><span data-i18n="pro.demoVideoSoon"></span></div>`}
       </div>
       <p class="vista-bloqueada-msg" data-i18n="pro.overlayMsg"></p>
@@ -68,6 +69,9 @@ function abrirModalBloqueo(featureId) {
   aplicarTraducciones(modalBloqueo);
   modalBloqueo.addEventListener('click', (e) => { if (e.target === modalBloqueo) cerrarModalBloqueo(); });
   modalBloqueo.querySelector('.modal-close').addEventListener('click', cerrarModalBloqueo);
+  modalBloqueo.querySelector('.vista-bloqueada-fullscreen')?.addEventListener('click', () => {
+    void modalBloqueo.querySelector('.vista-bloqueada-video')?.requestFullscreen();
+  });
   modalBloqueo.querySelector('.vista-bloqueada-link').addEventListener('click', () => {
     cerrarModalBloqueo();
     abrirPopupPlanes();
