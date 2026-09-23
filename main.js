@@ -5,7 +5,11 @@ const path = require('path');
 
 app.setName('TikLiveTTS');
 // Conserva los datos y sesiones de instalaciones previas tras cambiar productName.
-app.setPath('userData', path.join(app.getPath('appData'), 'tiktok-live-tts'));
+// --user-data-dir explicito (ej. para probar una instalacion nueva desde
+// cero) se respeta en vez de pisarlo.
+if (!app.commandLine.hasSwitch('user-data-dir')) {
+  app.setPath('userData', path.join(app.getPath('appData'), 'tiktok-live-tts'));
+}
 
 // Debe ocurrir antes de importar cualquier modulo local: portal-view/store.js
 // carga core/paths.js durante el require y este cachea ambos paths.
