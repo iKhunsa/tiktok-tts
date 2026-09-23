@@ -518,6 +518,8 @@
   "donations": {
     "title": "Soutenez mon contenu",
     "copyAddress": "Copier l'adresse",
+    "lightningDesc": "Paiements instantanés, sans frais de réseau",
+    "btcNativeDesc": "Transfert direct vers un portefeuille Bitcoin",
     "btcNative": "Bitcoin Natif",
     "kofiDesc": "Soutenez-moi avec un petit café",
     "paypalDesc": "Don direct via PayPal",

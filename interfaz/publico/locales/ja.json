@@ -518,6 +518,8 @@
   "donations": {
     "title": "コンテンツを支援する",
     "copyAddress": "アドレスをコピー",
+    "lightningDesc": "ネットワーク手数料なしの即時決済",
+    "btcNativeDesc": "Bitcoinウォレットへ直接送金",
     "btcNative": "ネイティブビットコイン",
     "kofiDesc": "コーヒー1杯分の支援をお願いします",
     "paypalDesc": "PayPalで直接寄付",

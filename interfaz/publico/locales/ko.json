@@ -518,6 +518,8 @@
   "donations": {
     "title": "내 콘텐츠를 지원해주세요",
     "copyAddress": "주소 복사",
+    "lightningDesc": "네트워크 수수료 없는 즉시 결제",
+    "btcNativeDesc": "비트코인 지갑으로 바로 전송",
     "btcNative": "네이티브 비트코인",
     "kofiDesc": "커피 한 잔으로 응원해주세요",
     "paypalDesc": "PayPal로 직접 기부",
