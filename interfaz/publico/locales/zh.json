@@ -377,7 +377,8 @@
   },
   "mobile2": {
     "loading": "加载中...",
-    "qrError": "生成二维码出错"
+    "qrError": "生成二维码出错",
+    "proRequired": "升级到 Pro 即可使用移动面板。"
   },
   "adv": {
     "subtitle": "服务器设置",

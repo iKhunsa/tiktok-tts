@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="Código QR no disponible">
+  <rect width="180" height="180" fill="#fff"/>
+  <g fill="#1b1b1b">
+    <path d="M12 12h42v42H12zm8 8v26h26V20zM126 12h42v42h-42zm8 8v26h26V20zM12 126h42v42H12zm8 8v26h26v-26zM66 12h8v8h-8zm16 0h8v16h-8zm16 0h8v8h-8zm8 8h12v8h-12zm-40 8h16v8H66zm24 0h8v16h-8zm16 8h12v8h-12zm-40 16h8v16h-8zm16 0h16v8H82zm24 8h8v8h-8zm-40 16h16v8H66zm24 0h8v16h-8zm16 0h16v8h-16zm24 0h8v16h-8zM12 66h8v16h-8zm16 0h16v8H28zm24 0h8v16h-8zm16 0h16v8H68zm24 8h8v16h-8zm16 0h8v8h-8zm16 0h16v8h-16zm24 0h8v16h-8zM12 90h16v8H12zm24 0h8v16h-8zm16 0h16v8H52zm24 8h8v8h-8zm16 0h16v8H92zm24 0h8v16h-8zm16 0h16v8h-16zM66 114h8v16h-8zm16 0h16v8H82zm24 0h8v8h-8zm16 0h16v8h-16zm-56 24h16v8H66zm24 0h8v16h-8zm16 0h16v8H90zm24 8h8v8h-8zm16 0h16v8h-16z"/>
+  </g>
+  <circle cx="90" cy="90" r="17" fill="#fff"/><path fill="#1b1b1b" d="M86 78h8v14h-8zm0 20h8v8h-8z"/>
+</svg>

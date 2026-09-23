@@ -379,7 +379,8 @@
   },
   "mobile2": {
     "loading": "Loading...",
-    "qrError": "Error generating QR"
+    "qrError": "Error generating QR",
+    "proRequired": "Upgrade to Pro to use the mobile panel."
   },
   "adv": {
     "subtitle": "Server Settings",
