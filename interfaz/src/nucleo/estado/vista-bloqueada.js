@@ -10,6 +10,10 @@ import { almacenSesion } from './sesion.js';
 import { abrirPopupPlanes } from '../../componentes/popup-planes.js';
 import { aplicarTraducciones } from '../i18n/i18n.js';
 
+const VIDEOS_YOUTUBE = { soundpad: 'WLTTEBE1yzk', 'bot-musical': 'w9Hl7y8TVuQ' };
+let modalBloqueo;
+let featureModalBloqueo;
+
 export function aplicarBloqueoVista(elId, featureId) {
   const s = almacenSesion.getState();
   const el = document.getElementById(elId);
@@ -33,29 +37,39 @@ export function aplicarBadgesInlinePro() {
 }
 
 function pintarOverlayBloqueo(el, bloqueada, featureId) {
-  let overlay = el.querySelector(':scope > .vista-bloqueada-overlay');
-  if (bloqueada && !overlay) {
-    overlay = document.createElement('div');
-    overlay.className = 'vista-bloqueada-overlay';
-    overlay.innerHTML =
-      `<div class="vista-bloqueada-contenido">
-        <div class="vista-bloqueada-video-wrap">
-          <div class="vista-bloqueada-video-placeholder">
-            <img src="icons/play_arrow.svg" alt="">
-            <span data-i18n="pro.demoVideoSoon"></span>
-          </div>
-          <video class="vista-bloqueada-video" src="videos/demo-${featureId}.mp4" muted loop playsinline controls></video>
-        </div>
-        <p class="vista-bloqueada-msg" data-i18n="pro.overlayMsg"></p>
-        <button type="button" class="vista-bloqueada-link" data-i18n="pro.upgradeCta"></button>
-      </div>`;
-    overlay.querySelector('.vista-bloqueada-video').addEventListener('loadeddata', (e) => {
-      e.currentTarget.closest('.vista-bloqueada-video-wrap').classList.add('cargado');
-    });
-    overlay.querySelector('.vista-bloqueada-link').addEventListener('click', abrirPopupPlanes);
-    el.appendChild(overlay);
-    aplicarTraducciones(overlay);
-  } else if (!bloqueada && overlay) {
-    overlay.remove();
-  }
+  if (!bloqueada && featureId === featureModalBloqueo) cerrarModalBloqueo();
+  if (bloqueada && el.closest('.view')?.classList.contains('active')) abrirModalBloqueo(featureId);
+}
+
+function cerrarModalBloqueo() {
+  modalBloqueo?.remove();
+  modalBloqueo = null;
+  featureModalBloqueo = null;
+}
+
+function abrirModalBloqueo(featureId) {
+  if (modalBloqueo) return;
+  featureModalBloqueo = featureId;
+  const videoId = VIDEOS_YOUTUBE[featureId];
+  modalBloqueo = document.createElement('div');
+  modalBloqueo.className = 'modal-overlay show vista-bloqueada-modal-overlay';
+  modalBloqueo.innerHTML = `
+    <div class="modal-content vista-bloqueada-contenido" role="dialog" aria-modal="true">
+      <button class="modal-close" type="button"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+      <div class="vista-bloqueada-video-wrap">
+        ${videoId
+    ? `<iframe class="vista-bloqueada-video" src="https://www.youtube.com/embed/${videoId}" title="YouTube" allowfullscreen></iframe>`
+    : `<div class="vista-bloqueada-video-placeholder"><img src="icons/play_arrow.svg" alt=""><span data-i18n="pro.demoVideoSoon"></span></div>`}
+      </div>
+      <p class="vista-bloqueada-msg" data-i18n="pro.overlayMsg"></p>
+      <button type="button" class="vista-bloqueada-link" data-i18n="pro.upgradeCta"></button>
+    </div>`;
+  document.body.appendChild(modalBloqueo);
+  aplicarTraducciones(modalBloqueo);
+  modalBloqueo.addEventListener('click', (e) => { if (e.target === modalBloqueo) cerrarModalBloqueo(); });
+  modalBloqueo.querySelector('.modal-close').addEventListener('click', cerrarModalBloqueo);
+  modalBloqueo.querySelector('.vista-bloqueada-link').addEventListener('click', () => {
+    cerrarModalBloqueo();
+    abrirPopupPlanes();
+  });
 }
