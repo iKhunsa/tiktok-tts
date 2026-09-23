@@ -233,7 +233,7 @@ function modalConfirmarCancelacion() {
         <button class="modal-close" type="button" id="modal-close"><img class="icon-inline" src="icons/close.svg" alt=""></button>
         <div class="cuenta-cancel-copy">
           <div class="notice-icon-badge"><img class="icon-inline" src="icons/warning.svg" alt=""></div>
-          <h2>${esc(t('cuenta.confirmCancelTitle'))}</h2>
+          <h2>${esc(t('cuenta.confirmCancelTitle')).replace(' ', '<br>')}</h2>
           <p class="cuenta-cancel-description">${esc(t('cuenta.confirmCancel'))}</p>
           <button class="btn btn-connect cuenta-cancel-confirm" type="button" id="cuentaCancelYes">${esc(t('cuenta.confirmCancelYes'))}</button>
           <button class="btn btn-disconnect cuenta-cancel-back" type="button" id="cuentaCancelNo">${esc(t('cuenta.confirmCancelNo'))}</button>
