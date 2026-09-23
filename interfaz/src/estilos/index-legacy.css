@@ -1966,8 +1966,7 @@
     #donationsModal .modal-content { position: relative; max-width: 780px; padding: var(--space-7); }
     #donationsModal h2 { display: flex; align-items: center; gap: var(--space-2); max-width: calc(100% - 200px); margin: 0 0 var(--space-2); }
     .donations-subtitle { max-width: calc(100% - 200px); margin: 0 0 var(--space-6); color: var(--text-secondary); font-size: var(--text-sm); line-height: 1.5; }
-    .donations-mascot { position: absolute; z-index: 1; top: calc(var(--space-3) * -1); right: var(--space-5); width: 180px; height: 180px; object-fit: contain; pointer-events: none; }
-    #donationsModal .modal-close { position: absolute; z-index: 2; right: calc(var(--space-5) + 180px + var(--space-3)); }
+    .donations-mascot { position: absolute; z-index: 1; top: calc(var(--space-5) + 28px); right: var(--space-5); width: 180px; height: 180px; object-fit: contain; pointer-events: none; }
     .donations-layout { display: grid; gap: var(--space-5); }
     .donations-methods { display: grid; gap: var(--space-3); }
 
@@ -2052,14 +2051,13 @@
 
     .donations-thanks { border-top: 1px solid var(--divider); padding-top: var(--space-5); text-align: center; }
     .donations-thanks h3 { margin: 0 0 var(--space-2); font-size: var(--text-base); }
-    .donations-thanks .icon-inline { width: 1.1em; height: 1.1em; }
+    .donations-thanks .icon-inline { display: block; width: 28px; height: 28px; margin: 0 auto var(--space-2); }
     .donations-thanks p { margin: var(--space-2) 0 0; color: var(--text-secondary); font-size: var(--text-sm); line-height: 1.5; }
 
     @media (max-width: 620px) {
       #donationsModal .modal-content { padding: var(--space-6) var(--space-4); }
       #donationsModal h2, .donations-subtitle { max-width: calc(100% - 128px); }
-      .donations-mascot { top: 0; right: var(--space-2); width: 112px; height: 112px; }
-      #donationsModal .modal-close { right: calc(var(--space-2) + 112px + var(--space-3)); }
+      .donations-mascot { top: calc(var(--space-5) + 28px); right: var(--space-2); width: 112px; height: 112px; }
       .donation-card-action { grid-template-columns: 1fr; }
       .qr-card.is-expanded .donation-card-action { max-height: 140px; }
       .donation-card-action .btn-copy { width: 100%; }
