@@ -433,33 +433,23 @@
           <span class="obs-hint">440 × 130 px</span>
         </div>
         <div class="cfg-fields">
-          <div class="cfg-field full">
-            <label>Imagen para Follow <span style="font-size:10px;color:var(--text-muted);">(URL)</span></label>
-            <input type="text" id="cfg-social-follow-img" placeholder="https://... o dejar vacío para emoji 💜"
-                   oninput="updateSocialOverlayUrl()" style="font-size:12px;" />
-          </div>
-          <div class="cfg-field full">
-            <label>Imagen para Share <span style="font-size:10px;color:var(--text-muted);">(URL)</span></label>
-            <input type="text" id="cfg-social-share-img" placeholder="https://... o dejar vacío para emoji 🔗"
-                   oninput="updateSocialOverlayUrl()" style="font-size:12px;" />
-          </div>
           <div class="cfg-field">
             <label data-i18n="label.accentColor">Color acento</label>
             <input type="color" id="cfg-alertas-social-color" value="#FFBB00"
-                   oninput="updateSocialOverlayUrl()" />
+                   oninput="onCfgChange('alertas-social','color', this.value)" />
           </div>
           <div class="cfg-field">
             <label><span data-i18n="label.bgOpacity">Opacidad fondo</span> — <span id="cfg-alertas-social-bg-val">90</span>%</label>
             <input type="range" id="cfg-alertas-social-bg" min="0.30" max="1.00" step="0.05" value="0.90"
-                   oninput="updateSocialOverlayUrl(); document.getElementById('cfg-alertas-social-bg-val').textContent = Math.round(this.value*100)" />
+                   oninput="onCfgChange('alertas-social','bg', parseFloat(this.value)); document.getElementById('cfg-alertas-social-bg-val').textContent = Math.round(this.value*100)" />
           </div>
         </div>
         <div class="cfg-url-row">
-          <span class="cfg-url-text" id="cfg-url-social-alert">http://localhost:3000/overlay-alertas-social.html</span>
-          <button class="cfg-btn" onclick="testSocialAlert('follow')">💜 Test Follow</button>
-          <button class="cfg-btn" onclick="testSocialAlert('share')">🔗 Test Share</button>
-          <button class="cfg-btn" onclick="copySocialAlertUrl()" data-i18n="btn.copy">Copiar</button>
-          <a class="cfg-btn" id="cfg-open-social-alert" href="http://localhost:3000/overlay-alertas-social.html" target="_blank" data-i18n="btn.open">Abrir</a>
+          <span class="cfg-url-text" id="cfg-url-alertas-social">http://localhost:3000/overlay-alertas-social.html</span>
+          <button class="cfg-btn" onclick="testSocialAlert('follow')"><img class="icon-inline" src="icons/person_add.svg" alt=""> Test Follow</button>
+          <button class="cfg-btn" onclick="testSocialAlert('share')"><img class="icon-inline" src="icons/public.svg" alt=""> Test Share</button>
+          <button class="cfg-btn" onclick="copyCfgUrl('alertas-social')" data-i18n="btn.copy">Copiar</button>
+          <a class="cfg-btn" id="cfg-open-alertas-social" href="http://localhost:3000/overlay-alertas-social.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
       </div>
 

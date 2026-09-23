@@ -35,7 +35,7 @@ import { copyToClipboard, showKnownIssuesNotice } from './utils-app.js';
 import {
   buildOverlayUrl, updateOverlayUrl, onCfgChange, onChatPlatformChange, copyCfgUrl,
   updateFollowerDisplay, testGiftAlert, testSocialAlert,
-  updateSocialOverlayUrl, copySocialAlertUrl, testTopLikers,
+  testTopLikers,
 } from './configurador-overlays.js';
 import {
   toggleChatToggles, toggleOption, setSoloChatMode,
@@ -72,7 +72,7 @@ import {
 } from './soundpad.js';
 import {
   toggleAddChannelForm, selectAddPlatform, addChannelFromSettings, toggleConnectAllChat,
-  renderSettingsChannels,
+  renderSettingsChannels, iniciarHoverConnectAllChat,
 } from './plataformas.js';
 import { doInstallUpdate, iniciarEventosElectron } from './eventos-electron.js';
 import {
@@ -105,7 +105,7 @@ Object.assign(window, {
   copyToClipboard, showKnownIssuesNotice,
   // configurador de overlays
   onCfgChange, onChatPlatformChange, copyCfgUrl, testGiftAlert, testSocialAlert,
-  copySocialAlertUrl, testTopLikers, updateSocialOverlayUrl,
+  testTopLikers,
   // toggles de chat
   toggleChatToggles, toggleOption, setSoloChatMode,
   // atajos de teclado
@@ -176,11 +176,12 @@ function aplicarBloqueoApp() {
   // cuentas apagado), nunca en la pantalla de login. arrancarAvisosOnboarding
   // es idempotente.
   if (!bloq) arrancarAvisosOnboarding();
-  // Vistas Pro enteras (Sonidos/Bot/MCP): re-evaluar el aviso visual cada vez
-  // que cambia la sesion (login, pago, degradado) sin re-fetchear su estado.
+  // Vistas Pro enteras (Sonidos/Bot/MCP/Panel movil): re-evaluar el aviso visual
+  // cada vez que cambia la sesion (login, pago, degradado) sin re-fetchear su estado.
   aplicarBloqueoVista('view-soundpad', 'soundpad');
   aplicarBloqueoVista('view-bot', 'bot-musical');
   aplicarBloqueoVista('mcpPanel', 'mcp-agente');
+  aplicarBloqueoVista('view-mobile', 'panel-movil');
 }
 
 function mostrarVersionApp() {
@@ -199,6 +200,7 @@ function iniciarArranque() {
   iniciarAtajosTeclado();
   iniciarCierreDropdownVoces();
   iniciarPintadoDeRangos();
+  iniciarHoverConnectAllChat();
 
   document.addEventListener('DOMContentLoaded', () => {
     initChatScrollFollow();

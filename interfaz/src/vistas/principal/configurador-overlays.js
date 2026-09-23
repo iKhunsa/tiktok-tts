@@ -111,36 +111,6 @@ export async function testSocialAlert(eventType, platform) {
   }
 }
 
-export function updateSocialOverlayUrl() {
-  const followImg = (document.getElementById('cfg-social-follow-img')?.value || '').trim();
-  const shareImg = (document.getElementById('cfg-social-share-img')?.value || '').trim();
-  const color = document.getElementById('cfg-alertas-social-color')?.value || '#FFBB00';
-  const bg = parseFloat(document.getElementById('cfg-alertas-social-bg')?.value || '0.90');
-  const cfg = appSettings.overlays['alertas-social'];
-  const p = new URLSearchParams();
-  if (followImg) p.set('followImg', followImg);
-  if (shareImg) p.set('shareImg', shareImg);
-  if (color !== '#FFBB00') p.set('color', color.replace('#', ''));
-  if (bg !== 0.90) p.set('bg', bg);
-  cfg.color = color;
-  cfg.bg = bg;
-  saveSettings();
-  const qs = p.toString();
-  const url = `${location.origin}/overlay-alertas-social.html` + (qs ? '?' + qs : '');
-  const urlEl = document.getElementById('cfg-url-social-alert');
-  const openEl = document.getElementById('cfg-open-social-alert');
-  if (urlEl) urlEl.textContent = url;
-  if (openEl) openEl.href = url;
-}
-
-export function copySocialAlertUrl() {
-  const url = document.getElementById('cfg-url-social-alert')?.textContent || 'http://localhost:3000/overlay-alertas-social.html';
-  navigator.clipboard
-    .writeText(url)
-    .then(() => showToast(t('toast.urlCopied')))
-    .catch(() => showToast(t('toast.copyError')));
-}
-
 export async function testTopLikers() {
   try {
     const res = await fetch('/api/test/likes', { method: 'POST' });

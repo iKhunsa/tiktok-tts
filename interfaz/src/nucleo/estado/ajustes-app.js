@@ -13,7 +13,7 @@ import { options } from './opciones-lectura.js';
 import { setFieldVal, setChecked, paintRangeFill } from '../../componentes/campos-formulario.js';
 import { renderChatTogglesState } from '../../vistas/principal/toggles-chat.js';
 import { updateConnectorChipState } from '../../vistas/principal/voces.js';
-import { updateOverlayUrl, updateSocialOverlayUrl } from '../../vistas/principal/configurador-overlays.js';
+import { updateOverlayUrl } from '../../vistas/principal/configurador-overlays.js';
 import * as datosPorCuenta from './datos-por-cuenta.js';
 
 // Circular import a proposito: los 4 modulos de arriba importan
@@ -213,5 +213,5 @@ export function applySettings() {
   updateOverlayUrl('alertas');
   updateOverlayUrl('creditos');
   updateOverlayUrl('social');
-  updateSocialOverlayUrl();
+  updateOverlayUrl('alertas-social');
 }

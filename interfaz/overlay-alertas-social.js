@@ -1,5 +1,5 @@
 import { cargarLocaleOverlay, t, aplicarI18nOverlay } from './compartido/i18n-overlay.js';
-import { leerParametros, aplicarParametrosVisuales, intParam, strParam } from './compartido/parametros.js';
+import { leerParametros, aplicarParametrosVisuales, intParam } from './compartido/parametros.js';
 import { conectarWSOverlay } from './compartido/ws-cliente.js';
 import { iniciarAccesibilidadOverlay } from './compartido/accesibilidad.js';
 import { registrarErroresOverlay } from './compartido/registrar-errores.js';
@@ -11,8 +11,6 @@ registrarErroresOverlay();
 const params = leerParametros();
 aplicarParametrosVisuales(params);
 const alertDur = intParam(params, 'dur', 4000);
-const followImg = strParam(params, 'followImg', '');
-const shareImg = strParam(params, 'shareImg', '');
 const userSetColor = !!params.get('color');
 
 // PLATFORM_META aca es distinto al de overlay-alertas.js (agrega tiktok con
@@ -39,17 +37,7 @@ function showAlert(event, alTerminar) {
   card.className = 'alert-card';
   if (meta && !userSetColor) card.style.setProperty('--accent', meta.color);
 
-  const customImg = isFollow ? followImg : shareImg;
-  if (customImg) {
-    const img = document.createElement('img');
-    img.className = 'event-img';
-    img.src = customImg;
-    img.alt = isFollow ? 'follow' : 'share';
-    img.onerror = () => { img.replaceWith(makeDefaultIcon(isFollow)); };
-    card.appendChild(img);
-  } else {
-    card.appendChild(makeDefaultIcon(isFollow));
-  }
+  card.appendChild(makeDefaultIcon(isFollow));
 
   const info = document.createElement('div');
   info.className = 'info';
