@@ -490,8 +490,6 @@
     "configRejected": "설정이 거부되었습니다"
   },
   "overlayStr": {
-    "knownBugs": "알려진 문제",
-    "knownBugsMsg": "일부 섹션에 알려진 버그가 있습니다. 곧 수정될 예정입니다.",
     "newFollowers": "새 팔로워",
     "waitingLikes": "좋아요를 기다리는 중...",
     "giftReceived": "선물 받음",

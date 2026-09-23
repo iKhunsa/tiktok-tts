@@ -490,8 +490,6 @@
     "configRejected": "配置被拒绝"
   },
   "overlayStr": {
-    "knownBugs": "已知问题",
-    "knownBugsMsg": "部分板块存在已知问题，即将修复。",
     "newFollowers": "新粉丝",
     "waitingLikes": "等待点赞...",
     "giftReceived": "收到礼物",

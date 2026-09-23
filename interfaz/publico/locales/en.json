@@ -492,8 +492,6 @@
     "configRejected": "Config rejected"
   },
   "overlayStr": {
-    "knownBugs": "Known issues",
-    "knownBugsMsg": "Some sections have known bugs. They'll be fixed soon.",
     "newFollowers": "New followers",
     "waitingLikes": "Waiting for likes...",
     "giftReceived": "Gift received",

@@ -31,7 +31,7 @@ import { abrirCuentaDesdeSidebar, cargarSesion, almacenSesion, appBloqueada } fr
 import { aplicarBloqueoVista } from '../../nucleo/estado/vista-bloqueada.js';
 import { iniciarCuenta } from './cuenta/index.js';
 import { iniciarRotacionAnuncioLateral } from './anuncio-lateral.js';
-import { copyToClipboard, showKnownIssuesNotice } from './utils-app.js';
+import { copyToClipboard } from './utils-app.js';
 import {
   buildOverlayUrl, updateOverlayUrl, onCfgChange, onChatPlatformChange, copyCfgUrl,
   updateFollowerDisplay, testGiftAlert, testSocialAlert,
@@ -102,7 +102,7 @@ Object.assign(window, {
   // vistas
   switchView, abrirCuentaDesdeSidebar,
   // utils
-  copyToClipboard, showKnownIssuesNotice,
+  copyToClipboard,
   // configurador de overlays
   onCfgChange, onChatPlatformChange, copyCfgUrl, testGiftAlert, testSocialAlert,
   testTopLikers,

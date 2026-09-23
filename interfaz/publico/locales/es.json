@@ -535,8 +535,6 @@
     "logsTitle": "Logs"
   },
   "overlayStr": {
-    "knownBugs": "Fallos conocidos",
-    "knownBugsMsg": "Algunas secciones tienen errores conocidos. Se arreglarán próximamente.",
     "newFollowers": "Nuevos seguidores",
     "waitingLikes": "Esperando likes...",
     "giftReceived": "Regalo recibido",

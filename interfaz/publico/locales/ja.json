@@ -490,8 +490,6 @@
     "configRejected": "設定が拒否されました"
   },
   "overlayStr": {
-    "knownBugs": "既知の不具合",
-    "knownBugsMsg": "一部のセクションに既知の不具合があります。近日中に修正されます。",
     "newFollowers": "新しいフォロワー",
     "waitingLikes": "いいねを待っています...",
     "giftReceived": "ギフト受信",

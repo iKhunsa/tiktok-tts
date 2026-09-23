@@ -490,8 +490,6 @@
     "configRejected": "Konfiguration abgelehnt"
   },
   "overlayStr": {
-    "knownBugs": "Bekannte Fehler",
-    "knownBugsMsg": "Einige Bereiche haben bekannte Fehler. Sie werden bald behoben.",
     "newFollowers": "Neue Follower",
     "waitingLikes": "Warte auf Likes...",
     "giftReceived": "Geschenk erhalten",
