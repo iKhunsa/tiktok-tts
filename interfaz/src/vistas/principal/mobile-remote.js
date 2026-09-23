@@ -1,8 +1,6 @@
 import { copyToClipboard } from './utils-app.js';
-import { abrirPopupPlanes } from '../../componentes/popup-planes.js';
 
 let _mobileURL = '';
-let _upgradePopupShown = false;
 
 export function loadMobileURL() {
   fetch('/api/local-ip').then(async (r) => {
@@ -33,10 +31,6 @@ export function showMobileUpgrade() {
   _mobileURL = '';
   document.getElementById('mobileCopyBtn')?.setAttribute('hidden', '');
   showMobileQRPlaceholder();
-  if (!_upgradePopupShown) {
-    _upgradePopupShown = true;
-    abrirPopupPlanes();
-  }
 }
 
 export function refreshMobileQR() {

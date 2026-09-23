@@ -1163,8 +1163,7 @@
     "proChannels": "Verbinde 2 oder mehr Kanäle derselben Plattform",
     "proBackgrounds": "Individuelle Hintergründe für Overlays",
     "choosePro": "Pro wählen",
-    "currentPlan": "Aktueller Tarif",
-    "howItWorks": "Wie funktioniert es?"
+    "currentPlan": "Aktueller Tarif"
   },
   "accountMenu": {
     "planFree": "Kostenloser Tarif",
