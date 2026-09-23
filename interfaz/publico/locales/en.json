@@ -524,7 +524,8 @@
     "kofiDesc": "Buy me a coffee",
     "paypalDesc": "Direct donation via PayPal",
     "subtitle": "Your support helps me keep creating content...",
-    "supportersNote": "Amazing people make amazing things"
+    "supportersNote": "Amazing people make amazing things",
+    "thanksTitle": "Thank you for supporting my work"
   },
   "notice": {
     "donationsTitle": "New ways to support the project",

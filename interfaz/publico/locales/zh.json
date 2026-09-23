@@ -522,7 +522,8 @@
     "kofiDesc": "请我喝杯咖啡来支持我",
     "paypalDesc": "通过 PayPal 直接捐赠",
     "subtitle": "你的支持帮助我继续创作内容...",
-    "supportersNote": "了不起的人做了不起的事"
+    "supportersNote": "了不起的人做了不起的事",
+    "thanksTitle": "感谢支持我的创作"
   },
   "notice": {
     "donationsTitle": "支持项目的新方式",
