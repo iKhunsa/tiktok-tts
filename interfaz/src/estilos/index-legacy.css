@@ -1858,7 +1858,7 @@
     .cuenta-cancel-confirm { color: var(--text-bright); }
     .cuenta-cancel-back { margin-top: var(--space-3); border-color: var(--border-strong); color: var(--text); }
     .cuenta-cancel-notice { display: flex; align-items: center; gap: var(--space-2); margin: var(--space-7) 0 0; color: var(--text-muted); font-size: var(--text-xs); line-height: 1.45; white-space: nowrap; }
-    .cuenta-cancel-notice .icon-inline { flex: 0 0 14px; width: 14px; height: 14px; opacity: 1; filter: invert(54%); }
+    .cuenta-cancel-notice .icon-inline { flex: 0 0 14px; width: 14px; height: 14px; opacity: 1; filter: brightness(0) invert(1); }
     .cuenta-cancel-image { display: grid; place-items: center; padding: var(--space-4); overflow: hidden; }
     .cuenta-cancel-image img { width: 138%; max-width: none; height: auto; transform: translate(16px, 20px); }
     @media (max-width: 520px) { .cuenta-cancel-modal { display: block; width: calc(100% - 24px); } .cuenta-cancel-image { display: none; } .cuenta-cancel-copy { padding: 24px 18px; } .cuenta-cancel-notice { white-space: normal; } }
