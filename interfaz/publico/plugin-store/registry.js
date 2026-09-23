@@ -22,9 +22,12 @@ const SIDEBAR_TOOLS = [
 ];
 // Tools visibles por defecto la primera vez que arranca la app (sin prefs
 // guardadas aún) o para usuarios que venían de antes de que existiera la
-// tienda. 'clips' y 'mobile' quedan ocultas de base — el usuario las activa
-// desde la tienda de plugins si las quiere.
-const SIDEBAR_TOOLS_LEGACY_VISIBLE = ['chat', 'overlays', 'soundpad', 'bot', 'moderacion', 'settings'];
+// tienda. 'soundpad', 'mobile', 'bot' y 'mcp' quedan ocultas de base — el
+// usuario las activa desde la tienda de plugins si las quiere. El orden acá
+// no importa (lo define el orden del array SIDEBAR_TOOLS de arriba), solo la
+// membresia: chat / overlays / clips / moderacion / settings quedan visibles
+// (el boton "Tienda de plugins" esta siempre fijo, no es parte de esta lista).
+const SIDEBAR_TOOLS_LEGACY_VISIBLE = ['chat', 'overlays', 'clips', 'moderacion', 'settings'];
 
 function toolById(id) {
   return SIDEBAR_TOOLS.find((tool) => tool.id === id) || null;
