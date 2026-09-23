@@ -15,10 +15,13 @@ function endpointURL() {
 }
 
 function snippetClaudeCode(url) {
-  return JSON.stringify({ mcpServers: { 'tiktok-tts': { type: 'http', url } } }, null, 2);
+  return `claude mcp add --transport http tiktok-tts ${url}`;
 }
 function snippetClaudeDesktop(url) {
   return JSON.stringify({ mcpServers: { 'tiktok-tts': { command: 'npx', args: ['-y', 'mcp-remote', url] } } }, null, 2);
+}
+function snippetCodex(url) {
+  return `[mcp_servers.tiktok-tts]\nurl = "${url}"`;
 }
 
 async function patchConfig(patch) {
@@ -117,7 +120,7 @@ export function renderMcpPanel() {
             </div>
           </div>
           <div class="setting-group mcp-full">
-            <label data-i18n="mcp.snippetClaudeCode">Claude Code (.mcp.json)</label>
+            <label data-i18n="mcp.snippetClaudeCode">Claude Code (terminal)</label>
             <pre class="mcp-snippet">${snippetClaudeCode(url)}</pre>
             <button class="cfg-btn small" id="mcpCopyCC" data-i18n="btn.copy">Copiar</button>
           </div>
@@ -125,6 +128,11 @@ export function renderMcpPanel() {
             <label data-i18n="mcp.snippetClaudeDesktop">Claude Desktop (claude_desktop_config.json)</label>
             <pre class="mcp-snippet">${snippetClaudeDesktop(url)}</pre>
             <button class="cfg-btn small" id="mcpCopyCD" data-i18n="btn.copy">Copiar</button>
+          </div>
+          <div class="setting-group mcp-full">
+            <label data-i18n="mcp.snippetCodex">Codex CLI (~/.codex/config.toml)</label>
+            <pre class="mcp-snippet">${snippetCodex(url)}</pre>
+            <button class="cfg-btn small" id="mcpCopyCodex" data-i18n="btn.copy">Copiar</button>
           </div>
         </div>
       </div>
@@ -164,6 +172,7 @@ export function renderMcpPanel() {
     onCopy('#mcpCopyEndpoint', url);
     onCopy('#mcpCopyCC', snippetClaudeCode(url));
     onCopy('#mcpCopyCD', snippetClaudeDesktop(url));
+    onCopy('#mcpCopyCodex', snippetCodex(url));
 
     aplicarTraducciones(el);
     aplicarBloqueoVista('mcpPanel', 'mcp-agente');
