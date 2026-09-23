@@ -1847,19 +1847,21 @@
       line-height: 1;
     }
 
-    .cuenta-cancel-modal { display: grid; grid-template-columns: minmax(0, 1fr) minmax(190px, .72fr); max-width: 700px; padding: 0; overflow: hidden; }
-    .cuenta-cancel-copy { padding: 32px; }
-    .cuenta-cancel-copy .modal-close { position: static; margin: -8px -8px 8px auto; }
-    .cuenta-cancel-copy .modal-close:focus-visible { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
-    .cuenta-cancel-copy .notice-icon-badge { width: 38px; height: 38px; margin: 0 0 16px; border-radius: 50%; background: rgba(239,68,68,.12); }
+    .cuenta-cancel-modal { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); max-width: 760px; padding: 0; overflow: hidden; }
+    .cuenta-cancel-copy { padding: var(--space-8); }
+    .cuenta-cancel-modal .modal-close:focus-visible { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
+    .cuenta-cancel-copy .notice-icon-badge { width: 44px; height: 44px; margin: 0 0 var(--space-5); border-radius: 50%; background: var(--danger-a12); }
     .cuenta-cancel-copy .notice-icon-badge .icon-inline { width: 20px; height: 20px; filter: invert(35%) sepia(98%) saturate(1884%) hue-rotate(338deg); }
-    .cuenta-cancel-copy h2 { margin-bottom: 16px; }
-    .cuenta-cancel-notice { display: flex; align-items: flex-start; gap: 7px; margin: 16px 0 0; color: var(--text-muted); font-size: var(--text-xs); line-height: 1.45; }
-    .cuenta-cancel-notice .icon-inline { flex: 0 0 14px; width: 14px; height: 14px; margin-top: 2px; opacity: .7; filter: invert(1); }
-    .cuenta-cancel-image { position: relative; isolation: isolate; display: grid; place-items: center; padding: var(--space-4); }
-    .cuenta-cancel-image::before { content: ''; position: absolute; inset: 0; z-index: -1; background: radial-gradient(circle, var(--danger-a30), transparent 70%); }
-    .cuenta-cancel-image img { width: 100%; max-width: 100%; height: auto; }
-    @media (max-width: 520px) { .cuenta-cancel-modal { display: block; width: calc(100% - 24px); } .cuenta-cancel-image { display: none; } .cuenta-cancel-copy { padding: 24px 18px; } }
+    .cuenta-cancel-copy h2 { margin-bottom: var(--space-4); font-size: 32px; font-weight: 700; line-height: 1.12; letter-spacing: -0.6px; }
+    .cuenta-cancel-description { margin: 0 0 var(--space-7); color: var(--text-muted); font-size: var(--text-base); line-height: 1.6; }
+    .cuenta-cancel-confirm, .cuenta-cancel-back { display: flex; width: 100%; min-height: 52px; justify-content: center; }
+    .cuenta-cancel-back { margin-top: var(--space-3); border-color: var(--border-strong); color: var(--text); }
+    .cuenta-cancel-notice { display: flex; align-items: center; gap: var(--space-2); margin: var(--space-7) 0 0; color: var(--text-muted); font-size: var(--text-xs); line-height: 1.45; white-space: nowrap; }
+    .cuenta-cancel-notice .icon-inline { flex: 0 0 14px; width: 14px; height: 14px; opacity: .7; filter: invert(1); }
+    .cuenta-cancel-image { position: relative; isolation: isolate; display: grid; place-items: center; padding: var(--space-4); overflow: hidden; }
+    .cuenta-cancel-image::before { content: ''; position: absolute; inset: -20%; z-index: -1; background: radial-gradient(ellipse at 60% 60%, var(--danger-a30), transparent 70%); filter: blur(20px); opacity: .45; }
+    .cuenta-cancel-image img { width: 138%; max-width: none; height: auto; transform: translate(16px, 20px); }
+    @media (max-width: 520px) { .cuenta-cancel-modal { display: block; width: calc(100% - 24px); } .cuenta-cancel-image { display: none; } .cuenta-cancel-copy { padding: 24px 18px; } .cuenta-cancel-notice { white-space: normal; } }
 
     /* Vista Pro bloqueada (Sonidos/Bot/MCP): configuraciones visibles, con
        aviso compacto que evita interactuar hasta mejorar el plan. */
