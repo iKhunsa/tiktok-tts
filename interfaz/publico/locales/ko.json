@@ -1164,7 +1164,8 @@
     "proChannels": "같은 플랫폼에서 2개 이상의 채널 연결",
     "proBackgrounds": "맞춤형 오버레이 배경",
     "choosePro": "Pro 선택",
-    "currentPlan": "현재 요금제"
+    "currentPlan": "현재 요금제",
+    "howItWorks": "어떻게 작동하나요?"
   },
   "accountMenu": {
     "planFree": "무료 요금제",

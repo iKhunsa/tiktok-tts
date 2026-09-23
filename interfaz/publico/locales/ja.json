@@ -1164,7 +1164,8 @@
     "proChannels": "同じプラットフォームで 2 つ以上のチャンネルを接続",
     "proBackgrounds": "オーバーレイのカスタム背景",
     "choosePro": "Pro を選択",
-    "currentPlan": "現在のプラン"
+    "currentPlan": "現在のプラン",
+    "howItWorks": "仕組みを見る"
   },
   "accountMenu": {
     "planFree": "無料プラン",
