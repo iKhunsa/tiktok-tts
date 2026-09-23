@@ -12,7 +12,7 @@
 const SIDEBAR_TOOLS = [
   { id: 'chat',       icon: 'icons/chat.svg',       labelKey: 'nav.chat',       descKey: 'store.desc.chat',       pinned: true,  media: null, proFeature: null },
   { id: 'overlays',   icon: 'icons/tv.svg',         labelKey: 'nav.overlays',   descKey: 'store.desc.overlays',   pinned: false, media: 'plugin-store/media/overlays.jpg',   aboutKey: 'store.about.overlays', proFeature: null },
-  { id: 'clips',      icon: 'icons/play_arrow.svg', labelKey: 'nav.clips',      descKey: 'store.desc.clips',      pinned: false, media: 'plugin-store/media/clips.jpg',      aboutKey: 'store.about.clips', proFeature: null },
+  { id: 'clips',      icon: 'icons/play_arrow.svg', labelKey: 'nav.clips',      descKey: 'store.desc.clips',      pinned: false, media: 'plugin-store/media/clips.jpg',      aboutKey: 'store.about.clips', proFeature: 'clips' },
   { id: 'soundpad',   icon: 'icons/volume_up.svg',  labelKey: 'nav.soundpad',   descKey: 'store.desc.soundpad',   pinned: false, media: 'plugin-store/media/soundpad.jpg',   aboutKey: 'store.about.soundpad', proFeature: 'soundpad' },
   { id: 'mobile',     icon: 'icons/smartphone.svg', labelKey: 'nav.mobile',     descKey: 'store.desc.mobile',     pinned: false, media: 'plugin-store/media/mobile.jpg',     aboutKey: 'store.about.mobile', proFeature: 'panel-movil' },
   { id: 'bot',        icon: 'icons/music_note.svg', labelKey: 'nav.bot',        descKey: 'store.desc.bot',        pinned: false, media: 'plugin-store/media/bot.jpg',        aboutKey: 'store.about.bot', proFeature: 'bot-musical' },
