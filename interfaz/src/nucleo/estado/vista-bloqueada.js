@@ -10,7 +10,13 @@ import { almacenSesion } from './sesion.js';
 import { abrirPopupPlanes } from '../../componentes/popup-planes.js';
 import { aplicarTraducciones } from '../i18n/i18n.js';
 
-const VIDEOS_YOUTUBE = { soundpad: 'WLTTEBE1yzk', 'bot-musical': 'w9Hl7y8TVuQ' };
+const VIDEOS_YOUTUBE = {
+  soundpad: 'WLTTEBE1yzk',
+  'bot-musical': 'w9Hl7y8TVuQ',
+  'panel-movil': 'jMi9gLvVP1M',
+  'mcp-agente': 'Hp6oLhs-tpI',
+  clips: '7weJI0r8yU8',
+};
 let modalBloqueo;
 let featureModalBloqueo;
 
