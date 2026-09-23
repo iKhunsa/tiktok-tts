@@ -1163,8 +1163,7 @@
     "proChannels": "Подключайте 2 или больше каналов на одной платформе",
     "proBackgrounds": "Пользовательские фоны для оверлеев",
     "choosePro": "Выбрать Pro",
-    "currentPlan": "Текущий тариф",
-    "howItWorks": "Как это работает?"
+    "currentPlan": "Текущий тариф"
   },
   "accountMenu": {
     "planFree": "Бесплатный тариф",
