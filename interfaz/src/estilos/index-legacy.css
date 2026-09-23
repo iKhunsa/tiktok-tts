@@ -1966,7 +1966,8 @@
     #donationsModal .modal-content { position: relative; max-width: 780px; padding: var(--space-7); }
     #donationsModal h2 { display: flex; align-items: center; gap: var(--space-2); max-width: calc(100% - 200px); margin: 0 0 var(--space-2); }
     .donations-subtitle { max-width: calc(100% - 200px); margin: 0 0 var(--space-6); color: var(--text-secondary); font-size: var(--text-sm); line-height: 1.5; }
-    .donations-mascot { position: absolute; z-index: 1; top: calc(var(--space-5) + 28px); right: var(--space-5); width: 180px; height: 180px; object-fit: contain; pointer-events: none; }
+    .donation-link-card.kofi { position: relative; }
+    .donations-mascot { position: absolute; z-index: 1; top: -115px; right: var(--space-2); width: 160px; height: 160px; object-fit: contain; pointer-events: none; }
     .donations-layout { display: grid; gap: var(--space-5); }
     .donations-methods { display: grid; gap: var(--space-3); }
 
@@ -2057,7 +2058,7 @@
     @media (max-width: 620px) {
       #donationsModal .modal-content { padding: var(--space-6) var(--space-4); }
       #donationsModal h2, .donations-subtitle { max-width: calc(100% - 128px); }
-      .donations-mascot { top: calc(var(--space-5) + 28px); right: var(--space-2); width: 112px; height: 112px; }
+      .donations-mascot { top: -72px; width: 96px; height: 96px; }
       .donation-card-action { grid-template-columns: 1fr; }
       .qr-card.is-expanded .donation-card-action { max-height: 140px; }
       .donation-card-action .btn-copy { width: 100%; }
