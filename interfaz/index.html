@@ -1234,37 +1234,38 @@
 <div id="donationsModal" class="modal-overlay" onclick="closeDonationsModal(event)">
   <div class="modal-content" onclick="event.stopPropagation()">
     <button class="modal-close" onclick="closeDonationsModal()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
-    <h2><img class="icon-inline" src="icons/favorite-red.svg" alt=""> <span data-i18n="donations.title">Apoya mi contenido</span> <img class="donations-mascot" src="img/mascota/michi-ramen.png" alt=""></h2>
+    <img class="donations-mascot" src="img/mascota/michi-ramen.png" alt="">
+    <h2><img class="icon-inline" src="icons/favorite-red.svg" alt=""> <span data-i18n="donations.title">Apoya mi contenido</span></h2>
     <p class="donations-subtitle" data-i18n="donations.subtitle">Tu apoyo me ayuda a seguir creando contenido...</p>
 
     <div class="donations-layout">
       <div class="donations-methods">
         <a href="https://ko-fi.com/ikhunsa" target="_blank" class="donation-link-card kofi">
-          <h3><img class="icon-inline donation-card-icon" src="icons/local_cafe.svg" alt=""> Ko-fi <img class="icon-inline ext-arrow" src="icons/chevron_right.svg" alt=""></h3>
-          <p data-i18n="donations.kofiDesc">Apóyame con un cafecito</p>
+          <span class="donation-card-badge"><img class="icon-inline donation-card-icon" src="icons/local_cafe.svg" alt=""></span>
+          <div class="donation-card-copy"><h3>Ko-fi</h3><p data-i18n="donations.kofiDesc">Apóyame con un cafecito</p></div>
+          <img class="icon-inline ext-arrow" src="icons/chevron_right.svg" alt="">
         </a>
 
         <a href="https://paypal.me/KhunsaUwU" target="_blank" class="donation-link-card paypal">
-          <h3><img class="icon-inline donation-card-icon" src="icons/attach_money.svg" alt=""> PayPal <img class="icon-inline ext-arrow" src="icons/chevron_right.svg" alt=""></h3>
-          <p data-i18n="donations.paypalDesc">Donación directa vía PayPal</p>
+          <span class="donation-card-badge"><img class="icon-inline donation-card-icon" src="icons/attach_money.svg" alt=""></span>
+          <div class="donation-card-copy"><h3>PayPal</h3><p data-i18n="donations.paypalDesc">Donación directa vía PayPal</p></div>
+          <img class="icon-inline ext-arrow" src="icons/chevron_right.svg" alt="">
         </a>
 
-        <div class="qr-card">
-          <h3><img class="icon-inline donation-card-icon" src="icons/offline_bolt.svg" alt=""> Lightning Network (Instant)</h3>
-          <p>Khunsa@coinos.io</p>
-          <input type="text" value="Khunsa@coinos.io" readonly class="donation-input" onclick="this.select()">
-          <button class="btn-copy" onclick="copyToClipboard('Khunsa@coinos.io')"><img class="icon-inline" src="icons/content_copy.svg" alt=""> <span data-i18n="donations.copyAddress">Copiar dirección</span></button>
+        <div class="qr-card is-featured">
+          <div class="donation-card-heading"><span class="donation-card-badge"><img class="icon-inline donation-card-icon" src="icons/offline_bolt.svg" alt=""></span><div class="donation-card-copy"><h3>Lightning Network (Instant)</h3><p>Khunsa@coinos.io</p></div></div>
+          <div class="donation-card-action"><input type="text" value="Khunsa@coinos.io" readonly class="donation-input" onclick="this.select()"><button class="btn-copy" onclick="copyToClipboard('Khunsa@coinos.io')"><img class="icon-inline" src="icons/content_copy.svg" alt=""> <span data-i18n="donations.copyAddress">Copiar dirección</span></button></div>
         </div>
 
         <div class="qr-card">
-          <h3><img class="icon-inline donation-card-icon" src="icons/monetization_on.svg" alt=""> <span data-i18n="donations.btcNative">Bitcoin Nativo</span></h3>
-          <p>bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk</p>
-          <input type="text" value="bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk" readonly class="donation-input" onclick="this.select()">
-          <button class="btn-copy" onclick="copyToClipboard('bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk')"><img class="icon-inline" src="icons/content_copy.svg" alt=""> <span data-i18n="donations.copyAddress">Copiar dirección</span></button>
+          <div class="donation-card-heading"><span class="donation-card-badge"><img class="icon-inline donation-card-icon" src="icons/monetization_on.svg" alt=""></span><div class="donation-card-copy"><h3 data-i18n="donations.btcNative">Bitcoin Nativo</h3><p>bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk</p></div></div>
+          <div class="donation-card-action"><input type="text" value="bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk" readonly class="donation-input" onclick="this.select()"><button class="btn-copy" onclick="copyToClipboard('bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk')"><img class="icon-inline" src="icons/content_copy.svg" alt=""> <span data-i18n="donations.copyAddress">Copiar dirección</span></button></div>
         </div>
       </div>
-      <div class="donations-aside">
-        <p><img class="icon-inline" src="icons/favorite-red.svg" alt=""> <span data-i18n="donations.supportersNote">Gente increíble hace cosas increíbles</span></p>
+      <div class="donations-thanks">
+        <h3 data-i18n="donations.thanksTitle">Gracias por apoyar mi trabajo</h3>
+        <img class="icon-inline" src="icons/favorite-red.svg" alt="">
+        <p data-i18n="donations.supportersNote">Gente increíble hace cosas increíbles</p>
       </div>
     </div>
   </div>

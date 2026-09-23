@@ -522,7 +522,8 @@
     "kofiDesc": "커피 한 잔으로 응원해주세요",
     "paypalDesc": "PayPal로 직접 기부",
     "subtitle": "여러분의 응원이 제가 계속 콘텐츠를 만들 수 있게 해줘요...",
-    "supportersNote": "멋진 사람들이 멋진 일을 만들어요"
+    "supportersNote": "멋진 사람들이 멋진 일을 만들어요",
+    "thanksTitle": "제 작업을 응원해 주셔서 감사합니다"
   },
   "notice": {
     "donationsTitle": "프로젝트를 지원하는 새로운 방법",

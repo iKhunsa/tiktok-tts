@@ -522,7 +522,8 @@
     "kofiDesc": "コーヒー1杯分の支援をお願いします",
     "paypalDesc": "PayPalで直接寄付",
     "subtitle": "あなたの支援が、これからもコンテンツを作り続ける力になります...",
-    "supportersNote": "素晴らしい人たちが素晴らしいことを生み出す"
+    "supportersNote": "素晴らしい人たちが素晴らしいことを生み出す",
+    "thanksTitle": "応援ありがとうございます"
   },
   "notice": {
     "donationsTitle": "プロジェクトを支援する新しい方法",
