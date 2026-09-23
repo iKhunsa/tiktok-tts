@@ -85,10 +85,14 @@ test('subscriptionsEnabled=true + sin sesion: /api/* exige login; whitelist abie
   assert.equal((await fetch(`${base}/api/auth/session`)).status, 404, 'auth/* pasa el guard (404 = no-op del dominio)');
   assert.equal((await fetch(`${base}/overlay-alertas.html`)).status, 200, 'overlay estatico abierto');
   assert.equal((await fetch(`${base}/mobile`)).status, 403, 'panel movil = 403 (gatePro, no el guard)');
+  assert.equal((await fetch(`${base}/api/local-ip`)).status, 403, 'URL movil = 403 (gatePro)');
+  assert.equal((await fetch(`${base}/api/mobile/qr`)).status, 403, 'QR movil = 403 (gatePro)');
 
   srv.bus.emit('config:patch', { subscriptionsEnabled: false });
   assert.notEqual((await post('/api/tts')).status, 401, 'con flag off, no exige login');
   assert.notEqual((await fetch(`${base}/api/soundpad/upload`, { method: 'POST' })).status, 401, 'con flag off, no exige login');
+  assert.equal((await fetch(`${base}/api/local-ip`)).status, 200, 'URL movil libre cuando subscriptions esta apagado');
+  assert.equal((await fetch(`${base}/api/mobile/qr`)).status, 200, 'QR movil valido cuando subscriptions esta apagado');
 });
 
 test('getSesionPublica() (payload del broadcast WS) no filtra email/user-id/subscription', () => {
