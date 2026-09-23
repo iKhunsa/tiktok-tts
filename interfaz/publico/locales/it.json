@@ -1163,7 +1163,8 @@
     "proChannels": "Collega 2 o più canali della stessa piattaforma",
     "proBackgrounds": "Sfondo personalizzato negli overlay",
     "choosePro": "Scegli Pro",
-    "currentPlan": "Piano attuale"
+    "currentPlan": "Piano attuale",
+    "howItWorks": "Come funziona?"
   },
   "accountMenu": {
     "planFree": "Piano gratuito",
