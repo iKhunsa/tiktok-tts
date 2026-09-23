@@ -422,8 +422,7 @@
   },
   "mobile2": {
     "loading": "Cargando...",
-    "qrError": "Error al generar QR",
-    "proRequired": "Pasate al plan Pro para usar el panel móvil."
+    "qrError": "Error al generar QR"
   },
   "adv": {
     "subtitle": "Configuración del Servidor",

@@ -377,8 +377,7 @@
   },
   "mobile2": {
     "loading": "로딩 중...",
-    "qrError": "QR 코드 생성 오류",
-    "proRequired": "모바일 패널을 사용하려면 Pro로 업그레이드하세요."
+    "qrError": "QR 코드 생성 오류"
   },
   "adv": {
     "subtitle": "서버 설정",

@@ -1109,11 +1109,7 @@
               <div id="mobileURL" style="font-size:13px;color:var(--accent);word-break:break-all;font-family:monospace;padding:8px 10px;background:var(--surface);border-radius:8px;border:1px solid var(--border);" data-i18n="mobile2.loading">Cargando...</div>
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
-              <button class="cfg-btn" onclick="copyMobileURL()" data-i18n="btn.copyLink">Copiar enlace</button>
-            </div>
-            <div id="mobileUpgrade" hidden style="font-size:12px;color:var(--text-muted);line-height:1.5;">
-              <span data-i18n="mobile2.proRequired">Pasate al plan Pro para usar el panel móvil.</span>
-              <button class="cfg-btn" type="button" onclick="upgradeMobilePanel()" data-i18n="pro.upgradeCta">Mejorar plan</button>
+              <button id="mobileCopyBtn" class="cfg-btn" onclick="copyMobileURL()" data-i18n="btn.copyLink">Copiar enlace</button>
             </div>
             <div style="font-size:11px;color:var(--text-muted);line-height:1.5;" data-i18n="mobile.appDesc">
               La app móvil incluye chat en vivo, controles TTS (pausa, skip, toggles) y marcadores de clip.

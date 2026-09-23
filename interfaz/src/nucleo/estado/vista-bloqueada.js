@@ -58,7 +58,7 @@ function abrirModalBloqueo(featureId) {
       <button class="modal-close" type="button"><img class="icon-inline" src="icons/close.svg" alt=""></button>
       <div class="vista-bloqueada-video-wrap">
         ${videoId
-    ? `<iframe class="vista-bloqueada-video" src="https://www.youtube.com/embed/${videoId}" title="YouTube" allowfullscreen></iframe>`
+    ? `<iframe class="vista-bloqueada-video" src="https://www.youtube.com/embed/${videoId}?modestbranding=1&rel=0&iv_load_policy=3" title="YouTube" allowfullscreen></iframe>`
     : `<div class="vista-bloqueada-video-placeholder"><img src="icons/play_arrow.svg" alt=""><span data-i18n="pro.demoVideoSoon"></span></div>`}
       </div>
       <p class="vista-bloqueada-msg" data-i18n="pro.overlayMsg"></p>

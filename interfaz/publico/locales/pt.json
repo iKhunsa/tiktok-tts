@@ -377,8 +377,7 @@
   },
   "mobile2": {
     "loading": "Carregando...",
-    "qrError": "Erro ao gerar QR",
-    "proRequired": "Faça upgrade para o Pro para usar o painel móvel."
+    "qrError": "Erro ao gerar QR"
   },
   "adv": {
     "subtitle": "Configurações do Servidor",

@@ -1,8 +1,8 @@
 import { copyToClipboard } from './utils-app.js';
-import { t } from '../../nucleo/i18n/i18n.js';
 import { abrirPopupPlanes } from '../../componentes/popup-planes.js';
 
 let _mobileURL = '';
+let _upgradePopupShown = false;
 
 export function loadMobileURL() {
   fetch('/api/local-ip').then(async (r) => {
@@ -15,7 +15,7 @@ export function loadMobileURL() {
     _mobileURL = `http://${data.ip}:${port}/mobile`;
     const el = document.getElementById('mobileURL');
     if (el) el.textContent = _mobileURL;
-    document.getElementById('mobileUpgrade')?.setAttribute('hidden', '');
+    document.getElementById('mobileCopyBtn')?.removeAttribute('hidden');
   }).catch(() => {});
 }
 
@@ -31,13 +31,13 @@ export function showMobileQRPlaceholder() {
 
 export function showMobileUpgrade() {
   _mobileURL = '';
-  const el = document.getElementById('mobileURL');
-  if (el) el.textContent = t('mobile2.proRequired');
-  document.getElementById('mobileUpgrade')?.removeAttribute('hidden');
+  document.getElementById('mobileCopyBtn')?.setAttribute('hidden', '');
   showMobileQRPlaceholder();
+  if (!_upgradePopupShown) {
+    _upgradePopupShown = true;
+    abrirPopupPlanes();
+  }
 }
-
-export function upgradeMobilePanel() { abrirPopupPlanes(); }
 
 export function refreshMobileQR() {
   loadMobileURL();

@@ -377,8 +377,7 @@
   },
   "mobile2": {
     "loading": "Lädt...",
-    "qrError": "Fehler beim Erstellen des QR-Codes",
-    "proRequired": "Wechsle zu Pro, um die mobile Steuerung zu nutzen."
+    "qrError": "Fehler beim Erstellen des QR-Codes"
   },
   "adv": {
     "subtitle": "Server-Einstellungen",

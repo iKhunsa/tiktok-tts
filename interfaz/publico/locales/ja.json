@@ -377,8 +377,7 @@
   },
   "mobile2": {
     "loading": "読み込み中...",
-    "qrError": "QRコードの生成エラー",
-    "proRequired": "モバイルパネルを使うにはProプランにアップグレードしてください。"
+    "qrError": "QRコードの生成エラー"
   },
   "adv": {
     "subtitle": "サーバー設定",

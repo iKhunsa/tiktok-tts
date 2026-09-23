@@ -377,8 +377,7 @@
   },
   "mobile2": {
     "loading": "Chargement...",
-    "qrError": "Erreur lors de la génération du QR",
-    "proRequired": "Passez au plan Pro pour utiliser le panneau mobile."
+    "qrError": "Erreur lors de la génération du QR"
   },
   "adv": {
     "subtitle": "Paramètres du Serveur",

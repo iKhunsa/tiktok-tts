@@ -377,8 +377,7 @@
   },
   "mobile2": {
     "loading": "Caricamento...",
-    "qrError": "Errore nella generazione del QR",
-    "proRequired": "Passa al piano Pro per usare il pannello mobile."
+    "qrError": "Errore nella generazione del QR"
   },
   "adv": {
     "subtitle": "Impostazioni Server",
