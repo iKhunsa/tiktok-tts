@@ -880,8 +880,8 @@
 
     .toggle-chip input { display: none; }
     .toggle-chip:hover { border-color: var(--text-bright-a30); color: var(--text-bright); }
-    .toggle-chip.active { background: var(--surface-raised); border-color: var(--text-bright-a30); color: var(--text-bright); }
-    .toggle-chip.active:hover { border-color: rgba(242, 242, 242, 0.5); background: var(--border-strong); }
+    .toggle-chip.active, .toggle-chip:has(input:checked) { background: var(--surface-raised); border-color: var(--text-bright-a30); color: var(--text-bright); }
+    .toggle-chip.active:hover, .toggle-chip:has(input:checked):hover { border-color: rgba(242, 242, 242, 0.5); background: var(--border-strong); }
     /* chip-dot removido — usado por toggle chips antiguos */
 
     /* Switch estilo iOS — mismo componente de advanced.html, para toggles
