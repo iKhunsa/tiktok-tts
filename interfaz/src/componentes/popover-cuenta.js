@@ -12,9 +12,9 @@ export function toggleAccountPopover(anchorEl) {
   const popover = document.createElement('div');
   popover.className = 'account-popover';
   popover.innerHTML = `
-    <div class="account-popover-header">
+    <div class="account-popover-header" role="button" tabindex="0">
       <img class="icon-inline" src="icons/account_circle.svg" alt="">
-      <div><div class="account-popover-email"></div><div class="account-popover-plan" data-i18n="accountMenu.${planKey}"></div></div>
+      <div class="account-popover-info"><div class="account-popover-email"></div><div class="account-popover-plan" data-i18n="accountMenu.${planKey}"></div></div>
     </div>
     <div class="account-popover-divider"></div>
     <button class="account-popover-option account-popover-upgrade" type="button"><img class="icon-inline" src="icons/flash_on.svg" alt=""><span data-i18n="accountMenu.upgradePlan"></span></button>
@@ -49,5 +49,11 @@ export function toggleAccountPopover(anchorEl) {
   popover.querySelector('.account-popover-upgrade')?.addEventListener('click', () => { cerrar(); abrirPopupPlanes(); });
   popover.querySelector('.account-popover-advanced').addEventListener('click', () => { cerrar(); window.open('/advanced.html?popup=1', '_blank'); });
   popover.querySelector('.account-popover-donate').addEventListener('click', () => { cerrar(); window.openDonationsModal(); });
-  popover.querySelector('.account-popover-account').addEventListener('click', () => { cerrar(); window.switchView('cuenta'); });
+  const abrirCuenta = () => { cerrar(); window.switchView('cuenta'); };
+  const header = popover.querySelector('.account-popover-header');
+  header.addEventListener('click', abrirCuenta);
+  header.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); abrirCuenta(); }
+  });
+  popover.querySelector('.account-popover-account').addEventListener('click', abrirCuenta);
 }
