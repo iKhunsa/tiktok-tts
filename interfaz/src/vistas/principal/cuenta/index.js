@@ -9,7 +9,7 @@ import { showToast } from '../../../componentes/toast.js';
 import { almacenSesion, aplicarSesion, pintarBadgeSidebar } from '../../../nucleo/estado/sesion.js';
 import { guardarAvatarPerfil, obtenerAvatarPerfil, quitarAvatarPerfil } from '../../../nucleo/estado/avatar-perfil.js';
 import { pedir, toastError } from './api.js';
-import { irACheckout } from './checkout.js';
+import { abrirPopupPlanes } from '../../../componentes/popup-planes.js';
 import { escaparAtributo as esc } from '../../../../compartido/escapar-html.js';
 
 const MIN_PASS = 8;
@@ -191,7 +191,7 @@ export function renderCuentaPanel() {
     showToast(t('cuenta.saved'));
     renderCuentaPanel();
   });
-  el.querySelector('#cuentaUpgrade')?.addEventListener('click', (e) => irACheckout(e.currentTarget, 'pro'));
+  el.querySelector('#cuentaUpgrade')?.addEventListener('click', () => abrirPopupPlanes());
   el.querySelector('#cuentaManage')?.addEventListener('click', (e) => cancelarSuscripcion(e.currentTarget));
   el.querySelector('#cuentaResume')?.addEventListener('click', (e) => reanudarSuscripcion(e.currentTarget));
 }
