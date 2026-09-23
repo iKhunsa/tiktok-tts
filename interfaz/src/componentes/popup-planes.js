@@ -51,22 +51,12 @@ export function abrirPopupPlanes() {
           ${accion(plan, 'pro', 'planesPopup.choosePro')}
         </section>
       </div>
-      <button class="planes-popup-video-card" type="button" data-plan-video>
-        <img class="icon-inline" src="icons/play_arrow.svg" alt="">
-        <span data-i18n="planesPopup.howItWorks"></span>
-      </button>
     </div>`;
   document.body.appendChild(overlay);
   aplicarTraducciones(overlay);
 
   let desuscribir;
-  let videoOverlay;
-  const cerrarVideo = () => {
-    videoOverlay?.remove();
-    videoOverlay = null;
-  };
   const cerrar = () => {
-    cerrarVideo();
     desuscribir();
     overlay.remove();
   };
@@ -77,21 +67,5 @@ export function abrirPopupPlanes() {
   overlay.querySelector('.modal-close').addEventListener('click', cerrar);
   overlay.querySelectorAll('[data-plan]').forEach((btn) => {
     btn.addEventListener('click', (e) => irACheckout(e.currentTarget, e.currentTarget.dataset.plan));
-  });
-  overlay.querySelector('[data-plan-video]').addEventListener('click', () => {
-    videoOverlay = document.createElement('div');
-    videoOverlay.className = 'modal-overlay show vista-bloqueada-modal-overlay';
-    videoOverlay.innerHTML = `
-      <div class="modal-content vista-bloqueada-contenido" role="dialog" aria-modal="true">
-        <button class="modal-close" type="button"><img class="icon-inline" src="icons/close.svg" alt=""></button>
-        <div class="vista-bloqueada-video-wrap">
-          <!-- Reemplazar este placeholder por el iframe cuando haya una URL aprobada. -->
-          <div class="vista-bloqueada-video-placeholder"><img src="icons/play_arrow.svg" alt=""><span data-i18n="pro.demoVideoSoon"></span></div>
-        </div>
-      </div>`;
-    document.body.appendChild(videoOverlay);
-    aplicarTraducciones(videoOverlay);
-    videoOverlay.addEventListener('click', (e) => { if (e.target === videoOverlay) cerrarVideo(); });
-    videoOverlay.querySelector('.modal-close').addEventListener('click', cerrarVideo);
   });
 }

@@ -1163,8 +1163,7 @@
     "proChannels": "连接同一平台的 2 个或更多频道",
     "proBackgrounds": "自定义叠加层背景",
     "choosePro": "选择 Pro",
-    "currentPlan": "当前套餐",
-    "howItWorks": "如何运作？"
+    "currentPlan": "当前套餐"
   },
   "accountMenu": {
     "planFree": "免费套餐",
