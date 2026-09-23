@@ -3,6 +3,10 @@ node_modules/
 bin/
 *.log
 /uploads/
+public/
+accounts/
+soundpad-account-migrated-v1.json
+nul
 dist/
 installer/
 electron-dist/
