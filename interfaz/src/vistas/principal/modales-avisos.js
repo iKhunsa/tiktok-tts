@@ -259,6 +259,23 @@ export function arrancarAvisosOnboarding() {
 }
 
 export function iniciarModalesYAvisos() {
+  const toggleDonationCard = (heading) => {
+    const card = heading.closest('.qr-card');
+    const expanded = card.classList.toggle('is-expanded');
+    heading.setAttribute('aria-expanded', expanded);
+  };
+  const donationsModal = document.getElementById('donationsModal');
+  donationsModal.addEventListener('click', (e) => {
+    if (e.target.closest('.donation-card-action')) return;
+    const heading = e.target.closest('.donation-card-heading');
+    if (heading) toggleDonationCard(heading);
+  });
+  donationsModal.addEventListener('keydown', (e) => {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('.donation-card-heading')) {
+      e.preventDefault();
+      toggleDonationCard(e.target);
+    }
+  });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       document.getElementById('donationsModal').classList.remove('show');
