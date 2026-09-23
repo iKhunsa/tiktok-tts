@@ -176,12 +176,14 @@ function aplicarBloqueoApp() {
   // cuentas apagado), nunca en la pantalla de login. arrancarAvisosOnboarding
   // es idempotente.
   if (!bloq) arrancarAvisosOnboarding();
-  // Vistas Pro enteras (Sonidos/Bot/MCP/Panel movil): re-evaluar el aviso visual
-  // cada vez que cambia la sesion (login, pago, degradado) sin re-fetchear su estado.
+  // Vistas Pro enteras (Sonidos/Bot/MCP/Panel movil/Clips): re-evaluar el aviso
+  // visual cada vez que cambia la sesion (login, pago, degradado) sin
+  // re-fetchear su estado.
   aplicarBloqueoVista('view-soundpad', 'soundpad');
   aplicarBloqueoVista('view-bot', 'bot-musical');
   aplicarBloqueoVista('mcpPanel', 'mcp-agente');
   aplicarBloqueoVista('view-mobile', 'panel-movil');
+  aplicarBloqueoVista('view-clips', 'clips');
 }
 
 function mostrarVersionApp() {

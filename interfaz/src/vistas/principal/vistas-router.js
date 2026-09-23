@@ -28,6 +28,8 @@ export function switchView(name) {
   // vista, sin repetir sus fetches.
   if (name === 'soundpad') aplicarBloqueoVista('view-soundpad', 'soundpad');
   if (name === 'bot') aplicarBloqueoVista('view-bot', 'bot-musical');
+  if (name === 'mobile') aplicarBloqueoVista('view-mobile', 'panel-movil');
+  if (name === 'clips') aplicarBloqueoVista('view-clips', 'clips');
   // El refresco de la tabla de moderacion solo corre con la vista visible.
   if (name === 'moderacion') {
     modReload(true);
