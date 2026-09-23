@@ -518,6 +518,8 @@
   "donations": {
     "title": "支持我的内容",
     "copyAddress": "复制地址",
+    "lightningDesc": "即时付款，无网络手续费",
+    "btcNativeDesc": "直接转入比特币钱包",
     "btcNative": "原生比特币",
     "kofiDesc": "请我喝杯咖啡来支持我",
     "paypalDesc": "通过 PayPal 直接捐赠",

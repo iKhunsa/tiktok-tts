@@ -518,6 +518,8 @@
   "donations": {
     "title": "Supporta il mio contenuto",
     "copyAddress": "Copia indirizzo",
+    "lightningDesc": "Pagamenti istantanei, senza commissioni di rete",
+    "btcNativeDesc": "Trasferimento diretto a un wallet Bitcoin",
     "btcNative": "Bitcoin Nativo",
     "kofiDesc": "Supportami con un caffè",
     "paypalDesc": "Donazione diretta via PayPal",

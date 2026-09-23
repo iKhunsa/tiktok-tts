@@ -518,6 +518,8 @@
   "donations": {
     "title": "Поддержи мой контент",
     "copyAddress": "Скопировать адрес",
+    "lightningDesc": "Мгновенные платежи без сетевых комиссий",
+    "btcNativeDesc": "Прямой перевод в Bitcoin-кошелёк",
     "btcNative": "Нативный биткоин",
     "kofiDesc": "Поддержи меня чашкой кофе",
     "paypalDesc": "Прямой донат через PayPal",
