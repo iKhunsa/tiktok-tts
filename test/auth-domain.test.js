@@ -85,8 +85,8 @@ test('subscriptionsEnabled=true + sin sesion: /api/* exige login; whitelist abie
   assert.equal((await fetch(`${base}/api/auth/session`)).status, 404, 'auth/* pasa el guard (404 = no-op del dominio)');
   assert.equal((await fetch(`${base}/overlay-alertas.html`)).status, 200, 'overlay estatico abierto');
   assert.equal((await fetch(`${base}/mobile`)).status, 403, 'panel movil = 403 (gatePro, no el guard)');
-  assert.equal((await fetch(`${base}/api/local-ip`)).status, 403, 'URL movil = 403 (gatePro)');
-  assert.equal((await fetch(`${base}/api/mobile/qr`)).status, 403, 'QR movil = 403 (gatePro)');
+  assert.equal((await fetch(`${base}/api/local-ip`)).status, 401, 'URL movil bajo /api/* = 401 (el guard corre antes que gatePro, igual que tts/voices)');
+  assert.equal((await fetch(`${base}/api/mobile/qr`)).status, 401, 'QR movil bajo /api/* = 401 (el guard corre antes que gatePro)');
 
   srv.bus.emit('config:patch', { subscriptionsEnabled: false });
   assert.notEqual((await post('/api/tts')).status, 401, 'con flag off, no exige login');
