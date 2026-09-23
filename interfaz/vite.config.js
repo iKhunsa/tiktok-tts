@@ -44,7 +44,6 @@ export default defineConfig({
       '/sounds': 'http://127.0.0.1:3000',
       '/icons': 'http://127.0.0.1:3000',
       '/gift-dict.json': 'http://127.0.0.1:3000',
-      '/uploads': 'http://127.0.0.1:3000',
     },
   },
 });

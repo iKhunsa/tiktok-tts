@@ -28,11 +28,10 @@ import { t, tErr } from '../../nucleo/i18n/i18n.js';
 import { iniciarI18nApp, pickLanguage, setLanguage } from './i18n-app.js';
 import { switchView } from './vistas-router.js';
 import { abrirCuentaDesdeSidebar, cargarSesion, almacenSesion, appBloqueada } from '../../nucleo/estado/sesion.js';
-import { aplicarBloqueoVista, aplicarBadgesInlinePro } from '../../nucleo/estado/vista-bloqueada.js';
+import { aplicarBloqueoVista } from '../../nucleo/estado/vista-bloqueada.js';
 import { iniciarCuenta } from './cuenta/index.js';
 import { iniciarRotacionAnuncioLateral } from './anuncio-lateral.js';
 import { copyToClipboard, showKnownIssuesNotice } from './utils-app.js';
-import { uploadBg, removeBg } from './subida-fondo.js';
 import {
   buildOverlayUrl, updateOverlayUrl, onCfgChange, onChatPlatformChange, copyCfgUrl,
   updateFollowerDisplay, testGiftAlert, testSocialAlert,
@@ -104,8 +103,6 @@ Object.assign(window, {
   switchView, abrirCuentaDesdeSidebar,
   // utils
   copyToClipboard, showKnownIssuesNotice,
-  // fondo de overlays
-  uploadBg, removeBg,
   // configurador de overlays
   onCfgChange, onChatPlatformChange, copyCfgUrl, testGiftAlert, testSocialAlert,
   copySocialAlertUrl, testTopLikers, updateSocialOverlayUrl,
@@ -184,7 +181,6 @@ function aplicarBloqueoApp() {
   aplicarBloqueoVista('view-soundpad', 'soundpad');
   aplicarBloqueoVista('view-bot', 'bot-musical');
   aplicarBloqueoVista('mcpPanel', 'mcp-agente');
-  aplicarBadgesInlinePro();
 }
 
 function mostrarVersionApp() {

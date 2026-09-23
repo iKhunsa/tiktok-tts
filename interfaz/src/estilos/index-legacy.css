@@ -1449,28 +1449,6 @@
       margin-right: 8px; flex-shrink: 0; display: inline-block;
     }
 
-    .bg-upload-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .bg-upload-row input[type="file"] {
-      display: none;
-    }
-
-    .bg-preview {
-      display: none;
-      width: 54px;
-      height: 32px;
-      object-fit: cover;
-      border: 1px solid var(--border-strong);
-      border-radius: var(--radius-xs);
-      background: var(--bg-button);
-    }
-
-    .bg-preview.visible { display: block; }
     /* ── Vista Moderación ───────────────────────────────────────── */
     .mod-stats { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
     .mod-stat {
@@ -1966,25 +1944,6 @@
     .vista-bloqueada-link:hover { color: var(--text-bright); }
     .vista-bloqueada-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
 
-    /* Badge chico "PRO" junto a un control gateado dentro de una vista libre
-       (ej. "Fondo personalizado" en Overlays). */
-    .pro-inline-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      margin-left: 8px;
-      padding: 2px 8px;
-      border-radius: 9999px;
-      font-size: var(--text-2xs);
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      color: var(--brand, #ff3b5c);
-      background: var(--brand-a15, rgba(255, 59, 92, 0.15));
-      vertical-align: middle;
-    }
-    .pro-inline-badge .icon-inline { width: 0.85em; height: 0.85em; }
-    /* mismo motivo que .sidebar-item[hidden]: display:inline-flex le gana a [hidden] */
-    .pro-inline-badge[hidden] { display: none; }
     .confetti-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2000000000; }
 
     #donationsModal .modal-content { position: relative; max-width: 780px; padding: var(--space-7); }

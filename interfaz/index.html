@@ -304,16 +304,6 @@
               <label class="toggle-chip" style="padding:6px 9px;"><input type="checkbox" id="cfg-chat-platform-kick" checked onchange="onChatPlatformChange('kick', this.checked)" /> Kick</label>
             </div>
           </div>
-          <div class="cfg-field full">
-            <label data-i18n="label.customBg">Fondo personalizado</label><span class="pro-inline-badge"><img class="icon-inline" src="icons/lock.svg" alt=""> <span data-i18n="pro.badgeInline"></span></span>
-            <div class="bg-upload-row">
-              <input type="file" id="cfg-chat-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
-                     onchange="uploadBg('chat', this.files[0])" />
-              <label class="cfg-btn" for="cfg-chat-bgimg"><span data-i18n="btn.uploadImage">Subir imagen</span></label>
-              <button type="button" class="cfg-btn danger small" id="cfg-chat-bgimg-remove" onclick="removeBg('chat')" style="display:none;" data-i18n="btn.remove">Quitar</button>
-              <img class="bg-preview" id="cfg-chat-bgimg-preview" alt="">
-            </div>
-          </div>
         </div>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-chat">http://localhost:3000/overlay-chat.html</span>
@@ -354,16 +344,6 @@
             <input type="range" id="cfg-seg-bg" min="0.30" max="1.00" step="0.05" value="0.80"
                    oninput="onCfgChange('seguidores','bg', parseFloat(this.value)); document.getElementById('cfg-seg-bg-val').textContent = Math.round(this.value*100)" />
           </div>
-          <div class="cfg-field full">
-            <label data-i18n="label.customBg">Fondo personalizado</label><span class="pro-inline-badge"><img class="icon-inline" src="icons/lock.svg" alt=""> <span data-i18n="pro.badgeInline"></span></span>
-            <div class="bg-upload-row">
-              <input type="file" id="cfg-seguidores-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
-                     onchange="uploadBg('seguidores', this.files[0])" />
-              <label class="cfg-btn" for="cfg-seguidores-bgimg"><span data-i18n="btn.uploadImage">Subir imagen</span></label>
-              <button type="button" class="cfg-btn danger small" id="cfg-seguidores-bgimg-remove" onclick="removeBg('seguidores')" style="display:none;" data-i18n="btn.remove">Quitar</button>
-              <img class="bg-preview" id="cfg-seguidores-bgimg-preview" alt="">
-            </div>
-          </div>
         </div>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-seguidores">http://localhost:3000/overlay-seguidores.html</span>
@@ -397,16 +377,6 @@
             <label><span data-i18n="label.bgOpacity">Opacidad fondo</span> — <span id="cfg-likes-bg-val">80</span>%</label>
             <input type="range" id="cfg-likes-bg" min="0.30" max="1.00" step="0.05" value="0.80"
                    oninput="onCfgChange('likes','bg', parseFloat(this.value)); document.getElementById('cfg-likes-bg-val').textContent = Math.round(this.value*100)" />
-          </div>
-          <div class="cfg-field full">
-            <label data-i18n="label.customBg">Fondo personalizado</label><span class="pro-inline-badge"><img class="icon-inline" src="icons/lock.svg" alt=""> <span data-i18n="pro.badgeInline"></span></span>
-            <div class="bg-upload-row">
-              <input type="file" id="cfg-likes-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
-                     onchange="uploadBg('likes', this.files[0])" />
-              <label class="cfg-btn" for="cfg-likes-bgimg"><span data-i18n="btn.uploadImage">Subir imagen</span></label>
-              <button type="button" class="cfg-btn danger small" id="cfg-likes-bgimg-remove" onclick="removeBg('likes')" style="display:none;" data-i18n="btn.remove">Quitar</button>
-              <img class="bg-preview" id="cfg-likes-bgimg-preview" alt="">
-            </div>
           </div>
         </div>
         <div class="cfg-url-row">
@@ -442,16 +412,6 @@
             <label><span data-i18n="label.bgOpacity">Opacidad fondo</span> — <span id="cfg-alertas-bg-val">90</span>%</label>
             <input type="range" id="cfg-alertas-bg" min="0.30" max="1.00" step="0.05" value="0.90"
                    oninput="onCfgChange('alertas','bg', parseFloat(this.value)); document.getElementById('cfg-alertas-bg-val').textContent = Math.round(this.value*100)" />
-          </div>
-          <div class="cfg-field full">
-            <label data-i18n="label.customBg">Fondo personalizado</label><span class="pro-inline-badge"><img class="icon-inline" src="icons/lock.svg" alt=""> <span data-i18n="pro.badgeInline"></span></span>
-            <div class="bg-upload-row">
-              <input type="file" id="cfg-alertas-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
-                     onchange="uploadBg('alertas', this.files[0])" />
-              <label class="cfg-btn" for="cfg-alertas-bgimg"><span data-i18n="btn.uploadImage">Subir imagen</span></label>
-              <button type="button" class="cfg-btn danger small" id="cfg-alertas-bgimg-remove" onclick="removeBg('alertas')" style="display:none;" data-i18n="btn.remove">Quitar</button>
-              <img class="bg-preview" id="cfg-alertas-bgimg-preview" alt="">
-            </div>
           </div>
         </div>
         <div class="cfg-url-row">
@@ -493,16 +453,6 @@
             <input type="range" id="cfg-alertas-social-bg" min="0.30" max="1.00" step="0.05" value="0.90"
                    oninput="updateSocialOverlayUrl(); document.getElementById('cfg-alertas-social-bg-val').textContent = Math.round(this.value*100)" />
           </div>
-          <div class="cfg-field full">
-            <label data-i18n="label.customBg">Fondo personalizado</label><span class="pro-inline-badge"><img class="icon-inline" src="icons/lock.svg" alt=""> <span data-i18n="pro.badgeInline"></span></span>
-            <div class="bg-upload-row">
-              <input type="file" id="cfg-alertas-social-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
-                     onchange="uploadBg('alertas-social', this.files[0])" />
-              <label class="cfg-btn" for="cfg-alertas-social-bgimg"><span data-i18n="btn.uploadImage">Subir imagen</span></label>
-              <button type="button" class="cfg-btn danger small" id="cfg-alertas-social-bgimg-remove" onclick="removeBg('alertas-social')" style="display:none;" data-i18n="btn.remove">Quitar</button>
-              <img class="bg-preview" id="cfg-alertas-social-bgimg-preview" alt="">
-            </div>
-          </div>
         </div>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-social-alert">http://localhost:3000/overlay-alertas-social.html</span>
@@ -539,16 +489,6 @@
             <input type="range" id="cfg-creditos-bg" min="0.30" max="1.00" step="0.05" value="0.85"
                    oninput="onCfgChange('creditos','bg', parseFloat(this.value)); document.getElementById('cfg-creditos-bg-val').textContent = Math.round(this.value*100)" />
           </div>
-          <div class="cfg-field full">
-            <label data-i18n="label.customBg">Fondo personalizado</label><span class="pro-inline-badge"><img class="icon-inline" src="icons/lock.svg" alt=""> <span data-i18n="pro.badgeInline"></span></span>
-            <div class="bg-upload-row">
-              <input type="file" id="cfg-creditos-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
-                     onchange="uploadBg('creditos', this.files[0])" />
-              <label class="cfg-btn" for="cfg-creditos-bgimg"><span data-i18n="btn.uploadImage">Subir imagen</span></label>
-              <button type="button" class="cfg-btn danger small" id="cfg-creditos-bgimg-remove" onclick="removeBg('creditos')" style="display:none;" data-i18n="btn.remove">Quitar</button>
-              <img class="bg-preview" id="cfg-creditos-bgimg-preview" alt="">
-            </div>
-          </div>
         </div>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-creditos">http://localhost:3000/overlay-creditos.html</span>
@@ -584,16 +524,6 @@
             <label><span data-i18n="label.bgOpacity">Opacidad fondo</span> — <span id="cfg-social-bg-val">80</span>%</label>
             <input type="range" id="cfg-social-bg" min="0.30" max="1.00" step="0.05" value="0.80"
                    oninput="onCfgChange('social','bg', parseFloat(this.value)); document.getElementById('cfg-social-bg-val').textContent = Math.round(this.value*100)" />
-          </div>
-          <div class="cfg-field full">
-            <label data-i18n="label.customBg">Fondo personalizado</label><span class="pro-inline-badge"><img class="icon-inline" src="icons/lock.svg" alt=""> <span data-i18n="pro.badgeInline"></span></span>
-            <div class="bg-upload-row">
-              <input type="file" id="cfg-social-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
-                     onchange="uploadBg('social', this.files[0])" />
-              <label class="cfg-btn" for="cfg-social-bgimg"><span data-i18n="btn.uploadImage">Subir imagen</span></label>
-              <button type="button" class="cfg-btn danger small" id="cfg-social-bgimg-remove" onclick="removeBg('social')" style="display:none;" data-i18n="btn.remove">Quitar</button>
-              <img class="bg-preview" id="cfg-social-bgimg-preview" alt="">
-            </div>
           </div>
         </div>
         <div class="cfg-url-row">

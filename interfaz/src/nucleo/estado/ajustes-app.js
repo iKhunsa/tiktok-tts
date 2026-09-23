@@ -13,7 +13,6 @@ import { options } from './opciones-lectura.js';
 import { setFieldVal, setChecked, paintRangeFill } from '../../componentes/campos-formulario.js';
 import { renderChatTogglesState } from '../../vistas/principal/toggles-chat.js';
 import { updateConnectorChipState } from '../../vistas/principal/voces.js';
-import { updateBgPreview } from '../../vistas/principal/subida-fondo.js';
 import { updateOverlayUrl, updateSocialOverlayUrl } from '../../vistas/principal/configurador-overlays.js';
 import * as datosPorCuenta from './datos-por-cuenta.js';
 
@@ -50,16 +49,15 @@ export const DEFAULT_SETTINGS = {
   musicPauseShortcut: null,
   musicSkipShortcut: null,
   overlays: {
-    seguidores: { goal: '', color: '#FFBB00', bg: 0.80, bgimg: '' },
-    likes: { rows: 10, color: '#FFBB00', bg: 0.80, bgimg: '' },
-    alertas: { dur: 4000, color: '#FFBB00', bg: 0.90, bgimg: '' },
-    creditos: { speed: 40, color: '#FFBB00', bg: 0.85, bgimg: '' },
-    social: { layout: 'cols', color: '#FFBB00', bg: 0.80, bgimg: '' },
-    'alertas-social': { color: '#FFBB00', bg: 0.90, bgimg: '' },
+    seguidores: { goal: '', color: '#FFBB00', bg: 0.80 },
+    likes: { rows: 10, color: '#FFBB00', bg: 0.80 },
+    alertas: { dur: 4000, color: '#FFBB00', bg: 0.90 },
+    creditos: { speed: 40, color: '#FFBB00', bg: 0.85 },
+    social: { layout: 'cols', color: '#FFBB00', bg: 0.80 },
+    'alertas-social': { color: '#FFBB00', bg: 0.90 },
     chat: {
       color: '#FFBB00',
       bg: 0.82,
-      bgimg: '',
       maxmsgs: 30,
       size: 14,
       usernames: true,
@@ -208,14 +206,6 @@ export function applySettings() {
     const asbValEl = document.getElementById('cfg-alertas-social-bg-val');
     if (asbValEl) asbValEl.textContent = Math.round(alertasSocial.bg * 100);
   }
-
-  updateBgPreview('seguidores', seguidores.bgimg);
-  updateBgPreview('likes', likes.bgimg);
-  updateBgPreview('alertas', alertas.bgimg);
-  updateBgPreview('chat', chat.bgimg);
-  updateBgPreview('creditos', creditos.bgimg);
-  updateBgPreview('social', social.bgimg);
-  updateBgPreview('alertas-social', alertasSocial?.bgimg);
 
   updateOverlayUrl('seguidores');
   updateOverlayUrl('likes');

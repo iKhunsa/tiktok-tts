@@ -162,7 +162,6 @@
     "resumeTTS": "▶ Reanudar TTS",
     "copy": "Copiar",
     "open": "Abrir",
-    "uploadImage": "Subir imagen",
     "remove": "Quitar",
     "useF8": "Usar F8",
     "usePlayPause": "Usar tecla Play/Pausa",
@@ -253,7 +252,6 @@
     "textSize": "Tamaño texto",
     "showNames": "Mostrar nombres",
     "visiblePlatforms": "Plataformas visibles",
-    "customBg": "Fondo personalizado",
     "followerGoal": "Meta de nuevos seguidores",
     "totalFollowers": "Total seguidores actuales",
     "maxRows": "Máximo de filas",
@@ -656,8 +654,6 @@
     "portalFavoriteInvalid": "Nombre o URL inválidos",
     "portalDownloadDone": "Descarga completa: {filename}",
     "portalDownloadFailed": "Error al descargar: {filename}",
-    "bgUploaded": "Fondo subido correctamente",
-    "bgUploadError": "Error de red al subir fondo",
     "minOnePlatform": "Deja al menos una plataforma visible",
     "urlCopied": "URL copiada — pégala en OBS Browser Source",
     "copyError": "Error al copiar",
@@ -948,8 +944,6 @@
     "copyDesc": "Hacé clic en \"Copiar\" para llevarte la URL al portapapeles. Luego en OBS: Add Source → Browser → pegá la URL → activá \"Enable transparent background\".",
     "customizeTitle": "Personalizá el overlay",
     "customizeDesc": "Ajustá el color de acento, la opacidad del fondo y otras opciones. Los cambios se reflejan al instante en la URL, sin necesidad de recargar OBS.",
-    "bgTitle": "Fondo personalizado",
-    "bgDesc": "Si querés reemplazar el fondo semitransparente por una imagen propia, subila acá (PNG, JPG, WebP o GIF, máx 8MB).",
     "testTitle": "Probar el overlay",
     "testDesc": "Usá el botón \"Test\" para disparar una alerta de prueba y ver cómo se ve en OBS antes de salir en vivo."
   },
@@ -1020,9 +1014,6 @@
     "audioUploadFailed": "Error al subir audio",
     "noAudioFile": "No se recibió archivo de audio",
     "maxSoundsReached": "Máximo 24 sonidos permitidos",
-    "imageTooLarge": "La imagen no puede superar 8 MB",
-    "imageUploadFailed": "Error al subir imagen",
-    "noImageFile": "No se recibió ninguna imagen",
     "contentRequired": "Se requiere contenido",
     "invalidConfig": "Configuración inválida",
     "playlistEmpty": "Tu playlist está vacía",
@@ -1156,14 +1147,12 @@
       "bot": "Dejá que el chat pida canciones con !p y sume tu propia playlist de fondo.",
       "soundpad": "Subí tus propios efectos de sonido y reproducilos con atajos de teclado.",
       "mcp": "Conectá un agente de IA (Claude) para operar la app por vos.",
-      "overlayDecoraciones": "Personalizá el fondo de tus overlays con tu propia imagen.",
       "generic": "Desbloqueá todas las funciones Pro de TikLiveTTS."
     },
     "overlayMsg": "Esta función requiere el plan Pro.",
     "overlayBtn": "Ver planes",
     "demoVideoSoon": "Video de demostración próximamente",
-    "upgradeCta": "Mejorá tu plan",
-    "badgeInline": "PRO"
+    "upgradeCta": "Mejorá tu plan"
   },
   "planesPopup": {
     "title": "Elegí el plan que mejor te acompaña",
@@ -1188,7 +1177,6 @@
     "proClips": "Marcado de clips en OBS",
     "proMcp": "Servidor de agente MCP",
     "proChannels": "Conectá 2 o más canales de la misma plataforma",
-    "proBackgrounds": "Fondos personalizados en los overlays",
     "choosePro": "Elegir Pro",
     "currentPlan": "Plan actual"
   },

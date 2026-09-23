@@ -140,7 +140,6 @@ POST /api/connect            ← conecta a TikTok Live (features/canales/)
 POST /api/tts                ← Google TTS → stream MP3 (features/sonido/)
 WS   /                       ← broadcast eventos al browser (core/broadcast.js)
 GET  /api/gifts-list         ← lista PNGs de regalos (features/overlay/)
-POST /api/upload-bg          ← sube imagen fondo overlay (features/overlay/)
 PATCH /api/config            ← ajusta config en runtime (features/configuracion/)
 GET  /api/platforms/status   ← estado twitch/youtube (features/canales/)
 POST /api/platforms/connect  ← conecta twitch o youtube (features/canales/)
@@ -249,7 +248,7 @@ bakeado) es un no-op total.
   `machine_id` a propósito (máxima privacidad).
 - **Eventos:** ciclo de vida (`installacion`, `app_started`, `app_updated`,
   `session_ended`), activación (`platform_connected`, `platform_connect_failed`,
-  `first_tts`), adopción (`overlay_opened`, `overlay_bg_uploaded`,
+  `first_tts`), adopción (`overlay_opened`,
   `mobile_paired`, `mobile_command`, `clip_marked`, `music_requested`,
   `promo_fired`, `bug_report_sent`, `soundpad` en resumen), config
   (`config_changed` **solo la clave, nunca el valor**, `voice_changed`,
@@ -341,7 +340,6 @@ cubierto ahora por `test/serve-ui.test.js`.
     lang-words\           ← diccionarios de frecuencia por idioma (filtro dictFilterEnabled, `features/idioma/lang-dicts.js`)
     blocked-words.md      ← palabras bloqueadas (r/w en runtime)
     tray-icon.ico
-    public\uploads\       ← imágenes subidas por usuario (r/w)
 ```
 
 ## Flujo de build y release
@@ -482,7 +480,6 @@ todo lo de las secciones **i18n** e **Íconos** de arriba.
 - Debounce de likes (agrupa likes del mismo usuario en ventana de 1.5s)
 - Auto-reconexión con backoff exponencial (máx 5 intentos)
 - Overlays: alertas de regalos, contador de likes, contador de seguidores
-- Subida de imagen de fondo para overlays (PNG/JPG/WebP/GIF, máx 8MB)
 - Top likers tracking durante el stream
 - Refresco de follower count cada 5 minutos
 - Palabras bloqueadas persistidas en `blocked-words.md`
@@ -637,7 +634,7 @@ telemetría, logs y binarios) permanecen en `DATA_BASE`.
 
 La transición se anuncia como `account:changing` (flush y desconexión) y
 `account:changed` (contexto y recarga). Los dominios no importan auth: escuchan
-ese bus. `config.json`, `moderation.json`, uploads, soundpad, PortalView y la
+ese bus. `config.json`, `moderation.json`, soundpad, PortalView y la
 cache de identidad de telemetría son por cuenta; `installation-config.json`
 conserva globales `subscriptionsEnabled` y los flags MCP. El renderer recarga
 la ventana tras un cambio efectivo de `user.id`, para no reutilizar caches,

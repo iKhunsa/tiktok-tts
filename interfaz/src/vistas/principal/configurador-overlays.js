@@ -43,8 +43,6 @@ export function buildOverlayUrl(type) {
     if (cfg.bg !== 0.90) p.set('bg', cfg.bg);
   }
 
-  if (cfg && cfg.bgimg) p.set('bgimg', cfg.bgimg);
-
   const qs = p.toString();
   return qs ? `${base}?${qs}` : base;
 }
@@ -124,7 +122,6 @@ export function updateSocialOverlayUrl() {
   if (shareImg) p.set('shareImg', shareImg);
   if (color !== '#FFBB00') p.set('color', color.replace('#', ''));
   if (bg !== 0.90) p.set('bg', bg);
-  if (cfg?.bgimg) p.set('bgimg', cfg.bgimg);
   cfg.color = color;
   cfg.bg = bg;
   saveSettings();

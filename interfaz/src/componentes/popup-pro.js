@@ -12,7 +12,6 @@ const BENEFICIO_POR_FEATURE = {
   'bot-musical': 'pro.benefit.bot',
   soundpad: 'pro.benefit.soundpad',
   'mcp-agente': 'pro.benefit.mcp',
-  'overlay-decoraciones': 'pro.benefit.overlayDecoraciones',
 };
 
 export function abrirPopupPro(featureId) {

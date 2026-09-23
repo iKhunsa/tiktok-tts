@@ -248,13 +248,6 @@ function attach(bus, logger) {
           break;
         }
 
-        // ── Overlays ─────────────────────────────────────────────────────
-        case 'overlay.fondo.subido': {
-          const kb = Number(d.size) ? Math.round(Number(d.size) / 1024) : 0;
-          track('overlay_bg_uploaded', { size_kb: kb });
-          break;
-        }
-
         // ── Clips ────────────────────────────────────────────────────────
         case 'clips.marcado.exitoso': {
           track('clip_marked', { origen: String(d.origen || 'desconocido').slice(0, 20) });

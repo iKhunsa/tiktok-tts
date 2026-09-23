@@ -15,12 +15,9 @@ const { purgeTopLikersIfNeeded } = require('./state/bounded-push');
 const { cleanNick } = require('./clean-nick');
 const mcpRegistry = require('../../core/contracts/mcp-registry');
 const { getConfigSnapshot } = require('../../core/config-snapshot');
-const entitlements = require('../../core/contracts/entitlements');
 
 const { overlayStats } = require('./routes/overlay-stats');
 const { giftsList } = require('./routes/gifts-list');
-const { uploadBg } = require('./routes/upload-bg');
-const { deleteBg } = require('./routes/delete-bg');
 const { testGift } = require('./routes/test-gift');
 const { testFollow } = require('./routes/test-follow');
 const { testShare } = require('./routes/test-share');
@@ -37,7 +34,6 @@ module.exports = {
     const deps = { state, bus, logger };
 
     app.use('/gifts', express.static(path.join(RESOURCE_BASE, 'gifts')));
-    app.use('/uploads', (req, res, next) => express.static(require('./routes/upload-bg').uploadsDir())(req, res, next));
 
     // ── Consumo puro de eventos de /canales y /chat ──────────────────────────
     bus.on('canal:gift', (payload) => {
@@ -136,11 +132,8 @@ module.exports = {
     }, 'overlay');
 
     // ── Rutas ─────────────────────────────────────────────────────────────
-    const gateOverlayBg = entitlements.guard('overlay-decoraciones');
     app.get('/api/overlay-stats', overlayStats(state));
     app.get('/api/gifts-list', giftsList(logger));
-    app.post('/api/upload-bg', gateOverlayBg, uploadBg(logger));
-    app.delete('/api/upload-bg', gateOverlayBg, deleteBg(logger));
     app.post('/api/test/gift', testGift(deps));
     app.post('/api/test/follow', testFollow(deps));
     app.post('/api/test/share', testShare(deps));
@@ -171,6 +164,6 @@ module.exports = {
       handler: () => slice().overlay,
     });
 
-    return { rutas: 9, listeners: 6 };
+    return { rutas: 7, listeners: 6 };
   },
 };

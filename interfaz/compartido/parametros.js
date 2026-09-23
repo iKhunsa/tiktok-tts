@@ -1,6 +1,6 @@
 /**
  * Lectura de querystring de un overlay. Reemplaza las 5 copias de
- * intParam(name, def) y el parseo repetido de color/bg/bgimg en los 7
+ * intParam(name, def) y el parseo repetido de color/bg en los 7
  * overlays (overlay-alertas, overlay-alertas-social, overlay-chat,
  * overlay-creditos, overlay-likes, overlay-seguidores, overlay-social).
  */
@@ -25,7 +25,7 @@ export function boolParam(params, name, def) {
 }
 
 /**
- * Aplica color/bg/bgimg de la querystring a las custom properties del
+ * Aplica color/bg de la querystring a las custom properties del
  * overlay. Es el parseo que estaba duplicado literalmente en los 7 overlays.
  */
 export function aplicarParametrosVisuales(params) {
@@ -35,9 +35,4 @@ export function aplicarParametrosVisuales(params) {
   const bg = params.get('bg');
   if (bg) document.documentElement.style.setProperty('--bg-alpha', bg);
 
-  const bgimg = params.get('bgimg');
-  if (bgimg) {
-    document.documentElement.style.setProperty('--bg-img', `url('${bgimg}')`);
-    document.body.classList.add('has-bgimg');
-  }
 }

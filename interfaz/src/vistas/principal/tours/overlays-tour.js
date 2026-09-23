@@ -14,7 +14,6 @@ export function startOverlaysTour() {
       { element: '#cfg-url-seguidores', popover: { title: t('overlay.followers.title'), description: t('overlaysTour.urlDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inOverlays },
       { element: '#cfg-url-likes', popover: { title: t('overlay.topLikers.title'), description: t('overlaysTour.urlDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inOverlays },
       { element: '#cfg-url-alertas', popover: { title: t('overlay2.giftsTitle'), description: t('overlaysTour.urlDesc'), side: 'top', align: 'start' }, onHighlightStarted: inOverlays },
-      { element: '#cfg-alertas-bgimg', popover: { title: t('overlaysTour.bgTitle'), description: t('overlaysTour.bgDesc'), side: 'top', align: 'start' }, onHighlightStarted: inOverlays },
       { element: '[onclick="testGiftAlert()"]', popover: { title: t('overlaysTour.testTitle'), description: t('overlaysTour.testDesc'), side: 'top', align: 'end' }, onHighlightStarted: inOverlays },
     ],
   }).drive();
