@@ -38,15 +38,17 @@ function pintarOverlayBloqueo(el, bloqueada, featureId) {
     overlay = document.createElement('div');
     overlay.className = 'vista-bloqueada-overlay';
     overlay.innerHTML =
-      `<div class="vista-bloqueada-video-wrap">
-        <div class="vista-bloqueada-video-placeholder">
-          <img src="icons/play_arrow.svg" alt="">
-          <span data-i18n="pro.demoVideoSoon"></span>
+      `<div class="vista-bloqueada-contenido">
+        <div class="vista-bloqueada-video-wrap">
+          <div class="vista-bloqueada-video-placeholder">
+            <img src="icons/play_arrow.svg" alt="">
+            <span data-i18n="pro.demoVideoSoon"></span>
+          </div>
+          <video class="vista-bloqueada-video" src="videos/demo-${featureId}.mp4" muted loop playsinline controls></video>
         </div>
-        <video class="vista-bloqueada-video" src="videos/demo-${featureId}.mp4" muted loop playsinline controls></video>
-      </div>` +
-      '<p class="vista-bloqueada-msg" data-i18n="pro.overlayMsg"></p>' +
-      '<button type="button" class="vista-bloqueada-link" data-i18n="pro.upgradeCta"></button>';
+        <p class="vista-bloqueada-msg" data-i18n="pro.overlayMsg"></p>
+        <button type="button" class="vista-bloqueada-link" data-i18n="pro.upgradeCta"></button>
+      </div>`;
     overlay.querySelector('.vista-bloqueada-video').addEventListener('loadeddata', (e) => {
       e.currentTarget.closest('.vista-bloqueada-video-wrap').classList.add('cargado');
     });
