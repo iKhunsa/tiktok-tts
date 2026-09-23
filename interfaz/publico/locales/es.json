@@ -1190,7 +1190,8 @@
     "proChannels": "Conectá 2 o más canales de la misma plataforma",
     "proBackgrounds": "Fondos personalizados en los overlays",
     "choosePro": "Elegir Pro",
-    "currentPlan": "Plan actual"
+    "currentPlan": "Plan actual",
+    "howItWorks": "¿Cómo funciona?"
   },
   "channelsTour": {
     "introTitle": "Canales vinculados", "introDesc": "Guardá tus canales antes de conectarlos al chat en vivo.",

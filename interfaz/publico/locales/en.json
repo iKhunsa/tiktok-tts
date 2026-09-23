@@ -1165,7 +1165,8 @@
     "proChannels": "Connect 2 or more channels on the same platform",
     "proBackgrounds": "Custom overlay backgrounds",
     "choosePro": "Choose Pro",
-    "currentPlan": "Current plan"
+    "currentPlan": "Current plan",
+    "howItWorks": "How does it work?"
   },
   "accountMenu": {
     "planFree": "Free plan",
