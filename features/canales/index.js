@@ -72,23 +72,6 @@ module.exports = {
       if (typeof respond === 'function') respond(state.tiktokChannels.size > 0);
     }, 'canales');
 
-    // /overlay (Fase 8) pide refrescar el conteo de followers periodicamente
-    // sin tocar los `conn` de TikTok directo (son privados de este dominio).
-    bus.on('canales:refrescar-followers', () => {
-      for (const [username, entry] of state.tiktokChannels) {
-        entry.conn.fetchRoomInfo()
-          .then((roomInfo) => {
-            bus.emit('canal:estado', { platform: 'tiktok', channel: username, state: 'followers-refrescado', roomInfo });
-          })
-          .catch((error) => {
-            logger.log(
-              'warn', 'canales', 'canales/index.js#register', 'canales.tiktok.refresco_followers_fallido',
-              `No se pudo refrescar followers de ${username}: ${error.message}`, { channel: username, error: error.message, stack: error.stack }
-            );
-          });
-      }
-    }, 'canales');
-
     // ── MCP ──────────────────────────────────────────────────────────────
     const snapshot = () => ({
       tiktok: Array.from(state.tiktokChannels.keys()),
