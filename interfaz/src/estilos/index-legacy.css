@@ -2344,10 +2344,6 @@
     .tiktok-login-step strong { color:var(--text); font-size:var(--text-2xs); font-weight:700; text-transform:uppercase; }
     .tiktok-login-step span:not(.tiktok-login-badge) { color:var(--text-muted); font-size:var(--text-3xs); line-height:1.4; }
     .tiktok-login-step-two strong { color:var(--tiktok); font-weight:800; }
-    .tiktok-login-complete { display:none; }
-    .tiktok-login-flow.is-complete .tiktok-login-pending { display:none; }
-    .tiktok-login-flow.is-complete .tiktok-login-complete { display:block; color:var(--ok); }
-    .tiktok-login-flow.is-complete .tiktok-login-step-two { flex:1.35; }
     @media (max-width:520px) { .tiktok-login-flow { align-items:stretch; flex-direction:column; gap:8px; } .tiktok-login-step-two { padding-left:0; padding-top:8px; border-left:none; border-top:1px solid var(--border); } }
 
     /* Segmented platform selector */

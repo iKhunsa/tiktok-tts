@@ -22,7 +22,7 @@ async function fetchTiktokSession() {
   return { available: false, loggedIn: false, authRequired: [] };
 }
 
-/** Fila superior de la seccion Canales — solo importa para poder cerrar sesion. */
+/** Fila minimalista al lado del selector de plataforma — solo importa para poder cerrar sesion. */
 function renderSessionRow(s) {
   const row = document.getElementById('tiktok-session-row');
   if (!row) return;
@@ -32,17 +32,16 @@ function renderSessionRow(s) {
 /**
  * Dentro de add-channel-form, con platform=tiktok: sin sesion, el input de
  * @usuario se reemplaza por el prompt de login (mismo lugar, una sola cosa a
- * la vez). Con sesion (o si el paquete no soporta sesion aun), input normal.
+ * la vez). Con sesion (o si el paquete no soporta sesion aun), input normal —
+ * el prompt se oculta del todo, no queda un estado "completado" visible.
  */
 export function toggleTiktokAddPrompt(platform) {
   const prompt = document.getElementById('tiktok-login-prompt');
   const row = document.getElementById('tiktok-add-channel-row');
   const hint = document.getElementById('channel-live-hint');
   if (!prompt || !row) return;
-  const hasTikTokSession = platform === 'tiktok' && lastSession.available;
-  const needsLogin = hasTikTokSession && !lastSession.loggedIn;
-  prompt.style.display = hasTikTokSession ? 'flex' : 'none';
-  prompt.classList.toggle('is-complete', hasTikTokSession && lastSession.loggedIn);
+  const needsLogin = platform === 'tiktok' && lastSession.available && !lastSession.loggedIn;
+  prompt.style.display = needsLogin ? 'flex' : 'none';
   row.style.display = needsLogin ? 'none' : 'flex';
   if (hint) hint.style.display = needsLogin ? 'none' : 'flex';
 }

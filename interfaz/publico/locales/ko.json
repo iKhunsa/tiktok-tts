@@ -367,7 +367,7 @@
     "stateManual": "수동",
     "stateError": "오류",
     "stateSaved": "저장됨",
-    "liveRequiredHint": "연결은 채널이 라이브 중일 때만 이루어집니다. 아직 방송을 시작하지 않았다면 채널을 저장하고, 라이브를 시작한 뒤 채팅에서 «모두 연결»을 누르세요.",
+    "liveRequiredHint": "<strong style=\"color:var(--danger);\">연결은 채널이 라이브 중일 때만 이루어집니다.</strong> 아직 방송을 시작하지 않았다면 채널을 저장하고, 라이브를 시작한 뒤 채팅에서 «모두 연결»을 누르세요.",
     "tiktokConnecting": "TikTok에 연결하는 중…",
     "tiktokRestoring": "TikTok 연결을 복구하는 중…",
     "tiktokRestored": "TikTok 연결이 복구되었습니다.",

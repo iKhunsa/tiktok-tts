@@ -367,7 +367,7 @@
     "stateManual": "Manuell",
     "stateError": "Fehler",
     "stateSaved": "Gespeichert",
-    "liveRequiredHint": "Die Verbindung erfolgt nur, wenn der Kanal LIVE ist. Wenn du deinen Stream noch nicht gestartet hast, speichere den Kanal und klicke im Chat auf «Alle verbinden», sobald du live bist.",
+    "liveRequiredHint": "<strong style=\"color:var(--danger);\">Die Verbindung erfolgt nur, wenn der Kanal LIVE ist.</strong> Wenn du deinen Stream noch nicht gestartet hast, speichere den Kanal und klicke im Chat auf «Alle verbinden», sobald du live bist.",
     "tiktokConnecting": "Verbindung zu TikTok wird hergestellt…",
     "tiktokRestoring": "Verbindung zu TikTok wird wiederhergestellt…",
     "tiktokRestored": "Verbindung zu TikTok wiederhergestellt.",

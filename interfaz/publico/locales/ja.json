@@ -367,7 +367,7 @@
     "stateManual": "手動",
     "stateError": "エラー",
     "stateSaved": "保存済み",
-    "liveRequiredHint": "接続はチャンネルがライブ中のときのみ行われます。まだ配信を開始していない場合は、チャンネルを保存し、ライブ開始後に「チャット」から「すべて接続」を押してください。",
+    "liveRequiredHint": "<strong style=\"color:var(--danger);\">接続はチャンネルがライブ中のときのみ行われます。</strong>まだ配信を開始していない場合は、チャンネルを保存し、ライブ開始後に「チャット」から「すべて接続」を押してください。",
     "tiktokConnecting": "TikTokに接続中…",
     "tiktokRestoring": "TikTokとの接続を復元中…",
     "tiktokRestored": "TikTokとの接続が回復しました。",

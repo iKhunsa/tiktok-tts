@@ -369,7 +369,7 @@
     "stateManual": "Manual",
     "stateError": "Error",
     "stateSaved": "Saved",
-    "liveRequiredHint": "The connection only happens when the channel is LIVE. If you haven't started your stream yet, save the channel and hit «Connect all» from Chat once you are live.",
+    "liveRequiredHint": "<strong style=\"color:var(--danger);\">The connection only happens when the channel is LIVE.</strong> If you haven't started your stream yet, save the channel and hit «Connect all» from Chat once you are live.",
     "tiktokConnecting": "Connecting to TikTok…",
     "tiktokRestoring": "Restoring connection to TikTok…",
     "tiktokRestored": "Connection to TikTok restored.",

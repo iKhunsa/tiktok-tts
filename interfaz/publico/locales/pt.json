@@ -367,7 +367,7 @@
     "stateManual": "Manual",
     "stateError": "Erro",
     "stateSaved": "Salvo",
-    "liveRequiredHint": "A conexão só acontece quando o canal está AO VIVO. Se ainda não começou a transmissão, salve o canal e clique em «Conectar tudo» no Chat quando estiver ao vivo.",
+    "liveRequiredHint": "<strong style=\"color:var(--danger);\">A conexão só acontece quando o canal está AO VIVO.</strong> Se ainda não começou a transmissão, salve o canal e clique em «Conectar tudo» no Chat quando estiver ao vivo.",
     "tiktokConnecting": "Conectando ao TikTok…",
     "tiktokRestoring": "Restaurando a conexão com o TikTok…",
     "tiktokRestored": "Conexão com o TikTok restabelecida.",

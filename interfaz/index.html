@@ -673,29 +673,30 @@
           </div>
         </div>
         <div id="settings-channels-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:20px;margin-bottom:4px;"></div>
-        <!-- Solo visible con sesion de TikTok activa (cerrar sesion). El login
-             en si vive dentro de add-channel-form (ver tiktok-login-prompt) y,
-             si ya hay canales guardados, se auto-abre ante auth_required — ver
-             tiktokLogin() en cliente-ws.js. -->
-        <div id="tiktok-session-row" style="display:none;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 4px;font-size:12px;">
-          <img class="icon-inline" src="icons/tiktok.svg" alt="">
-          <span id="tiktok-session-status" style="color:var(--text-muted);" data-i18n="conn.tiktokSessionActive">Sesión de TikTok iniciada.</span>
-          <button type="button" class="cfg-btn small" id="btnTiktokLogout" onclick="tiktokLogout()"><img class="icon-inline" src="icons/exit_to_app.svg" alt=""> <span data-i18n="conn.tiktokLogout">Cerrar sesión de TikTok</span></button>
-        </div>
         <div id="add-channel-form" style="display:none;flex-direction:column;gap:10px;margin-top:10px;">
-          <div class="seg-control" id="platform-seg">
-            <button class="seg-btn active" id="seg-tiktok" onclick="selectAddPlatform('tiktok')">
-              <img style="width:13px;height:13px;vertical-align:middle;" src="icons/tiktok.svg" alt=""> TikTok
-            </button>
-            <button class="seg-btn" id="seg-twitch" onclick="selectAddPlatform('twitch')">
-              <img style="width:13px;height:13px;vertical-align:middle;" src="icons/sports_esports.svg" alt=""> Twitch
-            </button>
-            <button class="seg-btn" id="seg-youtube" onclick="selectAddPlatform('youtube')">
-              <img style="width:13px;height:13px;vertical-align:middle;" src="icons/tv.svg" alt=""> YouTube
-            </button>
-            <button class="seg-btn" id="seg-kick" onclick="selectAddPlatform('kick')">
-              <img style="width:13px;height:13px;vertical-align:middle;" src="icons/kick.svg" alt=""> Kick
-            </button>
+          <div class="settings-row-flex" style="justify-content:space-between;flex-wrap:wrap;gap:8px;">
+            <div class="seg-control" id="platform-seg">
+              <button class="seg-btn active" id="seg-tiktok" onclick="selectAddPlatform('tiktok')">
+                <img style="width:13px;height:13px;vertical-align:middle;" src="icons/tiktok.svg" alt=""> TikTok
+              </button>
+              <button class="seg-btn" id="seg-twitch" onclick="selectAddPlatform('twitch')">
+                <img style="width:13px;height:13px;vertical-align:middle;" src="icons/sports_esports.svg" alt=""> Twitch
+              </button>
+              <button class="seg-btn" id="seg-youtube" onclick="selectAddPlatform('youtube')">
+                <img style="width:13px;height:13px;vertical-align:middle;" src="icons/tv.svg" alt=""> YouTube
+              </button>
+              <button class="seg-btn" id="seg-kick" onclick="selectAddPlatform('kick')">
+                <img style="width:13px;height:13px;vertical-align:middle;" src="icons/kick.svg" alt=""> Kick
+              </button>
+            </div>
+            <!-- Solo visible con sesion de TikTok activa (cerrar sesion) — minimalista,
+                 al lado del selector de plataforma en vez de una fila propia arriba de
+                 todo. El login en si vive en tiktok-login-prompt, mas abajo. -->
+            <div id="tiktok-session-row" style="display:none;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);">
+              <img class="icon-inline" src="icons/tiktok.svg" alt="" style="width:13px;height:13px;">
+              <span id="tiktok-session-status" data-i18n="conn.tiktokSessionActive">Sesión de TikTok iniciada.</span>
+              <button type="button" class="cfg-btn small icon-only" id="btnTiktokLogout" onclick="tiktokLogout()" data-i18n-title="conn.tiktokLogout" title="Cerrar sesión de TikTok"><img class="icon-inline" src="icons/exit_to_app.svg" alt=""></button>
+            </div>
           </div>
           <!-- Reemplaza la fila de input cuando platform=tiktok y no hay sesion
                (ver toggleTiktokAddPrompt en tiktok-sesion.js) — el login de
@@ -707,8 +708,7 @@
               <div class="tiktok-login-step tiktok-login-step-one">
                 <span class="tiktok-login-badge">1</span>
                 <div>
-                  <strong class="tiktok-login-pending" data-i18n="conn.tiktokLogin">Iniciar sesión en TikTok</strong>
-                  <strong class="tiktok-login-complete">✓ <span data-i18n="conn.tiktokSessionActive">Sesión de TikTok iniciada.</span></strong>
+                  <strong data-i18n="conn.tiktokLogin">Iniciar sesión en TikTok</strong>
                   <span data-i18n="conn.tiktokLoginStepOneDesc">Necesario para acceder al chat.</span>
                 </div>
               </div>
@@ -737,7 +737,7 @@
           </div>
           <div id="channel-live-hint" style="display:flex;gap:6px;font-size:11px;color:var(--text-muted);line-height:1.5;">
             <img class="icon-inline" src="icons/info.svg" alt="" style="opacity:.6;flex-shrink:0;width:13px;height:13px;">
-            <span data-i18n="conn.liveRequiredHint">La conexión solo ocurre cuando el canal está EN VIVO. Si aún no empiezas el directo, guarda el canal y pulsa «Conectar todo» desde Chat cuando estés en vivo.</span>
+            <span data-i18n-html="conn.liveRequiredHint"><strong style="color:var(--danger);">La conexión solo ocurre cuando el canal está EN VIVO.</strong> Si aún no empiezas el directo, guarda el canal y pulsa «Conectar todo» desde Chat cuando estés en vivo.</span>
           </div>
           <div id="youtube-channel-hint" style="display:none;font-size:11px;color:var(--text-muted);line-height:1.5;">
             Usa @canal o Channel ID para reconectar sin pegar link nuevo. Links watch/youtu.be se guardan como live temporal manual.

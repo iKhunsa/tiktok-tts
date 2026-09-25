@@ -412,7 +412,7 @@
     "stateError": "Error",
     "stateSaved": "Guardado",
     "shortcutNotRegisteredPrefix": "Atajo no registrado:",
-    "liveRequiredHint": "La conexión solo ocurre cuando el canal está EN VIVO. Si aún no empiezas el directo, guarda el canal y pulsa «Conectar todo» desde Chat cuando estés en vivo.",
+    "liveRequiredHint": "<strong style=\"color:var(--danger);\">La conexión solo ocurre cuando el canal está EN VIVO.</strong> Si aún no empiezas el directo, guarda el canal y pulsa «Conectar todo» desde Chat cuando estés en vivo.",
     "tiktokConnecting": "Conectando con TikTok…",
     "tiktokRestoring": "Restaurando conexión con TikTok…",
     "tiktokRestored": "Conexión con TikTok restablecida.",

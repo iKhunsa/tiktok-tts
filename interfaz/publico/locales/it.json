@@ -367,7 +367,7 @@
     "stateManual": "Manuale",
     "stateError": "Errore",
     "stateSaved": "Salvato",
-    "liveRequiredHint": "La connessione avviene solo quando il canale è IN DIRETTA. Se non hai ancora avviato la diretta, salva il canale e premi «Connetti tutto» da Chat quando sei in live.",
+    "liveRequiredHint": "<strong style=\"color:var(--danger);\">La connessione avviene solo quando il canale è IN DIRETTA.</strong> Se non hai ancora avviato la diretta, salva il canale e premi «Connetti tutto» da Chat quando sei in live.",
     "tiktokConnecting": "Connessione a TikTok…",
     "tiktokRestoring": "Ripristino della connessione a TikTok…",
     "tiktokRestored": "Connessione a TikTok ripristinata.",
