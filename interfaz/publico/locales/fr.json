@@ -1192,7 +1192,8 @@
     "introTitle": "Chaînes liées", "introDesc": "Enregistrez vos chaînes avant de les connecter au chat en direct.",
     "listTitle": "Chaînes enregistrées", "listDesc": "Voyez chaque chaîne et son état ici. Retirez celles que vous n'utilisez plus.",
     "addTitle": "Ajouter une chaîne", "addDesc": "Ouvrez ce formulaire pour enregistrer une autre chaîne.",
-    "platformTitle": "Choisissez la plateforme", "platformDesc": "Sélectionnez TikTok, Twitch, YouTube ou Kick avant de saisir la chaîne. Pour TikTok, vous devrez d'abord vous connecter pour pouvoir lire son chat — cette session peut expirer avec le temps, et l'application vous le signalera en vous demandant de vous reconnecter.",
+    "platformTitle": "Choisissez la plateforme", "platformDesc": "Sélectionnez TikTok, Twitch, YouTube ou Kick avant de saisir la chaîne.",
+    "tiktokLoginTitle": "Connectez-vous à TikTok", "tiktokLoginDesc": "TikTok exige que vous vous connectiez pour pouvoir lire son chat. Cette session peut expirer avec le temps — l'application vous le signalera alors et vous demandera de vous reconnecter.",
     "channelTitle": "Saisissez la chaîne", "channelDesc": "Saisissez le nom d'utilisateur ou le lien. Pour YouTube, utilisez aussi @chaîne ou Channel ID.",
     "saveTitle": "Enregistrer", "saveDesc": "Enregistrez-la pour la préparer. Cela ne lance pas de connexion.",
     "connectTitle": "Tout connecter", "connectDesc": "Depuis le Chat, ce bouton connecte les chaînes enregistrées lorsqu'elles sont en direct."

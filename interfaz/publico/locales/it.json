@@ -1192,7 +1192,8 @@
     "introTitle": "Canali collegati", "introDesc": "Salva i canali prima di collegarli alla chat in diretta.",
     "listTitle": "Canali salvati", "listDesc": "Qui vedi ogni canale e il suo stato. Rimuovi quelli che non usi più.",
     "addTitle": "Aggiungi canale", "addDesc": "Apri questo modulo per salvare un altro canale.",
-    "platformTitle": "Scegli la piattaforma", "platformDesc": "Seleziona TikTok, Twitch, YouTube o Kick prima di inserire il canale. Con TikTok dovrai prima accedere per poter leggere la sua chat — quella sessione può scadere col tempo, e l'app te lo segnalerà chiedendoti di accedere di nuovo.",
+    "platformTitle": "Scegli la piattaforma", "platformDesc": "Seleziona TikTok, Twitch, YouTube o Kick prima di inserire il canale.",
+    "tiktokLoginTitle": "Accedi a TikTok", "tiktokLoginDesc": "TikTok richiede l'accesso per poter leggere la sua chat. Questa sessione può scadere col tempo — quando succede, l'app te lo segnalerà e ti chiederà di accedere di nuovo.",
     "channelTitle": "Inserisci il canale", "channelDesc": "Inserisci utente o link. Per YouTube puoi usare anche @canale o Channel ID.",
     "saveTitle": "Salva", "saveDesc": "Salvalo per averlo pronto. Salvare non avvia una connessione.",
     "connectTitle": "Connetti tutto", "connectDesc": "Da Chat, questo pulsante collega i canali salvati quando sono in diretta."

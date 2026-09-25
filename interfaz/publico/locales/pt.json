@@ -1192,7 +1192,8 @@
     "introTitle": "Canais vinculados", "introDesc": "Salve seus canais antes de conectá-los ao chat ao vivo.",
     "listTitle": "Canais salvos", "listDesc": "Veja cada canal e seu status aqui. Remova os que não usa mais.",
     "addTitle": "Adicionar canal", "addDesc": "Abra este formulário para salvar outro canal.",
-    "platformTitle": "Escolha a plataforma", "platformDesc": "Selecione TikTok, Twitch, YouTube ou Kick antes de informar o canal. No TikTok, você vai precisar entrar primeiro para poder ler o chat — essa sessão pode expirar com o tempo, e o app vai avisar e pedir para você entrar de novo quando isso acontecer.",
+    "platformTitle": "Escolha a plataforma", "platformDesc": "Selecione TikTok, Twitch, YouTube ou Kick antes de informar o canal.",
+    "tiktokLoginTitle": "Entre no TikTok", "tiktokLoginDesc": "O TikTok exige que você entre para poder ler o chat. Essa sessão pode expirar com o tempo — quando isso acontecer, o app vai avisar e pedir para você entrar de novo.",
     "channelTitle": "Informe o canal", "channelDesc": "Digite o usuário ou link. Para YouTube, também pode usar @canal ou Channel ID.",
     "saveTitle": "Salvar", "saveDesc": "Salve para deixá-lo pronto. Salvar não inicia uma conexão.",
     "connectTitle": "Conectar tudo", "connectDesc": "No Chat, este botão conecta os canais salvos quando estiverem ao vivo."
