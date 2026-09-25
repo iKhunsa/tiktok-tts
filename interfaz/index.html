@@ -754,6 +754,12 @@
           </div>
         </div>
         <div id="settings-channels-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:20px;margin-bottom:4px;"></div>
+        <div id="tiktok-session-row" style="display:none;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 4px;font-size:12px;">
+          <img class="icon-inline" src="icons/tiktok.svg" alt="">
+          <span id="tiktok-session-status" style="color:var(--text-muted);"></span>
+          <button type="button" class="cfg-btn small" id="btnTiktokLogin" onclick="tiktokLogin()"><img class="icon-inline" src="icons/login.svg" alt=""> <span data-i18n="conn.tiktokLogin">Iniciar sesión en TikTok</span></button>
+          <button type="button" class="cfg-btn small" id="btnTiktokLogout" onclick="tiktokLogout()" style="display:none;"><img class="icon-inline" src="icons/exit_to_app.svg" alt=""> <span data-i18n="conn.tiktokLogout">Cerrar sesión de TikTok</span></button>
+        </div>
         <div id="add-channel-form" style="display:none;flex-direction:column;gap:10px;margin-top:10px;">
           <div class="seg-control" id="platform-seg">
             <button class="seg-btn active" id="seg-tiktok" onclick="selectAddPlatform('tiktok')">

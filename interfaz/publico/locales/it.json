@@ -373,7 +373,15 @@
     "tiktokConnecting": "Connessione a TikTok…",
     "tiktokRestoring": "Ripristino della connessione a TikTok…",
     "tiktokRestored": "Connessione a TikTok ripristinata.",
-    "tiktokWaitingLive": "Questo canale non è in diretta. Aspetteremo la prossima diretta."
+    "tiktokWaitingLive": "Questo canale non è in diretta. Aspetteremo la prossima diretta.",
+    "tiktokLogin": "Accedi a TikTok",
+    "tiktokLogout": "Esci da TikTok",
+    "tiktokSessionActive": "Accesso a TikTok effettuato.",
+    "tiktokSessionNone": "Nessun accesso a TikTok (serve solo se una live lo richiede).",
+    "tiktokAuthRequired": "Accesso richiesto per {channel}.",
+    "tiktokAuthRequiredToast": "TikTok richiede l'accesso per vedere @{channel}. Accedi da Impostazioni → Canali collegati.",
+    "tiktokLoggedIn": "Accesso a TikTok effettuato. Riconnessione…",
+    "tiktokLoggedOut": "Disconnesso da TikTok."
   },
   "mobile2": {
     "loading": "Caricamento...",
@@ -1004,6 +1012,9 @@
     "tiktokNoEnVivo": "L'utente non è in diretta",
     "tiktokEstadoDesconocido": "Non siamo riusciti a verificare se l'utente è in diretta. Riprova",
     "tiktokEsperandoProximoLive": "Questo canale non è in diretta. Aspetteremo la prossima diretta.",
+    "tiktokAuthRequired": "TikTok richiede l'accesso per vedere questa live.",
+    "tiktokLoginFailed": "Impossibile aprire l'accesso a TikTok.",
+    "tiktokLogoutFailed": "Impossibile uscire da TikTok.",
     "obsConnectInProgress": "È già in corso una connessione a OBS",
     "mcpDisabled": "Il server MCP è spento",
     "unauthorized": "Non autenticato.",

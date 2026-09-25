@@ -26,6 +26,10 @@ class FakeUnknownError extends Error {
   constructor(reason = 'unexpected_shape') { super(`unknown (${reason})`); this.name = 'LiveStatusUnknownError'; this.code = 'LIVE_STATUS_UNKNOWN'; this.reason = reason; }
 }
 
+class FakeAuthRequiredError extends Error {
+  constructor() { super('TikTok requires login to open @ana/live'); this.name = 'AuthRequiredError'; this.code = 'AUTH_REQUIRED'; }
+}
+
 /** connectImpl(instance, attemptIndex0Based) -> valor de resolucion, o lanza/rechaza para simular un fallo. */
 async function withFakeTiktok(connectImpl, run) {
   const prev = require.cache[TTLC_PATH];
@@ -260,6 +264,54 @@ test('offline confirmado entra en espera sin borrar la intencion, y reintenta ma
       await flush();
       assert.equal(instances.length, 2, 'siguio esperando el proximo live, sin que el usuario haga nada');
       assert.equal(deps.state.tiktokChannels.get('ana').techState, 'waiting_live');
+    }
+  );
+});
+
+test('TikTok pide login: auth_required, sin retry infinito, y reanuda solo tras resumeAuthPausedChannels', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  await withFakeTiktok(
+    (_i, idx) => (idx === 0 ? Promise.reject(new FakeAuthRequiredError()) : { roomInfo: { status: 2 } }),
+    async ({ connectTiktokChannel, resumeAuthPausedChannels }, instances) => {
+      const { deps, estados, broadcasts } = makeDeps();
+
+      await assert.rejects(connectTiktokChannel(deps, 'ana'), (err) => {
+        assert.equal(err.code, 'AUTH_REQUIRED', 'nunca cae al bucket unknown');
+        return true;
+      });
+
+      const entry = deps.state.tiktokChannels.get('ana');
+      assert.ok(entry, 'la intencion se conserva');
+      assert.equal(entry.techState, 'auth_required');
+      assert.equal(entry.timer, null, 'supervisor pausado: no hay proximo intento agendado');
+      assert.ok(estados.some((p) => p.state === 'auth-requerida' && p.channel === 'ana'));
+      assert.ok(broadcasts.some((b) => b.type === 'tiktok-connection-status' && b.status === 'auth-required' && b.channel === 'ana'));
+
+      t.mock.timers.tick(10 * 60 * 1000);
+      await flush();
+      assert.equal(instances.length, 1, 'ni un reintento mientras no haya sesion');
+
+      assert.deepEqual(resumeAuthPausedChannels(deps, 'login'), ['ana']);
+      await flush();
+      assert.equal(instances.length, 2, 'reanudo sola tras el login');
+      assert.equal(deps.state.tiktokChannels.get('ana').techState, 'connected');
+      assert.ok(estados.some((p) => p.state === 'sesion-restaurada' && p.channel === 'ana'));
+    }
+  );
+});
+
+test('error real (unknown) sigue reintentando con backoff aunque exista el bucket auth_required', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  await withFakeTiktok(
+    () => Promise.reject(new Error("ERR_ABORTED (-3) loading 'https://www.tiktok.com/@ana/live'")),
+    async ({ connectTiktokChannel, resumeAuthPausedChannels }, instances) => {
+      const { deps } = makeDeps();
+      await assert.rejects(connectTiktokChannel(deps, 'ana'));
+      assert.equal(deps.state.tiktokChannels.get('ana').techState, 'connecting');
+      assert.deepEqual(resumeAuthPausedChannels(deps, 'login'), [], 'un unknown no es un canal pausado por auth');
+      t.mock.timers.tick(nextRetryDelayMs(1));
+      await flush();
+      assert.equal(instances.length, 2, 'el backoff existente sigue intacto');
     }
   );
 });

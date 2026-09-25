@@ -75,6 +75,7 @@ import {
   toggleAddChannelForm, selectAddPlatform, addChannelFromSettings, toggleConnectAllChat,
   renderSettingsChannels,
 } from './plataformas.js';
+import { renderTiktokSession, tiktokLogin, tiktokLogout } from './tiktok-sesion.js';
 import { doInstallUpdate, iniciarEventosElectron } from './eventos-electron.js';
 import {
   musicRemoveFromQueue, musicSkip, musicTogglePause, musicSetEnabled, musicSetVolume,
@@ -137,6 +138,7 @@ Object.assign(window, {
   spSettingsDelete, spFilterIcons, spChooseIcon,
   // plataformas
   toggleAddChannelForm, selectAddPlatform, addChannelFromSettings, toggleConnectAllChat,
+  tiktokLogin, tiktokLogout,
   // auto-update
   doInstallUpdate,
   // musica
@@ -233,6 +235,7 @@ function iniciarArranque() {
   connectWS();
   updateQueueBadge();
   renderSettingsChannels();
+  renderTiktokSession();
   loadMobileURL();
   spLoad().then(() => spRestoreShortcuts());
 

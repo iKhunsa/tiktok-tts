@@ -373,7 +373,15 @@
     "tiktokConnecting": "Conectando ao TikTok…",
     "tiktokRestoring": "Restaurando a conexão com o TikTok…",
     "tiktokRestored": "Conexão com o TikTok restabelecida.",
-    "tiktokWaitingLive": "Este canal não está ao vivo. Vamos aguardar a próxima transmissão."
+    "tiktokWaitingLive": "Este canal não está ao vivo. Vamos aguardar a próxima transmissão.",
+    "tiktokLogin": "Entrar no TikTok",
+    "tiktokLogout": "Sair do TikTok",
+    "tiktokSessionActive": "Sessão do TikTok iniciada.",
+    "tiktokSessionNone": "Sem sessão do TikTok (só é necessária se uma live pedir).",
+    "tiktokAuthRequired": "Login necessário para {channel}.",
+    "tiktokAuthRequiredToast": "O TikTok pede login para ver @{channel}. Entre em Configurações → Canais vinculados.",
+    "tiktokLoggedIn": "Sessão do TikTok iniciada. Reconectando…",
+    "tiktokLoggedOut": "Sessão do TikTok encerrada."
   },
   "mobile2": {
     "loading": "Carregando...",
@@ -1004,6 +1012,9 @@
     "tiktokNoEnVivo": "O usuário não está ao vivo",
     "tiktokEstadoDesconocido": "Não conseguimos verificar se o usuário está ao vivo. Tente novamente",
     "tiktokEsperandoProximoLive": "Este canal não está ao vivo. Vamos aguardar a próxima transmissão.",
+    "tiktokAuthRequired": "O TikTok pede login para ver esta live.",
+    "tiktokLoginFailed": "Não foi possível abrir o login do TikTok.",
+    "tiktokLogoutFailed": "Não foi possível sair do TikTok.",
     "obsConnectInProgress": "Já existe uma conexão com o OBS em andamento",
     "mcpDisabled": "O servidor MCP está desligado",
     "unauthorized": "Não autenticado.",
