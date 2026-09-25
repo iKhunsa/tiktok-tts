@@ -9,7 +9,6 @@ const { addDonor, addFollower, addSharer } = require('./state/credits');
 const { setFollowerBaseForChannel } = require('./state/set-follower-base');
 const { recomputeFollowerBase } = require('./state/recompute-follower-base');
 const { extractFollowerCount } = require('./state/extract-follower-count');
-const { startFollowerRefresh, stopFollowerRefresh } = require('./state/follower-refresh-timer');
 const { computeGiftUsd } = require('./compute-gift-usd');
 const { purgeTopLikersIfNeeded } = require('./state/bounded-push');
 const { cleanNick } = require('./clean-nick');
@@ -112,18 +111,20 @@ module.exports = {
         resetOverlayState(state);
       }
 
-      if (payload.state === 'conectado' || payload.state === 'followers-refrescado') {
+      // La base se fija UNA vez al conectar (roomInfo de room/enter) y los
+      // follows en vivo suman aparte (canal:follow → followCount); el overlay
+      // muestra base + followCount. No hay refresco periodico: re-leer la base
+      // a mitad de stream contaria dos veces los follows de la sesion.
+      if (payload.state === 'conectado') {
         if (payload.channel) state.activeTiktokChannels.add(payload.channel);
         const count = extractFollowerCount(payload.roomInfo);
         if (count > 0) setFollowerBaseForChannel(deps, payload.channel, count);
-        if (payload.state === 'conectado') startFollowerRefresh(deps);
       }
 
       if (payload.state === 'desconectado' || payload.state === 'sin-canales') {
         if (payload.channel) state.activeTiktokChannels.delete(payload.channel);
         recomputeFollowerBase(deps);
         if (state.activeTiktokChannels.size === 0) {
-          stopFollowerRefresh(deps);
           // Migracion de clearLikePendingTimers (backend-viejo/server.js:599) —
           // sin esto, timers de debounce de likes pendientes de un canal ya
           // desconectado podian disparar un broadcast de likes fantasma.

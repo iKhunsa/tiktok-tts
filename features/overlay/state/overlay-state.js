@@ -18,7 +18,6 @@ function createOverlayState() {
       followers: new Map(),
       sharers: new Map(),
     },
-    followerRefreshTimer: null,
   };
 }
 
