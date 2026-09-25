@@ -14,6 +14,13 @@ const CONNECT_TIMEOUT_MS = 30000;
 // (giftId+uniqueId) y se publica solo el ultimo estado visto.
 const GIFT_COMBO_DEBOUNCE_MS = 1500;
 
+// Segunda senal de salud: la propia pagina de TikTok pollea check_alive cada
+// ~6s y el paquete emite 'checkAlive' en cada `alive:true`. Si el watchdog de
+// silencio general (WATCHDOG_TIMEOUT_MS) vence pero hubo un checkAlive en
+// esta ventana, el live esta sano sin actividad: no se reconecta y se vuelve
+// a mirar cada CHECK_ALIVE_FRESH_MS. 60s = ~10 polls, tolera varios perdidos.
+const CHECK_ALIVE_FRESH_MS = 60 * 1000;
+
 function watchdogKey(username) {
   return `tiktok:${username}`;
 }
@@ -145,8 +152,21 @@ function setupTikTokConnection(deps, cleanUsername) {
   // Cualquier evento tecnico (chat, regalo, like, join, follow, share, o el
   // push periodico de viewerCount) cuenta como "conexion viva" — un live sin
   // comentarios NO debe verse como caido. `armStaleWatchdog` es el unico lugar
-  // que decide que cuenta como salud tecnica.
-  const armStaleWatchdog = () => armWatchdog(state, staleKey, WATCHDOG_TIMEOUT_MS, () => onStaleConnection(deps, cleanUsername, conn));
+  // que decide que cuenta como salud tecnica (checkAlive es aparte, ver
+  // CHECK_ALIVE_FRESH_MS y onStaleConnection).
+  entry.lastCheckAliveAt = null;
+  entry.quietSince = null;
+  const armStaleWatchdog = () => {
+    if (entry.quietSince !== null) {
+      logger.log(
+        'info', 'canales', 'canales/tiktok/connect-tiktok-channel.js#setupTikTokConnection', 'canales.tiktok.actividad_reanudada',
+        `TikTok ${cleanUsername} volvio a tener actividad tras un periodo sano sin eventos`,
+        { channel: cleanUsername, quietMs: Date.now() - entry.quietSince }
+      );
+      entry.quietSince = null;
+    }
+    armWatchdog(state, staleKey, WATCHDOG_TIMEOUT_MS, () => onStaleConnection(deps, cleanUsername, conn));
+  };
   entry.armStaleWatchdog = armStaleWatchdog;
 
   // Evita que una conexion vieja (reemplazada por un reintento mas nuevo)
@@ -230,6 +250,19 @@ function setupTikTokConnection(deps, cleanUsername) {
     armStaleWatchdog();
   });
 
+  // TikTok confirmo (check_alive, ~cada 6s) que el directo sigue. NO rearma
+  // el watchdog general: solo lo consulta onStaleConnection al vencer.
+  conn.on('checkAlive', () => {
+    if (logIgnoredIfStale('checkAlive')) return;
+    if (entry.lastCheckAliveAt === null) {
+      logger.log(
+        'info', 'canales', 'canales/tiktok/connect-tiktok-channel.js#setupTikTokConnection', 'canales.tiktok.check_alive_confirmado',
+        `TikTok ${cleanUsername}: check_alive confirma directo activo (senal de salud secundaria)`, { channel: cleanUsername }
+      );
+    }
+    entry.lastCheckAliveAt = Date.now();
+  });
+
   conn.on('disconnected', () => {
     if (logIgnoredIfStale('disconnected')) return;
     clearWatchdog(state, staleKey);
@@ -266,15 +299,45 @@ function setupTikTokConnection(deps, cleanUsername) {
   return conn;
 }
 
-/** Watchdog de silencio tecnico total (WATCHDOG_TIMEOUT_MS sin ninguna senal, ver armStaleWatchdog arriba). */
+/**
+ * Vence el watchdog de silencio general (WATCHDOG_TIMEOUT_MS sin ninguna
+ * senal, ver armStaleWatchdog arriba). Modelo de dos senales: solo recupera
+ * si TAMPOCO hubo un checkAlive en los ultimos CHECK_ALIVE_FRESH_MS. Si lo
+ * hubo, el live esta sano sin actividad y se re-chequea cada
+ * CHECK_ALIVE_FRESH_MS hasta que vuelva la actividad (rearma el general) o
+ * check_alive deje de confirmar (recupera).
+ */
 function onStaleConnection(deps, cleanUsername, conn) {
   const { state, logger } = deps;
   const current = state.tiktokChannels.get(cleanUsername);
   if (!current || current.conn !== conn) return;
+  const source = 'canales/tiktok/connect-tiktok-channel.js#onStaleConnection';
+  const now = Date.now();
+  const checkAliveAgeMs = current.lastCheckAliveAt !== null ? now - current.lastCheckAliveAt : null;
+
+  if (checkAliveAgeMs !== null && checkAliveAgeMs < CHECK_ALIVE_FRESH_MS) {
+    if (current.quietSince === null) {
+      current.quietSince = now - WATCHDOG_TIMEOUT_MS;
+      logger.log(
+        'info', 'canales', source, 'canales.tiktok.sano_sin_actividad',
+        `TikTok ${cleanUsername} sin eventos en ${WATCHDOG_TIMEOUT_MS}ms pero check_alive sigue confirmando el directo; no se reconecta`,
+        { channel: cleanUsername, timeoutMs: WATCHDOG_TIMEOUT_MS, checkAliveAgeMs, healthSignal: 'check_alive' }
+      );
+    }
+    armWatchdog(state, watchdogKey(cleanUsername), CHECK_ALIVE_FRESH_MS, () => onStaleConnection(deps, cleanUsername, conn));
+    return;
+  }
+
+  // healthSignal distingue "check_alive nunca llego en esta conexion" (mismo
+  // caso que antes de existir la senal) de "confirmaba y dejo de hacerlo".
+  const healthSignal = checkAliveAgeMs === null ? 'ninguna_en_ventana' : 'check_alive_dejo_de_confirmar';
   logger.log(
-    'warn', 'canales', 'canales/tiktok/connect-tiktok-channel.js#onStaleConnection', 'canales.tiktok.sin_eventos',
-    `TikTok ${cleanUsername} sin ninguna senal tecnica en ${WATCHDOG_TIMEOUT_MS}ms; recuperando`,
-    { channel: cleanUsername, timeoutMs: WATCHDOG_TIMEOUT_MS, healthSignal: 'ninguna_en_ventana' }
+    'warn', 'canales', source, 'canales.tiktok.sin_eventos',
+    `TikTok ${cleanUsername} sin ninguna senal tecnica (${healthSignal}); recuperando`,
+    {
+      channel: cleanUsername, timeoutMs: WATCHDOG_TIMEOUT_MS, healthSignal, checkAliveAgeMs,
+      quietMs: current.quietSince !== null ? now - current.quietSince : null,
+    }
   );
   triggerRecovery(deps, cleanUsername, 'watchdog_sin_senal_tecnica');
 }
