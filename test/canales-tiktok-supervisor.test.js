@@ -154,6 +154,54 @@ test('live silencioso (sin chat) sigue sano: cualquier senal tecnica rearma el w
   );
 });
 
+test('dos senales: check_alive vigente evita reconectar un live sin eventos; si deja de confirmar, recupera', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout', 'Date'], now: 1_000_000 });
+  await withFakeTiktok(
+    () => ({ roomInfo: { status: 2 } }),
+    async ({ connectTiktokChannel }, instances) => {
+      const { deps } = makeDeps();
+      await connectTiktokChannel(deps, 'ana');
+      const events = () => deps.logger.entries.map((e) => e.event);
+
+      // 5 min sin NINGUN evento tecnico, pero check_alive confirmando cada 6s.
+      for (let i = 0; i < 50; i++) { t.mock.timers.tick(6000); instances[0].emit('checkAlive'); }
+      await flush();
+      assert.equal(deps.state.tiktokChannels.get('ana').techState, 'connected', 'check_alive vigente: no reconecta');
+      assert.ok(events().includes('canales.tiktok.sano_sin_actividad'));
+      assert.equal(instances.length, 1, 'no se abrio un intento nuevo');
+
+      // Sigue sano mientras check_alive confirme (re-chequeo periodico).
+      for (let i = 0; i < 30; i++) { t.mock.timers.tick(6000); instances[0].emit('checkAlive'); }
+      await flush();
+      assert.equal(deps.state.tiktokChannels.get('ana').techState, 'connected');
+
+      // check_alive deja de llegar: al vencer la ventana de frescura, recupera.
+      t.mock.timers.tick(2 * 60 * 1000);
+      await flush();
+      const stale = deps.logger.entries.find((e) => e.event === 'canales.tiktok.sin_eventos');
+      assert.ok(stale, 'se logueo la muerte real');
+      assert.equal(stale.data.healthSignal, 'check_alive_dejo_de_confirmar');
+      assert.equal(instances.length, 2, 'se disparo la recuperacion');
+    }
+  );
+});
+
+test('sin check_alive el watchdog general sigue reconectando a los 5 min (comportamiento previo intacto)', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout', 'Date'], now: 1_000_000 });
+  await withFakeTiktok(
+    () => ({ roomInfo: { status: 2 } }),
+    async ({ connectTiktokChannel }, instances) => {
+      const { deps } = makeDeps();
+      await connectTiktokChannel(deps, 'ana');
+      t.mock.timers.tick(5 * 60 * 1000);
+      await flush();
+      const stale = deps.logger.entries.find((e) => e.event === 'canales.tiktok.sin_eventos');
+      assert.equal(stale.data.healthSignal, 'ninguna_en_ventana');
+      assert.equal(instances.length, 2);
+    }
+  );
+});
+
 test('Desconectar durante recuperacion cancela el reintento agendado de inmediato', async (t) => {
   t.mock.timers.enable({ apis: ['setTimeout'] });
   await withFakeTiktok(
