@@ -363,3 +363,31 @@ test('error real (unknown) sigue reintentando con backoff aunque exista el bucke
     }
   );
 });
+
+test('fallo con tiktokStatusCode persistente (ej. 30003) converge al ritmo lento de espera, no al cap de 60s', () => {
+  const burst = 4;
+  for (let n = 1; n <= burst; n++) {
+    assert.equal(nextRetryDelayMs(n, { tiktokAnswered: true }), nextRetryDelayMs(n), 'la rafaga rapida inicial no cambia');
+  }
+  assert.equal(nextRetryDelayMs(burst + 1, { tiktokAnswered: true }), nextWaitingLiveDelayMs(0));
+  assert.equal(nextRetryDelayMs(100, { tiktokAnswered: true }), nextWaitingLiveDelayMs(100));
+  assert.ok(nextRetryDelayMs(100, { tiktokAnswered: true }) > nextRetryDelayMs(100), 'mas lento que el backoff de fallo tecnico');
+});
+
+test('roomChanged (la pagina salto a otro directo) dispara una recuperacion y reentra al canal', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  await withFakeTiktok(
+    () => ({ roomInfo: { status: 2 } }),
+    async ({ connectTiktokChannel }, instances) => {
+      const { deps } = makeDeps();
+      await connectTiktokChannel(deps, 'ana');
+
+      instances[0].emit('roomChanged', { roomId: '1', newRoomId: '2' });
+      await flush();
+
+      assert.equal(instances.length, 2, 'se abrio una conexion nueva al canal pedido');
+      assert.equal(instances[0].disconnectedManually, true, 'la conexion de la sala equivocada se cerro');
+      assert.equal(deps.state.tiktokChannels.get('ana').techState, 'connected');
+    }
+  );
+});

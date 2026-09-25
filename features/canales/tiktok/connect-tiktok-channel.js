@@ -301,6 +301,19 @@ function setupTikTokConnection(deps, cleanUsername) {
     triggerRecovery(deps, cleanUsername, 'stream_end');
   });
 
+  // La pagina de TikTok salto sola a OTRO directo dentro de la ventana
+  // invisible (autoplay al siguiente LIVE). El paquete ya dejo de reenviar esa
+  // sala y cerro la ventana; se reentra a /@canal/live desde cero.
+  conn.on('roomChanged', ({ roomId, newRoomId } = {}) => {
+    if (logIgnoredIfStale('roomChanged')) return;
+    clearWatchdog(state, staleKey);
+    logger.log(
+      'warn', 'canales', 'canales/tiktok/connect-tiktok-channel.js#setupTikTokConnection', 'canales.tiktok.sala_cambiada',
+      `La pagina de TikTok ${cleanUsername} cambio a otra sala; reconectando`, { channel: cleanUsername, roomId, newRoomId }
+    );
+    triggerRecovery(deps, cleanUsername, 'sala_cambiada');
+  });
+
   return conn;
 }
 
@@ -488,7 +501,7 @@ function onAttemptFailed(deps, entry, outcome, durationMs) {
       motivoPaquete: outcome.reason,
     });
 
-  const delay = nextRetryDelayMs(entry.consecutiveFailures);
+  const delay = nextRetryDelayMs(entry.consecutiveFailures, { tiktokAnswered: outcome.tiktokStatusCode !== undefined });
 
   if (entry.connectedOnce) {
     // Ya habia una conexion sana: es una RECUPERACION, sujeta al umbral de
