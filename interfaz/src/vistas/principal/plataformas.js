@@ -276,10 +276,25 @@ async function updateChatConnectAllState(preloadedChannels) {
   if (activeCount > 0) {
     chatBtn.classList.add('channels-connected');
     chatBtn.title = `${activeCount} canal(es) conectado(s) — clic para desconectar`;
+    chatBtn.textContent = chatBtn.matches(':hover') ? t('btn.disconnectAll') : t('btn.allConnected');
   } else {
     chatBtn.classList.remove('channels-connected');
     chatBtn.title = 'Sin canales conectados — clic para conectar todo';
+    chatBtn.textContent = t('btn.connectAll');
   }
+}
+
+export function iniciarHoverConnectAllChat() {
+  const chatBtn = document.getElementById('btn-connect-all-chat');
+  if (!chatBtn) return;
+  chatBtn.addEventListener('mouseenter', () => {
+    if (chatBtn.disabled || !chatBtn.classList.contains('channels-connected')) return;
+    chatBtn.textContent = t('btn.disconnectAll');
+  });
+  chatBtn.addEventListener('mouseleave', () => {
+    if (chatBtn.disabled || !chatBtn.classList.contains('channels-connected')) return;
+    chatBtn.textContent = t('btn.allConnected');
+  });
 }
 
 export async function renderSettingsChannels() {
