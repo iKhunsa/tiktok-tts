@@ -1194,7 +1194,7 @@
     "introTitle": "Canales vinculados", "introDesc": "Guardá tus canales antes de conectarlos al chat en vivo.",
     "listTitle": "Canales guardados", "listDesc": "Acá ves cada canal y su estado. Podés quitar los que ya no uses.",
     "addTitle": "Agregar canal", "addDesc": "Abrí este formulario para guardar otro canal.",
-    "platformTitle": "Elegí la plataforma", "platformDesc": "Seleccioná TikTok, Twitch, YouTube o Kick antes de escribir el canal.",
+    "platformTitle": "Elegí la plataforma", "platformDesc": "Seleccioná TikTok, Twitch, YouTube o Kick antes de escribir el canal. Si elegís TikTok, vas a necesitar iniciar sesión primero para poder leer su chat — esa sesión puede caducar con el tiempo, y cuando pase la app te va a avisar y te va a pedir volver a loguearte.",
     "channelTitle": "Escribí el canal", "channelDesc": "Ingresá el usuario o enlace del canal. Para YouTube también podés usar @canal o Channel ID.",
     "saveTitle": "Guardar", "saveDesc": "Guardalo para que quede listo. Guardar no inicia una conexión.",
     "connectTitle": "Conectar todo", "connectDesc": "Desde Chat, este botón conecta los canales guardados cuando estén en vivo."

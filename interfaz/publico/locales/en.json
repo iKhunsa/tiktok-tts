@@ -1194,7 +1194,7 @@
     "introTitle": "Linked channels", "introDesc": "Save your channels before connecting them to live chat.",
     "listTitle": "Saved channels", "listDesc": "See every channel and its status here. Remove channels you no longer use.",
     "addTitle": "Add channel", "addDesc": "Open this form to save another channel.",
-    "platformTitle": "Choose the platform", "platformDesc": "Select TikTok, Twitch, YouTube, or Kick before entering the channel.",
+    "platformTitle": "Choose the platform", "platformDesc": "Select TikTok, Twitch, YouTube, or Kick before entering the channel. If you pick TikTok, you'll need to log in first to read its chat — that session can expire over time, and the app will let you know and ask you to log in again when it does.",
     "channelTitle": "Enter the channel", "channelDesc": "Enter its username or link. For YouTube, you can also use @channel or Channel ID.",
     "saveTitle": "Save", "saveDesc": "Save it so it is ready. Saving does not start a connection.",
     "connectTitle": "Connect all", "connectDesc": "From Chat, this button connects saved channels when they are live."

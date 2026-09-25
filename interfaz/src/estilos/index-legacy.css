@@ -2335,6 +2335,7 @@
     }
     #btn-toggle-add-channel:hover,
     #btn-add-channel:hover { background: var(--brand); color: #fff; }
+    #tiktok-session-row .icon-inline { filter: brightness(0) invert(1); }
 
     .tiktok-login-flow { display:flex; align-items:center; gap:16px; padding:10px 12px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--surface); }
     .tiktok-login-step { display:flex; flex:1; align-items:flex-start; gap:8px; min-width:0; }
