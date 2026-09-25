@@ -1,6 +1,5 @@
 'use strict';
 
-const { openTikTokLoginWindow } = require('@tiklivetts/tiktok-live-client');
 const { tiktokSessionPartition } = require('../tiktok/tiktok-session-partition');
 const { resumeAuthPausedChannels } = require('../tiktok/connect-tiktok-channel');
 
@@ -16,6 +15,9 @@ const FN = 'canales/routes/tiktok-login.js#tiktokLogin';
 function tiktokLogin(deps) {
   return (req, res) => {
     const { bus, logger, state } = deps;
+    // Require perezoso (ver connect-tiktok-channel.js): quien nunca abre el
+    // login de TikTok no carga el cliente al arrancar.
+    const { openTikTokLoginWindow } = require('@tiklivetts/tiktok-live-client');
     const partition = tiktokSessionPartition();
     const pausados = Array.from(state.tiktokChannels.values())
       .filter((e) => e.techState === 'auth_required').map((e) => e.username);

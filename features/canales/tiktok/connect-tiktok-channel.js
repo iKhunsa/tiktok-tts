@@ -1,6 +1,5 @@
 'use strict';
 
-const { TikTokLiveClient } = require('@tiklivetts/tiktok-live-client');
 const { cleanTiktokUsername } = require('./clean-username');
 const { tiktokSessionPartition } = require('./tiktok-session-partition');
 const { armWatchdog, clearWatchdog, WATCHDOG_TIMEOUT_MS } = require('../stale-watchdog');
@@ -128,6 +127,9 @@ function setupTikTokConnection(deps, cleanUsername) {
   const existing = state.tiktokChannels.get(cleanUsername);
   if (existing && existing.conn) teardownConnResources(existing);
 
+  // Require perezoso (mismo patron que tmi.js en connect-twitch.js): quien no
+  // conecta TikTok nunca carga el cliente (~5 MB RSS medidos bajo node).
+  const { TikTokLiveClient } = require('@tiklivetts/tiktok-live-client');
   const conn = new TikTokLiveClient(cleanUsername, { partition: tiktokSessionPartition() });
   const entry = {
     conn,

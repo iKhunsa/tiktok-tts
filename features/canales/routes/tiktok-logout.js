@@ -1,6 +1,5 @@
 'use strict';
 
-const { clearTikTokSession } = require('@tiklivetts/tiktok-live-client');
 const { tiktokSessionPartition } = require('../tiktok/tiktok-session-partition');
 
 /**
@@ -13,6 +12,7 @@ function tiktokLogout(deps) {
   return async (req, res) => {
     const { bus, logger } = deps;
     try {
+      const { clearTikTokSession } = require('@tiklivetts/tiktok-live-client');
       await clearTikTokSession(tiktokSessionPartition());
     } catch (err) {
       logger.log('error', 'canales', 'canales/routes/tiktok-logout.js#tiktokLogout', 'canales.tiktok.logout_fallido',
