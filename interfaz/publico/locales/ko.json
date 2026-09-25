@@ -371,7 +371,15 @@
     "tiktokConnecting": "TikTok에 연결하는 중…",
     "tiktokRestoring": "TikTok 연결을 복구하는 중…",
     "tiktokRestored": "TikTok 연결이 복구되었습니다.",
-    "tiktokWaitingLive": "이 채널은 라이브 중이 아닙니다. 다음 라이브를 기다리겠습니다."
+    "tiktokWaitingLive": "이 채널은 라이브 중이 아닙니다. 다음 라이브를 기다리겠습니다.",
+    "tiktokLogin": "TikTok 로그인",
+    "tiktokLogout": "TikTok 로그아웃",
+    "tiktokSessionActive": "TikTok에 로그인되어 있습니다.",
+    "tiktokSessionNone": "TikTok 로그인 안 됨(라이브가 요구할 때만 필요).",
+    "tiktokAuthRequired": "{channel}에 로그인이 필요합니다.",
+    "tiktokAuthRequiredToast": "@{channel}을(를) 보려면 TikTok 로그인이 필요합니다. 설정 → 연결된 채널에서 로그인하세요.",
+    "tiktokLoggedIn": "TikTok에 로그인했습니다. 다시 연결 중…",
+    "tiktokLoggedOut": "TikTok에서 로그아웃했습니다."
   },
   "mobile2": {
     "loading": "로딩 중...",
@@ -998,6 +1006,9 @@
     "tiktokNoEnVivo": "사용자가 라이브 중이 아닙니다",
     "tiktokEstadoDesconocido": "사용자가 라이브 중인지 확인할 수 없습니다. 다시 시도해 주세요",
     "tiktokEsperandoProximoLive": "이 채널은 라이브 중이 아닙니다. 다음 라이브를 기다리겠습니다.",
+    "tiktokAuthRequired": "이 라이브를 보려면 TikTok 로그인이 필요합니다.",
+    "tiktokLoginFailed": "TikTok 로그인을 열 수 없습니다.",
+    "tiktokLogoutFailed": "TikTok에서 로그아웃할 수 없습니다.",
     "obsConnectInProgress": "이미 OBS 연결이 진행 중입니다",
     "mcpDisabled": "MCP 서버가 껺져 있습니다",
     "unauthorized": "인증되지 않았습니다.",

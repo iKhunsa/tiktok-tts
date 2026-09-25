@@ -170,6 +170,7 @@ const EVENTO_A_TIPO = {
 // aparece un caso nuevo de "canal no en vivo", sumar el patrón a esta lista.
 const ERRORES_CONEXION_ESPERADOS = [
   "isn't online",           // TikTok — "The requested user isn't online :("
+  'tiktok requires login',  // TikTok — AuthRequiredError: el live redirige a /login (GlitchTip #77); la UI ya pide iniciar sesion
   'live stream was not found', // YouTube — canal sin directo activo
   'client version was not found', // YouTube — idem
   'live has ended',         // TikTok/YouTube — el directo terminó
@@ -482,6 +483,9 @@ function attach(bus, logger) {
         const clave = `${p.platform}:${p.channel || ''}`;
         if (p.state === 'conectado') {
           estado.plataformasConectadas.add(clave);
+          Sentry.setTag(`canal_${p.platform}`, String(p.channel || ''));
+        } else if (p.state === 'auth-requerida') {
+          // Nunca llego a 'conectado': sin esto el issue/breadcrumb pierde el canal.
           Sentry.setTag(`canal_${p.platform}`, String(p.channel || ''));
         } else if (p.state === 'desconectado') {
           estado.plataformasConectadas.delete(clave);

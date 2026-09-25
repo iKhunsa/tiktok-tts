@@ -371,7 +371,15 @@
     "tiktokConnecting": "正在连接 TikTok…",
     "tiktokRestoring": "正在恢复与 TikTok 的连接…",
     "tiktokRestored": "已恢复与 TikTok 的连接。",
-    "tiktokWaitingLive": "该频道不在直播中，我们会等待下一次直播。"
+    "tiktokWaitingLive": "该频道不在直播中，我们会等待下一次直播。",
+    "tiktokLogin": "登录 TikTok",
+    "tiktokLogout": "退出 TikTok",
+    "tiktokSessionActive": "已登录 TikTok。",
+    "tiktokSessionNone": "未登录 TikTok（仅在直播要求时需要）。",
+    "tiktokAuthRequired": "{channel} 需要登录。",
+    "tiktokAuthRequiredToast": "TikTok 要求登录才能观看 @{channel}。请在 设置 → 已关联频道 中登录。",
+    "tiktokLoggedIn": "已登录 TikTok。正在重新连接…",
+    "tiktokLoggedOut": "已退出 TikTok。"
   },
   "mobile2": {
     "loading": "加载中...",
@@ -998,6 +1006,9 @@
     "tiktokNoEnVivo": "该用户不在直播中",
     "tiktokEstadoDesconocido": "无法确认该用户是否在直播，请重试",
     "tiktokEsperandoProximoLive": "该频道不在直播中，我们会等待下一次直播。",
+    "tiktokAuthRequired": "TikTok 要求登录才能观看此直播。",
+    "tiktokLoginFailed": "无法打开 TikTok 登录。",
+    "tiktokLogoutFailed": "无法退出 TikTok。",
     "obsConnectInProgress": "已有一个 OBS 连接正在进行中",
     "mcpDisabled": "MCP 服务器已关闭",
     "unauthorized": "未认证。",

@@ -6,6 +6,7 @@ import { modReload } from './moderacion.js';
 import { spRender } from './soundpad.js';
 import { renderClipsHistory } from './clips.js';
 import { renderSettingsChannels } from './plataformas.js';
+import { renderTiktokSession } from './tiktok-sesion.js';
 import { renderGlobalTTSButton } from '../../nucleo/tts/cola-tts.js';
 import { renderShortcutDisplay } from './atajos-teclado.js';
 import { renderBlockWordSession } from './moderacion.js';
@@ -42,6 +43,7 @@ function retranslateDynamic() {
   safe(spRender);
   safe(renderClipsHistory);
   safe(renderSettingsChannels);
+  safe(renderTiktokSession);
   safe(renderGlobalTTSButton);
   safe(renderChatTogglesState);
   safe(renderShortcutDisplay);

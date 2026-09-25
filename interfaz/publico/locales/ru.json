@@ -371,7 +371,15 @@
     "tiktokConnecting": "Подключение к TikTok…",
     "tiktokRestoring": "Восстановление соединения с TikTok…",
     "tiktokRestored": "Соединение с TikTok восстановлено.",
-    "tiktokWaitingLive": "Этот канал сейчас не в эфире. Мы подождём следующий эфир."
+    "tiktokWaitingLive": "Этот канал сейчас не в эфире. Мы подождём следующий эфир.",
+    "tiktokLogin": "Войти в TikTok",
+    "tiktokLogout": "Выйти из TikTok",
+    "tiktokSessionActive": "Вход в TikTok выполнен.",
+    "tiktokSessionNone": "Вход в TikTok не выполнен (нужен, только если трансляция его требует).",
+    "tiktokAuthRequired": "Для {channel} требуется вход.",
+    "tiktokAuthRequiredToast": "TikTok требует войти, чтобы смотреть @{channel}. Войдите в Настройки → Привязанные каналы.",
+    "tiktokLoggedIn": "Вход в TikTok выполнен. Переподключение…",
+    "tiktokLoggedOut": "Вы вышли из TikTok."
   },
   "mobile2": {
     "loading": "Загрузка...",
@@ -998,6 +1006,9 @@
     "tiktokNoEnVivo": "Пользователь сейчас не в эфире",
     "tiktokEstadoDesconocido": "Не удалось проверить, в эфире ли пользователь. Попробуйте ещё раз",
     "tiktokEsperandoProximoLive": "Этот канал сейчас не в эфире. Мы подождём следующий эфир.",
+    "tiktokAuthRequired": "TikTok требует войти, чтобы смотреть эту трансляцию.",
+    "tiktokLoginFailed": "Не удалось открыть вход в TikTok.",
+    "tiktokLogoutFailed": "Не удалось выйти из TikTok.",
     "obsConnectInProgress": "Подключение к OBS уже выполняется",
     "mcpDisabled": "Сервер MCP выключен",
     "unauthorized": "Не аутентифицирован.",

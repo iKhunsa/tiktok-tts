@@ -335,6 +335,12 @@ function attach(bus, logger) {
           estado.plataformasUsadas.add(p.platform);
           track('platform_connected', { platform: p.platform });
         }
+      } else if (p.state === 'auth-requerida') {
+        // Solo la plataforma: Aptabase nunca lleva nick/canal (ver CLAUDE.md);
+        // el canal viaja en el log (`data.channel`) y el tag canal_tiktok de GlitchTip.
+        track('platform_auth_required', { platform: p.platform });
+      } else if (p.state === 'sesion-restaurada') {
+        track('platform_auth_restored', { platform: p.platform });
       } else if (p.state === 'error') {
         track('platform_connect_failed', {
           platform: p.platform,

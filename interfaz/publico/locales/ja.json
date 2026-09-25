@@ -371,7 +371,15 @@
     "tiktokConnecting": "TikTokに接続中…",
     "tiktokRestoring": "TikTokとの接続を復元中…",
     "tiktokRestored": "TikTokとの接続が回復しました。",
-    "tiktokWaitingLive": "このチャンネルは配信中ではありません。次のライブをお待ちします。"
+    "tiktokWaitingLive": "このチャンネルは配信中ではありません。次のライブをお待ちします。",
+    "tiktokLogin": "TikTokにログイン",
+    "tiktokLogout": "TikTokからログアウト",
+    "tiktokSessionActive": "TikTokにログイン中です。",
+    "tiktokSessionNone": "TikTok未ログイン（ライブが求めた場合のみ必要）。",
+    "tiktokAuthRequired": "{channel} にはログインが必要です。",
+    "tiktokAuthRequiredToast": "@{channel} を見るにはTikTokへのログインが必要です。設定 → 連携チャンネル からログインしてください。",
+    "tiktokLoggedIn": "TikTokにログインしました。再接続中…",
+    "tiktokLoggedOut": "TikTokからログアウトしました。"
   },
   "mobile2": {
     "loading": "読み込み中...",
@@ -998,6 +1006,9 @@
     "tiktokNoEnVivo": "このユーザーはライブ配信していません",
     "tiktokEstadoDesconocido": "ライブ配信中かどうか確認できませんでした。もう一度お試しください",
     "tiktokEsperandoProximoLive": "このチャンネルは配信中ではありません。次のライブをお待ちします。",
+    "tiktokAuthRequired": "このライブを見るにはTikTokへのログインが必要です。",
+    "tiktokLoginFailed": "TikTokのログインを開けませんでした。",
+    "tiktokLogoutFailed": "TikTokからログアウトできませんでした。",
     "obsConnectInProgress": "OBSへの接続が既に進行中です",
     "mcpDisabled": "MCP サーバーはオフです",
     "unauthorized": "認証されていません。",

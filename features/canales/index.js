@@ -14,6 +14,9 @@ const { disconnect } = require('./routes/disconnect');
 const { platformsStatus } = require('./routes/platforms-status');
 const { platformsConnect } = require('./routes/platforms-connect');
 const { platformsDisconnect } = require('./routes/platforms-disconnect');
+const { tiktokSessionStatus } = require('./routes/tiktok-session-status');
+const { tiktokLogin } = require('./routes/tiktok-login');
+const { tiktokLogout } = require('./routes/tiktok-logout');
 const { listChannels } = require('./routes/list-channels');
 const { addChannel } = require('./routes/add-channel');
 const { removeChannel } = require('./routes/remove-channel');
@@ -44,6 +47,9 @@ module.exports = {
     app.get('/api/platforms/status', platformsStatus(state));
     app.post('/api/platforms/connect', rateLimit, gateCanal, platformsConnect(deps));
     app.post('/api/platforms/disconnect', platformsDisconnect(deps));
+    app.get('/api/platforms/tiktok/session', tiktokSessionStatus(state));
+    app.post('/api/platforms/tiktok/login', tiktokLogin(deps));
+    app.post('/api/platforms/tiktok/logout', tiktokLogout(deps));
     app.get('/api/channels', listChannels(state));
     app.post('/api/channels/add', rateLimit, gateCanal, addChannel(deps));
     app.post('/api/channels/remove', removeChannel(deps));
@@ -131,7 +137,7 @@ module.exports = {
       },
     });
 
-    return { rutas: 11, listeners: 3 };
+    return { rutas: 14, listeners: 3 };
   },
 
   shutdown() {

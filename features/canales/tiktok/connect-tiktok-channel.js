@@ -2,6 +2,7 @@
 
 const { TikTokLiveClient } = require('@tiklivetts/tiktok-live-client');
 const { cleanTiktokUsername } = require('./clean-username');
+const { tiktokSessionPartition } = require('./tiktok-session-partition');
 const { armWatchdog, clearWatchdog, WATCHDOG_TIMEOUT_MS } = require('../stale-watchdog');
 const { assertNoConexionEnCurso } = require('../connecting-lock');
 const { nextRetryDelayMs, nextWaitingLiveDelayMs, RECOVERY_VISIBLE_THRESHOLD_MS } = require('./tiktok-supervisor-schedule');
@@ -79,13 +80,17 @@ function readTikTokError(err) {
 /**
  * Clasifica el resultado de un intento tecnico para el supervisor. `live` y
  * `not_live` son los unicos casos "resueltos" del paquete (ver
- * classify-room-enter.js del paquete); todo lo demas (LIVE_STATUS_UNKNOWN,
- * SigningError/timeout, o cualquier excepcion no tipada) es `unknown` —
- * nunca se muestra como "offline confirmado" ni se descarta la intencion.
+ * classify-room-enter.js del paquete). `auth_required` = TikTok redirigio el
+ * live a /login (AuthRequiredError del paquete, detectado por la navegacion
+ * real, no por el ERR_ABORTED crudo): no es un fallo tecnico y reintentar no
+ * lo arregla. Todo lo demas (LIVE_STATUS_UNKNOWN, SigningError/timeout, o
+ * cualquier excepcion no tipada) es `unknown` — nunca se muestra como
+ * "offline confirmado" ni se descarta la intencion.
  */
 function classifyAttemptOutcome(err) {
   const { message, stack, code } = readTikTokError(err);
   if (code === 'NOT_LIVE') return { kind: 'not_live', code, message, stack };
+  if (code === 'AUTH_REQUIRED') return { kind: 'auth_required', code, message, stack };
   return { kind: 'unknown', code, reason: err && err.reason, tiktokStatusCode: err && err.tiktokStatusCode, message, stack };
 }
 
@@ -123,7 +128,7 @@ function setupTikTokConnection(deps, cleanUsername) {
   const existing = state.tiktokChannels.get(cleanUsername);
   if (existing && existing.conn) teardownConnResources(existing);
 
-  const conn = new TikTokLiveClient(cleanUsername);
+  const conn = new TikTokLiveClient(cleanUsername, { partition: tiktokSessionPartition() });
   const entry = {
     conn,
     username: cleanUsername,
@@ -404,6 +409,8 @@ async function runAttempt(deps, cleanUsername) {
     onAttemptSucceeded(deps, current, outcome, durationMs);
   } else if (outcome.kind === 'not_live') {
     onConfirmedNotLive(deps, current, outcome, durationMs);
+  } else if (outcome.kind === 'auth_required') {
+    onAuthRequired(deps, current, outcome, durationMs);
   } else {
     onAttemptFailed(deps, current, outcome, durationMs);
   }
@@ -506,6 +513,57 @@ function onAttemptFailed(deps, entry, outcome, durationMs) {
   scheduleNextAttempt(deps, entry, delay);
 }
 
+/**
+ * TikTok exige sesion para este live: el supervisor se PAUSA (no agenda
+ * proximo intento — reintentar contra /login no se resuelve solo y seria un
+ * loop infinito) pero la intencion del usuario queda guardada en
+ * state.tiktokChannels con techState 'auth_required'. Se reanuda sola con
+ * resumeAuthPausedChannels cuando el usuario inicia sesion.
+ */
+function onAuthRequired(deps, entry, outcome, durationMs) {
+  const { bus } = deps;
+  if (entry.visibilityTimer) { clearTimeout(entry.visibilityTimer); entry.visibilityTimer = null; }
+  const wasAlreadyPaused = entry.techState === 'auth_required';
+
+  logTransition(deps, entry, 'info', 'canales.tiktok.auth_requerida',
+    `TikTok ${entry.username}: TikTok pide iniciar sesion, supervisor pausado hasta que haya sesion`, {
+      techStateNuevo: 'auth_required', causa: 'redireccion_login', durationMs, tiktokErrorCode: outcome.code,
+    });
+
+  entry.techState = 'auth_required';
+  entry.consecutiveWaits = 0;
+  entry.recoveringSince = null;
+  entry.recoveryVisible = false;
+
+  if (!wasAlreadyPaused) {
+    bus.emit('canal:estado', { platform: 'tiktok', channel: entry.username, state: 'auth-requerida' });
+    broadcastTiktokStatus(bus, entry.username, 'auth-required');
+  }
+}
+
+/**
+ * Reanuda todo canal pausado por auth_required (llamado tras un login
+ * exitoso, ver routes/tiktok-login.js). Mismo ciclo (cycleId) — no es un clic
+ * nuevo de "Conectar", es la continuacion de la intencion que ya existia.
+ */
+function resumeAuthPausedChannels(deps, causa) {
+  const resumed = [];
+  for (const entry of deps.state.tiktokChannels.values()) {
+    if (entry.techState !== 'auth_required') continue;
+    logTransition(deps, entry, 'info', 'canales.tiktok.supervisor_reanudado',
+      `TikTok ${entry.username}: sesion disponible, reanudando conexion`, {
+        techStateNuevo: entry.connectedOnce ? 'recovering' : 'connecting', causa,
+      });
+    entry.techState = entry.connectedOnce ? 'recovering' : 'connecting';
+    entry.consecutiveFailures = 0;
+    deps.bus.emit('canal:estado', { platform: 'tiktok', channel: entry.username, state: 'sesion-restaurada' });
+    broadcastTiktokStatus(deps.bus, entry.username, 'connecting');
+    resumed.push(entry.username);
+    runAttempt(deps, entry.username);
+  }
+  return resumed;
+}
+
 async function connectTiktokChannel(deps, channel) {
   const { state, bus, logger } = deps;
   const cleanUsername = cleanTiktokUsername(channel);
@@ -574,4 +632,4 @@ async function connectTiktokChannel(deps, channel) {
   }
 }
 
-module.exports = { connectTiktokChannel, setupTikTokConnection, readTikTokError, teardownConn, runAttempt };
+module.exports = { connectTiktokChannel, setupTikTokConnection, readTikTokError, teardownConn, runAttempt, resumeAuthPausedChannels };
