@@ -4,34 +4,52 @@ import { showToast } from '../../componentes/toast.js';
 // Sesion opcional de TikTok (features/canales/routes/tiktok-*.js): solo hace
 // falta cuando un live redirige a /login (estado auth_required del supervisor).
 // El login ocurre en una ventana de TikTok aparte; la app nunca ve la contrasena.
+//
+// El login NO vive en su propia fila separada de "Agregar canal" — eso se leia
+// como "2 TikTok" distintos. Vive DENTRO del formulario, reemplazando el input
+// cuando platform=tiktok y no hay sesion (ver toggleTiktokAddPrompt). Si un
+// canal ya guardado entra en auth_required, la ventana de login se auto-abre
+// (cliente-ws.js, case 'tiktok-connection-status') en vez de esperar que el
+// usuario la busque.
 
-export async function renderTiktokSession() {
-  const row = document.getElementById('tiktok-session-row');
-  if (!row) return;
-  let s = { available: false, loggedIn: false, authRequired: [] };
+let lastSession = { available: false, loggedIn: false, authRequired: [] };
+
+async function fetchTiktokSession() {
   try {
     const res = await fetch('/api/platforms/tiktok/session');
-    if (res.ok) s = await res.json();
-  } catch { /* noop: fila oculta */ }
+    if (res.ok) return await res.json();
+  } catch { /* noop */ }
+  return { available: false, loggedIn: false, authRequired: [] };
+}
 
-  row.style.display = s.available ? 'flex' : 'none';
-  if (!s.available) return;
+/** Fila superior de la seccion Canales — solo importa para poder cerrar sesion. */
+function renderSessionRow(s) {
+  const row = document.getElementById('tiktok-session-row');
+  if (!row) return;
+  row.style.display = s.available && s.loggedIn ? 'flex' : 'none';
+}
 
-  const pending = (!s.loggedIn && s.authRequired?.length) ? s.authRequired : [];
-  const status = document.getElementById('tiktok-session-status');
-  if (status) {
-    status.textContent = s.loggedIn
-      ? t('conn.tiktokSessionActive')
-      : pending.length ? t('conn.tiktokAuthRequired', { channel: pending.map((c) => '@' + c).join(', ') }) : t('conn.tiktokSessionNone');
-    status.style.color = pending.length ? 'var(--warn)' : 'var(--text-muted)';
-  }
-  const login = document.getElementById('btnTiktokLogin');
-  const logout = document.getElementById('btnTiktokLogout');
-  if (login) {
-    login.style.display = s.loggedIn ? 'none' : '';
-    login.classList.toggle('warn', pending.length > 0);
-  }
-  if (logout) logout.style.display = s.loggedIn ? '' : 'none';
+/**
+ * Dentro de add-channel-form, con platform=tiktok: sin sesion, el input de
+ * @usuario se reemplaza por el prompt de login (mismo lugar, una sola cosa a
+ * la vez). Con sesion (o si el paquete no soporta sesion aun), input normal.
+ */
+export function toggleTiktokAddPrompt(platform) {
+  const prompt = document.getElementById('tiktok-login-prompt');
+  const row = document.getElementById('tiktok-add-channel-row');
+  const hint = document.getElementById('channel-live-hint');
+  if (!prompt || !row) return;
+  const needsLogin = platform === 'tiktok' && lastSession.available && !lastSession.loggedIn;
+  prompt.style.display = needsLogin ? 'flex' : 'none';
+  row.style.display = needsLogin ? 'none' : 'flex';
+  if (hint) hint.style.display = needsLogin ? 'none' : 'flex';
+}
+
+export async function renderTiktokSession() {
+  lastSession = await fetchTiktokSession();
+  renderSessionRow(lastSession);
+  const platformSeg = document.getElementById('seg-tiktok');
+  if (platformSeg?.classList.contains('active')) toggleTiktokAddPrompt('tiktok');
 }
 
 export async function tiktokLogin() {

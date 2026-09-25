@@ -375,9 +375,8 @@
     "tiktokLogin": "TikTokにログイン",
     "tiktokLogout": "TikTokからログアウト",
     "tiktokSessionActive": "TikTokにログイン中です。",
-    "tiktokSessionNone": "TikTok未ログイン（ライブが求めた場合のみ必要）。",
-    "tiktokAuthRequired": "{channel} にはログインが必要です。",
-    "tiktokAuthRequiredToast": "@{channel} を見るにはTikTokへのログインが必要です。設定 → 連携チャンネル からログインしてください。",
+    "tiktokLoginPromptDesc": "チャットを読み取るにはTikTokへのログインが必要です。ログイン後、聞きたいチャンネルを追加できます。",
+    "tiktokAuthRequiredToast": "@{channel} を見るにはTikTokへのログインが必要です。ログインウィンドウを開いています…",
     "tiktokLoggedIn": "TikTokにログインしました。再接続中…",
     "tiktokLoggedOut": "TikTokからログアウトしました。"
   },

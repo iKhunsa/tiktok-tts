@@ -673,11 +673,14 @@
           </div>
         </div>
         <div id="settings-channels-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:20px;margin-bottom:4px;"></div>
+        <!-- Solo visible con sesion de TikTok activa (cerrar sesion). El login
+             en si vive dentro de add-channel-form (ver tiktok-login-prompt) y,
+             si ya hay canales guardados, se auto-abre ante auth_required — ver
+             tiktokLogin() en cliente-ws.js. -->
         <div id="tiktok-session-row" style="display:none;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 4px;font-size:12px;">
           <img class="icon-inline" src="icons/tiktok.svg" alt="">
-          <span id="tiktok-session-status" style="color:var(--text-muted);"></span>
-          <button type="button" class="cfg-btn small" id="btnTiktokLogin" onclick="tiktokLogin()"><img class="icon-inline" src="icons/login.svg" alt=""> <span data-i18n="conn.tiktokLogin">Iniciar sesión en TikTok</span></button>
-          <button type="button" class="cfg-btn small" id="btnTiktokLogout" onclick="tiktokLogout()" style="display:none;"><img class="icon-inline" src="icons/exit_to_app.svg" alt=""> <span data-i18n="conn.tiktokLogout">Cerrar sesión de TikTok</span></button>
+          <span id="tiktok-session-status" style="color:var(--text-muted);" data-i18n="conn.tiktokSessionActive">Sesión de TikTok iniciada.</span>
+          <button type="button" class="cfg-btn small" id="btnTiktokLogout" onclick="tiktokLogout()"><img class="icon-inline" src="icons/exit_to_app.svg" alt=""> <span data-i18n="conn.tiktokLogout">Cerrar sesión de TikTok</span></button>
         </div>
         <div id="add-channel-form" style="display:none;flex-direction:column;gap:10px;margin-top:10px;">
           <div class="seg-control" id="platform-seg">
@@ -694,7 +697,23 @@
               <img style="width:13px;height:13px;vertical-align:middle;" src="icons/kick.svg" alt=""> Kick
             </button>
           </div>
-          <div class="settings-row-flex">
+          <!-- Reemplaza la fila de input cuando platform=tiktok y no hay sesion
+               (ver toggleTiktokAddPrompt en tiktok-sesion.js) — el login de
+               TikTok es un requisito para leer el chat, no una forma de elegir
+               canal, pero mostrarlo justo aca evita que se lea como "2 cosas
+               de TikTok" separadas. -->
+          <div id="tiktok-login-prompt" style="display:none;flex-direction:column;gap:8px;">
+            <div style="display:flex;gap:6px;font-size:11px;color:var(--text-muted);line-height:1.5;">
+              <img class="icon-inline" src="icons/info.svg" alt="" style="opacity:.6;flex-shrink:0;width:13px;height:13px;">
+              <span data-i18n="conn.tiktokLoginPromptDesc">TikTok pide iniciar sesión para poder leer su chat. Después de iniciarla vas a poder escribir los canales que quieras escuchar.</span>
+            </div>
+            <div class="settings-row-flex">
+              <button type="button" class="btn-supabase-primary" id="btn-tiktok-login-prompt" onclick="tiktokLogin()"><img class="icon-inline" src="icons/login.svg" alt=""> <span data-i18n="conn.tiktokLogin">Iniciar sesión en TikTok</span></button>
+              <button class="btn btn-disconnect" onclick="toggleAddChannelForm()"
+                style="font-size:12px;padding:9px 14px;border-radius:9999px;">Cancelar</button>
+            </div>
+          </div>
+          <div class="settings-row-flex" id="tiktok-add-channel-row">
             <div class="input-wrapper" style="flex:1;">
               <input type="text" id="add-channel-input" placeholder="@usuario"
                 autocomplete="off" onkeydown="if(event.key==='Enter')addChannelFromSettings()" />

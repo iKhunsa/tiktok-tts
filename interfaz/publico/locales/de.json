@@ -375,9 +375,8 @@
     "tiktokLogin": "Bei TikTok anmelden",
     "tiktokLogout": "Von TikTok abmelden",
     "tiktokSessionActive": "Bei TikTok angemeldet.",
-    "tiktokSessionNone": "Nicht bei TikTok angemeldet (nur nötig, wenn ein Live es verlangt).",
-    "tiktokAuthRequired": "Anmeldung erforderlich für {channel}.",
-    "tiktokAuthRequiredToast": "TikTok verlangt eine Anmeldung, um @{channel} zu sehen. Melde dich unter Einstellungen → Verknüpfte Kanäle an.",
+    "tiktokLoginPromptDesc": "TikTok verlangt eine Anmeldung, um den Chat lesen zu können. Danach kannst du die Kanäle eingeben, die du hören möchtest.",
+    "tiktokAuthRequiredToast": "TikTok verlangt eine Anmeldung, um @{channel} zu sehen. Das Anmeldefenster wird geöffnet …",
     "tiktokLoggedIn": "Bei TikTok angemeldet. Verbinde neu…",
     "tiktokLoggedOut": "Von TikTok abgemeldet."
   },

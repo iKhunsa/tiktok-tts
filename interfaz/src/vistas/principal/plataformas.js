@@ -1,6 +1,7 @@
 import { t } from '../../nucleo/i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
 import * as datosPorCuenta from '../../nucleo/estado/datos-por-cuenta.js';
+import { toggleTiktokAddPrompt } from './tiktok-sesion.js';
 
 const PLATFORM_CHANNELS_KEY = 'tikliveTTS_platforms_v1';
 export const PLATFORMS = ['tiktok', 'twitch', 'youtube', 'kick'];
@@ -136,9 +137,14 @@ export function selectAddPlatform(platform) {
     const btn = document.getElementById(`seg-${p}`);
     if (btn) btn.classList.toggle('active', p === platform);
   });
+  toggleTiktokAddPrompt(platform);
   const placeholders = { tiktok: '@usuario', twitch: 'nombre_del_canal', youtube: '@canal, Channel ID o link live', kick: 'nombre_del_canal' };
   const input = document.getElementById('add-channel-input');
-  if (input) { input.placeholder = placeholders[platform] || '@usuario'; input.focus(); }
+  const addChannelRow = document.getElementById('tiktok-add-channel-row');
+  if (input) {
+    input.placeholder = placeholders[platform] || '@usuario';
+    if (addChannelRow?.style.display !== 'none') input.focus();
+  }
   const hint = document.getElementById('youtube-channel-hint');
   if (hint) hint.style.display = platform === 'youtube' ? 'block' : 'none';
 }

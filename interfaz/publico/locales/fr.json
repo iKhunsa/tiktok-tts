@@ -375,9 +375,8 @@
     "tiktokLogin": "Se connecter à TikTok",
     "tiktokLogout": "Se déconnecter de TikTok",
     "tiktokSessionActive": "Connecté à TikTok.",
-    "tiktokSessionNone": "Non connecté à TikTok (nécessaire seulement si un live le demande).",
-    "tiktokAuthRequired": "Connexion requise pour {channel}.",
-    "tiktokAuthRequiredToast": "TikTok demande une connexion pour voir @{channel}. Connectez-vous dans Paramètres → Chaînes liées.",
+    "tiktokLoginPromptDesc": "TikTok demande une connexion pour pouvoir lire son chat. Une fois connecté, vous pourrez ajouter les chaînes que vous voulez écouter.",
+    "tiktokAuthRequiredToast": "TikTok demande une connexion pour voir @{channel}. Ouverture de la fenêtre de connexion…",
     "tiktokLoggedIn": "Connecté à TikTok. Reconnexion…",
     "tiktokLoggedOut": "Déconnecté de TikTok."
   },

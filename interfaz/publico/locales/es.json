@@ -420,9 +420,8 @@
     "tiktokLogin": "Iniciar sesión en TikTok",
     "tiktokLogout": "Cerrar sesión de TikTok",
     "tiktokSessionActive": "Sesión de TikTok iniciada.",
-    "tiktokSessionNone": "Sin sesión de TikTok (solo hace falta si un live la pide).",
-    "tiktokAuthRequired": "Inicio de sesión requerido para {channel}.",
-    "tiktokAuthRequiredToast": "TikTok pide iniciar sesión para ver @{channel}. Iniciala en Configuración → Canales vinculados.",
+    "tiktokLoginPromptDesc": "TikTok pide iniciar sesión para poder leer su chat. Después de iniciarla vas a poder escribir los canales que quieras escuchar.",
+    "tiktokAuthRequiredToast": "TikTok pide iniciar sesión para ver @{channel}. Abriendo la ventana de inicio de sesión…",
     "tiktokLoggedIn": "Sesión de TikTok iniciada. Reconectando…",
     "tiktokLoggedOut": "Sesión de TikTok cerrada."
   },

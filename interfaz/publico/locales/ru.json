@@ -375,9 +375,8 @@
     "tiktokLogin": "Войти в TikTok",
     "tiktokLogout": "Выйти из TikTok",
     "tiktokSessionActive": "Вход в TikTok выполнен.",
-    "tiktokSessionNone": "Вход в TikTok не выполнен (нужен, только если трансляция его требует).",
-    "tiktokAuthRequired": "Для {channel} требуется вход.",
-    "tiktokAuthRequiredToast": "TikTok требует войти, чтобы смотреть @{channel}. Войдите в Настройки → Привязанные каналы.",
+    "tiktokLoginPromptDesc": "TikTok требует войти, чтобы можно было читать чат. После входа вы сможете добавить каналы, которые хотите слушать.",
+    "tiktokAuthRequiredToast": "TikTok требует войти, чтобы смотреть @{channel}. Открывается окно входа…",
     "tiktokLoggedIn": "Вход в TikTok выполнен. Переподключение…",
     "tiktokLoggedOut": "Вы вышли из TikTok."
   },

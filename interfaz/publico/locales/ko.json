@@ -375,9 +375,8 @@
     "tiktokLogin": "TikTok 로그인",
     "tiktokLogout": "TikTok 로그아웃",
     "tiktokSessionActive": "TikTok에 로그인되어 있습니다.",
-    "tiktokSessionNone": "TikTok 로그인 안 됨(라이브가 요구할 때만 필요).",
-    "tiktokAuthRequired": "{channel}에 로그인이 필요합니다.",
-    "tiktokAuthRequiredToast": "@{channel}을(를) 보려면 TikTok 로그인이 필요합니다. 설정 → 연결된 채널에서 로그인하세요.",
+    "tiktokLoginPromptDesc": "채팅을 읽으려면 TikTok 로그인이 필요합니다. 로그인 후에는 듣고 싶은 채널을 추가할 수 있습니다.",
+    "tiktokAuthRequiredToast": "@{channel}을(를) 보려면 TikTok 로그인이 필요합니다. 로그인 창을 여는 중…",
     "tiktokLoggedIn": "TikTok에 로그인했습니다. 다시 연결 중…",
     "tiktokLoggedOut": "TikTok에서 로그아웃했습니다."
   },

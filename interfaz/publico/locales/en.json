@@ -377,9 +377,8 @@
     "tiktokLogin": "Log in to TikTok",
     "tiktokLogout": "Log out of TikTok",
     "tiktokSessionActive": "Logged in to TikTok.",
-    "tiktokSessionNone": "Not logged in to TikTok (only needed if a live asks for it).",
-    "tiktokAuthRequired": "Login required for {channel}.",
-    "tiktokAuthRequiredToast": "TikTok requires you to log in to watch @{channel}. Log in from Settings → Linked channels.",
+    "tiktokLoginPromptDesc": "TikTok requires you to log in to read its chat. After logging in you'll be able to add the channels you want to listen to.",
+    "tiktokAuthRequiredToast": "TikTok requires you to log in to watch @{channel}. Opening the login window…",
     "tiktokLoggedIn": "Logged in to TikTok. Reconnecting…",
     "tiktokLoggedOut": "Logged out of TikTok."
   },

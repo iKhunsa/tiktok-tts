@@ -375,9 +375,8 @@
     "tiktokLogin": "登录 TikTok",
     "tiktokLogout": "退出 TikTok",
     "tiktokSessionActive": "已登录 TikTok。",
-    "tiktokSessionNone": "未登录 TikTok（仅在直播要求时需要）。",
-    "tiktokAuthRequired": "{channel} 需要登录。",
-    "tiktokAuthRequiredToast": "TikTok 要求登录才能观看 @{channel}。请在 设置 → 已关联频道 中登录。",
+    "tiktokLoginPromptDesc": "TikTok 要求登录才能读取聊天。登录后即可添加想收听的频道。",
+    "tiktokAuthRequiredToast": "TikTok 要求登录才能观看 @{channel}。正在打开登录窗口…",
     "tiktokLoggedIn": "已登录 TikTok。正在重新连接…",
     "tiktokLoggedOut": "已退出 TikTok。"
   },

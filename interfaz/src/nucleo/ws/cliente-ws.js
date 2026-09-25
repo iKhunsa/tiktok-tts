@@ -21,7 +21,7 @@ import { incrementarMsgCount, handleChatData, addSystemMsg } from '../../vistas/
 import { setStatus, getSayUsernameConnector } from '../../vistas/principal/modales-avisos.js';
 import { updateFollowerDisplay } from '../../vistas/principal/configurador-overlays.js';
 import { renderSettingsChannels } from '../../vistas/principal/plataformas.js';
-import { renderTiktokSession } from '../../vistas/principal/tiktok-sesion.js';
+import { renderTiktokSession, tiktokLogin } from '../../vistas/principal/tiktok-sesion.js';
 import { updateOBSStatus, getClipsData, getLocalDateStr, deleteClip, startStreamManual, markClip, obtenerStreamStartTime } from '../../vistas/principal/clips.js';
 import { setSoloChatMode } from '../../vistas/principal/toggles-chat.js';
 import { spPlaySound } from '../../vistas/principal/soundpad.js';
@@ -208,6 +208,10 @@ function handleMessage(data) {
       else if (data.status === 'auth-required') {
         showToast(t('conn.tiktokAuthRequiredToast', { channel: data.channel }));
         renderTiktokSession();
+        // Auto-abre (o enfoca, si ya hay una abierta) la ventana de login en
+        // vez de obligar al usuario a buscarla en Configuracion — ver
+        // openTikTokLoginWindow, es idempotente por particion.
+        tiktokLogin();
       }
       break;
     }

@@ -375,9 +375,8 @@
     "tiktokLogin": "Accedi a TikTok",
     "tiktokLogout": "Esci da TikTok",
     "tiktokSessionActive": "Accesso a TikTok effettuato.",
-    "tiktokSessionNone": "Nessun accesso a TikTok (serve solo se una live lo richiede).",
-    "tiktokAuthRequired": "Accesso richiesto per {channel}.",
-    "tiktokAuthRequiredToast": "TikTok richiede l'accesso per vedere @{channel}. Accedi da Impostazioni → Canali collegati.",
+    "tiktokLoginPromptDesc": "TikTok richiede l'accesso per poter leggere la sua chat. Dopo aver effettuato l'accesso potrai aggiungere i canali che vuoi ascoltare.",
+    "tiktokAuthRequiredToast": "TikTok richiede l'accesso per vedere @{channel}. Apertura della finestra di accesso…",
     "tiktokLoggedIn": "Accesso a TikTok effettuato. Riconnessione…",
     "tiktokLoggedOut": "Disconnesso da TikTok."
   },
