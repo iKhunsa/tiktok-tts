@@ -375,7 +375,9 @@
     "tiktokLogin": "登录 TikTok",
     "tiktokLogout": "退出 TikTok",
     "tiktokSessionActive": "已登录 TikTok。",
-    "tiktokLoginPromptDesc": "TikTok 要求登录才能读取聊天。登录后即可添加想收听的频道。",
+    "tiktokLoginStepOneDesc": "访问聊天所必需。",
+    "tiktokLoginStepTwoTitle": "然后添加你想要的频道",
+    "tiktokLoginStepTwoDesc": "之后即可输入你想收听的<strong>任意频道</strong>的 @用户名。",
     "tiktokAuthRequiredToast": "TikTok 要求登录才能观看 @{channel}。正在打开登录窗口…",
     "tiktokLoggedIn": "已登录 TikTok。正在重新连接…",
     "tiktokLoggedOut": "已退出 TikTok。"

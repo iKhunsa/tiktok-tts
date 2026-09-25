@@ -375,7 +375,9 @@
     "tiktokLogin": "Se connecter à TikTok",
     "tiktokLogout": "Se déconnecter de TikTok",
     "tiktokSessionActive": "Connecté à TikTok.",
-    "tiktokLoginPromptDesc": "TikTok demande une connexion pour pouvoir lire son chat. Une fois connecté, vous pourrez ajouter les chaînes que vous voulez écouter.",
+    "tiktokLoginStepOneDesc": "Nécessaire pour accéder au chat.",
+    "tiktokLoginStepTwoTitle": "Ajoutez ensuite la chaîne de votre choix",
+    "tiktokLoginStepTwoDesc": "Vous pourrez ensuite saisir le @nom d'utilisateur de <strong>n'importe quelle chaîne</strong> que vous voulez écouter.",
     "tiktokAuthRequiredToast": "TikTok demande une connexion pour voir @{channel}. Ouverture de la fenêtre de connexion…",
     "tiktokLoggedIn": "Connecté à TikTok. Reconnexion…",
     "tiktokLoggedOut": "Déconnecté de TikTok."

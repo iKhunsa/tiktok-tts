@@ -703,9 +703,22 @@
                canal, pero mostrarlo justo aca evita que se lea como "2 cosas
                de TikTok" separadas. -->
           <div id="tiktok-login-prompt" style="display:none;flex-direction:column;gap:8px;">
-            <div style="display:flex;gap:6px;font-size:11px;color:var(--text-muted);line-height:1.5;">
-              <img class="icon-inline" src="icons/info.svg" alt="" style="opacity:.6;flex-shrink:0;width:13px;height:13px;">
-              <span data-i18n="conn.tiktokLoginPromptDesc">TikTok pide iniciar sesión para poder leer su chat. Después de iniciarla vas a poder escribir los canales que quieras escuchar.</span>
+            <div class="tiktok-login-flow">
+              <div class="tiktok-login-step tiktok-login-step-one">
+                <span class="tiktok-login-badge">1</span>
+                <div>
+                  <strong class="tiktok-login-pending" data-i18n="conn.tiktokLogin">Iniciar sesión en TikTok</strong>
+                  <strong class="tiktok-login-complete">✓ <span data-i18n="conn.tiktokSessionActive">Sesión de TikTok iniciada.</span></strong>
+                  <span data-i18n="conn.tiktokLoginStepOneDesc">Necesario para acceder al chat.</span>
+                </div>
+              </div>
+              <div class="tiktok-login-step tiktok-login-step-two">
+                <span class="tiktok-login-badge">2</span>
+                <div>
+                  <strong data-i18n="conn.tiktokLoginStepTwoTitle">Luego agrega el canal que quieras</strong>
+                  <span data-i18n-html="conn.tiktokLoginStepTwoDesc">Después podrás escribir el @usuario de <strong>cualquier canal</strong> que quieras escuchar.</span>
+                </div>
+              </div>
             </div>
             <div class="settings-row-flex">
               <button type="button" class="btn-supabase-primary" id="btn-tiktok-login-prompt" onclick="tiktokLogin()"><img class="icon-inline" src="icons/login.svg" alt=""> <span data-i18n="conn.tiktokLogin">Iniciar sesión en TikTok</span></button>

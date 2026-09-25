@@ -375,7 +375,9 @@
     "tiktokLogin": "Entrar no TikTok",
     "tiktokLogout": "Sair do TikTok",
     "tiktokSessionActive": "Sessão do TikTok iniciada.",
-    "tiktokLoginPromptDesc": "O TikTok pede login para poder ler o chat. Depois de entrar, você vai poder adicionar os canais que quiser ouvir.",
+    "tiktokLoginStepOneDesc": "Necessário para acessar o chat.",
+    "tiktokLoginStepTwoTitle": "Depois adicione o canal que quiser",
+    "tiktokLoginStepTwoDesc": "Depois você vai poder digitar o @usuário de <strong>qualquer canal</strong> que quiser ouvir.",
     "tiktokAuthRequiredToast": "O TikTok pede login para ver @{channel}. Abrindo a janela de login…",
     "tiktokLoggedIn": "Sessão do TikTok iniciada. Reconectando…",
     "tiktokLoggedOut": "Sessão do TikTok encerrada."

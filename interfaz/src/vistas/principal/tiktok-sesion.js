@@ -39,8 +39,10 @@ export function toggleTiktokAddPrompt(platform) {
   const row = document.getElementById('tiktok-add-channel-row');
   const hint = document.getElementById('channel-live-hint');
   if (!prompt || !row) return;
-  const needsLogin = platform === 'tiktok' && lastSession.available && !lastSession.loggedIn;
-  prompt.style.display = needsLogin ? 'flex' : 'none';
+  const hasTikTokSession = platform === 'tiktok' && lastSession.available;
+  const needsLogin = hasTikTokSession && !lastSession.loggedIn;
+  prompt.style.display = hasTikTokSession ? 'flex' : 'none';
+  prompt.classList.toggle('is-complete', hasTikTokSession && lastSession.loggedIn);
   row.style.display = needsLogin ? 'none' : 'flex';
   if (hint) hint.style.display = needsLogin ? 'none' : 'flex';
 }
