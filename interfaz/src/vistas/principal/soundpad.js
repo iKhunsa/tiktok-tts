@@ -1,6 +1,7 @@
 import { t, tErr } from '../../nucleo/i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
 import { aplicarBloqueoVista } from '../../nucleo/estado/vista-bloqueada.js';
+import { logStorage } from '../../nucleo/log-storage.js';
 
 let _spSounds = [];
 let _spCapturing = null; // soundId capturando un atajo
@@ -17,7 +18,25 @@ function spSafeColor(color) {
 export async function spLoad() {
   try {
     const r = await fetch('/api/soundpad/list');
-    _spSounds = await r.json();
+    const data = await r.json();
+    // /api/soundpad/list no esta en la whitelist de core/guard-suscripcion.js:
+    // con subscriptionsEnabled activo y sin sesion (ej. primera apertura,
+    // antes de loguearse) el muro global responde 401 { error, errorKey },
+    // no un array — mismo caso ya documentado en loadVoices() (voces.js) para
+    // /api/voices. Sin este guard, _spSounds queda con ese objeto y
+    // spRestoreShortcuts() revienta con "forEach is not a function".
+    if (!Array.isArray(data)) {
+      logStorage.addLog('warn', 'client', 'Respuesta inesperada de /api/soundpad/list', {
+        expectedType: 'array',
+        actualType: typeof data,
+        isArray: Array.isArray(data),
+        isNull: data === null,
+        keys: data && typeof data === 'object' ? Object.keys(data) : undefined,
+      });
+      _spSounds = [];
+    } else {
+      _spSounds = data;
+    }
   } catch (_) { _spSounds = []; }
   spRender();
 }
@@ -397,6 +416,20 @@ export async function spChooseIcon(name) {
  * electronAPI esta listo). */
 export function spRestoreShortcuts() {
   if (!window.electronAPI?.registerSoundpadShortcut) return;
+  // Guard defensivo: _spSounds ya deberia ser siempre un array (ver el
+  // contrato validado en spLoad()), pero esta funcion se llama desde
+  // Promises encadenadas sin catch (spLoad().then(() => spRestoreShortcuts()))
+  // — si algo mas rompe el invariante en el futuro, mejor loguear y salir
+  // que volver a producir un unhandledrejection.
+  if (!Array.isArray(_spSounds)) {
+    logStorage.addLog('warn', 'client', 'spRestoreShortcuts: _spSounds no es un array', {
+      expectedType: 'array',
+      actualType: typeof _spSounds,
+      isArray: Array.isArray(_spSounds),
+      isNull: _spSounds === null,
+    });
+    return;
+  }
   _spSounds.forEach((s) => {
     if (s.shortcut) window.electronAPI.registerSoundpadShortcut(s.id, s.shortcut);
   });

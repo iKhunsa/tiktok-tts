@@ -15,7 +15,7 @@
  */
 import { paintRangeFill, iniciarPintadoDeRangos } from '../../componentes/campos-formulario.js';
 import { showToast } from '../../componentes/toast.js';
-import { iniciarCapturaErroresCliente } from '../../nucleo/log-storage.js';
+import { iniciarCapturaErroresCliente, logStorage } from '../../nucleo/log-storage.js';
 import { loadSettings, applySettings, appSettings } from '../../nucleo/estado/ajustes-app.js';
 import { loadRuntimeConfig } from '../../nucleo/estado/config-runtime.js';
 import { connectWS } from '../../nucleo/ws/cliente-ws.js';
@@ -170,7 +170,7 @@ function aplicarBloqueoApp() {
   // 401 contra el muro — nadie mas los vuelve a pedir, hay que re-hidratarlos.
   if (!bloq && _estabaBloqueada) {
     loadVoices();
-    spLoad().then(() => spRestoreShortcuts());
+    spLoad().then(() => spRestoreShortcuts()).catch((err) => logStorage.addLog('warn', 'client', `spLoad/spRestoreShortcuts fallo: ${err.message}`));
     musicInit();
   }
   _estabaBloqueada = bloq;
@@ -237,7 +237,7 @@ function iniciarArranque() {
   renderSettingsChannels();
   renderTiktokSession();
   loadMobileURL();
-  spLoad().then(() => spRestoreShortcuts());
+  spLoad().then(() => spRestoreShortcuts()).catch((err) => logStorage.addLog('warn', 'client', `spLoad/spRestoreShortcuts fallo: ${err.message}`));
 
   fetch('/api/overlay-stats')
     .then((r) => r.json())
