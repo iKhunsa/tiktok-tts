@@ -45,7 +45,7 @@ server.js (Express + WS en puerto 3000)
       ├── configuracion/             ← único dueño de config.json y platform-config.json
       ├── idioma/                    ← filtro de idioma/script de voz (puro)
       ├── reporte-bug/                ← webhook de Discord, retención de logs
-      ├── moderacion/                ← moderation.json, blocked-words.md, policy.evaluate()
+      ├── moderacion/                ← moderation.json, blocked-words.md, @tiklivetts/chat-guard
       ├── canales/                   ← TikTok/Twitch/YouTube/Kick + OBS — único productor de eventos crudos
       ├── chat/                      ← orquesta: crudo → moderación → chat:mensaje-permitido
       ├── promo/                     ← avisos promocionales periódicos (announce-texts)
@@ -125,9 +125,8 @@ a n=1** — solo si compra una de estas tres:
 Si no compra ninguna de las tres, es solo mover una función detrás de una capa
 → `core/<nombre>.js` pelado, sin la ceremonia del contrato.
 
-Excepciones documentadas (copias deliberadas, NO tocar): `normalize-aggressive.js`
-/ `sanitize-for-tts.js` entre dominios (funciones puras, se eligió copiar
-antes que un contrato); los `toast.js` de `avanzada/` y `movil/` (cada vista
+Excepciones documentadas (copias deliberadas, NO tocar): los `toast.js` de
+`avanzada/` y `movil/` (cada vista
 legacy conserva el suyo hasta unificar la paleta CSS — ver `plan-fases/06`).
 
 Endpoints HTTP relevantes (repartidos por dominio, ver cada carpeta para
@@ -148,7 +147,7 @@ GET  /api/moderation/viewers ← registro de espectadores (moderacion/)
 POST /api/moderation/{mute,unmute,ban,unban,clear,follower}
 ```
 
-## Moderación de espectadores (`features/moderacion/store/`)
+## Moderación de espectadores (`features/moderacion/`)
 
 Registro persistente de todo espectador que interactúa, más los seguidores, con
 moderación **local** por usuario (no se toca la plataforma). Único dueño de

@@ -5,21 +5,22 @@ const os = require('os');
 const path = require('path');
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { createModerationStore } = require('../features/moderacion/store/create-store');
+const { createRegistryStore } = require('../features/moderacion/persistence/create-registry-store');
 
-test('moderacion A -> B -> A hace flush y no cruza escrituras diferidas', () => {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'tiklivetts-mod-'));
-  const a = path.join(root, 'a');
-  const b = path.join(root, 'b');
-  fs.mkdirSync(a); fs.mkdirSync(b);
-  const store = createModerationStore({ dataDir: a, logger: { log() {} } });
-  store.touch({ platform: 'tiktok', userId: 'a', nick: 'A' });
-  store.switchDataDir(b);
-  assert.equal(store.size, 0);
-  store.touch({ platform: 'tiktok', userId: 'b', nick: 'B' });
-  store.switchDataDir(a);
-  assert.equal(store.size, 1);
-  assert.equal(store.get('tiktok:a').nick, 'A');
+test('switching accounts flushes and reloads the registry', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'tts-account-switch-'));
+  const first = path.join(root, 'first');
+  const second = path.join(root, 'second');
+  fs.mkdirSync(first);
+  fs.mkdirSync(second);
+  const store = createRegistryStore({ dataDir: first, logger: { log() {} } });
+  store.touch({ platform: 'tiktok', userId: 'first', nick: 'First' });
+  store.switchDataDir(second);
+  assert.equal(store.stats().total, 0);
+  store.touch({ platform: 'tiktok', userId: 'second', nick: 'Second' });
+  store.switchDataDir(first);
+  assert.equal(store.stats().total, 1);
+  assert.equal(store.toDTO('tiktok:id:first').nick, 'First');
   store.shutdown();
   fs.rmSync(root, { recursive: true, force: true });
 });

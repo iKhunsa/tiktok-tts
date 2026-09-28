@@ -1,10 +1,9 @@
 'use strict';
 
-const { createModerationStore } = require('./store/create-store');
-const { createBlockedMatchersState } = require('./filters/blocked-matchers');
+const { createRegistryStore } = require('./persistence/create-registry-store');
 const { loadBlockedWordsFromFile } = require('./filters/blocked-words-file');
-const { createDuplicateTrackerState, sweepDuplicateTracker, DUP_WINDOW_MS } = require('./filters/is-duplicate-recent');
-const { createPolicy } = require('./policy');
+const { createChatGuard, viewerKey } = require('@tiklivetts/chat-guard');
+const { buildGuardOptions } = require('./build-guard-options');
 const moderacionPolicyContract = require('../../core/contracts/moderacion-policy');
 const mcpRegistry = require('../../core/contracts/mcp-registry');
 const { resolveModTarget, resolveUntil } = require('./apply-mod-action');
@@ -27,52 +26,49 @@ const { blockedWordsImport } = require('./routes/blocked-words-import');
 const { blockWord } = require('./routes/block-word');
 const { unblockWord } = require('./routes/unblock-word');
 
-const DUP_SWEEP_MS = 5 * 60 * 1000;
-
 let storeInstance = null;
 
 module.exports = {
   name: 'moderacion',
 
   register({ app, bus, logger }) {
-    const store = createModerationStore({ dataDir: accountDataDir(), logger });
+    const store = createRegistryStore({ dataDir: accountDataDir(), logger });
     storeInstance = store;
-    const blockedMatchersState = createBlockedMatchersState();
-    const dupState = createDuplicateTrackerState();
-    loadBlockedWordsFromFile(blockedMatchersState, logger);
+    const blockedWords = new Set();
+    loadBlockedWordsFromFile(blockedWords, logger);
+    const moderation = { guard: null };
+    const guardOptions = () => buildGuardOptions({ bus, blockedWords });
+    const createGuard = () => createChatGuard({ registry: store.registry, ...guardOptions() });
+    const configure = () => moderation.guard.configure(guardOptions());
+    moderation.guard = createGuard();
+    configure();
 
     bus.on('account:changing', () => store.flush(), 'moderacion');
     bus.on('account:changed', () => {
       store.switchDataDir(accountDataDir());
-      blockedMatchersState.blockedWords.clear();
-      blockedMatchersState.cache = null;
-      loadBlockedWordsFromFile(blockedMatchersState, logger);
+      blockedWords.clear();
+      loadBlockedWordsFromFile(blockedWords, logger);
+      moderation.guard = createGuard();
+      configure();
       bus.emit('ws:broadcast', { type: 'moderation-reset' });
     }, 'moderacion');
 
-    const deps = { app, bus, logger, store, blockedMatchersState, dupState };
-
-    const policy = createPolicy({ store, logger, bus, blockedMatchersState, dupState });
+    const deps = { app, bus, logger, store, blockedWords, moderation, guardOptions, configure };
     // Inyeccion en tiempo de registro: /chat (Fase 7) consume la interfaz de
     // core/contracts/moderacion-policy.js sin importar moderacion/ directo.
-    moderacionPolicyContract.evaluate = policy.evaluate;
+    moderacionPolicyContract.review = ({ platform, raw }) => {
+      const verdict = moderation.guard.review({ platform, raw });
+      if (!verdict.message) return verdict;
+      const key = viewerKey({ platform, id: verdict.message.author.id, handle: verdict.message.author.handle });
+      const status = store.registry.statusOf(key);
+      return { ...verdict, moderationKey: key, isFollower: status.isFollower || status.isWhitelisted };
+    };
+    bus.on('config:actualizado', configure, 'moderacion');
 
     bus.on('canal:follow', (payload) => {
       if (!payload) return;
       store.markFollower({ platform: payload.platform, userId: payload.userId, nick: payload.nick || payload.user });
     }, 'moderacion');
-
-    // /chat (Fase 7) emite esto ya con el dato limpio {platform, userId, nick}
-    // — canal:mensaje-crudo trae el dato crudo por plataforma (nombres de
-    // campo distintos en TikTok/Twitch/YouTube) y parsearlo aca acoplaria
-    // /moderacion a /canales.
-    bus.on('chat:mensaje-recibido', (payload) => {
-      if (!payload) return;
-      store.touch({ platform: payload.platform, userId: payload.userId, nick: payload.nick });
-    }, 'moderacion');
-
-    const dupSweepTimer = setInterval(() => sweepDuplicateTracker(dupState), DUP_SWEEP_MS);
-    if (dupSweepTimer.unref) dupSweepTimer.unref();
 
     app.post('/api/moderation/preview', preview(deps));
     app.get('/api/moderation/viewers', viewers(store));
@@ -85,7 +81,7 @@ module.exports = {
     app.post('/api/moderation/follower', follower(deps));
     app.delete('/api/moderation/viewer', deleteViewer(deps));
     app.delete('/api/moderation/viewers', deleteAllViewers(deps));
-    app.get('/api/blocked-words', blockedWordsGet(blockedMatchersState));
+    app.get('/api/blocked-words', blockedWordsGet(blockedWords));
     app.get('/api/blocked-words/export', blockedWordsExport(logger));
     app.post('/api/blocked-words/import', blockedWordsImport(deps));
     app.post('/api/block-word', blockWord(deps));

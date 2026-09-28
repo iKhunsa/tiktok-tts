@@ -188,6 +188,5 @@ module.exports = {
       try { entry.ws.removeAllListeners(); entry.ws.close(); } catch (_) { /* best-effort */ }
     }
     state.kickChannels.clear();
-    state.kickSeenIds.clear();
   },
 };
