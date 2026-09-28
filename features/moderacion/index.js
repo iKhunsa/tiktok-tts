@@ -61,7 +61,7 @@ module.exports = {
       if (!verdict.message) return verdict;
       const key = viewerKey({ platform, id: verdict.message.author.id, handle: verdict.message.author.handle });
       const status = store.registry.statusOf(key);
-      return { ...verdict, isFollower: status.isFollower || status.isWhitelisted };
+      return { ...verdict, moderationKey: key, isFollower: status.isFollower || status.isWhitelisted };
     };
     bus.on('config:actualizado', configure, 'moderacion');
 
@@ -70,10 +70,6 @@ module.exports = {
       store.markFollower({ platform: payload.platform, userId: payload.userId, nick: payload.nick || payload.user });
     }, 'moderacion');
 
-    // /chat (Fase 7) emite esto ya con el dato limpio {platform, userId, nick}
-    // — canal:mensaje-crudo trae el dato crudo por plataforma (nombres de
-    // campo distintos en TikTok/Twitch/YouTube) y parsearlo aca acoplaria
-    // /moderacion a /canales.
     app.post('/api/moderation/preview', preview(deps));
     app.get('/api/moderation/viewers', viewers(store));
     app.get('/api/moderation/stats', stats(store));

@@ -2,9 +2,23 @@
 
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
+const { adaptMessage, createChatGuard, createViewerRegistry } = require('@tiklivetts/chat-guard');
 const { createEventBus } = require('../core/event-bus');
+const moderacionPolicy = require('../core/contracts/moderacion-policy');
 const { emitChatMessage, resetAdminAnnounce } = require('../features/chat/emit-chat-message');
 const chatDomain = require('../features/chat/index');
+
+const originalReview = moderacionPolicy.review;
+
+moderacionPolicy.review = ({ platform, raw }) => ({
+  action: 'allow',
+  reasons: [],
+  message: adaptMessage({ platform, raw }),
+});
+
+test.after(() => {
+  moderacionPolicy.review = originalReview;
+});
 
 function setup() {
   resetAdminAnnounce();
@@ -29,7 +43,7 @@ function setup() {
 
   const adminAnnounceCount = () => broadcasts.filter((b) => b.type === 'admin-announce').length;
 
-  return { bus, adminMessage, adminAnnounceCount };
+  return { broadcasts, bus, adminMessage, adminAnnounceCount };
 }
 
 test('mensaje del admin dispara admin-announce una sola vez', () => {
@@ -57,4 +71,47 @@ test('lista-canales total 0 seguido de reconexion re-anuncia (sesion nueva)', ()
   bus.emit('canal:estado', { state: 'lista-canales', tiktok: ['streamer'], twitch: [], youtube: [], kick: [] });
   adminMessage();
   assert.equal(adminAnnounceCount(), 2, 'sesion nueva debe volver a anunciar');
+});
+
+test('redelivery del admin queda bloqueado por el guard', () => {
+  const guard = createChatGuard({ registry: createViewerRegistry() });
+  const previousReview = moderacionPolicy.review;
+  moderacionPolicy.review = (input) => guard.review(input);
+
+  try {
+    const { broadcasts, bus } = setup();
+    const blocked = [];
+    const raw = { nickname: 'Streamer', uniqueId: 'streamer', comment: 'hola', msgId: 'same' };
+    bus.on('chat:mensaje-bloqueado', (payload) => blocked.push(payload), 'test');
+    const emit = emitChatMessage({ bus, logger: { log() {} } });
+
+    emit({ platform: 'tiktok', channel: 'x', raw });
+    emit({ platform: 'tiktok', channel: 'x', raw });
+
+    assert.equal(broadcasts.filter((payload) => payload.type === 'chat').length, 1);
+    assert.equal(blocked.length, 1);
+    assert.equal(blocked[0].motivo, 'duplicate-redelivery');
+  } finally {
+    moderacionPolicy.review = previousReview;
+  }
+});
+
+test('un fallo de politica muestra el mensaje sin enviarlo a TTS', () => {
+  const previousReview = moderacionPolicy.review;
+  moderacionPolicy.review = () => { throw new Error('policy unavailable'); };
+
+  try {
+    const { broadcasts, bus } = setup();
+    emitChatMessage({ bus, logger: { log() {} } })({
+      platform: 'tiktok',
+      channel: 'x',
+      raw: { nickname: 'Viewer', uniqueId: 'viewer', comment: 'hola' },
+    });
+
+    const message = broadcasts.find((payload) => payload.type === 'chat');
+    assert.equal(message.muted, true);
+    assert.equal(message.ttsBlocked, true);
+  } finally {
+    moderacionPolicy.review = previousReview;
+  }
 });
