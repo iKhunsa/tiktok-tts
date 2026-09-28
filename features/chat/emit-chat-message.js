@@ -63,16 +63,21 @@ function fallbackVerdict({ logger, platform, raw }) {
     if (message && !message.skip) {
       return { action: 'mute', reasons: ['policy-evaluation-failed'], message };
     }
+    return adaptationFailed({ logger, platform, error: message && message.skip });
   } catch (error) {
-    logger.log(
-      'error',
-      'chat',
-      'chat/emit-chat-message.js#fallbackVerdict',
-      'chat.policy_fallo_adaptacion',
-      'No se pudo adaptar un mensaje sin politica de chat',
-      { platform, error: error.message }
-    );
+    return adaptationFailed({ logger, platform, error: error.message });
   }
+}
+
+function adaptationFailed({ logger, platform, error }) {
+  logger.log(
+    'error',
+    'chat',
+    'chat/emit-chat-message.js#fallbackVerdict',
+    'chat.policy_fallo_adaptacion',
+    'No se pudo adaptar un mensaje sin politica de chat',
+    { platform, error }
+  );
   return { action: 'drop', reasons: ['message-adaptation-failed'], message: null };
 }
 

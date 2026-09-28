@@ -115,3 +115,23 @@ test('un fallo de politica muestra el mensaje sin enviarlo a TTS', () => {
     moderacionPolicy.review = previousReview;
   }
 });
+
+test('un mensaje que no se puede adaptar se registra y descarta', () => {
+  const previousReview = moderacionPolicy.review;
+  const logs = [];
+  moderacionPolicy.review = () => { throw new Error('policy unavailable'); };
+
+  try {
+    const { broadcasts, bus } = setup();
+    emitChatMessage({ bus, logger: { log: (...entry) => logs.push(entry) } })({
+      platform: 'unknown',
+      channel: 'x',
+      raw: { comment: 'hola' },
+    });
+
+    assert.equal(broadcasts.some((payload) => payload.type === 'chat'), false);
+    assert.equal(logs.some((entry) => entry[3] === 'chat.policy_fallo_adaptacion'), true);
+  } finally {
+    moderacionPolicy.review = previousReview;
+  }
+});
