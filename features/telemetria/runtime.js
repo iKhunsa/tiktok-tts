@@ -110,6 +110,7 @@ async function shutdown({ timeoutMs = 1500 } = {}) {
   clearInterval(runtime.heartbeatTimer);
   clearTimeout(runtime.flushTimer);
 
+  runtime.bus.emit('telemetry:shutdown'); // platforms.js -> app/live_stopped si seguia en vivo
   runtime.bus.emit('telemetry:heartbeat');
   track('app', 'shutdown', { duration_minutes: sessionMinutes(), platforms_used: platformsUsed() });
 
