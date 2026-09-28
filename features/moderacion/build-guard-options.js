@@ -2,6 +2,9 @@
 
 const idiomaFiltrar = require('../../core/contracts/idioma-filtrar');
 
+// Tope real de Google Translate TTS; features/configuracion acota TTS_MAX_CHARS a lo mismo.
+const GOOGLE_TTS_MAX_CHARS = 200;
+
 const BASE_RULES = {
   maxDisplayLength: 300,
   floodWindowMs: 45000,
@@ -14,7 +17,7 @@ function buildGuardOptions({ bus, blockedWords }) {
   return {
     rules: {
       ...BASE_RULES,
-      maxSpeechLength: config.TTS_MAX_CHARS || 500,
+      maxSpeechLength: config.TTS_MAX_CHARS || GOOGLE_TTS_MAX_CHARS,
       nonFollowersSpeak: !!config.ttsReadNonFollowers,
     },
     adminHandles: adminHandles(config.adminIdentities),
