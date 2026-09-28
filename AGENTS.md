@@ -1,5 +1,7 @@
 # TikLiveTTS — Contexto del Proyecto para IA
 
+> **OBLIGATORIO para todo agente (Codex, Claude): skill clean-code.** Antes de escribir, modificar o revisar código lee `.agents/skills/clean-code/SKILL.md` y `.agents/skills/clean-code/references/smells-and-heuristics.md`, y aplícalas a todo el código y los tests. Todo reporte de trabajo incluye una tabla "archivo → reglas/smells de la skill aplicados". Si una regla choca con este documento, gana este documento y se anota el choque.
+
 ## Qué es
 
 App de escritorio Electron que lee en voz alta el chat de TikTok Live, Twitch y YouTube en tiempo real. Diseñada para streamers que quieren TTS integrado sin depender de herramientas externas. La UI corre dentro de la app (no en navegador externo). Los overlays (alertas, likes, seguidores) se pegan en OBS como Browser Source via `http://localhost:3000/overlay-*.html`.
