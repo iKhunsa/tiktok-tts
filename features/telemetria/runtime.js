@@ -128,4 +128,5 @@ module.exports = {
   sessionMinutes,
   switchCreatorDataDir,
   get enabled() { return runtime.enabled; },
+  get identity() { return runtime.identity; },
 };

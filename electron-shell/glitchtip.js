@@ -555,6 +555,16 @@ function attach(bus, logger) {
   );
 }
 
+// Correlaciona cada issue con la sesion del panel de telemetria-tts (INT-024).
+// Ids generados localmente (hash / UUID), no PII de terceros.
+function setTelemetryIdentity(identity) {
+  if (!estado.enabled || !Sentry || !identity) return;
+  try {
+    Sentry.setTag('telemetry_session_id', identity.sessionId);
+    Sentry.setTag('telemetry_machine_id', identity.machineId);
+  } catch (_) { /* best-effort */ }
+}
+
 async function shutdown() {
   if (!estado.enabled || !Sentry) return;
   try { await Sentry.close(1500); } catch (_) { /* best-effort */ }
@@ -563,6 +573,7 @@ async function shutdown() {
 module.exports = {
   init,
   attach,
+  setTelemetryIdentity,
   shutdown,
   esErrorConexionEsperado, // export para tests (bug 07)
   recortarData,            // export para tests (scrub de PII en breadcrumbs/Logs)
