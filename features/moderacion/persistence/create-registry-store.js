@@ -1,7 +1,7 @@
 'use strict';
 
 const path = require('path');
-const { viewerKey } = require('@tiklivetts/chat-guard');
+const { parseViewerKey, viewerKey } = require('@tiklivetts/chat-guard');
 const { flushRegistry } = require('./flush-registry');
 const { listViewers } = require('./list-viewers');
 const { loadRegistry } = require('./load-registry');
@@ -25,6 +25,17 @@ function createRegistryStore({ dataDir, logger }) {
     return toDto(state.registry, key);
   }
 
+  function modifyAndFlush(target, change) {
+    const viewer = modify(target, change);
+    flush();
+    return viewer;
+  }
+
+  function flushNow() {
+    state.dirty = true;
+    return flush();
+  }
+
   function touch(target) {
     return modify(target, (key) => state.registry.touch(key, { displayName: target.nick || '' }));
   }
@@ -34,32 +45,32 @@ function createRegistryStore({ dataDir, logger }) {
   }
 
   function setMute(target, until) {
-    return modify(target, (key) => state.registry.mute(key, until));
+    return modifyAndFlush(target, (key) => state.registry.mute(key, until));
   }
 
   function setBan(target, until) {
-    return modify(target, (key) => state.registry.ban(key, until));
+    return modifyAndFlush(target, (key) => state.registry.ban(key, until));
   }
 
   function clearPunishments(target) {
-    return modify(target, (key) => {
+    return modifyAndFlush(target, (key) => {
       state.registry.unmute(key);
       state.registry.unban(key);
     });
   }
 
   function setWhitelist(target, value) {
-    return modify(target, (key) => {
+    return modifyAndFlush(target, (key) => {
       if (value) state.registry.whitelist(key);
       else state.registry.unwhitelist(key);
     });
   }
 
   function remove(key) {
-    const exists = state.registry.statusOf(key).firstSeenAt > 0;
+    const exists = state.registry.list().some((viewer) => viewer.key === key);
     if (exists) {
       state.registry.remove(key);
-      scheduleFlush(state, flush);
+      flushNow();
     }
     return exists;
   }
@@ -68,7 +79,7 @@ function createRegistryStore({ dataDir, logger }) {
     const count = state.registry.list().length;
     if (count) {
       state.registry.clear();
-      scheduleFlush(state, flush);
+      flushNow();
     }
     return count;
   }
@@ -114,8 +125,11 @@ function targetKey(target) {
 }
 
 function parseKey(key) {
-  const match = /^(tiktok|twitch|youtube|kick):(id|name):(.+)$/.exec(String(key || ''));
-  return match ? { platform: match[1], idKind: match[2], id: match[3] } : null;
+  const parsed = parseViewerKey(key);
+  const isValid = ['tiktok', 'twitch', 'youtube', 'kick'].includes(parsed.platform)
+    && ['id', 'name'].includes(parsed.idKind)
+    && parsed.subjectId;
+  return isValid ? { platform: parsed.platform, idKind: parsed.idKind, id: parsed.subjectId } : null;
 }
 
 module.exports = { createRegistryStore };
