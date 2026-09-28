@@ -160,6 +160,7 @@ module.exports = {
       try { c.disconnect(); } catch (_) { /* best-effort */ }
     }
     state.twitchChannels.clear();
+    state.twitchReconnectDesired.clear();
 
     for (const timer of state.youtubeWatchdogTimers.values()) clearTimeout(timer);
     state.youtubeWatchdogTimers.clear();
@@ -170,6 +171,7 @@ module.exports = {
       try { c.stop('shutdown'); c.removeAllListeners(); } catch (_) { /* best-effort */ }
     }
     state.youtubeChannels.clear();
+    state.youtubeReconnectDesired.clear();
 
     if (state.obs.reconnectTimer) { clearTimeout(state.obs.reconnectTimer); state.obs.reconnectTimer = null; }
     if (state.obs.ws) {
@@ -188,5 +190,6 @@ module.exports = {
       try { entry.ws.removeAllListeners(); entry.ws.close(); } catch (_) { /* best-effort */ }
     }
     state.kickChannels.clear();
+    state.kickReconnectDesired.clear();
   },
 };

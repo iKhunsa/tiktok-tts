@@ -1,13 +1,13 @@
 'use strict';
 
 const WebSocket = require('ws');
-const { MAX_RECONNECT_ATTEMPTS } = require('../state/channel-maps');
 const { cleanKickSlug } = require('./clean-slug');
 const { fetchKickChatroom } = require('./fetch-chatroom');
 const { parseKickChatMessage } = require('./handle-event');
 const { PUSHER_URL, CHAT_MESSAGE_EVENT, subscribeFrame, PING_FRAME } = require('./pusher');
 const { armKickWatchdog, clearKickWatchdog, WATCHDOG_TIMEOUT_MS } = require('./stale-watchdog');
 const { assertNoConexionEnCurso } = require('../connecting-lock');
+const { reconnectDelayMs } = require('../reconnect-delay');
 
 // Conexion directa al chat de Kick desde Node: resuelve el chatroom.id via la
 // API publica de kick.com y se suscribe al canal Pusher `chatrooms.<id>.v2`
@@ -35,16 +35,8 @@ function teardownEntry(entry) {
 
 function scheduleReconnect(deps, slug, attempt, reason) {
   const { state, bus, logger } = deps;
-  if (attempt >= MAX_RECONNECT_ATTEMPTS) {
-    logger.log(
-      'warn', 'canales', 'canales/kick/connect-kick.js#scheduleReconnect', 'canales.kick.reconexion_agotada',
-      `Kick ${slug}: se agotaron los ${MAX_RECONNECT_ATTEMPTS} intentos de reconexion (motivo: ${reason})`,
-      { slug, motivo: reason }
-    );
-    bus.emit('canal:estado', { platform: 'kick', channel: slug, state: 'desconectado' });
-    return;
-  }
-  const delay = Math.min(1000 * Math.pow(2, attempt), 30000);
+  if (!state.kickReconnectDesired.has(slug)) return;
+  const delay = reconnectDelayMs(attempt);
   logger.log(
     'warn', 'canales', 'canales/kick/connect-kick.js#scheduleReconnect', 'canales.kick.reconectando',
     `Reconectando Kick ${slug}, intento ${attempt + 1} (motivo: ${reason})`,
@@ -58,6 +50,7 @@ function scheduleReconnect(deps, slug, attempt, reason) {
         'error', 'canales', 'canales/kick/connect-kick.js#scheduleReconnect', 'canales.kick.reconexion_fallida',
         `Fallo la reconexion de Kick ${slug}: ${e.message}`, { slug, error: e.message, stack: e.stack }
       );
+      scheduleReconnect(deps, slug, attempt + 1, reason);
     });
   }, delay);
   state.kickReconnectTimers.set(slug, timer);
@@ -145,7 +138,14 @@ async function connectKickLocked(deps, slug, attempt) {
         if (settled) return;
         settled = true;
         clearTimeout(subscribeTimeout);
+        if (attempt > 0 && !state.kickReconnectDesired.has(slug)) {
+          teardownEntry(entry);
+          resolve();
+          return;
+        }
         state.kickChannels.set(slug, entry);
+        state.kickReconnectDesired.add(slug);
+        entry.attempt = 0;
         logger.log(
           'info', 'canales', 'canales/kick/connect-kick.js#connectKick', 'canales.kick.conectado',
           `Kick ${slug} conectado`, { slug }
@@ -188,6 +188,7 @@ async function connectKickLocked(deps, slug, attempt) {
 function disconnectKick(deps, channelOrSlug) {
   const { state } = deps;
   const slug = cleanKickSlug(channelOrSlug);
+  state.kickReconnectDesired.delete(slug);
   clearKickReconnect(state.kickReconnectTimers, slug);
   clearKickWatchdog(state.kickWatchdogTimers, slug);
   const entry = state.kickChannels.get(slug);

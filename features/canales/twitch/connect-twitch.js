@@ -1,14 +1,36 @@
 'use strict';
 
-const { MAX_RECONNECT_ATTEMPTS } = require('../state/channel-maps');
 const { cleanTwitchChannel } = require('./clean-channel');
 const { armWatchdog, clearWatchdog, WATCHDOG_TIMEOUT_MS } = require('../stale-watchdog');
 const { assertNoConexionEnCurso } = require('../connecting-lock');
+const { reconnectDelayMs } = require('../reconnect-delay');
 
 function clearReconnectTimer(map, channel) {
   const timer = map.get(channel);
   if (timer) clearTimeout(timer);
   map.delete(channel);
+}
+
+function scheduleReconnect(deps, channel, attempt) {
+  const { state, bus, logger } = deps;
+  if (!state.twitchReconnectDesired.has(channel)) return;
+  const delay = reconnectDelayMs(attempt);
+  logger.log(
+    'warn', 'canales', 'canales/twitch/connect-twitch.js#scheduleReconnect', 'canales.twitch.reconectando',
+    `Reconectando Twitch ${channel}, intento ${attempt + 1}`, { channel, intento: attempt + 1, delayMs: delay }
+  );
+  bus.emit('canal:estado', { platform: 'twitch', channel, state: 'reconectando', attempt: attempt + 1, delayMs: delay });
+  const timer = setTimeout(() => {
+    state.twitchReconnectTimers.delete(channel);
+    connectTwitch(deps, channel, attempt + 1).catch((err) => {
+      logger.log(
+        'error', 'canales', 'canales/twitch/connect-twitch.js#scheduleReconnect', 'canales.twitch.reconexion_fallida',
+        `Fallo reconexion de Twitch ${channel}: ${err.message}`, { channel, error: err.message, stack: err.stack }
+      );
+      scheduleReconnect(deps, channel, attempt + 1);
+    });
+  }, delay);
+  state.twitchReconnectTimers.set(channel, timer);
 }
 
 /**
@@ -26,7 +48,7 @@ function clearReconnectTimer(map, channel) {
  * token muerto (GlitchTip #63).
  */
 async function connectTwitch(deps, channelInput, attempt = 0) {
-  const { state, bus, logger } = deps;
+  const { state } = deps;
   const tmi = require('tmi.js');
   const channel = cleanTwitchChannel(channelInput);
   if (!channel) throw new Error('Se requiere canal Twitch');
@@ -68,12 +90,7 @@ async function connectTwitchLocked(deps, tmi, channel, attempt) {
       `Twitch ${channel} sin 'message' en ${WATCHDOG_TIMEOUT_MS}ms; forzando reconexion`,
       { channel, timeoutMs: WATCHDOG_TIMEOUT_MS }
     );
-    connectTwitch(deps, channel, 0).catch((err) => {
-      logger.log(
-        'error', 'canales', 'canales/twitch/connect-twitch.js#connectTwitch', 'canales.twitch.reconexion_fallida',
-        `Fallo reconexion (stale) de Twitch ${channel}: ${err.message}`, { channel, error: err.message, stack: err.stack }
-      );
-    });
+    scheduleReconnect(deps, channel, 0);
   };
 
   client.on('message', (_ch, tags, message, self) => {
@@ -91,24 +108,7 @@ async function connectTwitchLocked(deps, tmi, channel, attempt) {
     bus.emit('canal:estado', { platform: 'twitch', channel, state: 'desconectado' });
     state.twitchChannels.delete(channel);
 
-    if (!client._intentionalDisconnect && attempt < MAX_RECONNECT_ATTEMPTS) {
-      const delay = Math.min(1000 * Math.pow(2, attempt), 30000);
-      logger.log(
-        'warn', 'canales', 'canales/twitch/connect-twitch.js#connectTwitch', 'canales.twitch.reconectando',
-        `Reconectando Twitch ${channel}, intento ${attempt + 1}`, { channel, intento: attempt + 1, delayMs: delay }
-      );
-      bus.emit('canal:estado', { platform: 'twitch', channel, state: 'reconectando', attempt: attempt + 1, delayMs: delay });
-      const timer = setTimeout(() => {
-        state.twitchReconnectTimers.delete(channel);
-        connectTwitch(deps, channel, attempt + 1).catch((err) => {
-          logger.log(
-            'error', 'canales', 'canales/twitch/connect-twitch.js#connectTwitch', 'canales.twitch.reconexion_fallida',
-            `Fallo reconexion de Twitch ${channel}: ${err.message}`, { channel, error: err.message, stack: err.stack }
-          );
-        });
-      }, delay);
-      state.twitchReconnectTimers.set(channel, timer);
-    }
+    if (!client._intentionalDisconnect) scheduleReconnect(deps, channel, 0);
   });
 
   // Defensivo: si tmi.js llegara a emitir 'error' en el EventEmitter (algunas
@@ -136,7 +136,13 @@ async function connectTwitchLocked(deps, tmi, channel, attempt) {
   } catch (err) {
     throw err instanceof Error ? err : new Error(String(err));
   }
+  if (attempt > 0 && !state.twitchReconnectDesired.has(channel)) {
+    client._intentionalDisconnect = true;
+    await client.disconnect();
+    return channel;
+  }
   state.twitchChannels.set(channel, client);
+  state.twitchReconnectDesired.add(channel);
   armWatchdog(state, staleKey, WATCHDOG_TIMEOUT_MS, onStale);
 
   logger.log(
@@ -146,4 +152,19 @@ async function connectTwitchLocked(deps, tmi, channel, attempt) {
   bus.emit('canal:estado', { platform: 'twitch', channel, state: 'conectado' });
 }
 
-module.exports = { connectTwitch, clearReconnectTimer };
+function disconnectTwitch(deps, channelInput) {
+  const { state } = deps;
+  const channel = cleanTwitchChannel(channelInput);
+  state.twitchReconnectDesired.delete(channel);
+  clearReconnectTimer(state.twitchReconnectTimers, channel);
+  clearWatchdog(state, `twitch:${channel}`);
+  const client = state.twitchChannels.get(channel);
+  if (client) {
+    client._intentionalDisconnect = true;
+    state.twitchChannels.delete(channel);
+    return client.disconnect().catch(() => undefined);
+  }
+  return undefined;
+}
+
+module.exports = { connectTwitch, disconnectTwitch, clearReconnectTimer };
