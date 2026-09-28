@@ -19,8 +19,13 @@ function buildGuardOptions({ bus, blockedWords }) {
     },
     adminHandles: adminHandles(config.adminIdentities),
     blockedWords: [...blockedWords],
-    languageCheck: (text) => idiomaFiltrar.filtrar(text, config.ttsVoiceLang, languageOptions(config)),
+    languageCheck: (text) => checkLanguage(bus, text),
   };
+}
+
+function checkLanguage(bus, text) {
+  const config = configSnapshot(bus);
+  return idiomaFiltrar.filtrar(text, config.ttsVoiceLang, languageOptions(config));
 }
 
 function configSnapshot(bus) {
