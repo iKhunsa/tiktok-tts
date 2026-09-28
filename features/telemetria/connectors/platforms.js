@@ -16,7 +16,7 @@
 const { flush } = require('../runtime');
 
 const LIVE_PING_MS = 60 * 1000;
-const PLATFORMS = ['tiktok', 'twitch', 'youtube'];
+const PLATFORMS = ['tiktok', 'twitch', 'youtube', 'kick'];
 
 function attach(bus, track, { markPlatform }) {
   const liveChannels = new Set(); // `${platform}:${channel}`
