@@ -15,8 +15,8 @@
  * @param {object} msg
  * @returns {ModeracionVeredicto}
  */
-function evaluate(msg) {
+function review(msg) {
   throw new Error('moderacionPolicy.evaluate no implementado todavia (se implementa en la Fase 5 — /moderacion)');
 }
 
-module.exports = { evaluate };
+module.exports = { review };

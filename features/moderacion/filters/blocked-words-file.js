@@ -5,7 +5,6 @@ const path = require('path');
 const { RESOURCE_BASE } = require('../../../core/paths');
 const { accountDataPath } = require('../../../core/account-data-path');
 const { atomicWriteFileSync } = require('../../../core/atomic-write');
-const { invalidateBlockedMatchers } = require('./blocked-matchers');
 
 const DEFAULT_BLOCKED_WORDS_FILE = path.join(RESOURCE_BASE, 'blocked-words.md');
 function blockedWordsFile() { return accountDataPath('blocked-words.md'); }
@@ -25,7 +24,6 @@ function loadBlockedWordsFromFile(state, logger) {
         if (word) state.blockedWords.add(word);
       }
     }
-    invalidateBlockedMatchers(state);
     logger.log(
       'info', 'moderacion', 'moderacion/filters/blocked-words-file.js#loadBlockedWordsFromFile', 'moderacion.palabras.cargado',
       `blocked-words.md cargado con ${state.blockedWords.size} palabra(s)`, { count: state.blockedWords.size }

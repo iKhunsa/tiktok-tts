@@ -1,6 +1,5 @@
 'use strict';
 
-const { invalidateBlockedMatchers } = require('../filters/blocked-matchers');
 const { saveBlockedWordsToFile } = require('../filters/blocked-words-file');
 
 function blockWord(deps) {
@@ -12,7 +11,7 @@ function blockWord(deps) {
     // bloqueaba el chat entero en silencio.
     if (!w) return res.status(400).json({ error: 'Palabra requerida', errorKey: 'errors.textRequired' });
     deps.blockedMatchersState.blockedWords.add(w);
-    invalidateBlockedMatchers(deps.blockedMatchersState);
+    if (deps.configure) deps.configure();
     saveBlockedWordsToFile(deps.blockedMatchersState, deps.logger);
     res.json({ words: [...deps.blockedMatchersState.blockedWords] });
   };

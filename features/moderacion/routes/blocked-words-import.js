@@ -1,6 +1,5 @@
 'use strict';
 
-const { invalidateBlockedMatchers } = require('../filters/blocked-matchers');
 const { saveBlockedWordsToFile } = require('../filters/blocked-words-file');
 
 function blockedWordsImport(deps) {
@@ -16,7 +15,7 @@ function blockedWordsImport(deps) {
         if (word) deps.blockedMatchersState.blockedWords.add(word);
       }
     }
-    invalidateBlockedMatchers(deps.blockedMatchersState);
+    if (deps.configure) deps.configure();
     saveBlockedWordsToFile(deps.blockedMatchersState, deps.logger);
     res.json({ words: [...deps.blockedMatchersState.blockedWords] });
   };
