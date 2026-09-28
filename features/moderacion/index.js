@@ -2,8 +2,8 @@
 
 const { createRegistryStore } = require('./persistence/create-registry-store');
 const { loadBlockedWordsFromFile } = require('./filters/blocked-words-file');
-const { createChatGuard } = require('@tiklivetts/chat-guard');
-const idiomaFiltrar = require('../../core/contracts/idioma-filtrar');
+const { createChatGuard, viewerKey } = require('@tiklivetts/chat-guard');
+const { buildGuardOptions } = require('./build-guard-options');
 const moderacionPolicyContract = require('../../core/contracts/moderacion-policy');
 const mcpRegistry = require('../../core/contracts/mcp-registry');
 const { resolveModTarget, resolveUntil } = require('./apply-mod-action');
@@ -34,32 +34,35 @@ module.exports = {
   register({ app, bus, logger }) {
     const store = createRegistryStore({ dataDir: accountDataDir(), logger });
     storeInstance = store;
-    const blockedMatchersState = { blockedWords: new Set() };
-    loadBlockedWordsFromFile(blockedMatchersState, logger);
-    let guard;
-    const createGuard = () => createChatGuard({ registry: store.registry, rules: { maxDisplayLength: 300, maxSpeechLength: 500, floodWindowMs: 45000, floodMinLength: 4, duplicateWindowMs: 6 * 60 * 60 * 1000, nonFollowersSpeak: true }, blockedWords: [...blockedMatchersState.blockedWords], languageCheck: (text) => { let config = {}; bus.emit('config:get', (c) => { config = c || {}; }); return idiomaFiltrar.filtrar(text, config.ttsVoiceLang, { langFilterEnabled: !!config.langFilterEnabled, dictFilterEnabled: !!config.dictFilterEnabled, allowedExtraLangs: config.allowedExtraLangs || [] }); } });
-    const configure = () => {
-      let config = {};
-      bus.emit('config:get', (c) => { config = c || {}; });
-      guard.configure({ rules: { maxDisplayLength: 300, maxSpeechLength: config.TTS_MAX_CHARS || 500, floodWindowMs: 45000, floodMinLength: 4, duplicateWindowMs: 6 * 60 * 60 * 1000, nonFollowersSpeak: !!config.ttsReadNonFollowers }, adminHandles: Object.entries(config.adminIdentities || {}).flatMap(([platform, handles]) => (handles || []).map((handle) => ({ platform, handle }))), blockedWords: [...blockedMatchersState.blockedWords] });
-    };
-    guard = createGuard();
+    const blockedWords = new Set();
+    loadBlockedWordsFromFile(blockedWords, logger);
+    const moderation = { guard: null };
+    const guardOptions = () => buildGuardOptions({ bus, blockedWords });
+    const createGuard = () => createChatGuard({ registry: store.registry, ...guardOptions() });
+    const configure = () => moderation.guard.configure(guardOptions());
+    moderation.guard = createGuard();
     configure();
 
     bus.on('account:changing', () => store.flush(), 'moderacion');
     bus.on('account:changed', () => {
       store.switchDataDir(accountDataDir());
-      guard = createGuard();
-      blockedMatchersState.blockedWords.clear();
-      loadBlockedWordsFromFile(blockedMatchersState, logger);
+      blockedWords.clear();
+      loadBlockedWordsFromFile(blockedWords, logger);
+      moderation.guard = createGuard();
       configure();
       bus.emit('ws:broadcast', { type: 'moderation-reset' });
     }, 'moderacion');
 
-    const deps = { app, bus, logger, store, blockedMatchersState, guard, configure };
+    const deps = { app, bus, logger, store, blockedWords, moderation, guardOptions, configure };
     // Inyeccion en tiempo de registro: /chat (Fase 7) consume la interfaz de
     // core/contracts/moderacion-policy.js sin importar moderacion/ directo.
-    moderacionPolicyContract.review = ({ platform, raw }) => guard.review({ platform, raw });
+    moderacionPolicyContract.review = ({ platform, raw }) => {
+      const verdict = moderation.guard.review({ platform, raw });
+      if (!verdict.message) return verdict;
+      const key = viewerKey({ platform, id: verdict.message.author.id, handle: verdict.message.author.handle });
+      const status = store.registry.statusOf(key);
+      return { ...verdict, isFollower: status.isFollower || status.isWhitelisted };
+    };
     bus.on('config:actualizado', configure, 'moderacion');
 
     bus.on('canal:follow', (payload) => {
@@ -71,11 +74,6 @@ module.exports = {
     // — canal:mensaje-crudo trae el dato crudo por plataforma (nombres de
     // campo distintos en TikTok/Twitch/YouTube) y parsearlo aca acoplaria
     // /moderacion a /canales.
-    bus.on('chat:mensaje-recibido', (payload) => {
-      if (!payload) return;
-      store.touch({ platform: payload.platform, userId: payload.userId, nick: payload.nick });
-    }, 'moderacion');
-
     app.post('/api/moderation/preview', preview(deps));
     app.get('/api/moderation/viewers', viewers(store));
     app.get('/api/moderation/stats', stats(store));
@@ -87,7 +85,7 @@ module.exports = {
     app.post('/api/moderation/follower', follower(deps));
     app.delete('/api/moderation/viewer', deleteViewer(deps));
     app.delete('/api/moderation/viewers', deleteAllViewers(deps));
-    app.get('/api/blocked-words', blockedWordsGet(blockedMatchersState));
+    app.get('/api/blocked-words', blockedWordsGet(blockedWords));
     app.get('/api/blocked-words/export', blockedWordsExport(logger));
     app.post('/api/blocked-words/import', blockedWordsImport(deps));
     app.post('/api/block-word', blockWord(deps));

@@ -2,10 +2,9 @@
 
 /**
  * @typedef {object} ModeracionVeredicto
- * @property {boolean} isSpam
- * @property {boolean} isMuted
- * @property {boolean} isBanned
- * @property {boolean} isFollower
+ * @property {'allow'|'mute'|'drop'} action
+ * @property {string[]} reasons
+ * @property {object|null} message
  */
 
 /**
@@ -16,7 +15,7 @@
  * @returns {ModeracionVeredicto}
  */
 function review(msg) {
-  throw new Error('moderacionPolicy.evaluate no implementado todavia (se implementa en la Fase 5 — /moderacion)');
+  throw new Error('moderacionPolicy.review no implementado todavia (se implementa en la Fase 5 — /moderacion)');
 }
 
 module.exports = { review };

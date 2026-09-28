@@ -10,10 +10,10 @@ function blockWord(deps) {
     // "" al Set -> getBlockedMatchers armaba una regex con alternativa vacia que
     // bloqueaba el chat entero en silencio.
     if (!w) return res.status(400).json({ error: 'Palabra requerida', errorKey: 'errors.textRequired' });
-    deps.blockedMatchersState.blockedWords.add(w);
+    deps.blockedWords.add(w);
     if (deps.configure) deps.configure();
-    saveBlockedWordsToFile(deps.blockedMatchersState, deps.logger);
-    res.json({ words: [...deps.blockedMatchersState.blockedWords] });
+    saveBlockedWordsToFile(deps.blockedWords, deps.logger);
+    res.json({ words: [...deps.blockedWords] });
   };
 }
 
