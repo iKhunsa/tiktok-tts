@@ -33,8 +33,8 @@ async function withStubTmi(connectImpl, run) {
   };
   delete require.cache[CT_PATH];
   try {
-    const { connectTwitch } = require(CT_PATH);
-    return await run(connectTwitch, { optsSeen, instances });
+    const { connectTwitch, disconnectTwitch } = require(CT_PATH);
+    return await run(connectTwitch, { disconnectTwitch, optsSeen, instances });
   } finally {
     if (prev) require.cache[TMI_PATH] = prev; else delete require.cache[TMI_PATH];
     delete require.cache[CT_PATH];
@@ -113,6 +113,63 @@ test('reconexion tras disconnect: el log trae el motivo real, nunca "undefined"'
       assert.ok(fail, 'se logueo reconexion_fallida');
       assert.equal(fail.data.error, 'Unable to connect.');
       assert.ok(!fail.message.includes('undefined'), fail.message);
+      assert.ok(d.state.twitchReconnectTimers.has('kintsu99'), 'el fallo agenda el siguiente intento');
+    }
+  );
+});
+
+test('un corte de dos minutos sigue reintentando y reconecta al volver la red', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  let online = true;
+  await withStubTmi(
+    () => (online ? Promise.resolve() : Promise.reject('Unable to connect.')),
+    async (connectTwitch, { instances }) => {
+      const d = deps();
+      await connectTwitch(d, 'kintsu99');
+      online = false;
+      instances[0].emit('disconnected');
+      for (const delay of [1000, 2000, 4000, 8000, 16000, 30000, 30000, 30000]) {
+        t.mock.timers.tick(delay);
+        for (let i = 0; i < 10; i += 1) await Promise.resolve();
+      }
+      online = true;
+      t.mock.timers.tick(30000);
+      for (let i = 0; i < 10; i += 1) await Promise.resolve();
+      assert.ok(d.state.twitchChannels.has('kintsu99'), 'reconecta despues de mas de dos minutos');
+    }
+  );
+});
+
+test('retirar Twitch durante un corte cancela los reintentos', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  await withStubTmi(
+    () => Promise.resolve(),
+    async (connectTwitch, { disconnectTwitch, instances }) => {
+      const d = deps();
+      await connectTwitch(d, 'kintsu99');
+      instances[0].emit('disconnected');
+      await disconnectTwitch(d, 'kintsu99');
+      t.mock.timers.tick(2 * 60 * 1000);
+      assert.equal(instances.length, 1, 'no crea clientes despues de retirar el canal');
+      assert.equal(d.state.twitchReconnectTimers.size, 0);
+    }
+  );
+});
+
+test('una reconexion exitosa reinicia el backoff', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  await withStubTmi(
+    () => Promise.resolve(),
+    async (connectTwitch, { instances }) => {
+      const d = deps();
+      await connectTwitch(d, 'kintsu99');
+      instances[0].emit('disconnected');
+      t.mock.timers.tick(1000);
+      for (let i = 0; i < 10; i += 1) await Promise.resolve();
+      instances[1].emit('disconnected');
+      const retry = d.logger.entries.filter((entry) => entry.event === 'canales.twitch.reconectando').at(-1);
+      assert.equal(retry.data.intento, 1);
+      assert.equal(retry.data.delayMs, 1000);
     }
   );
 });
