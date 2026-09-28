@@ -47,3 +47,19 @@ I1: `setWhitelist(false)` usa `registry.unwhitelist`. I2: persistencia separada 
 | `test/{chat-dedup,moderacion-store,moderation-account-switch,moderacion-key-for,canales-youtube-watchdog}.test.js` | F.I.R.S.T./T1: pruebas rápidas, independientes, de migración, reenvío y cuatro plataformas. |
 
 Verificación final: `npx vite build --config interfaz/vite.config.js && npm test` → 171/171; `node scripts/check-mcp.js` → OK; ESLint sin errores nuevos (warnings previos del repo). Servidor: viewers 200 y preview 200 (`{"blocked":false,"stage":"none"}`).
+
+## Correcciones J1-J8
+
+J1 respeta todo veredicto `drop`, incluido el reenvío del admin. J2 toma la configuración de idioma al evaluar cada mensaje. J3 persiste inmediatamente las acciones de moderación. J4 detecta la existencia real del espectador migrado. J5 delega la adaptación al paquete y silencia si falla la política. J6 consume `moderationKey` del contrato y divide el orquestador. J7 usa `parseViewerKey` del paquete. J8 elimina el comentario obsoleto y nombra la capacidad del registro.
+
+| Archivo | Reglas/smells de clean-code aplicados |
+| --- | --- |
+| `features/chat/emit-chat-message.js` | SRP/G30: orquestador dividido en funciones pequeñas; G5: adaptador y clave canónicos; CQS: broadcast separado de construcción; errores con plataforma y causa. |
+| `features/moderacion/index.js` | G17/N1: el contrato entrega la clave que ya posee; C2: eliminado comentario huérfano. |
+| `features/moderacion/build-guard-options.js` | G31/G35: lectura de configuración en el momento de uso, sin acoplamiento temporal. |
+| `features/moderacion/persistence/create-registry-store.js` | G3/G5: existencia real para migraciones y parser centralizado; nombres explícitos para persistencia inmediata. |
+| `features/moderacion/persistence/load-registry.js` | G25: `REGISTRY_CAPACITY` sustituye el número mágico repetido. |
+| `test/chat-admin-announce.test.js` | F.I.R.S.T./T1: cubre redelivery de admin y fallo de política sin TTS. |
+| `test/moderacion-build-guard-options.test.js` | F.I.R.S.T./T1: comprueba la configuración en caliente con una instancia estable. |
+| `test/moderacion-store.test.js` | F.I.R.S.T./T1/G3: cubre flush inmediato y migración sin timestamp. |
+| `docs/avance/chat-guard-integracion.md` | C1/C3: autoauditoría trazable, sin comentarios redundantes en código. |
