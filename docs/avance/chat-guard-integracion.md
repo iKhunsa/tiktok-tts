@@ -16,7 +16,7 @@
 | --- | --- |
 | `node scripts/check-mcp.js` | OK |
 | `npx eslint .` | Sin errores; el repositorio ya tenía warnings de variables sin uso. |
-| `npm test` | 188/196 verdes; 7 pruebas antiguas de `chat-dedup` esperan el dedup eliminado de chat, y una de assets de auth devuelve 404 sin `interfaz/dist`. |
+| `npm test` | 186/187 verdes; la única falla ajena al cambio es un asset de auth que devuelve 404 sin `interfaz/dist`. |
 | `node server.js` | Arranca; el entorno local tenía auth activa, por lo que `GET /api/moderation/viewers` respondió 401. |
 
 ## Autoauditoría clean-code
