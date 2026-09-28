@@ -33,13 +33,19 @@ function attach(bus, track, { markPlatform }) {
     if (liveTimer.unref) liveTimer.unref();
   }
 
-  function stopLive() {
+  function stopLive({ flushNow = true } = {}) {
     if (!liveTimer) return;
     clearInterval(liveTimer);
     liveTimer = null;
     track('app', 'live_stopped', {});
-    flush();
+    if (flushNow) flush();
   }
+
+  // Al cerrar la app: cortar el live sin flush propio — runtime.shutdown()
+  // hace el flush final y live_stopped viaja en el mismo batch que
+  // app/shutdown (un flush aca dejaria transport.sending=true y el de
+  // shutdown saldria sin enviar). Sin esto el backend espera la ventana de 150s.
+  bus.on('telemetry:shutdown', () => stopLive({ flushNow: false }));
 
   bus.on('canal:estado', (payload) => {
     if (!payload || !PLATFORMS.includes(payload.platform)) return;
