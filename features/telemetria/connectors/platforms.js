@@ -51,8 +51,10 @@ function attach(bus, track, { markPlatform }) {
         liveChannels.add(`${payload.platform}:${payload.channel}`);
         startLive();
       }
-    } else if (payload.state === 'desconectado') {
-      track('platforms', 'disconnected', { platform: payload.platform });
+    } else if (['desconectado', 'esperando-proximo-live', 'auth-requerida'].includes(payload.state)) {
+      if (payload.state === 'desconectado') {
+        track('platforms', 'disconnected', { platform: payload.platform });
+      }
       if (payload.channel) liveChannels.delete(`${payload.platform}:${payload.channel}`);
       if (liveChannels.size === 0) stopLive();
     } else if (payload.state === 'sin-canales') {
