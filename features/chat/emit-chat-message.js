@@ -28,7 +28,8 @@ function emitChatMessage({ bus, logger }) {
     let config = {};
     bus.emit('config:get', (c) => { config = c || {}; });
     const moderationKey = message.author.id ? `${platform}:id:${message.author.id}` : `${platform}:name:${String(message.author.handle || '').toLowerCase()}`;
-    const payload = { type: 'chat', platform, channel, user, userId: message.author.id || null, comment: message.text.display, ttsComment: message.text.speech, emotes: Object.keys(message.emotes).length ? message.emotes : undefined, ytMsgId: platform === 'youtube' ? message.messageId : undefined, isFollower: isAdmin || false, muted: verdict.action === 'mute', ttsBlocked: verdict.action === 'mute', isAdmin, timestamp: Date.now(), moderationKey };
+    const payload = { type: 'chat', platform, channel, user, userId: message.author.id || null, comment: message.text.display, ttsComment: message.text.speech, emotes: Object.keys(message.emotes).length ? message.emotes : undefined, ytMsgId: platform === 'youtube' ? message.messageId : undefined, isFollower: isAdmin || !!verdict.isFollower, muted: verdict.action === 'mute', ttsBlocked: verdict.action === 'mute', isAdmin, timestamp: Date.now(), moderationKey };
+    bus.emit('chat:mensaje-recibido', payload);
     bus.emit('chat:mensaje-permitido', payload);
     bus.emit('ws:broadcast', payload);
     if (isAdmin && !adminAnnounced) {
@@ -46,6 +47,4 @@ function fallbackVerdict(platform, raw) {
 function displayName(platform, author) { return platform === 'tiktok' ? resolveDisplayName(author.displayName, author.handle) : cleanName(author.displayName || author.handle) || 'USER'; }
 function blocked(bus, logger, platform, raw, reasons = [], userId = null, nick = null) { const motivo = reasons[0] || 'unknown'; logger.log('info', 'chat', 'chat/emit-chat-message.js#emitChatMessage', 'chat.mensaje.bloqueado', 'Mensaje bloqueado por moderacion', { platform, userId, nick, motivo }); bus.emit('chat:mensaje-bloqueado', { platform, userId, nick, motivo }); }
 
-function resetDedup() { /* deduplication belongs to the injected guard */ }
-
-module.exports = { emitChatMessage, resetAdminAnnounce, resetDedup };
+module.exports = { emitChatMessage, resetAdminAnnounce };

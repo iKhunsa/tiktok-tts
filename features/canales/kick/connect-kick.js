@@ -14,7 +14,6 @@ const { assertNoConexionEnCurso } = require('../connecting-lock');
 // (sin auth, es publico). NO necesita Electron ni ventana oculta — funciona
 // igual en `node server.js` que empaquetado.
 
-const SEEN_IDS_CAP = 500;
 const PING_INTERVAL_MS = 100 * 1000; // Pusher corta a los 120s sin actividad.
 const SUBSCRIBE_TIMEOUT_MS = 20000; // evita que la Promise quede colgada si Pusher nunca confirma la suscripcion.
 
@@ -99,7 +98,6 @@ async function connectKickLocked(deps, slug, attempt) {
 
   const ws = new WebSocket(PUSHER_URL);
   const entry = { ws, chatroomId, intentional: false, pingTimer: null, attempt };
-  if (!state.kickSeenIds.has(slug)) state.kickSeenIds.set(slug, new Set());
 
   function onStale() {
     logger.log(
@@ -160,10 +158,6 @@ async function connectKickLocked(deps, slug, attempt) {
       if (msg.event === CHAT_MESSAGE_EVENT) {
         const raw = parseKickChatMessage(msg.data);
         if (!raw) return;
-        const seen = state.kickSeenIds.get(slug);
-        if (seen.has(raw.id)) return;
-        seen.add(raw.id);
-        if (seen.size > SEEN_IDS_CAP) seen.delete(seen.values().next().value);
         bus.emit('canal:mensaje-crudo', { platform: 'kick', channel: slug, raw });
       }
     });
@@ -199,7 +193,6 @@ function disconnectKick(deps, channelOrSlug) {
   const entry = state.kickChannels.get(slug);
   if (entry) teardownEntry(entry);
   state.kickChannels.delete(slug);
-  state.kickSeenIds.delete(slug);
 }
 
 module.exports = { connectKick, disconnectKick };

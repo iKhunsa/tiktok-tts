@@ -3,12 +3,11 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { createEventBus } = require('../core/event-bus');
-const { emitChatMessage, resetAdminAnnounce, resetDedup } = require('../features/chat/emit-chat-message');
+const { emitChatMessage, resetAdminAnnounce } = require('../features/chat/emit-chat-message');
 const chatDomain = require('../features/chat/index');
 
 function setup() {
   resetAdminAnnounce();
-  resetDedup();
   const logger = { log: () => {} };
   const bus = createEventBus(logger);
   bus.on('config:get', (respond) => respond({ adminIdentities: { tiktok: ['streamer'] } }), 'test');

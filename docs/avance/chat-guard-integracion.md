@@ -28,4 +28,22 @@
 | Fronteras | Chat depende solo del contrato de moderación. |
 | Pendiente | Separar `create-registry-store.js` en los archivos de persistencia exigidos y reescribir los tests obsoletos contra el guard. |
 
-La skill `clean-code` indicada no estaba disponible en `.agents/skills/`; se aplicaron los criterios incluidos en el plan. `CLAUDE.md` prevalece donde difiere.
+Se leyó completa la skill `clean-code` y su checklist de smells antes de las correcciones I1-I8. `CLAUDE.md` prevalece donde difiere.
+
+## Correcciones I1-I8
+
+I1: `setWhitelist(false)` usa `registry.unwhitelist`. I2: persistencia separada por responsabilidad. I3: opciones del guard centralizadas y holder mutable por cuenta. I4: el guard es el único que registra actividad; `chat:mensaje-recibido` queda para promo. I5: se eliminaron filtros, store y caches de deduplicación anteriores. I6: tests migrados al guard y a v2. I7: `vite build` antes de tests. I8: servidor probado con auth de desarrollo desactivada y `config:patch` explícito.
+
+| Archivo | Reglas/smells de clean-code aplicados |
+| --- | --- |
+| `features/moderacion/build-guard-options.js` | SRP, G5: una fuente para reglas/configuración; G25: constantes nombradas. |
+| `features/moderacion/index.js` | G5/G31: holder explícito evita guard viejo al cambiar cuenta; CQS: contrato consulta, rutas mutan. |
+| `persistence/{create-registry-store,load-registry,schedule-flush,flush-registry,to-dto,list-viewers,viewer-stats}.js` | SRP/F1: funciones pequeñas y ≤2 argumentos; G10: responsabilidades cercanas; errores con contexto. |
+| `filters/blocked-words-file.js` y rutas de palabras | G5: una sola representación `Set`; CQS y nombres reveladores. |
+| `routes/preview.js` | Boundary limpio: guard y registro descartables, sin efectos sobre producción. |
+| `features/chat/emit-chat-message.js` | G17: chat solo orquesta contrato/broadcast; la deduplicación vive en el guard. |
+| `features/canales/{state, youtube, kick, routes}` | G9/G12: eliminado estado de deduplicación muerto/duplicado. |
+| `core/contracts/moderacion-policy.js` | N1: `review` y typedef alineados con el veredicto real. |
+| `test/{chat-dedup,moderacion-store,moderation-account-switch,moderacion-key-for,canales-youtube-watchdog}.test.js` | F.I.R.S.T./T1: pruebas rápidas, independientes, de migración, reenvío y cuatro plataformas. |
+
+Verificación final: `npx vite build --config interfaz/vite.config.js && npm test` → 171/171; `node scripts/check-mcp.js` → OK; ESLint sin errores nuevos (warnings previos del repo). Servidor: viewers 200 y preview 200 (`{"blocked":false,"stage":"none"}`).
