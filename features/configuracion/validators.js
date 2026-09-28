@@ -19,7 +19,7 @@ function isAnnounceTemplates(v) {
 // agregan ni quitan claves en esta fase.
 const CONFIG_VALIDATORS = {
   LIKE_DEBOUNCE_MS: (v) => Number.isInteger(v) && v >= 250 && v <= 10000,
-  TTS_MAX_CHARS: (v) => Number.isInteger(v) && v >= 20 && v <= 1000,
+  TTS_MAX_CHARS: (v) => Number.isInteger(v) && v >= 20 && v <= 200,
   rateLimitEnabled: (v) => typeof v === 'boolean',
   TTS_RATE_LIMIT_MAX: (v) => Number.isInteger(v) && v >= 1 && v <= 120,
   TTS_RATE_WINDOW_MS: (v) => Number.isInteger(v) && v >= 1000 && v <= 60000,
