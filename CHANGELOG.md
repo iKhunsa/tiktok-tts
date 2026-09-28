@@ -4,6 +4,29 @@ Todas las novedades relevantes de este proyecto se documentan aquí.
 
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.11.0] — 2026-09-28
+
+### Añadido
+- Los reportes de errores ahora incluyen identificadores de sesión y de
+  instalación, para relacionarlos con la sesión correspondiente en el panel
+  de telemetría.
+- Kick aparece en el panel de telemetría cuando se usa como plataforma de
+  transmisión.
+
+### Cambiado
+- Al cerrar la app, el panel recibe de inmediato el aviso de que la
+  transmisión terminó, sin esperar a que venza el tiempo de detección.
+
+### Arreglado
+- Cuando TikTok confirma que un directo terminó, la app deja de reportarlo
+  como si siguiera en vivo mientras espera el próximo directo o requiere
+  autenticación.
+
+### Seguridad
+- Cada instalación usa una credencial propia para firmar sus envíos de
+  telemetría. Sigue siendo compatible con servidores que aún usan el token
+  compartido.
+
 ## [1.9.3] — 2026-09-14 (prerelease)
 
 ### Cambiado
