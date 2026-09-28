@@ -190,6 +190,7 @@ app.whenReady().then(() => {
       bus,
       logger,
     });
+    if (telemetryRuntime.enabled) glitchtip.setTelemetryIdentity(telemetryRuntime.identity);
 
     startUiohook(logger);
 

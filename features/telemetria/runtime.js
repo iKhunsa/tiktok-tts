@@ -9,6 +9,7 @@ const { machineId, sessionId, osInfo } = require('./identity');
 const { Buffer } = require('./buffer');
 const { Transport } = require('./transport');
 const { CreatorCache } = require('./creator-cache');
+const { loadOrCreateSecret, registerSecret } = require('./credential');
 
 const HEARTBEAT_MS = 5 * 60 * 1000;
 
@@ -68,6 +69,7 @@ function init({ url, token, appVersion, dataDir, creatorDataDir = dataDir, bus, 
 
   try {
     runtime.identity = { machineId: machineId(), sessionId: sessionId(), os: osInfo() };
+    runtime.identity.ingestSecret = loadOrCreateSecret(dataDir);
     runtime.buffer = new Buffer(dataDir, logger);
     runtime.creators = new CreatorCache(creatorDataDir, logger);
     runtime.transport = new Transport({
@@ -75,6 +77,11 @@ function init({ url, token, appVersion, dataDir, creatorDataDir = dataDir, bus, 
       onDirectives: handleDirectives, logger,
     });
     runtime.enabled = true;
+    // Fire-and-forget: si falla, el envio sigue con el token compartido y se
+    // reintenta en el proximo arranque (409 = ya registrado).
+    registerSecret({
+      url, token, machineId: runtime.identity.machineId, secret: runtime.identity.ingestSecret, logger,
+    }).catch(() => {});
   } catch (error) {
     logger.log(
       'error', 'telemetria', 'telemetria/runtime.js#init', 'telemetria.init.fallido',
@@ -110,6 +117,7 @@ async function shutdown({ timeoutMs = 1500 } = {}) {
   clearInterval(runtime.heartbeatTimer);
   clearTimeout(runtime.flushTimer);
 
+  runtime.bus.emit('telemetry:shutdown'); // platforms.js -> app/live_stopped si seguia en vivo
   runtime.bus.emit('telemetry:heartbeat');
   track('app', 'shutdown', { duration_minutes: sessionMinutes(), platforms_used: platformsUsed() });
 
@@ -128,4 +136,5 @@ module.exports = {
   sessionMinutes,
   switchCreatorDataDir,
   get enabled() { return runtime.enabled; },
+  get identity() { return runtime.identity; },
 };
