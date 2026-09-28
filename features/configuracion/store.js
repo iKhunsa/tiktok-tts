@@ -17,6 +17,13 @@ function pick(object, keys) {
   return Object.fromEntries(keys.filter((key) => key in object).map((key) => [key, object[key]]));
 }
 
+function normalizeStoredConfig(config) {
+  if (Number.isInteger(config.TTS_MAX_CHARS) && config.TTS_MAX_CHARS > DEFAULT_CONFIG.TTS_MAX_CHARS) {
+    return { ...config, TTS_MAX_CHARS: DEFAULT_CONFIG.TTS_MAX_CHARS };
+  }
+  return config;
+}
+
 function migrateLegacyConfig() {
   const destination = configFile();
   if (fs.existsSync(MIGRATION_FILE) || !fs.existsSync(LEGACY_CONFIG_FILE) || fs.existsSync(destination)) return;
@@ -83,7 +90,7 @@ function createConfigStore(logger) {
       const file = configFile();
       if (require('../../core/account-data-path').getActiveAccount() !== 'anonymous') migrateLegacyConfig();
       if (!fs.existsSync(file)) return;
-      const parsed = JSON.parse(fs.readFileSync(file, 'utf8'));
+      const parsed = normalizeStoredConfig(JSON.parse(fs.readFileSync(file, 'utf8')));
       const { rejected } = applyConfigPatch(config, Object.fromEntries(Object.entries(parsed).filter(([key]) => !INSTALLATION_KEYS.includes(key))));
       if (rejected.length) {
         logger.log(
@@ -118,4 +125,4 @@ function createConfigStore(logger) {
   };
 }
 
-module.exports = { createConfigStore, configFile };
+module.exports = { createConfigStore, configFile, normalizeStoredConfig };

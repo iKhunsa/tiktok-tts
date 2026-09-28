@@ -19,6 +19,7 @@ import { getWs } from '../ws/cliente-ws.js';
 import { getClipsData, getLocalDateStr, obtenerStreamStartTime } from '../../vistas/principal/clips.js';
 import { chatFollowSpeaking } from '../../vistas/principal/chat-ui.js';
 import { MAX_QUEUE_SIZE } from '../estado/config-runtime.js';
+import { stopAudio } from './stop-audio.js';
 
 export let ttsGlobalEnabled = true;
 export let ttsPaused = false;
@@ -130,13 +131,8 @@ export function stopCurrentTTS({ clearQueue = false } = {}) {
     ttsAbortController = null;
   }
   if (activeAudio) {
-    // Quitar los handlers ANTES de src='': si no, el src vacio dispara
-    // audio.onerror → finish(onError) → processQueue(), un pump fantasma
-    // por cada skip.
-    activeAudio.onended = null;
-    activeAudio.onerror = null;
     const audio = activeAudio;
-    try { audio.pause(); audio.src = ''; } catch (_) { /* noop */ }
+    stopAudio(audio);
     releaseAudioObjectUrl(audio);
     activeAudio = null;
   }
@@ -187,10 +183,8 @@ export function playAudioBlob(blob, { onEnd, onError } = {}) {
   // matarlo antes de reemplazarlo — si no, sigue sonando fuera del alcance de
   // skip/pause (voces superpuestas).
   if (activeAudio) {
-    activeAudio.onended = null;
-    activeAudio.onerror = null;
     const previousAudio = activeAudio;
-    try { previousAudio.pause(); previousAudio.src = ''; } catch (_) { /* noop */ }
+    stopAudio(previousAudio);
     releaseAudioObjectUrl(previousAudio);
   }
 
@@ -216,6 +210,7 @@ export function playAudioBlob(blob, { onEnd, onError } = {}) {
   audio.onended = () => finish(onEnd);
   audio.onerror = () => {
     logStorage.addLog('error', 'client', 'Error de reproducción', { blobSize: blob.size });
+    stopAudio(audio);
     finish(onError);
   };
 
@@ -227,6 +222,7 @@ export function playAudioBlob(blob, { onEnd, onError } = {}) {
     if (playTimer) { clearTimeout(playTimer); playTimer = null; }
   }).catch((err) => {
     if (err.message === 'timeout') logStorage.addLog('error', 'client', 'Timeout en audio.play()');
+    stopAudio(audio);
     finish(onError);
   });
 }
