@@ -120,6 +120,7 @@
     "@aptabase/electron": "^0.3.1",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@sentry/electron": "^7.17.0",
+    "@tiklivetts/chat-guard": "file:../chat-guard",
     "@tiklivetts/tiktok-live-client": "^0.1.9",
     "electron-updater": "^6.8.9",
     "express": "^4.22.2",
