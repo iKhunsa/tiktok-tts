@@ -2,11 +2,11 @@
 
 Twitch solo encadenaba reintentos desde `disconnected`: si `connect()` fallaba durante un reintento, registraba el error y terminaba. El limite de cinco intentos tambien abandonaba cortes largos.
 
-La reconexion ahora agenda el siguiente intento tanto tras una desconexion como tras un fallo de reconexion. Usa 1, 2, 4, 8 y 16 segundos, y luego 30 segundos mientras el canal siga deseado. Retirar o desconectar el canal cancela el timer y evita que un intento en vuelo lo restaure. Una conexion exitosa reinicia el backoff.
+La reconexion ahora agenda el siguiente intento tanto tras una desconexion como tras un fallo de reconexion, incluido el watchdog de Twitch cuando vence sin actividad. Usa 1, 2, 4, 8 y 16 segundos, y luego 30 segundos mientras el canal siga deseado. Retirar o desconectar el canal cancela el timer y evita que un intento en vuelo lo restaure. Una conexion exitosa reinicia el backoff.
 
 YouTube y Kick tenian el mismo abandono en el `catch` del reintento y el mismo limite. Reciben la misma politica mediante `features/canales/reconnect-delay.js`, sin acoplar sus conexiones.
 
-Se anadieron pruebas de Twitch para un corte superior a dos minutos, retirada durante el corte y reinicio del backoff. Se ejecutaron build del frontend, la suite `node --test`, chequeo MCP y ESLint.
+Se anadieron pruebas de Twitch para un corte superior a dos minutos, retirada durante el corte, reinicio del backoff y watchdog con red caida. Se ejecutaron build del frontend, la suite `node --test`, chequeo MCP y ESLint.
 
 | Archivo | Reglas/smells aplicados |
 | --- | --- |

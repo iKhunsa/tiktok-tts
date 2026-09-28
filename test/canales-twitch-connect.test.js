@@ -173,3 +173,27 @@ test('una reconexion exitosa reinicia el backoff', async (t) => {
     }
   );
 });
+
+test('watchdog vencido sigue reintentando hasta que vuelve la red', async (t) => {
+  const { WATCHDOG_TIMEOUT_MS } = require('../features/canales/stale-watchdog');
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  let online = true;
+  await withStubTmi(
+    () => (online ? Promise.resolve() : Promise.reject('Unable to connect.')),
+    async (connectTwitch, { instances }) => {
+      const d = deps();
+      await connectTwitch(d, 'kintsu99');
+      online = false;
+      t.mock.timers.tick(WATCHDOG_TIMEOUT_MS);
+      for (const delay of [1000, 2000]) {
+        t.mock.timers.tick(delay);
+        for (let i = 0; i < 10; i += 1) await Promise.resolve();
+      }
+      assert.ok(d.state.twitchReconnectTimers.has('kintsu99'), 'el watchdog fallido conserva la cadena de reintentos');
+      online = true;
+      t.mock.timers.tick(4000);
+      for (let i = 0; i < 10; i += 1) await Promise.resolve();
+      assert.equal(d.state.twitchChannels.get('kintsu99'), instances.at(-1));
+    }
+  );
+});

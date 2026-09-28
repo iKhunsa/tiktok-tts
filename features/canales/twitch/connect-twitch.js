@@ -90,12 +90,7 @@ async function connectTwitchLocked(deps, tmi, channel, attempt) {
       `Twitch ${channel} sin 'message' en ${WATCHDOG_TIMEOUT_MS}ms; forzando reconexion`,
       { channel, timeoutMs: WATCHDOG_TIMEOUT_MS }
     );
-    connectTwitch(deps, channel, 0).catch((err) => {
-      logger.log(
-        'error', 'canales', 'canales/twitch/connect-twitch.js#connectTwitch', 'canales.twitch.reconexion_fallida',
-        `Fallo reconexion (stale) de Twitch ${channel}: ${err.message}`, { channel, error: err.message, stack: err.stack }
-      );
-    });
+    scheduleReconnect(deps, channel, 0);
   };
 
   client.on('message', (_ch, tags, message, self) => {
