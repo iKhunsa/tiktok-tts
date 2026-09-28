@@ -59,7 +59,7 @@ J1 respeta todo veredicto `drop`, incluido el reenvío del admin. J2 toma la con
 | `features/moderacion/build-guard-options.js` | G31/G35: lectura de configuración en el momento de uso, sin acoplamiento temporal. |
 | `features/moderacion/persistence/create-registry-store.js` | G3/G5: existencia real para migraciones y parser centralizado; nombres explícitos para persistencia inmediata. |
 | `features/moderacion/persistence/load-registry.js` | G25: `REGISTRY_CAPACITY` sustituye el número mágico repetido. |
-| `test/chat-admin-announce.test.js` | F.I.R.S.T./T1: cubre redelivery de admin y fallo de política sin TTS. |
+| `test/chat-admin-announce.test.js` | F.I.R.S.T./T1: cubre redelivery de admin, fallo de política sin TTS y adaptación imposible. |
 | `test/moderacion-build-guard-options.test.js` | F.I.R.S.T./T1: comprueba la configuración en caliente con una instancia estable. |
 | `test/moderacion-store.test.js` | F.I.R.S.T./T1/G3: cubre flush inmediato y migración sin timestamp. |
 | `docs/avance/chat-guard-integracion.md` | C1/C3: autoauditoría trazable, sin comentarios redundantes en código. |
