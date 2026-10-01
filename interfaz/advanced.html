@@ -30,6 +30,17 @@
     <p data-i18n="adv.desc">Controla el rate limiting, filtros de mensajes y monitorea el estado del sistema en tiempo real. Estos cambios aplican inmediatamente al backend.</p>
   </div>
 
+  <!-- ═══ LOGS DE DIAGNÓSTICO ═══ -->
+  <div class="panel panel-status">
+    <div class="status-header">
+      <div>
+        <div class="panel-title"><img class="icon-inline" src="icons/description.svg" alt=""> <span data-i18n="adv.logsDownloadTitle">Logs de diagnóstico</span></div>
+        <div class="panel-desc" data-i18n="adv.logsDownloadDesc">Descarga el historial completo de logs guardados (últimos 14 días) a tu carpeta de Descargas.</div>
+      </div>
+      <button class="btn-refresh" onclick="downloadAllLogs()" data-i18n="adv.logsDownloadBtn">↓ Descargar todos</button>
+    </div>
+  </div>
+
   <!-- ═══ PANEL 1: RATE LIMITING ═══ -->
   <div class="panel panel-rate">
     <div class="panel-title"><img class="icon-inline" src="icons/flash_on.svg" alt=""> <span data-i18n="adv.rlTitle">Rate Limiting de TTS</span></div>
@@ -286,17 +297,6 @@
         <span class="conn-key" data-i18n="adv.cfgDebounce">Debounce likes</span>
         <span class="conn-val" id="statusDebounce">—</span>
       </div>
-    </div>
-  </div>
-
-  <!-- ═══ PANEL: DESCARGA DE LOGS ═══ -->
-  <div class="panel panel-status">
-    <div class="status-header">
-      <div>
-        <div class="panel-title"><img class="icon-inline" src="icons/description.svg" alt=""> <span data-i18n="adv.logsDownloadTitle">Logs de diagnóstico</span></div>
-        <div class="panel-desc" data-i18n="adv.logsDownloadDesc">Descarga el historial completo de logs guardados (últimos 14 días) a tu carpeta de Descargas.</div>
-      </div>
-      <button class="btn-refresh" onclick="downloadAllLogs()" data-i18n="adv.logsDownloadBtn">↓ Descargar todos</button>
     </div>
   </div>
 

@@ -6,7 +6,7 @@
 #app-shell {
   display: flex;
   width: 100%;
-  min-height: 100vh;
+  min-height: calc(100vh - var(--titlebar-h));
 }
 #app-shell>.app-layout {
   flex: 1 1 auto;
@@ -35,7 +35,7 @@
    razon que el override de arriba: cerrado, el scroll de documento original
    (con .sidebar en position:sticky persiguiendolo) sigue intacto. */
 #app-shell.portal-view-open {
-  height: 100vh;
+  height: calc(100vh - var(--titlebar-h));
   overflow: hidden;
 }
 #app-shell.portal-view-open>.app-layout {

@@ -22,13 +22,15 @@ function off(channel, cb) {
 // proceso principal o en server.js y no necesita este canal.
 //  - tts:skipped / tts:queue-overflow → cola TTS (sin payload).
 //  - ui:language-set → cambio de idioma de UI (payload: código de idioma).
-const TRACKABLE_EVENTS = new Set(['tts:skipped', 'tts:queue-overflow', 'ui:language-set']);
+//  - ui:discord-opened / ui:discord-joined → entradas a Discord (payload: origen).
+const TRACKABLE_EVENTS = new Set(['tts:skipped', 'tts:queue-overflow', 'ui:language-set', 'ui:discord-opened', 'ui:discord-joined']);
 
 contextBridge.exposeInMainWorld('electronAPI', {
   getAppVersion: () => ipcRenderer.invoke('get-app-version'),
+  dimTitleBar: (dimmed) => ipcRenderer.send('titlebar:dim', dimmed === true),
   trackEvent: (name, payload) => {
     if (!TRACKABLE_EVENTS.has(name)) return;
-    // Solo se reenvía payload cuando es un string corto (código de idioma).
+    // Solo se reenvía payload cuando es un string corto (idioma u origen).
     if (typeof payload === 'string') ipcRenderer.send('telemetry:track', name, payload.slice(0, 12));
     else ipcRenderer.send('telemetry:track', name);
   },

@@ -4,11 +4,18 @@ import { renderMcpPanel } from './mcp/index.js';
 import { renderCuentaPanel } from './cuenta/index.js';
 import { appBloqueada } from '../../nucleo/estado/sesion.js';
 import { aplicarBloqueoVista } from '../../nucleo/estado/vista-bloqueada.js';
+import { crearHistorialVistas } from '../../nucleo/estado/historial-vistas.js';
 
-export function switchView(name) {
+// La app abre en 'chat' sin pasar por switchView.
+export const historialVistas = crearHistorialVistas();
+historialVistas.registrar('chat');
+
+// desdeHistorial: atrás/adelante de la barra de título ya movió el puntero.
+export function switchView(name, { desdeHistorial = false } = {}) {
   // App bloqueada (sistema de cuentas activo + sin sesión): la única vista
   // accesible es "cuenta". Cualquier otro destino rebota ahí.
   if (appBloqueada() && name !== 'cuenta') name = 'cuenta';
+  if (!desdeHistorial) historialVistas.registrar(name);
   // Si se estaba capturando un atajo del soundpad, cancelarlo: si no, el
   // listener global de keydown queda pegado y se come todas las teclas.
   spCancelCapture();

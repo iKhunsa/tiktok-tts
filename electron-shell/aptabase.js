@@ -393,6 +393,18 @@ function attach(bus, logger) {
     } catch (_) { /* noop */ }
   });
 
+  // Entradas a Discord (llegan del renderer vía IPC telemetry:track). `origen`
+  // viaja en `source`; lista cerrada para que el payload no meta texto libre.
+  const ORIGENES_DISCORD = new Set(['titlebar', 'sidebar', 'account_menu', 'banner', 'otro']);
+  for (const [evento, nombre] of [['ui:discord-opened', 'discord_modal_opened'], ['ui:discord-joined', 'discord_join_clicked']]) {
+    bus.on(evento, (origen) => {
+      try {
+        const source = ORIGENES_DISCORD.has(origen) ? origen : 'otro';
+        track(nombre, { source });
+      } catch (_) { /* noop */ }
+    });
+  }
+
   // Errores → solo se cuentan (GlitchTip los maneja con contexto). El conteo
   // sale como `errores` (bucket) en session_ended.
   const contarError = () => { estado.errorCount++; };

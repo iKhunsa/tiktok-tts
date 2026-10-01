@@ -2,13 +2,14 @@
 
 const { ipcMain } = require('electron');
 const { registerUiohookShortcut, unregisterUiohookShortcut, isUiohookActive } = require('./uiohook');
+const { TITLEBAR_OVERLAY, TITLEBAR_OVERLAY_DIMMED } = require('./titlebar');
 
 const FORBIDDEN_SHORTCUTS = new Set(['Alt+F4', 'Ctrl+C', 'Cmd+C', 'Ctrl+V', 'Cmd+V', 'Ctrl+Alt+Del', 'Ctrl+Shift+Esc', 'Cmd+Shift+Esc']);
 const SPECIAL_PAUSE_SHORTCUTS = new Set(['MediaPlayPause', 'F8', 'F9', 'F10', 'F11', 'F12']);
 const TTS_SHORTCUT_ACTIONS = new Set(['pause', 'skip', 'clear', 'musicPause', 'musicSkip']);
 // Lista blanca por seguridad: el renderer no puede mandar cualquier nombre
 // de evento al bus.
-const RENDERER_TELEMETRY_EVENTS = new Set(['tts:skipped', 'tts:queue-overflow', 'ui:language-set']);
+const RENDERER_TELEMETRY_EVENTS = new Set(['tts:skipped', 'tts:queue-overflow', 'ui:language-set', 'ui:discord-opened', 'ui:discord-joined']);
 
 function normalizeShortcut(shortcut) {
   if (!shortcut || typeof shortcut !== 'string') return '';
@@ -48,6 +49,12 @@ function isValidShortcut(shortcut) {
  */
 function attachIpcBridge({ app, bus, logger, getMainWindow, globalShortcut }) {
   ipcMain.handle('get-app-version', () => app.getVersion());
+
+  ipcMain.on('titlebar:dim', (_event, dimmed) => {
+    const win = getMainWindow();
+    if (!win || win.isDestroyed()) return;
+    try { win.setTitleBarOverlay(dimmed === true ? TITLEBAR_OVERLAY_DIMMED : TITLEBAR_OVERLAY); } catch (_) { /* plataforma sin overlay: sin efecto */ }
+  });
 
   ipcMain.on('install-update', () => {
     require('./updater').installUpdate();

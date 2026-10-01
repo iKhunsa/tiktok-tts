@@ -17,6 +17,20 @@ export function setStatus(type, text) {
 }
 
 export function openDonationsModal() { document.getElementById('donationsModal').classList.add('show'); }
+// Origen de la última apertura del modal (titlebar / sidebar / account_menu): se
+// manda a analítica para saber qué entrada a Discord convierte.
+let discordOrigen = 'otro';
+const trackDiscord = (evento, origen) => { try { window.electronAPI?.trackEvent?.(evento, origen); } catch (_) { /* noop */ } };
+
+export function openDiscordModal(origen) {
+  discordOrigen = typeof origen === 'string' ? origen : 'otro';
+  trackDiscord('ui:discord-opened', discordOrigen);
+  document.getElementById('discordModal').classList.add('show');
+}
+export function closeDiscordModal(e) {
+  if (e && e.target.id !== 'discordModal') return;
+  document.getElementById('discordModal').classList.remove('show');
+}
 export function closeDonationsModal(e) {
   if (e && e.target.id !== 'donationsModal') return;
   document.getElementById('donationsModal').classList.remove('show');
@@ -259,6 +273,8 @@ export function arrancarAvisosOnboarding() {
 }
 
 export function iniciarModalesYAvisos() {
+  document.querySelector('#discordModal .discord-cta').addEventListener('click', () => trackDiscord('ui:discord-joined', discordOrigen));
+  document.querySelector('.community-banner').addEventListener('click', () => trackDiscord('ui:discord-joined', 'banner'));
   const toggleDonationCard = (heading) => {
     const card = heading.closest('.qr-card');
     const expanded = card.classList.toggle('is-expanded');
@@ -279,6 +295,7 @@ export function iniciarModalesYAvisos() {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       document.getElementById('donationsModal').classList.remove('show');
+      document.getElementById('discordModal').classList.remove('show');
       document.getElementById('donationNoticeModal').classList.remove('show');
       document.getElementById('dictLangModal').classList.remove('show');
       document.getElementById('bugReportModal').classList.remove('show');

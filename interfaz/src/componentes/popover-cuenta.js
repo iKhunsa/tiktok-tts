@@ -20,6 +20,7 @@ export function toggleAccountPopover(anchorEl) {
     <button class="account-popover-option account-popover-upgrade" type="button"><img class="icon-inline" src="icons/flash_on.svg" alt=""><span data-i18n="accountMenu.upgradePlan"></span></button>
     <button class="account-popover-option account-popover-advanced" type="button"><img class="icon-inline" src="icons/build.svg" alt=""><span data-i18n="accountMenu.advanced"></span></button>
     <button class="account-popover-option account-popover-donate" type="button"><img class="icon-inline" src="icons/favorite-red.svg" alt=""><span data-i18n="accountMenu.donate"></span></button>
+    <button class="account-popover-option account-popover-discord" type="button"><img class="icon-inline" src="icons/discord.svg" alt=""><span data-i18n="accountMenu.discord"></span></button>
     <div class="account-popover-divider"></div>
     <button class="account-popover-option account-popover-account" type="button"><img class="icon-inline" src="icons/account_circle.svg" alt=""><span data-i18n="accountMenu.myAccount"></span></button>`;
   popover.querySelector('.account-popover-email').textContent = user?.email || '';
@@ -49,6 +50,7 @@ export function toggleAccountPopover(anchorEl) {
   popover.querySelector('.account-popover-upgrade')?.addEventListener('click', () => { cerrar(); abrirPopupPlanes(); });
   popover.querySelector('.account-popover-advanced').addEventListener('click', () => { cerrar(); window.open('/advanced.html?popup=1', '_blank'); });
   popover.querySelector('.account-popover-donate').addEventListener('click', () => { cerrar(); window.openDonationsModal(); });
+  popover.querySelector('.account-popover-discord').addEventListener('click', () => { cerrar(); window.openDiscordModal('account_menu'); });
   const abrirCuenta = () => { cerrar(); window.switchView('cuenta'); };
   const header = popover.querySelector('.account-popover-header');
   header.addEventListener('click', abrirCuenta);
