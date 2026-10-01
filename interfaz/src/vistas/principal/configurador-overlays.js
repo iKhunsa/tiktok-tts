@@ -88,22 +88,28 @@ async function testRanking(endpoint, sentKey) {
 export const testTopLikers = () => testRanking('/api/test/likes', 'toast.testLikesSent');
 export const testTopDonors = () => testRanking('/api/test/donors', 'toast.testDonorsSent');
 
-// Un mensaje de prueba por rol para ver el estilo de cada uno. TikTok no informa
-// moderadores, asi que ese rol se simula desde Twitch (que ademas no trae foto).
+// Un mensaje por plataforma y por rol, para ver el logo y el estilo de cada uno.
+// TikTok no informa moderadores, asi que ese rol se simula desde las demas.
 const MENSAJES_PRUEBA_CHAT = [
   { platform: 'tiktok', user: 'ViewerAna', comment: 'Hola a todos!' },
-  { platform: 'twitch', user: 'ModeradorLeo', comment: 'Recuerden respetar las reglas', role: 'moderator' },
   { platform: 'tiktok', user: 'SuscriptorMia', comment: 'Gracias por el directo!', role: 'subscriber' },
+  { platform: 'twitch', user: 'ModeradorLeo', comment: 'Recuerden respetar las reglas', role: 'moderator' },
+  { platform: 'youtube', user: 'MiembroSofi', comment: 'Saludos desde YouTube', role: 'subscriber' },
+  { platform: 'kick', user: 'ViewerMax', comment: 'Buen stream!' },
 ];
 
+// Secuencial (no Promise.all) para que los mensajes lleguen en el orden de la lista.
 export async function testChatOverlay() {
   try {
-    const respuestas = await Promise.all(MENSAJES_PRUEBA_CHAT.map((mensaje) => fetch('/api/test/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(mensaje),
-    })));
-    showToast(respuestas.every((respuesta) => respuesta.ok) ? t('toast.testChatSent') : t('toast.testError'));
+    for (const mensaje of MENSAJES_PRUEBA_CHAT) {
+      const respuesta = await fetch('/api/test/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(mensaje),
+      });
+      if (!respuesta.ok) throw new Error(`test/chat ${respuesta.status}`);
+    }
+    showToast(t('toast.testChatSent'));
   } catch {
     showToast(t('toast.testError'));
   }

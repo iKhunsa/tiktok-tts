@@ -19,7 +19,7 @@ function sourceMessageId({ platform, raw }) {
   return raw.id;
 }
 
-for (const platform of ['tiktok', 'twitch', 'youtube']) {
+for (const platform of ['tiktok', 'twitch', 'youtube', 'kick']) {
   test(`${platform}: cada simulación lleva un id de mensaje propio`, () => {
     const body = { platform, user: 'Ana', userId: 'ana', comment: 'hola' };
 

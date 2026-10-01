@@ -17,7 +17,7 @@ const camposRol = (rol, prefijoParam, colorUsuario) => [
 ];
 
 export const camposChat = () => [
-  { clave: 'bg', param: 'bg', tipo: 'numero', def: 0.82, min: 0.3, max: 1, step: 0.05, ui: 'rango', porcentaje: true, etiqueta: 'opacidadFondo', grupo: 'base' },
+  { clave: 'bg', param: 'bg', tipo: 'numero', def: 0.82, min: 0, max: 1, step: 0.05, ui: 'rango', porcentaje: true, etiqueta: 'opacidadFondo', grupo: 'base' },
   { clave: 'maxmsgs', param: 'maxmsgs', tipo: 'numero', def: 30, min: 5, max: 80, step: 1, etiqueta: 'mensajesVisibles', grupo: 'base' },
   { clave: 'usernames', param: 'usernames', tipo: 'bool', def: true, etiqueta: 'mostrarNombres', grupo: 'base' },
   { clave: 'platforms', param: 'platforms', tipo: 'plataformas', def: PLATAFORMAS_VISIBLES, etiqueta: 'plataformasVisibles', grupo: 'base' },

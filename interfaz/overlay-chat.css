@@ -39,7 +39,7 @@ body.rtl.fit #chat-container { align-items: flex-end; }
   gap: 7px;
   max-width: 100%;
   background: color-mix(in srgb, var(--rol-fondo) calc(var(--bg-alpha) * 100%), transparent);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, calc(var(--bg-alpha) * 0.1));
   border-radius: 12px;
   padding: 7px 11px;
   backdrop-filter: blur(10px);
@@ -75,32 +75,59 @@ body.rtl .anim-slide-left { animation-name: entra-derecha; }
   .msg { animation: none; }
 }
 
-.msg-avatar {
+/* Avatar: la foto, un anillo del color de la plataforma y la burbuja con su logo. */
+.avatar-plataforma {
+  --diametro: 2.2em;
+  position: relative;
   flex-shrink: 0;
-  width: 1.9em;
-  height: 1.9em;
+  width: var(--diametro);
+  height: var(--diametro);
+  padding: 2.5px;
+  border-radius: 50%;
+  background: var(--anillo);
+}
+.msg-avatar {
+  display: block;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   object-fit: cover;
   background: #2a2a2a;
 }
-.platform-dot {
-  width: 14px;
-  height: 14px;
+.insignia {
+  position: absolute;
+  top: -0.18em;
+  right: -0.3em;
+  display: grid;
+  place-items: center;
+  width: 40%;
+  height: 40%;
+  border: 2px solid #0b0b0b;
   border-radius: 50%;
-  flex-shrink: 0;
-  margin-top: 2px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 8px;
-  font-weight: 700;
-  color: rgba(0, 0, 0, 0.55);
-  line-height: 1;
+  box-sizing: content-box;
+  background: var(--insignia-fondo);
+  color: var(--insignia-logo);
 }
-.dot-tiktok { background: var(--tiktok); }
-.dot-twitch { background: var(--twitch); }
-.dot-youtube { background: var(--youtube); }
-.dot-kick { background: var(--kick); }
+.insignia svg { width: 62%; height: 62%; }
+.plat-tiktok { --anillo: #38bdf8; --insignia-fondo: #111; --insignia-logo: #fff; }
+.plat-twitch { --anillo: var(--twitch); --insignia-fondo: var(--twitch); --insignia-logo: #fff; }
+.plat-youtube { --anillo: var(--youtube); --insignia-fondo: var(--youtube); --insignia-logo: #fff; }
+.plat-kick { --anillo: var(--kick); --insignia-fondo: var(--kick); --insignia-logo: #0b0b0b; }
+.platform-icon {
+  flex-shrink: 0;
+  width: 1.2em;
+  height: 1.2em;
+  margin-top: 0.15em;
+}
+.platform-icon svg { display: block; width: 100%; height: 100%; }
+.platform-icon.icon-tiktok {
+  color: #fff;
+  /* Las dos sombras desplazadas imitan el efecto rosa/cian del logo de TikTok. */
+  filter: drop-shadow(0.06em 0.06em 0 var(--tiktok)) drop-shadow(-0.06em -0.06em 0 #25f4ee);
+}
+.platform-icon.icon-twitch { color: var(--twitch); }
+.platform-icon.icon-youtube { color: var(--youtube); }
+.platform-icon.icon-kick { color: var(--kick); }
 
 .msg-body { display: flex; align-items: baseline; gap: 5px; flex: 1; min-width: 0; }
 .msg-user {

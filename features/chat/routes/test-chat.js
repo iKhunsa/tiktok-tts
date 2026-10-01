@@ -3,7 +3,7 @@
 const crypto = require('crypto');
 const { testAvatar } = require('../../../core/test-avatar');
 
-const TEST_PLATFORMS = ['tiktok', 'twitch', 'youtube'];
+const TEST_PLATFORMS = ['tiktok', 'twitch', 'youtube', 'kick'];
 
 // Forma cruda de cada plataforma (la que llega en canal:mensaje-crudo), con
 // el rol y la foto de prueba donde esa plataforma los transporta.
@@ -33,6 +33,14 @@ const RAW_BUILDERS = {
     id: messageId,
     isModerator: role === 'moderator',
     isMembership: role === 'subscriber',
+  }),
+  kick: ({ user, userId, comment, messageId, role }) => ({
+    id: messageId,
+    userId: userId || null,
+    username: user,
+    content: comment,
+    isModerator: role === 'moderator',
+    isSubscriber: role === 'subscriber',
   }),
 };
 

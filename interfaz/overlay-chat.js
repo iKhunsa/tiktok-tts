@@ -6,10 +6,11 @@ import { leerConfig } from './compartido/estilo/query.js';
 import { ESQUEMAS } from './compartido/estilo/esquemas.js';
 import { aplicarTipografia } from './compartido/estilo/aplicar-tipografia.js';
 import { estilizarTexto } from './compartido/estilo/estilizar-texto.js';
+import { crearIconoPlataforma, crearInsigniaPlataforma } from './compartido/iconos-plataforma.js';
+import { AVATAR_PLACEHOLDER } from './compartido/leaderboard-iconos.js';
 
 registrarErroresOverlay();
 
-const PLATFORM_LABEL = { tiktok: 'T', twitch: 'W', youtube: 'Y', kick: 'K' };
 const ROLES = ['viewer', 'moderador', 'suscriptor'];
 const SALIDA_MS = 300;
 
@@ -74,21 +75,21 @@ function renderText(text, emotes) {
     .join('');
 }
 
-function crearAvatar(url) {
+// Avatar con anillo del color de la plataforma y su logo en una burbuja en la
+// esquina. Twitch y Kick no traen foto: se muestra la silueta para que
+// el anillo y la burbuja tengan donde anclarse.
+function crearAvatar(mensaje) {
   const imagen = document.createElement('img');
   imagen.className = 'msg-avatar';
   imagen.alt = '';
-  imagen.src = url;
-  // URL firmada caducada: sin foto vigente se quita en vez de dejar un hueco roto.
-  imagen.addEventListener('error', () => imagen.remove(), { once: true });
-  return imagen;
-}
+  imagen.src = mensaje.avatar || AVATAR_PLACEHOLDER;
+  // URL firmada caducada: sin foto vigente se muestra la silueta.
+  imagen.addEventListener('error', () => { imagen.src = AVATAR_PLACEHOLDER; }, { once: true });
 
-function crearPuntoPlataforma(plataforma) {
-  const punto = document.createElement('span');
-  punto.className = `platform-dot dot-${plataforma}`;
-  punto.textContent = PLATFORM_LABEL[plataforma] || '';
-  return punto;
+  const contenedor = document.createElement('span');
+  contenedor.className = `avatar-plataforma plat-${mensaje.platform}`;
+  contenedor.append(imagen, crearInsigniaPlataforma(mensaje.platform));
+  return contenedor;
 }
 
 function crearUsuario(mensaje, rol) {
@@ -125,8 +126,8 @@ function crearMensaje(mensaje, rol) {
   elemento.style.setProperty('--c-user', colorDeUsuario(rol, mensaje.user));
   elemento.style.setProperty('--c-texto', roles[rol].colorComentario);
 
-  if (cfg.mostrarAvatares && mensaje.avatar) elemento.appendChild(crearAvatar(mensaje.avatar));
-  elemento.append(crearPuntoPlataforma(mensaje.platform), crearCuerpo(mensaje, rol));
+  const marcaPlataforma = cfg.mostrarAvatares ? crearAvatar(mensaje) : crearIconoPlataforma(mensaje.platform);
+  elemento.append(marcaPlataforma, crearCuerpo(mensaje, rol));
   return elemento;
 }
 
