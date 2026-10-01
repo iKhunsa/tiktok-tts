@@ -117,6 +117,8 @@
     "openAdvanced": "詳細パネルを開く（フィルター、レート制限、ログ）→",
     "pauseTTS": "⏸ TTS 一時停止",
     "resumeTTS": "▶ TTS 再開",
+    "reset": "リセット",
+    "resetConfirm": "本当に？",
     "copy": "コピー",
     "open": "開く",
     "remove": "削除",
@@ -229,6 +231,10 @@
     "followers": {
       "title": "フォロワーカウンター",
       "subtitle": "リアルタイムの新フォロワー"
+    },
+    "topDonors": {
+      "title": "トップドナー",
+      "subtitle": "配信でギフトを最も多く送ったユーザーのランキング"
     },
     "topLikers": {
       "title": "トップライカー",
@@ -498,8 +504,71 @@
     "invalidValue": "{field}の値が無効です",
     "configRejected": "設定が拒否されました"
   },
+  "overlayCfg": {
+    "personalizar": "カスタマイズ",
+    "grupo": {
+      "tipografia": "フォント",
+      "usuario": "ユーザー名",
+      "ranking": "ランキング",
+      "comportamiento": "動作",
+      "viewer": "視聴者",
+      "moderador": "モデレーター",
+      "suscriptor": "サブスクライバー / スーパーファン"
+    },
+    "campo": {
+      "maxFilas": "最大行数",
+      "colorAcento": "アクセントカラー",
+      "opacidadPlaca": "プレートの不透明度",
+      "opacidadFondo": "背景の不透明度",
+      "mensajesVisibles": "表示メッセージ数",
+      "mostrarNombres": "ユーザー名を表示",
+      "plataformasVisibles": "表示するプラットフォーム",
+      "fuente": "フォント",
+      "tamano": "文字サイズ",
+      "interlineado": "行間",
+      "espaciadoLetras": "文字間隔",
+      "colorUsuario": "ユーザー名の色",
+      "efectoUsuario": "ユーザー名の効果",
+      "olaUsuario": "ユーザー名のウェーブアニメーション",
+      "colorValor": "値の色",
+      "colorRango": "順位の色",
+      "placa": "各行に背景を表示",
+      "colorPlaca": "行の背景色",
+      "mostrarRango": "順位を表示",
+      "mostrarValor": "値を表示",
+      "mostrarSimbolo": "シンボルを表示",
+      "mostrarAvatares": "プロフィール画像を表示",
+      "mostrarCorona": "1位に王冠",
+      "mostrarMedallas": "表彰台メダル",
+      "derechaAIzquierda": "右から左への配置",
+      "ocultarTras": "次の秒数後にメッセージを非表示（0 = しない）",
+      "animacionEntrada": "登場アニメーション",
+      "unaLinea": "1行表示（ミニチャット）",
+      "ajustarAncho": "メッセージに幅を合わせる",
+      "colorAleatorio": "ユーザー名の色をランダムに",
+      "rolMostrar": "チャットを表示",
+      "rolColorUsuario": "ユーザー名の色",
+      "rolEfecto": "ユーザー名の効果",
+      "rolOla": "ユーザー名のウェーブアニメーション",
+      "rolResplandor": "ユーザー名のグロー効果",
+      "rolColorComentario": "コメントの色",
+      "rolColorFondo": "背景色"
+    },
+    "opcion": {
+      "sistema": "システム",
+      "ninguno": "なし",
+      "sombra": "影",
+      "contorno": "アウトライン",
+      "neon": "ネオン",
+      "slide-up": "下からスライド",
+      "slide-left": "左からスライド",
+      "fade": "フェードイン",
+      "ninguna": "アニメーションなし"
+    }
+  },
   "overlayStr": {
     "newFollowers": "新しいフォロワー",
+    "waitingDonors": "ギフトを待っています...",
     "waitingLikes": "いいねを待っています...",
     "giftReceived": "ギフト受信",
     "newFollower": "新しいフォロワー",
@@ -517,8 +586,7 @@
     "sharedList": "シェア",
     "noShared": "まだシェアがありません",
     "anonymous": "匿名",
-    "giftFrom": "@{user} から",
-    "topLikers": "トップいいね"
+    "giftFrom": "@{user} から"
   },
   "donations": {
     "title": "コンテンツを支援する",
@@ -622,6 +690,9 @@
     "testAlertSent": "テストアラートを送信しました: {name}",
     "testError": "テストの送信中にエラーが発生しました",
     "testSocialSent": "テスト {type} を送信しました: {user}",
+    "testDonorsSent": "テストドナーを送信しました（{count}人）",
+    "testChatSent": "テストメッセージをチャットに送信しました",
+    "overlayReset": "オーバーレイを初期設定に戻しました",
     "testLikesSent": "テストいいねを送信しました ({count} ユーザー)",
     "emergencyActive": "緊急モード有効: ギフトとフォローのみ",
     "ttsNetError": "TTSが正常に応答しませんでした; インターネット接続を確認してください",
@@ -1172,6 +1243,7 @@
     "upgradePlan": "プランをアップグレード",
     "advanced": "詳細設定",
     "donate": "寄付する",
+    "discord": "Discord に参加",
     "myAccount": "マイアカウント"
   },
   "pro": {
@@ -1197,5 +1269,20 @@
     "channelTitle": "チャンネルを入力", "channelDesc": "ユーザー名またはリンクを入力します。YouTube では @チャンネルや Channel ID も使えます。",
     "saveTitle": "保存", "saveDesc": "準備のために保存します。保存だけでは接続されません。",
     "connectTitle": "すべて接続", "connectDesc": "チャット画面で、このボタンは保存済みチャンネルが配信中に接続します。"
+  },
+  "titlebar": {
+    "back": "戻る",
+    "forward": "進む",
+    "news": "新着情報",
+    "discord": "TikLiveTTS の Discord"
+  },
+  "news": {
+    "title": "TikLiveTTS の新着情報",
+    "close": "閉じる"
+  },
+  "discordInvite": {
+    "title": "TikLiveTTS の Discord に参加",
+    "body": "コミュニティに参加しよう。他の配信者と交流し、質問を解決し、最新情報をいち早く入手して、アプリ改善のアイデアを共有できます。",
+    "cta": "Discord に参加"
   }
 }

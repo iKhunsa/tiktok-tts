@@ -22,6 +22,7 @@ export default defineConfig({
         'overlay-alertas-social': entry('overlay-alertas-social.html'),
         'overlay-chat': entry('overlay-chat.html'),
         'overlay-creditos': entry('overlay-creditos.html'),
+        'overlay-donadores': entry('overlay-donadores.html'),
         'overlay-likes': entry('overlay-likes.html'),
         'overlay-seguidores': entry('overlay-seguidores.html'),
         'overlay-social': entry('overlay-social.html'),

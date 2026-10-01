@@ -3,7 +3,7 @@
 /**
  * Parsea el `data` (string JSON) de un App\Events\ChatMessageEvent de Pusher a
  * la forma cruda que espera chat/emit-chat-message.js#extractKickMessage:
- *   { id, userId, username, content }
+ *   { id, userId, username, content, isModerator, isSubscriber }
  *
  * `content` se deja tal cual lo manda Kick (con los tokens `[emote:ID:nombre]`
  * sin expandir) — la conversion a `:nombre:` + mapa de urls la hace
@@ -25,7 +25,11 @@ function parseKickChatMessage(dataStr) {
   const username = String(sender.username || sender.slug || '').trim();
   if (!username) return null;
 
+  const badgeTypes = ((sender.identity && sender.identity.badges) || []).map((badge) => badge.type);
+
   return {
+    isModerator: badgeTypes.includes('moderator') || badgeTypes.includes('broadcaster'),
+    isSubscriber: badgeTypes.includes('subscriber'),
     id: String(p.id),
     // Kick si expone un id numerico estable del usuario (a diferencia del
     // scraping viejo de corard.tv) — /moderacion lo usa como clave firme.

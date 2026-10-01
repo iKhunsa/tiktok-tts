@@ -1,50 +1,25 @@
-import { appSettings, saveSettings } from '../../nucleo/estado/ajustes-app.js';
+import { appSettings, saveSettings, applySettings } from '../../nucleo/estado/ajustes-app.js';
 import { t } from '../../nucleo/i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
-import { setChecked } from '../../componentes/campos-formulario.js';
-import { PLATFORMS } from './plataformas.js';
+import { construirQuery } from '../../../compartido/estilo/query.js';
+import { ESQUEMAS, DEFAULTS_OVERLAYS } from '../../../compartido/estilo/esquemas.js';
 
 export function buildOverlayUrl(type) {
   const base = `${location.origin}/overlay-${type}.html`;
-  const cfg = appSettings.overlays[type];
-  const p = new URLSearchParams();
+  const query = construirQuery(ESQUEMAS[type], appSettings.overlays[type]);
+  return query ? `${base}?${query}` : base;
+}
 
-  if (type === 'seguidores') {
-    if (cfg.goal) p.set('goal', cfg.goal);
-    if (cfg.color && cfg.color !== '#FFBB00') p.set('color', cfg.color.replace('#', ''));
-    if (cfg.bg !== 0.80) p.set('bg', cfg.bg);
-  } else if (type === 'likes') {
-    if (cfg.rows && cfg.rows !== 10) p.set('rows', cfg.rows);
-    if (cfg.color && cfg.color !== '#FFBB00') p.set('color', cfg.color.replace('#', ''));
-    if (cfg.bg !== 0.80) p.set('bg', cfg.bg);
-  } else if (type === 'alertas') {
-    if (cfg.dur && cfg.dur !== 4000) p.set('dur', cfg.dur);
-    if (cfg.color && cfg.color !== '#FFBB00') p.set('color', cfg.color.replace('#', ''));
-    if (cfg.bg !== 0.90) p.set('bg', cfg.bg);
-  } else if (type === 'creditos') {
-    if (cfg.speed && cfg.speed !== 40) p.set('speed', cfg.speed);
-    if (cfg.color && cfg.color !== '#FFBB00') p.set('color', cfg.color.replace('#', ''));
-    if (cfg.bg !== 0.85) p.set('bg', cfg.bg);
-  } else if (type === 'social') {
-    if (cfg.layout && cfg.layout !== 'cols') p.set('layout', cfg.layout);
-    if (cfg.color && cfg.color !== '#FFBB00') p.set('color', cfg.color.replace('#', ''));
-    if (cfg.bg !== 0.80) p.set('bg', cfg.bg);
-  } else if (type === 'chat') {
-    if (cfg.color && cfg.color !== '#FFBB00') p.set('color', cfg.color.replace('#', ''));
-    if (cfg.bg !== 0.82) p.set('bg', cfg.bg);
-    if (cfg.maxmsgs && cfg.maxmsgs !== 30) p.set('maxmsgs', cfg.maxmsgs);
-    if (cfg.size && cfg.size !== 14) p.set('size', cfg.size);
-    if (cfg.usernames === false) p.set('usernames', '0');
-    const platforms = cfg.platforms || {};
-    const visible = ['tiktok', 'twitch', 'youtube', 'kick'].filter((name) => platforms[name] !== false);
-    if (visible.length > 0 && visible.length < PLATFORMS.length) p.set('platforms', visible.join(','));
-  } else if (type === 'alertas-social') {
-    if (cfg.color && cfg.color !== '#FFBB00') p.set('color', cfg.color.replace('#', ''));
-    if (cfg.bg !== 0.90) p.set('bg', cfg.bg);
-  }
+const RETARDO_VISTA_PREVIA_MS = 250;
+const temporizadoresVistaPrevia = new Map();
 
-  const qs = p.toString();
-  return qs ? `${base}?${qs}` : base;
+// Recarga la vista previa con un pequeno retardo: arrastrar un slider dispara
+// decenas de cambios y cada recarga abre el WebSocket del overlay de nuevo.
+function actualizarVistaPrevia(type, url) {
+  const marco = document.querySelector(`[data-preview="${type}"]`);
+  if (!marco) return;
+  clearTimeout(temporizadoresVistaPrevia.get(type));
+  temporizadoresVistaPrevia.set(type, setTimeout(() => { if (marco.src !== url) marco.src = url; }, RETARDO_VISTA_PREVIA_MS));
 }
 
 export function updateOverlayUrl(type) {
@@ -53,24 +28,12 @@ export function updateOverlayUrl(type) {
   const openEl = document.getElementById('cfg-open-' + type);
   if (urlEl) urlEl.textContent = url;
   if (openEl) openEl.href = url;
+  actualizarVistaPrevia(type, url);
 }
 
 export function onCfgChange(type, field, value) {
   appSettings.overlays[type][field] = value;
   updateOverlayUrl(type);
-  saveSettings();
-}
-
-export function onChatPlatformChange(platform, checked) {
-  const chatCfg = appSettings.overlays.chat;
-  chatCfg.platforms = chatCfg.platforms || { tiktok: true, twitch: true, youtube: true, kick: true };
-  chatCfg.platforms[platform] = checked;
-  if (!Object.values(chatCfg.platforms).some(Boolean)) {
-    chatCfg.platforms[platform] = true;
-    setChecked('cfg-chat-platform-' + platform, true);
-    showToast(t('toast.minOnePlatform'));
-  }
-  updateOverlayUrl('chat');
   saveSettings();
 }
 
@@ -111,13 +74,61 @@ export async function testSocialAlert(eventType, platform) {
   }
 }
 
-export async function testTopLikers() {
+async function testRanking(endpoint, sentKey) {
   try {
-    const res = await fetch('/api/test/likes', { method: 'POST' });
+    const res = await fetch(endpoint, { method: 'POST' });
     const data = await res.json();
-    if (data.success) showToast(t('toast.testLikesSent').replace('{count}', data.count));
+    if (data.success) showToast(t(sentKey).replace('{count}', data.count));
     else showToast(t('toast.testError'));
-  } catch (e) {
+  } catch {
     showToast(t('toast.testError'));
   }
+}
+
+export const testTopLikers = () => testRanking('/api/test/likes', 'toast.testLikesSent');
+export const testTopDonors = () => testRanking('/api/test/donors', 'toast.testDonorsSent');
+
+// Un mensaje de prueba por rol para ver el estilo de cada uno. TikTok no informa
+// moderadores, asi que ese rol se simula desde Twitch (que ademas no trae foto).
+const MENSAJES_PRUEBA_CHAT = [
+  { platform: 'tiktok', user: 'ViewerAna', comment: 'Hola a todos!' },
+  { platform: 'twitch', user: 'ModeradorLeo', comment: 'Recuerden respetar las reglas', role: 'moderator' },
+  { platform: 'tiktok', user: 'SuscriptorMia', comment: 'Gracias por el directo!', role: 'subscriber' },
+];
+
+export async function testChatOverlay() {
+  try {
+    const respuestas = await Promise.all(MENSAJES_PRUEBA_CHAT.map((mensaje) => fetch('/api/test/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(mensaje),
+    })));
+    showToast(respuestas.every((respuesta) => respuesta.ok) ? t('toast.testChatSent') : t('toast.testError'));
+  } catch {
+    showToast(t('toast.testError'));
+  }
+}
+
+const CONFIRMACION_MS = 3000;
+
+// Dos clics para no perder ajustes por accidente: el primero pide confirmar
+// (el boton cambia de texto unos segundos), el segundo restablece.
+export function restablecerOverlay(type, boton) {
+  if (boton.dataset.confirmar) return aplicarRestablecer(type, boton);
+  boton.dataset.confirmar = '1';
+  boton.querySelector('span').textContent = t('btn.resetConfirm');
+  setTimeout(() => cancelarConfirmacion(boton), CONFIRMACION_MS);
+}
+
+function cancelarConfirmacion(boton) {
+  delete boton.dataset.confirmar;
+  boton.querySelector('span').textContent = t('btn.reset');
+}
+
+function aplicarRestablecer(type, boton) {
+  cancelarConfirmacion(boton);
+  appSettings.overlays[type] = JSON.parse(JSON.stringify(DEFAULTS_OVERLAYS[type]));
+  saveSettings();
+  applySettings();
+  showToast(t('toast.overlayReset'));
 }

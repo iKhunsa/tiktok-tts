@@ -19,6 +19,7 @@ const REQUIRED = [
   'overlay-alertas-social.html',
   'overlay-chat.html',
   'overlay-creditos.html',
+  'overlay-donadores.html',
   'overlay-likes.html',
   'overlay-seguidores.html',
   'overlay-social.html',

@@ -206,12 +206,14 @@ Dominio aparte que reporta uso agregado y anónimo a un servicio propio
   `config.json` a propósito, porque `features/configuracion/` descarta claves que no
   reconoce y lo borraría en el primer guardado.
 - Casi todos los eventos se emiten directo desde los conectores. Solo
-  `tts:skipped`, `tts:queue-overflow` y `ui:language-set` nacen en el renderer
-  (`interfaz/src/nucleo/tts/cola-tts.js`, `interfaz/src/vistas/principal/i18n-app.js`)
+  `tts:skipped`, `tts:queue-overflow`, `ui:language-set`, `ui:discord-opened` y
+  `ui:discord-joined` nacen en el renderer
+  (`interfaz/src/nucleo/tts/cola-tts.js`, `interfaz/src/vistas/principal/i18n-app.js`,
+  `interfaz/src/vistas/principal/modales-avisos.js`)
   y llegan al bus vía IPC:
   `window.electronAPI.trackEvent(name[, payload])` → `preload.js` →
   `ipcMain.on('telemetry:track', ...)` en `electron-shell/ipc-bridge.js`, con
-  lista blanca de esos tres nombres (`payload` solo se reenvía si es string corto).
+  lista blanca de esos cinco nombres (`payload` solo se reenvía si es string corto).
 
 ## Error tracking (`electron-shell/glitchtip.js`)
 
@@ -249,7 +251,10 @@ bakeado) es un no-op total.
   `session_ended`), activación (`platform_connected`, `platform_connect_failed`,
   `first_tts`), adopción (`overlay_opened`,
   `mobile_paired`, `mobile_command`, `clip_marked`, `music_requested`,
-  `promo_fired`, `bug_report_sent`, `soundpad` en resumen), config
+  `promo_fired`, `bug_report_sent`, `soundpad` en resumen,
+  `discord_modal_opened` y `discord_join_clicked` con `source` =
+  `titlebar|sidebar|account_menu|banner`, para medir qué entrada a Discord
+  convierte), config
   (`config_changed` **solo la clave, nunca el valor**, `voice_changed`,
   `ui_language_set`), moderación (`moderation_action`, `moderation_action_failed`,
   `mod_words_saved`).
@@ -310,6 +315,24 @@ nuevos por request). `features/mcp/` se registra **último** en `server.js`.
   la tabla de la UI usa claves i18n propias `mcp.toolDesc.<name>` y `mcp.domain.<slug>`
   (fallback al `description` inglés). El endpoint URL y los snippets JSON no se traducen.
 - `GET /api/mcp/info` — estado + catálogo de tools para la UI (GET, sin auth).
+
+## Overlays de OBS — esquema de ajustes (`interfaz/compartido/estilo/`)
+
+Chat, Top Likers y Top Donadores se personalizan con un **esquema declarativo**
+(`esquemas.js` + `campos-*.js`): cada campo `{ clave, param, tipo, def, grupo }` es la
+única fuente de su default, su nombre en la URL y su control en el configurador.
+`construirQuery`/`leerConfig` (`query.js`, puras y testeadas) convierten config ↔
+querystring omitiendo defaults; `ajustes-app.js` deriva `DEFAULTS_OVERLAYS` del esquema.
+Para agregar un ajuste: un campo en el esquema + sus claves `overlayCfg.campo.<clave>`
+en los 10 locales; el panel "Personalizar" (`vistas/principal/campos-overlay/`) lo dibuja solo.
+Los params históricos (`rows,color,bg,size,maxmsgs,usernames,platforms`) no se renombran.
+
+- Rankings: el **servidor es la fuente de verdad** (`top-likers`/`top-donors` por WS, snapshot en
+  `/api/overlay-stats`); `compartido/iniciar-ranking.js` + `leaderboard.js` solo pintan.
+- Avatar y roles (moderador/suscriptor) salen de `raw` en `features/chat/author-meta/` (chat-guard
+  no los transporta). El avatar de TikTok lo decodifica `@tiklivetts/tiktok-live-client` (`avatarUrl`,
+  desde v0.1.10); las URLs son firmadas y caducan → placeholder. TikTok no informa moderadores.
+- Fuentes: Google Fonts por CDN, solo desde `cargarFuente()` (`fuentes.js`); el default es la del sistema.
 
 ## Variables de entorno clave
 

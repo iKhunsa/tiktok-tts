@@ -11,6 +11,11 @@ const { recomputeFollowerBase } = require('./state/recompute-follower-base');
 const { extractFollowerCount } = require('./state/extract-follower-count');
 const { computeGiftUsd } = require('./compute-gift-usd');
 const { purgeTopLikersIfNeeded } = require('./state/bounded-push');
+const { addTopEntry } = require('./state/add-top-entry');
+const { rankTop } = require('./state/rank-top');
+const { MAX_TOP_ROWS } = require('./state/top-limits');
+const { broadcastTopDonors } = require('./state/broadcast-top-donors');
+const { broadcastTopLikers } = require('./state/broadcast-top-likers');
 const { cleanNick } = require('./clean-nick');
 const mcpRegistry = require('../../core/contracts/mcp-registry');
 const { getConfigSnapshot } = require('../../core/config-snapshot');
@@ -21,9 +26,9 @@ const { testGift } = require('./routes/test-gift');
 const { testFollow } = require('./routes/test-follow');
 const { testShare } = require('./routes/test-share');
 const { testLikes } = require('./routes/test-likes');
+const { testDonors } = require('./routes/test-donors');
 
 const LIKE_DEBOUNCE_FALLBACK_MS = 1500;
-
 module.exports = {
   name: 'overlay',
 
@@ -43,8 +48,12 @@ module.exports = {
       // deduplicado por connect-tiktok-channel.js#GIFT_COMBO_DEBOUNCE_MS) —
       // reemplaza al repeatCount de tiktok-live-connector.
       const repeatCount = data.groupCount || 1;
-      const { usdValue } = computeGiftUsd(logger, { giftName: data.giftName, repeatCount, diamondCount: data.diamondCount || 0 });
+      const { totalCoins, usdValue } = computeGiftUsd(logger, { giftName: data.giftName, repeatCount, diamondCount: data.diamondCount || 0 });
       addDonor(state.credits, { platform: payload.platform, userId: data.uniqueId, user, giftName: data.giftName, count: repeatCount });
+      if (totalCoins > 0) {
+        addTopEntry(state.topDonors, 'totalCoins', { user, amount: totalCoins, avatar: data.avatarUrl });
+        broadcastTopDonors(bus, state.topDonors);
+      }
       bus.emit('ws:broadcast', {
         type: 'gift', user, giftName: data.giftName, giftId: data.giftId,
         giftPictureUrl: data.giftPictureUrl || null, repeatCount, usdValue, timestamp: Date.now(),
@@ -66,18 +75,18 @@ module.exports = {
       if (state.likePendingTimers.has(user)) {
         clearTimeout(state.likePendingTimers.get(user).timer);
       } else {
-        state.likePendingTimers.set(user, { timer: null, count: 0 });
+        state.likePendingTimers.set(user, { timer: null, count: 0, avatar: '' });
       }
       const pending = state.likePendingTimers.get(user);
       pending.count += (payload.likeCount || 1);
+      pending.avatar = payload.avatar || pending.avatar;
       pending.timer = setTimeout(() => {
         const likeCount = pending.count;
         state.likePendingTimers.delete(user);
         bus.emit('ws:broadcast', { type: 'like', user, likeCount, timestamp: Date.now() });
-        const existing = state.topLikers.get(user) || { user, totalLikes: 0 };
-        existing.totalLikes += likeCount;
-        state.topLikers.set(user, existing);
+        addTopEntry(state.topLikers, 'totalLikes', { user, amount: likeCount, avatar: pending.avatar });
         purgeTopLikersIfNeeded(state.topLikers);
+        broadcastTopLikers(bus, state.topLikers);
       }, debounceMs);
     }, 'overlay');
 
@@ -139,15 +148,16 @@ module.exports = {
     app.post('/api/test/follow', testFollow(deps));
     app.post('/api/test/share', testShare(deps));
     app.post('/api/test/likes', testLikes(deps));
+    app.post('/api/test/donors', testDonors(deps));
 
     // ── MCP ──────────────────────────────────────────────────────────────
     const slice = () => {
-      const topLikers = [...state.topLikers.values()].sort((a, b) => b.totalLikes - a.totalLikes).slice(0, 10);
       return {
         overlay: {
           followCount: state.followCount,
           baseFollowerCount: state.baseFollowerCount,
-          topLikers,
+          topLikers: rankTop(state.topLikers, 'totalLikes', MAX_TOP_ROWS),
+          topDonors: rankTop(state.topDonors, 'totalCoins', MAX_TOP_ROWS),
           recentSharers: [...state.credits.sharers.values()].slice(-10).map((s) => s.user),
           recentDonors: [...state.credits.donors.values()].slice(-10),
         },
@@ -160,11 +170,11 @@ module.exports = {
     mcpRegistry.registerTool({
       name: 'overlay_stats', domain: 'overlay', readOnly: true,
       title: 'Overlay stats',
-      description: 'Follower count, top likers, recent sharers, gift/donor credits (session).',
+      description: 'Follower count, top likers, top donors (by coins), recent sharers, gift/donor credits (session).',
       inputSchema: { type: 'object', properties: {} },
       handler: () => slice().overlay,
     });
 
-    return { rutas: 7, listeners: 6 };
+    return { rutas: 8, listeners: 6 };
   },
 };

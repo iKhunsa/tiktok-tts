@@ -10,10 +10,12 @@
  * reasignacion ocurre en este modulo, que es el unico dueño del binding.
  */
 import { options } from './opciones-lectura.js';
-import { setFieldVal, setChecked, paintRangeFill } from '../../componentes/campos-formulario.js';
+import { setFieldVal, paintRangeFill } from '../../componentes/campos-formulario.js';
 import { renderChatTogglesState } from '../../vistas/principal/toggles-chat.js';
 import { updateConnectorChipState } from '../../vistas/principal/voces.js';
 import { updateOverlayUrl } from '../../vistas/principal/configurador-overlays.js';
+import { renderizarTodosLosCamposOverlay } from '../../vistas/principal/campos-overlay/index.js';
+import { DEFAULTS_OVERLAYS } from '../../../compartido/estilo/esquemas.js';
 import * as datosPorCuenta from './datos-por-cuenta.js';
 
 // Circular import a proposito: los 4 modulos de arriba importan
@@ -48,22 +50,7 @@ export const DEFAULT_SETTINGS = {
   clearShortcut: null,
   musicPauseShortcut: null,
   musicSkipShortcut: null,
-  overlays: {
-    seguidores: { goal: '', color: '#FFBB00', bg: 0.80 },
-    likes: { rows: 10, color: '#FFBB00', bg: 0.80 },
-    alertas: { dur: 4000, color: '#FFBB00', bg: 0.90 },
-    creditos: { speed: 40, color: '#FFBB00', bg: 0.85 },
-    social: { layout: 'cols', color: '#FFBB00', bg: 0.80 },
-    'alertas-social': { color: '#FFBB00', bg: 0.90 },
-    chat: {
-      color: '#FFBB00',
-      bg: 0.82,
-      maxmsgs: 30,
-      size: 14,
-      usernames: true,
-      platforms: { tiktok: true, twitch: true, youtube: true, kick: true },
-    },
-  },
+  overlays: DEFAULTS_OVERLAYS,
 };
 
 export let appSettings = {};
@@ -89,10 +76,18 @@ export function deepMerge(defaults, saved) {
   return out;
 }
 
+// El tamano del texto del chat se llamaba `size` y ahora es `tamano` (esquema
+// de overlays): se conserva lo que el usuario ya habia elegido.
+function migrarOverlaysAnteriores(guardado) {
+  const chat = guardado.overlays && guardado.overlays.chat;
+  if (chat && chat.size !== undefined && chat.tamano === undefined) chat.tamano = chat.size;
+  return guardado;
+}
+
 export function loadSettings() {
   try {
     const raw = datosPorCuenta.get(SETTINGS_KEY);
-    appSettings = raw ? deepMerge(DEFAULT_SETTINGS, JSON.parse(raw)) : JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+    appSettings = raw ? deepMerge(DEFAULT_SETTINGS, migrarOverlaysAnteriores(JSON.parse(raw))) : JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
   } catch (e) {
     console.warn('[settings] localStorage corrupto, usando valores por defecto', e);
     appSettings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
@@ -145,7 +140,7 @@ export function applySettings() {
   // servidor (loadRuntimeConfig corre despues de applySettings en el
   // arranque, ver vistas/principal/index.js).
 
-  const { seguidores, likes, alertas, creditos, social, chat } = appSettings.overlays || {};
+  const { seguidores, alertas, creditos, social } = appSettings.overlays || {};
 
   setFieldVal('cfg-seg-goal', seguidores.goal);
   setFieldVal('cfg-seg-color', seguidores.color);
@@ -153,27 +148,7 @@ export function applySettings() {
   const bgValEl = document.getElementById('cfg-seg-bg-val');
   if (bgValEl) bgValEl.textContent = Math.round(seguidores.bg * 100);
 
-  if (chat) {
-    setFieldVal('cfg-chat-color', chat.color);
-    setFieldVal('cfg-chat-bg', chat.bg);
-    setFieldVal('cfg-chat-maxmsgs', chat.maxmsgs);
-    setFieldVal('cfg-chat-size', chat.size);
-    setChecked('cfg-chat-usernames', chat.usernames !== false);
-    setChecked('cfg-chat-platform-tiktok', chat.platforms?.tiktok !== false);
-    setChecked('cfg-chat-platform-twitch', chat.platforms?.twitch !== false);
-    setChecked('cfg-chat-platform-youtube', chat.platforms?.youtube !== false);
-    setChecked('cfg-chat-platform-kick', chat.platforms?.kick !== false);
-    const cbValEl = document.getElementById('cfg-chat-bg-val');
-    if (cbValEl) cbValEl.textContent = Math.round(chat.bg * 100);
-    const sizeValEl = document.getElementById('cfg-chat-size-val');
-    if (sizeValEl) sizeValEl.textContent = chat.size || 14;
-  }
-
-  setFieldVal('cfg-likes-rows', likes.rows);
-  setFieldVal('cfg-likes-color', likes.color);
-  setFieldVal('cfg-likes-bg', likes.bg);
-  const lbValEl = document.getElementById('cfg-likes-bg-val');
-  if (lbValEl) lbValEl.textContent = Math.round(likes.bg * 100);
+  renderizarTodosLosCamposOverlay();
 
   setFieldVal('cfg-alertas-dur', alertas.dur);
   setFieldVal('cfg-alertas-color', alertas.color);
@@ -208,8 +183,6 @@ export function applySettings() {
   }
 
   updateOverlayUrl('seguidores');
-  updateOverlayUrl('likes');
-  updateOverlayUrl('chat');
   updateOverlayUrl('alertas');
   updateOverlayUrl('creditos');
   updateOverlayUrl('social');

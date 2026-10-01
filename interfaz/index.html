@@ -11,7 +11,9 @@
   <link rel="stylesheet" href="plugin-store/grid.css" />
   <link rel="stylesheet" href="plugin-store/detail.css" />
   <link rel="stylesheet" href="./src/estilos/index-legacy.css">
+  <link rel="stylesheet" href="./src/estilos/campos-overlay.css">
   <link rel="stylesheet" href="./src/estilos/portal-view.css">
+  <link rel="stylesheet" href="./src/estilos/barra-titulo.css">
 </head>
 <body>
 
@@ -27,6 +29,21 @@
   <button id="update-btn-install" style="display:none" onclick="doInstallUpdate()" data-i18n="update.installNow">Instalar ahora</button>
   <button id="update-btn-later"   style="display:none" onclick="document.getElementById('update-banner').classList.remove('visible')" data-i18n="update.later">Después</button>
 </div>
+
+<!-- ── Barra de título propia ────────────────────────────────── -->
+<header class="titlebar" id="titlebar">
+  <div class="titlebar-nav">
+    <button id="titlebarBack" class="titlebar-btn" disabled data-i18n-title="titlebar.back" data-i18n-aria-label="titlebar.back"><img class="icon-inline" src="icons/arrow_back.svg" alt=""></button>
+    <button id="titlebarForward" class="titlebar-btn" disabled data-i18n-title="titlebar.forward" data-i18n-aria-label="titlebar.forward"><img class="icon-inline" src="icons/arrow_forward.svg" alt=""></button>
+  </div>
+  <div class="titlebar-actions">
+    <button id="titlebarNews" class="titlebar-btn titlebar-news" data-i18n-title="titlebar.news" data-i18n-aria-label="titlebar.news">
+      <img class="icon-inline" src="icons/newspaper.svg" alt="">
+      <span class="titlebar-news-label" data-i18n="titlebar.news">Novedades</span>
+    </button>
+    <button id="titlebarDiscord" class="titlebar-btn" data-i18n-title="titlebar.discord" data-i18n-aria-label="titlebar.discord"><img class="icon-inline" src="icons/discord.svg" alt=""></button>
+  </div>
+</header>
 
 <div id="app-shell">
 <div class="app-layout">
@@ -97,6 +114,7 @@
 
     <div class="sidebar-footer">
       <button id="sidebarPortalViewBtn" class="sidebar-footer-btn" onclick="togglePortalView()"><img class="icon-inline" src="icons/public.svg" alt=""> <span data-i18n="footer.portalView">Navegador</span></button>
+      <button id="sidebarDiscordBtn" class="sidebar-footer-btn" onclick="openDiscordModal('sidebar')"><img class="icon-inline" src="icons/discord.svg" alt=""> <span>Discord TikLiveTTS</span></button>
       <button id="sidebarBugReportBtn" class="sidebar-footer-btn" onclick="openBugReportModal()"><img class="icon-inline" src="icons/warning.svg" alt=""> <span data-i18n="footer.bugReport">Reportar Bug</span></button>
       <button id="sidebarIdeaBtn" class="sidebar-footer-btn" onclick="openIdeaModal()"><img class="icon-inline" src="icons/lightbulb.svg" alt=""> <span data-i18n="ideas.sidebarEntry">Sugerir una idea</span></button>
       <button class="sidebar-footer-btn sidebar-item sidebar-account" data-view="cuenta" hidden>
@@ -266,46 +284,15 @@
           </div>
           <span class="obs-hint">420 × 720 px</span>
         </div>
-        <div class="cfg-fields">
-          <div class="cfg-field">
-            <label data-i18n="label.accentColor">Color acento</label>
-            <input type="color" id="cfg-chat-color" value="#FFBB00"
-                   oninput="onCfgChange('chat','color', this.value)" />
-          </div>
-          <div class="cfg-field">
-            <label><span data-i18n="label.bgOpacity">Opacidad fondo</span> — <span id="cfg-chat-bg-val">82</span>%</label>
-            <input type="range" id="cfg-chat-bg" min="0.30" max="1.00" step="0.05" value="0.82"
-                   oninput="onCfgChange('chat','bg', parseFloat(this.value)); document.getElementById('cfg-chat-bg-val').textContent = Math.round(this.value*100)" />
-          </div>
-          <div class="cfg-field">
-            <label>Mensajes visibles</label>
-            <input type="number" id="cfg-chat-maxmsgs" min="5" max="80" value="30"
-                   oninput="onCfgChange('chat','maxmsgs', parseInt(this.value)||30)" />
-          </div>
-          <div class="cfg-field">
-            <label>Tamaño texto — <span id="cfg-chat-size-val">14</span>px</label>
-            <input type="range" id="cfg-chat-size" min="10" max="24" step="1" value="14"
-                   oninput="onCfgChange('chat','size', parseInt(this.value)||14); document.getElementById('cfg-chat-size-val').textContent = this.value" />
-          </div>
-          <div class="cfg-field">
-            <label>Mostrar nombres</label>
-            <label class="toggle-chip" style="width:max-content;margin-top:2px;">
-              <input type="checkbox" id="cfg-chat-usernames" checked onchange="onCfgChange('chat','usernames', this.checked)" />
-              Usuarios
-            </label>
-          </div>
-          <div class="cfg-field">
-            <label>Plataformas visibles</label>
-            <div style="display:flex;gap:6px;flex-wrap:wrap;">
-              <label class="toggle-chip" style="padding:6px 9px;"><input type="checkbox" id="cfg-chat-platform-tiktok" checked onchange="onChatPlatformChange('tiktok', this.checked)" /> TikTok</label>
-              <label class="toggle-chip" style="padding:6px 9px;"><input type="checkbox" id="cfg-chat-platform-twitch" checked onchange="onChatPlatformChange('twitch', this.checked)" /> Twitch</label>
-              <label class="toggle-chip" style="padding:6px 9px;"><input type="checkbox" id="cfg-chat-platform-youtube" checked onchange="onChatPlatformChange('youtube', this.checked)" /> YouTube</label>
-              <label class="toggle-chip" style="padding:6px 9px;"><input type="checkbox" id="cfg-chat-platform-kick" checked onchange="onChatPlatformChange('kick', this.checked)" /> Kick</label>
-            </div>
-          </div>
-        </div>
+        <div class="cfg-fields" data-campos-base="chat"></div>
+        <details class="cfg-personalizar" data-campos-panel="chat">
+          <summary data-i18n="overlayCfg.personalizar">Personalizar</summary>
+        </details>
+        <iframe class="cfg-preview" data-preview="chat" tabindex="-1" aria-hidden="true"></iframe>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-chat">http://localhost:3000/overlay-chat.html</span>
+          <button class="cfg-btn" onclick="testChatOverlay()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Test</button>
+          <button class="cfg-btn" onclick="restablecerOverlay('chat', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
           <button class="cfg-btn" onclick="copyCfgUrl('chat')" data-i18n="btn.copy">Copiar</button>
           <a class="cfg-btn" id="cfg-open-chat" href="http://localhost:3000/overlay-chat.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
@@ -346,6 +333,7 @@
         </div>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-seguidores">http://localhost:3000/overlay-seguidores.html</span>
+          <button class="cfg-btn" onclick="restablecerOverlay('seguidores', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
           <button class="cfg-btn" onclick="copyCfgUrl('seguidores')" data-i18n="btn.copy">Copiar</button>
           <a class="cfg-btn" id="cfg-open-seguidores" href="http://localhost:3000/overlay-seguidores.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
@@ -359,30 +347,43 @@
             <div class="cfg-title" data-i18n="overlay.topLikers.title">Top Likers</div>
             <div class="cfg-subtitle" data-i18n="overlay.topLikers.subtitle">Ranking de usuarios con más likes del stream</div>
           </div>
-          <span class="obs-hint">260 × 380 px</span>
+          <span class="obs-hint">340 × 520 px</span>
         </div>
-        <div class="cfg-fields">
-          <div class="cfg-field">
-            <label>Máximo de filas</label>
-            <input type="number" id="cfg-likes-rows" placeholder="10" min="3" max="20"
-                   oninput="onCfgChange('likes','rows', parseInt(this.value)||10)" />
-          </div>
-          <div class="cfg-field">
-            <label data-i18n="label.accentColor">Color acento</label>
-            <input type="color" id="cfg-likes-color" value="#FFBB00"
-                   oninput="onCfgChange('likes','color', this.value)" />
-          </div>
-          <div class="cfg-field full">
-            <label><span data-i18n="label.bgOpacity">Opacidad fondo</span> — <span id="cfg-likes-bg-val">80</span>%</label>
-            <input type="range" id="cfg-likes-bg" min="0.30" max="1.00" step="0.05" value="0.80"
-                   oninput="onCfgChange('likes','bg', parseFloat(this.value)); document.getElementById('cfg-likes-bg-val').textContent = Math.round(this.value*100)" />
-          </div>
-        </div>
+        <div class="cfg-fields" data-campos-base="likes"></div>
+        <details class="cfg-personalizar" data-campos-panel="likes">
+          <summary data-i18n="overlayCfg.personalizar">Personalizar</summary>
+        </details>
+        <iframe class="cfg-preview" data-preview="likes" tabindex="-1" aria-hidden="true"></iframe>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-likes">http://localhost:3000/overlay-likes.html</span>
           <button class="cfg-btn" onclick="testTopLikers()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Test</button>
+          <button class="cfg-btn" onclick="restablecerOverlay('likes', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
           <button class="cfg-btn" onclick="copyCfgUrl('likes')" data-i18n="btn.copy">Copiar</button>
           <a class="cfg-btn" id="cfg-open-likes" href="http://localhost:3000/overlay-likes.html" target="_blank" data-i18n="btn.open">Abrir</a>
+        </div>
+      </div>
+
+      <!-- Top Donadores -->
+      <div class="cfg-card">
+        <div class="cfg-header">
+          <div class="cfg-icon"><img class="icon-inline" src="icons/redeem.svg" alt=""></div>
+          <div class="cfg-meta">
+            <div class="cfg-title" data-i18n="overlay.topDonors.title">Top Donadores</div>
+            <div class="cfg-subtitle" data-i18n="overlay.topDonors.subtitle">Ranking de usuarios que más regalos enviaron en el stream</div>
+          </div>
+          <span class="obs-hint">340 × 520 px</span>
+        </div>
+        <div class="cfg-fields" data-campos-base="donadores"></div>
+        <details class="cfg-personalizar" data-campos-panel="donadores">
+          <summary data-i18n="overlayCfg.personalizar">Personalizar</summary>
+        </details>
+        <iframe class="cfg-preview" data-preview="donadores" tabindex="-1" aria-hidden="true"></iframe>
+        <div class="cfg-url-row">
+          <span class="cfg-url-text" id="cfg-url-donadores">http://localhost:3000/overlay-donadores.html</span>
+          <button class="cfg-btn" onclick="testTopDonors()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Test</button>
+          <button class="cfg-btn" onclick="restablecerOverlay('donadores', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
+          <button class="cfg-btn" onclick="copyCfgUrl('donadores')" data-i18n="btn.copy">Copiar</button>
+          <a class="cfg-btn" id="cfg-open-donadores" href="http://localhost:3000/overlay-donadores.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
       </div>
 
@@ -416,6 +417,7 @@
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-alertas">http://localhost:3000/overlay-alertas.html</span>
           <button class="cfg-btn" onclick="testGiftAlert()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Test</button>
+          <button class="cfg-btn" onclick="restablecerOverlay('alertas', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
           <button class="cfg-btn" onclick="copyCfgUrl('alertas')" data-i18n="btn.copy">Copiar</button>
           <a class="cfg-btn" id="cfg-open-alertas" href="http://localhost:3000/overlay-alertas.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
@@ -447,6 +449,7 @@
           <span class="cfg-url-text" id="cfg-url-alertas-social">http://localhost:3000/overlay-alertas-social.html</span>
           <button class="cfg-btn" onclick="testSocialAlert('follow')"><img class="icon-inline" src="icons/person_add.svg" alt=""> Test Follow</button>
           <button class="cfg-btn" onclick="testSocialAlert('share')"><img class="icon-inline" src="icons/public.svg" alt=""> Test Share</button>
+          <button class="cfg-btn" onclick="restablecerOverlay('alertas-social', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
           <button class="cfg-btn" onclick="copyCfgUrl('alertas-social')" data-i18n="btn.copy">Copiar</button>
           <a class="cfg-btn" id="cfg-open-alertas-social" href="http://localhost:3000/overlay-alertas-social.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
@@ -481,6 +484,7 @@
         </div>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-creditos">http://localhost:3000/overlay-creditos.html</span>
+          <button class="cfg-btn" onclick="restablecerOverlay('creditos', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
           <button class="cfg-btn" onclick="copyCfgUrl('creditos')" data-i18n="btn.copy">Copiar</button>
           <a class="cfg-btn" id="cfg-open-creditos" href="http://localhost:3000/overlay-creditos.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
@@ -517,6 +521,7 @@
         </div>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-social">http://localhost:3000/overlay-social.html</span>
+          <button class="cfg-btn" onclick="restablecerOverlay('social', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
           <button class="cfg-btn" onclick="copyCfgUrl('social')" data-i18n="btn.copy">Copiar</button>
           <a class="cfg-btn" id="cfg-open-social" href="http://localhost:3000/overlay-social.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
@@ -1186,6 +1191,17 @@
 
 <div class="app-glow" id="appGlow"></div>
 
+<!-- ══ MODAL: Invitación a Discord ═══════════════════════ -->
+<div id="discordModal" class="modal-overlay" onclick="closeDiscordModal(event)">
+  <div class="modal-content discord-modal-content" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeDiscordModal()" data-i18n-aria-label="news.close"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <img class="discord-cat" src="img/mascota/discord-banner.webp" width="1000" height="563" alt="">
+    <h2 data-i18n="discordInvite.title">Únete al Discord de TikLiveTTS</h2>
+    <p data-i18n="discordInvite.body"></p>
+    <a class="discord-cta" href="https://discord.com/invite/mwY859tcQK" target="_blank" rel="noopener"><img class="icon-inline" src="icons/discord.svg" alt=""> <span data-i18n="discordInvite.cta">Unirme al Discord</span></a>
+  </div>
+</div>
+
 <!-- ══ MODAL: Donaciones ════════════════════════════════ -->
 <div id="donationsModal" class="modal-overlay" onclick="closeDonationsModal(event)">
   <div class="modal-content" onclick="event.stopPropagation()">
@@ -1342,6 +1358,15 @@
       <a href="https://github.com/iKhunsa/tiktok-tts" target="_blank" class="cfg-btn" style="flex:1;justify-content:center;" data-i18n="notice.bugReportDevCta">Sumate como developer</a>
       <button class="cfg-btn" style="flex:1;justify-content:center;" onclick="closeBugReportNotice();openDonationsModal();" data-i18n="notice.bugReportDonateCta">Apoyar con una donación</button>
     </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: Novedades ══════════════════════════════════ -->
+<div id="newsModal" class="modal-overlay">
+  <div class="modal-content news-modal-content">
+    <button id="newsModalClose" class="modal-close" data-i18n-aria-label="news.close"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <h2><img class="icon-inline" src="icons/newspaper.svg" alt=""> <span data-i18n="news.title">Novedades de TikLiveTTS</span></h2>
+    <div id="newsList" class="news-list"></div>
   </div>
 </div>
 

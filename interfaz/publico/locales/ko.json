@@ -117,6 +117,8 @@
     "openAdvanced": "고급 패널 열기（필터, 속도 제한, 로그）→",
     "pauseTTS": "⏸ TTS 일시정지",
     "resumeTTS": "▶ TTS 재개",
+    "reset": "초기화",
+    "resetConfirm": "확실해요?",
     "copy": "복사",
     "open": "열기",
     "remove": "제거",
@@ -229,6 +231,10 @@
     "followers": {
       "title": "팔로워 카운터",
       "subtitle": "실시간 신규 팔로워"
+    },
+    "topDonors": {
+      "title": "후원 랭킹",
+      "subtitle": "방송에서 선물을 가장 많이 보낸 사용자 순위"
     },
     "topLikers": {
       "title": "탑 라이커",
@@ -498,8 +504,71 @@
     "invalidValue": "{field}의 값이 잘못되었습니다",
     "configRejected": "설정이 거부되었습니다"
   },
+  "overlayCfg": {
+    "personalizar": "사용자 지정",
+    "grupo": {
+      "tipografia": "글꼴",
+      "usuario": "사용자 이름",
+      "ranking": "랭킹",
+      "comportamiento": "동작",
+      "viewer": "시청자",
+      "moderador": "모더레이터",
+      "suscriptor": "구독자 / 슈퍼 팬"
+    },
+    "campo": {
+      "maxFilas": "최대 행 수",
+      "colorAcento": "강조 색상",
+      "opacidadPlaca": "플레이트 투명도",
+      "opacidadFondo": "배경 투명도",
+      "mensajesVisibles": "표시할 메시지 수",
+      "mostrarNombres": "이름 표시",
+      "plataformasVisibles": "표시할 플랫폼",
+      "fuente": "글꼴",
+      "tamano": "글자 크기",
+      "interlineado": "줄 간격",
+      "espaciadoLetras": "자간",
+      "colorUsuario": "이름 색상",
+      "efectoUsuario": "이름 효과",
+      "olaUsuario": "이름 물결 애니메이션",
+      "colorValor": "값 색상",
+      "colorRango": "순위 색상",
+      "placa": "각 행에 배경 표시",
+      "colorPlaca": "행 배경 색상",
+      "mostrarRango": "순위 표시",
+      "mostrarValor": "값 표시",
+      "mostrarSimbolo": "기호 표시",
+      "mostrarAvatares": "프로필 사진 표시",
+      "mostrarCorona": "1위 왕관",
+      "mostrarMedallas": "시상대 메달",
+      "derechaAIzquierda": "오른쪽에서 왼쪽 정렬",
+      "ocultarTras": "메시지 숨김 시간 (초, 0 = 안 함)",
+      "animacionEntrada": "등장 애니메이션",
+      "unaLinea": "한 줄 (미니 채팅)",
+      "ajustarAncho": "메시지에 너비 맞춤",
+      "colorAleatorio": "무작위 이름 색상",
+      "rolMostrar": "채팅 표시",
+      "rolColorUsuario": "이름 색상",
+      "rolEfecto": "이름 효과",
+      "rolOla": "이름 물결 애니메이션",
+      "rolResplandor": "이름 글로우 효과",
+      "rolColorComentario": "댓글 색상",
+      "rolColorFondo": "배경 색상"
+    },
+    "opcion": {
+      "sistema": "시스템",
+      "ninguno": "없음",
+      "sombra": "그림자",
+      "contorno": "윤곽선",
+      "neon": "네온",
+      "slide-up": "아래에서 슬라이드",
+      "slide-left": "왼쪽에서 슬라이드",
+      "fade": "페이드 인",
+      "ninguna": "애니메이션 없음"
+    }
+  },
   "overlayStr": {
     "newFollowers": "새 팔로워",
+    "waitingDonors": "선물을 기다리는 중...",
     "waitingLikes": "좋아요를 기다리는 중...",
     "giftReceived": "선물 받음",
     "newFollower": "새 팔로워",
@@ -517,8 +586,7 @@
     "sharedList": "공유",
     "noShared": "아직 공유 없음",
     "anonymous": "익명",
-    "giftFrom": "@{user}님으로부터",
-    "topLikers": "탑 라이커"
+    "giftFrom": "@{user}님으로부터"
   },
   "donations": {
     "title": "내 콘텐츠를 지원해주세요",
@@ -622,6 +690,9 @@
     "testAlertSent": "테스트 알림 전송됨: {name}",
     "testError": "테스트 전송 오류",
     "testSocialSent": "테스트 {type} 전송됨: {user}",
+    "testDonorsSent": "테스트 후원 전송됨 ({count}명)",
+    "testChatSent": "채팅에 테스트 메시지를 보냈습니다",
+    "overlayReset": "오버레이를 기본값으로 초기화했습니다",
     "testLikesSent": "테스트 좋아요 전송됨 ({count} 사용자)",
     "emergencyActive": "긴급 모드 활성: 선물과 팔로우만",
     "ttsNetError": "TTS가 올바르게 응답하지 않았습니다; 인터넷 연결을 확인하세요",
@@ -1172,6 +1243,7 @@
     "upgradePlan": "요금제 업그레이드",
     "advanced": "고급",
     "donate": "기부",
+    "discord": "디스코드 참여",
     "myAccount": "내 계정"
   },
   "pro": {
@@ -1197,5 +1269,20 @@
     "channelTitle": "채널 입력", "channelDesc": "사용자 이름 또는 링크를 입력하세요. YouTube는 @채널이나 Channel ID도 사용할 수 있습니다.",
     "saveTitle": "저장", "saveDesc": "준비되도록 저장합니다. 저장만으로 연결되지는 않습니다.",
     "connectTitle": "모두 연결", "connectDesc": "채팅에서 이 버튼은 저장된 채널이 라이브일 때 연결합니다."
+  },
+  "titlebar": {
+    "back": "뒤로",
+    "forward": "앞으로",
+    "news": "새 소식",
+    "discord": "TikLiveTTS 디스코드"
+  },
+  "news": {
+    "title": "TikLiveTTS 새 소식",
+    "close": "닫기"
+  },
+  "discordInvite": {
+    "title": "TikLiveTTS 디스코드에 참여하세요",
+    "body": "커뮤니티에 참여하세요. 다른 스트리머와 대화하고, 궁금한 점을 해결하고, 업데이트 소식을 가장 먼저 받고, 앱 개선 아이디어를 공유하세요.",
+    "cta": "디스코드 참여"
   }
 }

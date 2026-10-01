@@ -1,0 +1,155 @@
+/* Ranking de usuarios (Top Likers / Top Donadores). Todo escala con --fs. */
+:root {
+  --ff: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --fs: 16px;
+  --lh: 1.4;
+  --ls: 0px;
+  --oro: #f6b738;
+  --plata: #c5ccd6;
+  --bronce: #cd7f32;
+  --c-user: #ffffff;
+  --c-valor: #ffffff;
+  --c-rango: #d9d9d9;
+  --c-placa: #212121;
+}
+body {
+  background: transparent;
+  width: 340px;
+  padding: 1.4em 8px 8px;
+  font-family: var(--ff);
+  font-size: var(--fs);
+  line-height: var(--lh);
+  letter-spacing: var(--ls);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+#leaderboard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+}
+#leaderboard.rtl { direction: rtl; }
+
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  padding: 0.35em 0.6em;
+  border-radius: 1em;
+  color: #fff;
+}
+.con-placa .row {
+  background: color-mix(in srgb, var(--c-placa) calc(var(--bg-alpha) * 100%), transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+/* El destello de "cambio de valor" va en un overlay para no pisar la placa. */
+.row::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--accent);
+  opacity: 0;
+  pointer-events: none;
+}
+.row-pulso::after { animation: destello 0.7s ease-out; }
+@keyframes destello {
+  from { opacity: 0.28; }
+  to { opacity: 0; }
+}
+
+.rank {
+  flex-shrink: 0;
+  width: 1.9em;
+  text-align: center;
+  font-weight: 700;
+  color: var(--c-rango);
+  font-variant-numeric: tabular-nums;
+}
+.medalla {
+  display: grid;
+  place-items: center;
+  width: 1.7em;
+  height: 1.7em;
+  margin: 0 auto;
+  border-radius: 50%;
+  color: #2a1c00;
+  font-size: 0.9em;
+  background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.55), transparent 55%), var(--color-medalla);
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+.medalla-1 { --color-medalla: var(--oro); }
+.medalla-2 { --color-medalla: var(--plata); }
+.medalla-3 { --color-medalla: var(--bronce); }
+
+.avatar {
+  position: relative;
+  flex-shrink: 0;
+  width: 2.8em;
+  height: 2.8em;
+}
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #2a2a2a;
+  box-shadow: 0 0 0 0.13em var(--anillo, rgba(255, 255, 255, 0.18));
+}
+.row-1 .avatar-img { --anillo: var(--oro); }
+.row-2 .avatar-img { --anillo: var(--plata); }
+.row-3 .avatar-img { --anillo: var(--bronce); }
+.corona {
+  position: absolute;
+  top: -0.95em;
+  left: 50%;
+  width: 1.5em;
+  transform: translateX(-50%) rotate(-8deg);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
+  animation: flota 2.4s ease-in-out infinite;
+}
+@keyframes flota {
+  0%, 100% { transform: translateX(-50%) translateY(0) rotate(-8deg); }
+  50% { transform: translateX(-50%) translateY(-0.12em) rotate(-8deg); }
+}
+
+.identidad {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+.username {
+  color: var(--c-user);
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+.valor {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  font-size: 0.9em;
+  color: var(--c-valor);
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+.simbolo {
+  flex-shrink: 0;
+  width: 1em;
+  height: 1em;
+}
+.empty-msg {
+  text-align: center;
+  font-size: 0.8em;
+  color: #fff;
+  padding: 1em 0 0.5em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+@media (prefers-reduced-motion: reduce) {
+  .corona, .row-pulso::after { animation: none; }
+}

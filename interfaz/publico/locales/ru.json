@@ -117,6 +117,8 @@
     "openAdvanced": "Открыть расширенную панель (фильтры, ограничения, логи) →",
     "pauseTTS": "⏸ Пауза TTS",
     "resumeTTS": "▶ Возобновить TTS",
+    "reset": "Сбросить",
+    "resetConfirm": "Уверены?",
     "copy": "Копировать",
     "open": "Открыть",
     "remove": "Удалить",
@@ -229,6 +231,10 @@
     "followers": {
       "title": "Счётчик подписчиков",
       "subtitle": "Новые подписчики трансляции в реальном времени"
+    },
+    "topDonors": {
+      "title": "Топ донатеров",
+      "subtitle": "Рейтинг пользователей, отправивших больше всего подарков за стрим"
     },
     "topLikers": {
       "title": "Топ лайкеров",
@@ -498,8 +504,71 @@
     "invalidValue": "Недопустимое значение в {field}",
     "configRejected": "Конфигурация отклонена"
   },
+  "overlayCfg": {
+    "personalizar": "Настроить",
+    "grupo": {
+      "tipografia": "Шрифт",
+      "usuario": "Имя пользователя",
+      "ranking": "Рейтинг",
+      "comportamiento": "Поведение",
+      "viewer": "Зрители",
+      "moderador": "Модераторы",
+      "suscriptor": "Подписчики / Суперфаны"
+    },
+    "campo": {
+      "maxFilas": "Макс. строк",
+      "colorAcento": "Акцентный цвет",
+      "opacidadPlaca": "Прозрачность подложки",
+      "opacidadFondo": "Прозрачность фона",
+      "mensajesVisibles": "Видимые сообщения",
+      "mostrarNombres": "Показывать имена",
+      "plataformasVisibles": "Видимые платформы",
+      "fuente": "Шрифт",
+      "tamano": "Размер текста",
+      "interlineado": "Межстрочный интервал",
+      "espaciadoLetras": "Межбуквенный интервал",
+      "colorUsuario": "Цвет имени",
+      "efectoUsuario": "Эффект имени",
+      "olaUsuario": "Волновая анимация имени",
+      "colorValor": "Цвет значения",
+      "colorRango": "Цвет места",
+      "placa": "Фон у каждой строки",
+      "colorPlaca": "Цвет фона строки",
+      "mostrarRango": "Показывать место",
+      "mostrarValor": "Показывать значение",
+      "mostrarSimbolo": "Показывать символ",
+      "mostrarAvatares": "Показывать аватары",
+      "mostrarCorona": "Корона для №1",
+      "mostrarMedallas": "Медали на пьедестале",
+      "derechaAIzquierda": "Выравнивание справа налево",
+      "ocultarTras": "Скрывать сообщения через (с, 0 = никогда)",
+      "animacionEntrada": "Анимация появления",
+      "unaLinea": "Одна строка (мини-чат)",
+      "ajustarAncho": "Ширина по сообщению",
+      "colorAleatorio": "Случайные цвета имён",
+      "rolMostrar": "Показывать чат",
+      "rolColorUsuario": "Цвет имени",
+      "rolEfecto": "Эффект имени",
+      "rolOla": "Волновая анимация имени",
+      "rolResplandor": "Свечение имени",
+      "rolColorComentario": "Цвет комментария",
+      "rolColorFondo": "Цвет фона"
+    },
+    "opcion": {
+      "sistema": "Системный",
+      "ninguno": "Нет",
+      "sombra": "Тень",
+      "contorno": "Контур",
+      "neon": "Неон",
+      "slide-up": "Снизу вверх",
+      "slide-left": "Слева направо",
+      "fade": "Плавное появление",
+      "ninguna": "Без анимации"
+    }
+  },
   "overlayStr": {
     "newFollowers": "Новые подписчики",
+    "waitingDonors": "Ожидание подарков...",
     "waitingLikes": "Ожидание лайков...",
     "giftReceived": "Получен подарок",
     "newFollower": "Новый подписчик",
@@ -517,8 +586,7 @@
     "sharedList": "Поделились",
     "noShared": "Пока нет репостов",
     "anonymous": "Аноним",
-    "giftFrom": "от @{user}",
-    "topLikers": "Топ лайкеров"
+    "giftFrom": "от @{user}"
   },
   "donations": {
     "title": "Поддержи мой контент",
@@ -622,6 +690,9 @@
     "testAlertSent": "Тестовое оповещение отправлено: {name}",
     "testError": "Ошибка отправки теста",
     "testSocialSent": "Тест {type} отправлен: {user}",
+    "testDonorsSent": "Тестовые донатеры отправлены ({count} польз.)",
+    "testChatSent": "Тестовые сообщения отправлены в чат",
+    "overlayReset": "Оверлей сброшен к заводским настройкам",
     "testLikesSent": "Тестовые лайки отправлены ({count} пользователей)",
     "emergencyActive": "Экстренный режим: только подарки и подписки",
     "ttsNetError": "TTS не ответил корректно; проверьте подключение к интернету",
@@ -1172,6 +1243,7 @@
     "upgradePlan": "Улучшить тариф",
     "advanced": "Расширенные настройки",
     "donate": "Поддержать",
+    "discord": "Войти в Discord",
     "myAccount": "Мой аккаунт"
   },
   "pro": {
@@ -1197,5 +1269,20 @@
     "channelTitle": "Введите канал", "channelDesc": "Введите имя пользователя или ссылку. Для YouTube также подходят @канал или Channel ID.",
     "saveTitle": "Сохранить", "saveDesc": "Сохраните, чтобы подготовить его. Сохранение не запускает подключение.",
     "connectTitle": "Подключить все", "connectDesc": "В чате эта кнопка подключает сохраненные каналы, когда они в эфире."
+  },
+  "titlebar": {
+    "back": "Назад",
+    "forward": "Вперёд",
+    "news": "Что нового",
+    "discord": "Discord TikLiveTTS"
+  },
+  "news": {
+    "title": "Что нового в TikLiveTTS",
+    "close": "Закрыть"
+  },
+  "discordInvite": {
+    "title": "Присоединяйтесь к Discord TikLiveTTS",
+    "body": "Присоединяйтесь к сообществу: общайтесь с другими стримерами, получайте ответы на вопросы, узнавайте об обновлениях первыми и делитесь идеями по улучшению приложения.",
+    "cta": "Войти в Discord"
   }
 }

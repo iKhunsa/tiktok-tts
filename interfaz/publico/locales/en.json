@@ -119,6 +119,8 @@
     "openAdvanced": "Open advanced panel (filters, rate limit, logs) →",
     "pauseTTS": "⏸ Pause TTS",
     "resumeTTS": "▶ Resume TTS",
+    "reset": "Reset",
+    "resetConfirm": "Sure?",
     "copy": "Copy",
     "open": "Open",
     "remove": "Remove",
@@ -231,6 +233,10 @@
     "followers": {
       "title": "Follower Counter",
       "subtitle": "New stream followers in real time"
+    },
+    "topDonors": {
+      "title": "Top Donors",
+      "subtitle": "Ranking of users who sent the most gifts in the stream"
     },
     "topLikers": {
       "title": "Top Likers",
@@ -500,8 +506,71 @@
     "invalidValue": "Invalid value in {field}",
     "configRejected": "Config rejected"
   },
+  "overlayCfg": {
+    "personalizar": "Customize",
+    "grupo": {
+      "tipografia": "Typography",
+      "usuario": "Username",
+      "ranking": "Ranking",
+      "comportamiento": "Behavior",
+      "viewer": "Viewers",
+      "moderador": "Moderators",
+      "suscriptor": "Subscribers / Super fans"
+    },
+    "campo": {
+      "maxFilas": "Max rows",
+      "colorAcento": "Accent color",
+      "opacidadPlaca": "Plate opacity",
+      "opacidadFondo": "Background opacity",
+      "mensajesVisibles": "Visible messages",
+      "mostrarNombres": "Show usernames",
+      "plataformasVisibles": "Visible platforms",
+      "fuente": "Font",
+      "tamano": "Font size",
+      "interlineado": "Line spacing",
+      "espaciadoLetras": "Letter spacing",
+      "colorUsuario": "Username color",
+      "efectoUsuario": "Username text effect",
+      "olaUsuario": "Username wave animation",
+      "colorValor": "Value color",
+      "colorRango": "Rank color",
+      "placa": "Background on each row",
+      "colorPlaca": "Row background color",
+      "mostrarRango": "Show rank",
+      "mostrarValor": "Show value",
+      "mostrarSimbolo": "Show symbol",
+      "mostrarAvatares": "Show profile pictures",
+      "mostrarCorona": "Crown on #1",
+      "mostrarMedallas": "Podium medals",
+      "derechaAIzquierda": "Right to left alignment",
+      "ocultarTras": "Hide entries after (s, 0 = never)",
+      "animacionEntrada": "Entrance animation",
+      "unaLinea": "Single line (mini chat)",
+      "ajustarAncho": "Fit width to message",
+      "colorAleatorio": "Random username colors",
+      "rolMostrar": "Show chats",
+      "rolColorUsuario": "Username color",
+      "rolEfecto": "Username text effect",
+      "rolOla": "Username wave animation",
+      "rolResplandor": "Username glow effect",
+      "rolColorComentario": "Comment color",
+      "rolColorFondo": "Background color"
+    },
+    "opcion": {
+      "sistema": "System",
+      "ninguno": "None",
+      "sombra": "Shadow",
+      "contorno": "Outline",
+      "neon": "Neon",
+      "slide-up": "Slide up",
+      "slide-left": "Slide from left",
+      "fade": "Fade in",
+      "ninguna": "No animation"
+    }
+  },
   "overlayStr": {
     "newFollowers": "New followers",
+    "waitingDonors": "Waiting for gifts...",
     "waitingLikes": "Waiting for likes...",
     "giftReceived": "Gift received",
     "newFollower": "New follower",
@@ -519,8 +588,7 @@
     "sharedList": "Shared",
     "noShared": "No shares yet",
     "anonymous": "Anonymous",
-    "giftFrom": "from @{user}",
-    "topLikers": "Top Likers"
+    "giftFrom": "from @{user}"
   },
   "donations": {
     "title": "Support my content",
@@ -624,6 +692,9 @@
     "testAlertSent": "Test alert sent: {name}",
     "testError": "Error sending test",
     "testSocialSent": "Test {type} sent: {user}",
+    "testDonorsSent": "Test donors sent ({count} users)",
+    "testChatSent": "Test messages sent to the chat",
+    "overlayReset": "Overlay reset to factory defaults",
     "testLikesSent": "Test likes sent ({count} users)",
     "emergencyActive": "Emergency mode active: gifts and follows only",
     "ttsNetError": "TTS did not respond correctly; check your internet connection",
@@ -1174,6 +1245,7 @@
     "upgradePlan": "Upgrade plan",
     "advanced": "Advanced",
     "donate": "Donate",
+    "discord": "Join Discord",
     "myAccount": "My account"
   },
   "pro": {
@@ -1199,5 +1271,20 @@
     "channelTitle": "Enter the channel", "channelDesc": "Enter its username or link. For YouTube, you can also use @channel or Channel ID.",
     "saveTitle": "Save", "saveDesc": "Save it so it is ready. Saving does not start a connection.",
     "connectTitle": "Connect all", "connectDesc": "From Chat, this button connects saved channels when they are live."
+  },
+  "titlebar": {
+    "back": "Back",
+    "forward": "Forward",
+    "news": "What's new",
+    "discord": "TikLiveTTS Discord"
+  },
+  "news": {
+    "title": "What's new in TikLiveTTS",
+    "close": "Close"
+  },
+  "discordInvite": {
+    "title": "Join the TikLiveTTS Discord",
+    "body": "Join the community: chat with other streamers, get your questions answered, hear about updates first and share your ideas to improve the app.",
+    "cta": "Join Discord"
   }
 }

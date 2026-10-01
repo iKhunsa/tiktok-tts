@@ -117,6 +117,8 @@
     "openAdvanced": "打开高级面板（过滤器、频率限制、日志）→",
     "pauseTTS": "⏸ 暂停 TTS",
     "resumeTTS": "▶ 恢复 TTS",
+    "reset": "重置",
+    "resetConfirm": "确定？",
     "copy": "复制",
     "open": "打开",
     "remove": "移除",
@@ -229,6 +231,10 @@
     "followers": {
       "title": "粉丝计数器",
       "subtitle": "实时新粉丝"
+    },
+    "topDonors": {
+      "title": "打赏排行榜",
+      "subtitle": "直播中送出礼物最多的用户排名"
     },
     "topLikers": {
       "title": "点赞排行榜",
@@ -498,8 +504,71 @@
     "invalidValue": "{field} 中的值无效",
     "configRejected": "配置被拒绝"
   },
+  "overlayCfg": {
+    "personalizar": "自定义",
+    "grupo": {
+      "tipografia": "字体",
+      "usuario": "用户名",
+      "ranking": "排行榜",
+      "comportamiento": "行为",
+      "viewer": "观众",
+      "moderador": "管理员",
+      "suscriptor": "订阅者 / 超级粉丝"
+    },
+    "campo": {
+      "maxFilas": "最大行数",
+      "colorAcento": "强调色",
+      "opacidadPlaca": "底板不透明度",
+      "opacidadFondo": "背景不透明度",
+      "mensajesVisibles": "可见消息数",
+      "mostrarNombres": "显示用户名",
+      "plataformasVisibles": "可见平台",
+      "fuente": "字体",
+      "tamano": "字号",
+      "interlineado": "行距",
+      "espaciadoLetras": "字间距",
+      "colorUsuario": "用户名颜色",
+      "efectoUsuario": "用户名效果",
+      "olaUsuario": "用户名波浪动画",
+      "colorValor": "数值颜色",
+      "colorRango": "排名颜色",
+      "placa": "每行显示底板",
+      "colorPlaca": "行底板颜色",
+      "mostrarRango": "显示排名",
+      "mostrarValor": "显示数值",
+      "mostrarSimbolo": "显示符号",
+      "mostrarAvatares": "显示头像",
+      "mostrarCorona": "第一名皇冠",
+      "mostrarMedallas": "领奖台奖牌",
+      "derechaAIzquierda": "从右到左对齐",
+      "ocultarTras": "多少秒后隐藏消息（0 = 不隐藏）",
+      "animacionEntrada": "入场动画",
+      "unaLinea": "单行（迷你聊天）",
+      "ajustarAncho": "宽度适应消息",
+      "colorAleatorio": "随机用户名颜色",
+      "rolMostrar": "显示聊天",
+      "rolColorUsuario": "用户名颜色",
+      "rolEfecto": "用户名效果",
+      "rolOla": "用户名波浪动画",
+      "rolResplandor": "用户名发光效果",
+      "rolColorComentario": "评论颜色",
+      "rolColorFondo": "背景颜色"
+    },
+    "opcion": {
+      "sistema": "系统",
+      "ninguno": "无",
+      "sombra": "阴影",
+      "contorno": "描边",
+      "neon": "霓虹",
+      "slide-up": "从下方滑入",
+      "slide-left": "从左侧滑入",
+      "fade": "淡入",
+      "ninguna": "无动画"
+    }
+  },
   "overlayStr": {
     "newFollowers": "新粉丝",
+    "waitingDonors": "等待礼物...",
     "waitingLikes": "等待点赞...",
     "giftReceived": "收到礼物",
     "newFollower": "新粉丝",
@@ -517,8 +586,7 @@
     "sharedList": "分享",
     "noShared": "暂无分享",
     "anonymous": "匿名",
-    "giftFrom": "来自 @{user}",
-    "topLikers": "点赞排行榜"
+    "giftFrom": "来自 @{user}"
   },
   "donations": {
     "title": "支持我的内容",
@@ -622,6 +690,9 @@
     "testAlertSent": "测试提醒已发送: {name}",
     "testError": "发送测试时出错",
     "testSocialSent": "测试 {type} 已发送: {user}",
+    "testDonorsSent": "已发送测试打赏（{count} 位用户）",
+    "testChatSent": "已向聊天发送测试消息",
+    "overlayReset": "已将浮层恢复为出厂设置",
     "testLikesSent": "测试点赞已发送 ({count} 用户)",
     "emergencyActive": "紧急模式已激活: 仅礼物和关注",
     "ttsNetError": "TTS未正确响应; 请检查网络连接",
@@ -1172,6 +1243,7 @@
     "upgradePlan": "升级套餐",
     "advanced": "高级",
     "donate": "捐赠",
+    "discord": "加入 Discord",
     "myAccount": "我的账户"
   },
   "pro": {
@@ -1197,5 +1269,20 @@
     "channelTitle": "输入频道", "channelDesc": "输入用户名或链接。YouTube 也可使用 @频道或 Channel ID。",
     "saveTitle": "保存", "saveDesc": "保存后即可使用。保存不会开始连接。",
     "connectTitle": "全部连接", "connectDesc": "在聊天页，此按钮会在已保存频道直播时连接它们。"
+  },
+  "titlebar": {
+    "back": "后退",
+    "forward": "前进",
+    "news": "最新动态",
+    "discord": "TikLiveTTS Discord"
+  },
+  "news": {
+    "title": "TikLiveTTS 最新动态",
+    "close": "关闭"
+  },
+  "discordInvite": {
+    "title": "加入 TikLiveTTS 的 Discord",
+    "body": "加入社区:与其他主播交流、解答疑问、第一时间了解更新,并分享你对改进应用的想法。",
+    "cta": "加入 Discord"
   }
 }

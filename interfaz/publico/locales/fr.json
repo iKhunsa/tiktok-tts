@@ -117,6 +117,8 @@
     "openAdvanced": "Ouvrir panneau avancé (filtres, rate limit, logs) →",
     "pauseTTS": "⏸ Pause TTS",
     "resumeTTS": "▶ Reprendre TTS",
+    "reset": "Réinitialiser",
+    "resetConfirm": "Sûr ?",
     "copy": "Copier",
     "open": "Ouvrir",
     "remove": "Supprimer",
@@ -229,6 +231,10 @@
     "followers": {
       "title": "Compteur d'Abonnés",
       "subtitle": "Nouveaux abonnés du stream en temps réel"
+    },
+    "topDonors": {
+      "title": "Top Donateurs",
+      "subtitle": "Classement des utilisateurs ayant envoyé le plus de cadeaux pendant le stream"
     },
     "topLikers": {
       "title": "Top Likers",
@@ -498,8 +504,71 @@
     "invalidValue": "Valeur invalide dans {field}",
     "configRejected": "Config rejetée"
   },
+  "overlayCfg": {
+    "personalizar": "Personnaliser",
+    "grupo": {
+      "tipografia": "Typographie",
+      "usuario": "Nom d'utilisateur",
+      "ranking": "Classement",
+      "comportamiento": "Comportement",
+      "viewer": "Spectateurs",
+      "moderador": "Modérateurs",
+      "suscriptor": "Abonnés / Super fans"
+    },
+    "campo": {
+      "maxFilas": "Lignes max",
+      "colorAcento": "Couleur d'accent",
+      "opacidadPlaca": "Opacité du fond de ligne",
+      "opacidadFondo": "Opacité du fond",
+      "mensajesVisibles": "Messages visibles",
+      "mostrarNombres": "Afficher les pseudos",
+      "plataformasVisibles": "Plateformes visibles",
+      "fuente": "Police",
+      "tamano": "Taille du texte",
+      "interlineado": "Interligne",
+      "espaciadoLetras": "Espacement des lettres",
+      "colorUsuario": "Couleur du pseudo",
+      "efectoUsuario": "Effet du pseudo",
+      "olaUsuario": "Animation en vague du pseudo",
+      "colorValor": "Couleur de la valeur",
+      "colorRango": "Couleur du rang",
+      "placa": "Fond sur chaque ligne",
+      "colorPlaca": "Couleur du fond de ligne",
+      "mostrarRango": "Afficher le rang",
+      "mostrarValor": "Afficher la valeur",
+      "mostrarSimbolo": "Afficher le symbole",
+      "mostrarAvatares": "Afficher les photos de profil",
+      "mostrarCorona": "Couronne sur le n°1",
+      "mostrarMedallas": "Médailles du podium",
+      "derechaAIzquierda": "Alignement de droite à gauche",
+      "ocultarTras": "Masquer les messages après (s, 0 = jamais)",
+      "animacionEntrada": "Animation d'entrée",
+      "unaLinea": "Une seule ligne (mini chat)",
+      "ajustarAncho": "Ajuster la largeur au message",
+      "colorAleatorio": "Couleurs de pseudo aléatoires",
+      "rolMostrar": "Afficher les messages",
+      "rolColorUsuario": "Couleur du pseudo",
+      "rolEfecto": "Effet du pseudo",
+      "rolOla": "Animation en vague du pseudo",
+      "rolResplandor": "Effet de halo du pseudo",
+      "rolColorComentario": "Couleur du commentaire",
+      "rolColorFondo": "Couleur d'arrière-plan"
+    },
+    "opcion": {
+      "sistema": "Système",
+      "ninguno": "Aucun",
+      "sombra": "Ombre",
+      "contorno": "Contour",
+      "neon": "Néon",
+      "slide-up": "Glisser depuis le bas",
+      "slide-left": "Glisser depuis la gauche",
+      "fade": "Fondu",
+      "ninguna": "Aucune animation"
+    }
+  },
   "overlayStr": {
     "newFollowers": "Nouveaux abonnés",
+    "waitingDonors": "En attente de cadeaux...",
     "waitingLikes": "En attente de likes...",
     "giftReceived": "Cadeau reçu",
     "newFollower": "Nouvel abonné",
@@ -517,8 +586,7 @@
     "sharedList": "Partagés",
     "noShared": "Pas encore de partages",
     "anonymous": "Anonyme",
-    "giftFrom": "de @{user}",
-    "topLikers": "Top Likers"
+    "giftFrom": "de @{user}"
   },
   "donations": {
     "title": "Soutenez mon contenu",
@@ -622,6 +690,9 @@
     "testAlertSent": "Alerte test envoyée: {name}",
     "testError": "Erreur lors de l'envoi du test",
     "testSocialSent": "Test {type} envoyé: {user}",
+    "testDonorsSent": "Test donateurs envoyé ({count} utilisateurs)",
+    "testChatSent": "Messages de test envoyés au chat",
+    "overlayReset": "Overlay réinitialisé aux valeurs d'usine",
     "testLikesSent": "Test likes envoyés ({count} utilisateurs)",
     "emergencyActive": "Mode urgence actif: cadeaux et abonnements seulement",
     "ttsNetError": "TTS n'a pas répondu correctement; vérifiez votre connexion internet",
@@ -1172,6 +1243,7 @@
     "upgradePlan": "Changer d'offre",
     "advanced": "Avancé",
     "donate": "Faire un don",
+    "discord": "Rejoindre Discord",
     "myAccount": "Mon compte"
   },
   "pro": {
@@ -1197,5 +1269,20 @@
     "channelTitle": "Saisissez la chaîne", "channelDesc": "Saisissez le nom d'utilisateur ou le lien. Pour YouTube, utilisez aussi @chaîne ou Channel ID.",
     "saveTitle": "Enregistrer", "saveDesc": "Enregistrez-la pour la préparer. Cela ne lance pas de connexion.",
     "connectTitle": "Tout connecter", "connectDesc": "Depuis le Chat, ce bouton connecte les chaînes enregistrées lorsqu'elles sont en direct."
+  },
+  "titlebar": {
+    "back": "Retour",
+    "forward": "Avancer",
+    "news": "Nouveautés",
+    "discord": "Discord TikLiveTTS"
+  },
+  "news": {
+    "title": "Nouveautés de TikLiveTTS",
+    "close": "Fermer"
+  },
+  "discordInvite": {
+    "title": "Rejoins le Discord de TikLiveTTS",
+    "body": "Rejoins la communauté : discute avec d'autres streamers, trouve des réponses, découvre les nouveautés en premier et partage tes idées pour améliorer l'app.",
+    "cta": "Rejoindre le Discord"
   }
 }

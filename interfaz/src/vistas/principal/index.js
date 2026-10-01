@@ -27,16 +27,18 @@ import {
 import { t, tErr } from '../../nucleo/i18n/i18n.js';
 import { iniciarI18nApp, pickLanguage, setLanguage } from './i18n-app.js';
 import { switchView } from './vistas-router.js';
+import { iniciarBarraTitulo } from './barra-titulo/index.js';
 import { abrirCuentaDesdeSidebar, cargarSesion, almacenSesion, appBloqueada } from '../../nucleo/estado/sesion.js';
 import { aplicarBloqueoVista } from '../../nucleo/estado/vista-bloqueada.js';
 import { iniciarCuenta } from './cuenta/index.js';
 import { iniciarRotacionAnuncioLateral } from './anuncio-lateral.js';
 import { copyToClipboard } from './utils-app.js';
 import {
-  buildOverlayUrl, updateOverlayUrl, onCfgChange, onChatPlatformChange, copyCfgUrl,
+  buildOverlayUrl, updateOverlayUrl, onCfgChange, copyCfgUrl,
   updateFollowerDisplay, testGiftAlert, testSocialAlert,
-  testTopLikers,
+  testTopLikers, testTopDonors, testChatOverlay, restablecerOverlay,
 } from './configurador-overlays.js';
+import { iniciarCamposOverlay } from './campos-overlay/index.js';
 import {
   toggleChatToggles, toggleOption, setSoloChatMode,
   iniciarObservadorTogglesChat,
@@ -53,7 +55,7 @@ import {
 } from './voces.js';
 import { escapeHtml, initChatScrollFollow, initSpeakingGoto, clearChatAndQueue } from './chat-ui.js';
 import {
-  openDonationsModal, closeDonationsModal,
+  openDonationsModal, closeDonationsModal, openDiscordModal, closeDiscordModal,
   openBugReportModal, closeBugReportModal, submitBugReport, openDictLangModal,
   closeDictLangModal, closeDonationNotice, openDonationsFromNotice, closeBugReportNotice,
   openBugReportFromNotice, closeOnboardingWelcome, closeOnboardingComplete, startOnboardingTour,
@@ -105,8 +107,8 @@ Object.assign(window, {
   // utils
   copyToClipboard,
   // configurador de overlays
-  onCfgChange, onChatPlatformChange, copyCfgUrl, testGiftAlert, testSocialAlert,
-  testTopLikers,
+  onCfgChange, copyCfgUrl, testGiftAlert, testSocialAlert,
+  testTopLikers, testTopDonors, testChatOverlay, restablecerOverlay,
   // toggles de chat
   toggleChatToggles, toggleOption, setSoloChatMode,
   // atajos de teclado
@@ -120,7 +122,7 @@ Object.assign(window, {
   clearChatAndQueue, skipCurrentTTS, togglePauseTts, toggleGlobalTTS,
   enableEmergencyTTSMode, updateRate, updateVol,
   // modales y avisos
-  openDonationsModal, closeDonationsModal,
+  openDonationsModal, closeDonationsModal, openDiscordModal, closeDiscordModal,
   openBugReportModal, closeBugReportModal, submitBugReport, openDictLangModal,
   openIdeaModal, closeIdeaModal, submitIdea,
   closeDictLangModal, closeDonationNotice, openDonationsFromNotice, closeBugReportNotice,
@@ -204,6 +206,7 @@ function iniciarArranque() {
   iniciarAtajosTeclado();
   iniciarCierreDropdownVoces();
   iniciarPintadoDeRangos();
+  iniciarCamposOverlay();
   iniciarHoverConnectAllChat();
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -244,6 +247,7 @@ function iniciarArranque() {
     .then((d) => { if (d.baseFollowerCount) updateFollowerDisplay(d.baseFollowerCount); })
     .catch(() => {});
 
+  iniciarBarraTitulo();
   iniciarEventosElectron();
   musicInit();
   iniciarPortalView();

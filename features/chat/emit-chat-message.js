@@ -5,6 +5,7 @@ const { getConfigSnapshot } = require('../../core/config-snapshot');
 const { resolveDisplayName } = require('./resolve-display-name');
 const { cleanName } = require('./clean-name');
 const { isAdminIdentity } = require('./is-admin-identity');
+const { extractAuthorMeta } = require('./author-meta/extract-author-meta');
 const moderacionPolicy = require('../../core/contracts/moderacion-policy');
 const { ADMIN_ANNOUNCE_TEXT, pickAnnounceText } = require('../../core/announce-texts');
 
@@ -25,7 +26,7 @@ function emitChatMessage({ bus, logger }) {
       return reportBlocked({ bus, logger, platform, verdict });
     }
 
-    const payload = buildPayload({ bus, channel, platform, verdict });
+    const payload = buildPayload({ bus, channel, platform, verdict, raw });
     broadcastMessage(bus, payload);
     announceAdminOnce({ bus, isAdmin: payload.isAdmin });
   };
@@ -81,10 +82,11 @@ function adaptationFailed({ logger, platform, error }) {
   return { action: 'drop', reasons: ['message-adaptation-failed'], message: null };
 }
 
-function buildPayload({ bus, channel, platform, verdict }) {
+function buildPayload({ bus, channel, platform, verdict, raw }) {
   const { message } = verdict;
   const user = displayName(platform, message.author);
   const isAdmin = isAdminIdentity(bus, platform, message.author.handle);
+  const { avatar, isModerator, isSubscriber } = extractAuthorMeta(platform, raw);
 
   return {
     type: 'chat',
@@ -96,6 +98,9 @@ function buildPayload({ bus, channel, platform, verdict }) {
     ttsComment: message.text.speech,
     emotes: Object.keys(message.emotes).length ? message.emotes : undefined,
     ytMsgId: platform === 'youtube' ? message.messageId : undefined,
+    avatar,
+    isModerator,
+    isSubscriber,
     isFollower: isAdmin || Boolean(verdict.isFollower),
     muted: verdict.action === 'mute',
     ttsBlocked: verdict.action === 'mute',
