@@ -1,10 +1,10 @@
 'use strict';
 
-const { MAX_RECONNECT_ATTEMPTS } = require('../state/channel-maps');
 const { parseYoutubeTarget } = require('./parse-target');
 const { stopYoutubeChat } = require('./stop-chat');
 const { WATCHDOG_TIMEOUT_MS, clearWatchdogTimer, armWatchdog, nextConfirmBackoffMs } = require('./chat-watchdog');
 const { assertNoConexionEnCurso } = require('../connecting-lock');
+const { reconnectDelayMs } = require('../reconnect-delay');
 
 // `fetchLivePage` es la MISMA llamada que `LiveChat#start()` hace por dentro
 // para obtener apiKey/clientVersion/continuation (ver node_modules/youtube-chat
@@ -33,8 +33,8 @@ function clearReconnectTimer(map, channel) {
 
 function scheduleReconnect(deps, target, attempt, reason) {
   const { state, bus, logger } = deps;
-  if (attempt >= MAX_RECONNECT_ATTEMPTS) return;
-  const delay = Math.min(1000 * Math.pow(2, attempt), 30000);
+  if (!state.youtubeReconnectDesired.has(target.key)) return;
+  const delay = reconnectDelayMs(attempt);
   logger.log(
     'warn', 'canales', 'canales/youtube/connect-youtube.js#connectYoutube', 'canales.youtube.reconectando',
     `Reconectando YouTube ${target.key}, intento ${attempt + 1} (motivo: ${reason})`,
@@ -48,12 +48,11 @@ function scheduleReconnect(deps, target, attempt, reason) {
         'error', 'canales', 'canales/youtube/connect-youtube.js#connectYoutube', 'canales.youtube.reconexion_fallida',
         `Fallo reconexion de YouTube ${target.key}: ${e.message}`, { channel: target.key, error: e.message, stack: e.stack }
       );
+      scheduleReconnect(deps, target, attempt + 1, reason);
     });
   }, delay);
   state.youtubeReconnectTimers.set(target.key, timer);
 }
-
-const SEEN_IDS_CAP = 500;
 
 function forceReconnect(deps, target, liveChat, attempt, reason) {
   const { state, bus } = deps;
@@ -64,7 +63,7 @@ function forceReconnect(deps, target, liveChat, attempt, reason) {
     bus.emit('canal:estado', { platform: 'youtube', channel: target.key, state: 'desconectado' });
     state.youtubeChannels.delete(target.key);
   }
-  if (wasActive) scheduleReconnect(deps, target, attempt, reason);
+  if (wasActive) scheduleReconnect(deps, target, 0, reason);
 }
 
 async function connectYoutube(deps, channelOrId, attempt = 0) {
@@ -94,8 +93,6 @@ async function connectYoutubeLocked(deps, target, attempt) {
   }
 
   const liveChat = new LiveChat(target.opts);
-  if (!state.youtubeSeenIds.has(target.key)) state.youtubeSeenIds.set(target.key, new Set());
-
   // Watchdog: YouTube puede seguir devolviendo 200 OK con actions:[] para
   // clientes anonimos cuando el token de continuacion caduca — 'chat' deja de
   // disparar para siempre y la libreria nunca emite 'error'. Pero un LIVE sano
@@ -152,13 +149,6 @@ async function connectYoutubeLocked(deps, target, attempt) {
     // huecos mas largos que los 10min del gate central (ver comentario en
     // channel-maps.js#youtubeSeenIds). Doble capa a proposito: esto atrapa
     // huecos largos, el gate central atrapa lo que esto no cubra (cap de 500).
-    const msgId = item.id;
-    if (msgId) {
-      const seen = state.youtubeSeenIds.get(target.key);
-      if (seen.has(msgId)) return;
-      seen.add(msgId);
-      if (seen.size > SEEN_IDS_CAP) seen.delete(seen.values().next().value);
-    }
     bus.emit('canal:mensaje-crudo', { platform: 'youtube', channel: target.key, raw: item });
   });
 
@@ -179,7 +169,12 @@ async function connectYoutubeLocked(deps, target, attempt) {
 
   const ok = await liveChat.start();
   if (!ok) throw new Error('No se pudo iniciar el chat de YouTube (¿el canal está en vivo?)');
+  if (attempt > 0 && !state.youtubeReconnectDesired.has(target.key)) {
+    stopYoutubeChat(liveChat, 'disconnect');
+    return target.key;
+  }
   state.youtubeChannels.set(target.key, liveChat);
+  state.youtubeReconnectDesired.add(target.key);
   lastActivityAt = Date.now();
   scheduleWatchdog(WATCHDOG_TIMEOUT_MS);
 
@@ -192,4 +187,16 @@ async function connectYoutubeLocked(deps, target, attempt) {
   return target.key;
 }
 
-module.exports = { connectYoutube, clearReconnectTimer, clearWatchdogTimer };
+function disconnectYoutube(deps, channelOrId) {
+  const { state } = deps;
+  const target = parseYoutubeTarget(channelOrId);
+  if (!target) return;
+  state.youtubeReconnectDesired.delete(target.key);
+  clearReconnectTimer(state.youtubeReconnectTimers, target.key);
+  clearWatchdogTimer(state.youtubeWatchdogTimers, target.key);
+  const liveChat = state.youtubeChannels.get(target.key);
+  if (liveChat) stopYoutubeChat(liveChat, 'disconnect');
+  state.youtubeChannels.delete(target.key);
+}
+
+module.exports = { connectYoutube, disconnectYoutube, clearReconnectTimer, clearWatchdogTimer };

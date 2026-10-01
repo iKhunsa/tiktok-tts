@@ -1,5 +1,7 @@
 'use strict';
 
+const crypto = require('crypto');
+
 /**
  * Inyecta un mensaje sintetico por el mismo camino (bus.emit('canal:mensaje-crudo'))
  * que el chat real, para probar el flujo completo sin plataformas conectadas.
@@ -13,13 +15,16 @@ function testChat(deps) {
     const comment = String(b.comment || '').trim();
     if (!comment) return res.status(400).json({ error: 'comment requerido' });
 
+    // Id de mensaje unico por envio, en el campo donde cada plataforma lo trae:
+    // sin el, dos simulaciones con el mismo texto y usuario se descartan como reenvio.
+    const messageId = `test-${crypto.randomUUID()}`;
     let raw;
     if (platform === 'tiktok') {
-      raw = { nickname: user, uniqueId: b.userId || null, comment };
+      raw = { nickname: user, uniqueId: b.userId || null, comment, msgId: messageId };
     } else if (platform === 'twitch') {
-      raw = { tags: { 'display-name': user, username: user, 'user-id': b.userId || null }, message: comment };
+      raw = { tags: { id: messageId, 'display-name': user, username: user, 'user-id': b.userId || null }, message: comment };
     } else {
-      raw = { author: { name: user, channelId: b.userId || null }, message: [{ text: comment }], id: `test-${Date.now()}` };
+      raw = { author: { name: user, channelId: b.userId || null }, message: [{ text: comment }], id: messageId };
     }
 
     bus.emit('canal:mensaje-crudo', { platform, channel: 'test', raw });

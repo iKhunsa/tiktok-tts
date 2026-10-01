@@ -1,6 +1,6 @@
 {
   "name": "tiktok-live-tts",
-  "version": "1.11.0",
+  "version": "1.11.0-beta.0",
   "description": "TikLiveTTS Live Chat Text-to-Speech Reader",
   "author": "iKhunsa",
   "main": "main.js",
@@ -120,6 +120,7 @@
     "@aptabase/electron": "^0.3.1",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@sentry/electron": "^7.17.0",
+    "@tiklivetts/chat-guard": "^0.1.0",
     "@tiklivetts/tiktok-live-client": "^0.1.9",
     "electron-updater": "^6.8.9",
     "express": "^4.22.2",

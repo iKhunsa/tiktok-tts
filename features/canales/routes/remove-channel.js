@@ -4,10 +4,9 @@ const { cleanTiktokUsername } = require('../tiktok/clean-username');
 const { cleanupAfterLastTikTokChannel } = require('../tiktok/cleanup-after-last-channel');
 const { teardownConn } = require('../tiktok/connect-tiktok-channel');
 const { cleanTwitchChannel } = require('../twitch/clean-channel');
-const { clearReconnectTimer: clearTwitchReconnectTimer } = require('../twitch/connect-twitch');
+const { disconnectTwitch } = require('../twitch/connect-twitch');
 const { normalizeYoutubeInput } = require('../youtube/parse-target');
-const { clearReconnectTimer: clearYoutubeReconnectTimer, clearWatchdogTimer: clearYoutubeWatchdogTimer } = require('../youtube/connect-youtube');
-const { stopYoutubeChat } = require('../youtube/stop-chat');
+const { disconnectYoutube } = require('../youtube/connect-youtube');
 const { cleanKickSlug } = require('../kick/clean-slug');
 const { disconnectKick } = require('../kick/connect-kick');
 const { broadcastChannels } = require('../broadcast-channels');
@@ -32,18 +31,11 @@ function removeChannel(deps) {
         else bus.emit('canal:estado', { platform: 'tiktok', channel: cleanUsername, state: 'desconectado' });
       } else if (platform === 'twitch') {
         const twitchChannel = cleanTwitchChannel(channel);
-        clearTwitchReconnectTimer(state.twitchReconnectTimers, twitchChannel);
-        clearWatchdog(state, `twitch:${twitchChannel}`);
-        const c = state.twitchChannels.get(twitchChannel);
-        if (c) { c._intentionalDisconnect = true; try { await c.disconnect(); } catch (_) { /* best-effort */ } state.twitchChannels.delete(twitchChannel); }
+        await disconnectTwitch(deps, twitchChannel);
         bus.emit('canal:estado', { platform: 'twitch', channel: twitchChannel, state: 'desconectado' });
       } else if (platform === 'youtube') {
         const ytChannel = normalizeYoutubeInput(channel);
-        clearYoutubeReconnectTimer(state.youtubeReconnectTimers, ytChannel);
-        clearYoutubeWatchdogTimer(state.youtubeWatchdogTimers, ytChannel);
-        const c = state.youtubeChannels.get(ytChannel);
-        if (c) { stopYoutubeChat(c, 'disconnect'); state.youtubeChannels.delete(ytChannel); }
-        state.youtubeSeenIds.delete(ytChannel);
+        disconnectYoutube(deps, ytChannel);
         bus.emit('canal:estado', { platform: 'youtube', channel: ytChannel, state: 'desconectado' });
       } else if (platform === 'kick') {
         const slug = cleanKickSlug(channel);

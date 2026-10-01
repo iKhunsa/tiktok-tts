@@ -12,8 +12,10 @@ function createChannelState() {
     connectingKick: new Set(),
     twitchChannels: new Map(), // channel -> tmi.Client
     twitchReconnectTimers: new Map(),
+    twitchReconnectDesired: new Set(), // canales conectados que deben sobrevivir cortes
     youtubeChannels: new Map(), // channelOrId -> LiveChat
     youtubeReconnectTimers: new Map(),
+    youtubeReconnectDesired: new Set(),
     youtubeWatchdogTimers: new Map(), // channelKey -> Timeout (watchdog de chat 'silencioso')
     // channelKey -> Set<item.id>. Defensa en profundidad ademas del gate central
     // de dedup (features/chat/emit-chat-message.js, ventana 10min): youtube-chat
@@ -24,11 +26,10 @@ function createChannelState() {
     // Sin ventana de tiempo (solo cap de conteo, como kickSeenIds) para no
     // depender de cuanto dure el hueco. Se crea una vez por canal y NO se
     // recrea en reconexiones (mismo patron que kickSeenIds).
-    youtubeSeenIds: new Map(),
     kickChannels: new Map(), // slug -> { ws, chatroomId, intentional, pingTimer, attempt }
-    kickSeenIds: new Map(), // slug -> Set<msgId>
     kickWatchdogTimers: new Map(), // slug -> Timeout (watchdog de chat 'silencioso')
     kickReconnectTimers: new Map(), // slug -> Timeout (backoff de reconexion del WS)
+    kickReconnectDesired: new Set(),
     channelWatchdogTimers: new Map(), // 'tiktok:<user>' / 'twitch:<chan>' -> Timeout (stale-watchdog.js)
     obs: {
       ws: null,

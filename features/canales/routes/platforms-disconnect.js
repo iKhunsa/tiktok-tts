@@ -4,10 +4,9 @@ const { cleanTiktokUsername } = require('../tiktok/clean-username');
 const { cleanupAfterLastTikTokChannel } = require('../tiktok/cleanup-after-last-channel');
 const { teardownConn } = require('../tiktok/connect-tiktok-channel');
 const { cleanTwitchChannel } = require('../twitch/clean-channel');
-const { clearReconnectTimer: clearTwitchReconnectTimer } = require('../twitch/connect-twitch');
+const { disconnectTwitch } = require('../twitch/connect-twitch');
 const { normalizeYoutubeInput } = require('../youtube/parse-target');
-const { clearReconnectTimer: clearYoutubeReconnectTimer, clearWatchdogTimer: clearYoutubeWatchdogTimer } = require('../youtube/connect-youtube');
-const { stopYoutubeChat } = require('../youtube/stop-chat');
+const { disconnectYoutube } = require('../youtube/connect-youtube');
 const { cleanKickSlug } = require('../kick/clean-slug');
 const { disconnectKick } = require('../kick/connect-kick');
 const { broadcastChannels } = require('../broadcast-channels');
@@ -42,31 +41,17 @@ function platformsDisconnect(deps) {
       } else if (platform === 'twitch') {
         if (channel) {
           const twitchChannel = cleanTwitchChannel(channel);
-          clearTwitchReconnectTimer(state.twitchReconnectTimers, twitchChannel);
-          clearWatchdog(state, `twitch:${twitchChannel}`);
-          const c = state.twitchChannels.get(twitchChannel);
-          if (c) { c._intentionalDisconnect = true; try { await c.disconnect(); } catch (_) { /* best-effort */ } state.twitchChannels.delete(twitchChannel); }
+          await disconnectTwitch(deps, twitchChannel);
         } else {
-          for (const ch of state.twitchReconnectTimers.keys()) clearTwitchReconnectTimer(state.twitchReconnectTimers, ch);
-          for (const ch of state.twitchChannels.keys()) clearWatchdog(state, `twitch:${ch}`);
-          for (const c of state.twitchChannels.values()) { c._intentionalDisconnect = true; try { await c.disconnect(); } catch (_) { /* best-effort */ } }
-          state.twitchChannels.clear();
+          for (const ch of Array.from(state.twitchReconnectDesired)) await disconnectTwitch(deps, ch);
         }
         bus.emit('canal:estado', { platform: 'twitch', channel: channel ? cleanTwitchChannel(channel) : null, state: 'desconectado' });
       } else if (platform === 'youtube') {
         if (channel) {
           const ytChannel = normalizeYoutubeInput(channel);
-          clearYoutubeReconnectTimer(state.youtubeReconnectTimers, ytChannel);
-          clearYoutubeWatchdogTimer(state.youtubeWatchdogTimers, ytChannel);
-          const c = state.youtubeChannels.get(ytChannel);
-          if (c) { stopYoutubeChat(c, 'disconnect'); state.youtubeChannels.delete(ytChannel); }
-          state.youtubeSeenIds.delete(ytChannel);
+          disconnectYoutube(deps, ytChannel);
         } else {
-          for (const ch of state.youtubeReconnectTimers.keys()) clearYoutubeReconnectTimer(state.youtubeReconnectTimers, ch);
-          for (const ch of state.youtubeWatchdogTimers.keys()) clearYoutubeWatchdogTimer(state.youtubeWatchdogTimers, ch);
-          for (const c of state.youtubeChannels.values()) stopYoutubeChat(c, 'disconnect');
-          state.youtubeChannels.clear();
-          state.youtubeSeenIds.clear();
+          for (const ch of Array.from(state.youtubeReconnectDesired)) disconnectYoutube(deps, ch);
         }
         bus.emit('canal:estado', { platform: 'youtube', channel: channel ? normalizeYoutubeInput(channel) : null, state: 'desconectado' });
       } else if (platform === 'kick') {
@@ -74,7 +59,7 @@ function platformsDisconnect(deps) {
           const slug = cleanKickSlug(channel);
           disconnectKick(deps, slug);
         } else {
-          for (const slug of Array.from(state.kickChannels.keys())) disconnectKick(deps, slug);
+          for (const slug of Array.from(state.kickReconnectDesired)) disconnectKick(deps, slug);
         }
         bus.emit('canal:estado', { platform: 'kick', channel: channel ? cleanKickSlug(channel) : null, state: 'desconectado' });
       }

@@ -1,6 +1,5 @@
 'use strict';
 
-const { invalidateBlockedMatchers } = require('../filters/blocked-matchers');
 const { saveBlockedWordsToFile } = require('../filters/blocked-words-file');
 
 function blockWord(deps) {
@@ -11,10 +10,10 @@ function blockWord(deps) {
     // "" al Set -> getBlockedMatchers armaba una regex con alternativa vacia que
     // bloqueaba el chat entero en silencio.
     if (!w) return res.status(400).json({ error: 'Palabra requerida', errorKey: 'errors.textRequired' });
-    deps.blockedMatchersState.blockedWords.add(w);
-    invalidateBlockedMatchers(deps.blockedMatchersState);
-    saveBlockedWordsToFile(deps.blockedMatchersState, deps.logger);
-    res.json({ words: [...deps.blockedMatchersState.blockedWords] });
+    deps.blockedWords.add(w);
+    if (deps.configure) deps.configure();
+    saveBlockedWordsToFile(deps.blockedWords, deps.logger);
+    res.json({ words: [...deps.blockedWords] });
   };
 }
 
