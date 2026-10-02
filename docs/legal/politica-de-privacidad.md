@@ -1,6 +1,6 @@
 # Política de Privacidad de TikLiveTTS
 
-**Versión del documento:** 2.0 (borrador para revisión) · **Vigencia desde:** 2 de octubre de 2026
+**Versión del documento:** 2.0 · **Vigencia desde:** 2 de octubre de 2026
 **Responsable del tratamiento:** iKhunsa (Ecuador)
 **Contacto de privacidad y encargado de datos (DPO/encarregado):** iKhunsa — info@tiklivetts.es
 
@@ -35,7 +35,7 @@ Esta política explica qué datos trata TikLiveTTS (la "App"), para qué, con qu
 **Aclaraciones:**
 - La huella de equipo es un dato **seudonimizado**: no contiene tu nombre, pero sigue siendo un dato personal porque identifica de forma estable tu instalación.
 - Tu IP se usa solo para estimar tu **ubicación aproximada** (país y ciudad), no tu ubicación exacta, y no la usamos para identificarte. Esa aproximación nos da una idea general de dónde se usa la App.
-- Los registros de sesión que se adjuntan a errores y reportes **pueden contener nombres de usuario** de las plataformas conectadas. Los recortamos, pero no podemos garantizar que no aparezca alguno. [CONFIRMAR: alcance del filtrado.]
+- Los registros de sesión que se adjuntan a errores y reportes **pueden contener nombres de usuario** de las plataformas conectadas. Los recortamos, pero no podemos garantizar que no aparezca alguno.
 - **No tratamos** el contenido de los mensajes del chat de tus espectadores como parte de la telemetría, ni tus contraseñas de TikTok, Twitch, YouTube o Kick. La sesión de TikTok se guarda localmente.
 - No tomamos **decisiones automatizadas** ni elaboramos perfiles que produzcan efectos jurídicos sobre ti.
 - No tratamos categorías especiales de datos (salud, biometría, origen, etc.).
@@ -55,7 +55,7 @@ No vendemos datos personales ni los usamos para publicidad de terceros. Los comp
 
 ## 4. Transferencias internacionales
 
-Algunos proveedores (Google, Discord, GitHub, Polar, Hostinger) pueden tratar datos fuera de tu país. Soy de Ecuador y nuestros servidores propios se alojan en **Manchester, Reino Unido**. Cuando tus datos salen del Espacio Económico Europeo, del Reino Unido o de Brasil, nos apoyamos en las garantías de cada proveedor (decisiones de adecuación, cláusulas contractuales tipo o mecanismos equivalentes) y en tu consentimiento, necesario para prestar el servicio. Puedes pedirnos información sobre estas garantías en info@tiklivetts.es. [CONFIRMAR: representante en la UE, si ofreces el servicio activamente a residentes de la UE.]
+Algunos proveedores (Google, Discord, GitHub, Polar, Hostinger) pueden tratar datos fuera de tu país. Soy de Ecuador y nuestros servidores propios se alojan en **Manchester, Reino Unido**. Cuando tus datos salen del Espacio Económico Europeo, del Reino Unido o de Brasil, nos apoyamos en las garantías de cada proveedor (decisiones de adecuación, cláusulas contractuales tipo o mecanismos equivalentes) y en tu consentimiento, necesario para prestar el servicio. Puedes pedirnos información sobre estas garantías en info@tiklivetts.es.
 
 ## 5. Cuánto tiempo guardamos los datos
 
@@ -65,14 +65,14 @@ Algunos proveedores (Google, Discord, GitHub, Polar, Hostinger) pueden tratar da
 - **Errores (GlitchTip):** sin plazo fijo; se conservan mientras sean útiles para corregir errores y mejorar la estabilidad, y puedes pedir su eliminación.
 - **Reportes en Discord:** hasta que los retiremos o nos pidas borrarlos.
 - **Registros locales:** en tu equipo, hasta que los borres o desinstales la App.
-- **Copias de seguridad:** los datos eliminados se purgan también de las copias de seguridad en un plazo de hasta [CONFIRMAR: 30] días.
+- **Copias de seguridad:** los datos eliminados se purgan también de las copias de seguridad en un plazo de hasta 30 días.
 
 ## 6. Tus derechos y cómo ejercerlos
 
 Tienes derecho a **acceso, rectificación, eliminación, oposición, limitación, portabilidad** y a **retirar tu consentimiento** en cualquier momento, sin efecto retroactivo.
 
 - **Eliminar tu cuenta y tus datos de cuenta:** botón **"Eliminar cuenta"** en tu perfil (vista Cuenta). Es inmediato e irreversible.
-- **Telemetría y analítica asociadas a tu instalación:** escríbenos a info@tiklivetts.es o por Discord y te ayudamos a identificarla y borrarla. [CONFIRMAR: hoy no hay un interruptor en la App para desactivar la telemetría; puedes dejar de enviarla desinstalando la App.]
+- **Telemetría y analítica asociadas a tu instalación:** escríbenos a info@tiklivetts.es o por Discord y te ayudamos a identificarla y borrarla. Hoy la App no incluye un interruptor para desactivar la telemetría; puedes dejar de enviarla desinstalando la App o escribiéndonos.
 - **Publicidad por correo:** enlace de baja en cada correo o escribiéndonos.
 - **Retirar la autorización de uso de imagen:** eliminando tu cuenta o escribiéndonos (ver §7).
 

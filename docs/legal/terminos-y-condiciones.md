@@ -1,6 +1,6 @@
 # Términos y Condiciones de Uso de TikLiveTTS
 
-**Versión del documento:** 2.0 (borrador para revisión) · **Vigencia desde:** 2 de octubre de 2026
+**Versión del documento:** 2.0 · **Vigencia desde:** 2 de octubre de 2026
 **Proveedor:** iKhunsa (Ecuador)
 **Contacto:** info@tiklivetts.es · Discord: <https://discord.com/invite/mwY859tcQK> · Sitio: <https://tiklivetts.es>
 
