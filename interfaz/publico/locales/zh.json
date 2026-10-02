@@ -93,6 +93,11 @@
     "hide": "隐藏",
     "none": "无启用项"
   },
+  "eventFx": {
+    "label": "活动特效",
+    "on": "节日动画和音效：已开启。点击关闭",
+    "off": "节日动画和音效：已关闭。点击开启"
+  },
   "btn": {
     "skipCurrent": "跳过当前",
     "clearChatAndQueue": "清除聊天和队列",
@@ -1284,5 +1289,9 @@
     "title": "加入 TikLiveTTS 的 Discord",
     "body": "加入社区:与其他主播交流、解答疑问、第一时间了解更新,并分享你对改进应用的想法。",
     "cta": "加入 Discord"
+  },
+  "connectFail": {
+    "title": "哎呀！连接失败",
+    "body": "连接前请先确认你的频道正在直播。如果已在直播，可能是 bug：TikLiveTTS 仍在开发中，偶尔会出问题。欢迎加入我们的 Discord，我们会帮你解决。"
   }
 }

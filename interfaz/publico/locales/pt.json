@@ -93,6 +93,11 @@
     "hide": "Ocultar",
     "none": "nada ativo"
   },
+  "eventFx": {
+    "label": "Efeitos de evento",
+    "on": "Animações e sons de temporada: ativados. Clique para desativar",
+    "off": "Animações e sons de temporada: desativados. Clique para ativar"
+  },
   "btn": {
     "skipCurrent": "Pular atual",
     "clearChatAndQueue": "Limpar chat e fila",
@@ -1284,5 +1289,9 @@
     "title": "Entre no Discord do TikLiveTTS",
     "body": "Entre na comunidade: converse com outros streamers, tire dúvidas, saiba das novidades em primeira mão e conte suas ideias para melhorar o app.",
     "cta": "Entrar no Discord"
+  },
+  "connectFail": {
+    "title": "Ops! Não foi possível conectar",
+    "body": "Confira se o seu canal está ao vivo antes de conectar. Se estiver, pode ser um bug: o TikLiveTTS está em desenvolvimento e às vezes falha. Entre no nosso Discord e a gente ajuda você."
   }
 }

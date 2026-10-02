@@ -1,7 +1,13 @@
 import { t } from '../../nucleo/i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
+import { reproducirSonidoUi } from '../../componentes/sonido-ui.js';
+import { mostrarAvisoConexionFallida } from './aviso-conexion-fallida.js';
 import * as datosPorCuenta from '../../nucleo/estado/datos-por-cuenta.js';
 import { toggleTiktokAddPrompt } from './tiktok-sesion.js';
+
+// Suena cuando el servidor confirma la conexion (junto al aviso "N conectados").
+// El archivo original esta a -15 LUFS: 0.35 lo deja ~-24 LUFS, bajo el TTS.
+const SONIDO_CONECTADO = { src: 'audio/ui/connect-wallet.mp3', volumen: 0.35 };
 
 const PLATFORM_CHANNELS_KEY = 'tikliveTTS_platforms_v1';
 export const PLATFORMS = ['tiktok', 'twitch', 'youtube', 'kick'];
@@ -227,6 +233,8 @@ async function connectSavedChannels() {
 
   if (chatBtn) { chatBtn.disabled = false; chatBtn.textContent = t('btn.connectAll'); }
   renderSettingsChannels();
+  if (connected > 0) reproducirSonidoUi(SONIDO_CONECTADO);
+  else if (failed > 0) mostrarAvisoConexionFallida();
   const parts = [`${connected} conectados`];
   if (failed) parts.push(`${failed} fallidos`);
   if (manualCount) parts.push(`${manualCount} manual`);

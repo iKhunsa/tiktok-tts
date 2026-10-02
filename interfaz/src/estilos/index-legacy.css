@@ -1546,6 +1546,22 @@
     .cfg-btn.small { padding: 5px 10px; font-size: var(--text-2xs); }
     /* Solo icono, sin label — el texto vive en title (data-i18n-title). */
     .cfg-btn.icon-only { padding: 6px 9px; }
+    /* Efectos de evento: etiqueta + mini switch; verde = activos, gris = apagados. */
+    #btnEventEffects { gap: 7px; }
+    #btnEventEffects .fx-switch {
+      position: relative; width: 26px; height: 14px; flex-shrink: 0; margin-left: 2px;
+      background: var(--border); border-radius: var(--radius-pill);
+      transition: background var(--dur-2) var(--ease-out);
+    }
+    #btnEventEffects .fx-switch::after {
+      content: ''; position: absolute; top: 2px; left: 2px; width: 10px; height: 10px;
+      background: var(--text-muted); border-radius: 50%;
+      transition: transform var(--dur-2) var(--ease-out), background var(--dur-2) var(--ease-out);
+    }
+    #btnEventEffects[aria-pressed="true"] { border-color: rgba(62, 207, 142, 0.4); color: var(--text-bright); }
+    #btnEventEffects[aria-pressed="true"] .fx-switch { background: rgba(62, 207, 142, 0.25); }
+    #btnEventEffects[aria-pressed="true"] .fx-switch::after { transform: translateX(12px); background: var(--ok); }
+    #btnEventEffects[aria-pressed="false"] .icon-inline { opacity: 0.45; }
     .cfg-btn.danger { border-color: rgba(239, 68, 68, 0.4); color: var(--danger); }
     .cfg-btn.danger:hover { border-color: rgba(239, 68, 68, 0.7); color: #f87171; }
     .cfg-btn.warn { border-color: rgba(255, 187, 0, 0.4); color: var(--warn); }
@@ -2722,6 +2738,9 @@
       margin: calc(-1 * var(--space-7)) calc(-1 * var(--space-7)) var(--space-5);
       border-radius: var(--modal-radius) var(--modal-radius) 0 0;
     }
+    /* La X se lee sobre la foto (gris) con un fondo oscuro translucido. */
+    #discordModal .modal-close,
+    #connectFailModal .modal-close { background: rgba(0, 0, 0, 0.45); border-radius: 50%; }
     .discord-modal-content h2 { margin: 0 0 var(--space-2); }
     .discord-modal-content p { margin: 0 0 var(--space-5); color: var(--text-secondary); font-size: var(--text-sm); line-height: 1.55; }
     .discord-cta {

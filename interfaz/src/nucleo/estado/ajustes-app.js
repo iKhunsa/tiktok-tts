@@ -40,6 +40,7 @@ export const DEFAULT_SETTINGS = {
   sayUsername: true,
   sayUsernameConnector: true,
   chatTogglesCollapsed: true,
+  eventEffects: true, // animaciones/sonidos de temporada (componentes/eventos); activos por defecto
   // langFilterEnabled/dictFilterEnabled/allowedExtraLangs NO viven aca
   // (fase-05): fuente unica de verdad = config.json del servidor, ver
   // nucleo/estado/config-runtime.js. Antes duplicaban esas 3 claves con

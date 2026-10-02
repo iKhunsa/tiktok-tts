@@ -114,7 +114,7 @@
 
     <div class="sidebar-footer">
       <button id="sidebarPortalViewBtn" class="sidebar-footer-btn" onclick="togglePortalView()"><img class="icon-inline" src="icons/public.svg" alt=""> <span data-i18n="footer.portalView">Navegador</span></button>
-      <button id="sidebarDiscordBtn" class="sidebar-footer-btn" onclick="openDiscordModal('sidebar')"><img class="icon-inline" src="icons/discord.svg" alt=""> <span>Discord TikLiveTTS</span></button>
+      <button id="sidebarDiscordBtn" class="sidebar-footer-btn" onclick="openDiscordModal('sidebar')"><img class="icon-inline" src="icons/discord.svg" alt=""> <span data-i18n="nav.discord">Unirse a Discord</span></button>
       <button id="sidebarBugReportBtn" class="sidebar-footer-btn" onclick="openBugReportModal()"><img class="icon-inline" src="icons/warning.svg" alt=""> <span data-i18n="footer.bugReport">Reportar Bug</span></button>
       <button id="sidebarIdeaBtn" class="sidebar-footer-btn" onclick="openIdeaModal()"><img class="icon-inline" src="icons/lightbulb.svg" alt=""> <span data-i18n="ideas.sidebarEntry">Sugerir una idea</span></button>
       <button class="sidebar-footer-btn sidebar-item sidebar-account" data-view="cuenta" hidden>
@@ -170,6 +170,7 @@
         <button class="cfg-btn danger" onclick="clearChatAndQueue()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="btn.clearChatAndQueue">Limpiar chat y cola</span></button>
         <button class="cfg-btn icon-only warn" onclick="enableEmergencyTTSMode()" data-i18n-title="btn.emergency" title="Modo emergencia"><img class="icon-inline" src="icons/warning-amber.svg" alt=""></button>
         <button class="cfg-btn icon-only" id="btnBlockedWordsShortcut" onclick="openBlockWordModal()" data-i18n-title="btn.blockedWordsShortcut" title="Palabras bloqueadas"><img class="icon-inline" src="icons/filter_none.svg" alt=""></button>
+        <button class="cfg-btn" id="btnEventEffects" hidden aria-pressed="true" data-i18n-title="eventFx.on" title="Animaciones y sonidos de temporada: activados. Clic para desactivar"><img class="icon-inline" src="icons/flare.svg" alt=""> <span data-i18n="eventFx.label">Efectos de evento</span><span class="fx-switch" aria-hidden="true"></span></button>
       </div>
 
       <!-- TOGGLES — colapsados por defecto (appSettings.chatTogglesCollapsed).
@@ -1198,6 +1199,17 @@
     <img class="discord-cat" src="img/mascota/discord-banner.webp" width="1000" height="563" alt="">
     <h2 data-i18n="discordInvite.title">Únete al Discord de TikLiveTTS</h2>
     <p data-i18n="discordInvite.body"></p>
+    <a class="discord-cta" href="https://discord.com/invite/mwY859tcQK" target="_blank" rel="noopener"><img class="icon-inline" src="icons/discord.svg" alt=""> <span data-i18n="discordInvite.cta">Unirme al Discord</span></a>
+  </div>
+</div>
+
+<!-- ══ MODAL: Aviso de conexión fallida (invita al Discord) ═══ -->
+<div id="connectFailModal" class="modal-overlay">
+  <div class="modal-content discord-modal-content">
+    <button class="modal-close" type="button" data-i18n-aria-label="news.close"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <img class="discord-cat" src="img/mascota/gato-grito.webp" width="876" height="548" alt="">
+    <h2 data-i18n="connectFail.title">¡Ups! No se pudo conectar</h2>
+    <p data-i18n="connectFail.body"></p>
     <a class="discord-cta" href="https://discord.com/invite/mwY859tcQK" target="_blank" rel="noopener"><img class="icon-inline" src="icons/discord.svg" alt=""> <span data-i18n="discordInvite.cta">Unirme al Discord</span></a>
   </div>
 </div>

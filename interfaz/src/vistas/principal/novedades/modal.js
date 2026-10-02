@@ -1,7 +1,8 @@
 import changelogRaw from '../../../../../CHANGELOG.md?raw';
 import { parsearChangelog } from './parse-changelog.js';
 
-const MARCAS_INLINE = /(\*\*[^*]+\*\*|`[^`]+`)/;
+const MARCAS_INLINE = /(\*\*[^*]+\*\*|`[^`]+`|\[[^\]]+\]\(https?:\/\/(?:www\.)?(?:youtube\.com|youtu\.be)\/[^)\s]+\))/;
+const ENLACE_YOUTUBE = /^\[([^\]]+)\]\((https?:\/\/(?:www\.)?(?:youtube\.com|youtu\.be)\/[^)\s]+)\)$/;
 
 function crear(etiqueta, clase, texto) {
   const el = document.createElement(etiqueta);
@@ -17,6 +18,14 @@ function agregarTextoInline(padre, texto) {
     if (!trozo) continue;
     if (trozo.startsWith('**')) padre.append(crear('strong', '', trozo.slice(2, -2)));
     else if (trozo.startsWith('`')) padre.append(crear('code', '', trozo.slice(1, -1)));
+    else if (trozo.startsWith('[') && ENLACE_YOUTUBE.test(trozo)) {
+      const [, titulo, url] = trozo.match(ENLACE_YOUTUBE);
+      const enlace = crear('a', 'news-youtube-link', titulo);
+      enlace.href = url;
+      enlace.target = '_blank';
+      enlace.rel = 'noopener';
+      padre.append(enlace);
+    }
     else padre.append(trozo);
   }
 }

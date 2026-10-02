@@ -95,6 +95,11 @@
     "hide": "Hide",
     "none": "nothing active"
   },
+  "eventFx": {
+    "label": "Event effects",
+    "on": "Seasonal animations and sounds: on. Click to turn off",
+    "off": "Seasonal animations and sounds: off. Click to turn on"
+  },
   "btn": {
     "skipCurrent": "Skip current",
     "clearChatAndQueue": "Clear chat and queue",
@@ -1286,5 +1291,9 @@
     "title": "Join the TikLiveTTS Discord",
     "body": "Join the community: chat with other streamers, get your questions answered, hear about updates first and share your ideas to improve the app.",
     "cta": "Join Discord"
+  },
+  "connectFail": {
+    "title": "Oops! Couldn't connect",
+    "body": "Make sure your channel is live before connecting. If it is, it's probably a bug: TikLiveTTS is under development and can fail sometimes. Join our Discord and we'll help you."
   }
 }

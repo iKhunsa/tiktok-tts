@@ -31,6 +31,9 @@ import { iniciarBarraTitulo } from './barra-titulo/index.js';
 import { abrirCuentaDesdeSidebar, cargarSesion, almacenSesion, appBloqueada } from '../../nucleo/estado/sesion.js';
 import { aplicarBloqueoVista } from '../../nucleo/estado/vista-bloqueada.js';
 import { iniciarCuenta } from './cuenta/index.js';
+import { reproducirEventoActivo, reproducirEvento } from '../../componentes/eventos/index.js';
+import { iniciarBotonEfectosEvento } from './efectos-evento.js';
+import { iniciarAvisoConexionFallida } from './aviso-conexion-fallida.js';
 import { iniciarRotacionAnuncioLateral } from './anuncio-lateral.js';
 import { copyToClipboard } from './utils-app.js';
 import {
@@ -180,6 +183,8 @@ function aplicarBloqueoApp() {
   // cuentas apagado), nunca en la pantalla de login. arrancarAvisosOnboarding
   // es idempotente.
   if (!bloq) arrancarAvisosOnboarding();
+  // Evento de temporada (Halloween...): una vez por carga, ya desbloqueada la app.
+  if (!bloq) reproducirEventoActivo();
   // Vistas Pro enteras (Sonidos/Bot/MCP/Panel movil/Clips): re-evaluar el aviso
   // visual cada vez que cambia la sesion (login, pago, degradado) sin
   // re-fetchear su estado.
@@ -221,12 +226,16 @@ function iniciarArranque() {
   loadRuntimeConfig();
   mostrarVersionApp();
   iniciarCuenta();
+  iniciarBotonEfectosEvento();
+  iniciarAvisoConexionFallida();
   // Puente para interfaz/publico/plugin-store/ (scripts clasicos, sin import
   // ES) -- mismo patron que window.refreshPluginStoreTexts/__langReady.
   window.__sesionActual = () => almacenSesion.getState();
   almacenSesion.subscribe(() => window.renderPluginStore?.());
   almacenSesion.subscribe(aplicarBloqueoApp);
   cargarSesion();
+  const eventoForzado = new URLSearchParams(window.location.search).get('evento');
+  if (eventoForzado) reproducirEvento(eventoForzado); // prueba manual: ?evento=halloween
   renderShortcutDisplay();
   if (window.electronAPI?.registerTtsShortcut) {
     for (const action of TTS_SHORTCUT_ACTIONS_KEYS) {
