@@ -1,8 +1,12 @@
 import changelogRaw from '../../../../../CHANGELOG.md?raw';
 import { parsearChangelog } from './parse-changelog.js';
+import { extraerIdYoutube } from './extraer-id-youtube.js';
+import { crearVideoNovedades } from './crear-video-novedades.js';
+import { t } from '../../../nucleo/i18n/i18n.js';
 
 const MARCAS_INLINE = /(\*\*[^*]+\*\*|`[^`]+`|\[[^\]]+\]\(https?:\/\/(?:www\.)?(?:youtube\.com|youtu\.be)\/[^)\s]+\))/;
 const ENLACE_YOUTUBE = /^\[([^\]]+)\]\((https?:\/\/(?:www\.)?(?:youtube\.com|youtu\.be)\/[^)\s]+)\)$/;
+const SECCION_VIDEOS = 'Videos de YouTube';
 
 function crear(etiqueta, clase, texto) {
   const el = document.createElement(etiqueta);
@@ -50,19 +54,44 @@ function crearVersion({ version, fecha, etiqueta, secciones }) {
   return bloque;
 }
 
+// El video de la versión más reciente que lo trae va arriba de todo el texto,
+// embebido; su sección no se repite como lista de enlaces.
+function separarVideo(versiones) {
+  let idVideo = null;
+  const sinVideos = versiones.map((version) => {
+    const secciones = version.secciones.filter((seccion) => {
+      if (seccion.titulo !== SECCION_VIDEOS) return true;
+      const enlace = seccion.items.map((item) => ENLACE_YOUTUBE.exec(item)).find(Boolean);
+      idVideo = idVideo || (enlace && extraerIdYoutube(enlace[2]));
+      return false;
+    });
+    return { ...version, secciones };
+  });
+  return { idVideo, versiones: sinVideos };
+}
+
 let renderizado = false;
+let idVideoNovedades = null;
 
 export function abrirNovedades() {
   const lista = document.getElementById('newsList');
   if (!renderizado) {
-    lista.replaceChildren(...parsearChangelog(changelogRaw).map(crearVersion));
+    const { idVideo, versiones } = separarVideo(parsearChangelog(changelogRaw));
+    idVideoNovedades = idVideo;
+    lista.replaceChildren(...versiones.map(crearVersion));
     renderizado = true;
+  }
+  // El reproductor existe solo mientras el modal está abierto: al cerrarlo se
+  // destruye y el video deja de sonar.
+  if (idVideoNovedades && !lista.querySelector('.news-video')) {
+    lista.prepend(crearVideoNovedades(idVideoNovedades, t('news.videoTitle')));
   }
   document.getElementById('newsModal').classList.add('show');
 }
 
 function cerrarNovedades() {
   document.getElementById('newsModal').classList.remove('show');
+  document.querySelector('#newsList .news-video')?.remove();
 }
 
 export function iniciarModalNovedades() {

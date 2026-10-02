@@ -1297,7 +1297,8 @@
   },
   "news": {
     "title": "TikLiveTTS 새 소식",
-    "close": "닫기"
+    "close": "닫기",
+    "videoTitle": "새로운 기능 영상"
   },
   "discordInvite": {
     "title": "TikLiveTTS 디스코드에 참여하세요",

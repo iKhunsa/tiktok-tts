@@ -1297,7 +1297,8 @@
   },
   "news": {
     "title": "TikLiveTTS の新着情報",
-    "close": "閉じる"
+    "close": "閉じる",
+    "videoTitle": "新機能紹介ビデオ"
   },
   "discordInvite": {
     "title": "TikLiveTTS の Discord に参加",

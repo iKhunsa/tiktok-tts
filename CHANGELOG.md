@@ -4,6 +4,46 @@ Todas las novedades relevantes de este proyecto se documentan aquí.
 
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.11.0-beta.1] — 2026-10-02 (prerelease)
+
+### Añadido
+- **Planes mensuales.** Además del plan anual, ahora puedes elegir Sin Promos
+  (US$3 al mes) o Pro (US$8 al mes). El popup de planes tiene un selector
+  Mensual/Anual y, desde Cuenta, un plan anual se puede pasar a mensual: el
+  cambio se aplica en la próxima renovación, sin reembolso, y el año ya
+  pagado se cumple completo.
+- **Contador de espectadores.** Overlay nuevo para OBS con las personas que
+  están viendo tu directo de TikTok en tiempo real. Se suma entre todos tus
+  canales de TikTok conectados, se actualiza solo y se personaliza (color y
+  fondo) desde la vista Overlays.
+- **Video de novedades** dentro de la app: esta ventana lo muestra arriba de
+  todo, con pantalla completa de YouTube.
+- **Overlays personalizables.** Chat, Top Likers y Top Donadores tienen un
+  panel "Personalizar" con vista previa en vivo y botón Restablecer. Tus
+  URLs actuales siguen funcionando.
+- **Chat para OBS:** fuente, tamaño y espaciados; ocultar mensajes tras unos
+  segundos; una sola línea; ancho ajustado al mensaje; colores aleatorios;
+  estilo por rol (espectador, moderador, suscriptor); avatar con anillo y
+  burbuja con el logo de la plataforma; y opacidad de fondo de 0 a 100 %.
+- **Top Likers y Top Donadores rediseñados** con medallas, corona, avatar y
+  contador animado.
+- **Efectos de temporada (Halloween):** animaciones y sonidos que puedes
+  activar o desactivar con el botón "Efectos de evento" del chat.
+- **Aviso de conexión fallida:** si "Conectar todo" no logra conectar ningún
+  canal, la app te invita a nuestro Discord para ayudarte.
+- **Barra de título propia** con botones de atrás y adelante entre vistas, y
+  la vista de Novedades.
+- **Banners:** el banner del chat rota solo cada 20 segundos; el de Halloween
+  abre una ventana para copiar el código de descuento y ver los planes. En
+  la barra lateral, un banner para seguirnos en TikTok.
+
+### Cambiado
+- Los avatares y roles de los overlays salen de los datos de cada mensaje,
+  por lo que el avatar de TikTok se ve en el chat y en los rankings.
+
+### Videos de YouTube
+- [Ver video de novedades](https://www.youtube.com/watch?v=JBLPEXGKRlM)
+
 ## [1.11.0-beta.0] — 2026-09-28 (prerelease)
 
 ### Añadido

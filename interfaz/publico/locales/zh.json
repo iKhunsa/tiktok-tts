@@ -1297,7 +1297,8 @@
   },
   "news": {
     "title": "TikLiveTTS 最新动态",
-    "close": "关闭"
+    "close": "关闭",
+    "videoTitle": "更新内容视频"
   },
   "discordInvite": {
     "title": "加入 TikLiveTTS 的 Discord",

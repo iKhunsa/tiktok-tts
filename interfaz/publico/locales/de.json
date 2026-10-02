@@ -1297,7 +1297,8 @@
   },
   "news": {
     "title": "Neuigkeiten in TikLiveTTS",
-    "close": "Schließen"
+    "close": "Schließen",
+    "videoTitle": "Neuigkeiten-Video"
   },
   "discordInvite": {
     "title": "Tritt dem TikLiveTTS-Discord bei",
