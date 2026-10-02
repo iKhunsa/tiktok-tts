@@ -2,7 +2,7 @@
 
 const estado = require('./estado-sesion');
 
-// Las 6 rutas /api/auth/* de la app. Son proxies finos a servicio-cuentas
+// Las rutas /api/auth/* de la app. Son proxies finos a servicio-cuentas
 // (via cliente): la app agrega/gestiona el token, servicio-cuentas habla con
 // Supabase/Polar. Todas detras de subscriptionsEnabled (si off -> 404).
 
@@ -15,6 +15,9 @@ function propagarError(res, r, logger) {
   const b = r.body;
   return res.status(r.status).json({ error: b.error || 'Error', errorKey: b.errorKey || 'errors.generic' });
 }
+
+// Cualquier valor distinto de 'month' cae al default del contrato: anual.
+const intervaloValido = (v) => (v === 'month' ? 'month' : 'year');
 
 function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
   const guard = (req, res, next) => (subscriptionsEnabled() ? next() : res.status(404).end());
@@ -68,7 +71,8 @@ function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
   app.post('/api/auth/checkout', guard, async (req, res) => {
     const token = estado.getToken();
     if (!token) return res.status(401).json({ error: 'No autenticado', errorKey: 'errors.unauthorized' });
-    const r = await cliente.checkout(token, { plan: (req.body || {}).plan || 'pro' });
+    const body = req.body || {};
+    const r = await cliente.checkout(token, { plan: body.plan || 'pro', intervalo: intervaloValido(body.intervalo) });
     if (!r.ok) return propagarError(res, r, logger);
     logger.log('info', 'auth', 'auth/routes.js#checkout', 'auth.checkout.solicitado', 'Checkout iniciado', {});
     res.json({ url: r.body.url });
@@ -100,7 +104,20 @@ function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
     res.json(estado.getSesion());
   });
 
-  return 8;
+  app.post('/api/auth/subscription/change-interval', guard, async (req, res) => {
+    const token = estado.getToken();
+    if (!token) return res.status(401).json({ error: 'No autenticado', errorKey: 'errors.unauthorized' });
+    const { intervalo } = req.body || {};
+    if (!['month', 'year'].includes(intervalo)) return res.status(400).json({ error: 'Intervalo invalido', errorKey: 'errors.generic' });
+    const r = await cliente.cambiarIntervalo(token, { intervalo });
+    if (!r.ok) return propagarError(res, r, logger);
+    logger.log('info', 'auth', 'auth/routes.js#cambiarIntervalo', 'auth.suscripcion.intervalo_cambiado', 'Cambio de intervalo solicitado', {});
+    const s = await cliente.session(token); // re-hidrata: subscription.nextInterval ya actualizado
+    if (s.ok) estado.aplicar({ session: s.body }, logger);
+    res.json(estado.getSesion());
+  });
+
+  return 9;
 }
 
 module.exports = { montar };

@@ -1094,6 +1094,7 @@
     "invalidCredentials": "邮箱或密码错误。",
     "serviceUnavailable": "账户服务不可用。请稍后重试。",
     "generic": "发生错误。请重试。",
+    "notImplemented": "此功能暂不可用",
     "weakPassword": "密码太短。",
     "passwordMismatch": "两次输入的密码不一致。", "ideasRequired":"请完成必填想法字段。","ideasInvalidAudience":"请选择有效受众。","ideasRateLimited":"请等待一分钟再发送想法。","ideasUnavailable":"建议暂时不可用。","ideasSendFailed":"无法发送想法，请重试。"
   },
@@ -1203,7 +1204,13 @@
     "planSinPromosCancels": "无推广 · 将于 {fecha} 取消",
     "changePhoto": "更换头像",
     "removePhoto": "移除头像",
-    "photoError": "无法保存头像"
+    "photoError": "无法保存头像",
+    "intervalMonthly": "按月计费",
+    "intervalYearly": "按年计费",
+    "switchToMonthly": "下次续订时改为按月",
+    "switchNote": "不予退款：年付套餐将完整履行，变更在续订时生效。",
+    "changesAt": "将于 {fecha} 改为按月",
+    "switchRequested": "已完成：下次续订时将改为按月。"
   },
   "sidebarAccount": {
     "badgeFree": "免费",
@@ -1226,11 +1233,13 @@
     "freeBugs": "问题反馈",
     "noAdsName": "无推广",
     "noAdsPrice": "每年 25 美元",
+    "noAdsPriceMonthly": "每月 3 美元",
     "noAdsFree": "包含 Free 套餐的所有内容",
     "noAdsPromos": "无推广语音消息",
     "chooseNoAds": "选择",
     "proName": "Pro",
     "proPrice": "每年 85 美元",
+    "proPriceMonthly": "每月 8 美元",
     "proNoAds": "包含无推广套餐的所有内容",
     "proMusic": "带歌曲队列的音乐机器人",
     "proSoundpad": "音效面板",
@@ -1239,7 +1248,10 @@
     "proMcp": "MCP 智能体服务器",
     "proChannels": "连接同一平台的 2 个或更多频道",
     "choosePro": "选择 Pro",
-    "currentPlan": "当前套餐"
+    "currentPlan": "当前套餐",
+    "billingMonthly": "按月",
+    "billingYearly": "按年",
+    "billingLabel": "计费周期"
   },
   "accountMenu": {
     "planFree": "免费套餐",

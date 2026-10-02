@@ -7,10 +7,10 @@ import { t } from '../../../nucleo/i18n/i18n.js';
 import { showToast } from '../../../componentes/toast.js';
 import { pedir, toastError } from './api.js';
 
-export async function irACheckout(btn, plan = 'pro') {
+export async function irACheckout(btn, plan = 'pro', intervalo = 'year') {
   btn.disabled = true;
   try {
-    const r = await pedir('/api/auth/checkout', { method: 'POST', body: { plan } });
+    const r = await pedir('/api/auth/checkout', { method: 'POST', body: { plan, intervalo } });
     if (!r.ok || !r.body.url) return toastError(r.body);
     window.open(r.body.url, '_blank'); // window.js rebota la URL no-local al navegador externo
     showToast(t('cuenta.checkoutOpened'));

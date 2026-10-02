@@ -1094,6 +1094,7 @@
     "invalidCredentials": "Falsche E-Mail oder Passwort.",
     "serviceUnavailable": "Kontodienst nicht verfügbar. Versuche es bald erneut.",
     "generic": "Ein Fehler ist aufgetreten. Versuche es erneut.",
+    "notImplemented": "Diese Funktion ist noch nicht verfügbar",
     "weakPassword": "Das Passwort ist zu kurz.",
     "passwordMismatch": "Die Passwörter stimmen nicht überein.", "ideasRequired":"Fülle die Pflichtfelder der Idee aus.","ideasInvalidAudience":"Wähle eine gültige Zielgruppe.","ideasRateLimited":"Warte eine Minute vor einer weiteren Idee.","ideasUnavailable":"Vorschläge sind vorübergehend nicht verfügbar.","ideasSendFailed":"Idee konnte nicht gesendet werden. Versuche es erneut."
   },
@@ -1203,7 +1204,13 @@
     "planSinPromosCancels": "Ohne Werbung · endet am {fecha}",
     "changePhoto": "Foto ändern",
     "removePhoto": "Foto entfernen",
-    "photoError": "Foto konnte nicht gespeichert werden"
+    "photoError": "Foto konnte nicht gespeichert werden",
+    "intervalMonthly": "Monatliche Abrechnung",
+    "intervalYearly": "Jährliche Abrechnung",
+    "switchToMonthly": "Zur nächsten Verlängerung auf monatlich wechseln",
+    "switchNote": "Keine Erstattung: Der Jahrestarif läuft bis zum Ende und der Wechsel gilt ab der Verlängerung.",
+    "changesAt": "Wechselt am {fecha} auf monatlich",
+    "switchRequested": "Erledigt: Du wechselst zur nächsten Verlängerung auf monatlich."
   },
   "sidebarAccount": {
     "badgeFree": "FREE",
@@ -1226,11 +1233,13 @@
     "freeBugs": "Fehler melden",
     "noAdsName": "Ohne Werbung",
     "noAdsPrice": "25 US$ pro Jahr",
+    "noAdsPriceMonthly": "3 US$ pro Monat",
     "noAdsFree": "Alles aus dem Free-Tarif",
     "noAdsPromos": "Keine Werbe-Sprachnachrichten",
     "chooseNoAds": "Auswählen",
     "proName": "Pro",
     "proPrice": "85 US$ pro Jahr",
+    "proPriceMonthly": "8 US$ pro Monat",
     "proNoAds": "Alles aus Ohne Werbung",
     "proMusic": "Musik-Bot mit Song-Warteschlange",
     "proSoundpad": "Soundpad für Soundeffekte",
@@ -1239,7 +1248,10 @@
     "proMcp": "MCP-Agent-Server",
     "proChannels": "Verbinde 2 oder mehr Kanäle derselben Plattform",
     "choosePro": "Pro wählen",
-    "currentPlan": "Aktueller Tarif"
+    "currentPlan": "Aktueller Tarif",
+    "billingMonthly": "Monatlich",
+    "billingYearly": "Jährlich",
+    "billingLabel": "Abrechnungsintervall"
   },
   "accountMenu": {
     "planFree": "Kostenloser Tarif",

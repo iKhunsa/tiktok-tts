@@ -1094,6 +1094,7 @@
     "invalidCredentials": "Email ou senha incorretos.",
     "serviceUnavailable": "Serviço de contas indisponível. Tente novamente em breve.",
     "generic": "Ocorreu um erro. Tente novamente.",
+    "notImplemented": "Este recurso ainda não está disponível",
     "weakPassword": "A senha é muito curta.",
     "passwordMismatch": "As senhas não coincidem.", "ideasRequired":"Preencha os campos obrigatórios da ideia.","ideasInvalidAudience":"Escolha um público válido.","ideasRateLimited":"Aguarde um minuto antes de enviar outra ideia.","ideasUnavailable":"As sugestões estão temporariamente indisponíveis.","ideasSendFailed":"Não foi possível enviar a ideia. Tente novamente."
   },
@@ -1203,7 +1204,13 @@
     "planSinPromosCancels": "Sem promoções · cancela em {fecha}",
     "changePhoto": "Alterar foto",
     "removePhoto": "Remover foto",
-    "photoError": "Não foi possível salvar a foto"
+    "photoError": "Não foi possível salvar a foto",
+    "intervalMonthly": "Cobrança mensal",
+    "intervalYearly": "Cobrança anual",
+    "switchToMonthly": "Mudar para mensal na próxima renovação",
+    "switchNote": "Sem reembolso: o plano anual é cumprido por completo e a mudança vale a partir da renovação.",
+    "changesAt": "Mudará para mensal em {fecha}",
+    "switchRequested": "Pronto: você mudará para mensal na próxima renovação."
   },
   "sidebarAccount": {
     "badgeFree": "FREE",
@@ -1226,11 +1233,13 @@
     "freeBugs": "Relatório de bugs",
     "noAdsName": "Sem promoções",
     "noAdsPrice": "US$ 25 por ano",
+    "noAdsPriceMonthly": "US$ 3 por mês",
     "noAdsFree": "Tudo do plano Free",
     "noAdsPromos": "Sem mensagens de voz promocionais",
     "chooseNoAds": "Escolher",
     "proName": "Pro",
     "proPrice": "US$ 85 por ano",
+    "proPriceMonthly": "US$ 8 por mês",
     "proNoAds": "Tudo do Sem promoções",
     "proMusic": "Bot de música com fila de canções",
     "proSoundpad": "Soundpad de efeitos sonoros",
@@ -1239,7 +1248,10 @@
     "proMcp": "Servidor de agente MCP",
     "proChannels": "Conecte 2 ou mais canais da mesma plataforma",
     "choosePro": "Escolher Pro",
-    "currentPlan": "Plano atual"
+    "currentPlan": "Plano atual",
+    "billingMonthly": "Mensal",
+    "billingYearly": "Anual",
+    "billingLabel": "Frequência de cobrança"
   },
   "accountMenu": {
     "planFree": "Plano gratuito",

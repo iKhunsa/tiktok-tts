@@ -772,6 +772,7 @@
     "invalidCredentials": "Wrong email or password.",
     "serviceUnavailable": "Account service unavailable. Try again shortly.",
     "generic": "Something went wrong. Try again.",
+    "notImplemented": "This feature isn't available yet",
     "weakPassword": "The password is too short.",
     "passwordMismatch": "Passwords don't match.", "ideasRequired": "Complete the required idea fields.", "ideasInvalidAudience": "Choose a valid audience.", "ideasRateLimited": "Wait a minute before sending another idea.", "ideasUnavailable": "Suggestions are temporarily unavailable.", "ideasSendFailed": "Could not send the idea. Try again."
   },
@@ -1205,7 +1206,13 @@
     "planSinPromosCancels": "No promotions · cancels on {fecha}",
     "changePhoto": "Change photo",
     "removePhoto": "Remove photo",
-    "photoError": "Couldn't save the photo"
+    "photoError": "Couldn't save the photo",
+    "intervalMonthly": "Monthly billing",
+    "intervalYearly": "Yearly billing",
+    "switchToMonthly": "Switch to monthly at next renewal",
+    "switchNote": "No refund: the yearly plan runs its full term and the change applies on renewal.",
+    "changesAt": "Switches to monthly on {fecha}",
+    "switchRequested": "Done: you'll switch to monthly at the next renewal."
   },
   "sidebarAccount": {
     "badgeFree": "FREE",
@@ -1228,11 +1235,13 @@
     "freeBugs": "Bug reporting",
     "noAdsName": "No Ads",
     "noAdsPrice": "US$25 per year",
+    "noAdsPriceMonthly": "US$3 per month",
     "noAdsFree": "Everything in the Free plan",
     "noAdsPromos": "No promotional voice messages",
     "chooseNoAds": "Choose",
     "proName": "Pro",
     "proPrice": "US$85 per year",
+    "proPriceMonthly": "US$8 per month",
     "proNoAds": "Everything in No Ads",
     "proMusic": "Music bot with song queue",
     "proSoundpad": "Sound effects soundpad",
@@ -1241,7 +1250,10 @@
     "proMcp": "MCP agent server",
     "proChannels": "Connect 2 or more channels on the same platform",
     "choosePro": "Choose Pro",
-    "currentPlan": "Current plan"
+    "currentPlan": "Current plan",
+    "billingMonthly": "Monthly",
+    "billingYearly": "Yearly",
+    "billingLabel": "Billing frequency"
   },
   "accountMenu": {
     "planFree": "Free plan",

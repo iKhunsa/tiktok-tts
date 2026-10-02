@@ -1094,6 +1094,7 @@
     "invalidCredentials": "メールまたはパスワードが違います。",
     "serviceUnavailable": "アカウントサービスを利用できません。しばらくして再試行してください。",
     "generic": "エラーが発生しました。再試行してください。",
+    "notImplemented": "この機能はまだ利用できません",
     "weakPassword": "パスワードが短すぎます。",
     "passwordMismatch": "パスワードが一致しません。", "ideasRequired":"必須のアイデア項目を入力してください。","ideasInvalidAudience":"有効な対象者を選択してください。","ideasRateLimited":"次のアイデアを送る前に1分待ってください。","ideasUnavailable":"提案は一時的に利用できません。","ideasSendFailed":"アイデアを送信できませんでした。もう一度お試しください。"
   },
@@ -1203,7 +1204,13 @@
     "planSinPromosCancels": "プロモーションなし · {fecha} に解約",
     "changePhoto": "写真を変更",
     "removePhoto": "写真を削除",
-    "photoError": "写真を保存できませんでした"
+    "photoError": "写真を保存できませんでした",
+    "intervalMonthly": "月額請求",
+    "intervalYearly": "年額請求",
+    "switchToMonthly": "次回更新時に月額へ変更",
+    "switchNote": "返金はありません。年額プランは期間満了まで継続し、変更は更新時に適用されます。",
+    "changesAt": "{fecha} に月額へ切り替わります",
+    "switchRequested": "完了しました。次回更新時に月額へ切り替わります。"
   },
   "sidebarAccount": {
     "badgeFree": "無料",
@@ -1226,11 +1233,13 @@
     "freeBugs": "バグ報告",
     "noAdsName": "プロモーションなし",
     "noAdsPrice": "年額 25 米ドル",
+    "noAdsPriceMonthly": "月額 3 米ドル",
     "noAdsFree": "Free プランのすべての機能",
     "noAdsPromos": "プロモーション音声メッセージなし",
     "chooseNoAds": "選択",
     "proName": "Pro",
     "proPrice": "年額 85 米ドル",
+    "proPriceMonthly": "月額 8 米ドル",
     "proNoAds": "プロモーションなしプランのすべての機能",
     "proMusic": "曲のキュー付き音楽ボット",
     "proSoundpad": "効果音用サウンドパッド",
@@ -1239,7 +1248,10 @@
     "proMcp": "MCP エージェントサーバー",
     "proChannels": "同じプラットフォームで 2 つ以上のチャンネルを接続",
     "choosePro": "Pro を選択",
-    "currentPlan": "現在のプラン"
+    "currentPlan": "現在のプラン",
+    "billingMonthly": "月額",
+    "billingYearly": "年額",
+    "billingLabel": "請求サイクル"
   },
   "accountMenu": {
     "planFree": "無料プラン",
