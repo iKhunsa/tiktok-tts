@@ -1,7 +1,7 @@
 # Términos y Condiciones de Uso de TikLiveTTS
 
 **Versión del documento:** 2.0 (borrador para revisión) · **Vigencia desde:** 2 de octubre de 2026
-**Proveedor:** [NOMBRE LEGAL COMPLETO] (alias "iKhunsa"), persona natural · **RUC / cédula:** [DATO] · **Domicilio:** [CIUDAD, PROVINCIA], Ecuador
+**Proveedor:** iKhunsa (Ecuador)
 **Contacto:** info@tiklivetts.es · Discord: <https://discord.com/invite/mwY859tcQK> · Sitio: <https://tiklivetts.es>
 
 > Al instalar, actualizar o usar TikLiveTTS aceptas estos Términos y Condiciones y la [Política de Privacidad](politica-de-privacidad.md), **incluido el uso de tus datos y de tu correo para publicidad** (secciones 7, 8 y 9). Si no estás de acuerdo, no instales ni uses la aplicación.
@@ -10,7 +10,7 @@
 
 ## 1. Qué es TikLiveTTS y quién es el responsable
 
-TikLiveTTS (en adelante, "la App") es una aplicación de escritorio para Windows que lee en voz alta el chat de TikTok Live, Twitch, YouTube y Kick, ofrece overlays para OBS y herramientas para streamers. La App y los servicios que la acompañan (cuentas, planes de pago, actualizaciones, telemetría y soporte) son ofrecidos por **iKhunsa**, persona natural domiciliada en Ecuador (en adelante, "el Desarrollador", "nosotros").
+TikLiveTTS (en adelante, "la App") es una aplicación de escritorio para Windows que lee en voz alta el chat de TikTok Live, Twitch, YouTube y Kick, ofrece overlays para OBS y herramientas para streamers. La App y los servicios que la acompañan (cuentas, planes de pago, actualizaciones, telemetría y soporte) son ofrecidos por **iKhunsa**, de Ecuador (en adelante, "el Desarrollador", "nosotros").
 
 TikLiveTTS es un proyecto **independiente**. No está afiliado, patrocinado ni respaldado por TikTok/ByteDance, Twitch, YouTube/Google, Kick, OBS Project, Discord ni Polar. Sus nombres y marcas pertenecen a sus respectivos propietarios y se mencionan solo para describir la compatibilidad.
 
@@ -89,7 +89,7 @@ No vendemos tus datos. El contenido de los mensajes del chat de tus espectadores
 10.2. **Eres el único responsable** de cumplir los términos de esas plataformas y de las sanciones que te impongan (por ejemplo, limitaciones o suspensión de tu canal). TikLiveTTS se conecta a ellas mediante interfaces que pueden cambiar o dejar de funcionar sin aviso.
 10.3. Para agregar un canal de TikTok se te pedirá iniciar sesión en TikTok dentro de la App. Esa sesión se guarda **localmente en tu equipo**; no recibimos tu contraseña de TikTok.
 10.4. Eres responsable del contenido que lees en voz alta y de los permisos necesarios para emitirlo.
-10.5. **Música y derechos de autor:** las funciones que reproducen música (por ejemplo, el bot musical, que obtiene el audio de servicios como YouTube) son una herramienta tuya. Eres el único responsable de contar con los derechos para reproducir y emitir ese contenido en tus directos y de cumplir los términos de esos servicios. No concedemos licencias sobre obras de terceros. Si crees que algún contenido viola tus derechos de autor, escríbenos a info@tiklivetts.es con la identificación de la obra y de tu titularidad.
+10.5. **Música y derechos de autor:** TikLiveTTS es solo una **herramienta** que reproduce el audio que tú o tus espectadores piden (por ejemplo, con el bot musical, que obtiene el audio de servicios como YouTube). **No controlamos ni podemos controlar qué música o contenido se reproduce.** Por eso, **toda la responsabilidad sobre la música y los derechos de autor es del streamer**: contar con los permisos para reproducirla y emitirla en tus directos, respetar los términos de esos servicios y de las plataformas donde transmites, y responder por reclamos, sanciones o bajas de contenido. TikLiveTTS y su responsable no responden por ello y no conceden licencias sobre obras de terceros. Si crees que algún contenido viola tus derechos de autor, escríbenos a info@tiklivetts.es con la identificación de la obra y de tu titularidad.
 
 ## 11. Tus espectadores y el contenido de tu chat
 
@@ -106,7 +106,7 @@ El soporte, los tutoriales y la resolución de problemas se atienden por nuestro
 ## 14. Descargo de responsabilidad y limitación
 
 14.1. La App se ofrece **"tal cual" y "según disponibilidad"**, sin garantías de ningún tipo, expresas o implícitas, incluidas las de comerciabilidad, idoneidad para un fin particular, funcionamiento ininterrumpido o libre de errores, ni compatibilidad permanente con las plataformas.
-14.2. En la máxima medida permitida por la ley, **el Desarrollador no se hace responsable** de daños directos o indirectos, lucro cesante, pérdida de audiencia, ingresos o datos, sanciones o suspensiones de cuentas en plataformas de terceros, ni de fallos de servicios de terceros, derivados del uso o de la imposibilidad de usar la App.
+14.2. En la máxima medida permitida por la ley, **el Desarrollador no se hace responsable** de daños directos o indirectos, lucro cesante, pérdida de audiencia, ingresos o datos, sanciones o suspensiones de cuentas en plataformas de terceros, reclamos por derechos de autor sobre el contenido que reproduzcas, ni de fallos de servicios de terceros, derivados del uso o de la imposibilidad de usar la App.
 14.3. Si, a pesar de lo anterior, se determinara una responsabilidad, el total acumulado no excederá el importe que hayas pagado por planes de pago en los **12 meses anteriores** al hecho que la origina.
 14.4. Nada de estos términos excluye responsabilidades que la ley no permita excluir.
 
@@ -118,9 +118,12 @@ Podemos modificar, pausar o descontinuar la App o partes del servicio (incluidos
 
 Podemos actualizar estos términos. Publicaremos la nueva versión en el repositorio y en nuestro sitio, y te avisaremos dentro de la App cuando el cambio sea relevante. Usar la App después de la fecha de vigencia implica aceptar la versión nueva; si no estás de acuerdo, debes dejar de usarla y puedes eliminar tu cuenta.
 
-## 17. Ley aplicable y jurisdicción
+## 17. Ley aplicable y solución de controversias
 
-Estos términos se rigen por las leyes de la **República del Ecuador**. Para cualquier controversia, las partes se someten a los jueces y tribunales competentes de Ecuador, sin perjuicio de los derechos irrenunciables que la ley de tu país de residencia te reconozca como consumidor o titular de datos.
+17.1. Estos términos se rigen por las leyes de la **República del Ecuador**.
+17.2. **Primero, buena fe y diálogo.** Si tienes un problema o una queja, escríbenos a info@tiklivetts.es o por Discord. Ambas partes se comprometen a intentar resolverlo de buena fe y de forma amistosa, antes de acudir a cualquier instancia formal. Daremos respuesta y propuesta de solución en un plazo máximo de **30 días**.
+17.3. **Mediación y arbitraje en Ecuador.** Si no se llega a un acuerdo, la controversia se someterá a mediación y, de no resolverse, a **arbitraje** ante un centro de arbitraje y mediación de Ecuador, conforme a la Ley de Arbitraje y Mediación ecuatoriana, con sede en Ecuador, aplicando las leyes ecuatorianas y en idioma español.
+17.4. Lo anterior no limita los derechos irrenunciables que la ley de tu país de residencia te reconozca como consumidor o titular de datos (por ejemplo, acudir a la autoridad de protección de datos o a los tribunales de tu domicilio cuando la ley te lo garantice), ni impide solicitar medidas urgentes ante un juez.
 
 ## 18. Disposiciones generales
 

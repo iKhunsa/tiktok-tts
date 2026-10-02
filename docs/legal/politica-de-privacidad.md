@@ -1,7 +1,7 @@
 # Política de Privacidad de TikLiveTTS
 
 **Versión del documento:** 2.0 (borrador para revisión) · **Vigencia desde:** 2 de octubre de 2026
-**Responsable del tratamiento:** [NOMBRE LEGAL COMPLETO] (alias "iKhunsa"), persona natural · RUC / cédula: [DATO] · Domicilio: [CIUDAD, PROVINCIA], Ecuador
+**Responsable del tratamiento:** iKhunsa (Ecuador)
 **Contacto de privacidad y encargado de datos (DPO/encarregado):** iKhunsa — info@tiklivetts.es
 
 Esta política explica qué datos trata TikLiveTTS (la "App"), para qué, con quién los compartimos, cuánto tiempo los guardamos y cómo ejercer tus derechos. Complementa los [Términos y Condiciones](terminos-y-condiciones.md). Está pensada para cumplir con la Ley Orgánica de Protección de Datos Personales de Ecuador (LOPDP) y, en lo aplicable, con el RGPD (UE) y la LGPD (Brasil).
@@ -34,7 +34,7 @@ Esta política explica qué datos trata TikLiveTTS (la "App"), para qué, con qu
 
 **Aclaraciones:**
 - La huella de equipo es un dato **seudonimizado**: no contiene tu nombre, pero sigue siendo un dato personal porque identifica de forma estable tu instalación.
-- Tu IP se usa para calcular país y ciudad. [CONFIRMAR: si la IP se descarta tras la geolocalización o se conserva en los registros del servidor y por cuánto tiempo.]
+- Tu IP se usa solo para estimar tu **ubicación aproximada** (país y ciudad), no tu ubicación exacta, y no la usamos para identificarte. Esa aproximación nos da una idea general de dónde se usa la App.
 - Los registros de sesión que se adjuntan a errores y reportes **pueden contener nombres de usuario** de las plataformas conectadas. Los recortamos, pero no podemos garantizar que no aparezca alguno. [CONFIRMAR: alcance del filtrado.]
 - **No tratamos** el contenido de los mensajes del chat de tus espectadores como parte de la telemetría, ni tus contraseñas de TikTok, Twitch, YouTube o Kick. La sesión de TikTok se guarda localmente.
 - No tomamos **decisiones automatizadas** ni elaboramos perfiles que produzcan efectos jurídicos sobre ti.
@@ -48,21 +48,21 @@ No vendemos datos personales ni los usamos para publicidad de terceros. Los comp
 - **Google** — síntesis de voz (Google Translate TTS) y, si abres el video de Novedades o escuchas música, YouTube.
 - **Discord** — recibe los reportes de bug y sugerencias que envías, y es el canal de la comunidad.
 - **GitHub** — descarga y actualización de la App (GitHub ve tu IP al consultar las Releases).
-- **Proveedores de alojamiento** de nuestros servidores (cuentas, telemetría, analítica y errores) [CONFIRMAR: nombre y país del proveedor].
-- **Vercel y Umami** — analítica agregada y sin cookies de nuestro sitio web.
-- Políticas de privacidad de estos proveedores: Polar <https://polar.sh/legal/privacy> · Google <https://policies.google.com/privacy> · Discord <https://discord.com/privacy> · GitHub <https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement> · Vercel <https://vercel.com/legal/privacy-policy>.
+- **Hostinger** — alojamiento de nuestros servidores (cuentas, telemetría, analítica y errores) en un VPS ubicado en **Manchester, Reino Unido** (Europa).
+- **Umami** (instancia propia) — analítica agregada y sin cookies de nuestro sitio web.
+- Políticas de privacidad de estos proveedores: Polar <https://polar.sh/legal/privacy> · Google <https://policies.google.com/privacy> · Discord <https://discord.com/privacy> · GitHub <https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement> · Hostinger <https://www.hostinger.com/legal/privacy-policy>.
 - Autoridades, cuando una ley o una orden válida lo exija.
 
 ## 4. Transferencias internacionales
 
-Algunos proveedores (Google, Discord, GitHub, Polar, Vercel) pueden tratar datos fuera de tu país. Nuestros servidores propios se alojan en [CONFIRMAR: ubicación]. Cuando tus datos salen del Espacio Económico Europeo, del Reino Unido o de Brasil, nos apoyamos en las garantías de cada proveedor (decisiones de adecuación, cláusulas contractuales tipo o mecanismos equivalentes) y en tu consentimiento, necesario para prestar el servicio. Puedes pedirnos información sobre estas garantías en info@tiklivetts.es. [CONFIRMAR: representante en la UE, si ofreces el servicio activamente a residentes de la UE.]
+Algunos proveedores (Google, Discord, GitHub, Polar, Hostinger) pueden tratar datos fuera de tu país. Soy de Ecuador y nuestros servidores propios se alojan en **Manchester, Reino Unido**. Cuando tus datos salen del Espacio Económico Europeo, del Reino Unido o de Brasil, nos apoyamos en las garantías de cada proveedor (decisiones de adecuación, cláusulas contractuales tipo o mecanismos equivalentes) y en tu consentimiento, necesario para prestar el servicio. Puedes pedirnos información sobre estas garantías en info@tiklivetts.es. [CONFIRMAR: representante en la UE, si ofreces el servicio activamente a residentes de la UE.]
 
 ## 5. Cuánto tiempo guardamos los datos
 
 - **Telemetría y analítica:** hasta **365 días**; después se borran automáticamente.
 - **Cuenta y suscripción:** mientras tu cuenta exista. Al eliminarla borramos tu cuenta, correo e historial de suscripción de nuestros sistemas.
 - **Pagos:** Polar conserva los registros de transacciones el tiempo que exijan las normas contables y fiscales; no los controlamos.
-- **Errores (GlitchTip):** [CONFIRMAR: plazo de retención configurado].
+- **Errores (GlitchTip):** sin plazo fijo; se conservan mientras sean útiles para corregir errores y mejorar la estabilidad, y puedes pedir su eliminación.
 - **Reportes en Discord:** hasta que los retiremos o nos pidas borrarlos.
 - **Registros locales:** en tu equipo, hasta que los borres o desinstales la App.
 - **Copias de seguridad:** los datos eliminados se purgan también de las copias de seguridad en un plazo de hasta [CONFIRMAR: 30] días.
@@ -102,7 +102,7 @@ No **vendemos** datos personales ni los **compartimos** para publicidad conductu
 
 ## 12. Nuestro sitio web
 
-El sitio es estático, **no usa cookies** ni formularios que recojan datos personales. Medimos visitas con **Vercel Web Analytics** y una instancia propia de **Umami**, sin cookies y sin crear perfiles. La tipografía se carga desde **Google Fonts**, por lo que tu navegador consulta servidores de Google.
+El sitio es estático, **no usa cookies** ni formularios que recojan datos personales. Medimos visitas con una instancia propia de **Umami**, sin cookies y sin crear perfiles. La tipografía se carga desde **Google Fonts**, por lo que tu navegador consulta servidores de Google.
 
 ## 13. Cambios en esta política y registro de aceptación
 

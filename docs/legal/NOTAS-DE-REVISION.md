@@ -6,18 +6,21 @@
 
 Los textos son coherentes con lo que la app hace hoy. Antes de publicarlos hay que (a) cerrar los `[CONFIRMAR]`, (b) implementar varios puntos técnicos para que lo que dicen sea cierto y (c) decidir sobre tres riesgos jurídicos.
 
-## 1. Marcadores `[CONFIRMAR]` pendientes (política de privacidad)
+## 1. Marcadores `[CONFIRMAR]` que siguen abiertos (política de privacidad)
 
 | # | Dato | Dónde |
 |---|---|---|
-| 1 | Proveedor y país del alojamiento de los servidores (cuentas, telemetría, Aptabase, GlitchTip) | §3 y §4 |
-| 2 | ¿Se descarta la IP tras la geolocalización o se conserva en los registros? ¿Cuánto tiempo? | §2 |
-| 3 | Alcance del filtrado de los registros de sesión (pueden llevar nombres de usuario) | §2 |
-| 4 | Retención configurada en GlitchTip | §5 |
-| 5 | Representante en la UE (Art. 27 RGPD) si se ofrece activamente a residentes de la UE | §4 |
-| 6 | Si existe (o existirá) un interruptor para desactivar telemetría | §6 |
-| 7 | **Nombre legal completo, RUC o cédula y domicilio (ciudad/provincia)** del proveedor: la ley ecuatoriana de comercio electrónico y consumo exige identificar al proveedor | Encabezado de ambos documentos |
-| 8 | Plazo de purga de copias de seguridad tras eliminar una cuenta (se escribió 30 días) | Privacidad §5 |
+| 1 | Alcance del filtrado de los registros de sesión (pueden llevar nombres de usuario) | §2 |
+| 2 | Representante en la UE (Art. 27 RGPD), solo si se ofrece activamente a residentes de la UE | §4 |
+| 3 | Plazo de purga de copias de seguridad tras eliminar una cuenta (se escribió 30 días) | §5 |
+| 4 | Si existe (o existirá) un interruptor para desactivar telemetría | §6 |
+
+Resueltos: proveedor y ubicación del hosting (Hostinger, Manchester, Reino Unido), tratamiento de la IP (solo ubicación aproximada), retención de GlitchTip (sin plazo fijo) y datos del proveedor (solo "iKhunsa, Ecuador" por decisión del dueño).
+
+**Puntos a vigilar de lo decidido:**
+- La retención **ilimitada** de errores (GlitchTip) choca con el principio de limitación del plazo de conservación del RGPD/LGPD; se mitiga con el derecho de eliminación a petición.
+- El texto dice que la IP "no se usa para identificar"; si los registros del servidor guardan la IP completa, conviene decirlo expresamente.
+- Sin RUC/cédula ni domicilio, la identificación del proveedor es mínima; la ley ecuatoriana de comercio electrónico y consumo puede exigir más en ventas a distancia.
 
 ## 2. Riesgos jurídicos y mitigación
 
