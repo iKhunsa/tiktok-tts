@@ -698,6 +698,7 @@
     "testError": "Fehler beim Senden des Tests",
     "testSocialSent": "Test {type} gesendet: {user}",
     "testDonorsSent": "Test-Spender gesendet ({count} Nutzer)",
+    "testViewersSent": "Test gesendet: {count} Zuschauer",
     "testChatSent": "Testnachrichten an den Chat gesendet",
     "overlayReset": "Overlay auf Werkseinstellungen zurückgesetzt",
     "testLikesSent": "Test-Likes gesendet ({count} Nutzer)",

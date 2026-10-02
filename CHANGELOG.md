@@ -4,7 +4,7 @@ Todas las novedades relevantes de este proyecto se documentan aquí.
 
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
-## [1.11.0-beta.1] — 2026-10-02 (prerelease)
+## [1.11.0-beta.0] — 2026-09-28 (prerelease)
 
 ### Añadido
 - **Planes mensuales.** Además del plan anual, ahora puedes elegir Sin Promos
@@ -36,17 +36,6 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y e
 - **Banners:** el banner del chat rota solo cada 20 segundos; el de Halloween
   abre una ventana para copiar el código de descuento y ver los planes. En
   la barra lateral, un banner para seguirnos en TikTok.
-
-### Cambiado
-- Los avatares y roles de los overlays salen de los datos de cada mensaje,
-  por lo que el avatar de TikTok se ve en el chat y en los rankings.
-
-### Videos de YouTube
-- [Ver video de novedades](https://www.youtube.com/watch?v=JBLPEXGKRlM)
-
-## [1.11.0-beta.0] — 2026-09-28 (prerelease)
-
-### Añadido
 - Moderación de chat unificada para TikTok, Twitch, YouTube y Kick en un
   solo módulo: las mismas reglas y el mismo criterio para las cuatro
   plataformas.
@@ -64,6 +53,8 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y e
   real del servicio de voz (antes se cortaba ahí sin avisar).
 - Al cerrar la app, el panel recibe de inmediato el aviso de que la
   transmisión terminó, sin esperar a que venza el tiempo de detección.
+- Los avatares y roles de los overlays salen de los datos de cada mensaje,
+  por lo que el avatar de TikTok se ve en el chat y en los rankings.
 
 ### Arreglado
 - Ya no se leen palabras repetidas: "hola hola hola hola" se lee
@@ -84,6 +75,9 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y e
 - Cada instalación usa una credencial propia para firmar sus envíos de
   telemetría. Sigue siendo compatible con servidores que aún usan el token
   compartido.
+
+### Videos de YouTube
+- [Ver video de novedades](https://www.youtube.com/watch?v=JBLPEXGKRlM)
 
 ## [1.9.3] — 2026-09-14 (prerelease)
 

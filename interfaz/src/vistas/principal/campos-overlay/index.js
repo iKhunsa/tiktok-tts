@@ -8,7 +8,7 @@ import { sincronizarCamposOverlay } from './sincronizar.js';
 import { leerValorDeEntrada } from './leer-valor.js';
 import { textoValor } from './etiquetas.js';
 
-const OVERLAYS_CON_ESQUEMA = ['chat', 'likes', 'donadores'];
+const OVERLAYS_CON_ESQUEMA = ['chat', 'likes', 'donadores', 'viewers'];
 
 const campoDe = (overlay, clave) => ESQUEMAS[overlay].find((campo) => campo.clave === clave);
 

@@ -30,6 +30,7 @@ const { testFollow } = require('./routes/test-follow');
 const { testShare } = require('./routes/test-share');
 const { testLikes } = require('./routes/test-likes');
 const { testDonors } = require('./routes/test-donors');
+const { testViewers } = require('./routes/test-viewers');
 
 const LIKE_DEBOUNCE_FALLBACK_MS = 1500;
 module.exports = {
@@ -160,6 +161,7 @@ module.exports = {
     app.post('/api/test/share', testShare(deps));
     app.post('/api/test/likes', testLikes(deps));
     app.post('/api/test/donors', testDonors(deps));
+    app.post('/api/test/viewers', testViewers(deps));
 
     // ── MCP ──────────────────────────────────────────────────────────────
     const slice = () => {
@@ -187,6 +189,6 @@ module.exports = {
       handler: () => slice().overlay,
     });
 
-    return { rutas: 8, listeners: 7 };
+    return { rutas: 9, listeners: 7 };
   },
 };

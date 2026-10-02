@@ -29,7 +29,8 @@ function crearGrupo(overlay, grupo, campos) {
 
 /**
  * Dibuja los campos de un overlay a partir de su esquema: el grupo `base`
- * va siempre visible; el resto, dentro del panel "Personalizar".
+ * va siempre visible; el resto, dentro del panel "Personalizar" (los overlays
+ * sin grupos extra no tienen panel).
  * Se llama de nuevo al cambiar de idioma (las etiquetas se traducen al crear).
  */
 export function montarCamposOverlay(overlay) {
@@ -40,6 +41,7 @@ export function montarCamposOverlay(overlay) {
   base.replaceChildren(...grupos.get('base').map((campo) => crearCampo(overlay, campo)));
   grupos.delete('base');
 
+  if (!panel) return;
   panel.querySelectorAll('.cfg-grupo').forEach((grupo) => grupo.remove());
   for (const [grupo, campos] of grupos) panel.appendChild(crearGrupo(overlay, grupo, campos));
 }

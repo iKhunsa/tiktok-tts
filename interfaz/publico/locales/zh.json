@@ -698,6 +698,7 @@
     "testError": "发送测试时出错",
     "testSocialSent": "测试 {type} 已发送: {user}",
     "testDonorsSent": "已发送测试打赏（{count} 位用户）",
+    "testViewersSent": "测试已发送：{count} 位观众",
     "testChatSent": "已向聊天发送测试消息",
     "overlayReset": "已将浮层恢复为出厂设置",
     "testLikesSent": "测试点赞已发送 ({count} 用户)",

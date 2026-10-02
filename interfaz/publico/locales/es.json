@@ -744,6 +744,7 @@
     "testError": "Error al enviar test",
     "testSocialSent": "Test {type} enviado: {user}",
     "testDonorsSent": "Test donadores enviados ({count} usuarios)",
+    "testViewersSent": "Test enviado: {count} espectadores",
     "testChatSent": "Mensajes de prueba enviados al chat",
     "overlayReset": "Overlay restablecido a los valores de fábrica",
     "testLikesSent": "Test likes enviados ({count} usuarios)",

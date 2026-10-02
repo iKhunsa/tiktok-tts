@@ -348,12 +348,11 @@
           <span class="obs-hint">460 × 112 px</span>
         </div>
         <div class="cfg-fields" data-campos-base="viewers"></div>
-        <details class="cfg-personalizar" data-campos-panel="viewers">
-          <summary data-i18n="overlayCfg.personalizar">Personalizar</summary>
-        </details>
         <iframe class="cfg-preview" data-preview="viewers" tabindex="-1" aria-hidden="true"></iframe>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-viewers">http://localhost:3000/overlay-viewers.html</span>
+          <button class="cfg-btn" onclick="testViewers()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Test</button>
+          <button class="cfg-btn" onclick="restablecerOverlay('viewers', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
           <button class="cfg-btn" onclick="copyCfgUrl('viewers')" data-i18n="btn.copy">Copiar</button>
           <a class="cfg-btn" id="cfg-open-viewers" href="http://localhost:3000/overlay-viewers.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>

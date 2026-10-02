@@ -698,6 +698,7 @@
     "testError": "테스트 전송 오류",
     "testSocialSent": "테스트 {type} 전송됨: {user}",
     "testDonorsSent": "테스트 후원 전송됨 ({count}명)",
+    "testViewersSent": "테스트 전송: 시청자 {count}명",
     "testChatSent": "채팅에 테스트 메시지를 보냈습니다",
     "overlayReset": "오버레이를 기본값으로 초기화했습니다",
     "testLikesSent": "테스트 좋아요 전송됨 ({count} 사용자)",

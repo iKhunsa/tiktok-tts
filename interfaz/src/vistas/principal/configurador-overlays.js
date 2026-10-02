@@ -87,6 +87,7 @@ async function testRanking(endpoint, sentKey) {
 
 export const testTopLikers = () => testRanking('/api/test/likes', 'toast.testLikesSent');
 export const testTopDonors = () => testRanking('/api/test/donors', 'toast.testDonorsSent');
+export const testViewers = () => testRanking('/api/test/viewers', 'toast.testViewersSent');
 
 // Un mensaje por plataforma y por rol, para ver el logo y el estilo de cada uno.
 // TikTok no informa moderadores, asi que ese rol se simula desde las demas.

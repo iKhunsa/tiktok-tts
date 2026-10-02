@@ -698,6 +698,7 @@
     "testError": "テストの送信中にエラーが発生しました",
     "testSocialSent": "テスト {type} を送信しました: {user}",
     "testDonorsSent": "テストドナーを送信しました（{count}人）",
+    "testViewersSent": "テスト送信：視聴者 {count} 人",
     "testChatSent": "テストメッセージをチャットに送信しました",
     "overlayReset": "オーバーレイを初期設定に戻しました",
     "testLikesSent": "テストいいねを送信しました ({count} ユーザー)",

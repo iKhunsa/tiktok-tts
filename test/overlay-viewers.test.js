@@ -20,7 +20,7 @@ function registerOverlay() {
   const app = {
     use() {},
     get(path, handler) { routes.set(path, handler); },
-    post() {},
+    post(path, handler) { routes.set(path, handler); },
   };
   overlay.register({ app, bus, logger: { log() {} } });
   return { bus, broadcasts, routes };
@@ -69,4 +69,15 @@ test('/api/overlay-stats incluye el total de viewers', () => {
   bus.emit('canal:viewers', { platform: 'tiktok', channel: 'ana', viewerCount: 12 });
 
   assert.equal(readOverlayStats(routes).viewerCount, 12);
+});
+
+test('POST /api/test/viewers emite un conteo de prueba y lo manda al overlay', () => {
+  resetOverlay();
+  let respuesta;
+  context.routes.get('/api/test/viewers')(null, { json(value) { respuesta = value; } });
+
+  assert.equal(respuesta.success, true);
+  assert.equal(context.broadcasts.at(-1).type, 'viewers');
+  assert.equal(context.broadcasts.at(-1).total, respuesta.count);
+  resetOverlay();
 });

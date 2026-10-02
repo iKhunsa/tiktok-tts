@@ -40,7 +40,7 @@ import { copyToClipboard } from './utils-app.js';
 import {
   buildOverlayUrl, updateOverlayUrl, onCfgChange, copyCfgUrl,
   updateFollowerDisplay, testGiftAlert, testSocialAlert,
-  testTopLikers, testTopDonors, testChatOverlay, restablecerOverlay,
+  testTopLikers, testTopDonors, testViewers, testChatOverlay, restablecerOverlay,
 } from './configurador-overlays.js';
 import { iniciarCamposOverlay } from './campos-overlay/index.js';
 import {
@@ -112,7 +112,7 @@ Object.assign(window, {
   copyToClipboard,
   // configurador de overlays
   onCfgChange, copyCfgUrl, testGiftAlert, testSocialAlert,
-  testTopLikers, testTopDonors, testChatOverlay, restablecerOverlay,
+  testTopLikers, testTopDonors, testViewers, testChatOverlay, restablecerOverlay,
   // toggles de chat
   toggleChatToggles, toggleOption, setSoloChatMode,
   // atajos de teclado

@@ -39,6 +39,6 @@ test('changelog: parsea versiones, secciones y viñetas multilínea del CHANGELO
   assert.ok(versiones.length > 10);
   assert.equal(versiones[0].etiqueta, 'prerelease');
   assert.ok(versiones.every((v) => v.version && v.secciones.every((s) => s.items.length > 0)));
-  const moderacion = versiones[0].secciones[0].items[0];
+  const moderacion = versiones[0].secciones.flatMap((s) => s.items).find((item) => item.startsWith('**Moderación') || item.startsWith('Moderación de chat'));
   assert.match(moderacion, /cuatro plataformas\.$/); // une las líneas de continuación
 });
