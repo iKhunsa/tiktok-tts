@@ -5,7 +5,9 @@ const { dialog } = require('electron');
 
 function setupAutoUpdater({ app, bus, logger, getMainWindow, getTray, buildTrayMenu, onPendingVersion }) {
   autoUpdater.autoDownload = true;
-  autoUpdater.autoInstallOnAppQuit = true;
+  // Toda instalacion pasa por el asistente visible (exige aceptar Terminos y
+  // Privacidad); con true, al cerrar la app se instalaria en silencio sin licencia.
+  autoUpdater.autoInstallOnAppQuit = false;
 
   const sendUpdate = (data) => {
     const win = getMainWindow();

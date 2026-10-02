@@ -19,7 +19,7 @@
     "postbuild:front": "node scripts/verify-front-build.js",
     "serve": "npm run build:front && node server.js",
     "serve:watch": "npm run build:front && node --watch server.js",
-    "prebuild:electron": "node scripts/ensure-configs.js && npm run build:front",
+    "prebuild:electron": "node scripts/ensure-configs.js && node scripts/build-license-texts.js && npm run build:front",
     "build:electron": "electron-builder --win"
   },
   "build": {

@@ -14,7 +14,7 @@ function buildTrayMenu({ onOpen, onInstallUpdate, onQuit }, updateVersion = null
     items.push({ type: 'separator' });
   }
 
-  // app.quit() dispara before-quit para que autoInstallOnAppQuit funcione.
+  // Salir no instala la actualizacion pendiente: se vuelve a ofrecer al abrir la app.
   items.push({ label: 'Salir', click: onQuit });
 
   return Menu.buildFromTemplate(items);

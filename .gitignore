@@ -33,3 +33,7 @@ cuentas.json
 
 # skills vendorizadas por `npx skills` (el lock basta, se re-bajan)
 .agents/
+
+# textos del instalador NSIS: se generan desde docs/legal/*.md (scripts/build-license-texts.js)
+/build/license_*.txt
+/build/terms-version.nsh
