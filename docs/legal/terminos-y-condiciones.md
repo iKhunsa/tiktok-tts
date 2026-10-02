@@ -1,9 +1,10 @@
 # Términos y Condiciones de Uso de TikLiveTTS
 
 **Versión del documento:** 2.0 (borrador para revisión) · **Vigencia desde:** 2 de octubre de 2026
-**Responsable:** iKhunsa, persona natural, Ecuador · **Contacto:** info@tiklivetts.es · Discord: <https://discord.com/invite/mwY859tcQK>
+**Proveedor:** [NOMBRE LEGAL COMPLETO] (alias "iKhunsa"), persona natural · **RUC / cédula:** [DATO] · **Domicilio:** [CIUDAD, PROVINCIA], Ecuador
+**Contacto:** info@tiklivetts.es · Discord: <https://discord.com/invite/mwY859tcQK> · Sitio: <https://tiklivetts.es>
 
-> Al instalar o usar TikLiveTTS aceptas estos Términos y Condiciones y la [Política de Privacidad](politica-de-privacidad.md). Si no estás de acuerdo, no instales ni uses la aplicación.
+> Al instalar, actualizar o usar TikLiveTTS aceptas estos Términos y Condiciones y la [Política de Privacidad](politica-de-privacidad.md), **incluido el uso de tus datos y de tu correo para publicidad** (secciones 7, 8 y 9). Si no estás de acuerdo, no instales ni uses la aplicación.
 
 ---
 
@@ -15,10 +16,10 @@ TikLiveTTS es un proyecto **independiente**. No está afiliado, patrocinado ni r
 
 ## 2. Aceptación, edad y capacidad
 
-2.1. Aceptas estos términos al marcar la casilla de aceptación del instalador o, de no existir, al usar la App por primera vez.
+2.1. Aceptas estos términos al pulsar "Acepto" en el instalador. **El instalador te los muestra en cada instalación y en cada actualización**, y debes aceptarlos de nuevo cada vez: si no los aceptas, la instalación o la actualización no continúa.
 2.2. Debes tener la edad legal para contratar en tu país (18 años en Ecuador). Si eres menor de edad, solo puedes usar la App con el permiso y bajo la responsabilidad de tu representante legal, quien acepta estos términos por ti.
 2.3. Usas la App bajo tu propia responsabilidad y declaras que la información que nos proporcionas es veraz.
-2.4. **Registro de aceptación:** guardamos, en tu equipo y en tu cuenta si la tienes, la versión de estos términos que aceptaste y la fecha, para poder demostrarlo. Las actualizaciones automáticas de la App no vuelven a mostrar el instalador: cuando publiquemos una versión nueva de estos términos o de la Política de Privacidad con cambios relevantes, la App te pedirá aceptarla de nuevo antes de seguir usándola.
+2.4. **Registro de aceptación:** guardamos en tu equipo (y en tu cuenta, si la tienes) la versión de estos términos que aceptaste y la fecha, para poder demostrarlo. Si no aceptas una actualización, puedes seguir usando la versión instalada, que se rige por los términos que aceptaste antes, pero no recibirás nuevas funciones ni correcciones.
 
 ## 3. Software de código abierto y verificable
 
@@ -41,7 +42,7 @@ TikLiveTTS es un proyecto **independiente**. No está afiliado, patrocinado ni r
 
 ## 6. Planes, pagos y renovaciones
 
-6.1. La App ofrece un plan **Free** y planes de pago (**Sin Promos** y **Pro**) con facturación **mensual** o **anual**. Los precios vigentes se muestran en la App antes de pagar.
+6.1. La App ofrece un plan **Free** y planes de pago (**Sin Promos** y **Pro**) con facturación **mensual** o **anual**. Los precios vigentes se muestran en la App antes de pagar. A la fecha de este documento (en dólares estadounidenses): **Sin Promos** US$3 al mes o US$25 al año; **Pro** US$8 al mes o US$85 al año. Polar calcula y aplica los impuestos que correspondan a tu país al momento de pagar; el importe final se muestra antes de confirmar.
 6.2. Los pagos los procesa **Polar** (<https://polar.sh>), que actúa como comerciante de registro y gestiona impuestos y datos de pago. Nosotros no vemos ni almacenamos el número de tu tarjeta. Al pagar aceptas también los términos de Polar.
 6.3. Las suscripciones se **renuevan automáticamente** al final de cada período hasta que las canceles. Puedes cancelar cuando quieras; la cancelación evita la siguiente renovación y conservas el plan hasta el fin del período ya pagado.
 6.4. Si cambias de plan anual a mensual, el cambio se aplica en la **siguiente renovación**; el período anual ya pagado se cumple completo.
@@ -77,17 +78,18 @@ No vendemos tus datos. El contenido de los mensajes del chat de tus espectadores
 
 ## 9. Comunicaciones comerciales por correo electrónico
 
-9.1. Los correos **transaccionales** (confirmaciones, avisos de pago, seguridad de la cuenta, cambios en estos términos) son necesarios para prestar el servicio y no requieren consentimiento adicional.
-9.2. Con una **casilla independiente, que aparece sin marcar al crear tu cuenta**, puedes consentir que usemos tu correo para enviarte **publicidad y novedades de TikLiveTTS y de otros proyectos de mi propiedad** (iKhunsa). Este consentimiento es **opcional**: no marcarlo no afecta tu acceso a la App.
+9.1. Los correos **transaccionales** (confirmaciones, avisos de pago, seguridad de la cuenta, cambios en estos términos) son necesarios para prestar el servicio.
+9.2. **Al aceptar estos términos y compartir tu correo electrónico** (por ejemplo, al crear tu cuenta o al pagar un plan), **consientes que usemos tu correo para enviarte publicidad, ofertas y novedades de TikLiveTTS y de otros proyectos de mi propiedad** (iKhunsa). Este consentimiento forma parte de la aceptación de estos términos; puedes retirarlo en cualquier momento, sin costo, como se explica abajo.
 9.3. Puedes **retirar tu consentimiento** en cualquier momento mediante el enlace de baja de cada correo, escribiendo a info@tiklivetts.es o eliminando tu cuenta. No cederemos ni venderemos tu correo a terceros para su propia publicidad.
-9.4. Guardamos la prueba de tu consentimiento (fecha, versión del texto y casilla marcada). Cada correo comercial identificará al remitente, incluirá un enlace de baja que funciona con un solo clic y dejaremos de enviártelos en un máximo de 10 días tras tu baja.
+9.4. Guardamos la prueba de tu aceptación (fecha y versión de estos términos). Cada correo comercial identificará al remitente, incluirá un enlace de baja que funciona con un solo clic y dejaremos de enviártelos en un máximo de 10 días tras tu baja.
 
 ## 10. Uso aceptable y plataformas de terceros
 
 10.1. Te comprometes a no usar la App para violar la ley, acosar, spamear, suplantar, vulnerar derechos de terceros ni infringir los términos de las plataformas que conectes (TikTok, Twitch, YouTube, Kick).
 10.2. **Eres el único responsable** de cumplir los términos de esas plataformas y de las sanciones que te impongan (por ejemplo, limitaciones o suspensión de tu canal). TikLiveTTS se conecta a ellas mediante interfaces que pueden cambiar o dejar de funcionar sin aviso.
 10.3. Para agregar un canal de TikTok se te pedirá iniciar sesión en TikTok dentro de la App. Esa sesión se guarda **localmente en tu equipo**; no recibimos tu contraseña de TikTok.
-10.4. Eres responsable del contenido que lees en voz alta y de los permisos necesarios para emitirlo (por ejemplo, derechos de música).
+10.4. Eres responsable del contenido que lees en voz alta y de los permisos necesarios para emitirlo.
+10.5. **Música y derechos de autor:** las funciones que reproducen música (por ejemplo, el bot musical, que obtiene el audio de servicios como YouTube) son una herramienta tuya. Eres el único responsable de contar con los derechos para reproducir y emitir ese contenido en tus directos y de cumplir los términos de esos servicios. No concedemos licencias sobre obras de terceros. Si crees que algún contenido viola tus derechos de autor, escríbenos a info@tiklivetts.es con la identificación de la obra y de tu titularidad.
 
 ## 11. Tus espectadores y el contenido de tu chat
 
@@ -120,10 +122,19 @@ Podemos actualizar estos términos. Publicaremos la nueva versión en el reposit
 
 Estos términos se rigen por las leyes de la **República del Ecuador**. Para cualquier controversia, las partes se someten a los jueces y tribunales competentes de Ecuador, sin perjuicio de los derechos irrenunciables que la ley de tu país de residencia te reconozca como consumidor o titular de datos.
 
-## 18. Contacto
+## 18. Disposiciones generales
+
+18.1. **Divisibilidad:** si una cláusula fuera nula o inaplicable, el resto sigue vigente.
+18.2. **Acuerdo completo:** estos términos y la Política de Privacidad son el acuerdo íntegro entre tú y nosotros sobre la App y sustituyen versiones anteriores.
+18.3. **Cesión:** puedes ceder tus derechos solo con nuestro consentimiento; nosotros podemos ceder nuestra posición a un sucesor del proyecto, avisándote.
+18.4. **No renuncia:** no ejercer un derecho no implica renunciar a él.
+18.5. **Fuerza mayor:** no respondemos por incumplimientos causados por hechos fuera de nuestro control razonable (caídas de proveedores, cambios de plataformas, fallos de red, causas de fuerza mayor).
+18.6. **Notificaciones:** podemos avisarte dentro de la App, en el instalador, por el correo de tu cuenta o en nuestro sitio y repositorio.
+
+## 19. Contacto
 
 Para dudas sobre estos términos, solicitudes de datos o retiro de consentimientos: info@tiklivetts.es, el Discord de la comunidad o los issues de GitHub.
 
-## 19. Idioma
+## 20. Idioma
 
 Estos términos están redactados en español. Si se ofrecen traducciones, en caso de discrepancia prevalece la versión en español.

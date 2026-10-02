@@ -1,7 +1,8 @@
 # Política de Privacidad de TikLiveTTS
 
 **Versión del documento:** 2.0 (borrador para revisión) · **Vigencia desde:** 2 de octubre de 2026
-**Responsable del tratamiento:** iKhunsa, persona natural, Ecuador · **Contacto de privacidad y encargado de datos (DPO/encarregado):** iKhunsa — info@tiklivetts.es
+**Responsable del tratamiento:** [NOMBRE LEGAL COMPLETO] (alias "iKhunsa"), persona natural · RUC / cédula: [DATO] · Domicilio: [CIUDAD, PROVINCIA], Ecuador
+**Contacto de privacidad y encargado de datos (DPO/encarregado):** iKhunsa — info@tiklivetts.es
 
 Esta política explica qué datos trata TikLiveTTS (la "App"), para qué, con quién los compartimos, cuánto tiempo los guardamos y cómo ejercer tus derechos. Complementa los [Términos y Condiciones](terminos-y-condiciones.md). Está pensada para cumplir con la Ley Orgánica de Protección de Datos Personales de Ecuador (LOPDP) y, en lo aplicable, con el RGPD (UE) y la LGPD (Brasil).
 
@@ -29,7 +30,7 @@ Esta política explica qué datos trata TikLiveTTS (la "App"), para qué, con qu
 | **Reportes de bug y sugerencias** que tú envíes: tu usuario de Discord, el enlace de tu canal, tu descripción y, en bugs, el registro de la sesión | Atender tu reporte | Consentimiento (lo envías tú) |
 | **Texto leído en voz alta** (puede incluir el nombre de quien escribió si activas esa opción) | Generar el audio con el servicio de voz de Google Translate | Ejecución del servicio |
 | **Registros locales y ajustes** (en tu carpeta de datos de la App): configuración, moderación, soundpad, sesión de TikTok | Funcionamiento de la App en tu equipo | Ejecución del servicio — **no los recibimos** |
-| **Correo para publicidad** (solo si marcas la casilla opcional) | Publicidad y novedades de TikLiveTTS y de otros proyectos de iKhunsa | Consentimiento, revocable |
+| **Correo para publicidad** (el que compartes al crear tu cuenta o al pagar) | Publicidad, ofertas y novedades de TikLiveTTS y de otros proyectos de iKhunsa | Consentimiento (incluido en la aceptación de los Términos), revocable |
 
 **Aclaraciones:**
 - La huella de equipo es un dato **seudonimizado**: no contiene tu nombre, pero sigue siendo un dato personal porque identifica de forma estable tu instalación.
@@ -49,6 +50,7 @@ No vendemos datos personales ni los usamos para publicidad de terceros. Los comp
 - **GitHub** — descarga y actualización de la App (GitHub ve tu IP al consultar las Releases).
 - **Proveedores de alojamiento** de nuestros servidores (cuentas, telemetría, analítica y errores) [CONFIRMAR: nombre y país del proveedor].
 - **Vercel y Umami** — analítica agregada y sin cookies de nuestro sitio web.
+- Políticas de privacidad de estos proveedores: Polar <https://polar.sh/legal/privacy> · Google <https://policies.google.com/privacy> · Discord <https://discord.com/privacy> · GitHub <https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement> · Vercel <https://vercel.com/legal/privacy-policy>.
 - Autoridades, cuando una ley o una orden válida lo exija.
 
 ## 4. Transferencias internacionales
@@ -63,6 +65,7 @@ Algunos proveedores (Google, Discord, GitHub, Polar, Vercel) pueden tratar datos
 - **Errores (GlitchTip):** [CONFIRMAR: plazo de retención configurado].
 - **Reportes en Discord:** hasta que los retiremos o nos pidas borrarlos.
 - **Registros locales:** en tu equipo, hasta que los borres o desinstales la App.
+- **Copias de seguridad:** los datos eliminados se purgan también de las copias de seguridad en un plazo de hasta [CONFIRMAR: 30] días.
 
 ## 6. Tus derechos y cómo ejercerlos
 
@@ -83,7 +86,7 @@ Con tu aceptación, usamos los **datos públicos** de tus canales (nombre de usu
 
 ## 8. Publicidad por correo electrónico
 
-Solo si marcas la casilla **opcional** (que aparece sin marcar al registrarte) usaremos tu correo para enviarte publicidad y novedades de TikLiveTTS y de otros proyectos de iKhunsa. No compartimos ni vendemos tu correo a terceros para su publicidad. Puedes retirar tu consentimiento cuando quieras; seguirás recibiendo los correos transaccionales necesarios (pagos, seguridad, cambios de términos).
+Al aceptar los Términos y compartir tu correo, consientes que lo usemos para enviarte publicidad, ofertas y novedades de TikLiveTTS y de otros proyectos de iKhunsa. No compartimos ni vendemos tu correo a terceros para su propia publicidad. Puedes retirar tu consentimiento cuando quieras con el enlace de baja de cada correo, escribiendo a info@tiklivetts.es o eliminando tu cuenta; seguirás recibiendo los correos transaccionales necesarios (pagos, seguridad, cambios de términos).
 
 ## 9. Seguridad
 
@@ -103,7 +106,7 @@ El sitio es estático, **no usa cookies** ni formularios que recojan datos perso
 
 ## 13. Cambios en esta política y registro de aceptación
 
-Guardamos la versión de esta política que aceptaste y la fecha. Publicaremos la versión actualizada con su fecha de vigencia y te avisaremos en la App cuando el cambio sea relevante. Si el cambio amplía el uso de tus datos, volveremos a pedir tu consentimiento cuando la ley lo exija.
+Guardamos la versión de esta política que aceptaste y la fecha. El instalador te la muestra en cada instalación y actualización y debes aceptarla de nuevo cada vez. Publicaremos la versión actualizada con su fecha de vigencia y te avisaremos en la App cuando el cambio sea relevante. Si el cambio amplía el uso de tus datos, volveremos a pedir tu consentimiento cuando la ley lo exija.
 
 ## 14. Contacto
 
