@@ -1089,6 +1089,7 @@
     "invalidCredentials": "Неверная почта или пароль.",
     "serviceUnavailable": "Сервис аккаунтов недоступен. Повторите позже.",
     "generic": "Произошла ошибка. Повторите попытку.",
+    "notImplemented": "Эта функция пока недоступна",
     "weakPassword": "Пароль слишком короткий.",
     "passwordMismatch": "Пароли не совпадают.", "ideasRequired":"Заполните обязательные поля идеи.","ideasInvalidAudience":"Выберите допустимую аудиторию.","ideasRateLimited":"Подождите минуту перед следующей идеей.","ideasUnavailable":"Предложения временно недоступны.","ideasSendFailed":"Не удалось отправить идею. Повторите попытку."
   },
@@ -1198,7 +1199,13 @@
     "planSinPromosCancels": "Без рекламы · отменяется {fecha}",
     "changePhoto": "Изменить фото",
     "removePhoto": "Удалить фото",
-    "photoError": "Не удалось сохранить фото"
+    "photoError": "Не удалось сохранить фото",
+    "intervalMonthly": "Ежемесячная оплата",
+    "intervalYearly": "Ежегодная оплата",
+    "switchToMonthly": "Перейти на месячный тариф при следующем продлении",
+    "switchNote": "Без возврата: годовой тариф действует весь срок, изменение вступит в силу при продлении.",
+    "changesAt": "Перейдёт на месячный тариф {fecha}",
+    "switchRequested": "Готово: при следующем продлении вы перейдёте на месячный тариф."
   },
   "sidebarAccount": {
     "badgeFree": "БЕСПЛАТНО",
@@ -1221,11 +1228,13 @@
     "freeBugs": "Сообщения об ошибках",
     "noAdsName": "Без рекламы",
     "noAdsPrice": "25 USD в год",
+    "noAdsPriceMonthly": "3 USD в месяц",
     "noAdsFree": "Всё из тарифа Free",
     "noAdsPromos": "Без рекламных голосовых сообщений",
     "chooseNoAds": "Выбрать",
     "proName": "Pro",
     "proPrice": "85 USD в год",
+    "proPriceMonthly": "8 USD в месяц",
     "proNoAds": "Всё из тарифа «Без рекламы»",
     "proMusic": "Музыкальный бот с очередью песен",
     "proSoundpad": "Саундпад со звуковыми эффектами",
@@ -1234,7 +1243,10 @@
     "proMcp": "Сервер агента MCP",
     "proChannels": "Подключайте 2 или больше каналов на одной платформе",
     "choosePro": "Выбрать Pro",
-    "currentPlan": "Текущий тариф"
+    "currentPlan": "Текущий тариф",
+    "billingMonthly": "Ежемесячно",
+    "billingYearly": "Ежегодно",
+    "billingLabel": "Периодичность оплаты"
   },
   "accountMenu": {
     "planFree": "Бесплатный тариф",

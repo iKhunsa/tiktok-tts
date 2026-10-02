@@ -54,6 +54,21 @@ function formAuth() {
     </div>`;
 }
 
+// Intervalo de facturacion del plan de pago: el anual se puede pasar a mensual
+// en la proxima renovacion (sin reembolso, el periodo pagado se cumple completo).
+function intervaloBlock(sub, hasta) {
+  if (!sub.interval) return '';
+  const intervaloKey = sub.interval === 'month' ? 'cuenta.intervalMonthly' : 'cuenta.intervalYearly';
+  let detalle = '';
+  if (sub.nextInterval === 'month') {
+    detalle = `<p class="cuenta-hint">${esc(t('cuenta.changesAt', { fecha: hasta }))}</p>`;
+  } else if (sub.interval === 'year' && !sub.cancelAtPeriodEnd) {
+    detalle = `<button class="cuenta-btn-ghost" id="cuentaSwitchMonthly" data-i18n="cuenta.switchToMonthly"></button>
+      <p class="cuenta-hint" data-i18n="cuenta.switchNote"></p>`;
+  }
+  return `<div class="cuenta-plan-interval"><p class="cuenta-hint" data-i18n="${intervaloKey}"></p>${detalle}</div>`;
+}
+
 function planCard(s) {
   const esPro = s.plan === 'pro';
   const esSinPromos = s.plan === 'sin-promos';
@@ -76,6 +91,7 @@ function planCard(s) {
         </div>
       </div>
       ${s.degraded ? `<p class="cuenta-hint" data-i18n="cuenta.degraded"></p>` : ''}
+      ${esPro || esSinPromos ? intervaloBlock(sub, hasta) : ''}
       ${esPro
     ? (sub.cancelAtPeriodEnd
       ? `<button class="cuenta-btn-primary" id="cuentaResume" data-i18n="cuenta.resume"></button>`
@@ -194,6 +210,7 @@ export function renderCuentaPanel() {
   el.querySelector('#cuentaUpgrade')?.addEventListener('click', () => abrirPopupPlanes());
   el.querySelector('#cuentaManage')?.addEventListener('click', (e) => cancelarSuscripcion(e.currentTarget));
   el.querySelector('#cuentaResume')?.addEventListener('click', (e) => reanudarSuscripcion(e.currentTarget));
+  el.querySelector('#cuentaSwitchMonthly')?.addEventListener('click', (e) => pasarAMensual(e.currentTarget));
 }
 
 async function enviarAuth(el) {
@@ -275,6 +292,21 @@ async function reanudarSuscripcion(btn) {
     if (!r.ok) return toastError(r.body);
     aplicarSesion(r.body);
     showToast(t('cuenta.resumed'));
+    renderCuentaPanel();
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// Polar puede no soportar el cambio (501 errors.notImplemented): toastError lo
+// muestra y la vista queda como estaba.
+async function pasarAMensual(btn) {
+  btn.disabled = true;
+  try {
+    const r = await pedir('/api/auth/subscription/change-interval', { method: 'POST', body: { intervalo: 'month' } });
+    if (!r.ok) return toastError(r.body);
+    aplicarSesion(r.body);
+    showToast(t('cuenta.switchRequested'));
     renderCuentaPanel();
   } finally {
     btn.disabled = false;

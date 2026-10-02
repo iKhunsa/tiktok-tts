@@ -1089,6 +1089,7 @@
     "invalidCredentials": "Email ou mot de passe incorrect.",
     "serviceUnavailable": "Service de comptes indisponible. Réessayez bientôt.",
     "generic": "Une erreur s'est produite. Réessayez.",
+    "notImplemented": "Cette fonctionnalité n'est pas encore disponible",
     "weakPassword": "Le mot de passe est trop court.",
     "passwordMismatch": "Les mots de passe ne correspondent pas.", "ideasRequired":"Remplissez les champs obligatoires de l'idée.","ideasInvalidAudience":"Choisissez un public valide.","ideasRateLimited":"Attendez une minute avant d'envoyer une autre idée.","ideasUnavailable":"Les suggestions sont temporairement indisponibles.","ideasSendFailed":"Impossible d'envoyer l'idée. Réessayez."
   },
@@ -1198,7 +1199,13 @@
     "planSinPromosCancels": "Sans promotions · résiliation le {fecha}",
     "changePhoto": "Changer la photo",
     "removePhoto": "Supprimer la photo",
-    "photoError": "Impossible d'enregistrer la photo"
+    "photoError": "Impossible d'enregistrer la photo",
+    "intervalMonthly": "Facturation mensuelle",
+    "intervalYearly": "Facturation annuelle",
+    "switchToMonthly": "Passer au mensuel au prochain renouvellement",
+    "switchNote": "Aucun remboursement : l'offre annuelle va jusqu'à son terme et le changement s'applique au renouvellement.",
+    "changesAt": "Passera au mensuel le {fecha}",
+    "switchRequested": "C'est fait : vous passerez au mensuel au prochain renouvellement."
   },
   "sidebarAccount": {
     "badgeFree": "FREE",
@@ -1221,11 +1228,13 @@
     "freeBugs": "Signalement de bugs",
     "noAdsName": "Sans promotions",
     "noAdsPrice": "25 $US par an",
+    "noAdsPriceMonthly": "3 $US par mois",
     "noAdsFree": "Tout ce qui est inclus dans l'offre Free",
     "noAdsPromos": "Aucun message vocal promotionnel",
     "chooseNoAds": "Choisir",
     "proName": "Pro",
     "proPrice": "85 $US par an",
+    "proPriceMonthly": "8 $US par mois",
     "proNoAds": "Tout ce qui est inclus dans Sans promotions",
     "proMusic": "Bot musical avec file d'attente de morceaux",
     "proSoundpad": "Soundpad d'effets sonores",
@@ -1234,7 +1243,10 @@
     "proMcp": "Serveur d'agent MCP",
     "proChannels": "Connectez 2 canaux ou plus sur la même plateforme",
     "choosePro": "Choisir Pro",
-    "currentPlan": "Offre actuelle"
+    "currentPlan": "Offre actuelle",
+    "billingMonthly": "Mensuel",
+    "billingYearly": "Annuel",
+    "billingLabel": "Fréquence de facturation"
   },
   "accountMenu": {
     "planFree": "Offre gratuite",

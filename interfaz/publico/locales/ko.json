@@ -1089,6 +1089,7 @@
     "invalidCredentials": "이메일 또는 비밀번호가 잘못되었습니다.",
     "serviceUnavailable": "계정 서비스를 사용할 수 없습니다. 잠시 후 다시 시도하세요.",
     "generic": "오류가 발생했습니다. 다시 시도하세요.",
+    "notImplemented": "이 기능은 아직 사용할 수 없습니다",
     "weakPassword": "비밀번호가 너무 짧습니다.",
     "passwordMismatch": "비밀번호가 일치하지 않습니다.", "ideasRequired":"필수 아이디어 항목을 작성해 주세요.","ideasInvalidAudience":"유효한 대상을 선택해 주세요.","ideasRateLimited":"다른 아이디어를 보내기 전에 1분 기다려 주세요.","ideasUnavailable":"제안 기능을 일시적으로 사용할 수 없습니다.","ideasSendFailed":"아이디어를 보낼 수 없습니다. 다시 시도해 주세요."
   },
@@ -1198,7 +1199,13 @@
     "planSinPromosCancels": "프로모션 없음 · {fecha}에 해지",
     "changePhoto": "사진 변경",
     "removePhoto": "사진 삭제",
-    "photoError": "사진을 저장할 수 없습니다"
+    "photoError": "사진을 저장할 수 없습니다",
+    "intervalMonthly": "월간 결제",
+    "intervalYearly": "연간 결제",
+    "switchToMonthly": "다음 갱신 시 월간으로 변경",
+    "switchNote": "환불 없음: 연간 요금제는 기간이 끝날 때까지 유지되며 변경은 갱신 시 적용됩니다.",
+    "changesAt": "{fecha}에 월간으로 전환됩니다",
+    "switchRequested": "완료: 다음 갱신 시 월간으로 전환됩니다."
   },
   "sidebarAccount": {
     "badgeFree": "무료",
@@ -1221,11 +1228,13 @@
     "freeBugs": "버그 신고",
     "noAdsName": "프로모션 없음",
     "noAdsPrice": "연간 US$25",
+    "noAdsPriceMonthly": "월 US$3",
     "noAdsFree": "Free 요금제의 모든 기능",
     "noAdsPromos": "프로모션 음성 메시지 없음",
     "chooseNoAds": "선택",
     "proName": "Pro",
     "proPrice": "연간 US$85",
+    "proPriceMonthly": "월 US$8",
     "proNoAds": "프로모션 없음 요금제의 모든 기능",
     "proMusic": "곡 대기열이 있는 음악 봇",
     "proSoundpad": "효과음 사운드패드",
@@ -1234,7 +1243,10 @@
     "proMcp": "MCP 에이전트 서버",
     "proChannels": "같은 플랫폼에서 2개 이상의 채널 연결",
     "choosePro": "Pro 선택",
-    "currentPlan": "현재 요금제"
+    "currentPlan": "현재 요금제",
+    "billingMonthly": "월간",
+    "billingYearly": "연간",
+    "billingLabel": "결제 주기"
   },
   "accountMenu": {
     "planFree": "무료 요금제",
