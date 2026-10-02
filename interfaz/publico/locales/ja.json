@@ -573,6 +573,8 @@
   },
   "overlayStr": {
     "newFollowers": "新しいフォロワー",
+    "viewers": "視聴者",
+    "liveViewerCount": "TikTokライブを視聴中の人",
     "waitingDonors": "ギフトを待っています...",
     "waitingLikes": "いいねを待っています...",
     "giftReceived": "ギフト受信",

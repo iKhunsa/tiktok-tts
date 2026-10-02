@@ -158,6 +158,22 @@ test('live silencioso (sin chat) sigue sano: cualquier senal tecnica rearma el w
   );
 });
 
+test('roomUserSeq publica el conteo de viewers de TikTok', async () => {
+  await withFakeTiktok(
+    () => ({ roomInfo: { status: 2 } }),
+    async ({ connectTiktokChannel }, instances) => {
+      const { deps } = makeDeps();
+      const viewers = [];
+      deps.bus.on('canal:viewers', (payload) => viewers.push(payload));
+
+      await connectTiktokChannel(deps, 'ana');
+      instances[0].emit('roomUserSeq', { viewerCount: '42' });
+
+      assert.deepEqual(viewers, [{ platform: 'tiktok', channel: 'ana', viewerCount: '42' }]);
+    }
+  );
+});
+
 test('dos senales: check_alive vigente evita reconectar un live sin eventos; si deja de confirmar, recupera', async (t) => {
   t.mock.timers.enable({ apis: ['setTimeout', 'Date'], now: 1_000_000 });
   await withFakeTiktok(

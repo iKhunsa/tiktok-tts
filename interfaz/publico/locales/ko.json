@@ -573,6 +573,8 @@
   },
   "overlayStr": {
     "newFollowers": "새 팔로워",
+    "viewers": "시청자",
+    "liveViewerCount": "TikTok 라이브를 시청 중인 사람",
     "waitingDonors": "선물을 기다리는 중...",
     "waitingLikes": "좋아요를 기다리는 중...",
     "giftReceived": "선물 받음",

@@ -573,6 +573,8 @@
   },
   "overlayStr": {
     "newFollowers": "Nouveaux abonnés",
+    "viewers": "Spectateurs",
+    "liveViewerCount": "Personnes regardant votre TikTok en direct",
     "waitingDonors": "En attente de cadeaux...",
     "waitingLikes": "En attente de likes...",
     "giftReceived": "Cadeau reçu",

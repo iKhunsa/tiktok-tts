@@ -573,6 +573,8 @@
   },
   "overlayStr": {
     "newFollowers": "新粉丝",
+    "viewers": "观众",
+    "liveViewerCount": "正在观看你的 TikTok 直播的人",
     "waitingDonors": "等待礼物...",
     "waitingLikes": "等待点赞...",
     "giftReceived": "收到礼物",

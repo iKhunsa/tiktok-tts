@@ -573,6 +573,8 @@
   },
   "overlayStr": {
     "newFollowers": "Новые подписчики",
+    "viewers": "Зрители",
+    "liveViewerCount": "Люди, смотрящие ваш эфир TikTok",
     "waitingDonors": "Ожидание подарков...",
     "waitingLikes": "Ожидание лайков...",
     "giftReceived": "Получен подарок",

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Overlay — Espectadores</title>
+  <link rel="stylesheet" href="./compartido/tema-overlay.css">
+  <style>
+    :root { --accent: #F0213A; --bg-alpha: .80; --space: 12px; --radius: 9999px; --dur-pop: 280ms; --ease-out: cubic-bezier(.23, 1, .32, 1); }
+    body { display: grid; min-width: 460px; min-height: 112px; place-items: center; background: transparent; font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+    .viewer-card { display: flex; align-items: center; gap: var(--space); padding: 10px 14px 10px 10px; color: #fff; background: rgba(0, 0, 0, var(--bg-alpha)); border: 1px solid rgba(255, 255, 255, .10); border-radius: var(--radius); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+    .viewer-icon { display: grid; width: 48px; height: 48px; place-items: center; color: var(--accent); background: color-mix(in srgb, var(--accent) 18%, transparent); border-radius: 50%; }
+    .viewer-icon::before { width: 28px; height: 28px; background: var(--accent); content: ''; mask: url('/icons/visibility.svg') center / contain no-repeat; -webkit-mask: url('/icons/visibility.svg') center / contain no-repeat; }
+    .viewer-count { min-width: 150px; color: #fff; font-size: 42px; font-weight: 800; line-height: 1; letter-spacing: -1.5px; text-align: center; font-variant-numeric: tabular-nums; transition: color var(--dur-pop) ease; }
+    .viewer-count.bump { animation: viewer-pop var(--dur-pop) var(--ease-out); }
+    .viewer-label { padding: 8px 13px; color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, transparent); border-radius: var(--radius); font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+    @keyframes viewer-pop { 50% { transform: scale(1.08); color: var(--accent); } }
+    body.reduce-motion .viewer-count.bump { animation: none; color: var(--accent); }
+    @media (prefers-reduced-motion: reduce) { .viewer-count.bump { animation: none; color: var(--accent); } }
+  </style>
+</head>
+<body>
+  <div class="viewer-card">
+    <div class="viewer-icon"><img src="./icons/visibility.svg" alt=""></div>
+    <div class="viewer-count" id="viewerCount">0</div>
+    <div class="viewer-label" data-i18n="overlayStr.viewers">Espectadores</div>
+  </div>
+  <script type="module" src="./overlay-viewers.js"></script>
+</body>
+</html>

@@ -25,6 +25,7 @@ export default defineConfig({
         'overlay-donadores': entry('overlay-donadores.html'),
         'overlay-likes': entry('overlay-likes.html'),
         'overlay-seguidores': entry('overlay-seguidores.html'),
+        'overlay-viewers': entry('overlay-viewers.html'),
         'overlay-social': entry('overlay-social.html'),
       },
     },

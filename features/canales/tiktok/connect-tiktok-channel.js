@@ -252,9 +252,10 @@ function setupTikTokConnection(deps, cleanUsername) {
   // TikTok empuja viewerCount periodicamente aunque el chat este en silencio
   // total — es la senal tecnica mas confiable de "el WS sigue vivo" que
   // expone el paquete sin depender de que alguien escriba o regale algo.
-  conn.on('roomUserSeq', () => {
+  conn.on('roomUserSeq', (data) => {
     if (logIgnoredIfStale('roomUserSeq')) return;
     armStaleWatchdog();
+    bus.emit('canal:viewers', { platform: 'tiktok', channel: cleanUsername, viewerCount: data?.viewerCount });
   });
 
   // TikTok confirmo (check_alive, ~cada 6s) que el directo sigue. NO rearma

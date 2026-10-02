@@ -17,6 +17,9 @@ const { MAX_TOP_ROWS } = require('./state/top-limits');
 const { broadcastTopDonors } = require('./state/broadcast-top-donors');
 const { broadcastTopLikers } = require('./state/broadcast-top-likers');
 const { cleanNick } = require('./clean-nick');
+const { setViewerCount } = require('./state/set-viewer-count');
+const { removeViewerCount } = require('./state/remove-viewer-count');
+const { totalViewerCount } = require('./state/total-viewer-count');
 const mcpRegistry = require('../../core/contracts/mcp-registry');
 const { getConfigSnapshot } = require('../../core/config-snapshot');
 
@@ -90,6 +93,11 @@ module.exports = {
       }, debounceMs);
     }, 'overlay');
 
+    bus.on('canal:viewers', (payload) => {
+      const total = setViewerCount(state, payload);
+      if (total !== null) bus.emit('ws:broadcast', { type: 'viewers', total });
+    }, 'overlay');
+
     bus.on('canal:evento-especial', (payload) => {
       const { platform, channel, kind, raw, userId, nick } = payload;
       if (kind === 'share') {
@@ -114,6 +122,7 @@ module.exports = {
 
       if (payload.state === 'conectando' && state.activeTiktokChannels.size === 0) {
         resetOverlayState(state);
+        bus.emit('ws:broadcast', { type: 'viewers', total: 0 });
       }
 
       // La base se fija UNA vez al conectar (roomInfo de room/enter) y los
@@ -127,6 +136,8 @@ module.exports = {
       }
 
       if (payload.state === 'desconectado' || payload.state === 'sin-canales') {
+        const total = removeViewerCount(state, payload);
+        bus.emit('ws:broadcast', { type: 'viewers', total });
         if (payload.channel) state.activeTiktokChannels.delete(payload.channel);
         recomputeFollowerBase(deps);
         if (state.activeTiktokChannels.size === 0) {
@@ -156,6 +167,7 @@ module.exports = {
         overlay: {
           followCount: state.followCount,
           baseFollowerCount: state.baseFollowerCount,
+          viewerCount: totalViewerCount(state.viewerCountByChannel),
           topLikers: rankTop(state.topLikers, 'totalLikes', MAX_TOP_ROWS),
           topDonors: rankTop(state.topDonors, 'totalCoins', MAX_TOP_ROWS),
           recentSharers: [...state.credits.sharers.values()].slice(-10).map((s) => s.user),
@@ -175,6 +187,6 @@ module.exports = {
       handler: () => slice().overlay,
     });
 
-    return { rutas: 8, listeners: 6 };
+    return { rutas: 8, listeners: 7 };
   },
 };

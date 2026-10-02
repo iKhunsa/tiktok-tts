@@ -8,6 +8,7 @@ function resetOverlayState(state) {
   state.topDonors.clear();
   state.baseFollowerCount = 0;
   state.followerBaseByChannel.clear();
+  state.viewerCountByChannel.clear();
   clearCredits(state.credits);
 }
 

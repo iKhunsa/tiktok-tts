@@ -19,6 +19,10 @@ export const ESQUEMAS = {
     colorAcento,
     opacidadFondo(0.8),
   ],
+  viewers: [
+    { ...colorAcento, def: '#F0213A' },
+    opacidadFondo(0.8),
+  ],
   alertas: [
     { clave: 'dur', param: 'dur', tipo: 'numero', def: 4000, grupo: 'base' },
     colorAcento,
