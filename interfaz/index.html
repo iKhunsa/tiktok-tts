@@ -99,14 +99,9 @@
       </button>
     </nav>
 
-    <div class="ad-slot ad-slot--lateral" id="sidebarAdSlot"
-         data-ads='["asset/ads/lateral-verde.png","asset/ads/lateral-azul.png","asset/ads/lateral-naranja.png"]'>
-      <a href="https://discord.gg/F2hYcpvJ46" target="_blank" rel="noopener" class="ad-link">
-        <img class="ad-layer is-active" src="asset/ads/lateral-verde.png" alt="Publicidad">
-        <img class="ad-layer" src="" alt="Publicidad" aria-hidden="true">
-      </a>
-    </div>
-    
+    <a href="https://www.tiktok.com/@ikhunsa_tiklivetts" target="_blank" rel="noopener" class="tiktok-banner">
+      <img src="asset/ads/banner-tiktok.png" width="1536" height="728" loading="lazy" decoding="async" alt="Síguenos en TikTok">
+    </a>
 
     <a href="https://discord.com/invite/mwY859tcQK" target="_blank" rel="noopener" class="community-banner">
       <img src="community-banner.webp" width="420" height="199" loading="lazy" decoding="async" alt="Comunidad TikLiveTTS — Discord oficial">
@@ -260,9 +255,11 @@
       <!-- Fuera de .chat-section a propósito: es un espacio de publicidad,
            no parte del chat, y necesita su propio margen para no leerse
            como si fuera una fila más de esa tarjeta. -->
-      <div class="ad-slot ad-slot--banner" id="chatAdSlot">
+      <div class="ad-slot ad-slot--banner" id="chatAdSlot"
+           data-ads='["asset/ads/banner-sale-octubre.png","asset/ads/banner-edicion.png","asset/ads/banner-rebranding.png","asset/ads/banner-clips.png"]'>
         <a href="https://discord.gg/F2hYcpvJ46" target="_blank" rel="noopener" class="ad-link">
-          <img src="asset/ads/banner.png" alt="Publicidad">
+          <img class="ad-layer is-active" src="asset/ads/banner-sale-octubre.png" alt="Publicidad">
+          <img class="ad-layer" src="" alt="Publicidad" aria-hidden="true">
         </a>
       </div>
     </div>
@@ -1211,6 +1208,21 @@
     <h2 data-i18n="connectFail.title">¡Ups! No se pudo conectar</h2>
     <p data-i18n="connectFail.body"></p>
     <a class="discord-cta" href="https://discord.com/invite/mwY859tcQK" target="_blank" rel="noopener"><img class="icon-inline" src="icons/discord.svg" alt=""> <span data-i18n="discordInvite.cta">Unirme al Discord</span></a>
+  </div>
+</div>
+
+<!-- ══ MODAL: Código de descuento (primer banner del chat) ═══ -->
+<div id="promoCodeModal" class="modal-overlay">
+  <div class="modal-content discord-modal-content" role="dialog" aria-modal="true" aria-labelledby="promoCodeTitle">
+    <button class="modal-close" type="button" data-i18n-aria-label="news.close"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <img class="discord-cat" src="asset/ads/banner-sale-octubre.png" width="2341" height="672" alt="">
+    <h2 id="promoCodeTitle" data-i18n="promoCode.title">Descuento de Halloween</h2>
+    <p data-i18n="promoCode.body"></p>
+    <button class="promo-code" type="button" data-i18n-aria-label="promoCode.copyAria">
+      <span class="promo-code-text"></span>
+      <img class="icon-inline promo-code-icon" src="icons/content_copy.svg" alt="">
+    </button>
+    <button class="cuenta-btn-primary promo-code-plans" type="button"><img class="icon-inline" src="icons/redeem.svg" alt=""> <span data-i18n="promoCode.viewPlans">Ver planes</span></button>
   </div>
 </div>
 

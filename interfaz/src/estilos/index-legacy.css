@@ -339,27 +339,27 @@
     .sidebar-account-cta img[hidden] { display: none; }
 
     .ad-slot { display: block; margin: 4px 12px; border-radius: var(--radius-sm); overflow: hidden; line-height: 0; }
-    .ad-slot--lateral { flex: 1 1 auto; min-height: 48px; max-height: 461px; position: relative; }
     .ad-slot img { width: 100%; height: auto; display: block; object-fit: contain; }
-    .ad-slot--lateral img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
     .ad-slot--banner { margin: 22px 0 0; border-radius: var(--radius-md); }
     .ad-link { display: block; line-height: 0; text-decoration: none; cursor: pointer; transition: opacity .15s; }
     .ad-link:hover { opacity: .9; }
-    .ad-slot--lateral .ad-link { position: absolute; inset: 0; }
+    .ad-slot--banner .ad-link { position: relative; aspect-ratio: 2341 / 672; }
 
-    /* Carrusel lateral: dos capas apiladas, crossfade + leve zoom al cambiar */
-    .ad-slot--lateral .ad-layer {
+    /* Carrusel del banner: dos capas apiladas, crossfade + leve zoom al cambiar */
+    .ad-slot--banner .ad-layer {
       position: absolute; inset: 0;
       opacity: 0; transform: scale(1.04);
       transition: opacity .8s ease, transform .8s ease;
       will-change: opacity, transform;
     }
-    .ad-slot--lateral .ad-layer.is-active { opacity: 1; transform: scale(1); }
+    .ad-slot--banner .ad-layer.is-active { opacity: 1; transform: scale(1); }
     @media (prefers-reduced-motion: reduce) {
-      .ad-slot--lateral .ad-layer { transition: opacity .3s linear; transform: none; }
-      .ad-slot--lateral .ad-layer.is-active { transform: none; }
+      .ad-slot--banner .ad-layer { transition: opacity .3s linear; transform: none; }
+      .ad-slot--banner .ad-layer.is-active { transform: none; }
     }
 
+    /* Banners del pie del sidebar (TikTok + Discord). */
+    .tiktok-banner,
     .community-banner {
       display: block;
       margin: 6px 12px 2px;
@@ -368,8 +368,12 @@
       text-decoration: none;
       transition: opacity 0.15s;
     }
+    .tiktok-banner img,
     .community-banner img { display: block; width: 100%; height: auto; }
+    .tiktok-banner:hover,
     .community-banner:hover { opacity: 0.88; }
+    /* El de TikTok va primero: su margen auto empuja ambos banners y el footer al fondo. */
+    .tiktok-banner { margin-top: auto; }
 
     .lang-selector-row {
       display: flex;
@@ -591,7 +595,7 @@
       .badge-new,
       .sp-shortcut-value.capturing { animation: none !important; }
       .tts-switch.on .tts-bars i { animation: none !important; transform: scaleY(0.55) !important; }
-      .ad-slot--lateral .ad-layer { transition: opacity .3s linear !important; transform: none !important; }
+      .ad-slot--banner .ad-layer { transition: opacity .3s linear !important; transform: none !important; }
     }
     body.reduce-motion .view.active,
     body.reduce-motion .chat-msg,
@@ -2765,7 +2769,8 @@
     }
     /* La X se lee sobre la foto (gris) con un fondo oscuro translucido. */
     #discordModal .modal-close,
-    #connectFailModal .modal-close { background: rgba(0, 0, 0, 0.45); border-radius: 50%; }
+    #connectFailModal .modal-close,
+    #promoCodeModal .modal-close { background: rgba(0, 0, 0, 0.45); border-radius: 50%; }
     .discord-modal-content h2 { margin: 0 0 var(--space-2); }
     .discord-modal-content p { margin: 0 0 var(--space-5); color: var(--text-secondary); font-size: var(--text-sm); line-height: 1.55; }
     .discord-cta {
@@ -2778,3 +2783,20 @@
     .discord-cta:hover { background: #4752c4; }
     .discord-cta:active { transform: scale(0.97); }
     .discord-cta:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+    /* ── Código de descuento (banner del chat) ──────────── */
+    .promo-code {
+      display: flex; align-items: center; justify-content: center; gap: var(--space-2);
+      width: 100%; height: 48px; margin: 0 0 var(--space-3); padding: 0 var(--space-4);
+      border: 1px dashed var(--brand); border-radius: 10px;
+      background: var(--surface-raised); color: var(--text-bright);
+      font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      font-size: var(--text-lg); font-weight: 700; letter-spacing: 0.08em; cursor: pointer;
+      transition: background-color var(--dur-1) var(--ease-out), transform var(--dur-1) var(--ease-out);
+    }
+    .promo-code .icon-inline { width: 20px; height: 20px; }
+    .promo-code:hover { background: var(--surface-hover, var(--surface-raised)); }
+    .promo-code:active { transform: scale(0.97); }
+    .promo-code:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+    .promo-code-plans { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); width: 100%; height: 42px; }
+    .promo-code-plans .icon-inline { width: 20px; height: 20px; }

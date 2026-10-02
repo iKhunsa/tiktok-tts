@@ -1307,5 +1307,11 @@
   "connectFail": {
     "title": "Oops! Couldn't connect",
     "body": "Make sure your channel is live before connecting. If it is, it's probably a bug: TikLiveTTS is under development and can fail sometimes. Join our Discord and we'll help you."
+  },
+  "promoCode": {
+    "title": "Halloween discount",
+    "body": "Copy the code and paste it at checkout when you pay for your plan to get the discount.",
+    "copyAria": "Copy code",
+    "viewPlans": "View plans"
   }
 }

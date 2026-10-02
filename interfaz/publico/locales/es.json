@@ -1307,5 +1307,11 @@
   "connectFail": {
     "title": "¡Ups! No se pudo conectar",
     "body": "Revisá que tu canal esté en vivo antes de conectar. Si lo está, puede ser un bug: TikLiveTTS está en desarrollo y a veces falla. Unite a nuestro Discord y te ayudamos."
+  },
+  "promoCode": {
+    "title": "Descuento de Halloween",
+    "body": "Copiá el código y pegalo cuando pagues tu plan para aplicar el descuento.",
+    "copyAria": "Copiar código",
+    "viewPlans": "Ver planes"
   }
 }

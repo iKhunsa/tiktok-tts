@@ -1305,5 +1305,11 @@
   "connectFail": {
     "title": "Oups ! Connexion impossible",
     "body": "Vérifiez que votre chaîne est en direct avant de vous connecter. Si c'est le cas, c'est peut-être un bug : TikLiveTTS est en développement et peut parfois planter. Rejoignez notre Discord, on vous aide."
+  },
+  "promoCode": {
+    "title": "Réduction Halloween",
+    "body": "Copiez le code et collez-le au moment de payer votre offre pour appliquer la réduction.",
+    "copyAria": "Copier le code",
+    "viewPlans": "Voir les offres"
   }
 }

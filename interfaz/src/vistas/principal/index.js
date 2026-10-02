@@ -34,7 +34,8 @@ import { iniciarCuenta } from './cuenta/index.js';
 import { reproducirEventoActivo, reproducirEvento } from '../../componentes/eventos/index.js';
 import { iniciarBotonEfectosEvento } from './efectos-evento.js';
 import { iniciarAvisoConexionFallida } from './aviso-conexion-fallida.js';
-import { iniciarRotacionAnuncioLateral } from './anuncio-lateral.js';
+import { iniciarAvisoCodigoDescuento } from './aviso-codigo-descuento.js';
+import { iniciarRotacionAnuncio } from './anuncio-rotativo.js';
 import { copyToClipboard } from './utils-app.js';
 import {
   buildOverlayUrl, updateOverlayUrl, onCfgChange, copyCfgUrl,
@@ -202,7 +203,7 @@ function mostrarVersionApp() {
 }
 
 function iniciarArranque() {
-  iniciarRotacionAnuncioLateral();
+  iniciarRotacionAnuncio('chatAdSlot', 20000);
   iniciarCapturaErroresCliente();
   iniciarI18nApp();
   iniciarModalesYAvisos();
@@ -228,6 +229,7 @@ function iniciarArranque() {
   iniciarCuenta();
   iniciarBotonEfectosEvento();
   iniciarAvisoConexionFallida();
+  iniciarAvisoCodigoDescuento();
   // Puente para interfaz/publico/plugin-store/ (scripts clasicos, sin import
   // ES) -- mismo patron que window.refreshPluginStoreTexts/__langReady.
   window.__sesionActual = () => almacenSesion.getState();

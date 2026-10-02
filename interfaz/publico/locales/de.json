@@ -1305,5 +1305,11 @@
   "connectFail": {
     "title": "Hoppla! Verbindung fehlgeschlagen",
     "body": "Prüfe, ob dein Kanal live ist, bevor du dich verbindest. Falls ja, ist es vermutlich ein Bug: TikLiveTTS ist in Entwicklung und kann manchmal Fehler haben. Tritt unserem Discord bei, wir helfen dir."
+  },
+  "promoCode": {
+    "title": "Halloween-Rabatt",
+    "body": "Kopiere den Code und füge ihn beim Bezahlen deines Tarifs ein, um den Rabatt zu erhalten.",
+    "copyAria": "Code kopieren",
+    "viewPlans": "Tarife ansehen"
   }
 }

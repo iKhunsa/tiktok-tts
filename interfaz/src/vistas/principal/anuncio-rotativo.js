@@ -1,10 +1,9 @@
 /**
- * Rota los banners publicitarios del sidebar cada 30s (precarga las
- * imagenes, cross-fade con dos capas). Portado 1:1 desde el IIFE inline
- * de index.html.
+ * Rota los anuncios de un slot publicitario (precarga las imagenes,
+ * cross-fade con dos capas). Las imagenes salen de data-ads del slot, en orden.
  */
-export function iniciarRotacionAnuncioLateral() {
-  const slot = document.getElementById('sidebarAdSlot');
+export function iniciarRotacionAnuncio(slotId, intervaloMs) {
+  const slot = document.getElementById(slotId);
   if (!slot) return;
   const layers = slot.querySelectorAll('.ad-layer');
   let ads;
@@ -24,5 +23,5 @@ export function iniciarRotacionAnuncioLateral() {
     layers[back].classList.add('is-active');
     layers[front].classList.remove('is-active');
     front = back;
-  }, 30000);
+  }, intervaloMs);
 }

@@ -1305,5 +1305,11 @@
   "connectFail": {
     "title": "哎呀！连接失败",
     "body": "连接前请先确认你的频道正在直播。如果已在直播，可能是 bug：TikLiveTTS 仍在开发中，偶尔会出问题。欢迎加入我们的 Discord，我们会帮你解决。"
+  },
+  "promoCode": {
+    "title": "万圣节优惠",
+    "body": "复制优惠码，在支付套餐时粘贴即可享受折扣。",
+    "copyAria": "复制优惠码",
+    "viewPlans": "查看套餐"
   }
 }
