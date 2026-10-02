@@ -1094,6 +1094,10 @@
     "suggestIdeaDesc": "Contanos qué herramienta te gustaría usar."
   },
   "errors": {
+    "wrongPassword": "Contraseña incorrecta",
+    "polarUnavailable": "No se pudo cancelar tu suscripción; no se borró nada. Inténtalo de nuevo.",
+    "rateLimited": "Demasiados intentos. Prueba en unos minutos.",
+    "invalidBody": "Faltan datos en la solicitud",
     "textRequired": "Texto requerido",
     "ttsRateLimited": "Rate limit activo",
     "ttsServiceError": "Hubo un problema con el servicio de voz (Google TTS)",
@@ -1235,7 +1239,17 @@
     "switchToMonthly": "Pasar a mensual en la próxima renovación",
     "switchNote": "Sin reembolso: el plan anual se cumple completo y el cambio se aplica al renovar.",
     "changesAt": "Pasará a mensual el {fecha}",
-    "switchRequested": "Listo: pasarás a mensual en la próxima renovación."
+    "switchRequested": "Listo: pasarás a mensual en la próxima renovación.",
+    "deleteAccount": "Eliminar cuenta",
+    "deleteHint": "Borra tu cuenta y tus datos de forma permanente.",
+    "deleteModalTitle": "¿Eliminar tu cuenta?",
+    "deleteWhat": "Se borrarán tu cuenta, tu correo y tu historial de suscripción.",
+    "deletePlan": "Si tienes un plan activo, se cancela ahora mismo sin reembolso y pierdes el acceso.",
+    "deleteIrreversible": "Esta acción no se puede deshacer.",
+    "deletePassword": "Escribe tu contraseña para confirmar",
+    "deleteConfirm": "Eliminar definitivamente",
+    "deleteCancel": "Cancelar",
+    "deleteDone": "Tu cuenta fue eliminada."
   },
   "pro": {
     "popupTitle": "Desbloqueá esta función con Pro",

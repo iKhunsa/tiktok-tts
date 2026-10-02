@@ -1072,6 +1072,10 @@
     "suggestIdeaDesc": "告诉我们您希望使用什么工具。"
   },
   "errors": {
+    "wrongPassword": "密码错误",
+    "polarUnavailable": "无法取消你的订阅，未删除任何内容。请重试。",
+    "rateLimited": "尝试次数过多，请几分钟后再试。",
+    "invalidBody": "请求缺少数据",
     "textRequired": "需要输入文本",
     "ttsRateLimited": "速率限制生效中",
     "ttsServiceError": "语音服务（Google TTS）出现问题",
@@ -1213,7 +1217,17 @@
     "switchToMonthly": "下次续订时改为按月",
     "switchNote": "不予退款：年付套餐将完整履行，变更在续订时生效。",
     "changesAt": "将于 {fecha} 改为按月",
-    "switchRequested": "已完成：下次续订时将改为按月。"
+    "switchRequested": "已完成：下次续订时将改为按月。",
+    "deleteAccount": "删除账号",
+    "deleteHint": "永久删除你的账号和数据。",
+    "deleteModalTitle": "删除你的账号？",
+    "deleteWhat": "你的账号、邮箱和订阅记录将被删除。",
+    "deletePlan": "如果你有有效套餐，将立即取消且不退款，你会失去访问权限。",
+    "deleteIrreversible": "此操作无法撤销。",
+    "deletePassword": "输入密码以确认",
+    "deleteConfirm": "永久删除",
+    "deleteCancel": "取消",
+    "deleteDone": "你的账号已删除。"
   },
   "sidebarAccount": {
     "badgeFree": "免费",

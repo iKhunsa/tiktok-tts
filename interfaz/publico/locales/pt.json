@@ -1072,6 +1072,10 @@
     "suggestIdeaDesc": "Conte-nos qual ferramenta você gostaria de usar."
   },
   "errors": {
+    "wrongPassword": "Senha incorreta",
+    "polarUnavailable": "Não foi possível cancelar sua assinatura; nada foi excluído. Tente novamente.",
+    "rateLimited": "Muitas tentativas. Tente novamente em alguns minutos.",
+    "invalidBody": "Faltam dados na solicitação",
     "textRequired": "Texto obrigatório",
     "ttsRateLimited": "Rate limit ativo",
     "ttsServiceError": "Houve um problema com o serviço de voz (Google TTS)",
@@ -1213,7 +1217,17 @@
     "switchToMonthly": "Mudar para mensal na próxima renovação",
     "switchNote": "Sem reembolso: o plano anual é cumprido por completo e a mudança vale a partir da renovação.",
     "changesAt": "Mudará para mensal em {fecha}",
-    "switchRequested": "Pronto: você mudará para mensal na próxima renovação."
+    "switchRequested": "Pronto: você mudará para mensal na próxima renovação.",
+    "deleteAccount": "Excluir conta",
+    "deleteHint": "Exclui sua conta e seus dados de forma permanente.",
+    "deleteModalTitle": "Excluir sua conta?",
+    "deleteWhat": "Sua conta, seu e-mail e seu histórico de assinatura serão excluídos.",
+    "deletePlan": "Se você tem um plano ativo, ele é cancelado agora mesmo, sem reembolso, e você perde o acesso.",
+    "deleteIrreversible": "Esta ação não pode ser desfeita.",
+    "deletePassword": "Digite sua senha para confirmar",
+    "deleteConfirm": "Excluir definitivamente",
+    "deleteCancel": "Cancelar",
+    "deleteDone": "Sua conta foi excluída."
   },
   "sidebarAccount": {
     "badgeFree": "FREE",

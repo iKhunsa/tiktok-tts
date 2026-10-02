@@ -41,6 +41,7 @@ function crearCliente(baseUrl) {
     logout: (token) => pedir('/api/auth/logout', { method: 'POST', token }),
     session: (token) => pedir('/api/session', { token, reintentos: 2 }),
     account: (token, b) => pedir('/api/account', { method: 'PATCH', token, body: b }),
+    eliminarCuenta: (token, b) => pedir('/api/account', { method: 'DELETE', token, body: b }),
     checkout: (token, b) => pedir('/api/checkout', { method: 'POST', token, body: b }),
     cancelarSuscripcion: (token) => pedir('/api/subscription/cancel', { method: 'POST', token }),
     cambiarIntervalo: (token, b) => pedir('/api/subscription/change-interval', { method: 'POST', token, body: b }),

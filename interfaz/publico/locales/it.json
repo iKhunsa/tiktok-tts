@@ -1072,6 +1072,10 @@
     "suggestIdeaDesc": "Dicci quale strumento vorresti usare."
   },
   "errors": {
+    "wrongPassword": "Password errata",
+    "polarUnavailable": "Impossibile annullare l'abbonamento; non è stato eliminato nulla. Riprova.",
+    "rateLimited": "Troppi tentativi. Riprova tra qualche minuto.",
+    "invalidBody": "Nella richiesta mancano dei dati",
     "textRequired": "Testo richiesto",
     "ttsRateLimited": "Rate limit attivo",
     "ttsServiceError": "Si è verificato un problema con il servizio vocale (Google TTS)",
@@ -1213,7 +1217,17 @@
     "switchToMonthly": "Passa al mensile al prossimo rinnovo",
     "switchNote": "Nessun rimborso: il piano annuale prosegue fino alla scadenza e il cambio vale dal rinnovo.",
     "changesAt": "Passerà al mensile il {fecha}",
-    "switchRequested": "Fatto: passerai al mensile al prossimo rinnovo."
+    "switchRequested": "Fatto: passerai al mensile al prossimo rinnovo.",
+    "deleteAccount": "Elimina account",
+    "deleteHint": "Elimina in modo permanente il tuo account e i tuoi dati.",
+    "deleteModalTitle": "Eliminare il tuo account?",
+    "deleteWhat": "Verranno eliminati il tuo account, la tua email e la cronologia degli abbonamenti.",
+    "deletePlan": "Se hai un piano attivo, viene annullato subito senza rimborso e perdi l'accesso.",
+    "deleteIrreversible": "Questa azione non si può annullare.",
+    "deletePassword": "Inserisci la password per confermare",
+    "deleteConfirm": "Elimina definitivamente",
+    "deleteCancel": "Annulla",
+    "deleteDone": "Il tuo account è stato eliminato."
   },
   "sidebarAccount": {
     "badgeFree": "FREE",

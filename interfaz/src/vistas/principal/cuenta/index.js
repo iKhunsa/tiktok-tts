@@ -7,12 +7,16 @@
 import { t, aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
 import { showToast } from '../../../componentes/toast.js';
 import { almacenSesion, aplicarSesion, pintarBadgeSidebar } from '../../../nucleo/estado/sesion.js';
+import { borrarDatosDeCuenta } from '../../../nucleo/estado/datos-por-cuenta.js';
 import { guardarAvatarPerfil, obtenerAvatarPerfil, quitarAvatarPerfil } from '../../../nucleo/estado/avatar-perfil.js';
 import { pedir, toastError } from './api.js';
+import { abrirModalEliminarCuenta } from './modal-eliminar-cuenta.js';
 import { abrirPopupPlanes } from '../../../componentes/popup-planes.js';
 import { escaparAtributo as esc } from '../../../../compartido/escapar-html.js';
 
 const MIN_PASS = 8;
+// La sesion pasa a anonymous y la ventana se recarga: el aviso sobrevive al reload.
+const AVISO_CUENTA_ELIMINADA = 'tikliveTTS_cuentaEliminada';
 
 let modo = 'login'; // 'login' | 'register' — solo cuando esta deslogueado
 
@@ -131,7 +135,11 @@ function panelPerfil(s) {
         <button class="cuenta-btn-ghost cuenta-btn-danger" id="cuentaLogout" data-i18n="cuenta.logout"></button>
       </div>
     </div>
-    ${planCard(s)}`;
+    ${planCard(s)}
+    <div class="cuenta-danger-zone">
+      <p class="cuenta-hint" data-i18n="cuenta.deleteHint"></p>
+      <button class="cuenta-btn-ghost cuenta-btn-danger" id="cuentaEliminar" data-i18n="cuenta.deleteAccount"></button>
+    </div>`;
 }
 
 export function renderCuentaPanel() {
@@ -207,6 +215,7 @@ export function renderCuentaPanel() {
     showToast(t('cuenta.saved'));
     renderCuentaPanel();
   });
+  el.querySelector('#cuentaEliminar').addEventListener('click', () => abrirModalEliminarCuenta({ eliminar: eliminarCuenta }));
   el.querySelector('#cuentaUpgrade')?.addEventListener('click', () => abrirPopupPlanes());
   el.querySelector('#cuentaManage')?.addEventListener('click', (e) => cancelarSuscripcion(e.currentTarget));
   el.querySelector('#cuentaResume')?.addEventListener('click', (e) => reanudarSuscripcion(e.currentTarget));
@@ -313,6 +322,29 @@ async function pasarAMensual(btn) {
   }
 }
 
+// El backend borra todo y la app cierra sesion y limpia sus datos locales; aca
+// solo se limpia lo del renderer (antes de pasar a anonymous) y se avisa.
+async function eliminarCuenta(password) {
+  const r = await pedir('/api/auth/account', { method: 'DELETE', body: { password } });
+  if (!r.ok) {
+    toastError(r.body);
+    return false;
+  }
+  try { sessionStorage.setItem(AVISO_CUENTA_ELIMINADA, '1'); } catch (_) { /* sin storage: no hay aviso */ }
+  borrarDatosDeCuenta();
+  aplicarSesion({ activo: true, signedIn: false });
+  renderCuentaPanel();
+  return true;
+}
+
+function mostrarAvisoCuentaEliminada() {
+  try {
+    if (!sessionStorage.getItem(AVISO_CUENTA_ELIMINADA)) return;
+    sessionStorage.removeItem(AVISO_CUENTA_ELIMINADA);
+    showToast(t('cuenta.deleteDone'));
+  } catch (_) { /* sin storage */ }
+}
+
 /** Muestra/oculta el item de sidebar y re-pinta si la vista esta abierta. */
 export function iniciarCuenta() {
   const sync = () => {
@@ -323,4 +355,6 @@ export function iniciarCuenta() {
   };
   almacenSesion.subscribe(sync);
   sync();
+  // Tras la recarga el diccionario carga async: esperar antes de traducir.
+  Promise.resolve(window.__langReady).then(mostrarAvisoCuentaEliminada);
 }
