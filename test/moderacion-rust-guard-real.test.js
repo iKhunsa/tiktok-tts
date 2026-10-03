@@ -55,7 +55,12 @@ test('adapter real: shadow, enforce y palabras del usuario', { skip }, () => {
   assert.equal(rustGuard.check('palabra-propia').action, 'BLOCK');
 
   const shadow = jsVerdict('maricón');
-  assert.equal(review(shadow), shadow);
+  // En shadow la decision no cambia; solo se anota `shadow` para el popup de "detectados".
+  const reviewed = review(shadow);
+  assert.equal(reviewed.action, shadow.action);
+  assert.equal(reviewed.message, shadow.message);
+  assert.deepEqual(reviewed.reasons, shadow.reasons);
+  assert.equal(reviewed.shadow.category, 'discrimination');
   assert.ok(eventsOf(logger).includes('moderacion.rust.shadow_bloqueado'));
 
   rustGuard.sync(settings({ mode: 'enforce' }));
