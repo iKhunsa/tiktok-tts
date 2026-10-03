@@ -1130,7 +1130,7 @@
     "generic": "Ocurrió un error. Probá de nuevo.",
     "notImplemented": "Esta función todavía no está disponible",
     "weakPassword": "La contraseña es demasiado corta.",
-    "passwordMismatch": "Las contraseñas no coinciden.", "ideasRequired": "Completá los campos obligatorios de la idea.", "ideasInvalidAudience": "Elegí una audiencia válida.", "ideasRateLimited": "Esperá un minuto antes de enviar otra idea.", "ideasUnavailable": "Las sugerencias no están disponibles temporalmente.", "ideasSendFailed": "No se pudo enviar la idea. Probá de nuevo."
+    "passwordMismatch": "Las contraseñas no coinciden.", "ideasRequired": "Completá los campos obligatorios de la idea.", "ideasInvalidAudience": "Elegí una audiencia válida.", "ideasRateLimited": "Esperá un minuto antes de enviar otra idea.", "ideasUnavailable": "Las sugerencias no están disponibles temporalmente.", "ideasSendFailed": "No se pudo enviar la idea. Probá de nuevo.", "chatGuardUnavailable": "No se pudo contactar con el filtro. Reintenta.", "chatGuardInvalidWord": "Palabra no válida.", "chatGuardWordConflict": "Esa palabra está en la otra lista.", "chatGuardAllowedSingleWord": "Aquí solo se aceptan palabras sueltas, no frases."
   },
   "mcp": {
     "title": "Agente MCP",
@@ -1339,5 +1339,98 @@
     "body": "Copiá el código y pegalo cuando pagues tu plan para aplicar el descuento.",
     "copyAria": "Copiar código",
     "viewPlans": "Ver planes"
+  },
+  "chatGuard": {
+    "title": "Moderación del chat",
+    "desc": "Decide qué mensajes se muestran y se leen en voz alta.",
+    "enable": "Activar filtro avanzado",
+    "enableDesc": "Detecta insultos y mensajes no deseados, incluso escritos con trucos. Tu lista de palabras bloqueadas se aplica siempre.",
+    "peopleNote": "Los silencios y expulsiones de personas siguen activos aunque lo apagues.",
+    "level": {
+      "title": "Nivel de protección",
+      "soft": "Suave",
+      "softDesc": "Solo lo más evidente. Casi nunca bloquea por error.",
+      "balanced": "Equilibrado",
+      "balancedDesc": "Recomendado. Bloquea lo claro y los intentos de esquivar el filtro.",
+      "strict": "Estricto",
+      "strictDesc": "Bloquea también casos dudosos. Puede frenar mensajes inocentes.",
+      "custom": "Personalizado",
+      "customDesc": "Elige tú qué detectar."
+    },
+    "custom": {
+      "tricks": "Detectar palabras escritas con trucos",
+      "tricksHint": "Por ejemplo con símbolos, espacios o letras repetidas.",
+      "similar": "Detectar variantes parecidas",
+      "similarHint": "Palabras con pequeños errores de escritura."
+    },
+    "mode": {
+      "title": "¿Qué hace el filtro con lo que detecta?",
+      "shadow": "Solo avisar",
+      "shadowDesc": "Modo de prueba: el chat no cambia. El filtro solo anota lo que habría bloqueado para que veas si acierta.",
+      "enforce": "Aplicar",
+      "enforceDesc": "Los mensajes que el filtro detecta no se muestran ni se leen."
+    },
+    "lang": {
+      "title": "Idiomas del filtro",
+      "hint": "Los mensajes en otros idiomas no se filtran por palabras. Esto no cambia el idioma de la voz.",
+      "minOne": "Deja al menos un idioma activo.",
+      "es": "Español",
+      "esLatam": "Español (Latinoamérica)",
+      "en": "Inglés",
+      "esAr": "Español (Argentina)",
+      "esCl": "Español (Chile)",
+      "esCo": "Español (Colombia)",
+      "esEc": "Español (Ecuador)",
+      "esMx": "Español (México)",
+      "esPe": "Español (Perú)",
+      "esVe": "Español (Venezuela)"
+    },
+    "words": {
+      "title": "Palabras",
+      "blockedTab": "Bloqueadas ({n})",
+      "allowedTab": "Permitidas ({n})",
+      "blockedHelp": "Los mensajes con estas palabras no se muestran ni se leen. Esta lista se aplica siempre, aunque el filtro avanzado esté apagado.",
+      "allowedHelp": "Estas palabras nunca se bloquean, aunque el filtro las detecte.",
+      "allowedSingleWord": "Aquí solo se aceptan palabras sueltas, no frases.",
+      "inputLabel": "Palabra o frase corta",
+      "inputPlaceholder": "Escribe una palabra...",
+      "add": "Agregar",
+      "remove": "Quitar {word}",
+      "search": "Buscar en la lista",
+      "empty": "Escribe una palabra primero.",
+      "duplicate": "Ya está en la lista.",
+      "conflict": "Esa palabra ya está en la lista de {other}. Quítala de ahí primero.",
+      "listBlocked": "bloqueadas",
+      "listAllowed": "permitidas",
+      "tooLong": "Es demasiado larga.",
+      "emptyBlocked": "Aún no hay palabras bloqueadas.",
+      "emptyAllowed": "Aún no hay palabras permitidas.",
+      "noResults": "Sin resultados para esa búsqueda.",
+      "truncated": "Mostrando {shown} de {total}. Usa el buscador para ver el resto.",
+      "added": "Palabra agregada",
+      "removed": "Palabra quitada"
+    },
+    "status": {
+      "title": "Estado del filtro",
+      "loading": "Comprobando el filtro...",
+      "loadError": "No se pudo comprobar el filtro.",
+      "off": "Desactivado",
+      "unavailable": "El filtro avanzado no está disponible en esta instalación. Tu chat sigue funcionando con el filtro básico.",
+      "error": "El filtro tiene problemas. Usamos el filtro básico, tu chat sigue funcionando.",
+      "okShadow": "Funcionando en modo de prueba: avisa, pero no bloquea nada.",
+      "okEnforce": "Funcionando: bloquea lo que detecta.",
+      "versions": "Motor {engine} · Palabras {dict}",
+      "retry": "Reintentar"
+    },
+    "announce": {
+      "levelChanged": "Nivel cambiado a {level}"
+    },
+    "people": {
+      "note": "Para silenciar o expulsar a un espectador concreto, usa Moderación.",
+      "go": "Ir a Moderación"
+    },
+    "toast": {
+      "saveError": "No se pudo guardar el cambio. Reintenta."
+    }
   }
 }

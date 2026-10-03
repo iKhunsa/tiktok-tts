@@ -1,5 +1,6 @@
 'use strict';
 
+const { CHAT_GUARD_LEVELS, isChatGuardLangs, isChatGuardCustom } = require('../../core/chat-guard-options');
 const { GOOGLE_TTS_LANGS, DICT_FILTER_LANGS } = require('../../core/contracts/idioma-datos');
 
 function isStringArray(v) {
@@ -48,6 +49,9 @@ const CONFIG_VALIDATORS = {
   ttsReadNonFollowers: (v) => typeof v === 'boolean',
   rustGuardEnabled: (v) => typeof v === 'boolean',
   rustGuardMode: (v) => v === 'shadow' || v === 'enforce',
+  chatGuardLevel: (v) => CHAT_GUARD_LEVELS.includes(v),
+  chatGuardLangs: isChatGuardLangs,
+  chatGuardCustom: isChatGuardCustom,
   mcpEnabled: (v) => typeof v === 'boolean',
   mcpDestructiveToolsEnabled: (v) => typeof v === 'boolean',
   mcpDevToolsEnabled: (v) => typeof v === 'boolean',

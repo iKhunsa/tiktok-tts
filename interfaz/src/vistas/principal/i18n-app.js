@@ -12,6 +12,7 @@ import { renderShortcutDisplay } from './atajos-teclado.js';
 import { renderBlockWordSession } from './moderacion.js';
 import { updatePlaylistInfo, musicRenderQueue } from './bot-musica.js';
 import { renderCuentaPanel } from './cuenta/index.js';
+import { retranslateModeracionContenido } from './moderacion-contenido/index.js';
 import { renderizarTodosLosCamposOverlay } from './campos-overlay/index.js';
 
 const LANG_PICKER_COPY = {
@@ -52,6 +53,7 @@ function retranslateDynamic() {
   safe(updatePlaylistInfo);
   safe(musicRenderQueue);
   safe(renderCuentaPanel);
+  safe(retranslateModeracionContenido);
   safe(renderizarTodosLosCamposOverlay);
   // Boton pausa TTS: su label se setea sin data-i18n; refrescar segun estado.
   const pb = document.getElementById('btnPauseTTS');

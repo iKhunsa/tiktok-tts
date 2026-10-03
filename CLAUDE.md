@@ -183,6 +183,11 @@ cuenta). Corre dentro de `moderacionPolicy.review` DESPUÉS del guard JS y solo 
 (BLOCK→drop, REVIEW→mute). Fail-open: cualquier fallo/paquete ausente conserva el veredicto
 JS y loguea `moderacion.rust.*` (nunca silencioso). Paquete `@tiklivetts/rust-chat-guard`
 opcional, cargado solo en `load-engine.js`. El cableado en `index.js` lleva `// rust-guard`.
+UI en Ajustes > «Moderación del chat» (`interfaz/src/vistas/principal/moderacion-contenido/`): maestro
+(`rustGuardEnabled`), nivel/idiomas/personalizado (`chatGuardLevel|Langs|Custom`, constantes en
+`core/chat-guard-options.js`), modo `rustGuardMode`, palabras permitidas (`chat-guard-allowed-words.json`
+por cuenta, solo palabras sueltas) y estado del motor (`GET /api/chat-guard/status`: `off|unavailable|error|ok`).
+Las bloqueadas reusan `/api/block-word`. Desviaciones respecto al plan: `docs/06_FRONTEND_PLAN.md` §15 del repo del motor.
 
 ## Telemetría (`features/telemetria/`)
 

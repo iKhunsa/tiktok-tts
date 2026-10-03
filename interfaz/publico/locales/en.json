@@ -786,7 +786,7 @@
     "generic": "Something went wrong. Try again.",
     "notImplemented": "This feature isn't available yet",
     "weakPassword": "The password is too short.",
-    "passwordMismatch": "Passwords don't match.", "ideasRequired": "Complete the required idea fields.", "ideasInvalidAudience": "Choose a valid audience.", "ideasRateLimited": "Wait a minute before sending another idea.", "ideasUnavailable": "Suggestions are temporarily unavailable.", "ideasSendFailed": "Could not send the idea. Try again."
+    "passwordMismatch": "Passwords don't match.", "ideasRequired": "Complete the required idea fields.", "ideasInvalidAudience": "Choose a valid audience.", "ideasRateLimited": "Wait a minute before sending another idea.", "ideasUnavailable": "Suggestions are temporarily unavailable.", "ideasSendFailed": "Could not send the idea. Try again.", "chatGuardUnavailable": "Could not reach the filter. Try again.", "chatGuardInvalidWord": "Invalid word.", "chatGuardWordConflict": "That word is in the other list.", "chatGuardAllowedSingleWord": "Only single words are accepted here, not phrases."
   },
   "dictLang": {
     "title": "Allowed languages",
@@ -1339,5 +1339,98 @@
     "body": "Copy the code and paste it at checkout when you pay for your plan to get the discount.",
     "copyAria": "Copy code",
     "viewPlans": "View plans"
+  },
+  "chatGuard": {
+    "title": "Chat moderation",
+    "desc": "Decide which messages are shown and read aloud.",
+    "enable": "Turn on advanced filter",
+    "enableDesc": "Catches insults and unwanted messages, even when they are written with tricks. Your blocked words list always applies.",
+    "peopleNote": "Muting and banning individual people keeps working even if you turn this off.",
+    "level": {
+      "title": "Protection level",
+      "soft": "Gentle",
+      "softDesc": "Only the most obvious. Almost never blocks by mistake.",
+      "balanced": "Balanced",
+      "balancedDesc": "Recommended. Blocks the clear cases and attempts to get around the filter.",
+      "strict": "Strict",
+      "strictDesc": "Also blocks doubtful cases. It may stop harmless messages.",
+      "custom": "Custom",
+      "customDesc": "You choose what to detect."
+    },
+    "custom": {
+      "tricks": "Detect words written with tricks",
+      "tricksHint": "For example with symbols, spaces or repeated letters.",
+      "similar": "Detect similar variants",
+      "similarHint": "Words with small spelling mistakes."
+    },
+    "mode": {
+      "title": "What should the filter do with what it detects?",
+      "shadow": "Only warn",
+      "shadowDesc": "Test mode: your chat does not change. The filter just notes what it would have blocked so you can see if it gets it right.",
+      "enforce": "Apply",
+      "enforceDesc": "Messages the filter detects are not shown or read aloud."
+    },
+    "lang": {
+      "title": "Filter languages",
+      "hint": "Messages in other languages are not filtered by words. This does not change the voice language.",
+      "minOne": "Keep at least one language on.",
+      "es": "Spanish",
+      "esLatam": "Spanish (Latin America)",
+      "en": "English",
+      "esAr": "Spanish (Argentina)",
+      "esCl": "Spanish (Chile)",
+      "esCo": "Spanish (Colombia)",
+      "esEc": "Spanish (Ecuador)",
+      "esMx": "Spanish (Mexico)",
+      "esPe": "Spanish (Peru)",
+      "esVe": "Spanish (Venezuela)"
+    },
+    "words": {
+      "title": "Words",
+      "blockedTab": "Blocked ({n})",
+      "allowedTab": "Allowed ({n})",
+      "blockedHelp": "Messages with these words are not shown or read aloud. This list always applies, even if the advanced filter is off.",
+      "allowedHelp": "These words are never blocked, even if the filter detects them.",
+      "allowedSingleWord": "Only single words are accepted here, not phrases.",
+      "inputLabel": "Word or short phrase",
+      "inputPlaceholder": "Type a word...",
+      "add": "Add",
+      "remove": "Remove {word}",
+      "search": "Search the list",
+      "empty": "Type a word first.",
+      "duplicate": "It is already in the list.",
+      "conflict": "That word is already in the {other} list. Remove it from there first.",
+      "listBlocked": "blocked",
+      "listAllowed": "allowed",
+      "tooLong": "It is too long.",
+      "emptyBlocked": "There are no blocked words yet.",
+      "emptyAllowed": "There are no allowed words yet.",
+      "noResults": "No results for that search.",
+      "truncated": "Showing {shown} of {total}. Use the search to see the rest.",
+      "added": "Word added",
+      "removed": "Word removed"
+    },
+    "status": {
+      "title": "Filter status",
+      "loading": "Checking the filter...",
+      "loadError": "The filter could not be checked.",
+      "off": "Off",
+      "unavailable": "The advanced filter is not available in this installation. Your chat keeps working with the basic filter.",
+      "error": "The filter has problems. We are using the basic filter; your chat keeps working.",
+      "okShadow": "Working in test mode: it warns but blocks nothing.",
+      "okEnforce": "Working: it blocks what it detects.",
+      "versions": "Engine {engine} · Words {dict}",
+      "retry": "Retry"
+    },
+    "announce": {
+      "levelChanged": "Level changed to {level}"
+    },
+    "people": {
+      "note": "To mute or ban a specific viewer, use Moderation.",
+      "go": "Go to Moderation"
+    },
+    "toast": {
+      "saveError": "The change could not be saved. Try again."
+    }
   }
 }

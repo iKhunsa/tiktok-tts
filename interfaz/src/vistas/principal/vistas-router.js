@@ -1,6 +1,7 @@
 import { spCancelCapture } from './soundpad.js';
 import { modReload, modStartAutoRefresh, modStopAutoRefresh, maybeShowModerationTour } from './moderacion.js';
 import { renderMcpPanel } from './mcp/index.js';
+import { reloadModeracionContenido } from './moderacion-contenido/index.js';
 import { renderCuentaPanel } from './cuenta/index.js';
 import { appBloqueada } from '../../nucleo/estado/sesion.js';
 import { aplicarBloqueoVista } from '../../nucleo/estado/vista-bloqueada.js';
@@ -30,6 +31,7 @@ export function switchView(name, { desdeHistorial = false } = {}) {
   if (name === 'tools' && window.renderPluginStore) window.renderPluginStore();
   if (name === 'mcp') renderMcpPanel();
   if (name === 'cuenta') renderCuentaPanel();
+  if (name === 'settings') reloadModeracionContenido();
   // Sonidos/Bot ya se pintaron una vez al arrancar (spLoad/musicInit) -- acá
   // solo se re-evalua el bloqueo Pro al entrar de verdad a la
   // vista, sin repetir sus fetches.

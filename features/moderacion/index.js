@@ -2,6 +2,9 @@
 
 const { createRegistryStore } = require('./persistence/create-registry-store');
 const { loadBlockedWordsFromFile } = require('./filters/blocked-words-file');
+const { loadAllowedWordsFromFile, saveAllowedWordsToFile } = require('./filters/allowed-words-file'); // rust-guard
+const { normalizeWord } = require('./filters/normalize-word'); // rust-guard
+const { rejectAllowedWord } = require('./filters/validate-allowed-word'); // rust-guard
 const { createChatGuard, viewerKey } = require('@tiklivetts/chat-guard');
 const { buildGuardOptions } = require('./build-guard-options');
 const moderacionPolicyContract = require('../../core/contracts/moderacion-policy');
@@ -29,6 +32,9 @@ const { blockedWordsExport } = require('./routes/blocked-words-export');
 const { blockedWordsImport } = require('./routes/blocked-words-import');
 const { blockWord } = require('./routes/block-word');
 const { unblockWord } = require('./routes/unblock-word');
+const { chatGuardStatus, describeChatGuard } = require('./routes/chat-guard-status'); // rust-guard
+const { allowWord } = require('./routes/chat-guard-allow-word'); // rust-guard
+const { disallowWord } = require('./routes/chat-guard-disallow-word'); // rust-guard
 
 let storeInstance = null;
 let rustGuardInstance = null;
@@ -41,6 +47,8 @@ module.exports = {
     storeInstance = store;
     const blockedWords = new Set();
     loadBlockedWordsFromFile(blockedWords, logger);
+    const allowedWords = new Set(); // rust-guard
+    loadAllowedWordsFromFile(allowedWords, logger); // rust-guard
     const moderation = { guard: null };
     const guardOptions = () => buildGuardOptions({ bus, blockedWords });
     const createGuard = () => createChatGuard({ registry: store.registry, ...guardOptions() });
@@ -49,7 +57,7 @@ module.exports = {
     const reviewWithRust = createRustReviewer({ rustGuard, logger }); // rust-guard
     const configure = () => {
       moderation.guard.configure(guardOptions());
-      rustGuard.sync(buildRustConfig({ bus, blockedWords })); // rust-guard
+      rustGuard.sync(buildRustConfig({ bus, blockedWords, allowedWords })); // rust-guard
     };
     moderation.guard = createGuard();
     configure();
@@ -59,6 +67,8 @@ module.exports = {
       store.switchDataDir(accountDataDir());
       blockedWords.clear();
       loadBlockedWordsFromFile(blockedWords, logger);
+      allowedWords.clear(); // rust-guard
+      loadAllowedWordsFromFile(allowedWords, logger); // rust-guard
       moderation.guard = createGuard();
       rustGuard.stop(); // rust-guard: hot-swap, el motor arranca de nuevo con la config de la cuenta
       configure();
@@ -75,7 +85,10 @@ module.exports = {
       bus.emit('moderacion:palabras-cambiadas');
     };
 
-    const deps = { app, bus, logger, store, blockedWords, moderation, guardOptions, configure: configureAndNotify };
+    const deps = {
+      app, bus, logger, store, blockedWords, allowedWords, rustGuard, moderation, guardOptions,
+      configure: configureAndNotify, reconfigure: configure,
+    };
     // Inyeccion en tiempo de registro: /chat (Fase 7) consume la interfaz de
     // core/contracts/moderacion-policy.js sin importar moderacion/ directo.
     moderacionPolicyContract.review = ({ platform, raw }) => {
@@ -108,13 +121,16 @@ module.exports = {
     app.post('/api/blocked-words/import', blockedWordsImport(deps));
     app.post('/api/block-word', blockWord(deps));
     app.delete('/api/block-word', unblockWord(deps));
+    app.get('/api/chat-guard/status', chatGuardStatus(deps)); // rust-guard
+    app.post('/api/chat-guard/allowed-words', allowWord(deps)); // rust-guard
+    app.delete('/api/chat-guard/allowed-words', disallowWord(deps)); // rust-guard
 
     // ── MCP ──────────────────────────────────────────────────────────────
     mcpRegistry.registerStateProvider(() => {
       const s = store.stats();
       return {
         moderation: { viewers: s.total, followers: s.followers, muted: s.muted, banned: s.banned },
-        rustGuard: rustGuard.status(), // rust-guard
+        rustGuard: describeChatGuard(deps), // rust-guard
       };
     }, 'moderacion');
 
@@ -142,7 +158,40 @@ module.exports = {
       title: 'Rust Chat Guard status',
       description: 'Native content-moderation engine: enabled, mode (shadow | enforce), running and engine version.',
       inputSchema: { type: 'object', properties: {} },
-      handler: () => rustGuard.status(),
+      handler: () => describeChatGuard(deps),
+    });
+
+    const allowedWordSchema = { // rust-guard
+      type: 'object',
+      required: ['word'],
+      properties: { word: { type: 'string', description: 'Single word (no spaces)' } },
+    };
+    mcpRegistry.registerTool({ // rust-guard
+      name: 'chat_guard_allow_word', domain: 'moderacion', idempotent: true,
+      title: 'Allow word (content filter)',
+      description: 'Add a single word the native content filter never blocks. Rejected if it is in the blocked list.',
+      inputSchema: allowedWordSchema,
+      handler: (a) => {
+        const word = normalizeWord(a.word);
+        const rejection = rejectAllowedWord(word, blockedWords);
+        if (rejection) return { ok: false, reason: rejection.errorKey };
+        allowedWords.add(word);
+        configure();
+        saveAllowedWordsToFile(allowedWords, logger);
+        return { ok: true, allowedWords: [...allowedWords].sort() };
+      },
+    });
+    mcpRegistry.registerTool({ // rust-guard
+      name: 'chat_guard_disallow_word', domain: 'moderacion', idempotent: true,
+      title: 'Remove allowed word (content filter)',
+      description: 'Remove a word from the content filter allowed list.',
+      inputSchema: allowedWordSchema,
+      handler: (a) => {
+        allowedWords.delete(normalizeWord(a.word));
+        configure();
+        saveAllowedWordsToFile(allowedWords, logger);
+        return { ok: true, allowedWords: [...allowedWords].sort() };
+      },
     });
 
     mcpRegistry.registerTool({
@@ -195,7 +244,7 @@ module.exports = {
       handler: modAction('clear', (t) => store.clearPunishments(t)),
     });
 
-    return { rutas: 16, listeners: 2 };
+    return { rutas: 19, listeners: 2 };
   },
 
   shutdown() {

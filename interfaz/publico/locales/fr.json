@@ -1108,7 +1108,7 @@
     "generic": "Une erreur s'est produite. Réessayez.",
     "notImplemented": "Cette fonctionnalité n'est pas encore disponible",
     "weakPassword": "Le mot de passe est trop court.",
-    "passwordMismatch": "Les mots de passe ne correspondent pas.", "ideasRequired":"Remplissez les champs obligatoires de l'idée.","ideasInvalidAudience":"Choisissez un public valide.","ideasRateLimited":"Attendez une minute avant d'envoyer une autre idée.","ideasUnavailable":"Les suggestions sont temporairement indisponibles.","ideasSendFailed":"Impossible d'envoyer l'idée. Réessayez."
+    "passwordMismatch": "Les mots de passe ne correspondent pas.", "ideasRequired":"Remplissez les champs obligatoires de l'idée.","ideasInvalidAudience":"Choisissez un public valide.","ideasRateLimited":"Attendez une minute avant d'envoyer une autre idée.","ideasUnavailable":"Les suggestions sont temporairement indisponibles.","ideasSendFailed":"Impossible d'envoyer l'idée. Réessayez.", "chatGuardUnavailable": "Impossible de joindre le filtre. Réessayez.", "chatGuardInvalidWord": "Mot non valide.", "chatGuardWordConflict": "Ce mot est dans l’autre liste.", "chatGuardAllowedSingleWord": "Seuls les mots seuls sont acceptés ici, pas les phrases."
   },
   "mcp": {
     "title": "Agent MCP",
@@ -1337,5 +1337,98 @@
     "body": "Copiez le code et collez-le au moment de payer votre offre pour appliquer la réduction.",
     "copyAria": "Copier le code",
     "viewPlans": "Voir les offres"
+  },
+  "chatGuard": {
+    "title": "Modération du chat",
+    "desc": "Décidez quels messages sont affichés et lus à voix haute.",
+    "enable": "Activer le filtre avancé",
+    "enableDesc": "Détecte les insultes et les messages indésirables, même écrits avec des astuces. Votre liste de mots bloqués s’applique toujours.",
+    "peopleNote": "Le blocage et le bannissement de personnes restent actifs même si vous le désactivez.",
+    "level": {
+      "title": "Niveau de protection",
+      "soft": "Léger",
+      "softDesc": "Seulement le plus évident. Bloque presque jamais par erreur.",
+      "balanced": "Équilibré",
+      "balancedDesc": "Recommandé. Bloque les cas clairs et les tentatives de contourner le filtre.",
+      "strict": "Strict",
+      "strictDesc": "Bloque aussi les cas douteux. Peut arrêter des messages innocents.",
+      "custom": "Personnalisé",
+      "customDesc": "Vous choisissez ce qu’il faut détecter."
+    },
+    "custom": {
+      "tricks": "Détecter les mots écrits avec des astuces",
+      "tricksHint": "Par exemple avec des symboles, des espaces ou des lettres répétées.",
+      "similar": "Détecter les variantes proches",
+      "similarHint": "Des mots avec de petites fautes d’écriture."
+    },
+    "mode": {
+      "title": "Que doit faire le filtre de ce qu’il détecte ?",
+      "shadow": "Seulement avertir",
+      "shadowDesc": "Mode test : le chat ne change pas. Le filtre note seulement ce qu’il aurait bloqué pour que vous voyiez s’il a raison.",
+      "enforce": "Appliquer",
+      "enforceDesc": "Les messages détectés par le filtre ne sont ni affichés ni lus."
+    },
+    "lang": {
+      "title": "Langues du filtre",
+      "hint": "Les messages dans d’autres langues ne sont pas filtrés par mots. Cela ne change pas la langue de la voix.",
+      "minOne": "Laissez au moins une langue active.",
+      "es": "Espagnol",
+      "esLatam": "Espagnol (Amérique latine)",
+      "en": "Anglais",
+      "esAr": "Espagnol (Argentine)",
+      "esCl": "Espagnol (Chili)",
+      "esCo": "Espagnol (Colombie)",
+      "esEc": "Espagnol (Équateur)",
+      "esMx": "Espagnol (Mexique)",
+      "esPe": "Espagnol (Pérou)",
+      "esVe": "Espagnol (Venezuela)"
+    },
+    "words": {
+      "title": "Mots",
+      "blockedTab": "Bloqués ({n})",
+      "allowedTab": "Autorisés ({n})",
+      "blockedHelp": "Les messages contenant ces mots ne sont ni affichés ni lus. Cette liste s’applique toujours, même si le filtre avancé est désactivé.",
+      "allowedHelp": "Ces mots ne sont jamais bloqués, même si le filtre les détecte.",
+      "allowedSingleWord": "Seuls les mots seuls sont acceptés ici, pas les phrases.",
+      "inputLabel": "Mot ou courte phrase",
+      "inputPlaceholder": "Écrivez un mot...",
+      "add": "Ajouter",
+      "remove": "Retirer {word}",
+      "search": "Rechercher dans la liste",
+      "empty": "Écrivez d’abord un mot.",
+      "duplicate": "Il est déjà dans la liste.",
+      "conflict": "Ce mot est déjà dans la liste des mots {other}. Retirez-le d’abord de là.",
+      "listBlocked": "bloqués",
+      "listAllowed": "autorisés",
+      "tooLong": "Il est trop long.",
+      "emptyBlocked": "Aucun mot bloqué pour l’instant.",
+      "emptyAllowed": "Aucun mot autorisé pour l’instant.",
+      "noResults": "Aucun résultat pour cette recherche.",
+      "truncated": "Affichage de {shown} sur {total}. Utilisez la recherche pour voir le reste.",
+      "added": "Mot ajouté",
+      "removed": "Mot retiré"
+    },
+    "status": {
+      "title": "État du filtre",
+      "loading": "Vérification du filtre...",
+      "loadError": "Impossible de vérifier le filtre.",
+      "off": "Désactivé",
+      "unavailable": "Le filtre avancé n’est pas disponible dans cette installation. Votre chat continue de fonctionner avec le filtre de base.",
+      "error": "Le filtre a des problèmes. Nous utilisons le filtre de base, votre chat continue de fonctionner.",
+      "okShadow": "Fonctionne en mode test : il avertit, mais ne bloque rien.",
+      "okEnforce": "Fonctionne : il bloque ce qu’il détecte.",
+      "versions": "Moteur {engine} · Mots {dict}",
+      "retry": "Réessayer"
+    },
+    "announce": {
+      "levelChanged": "Niveau changé en {level}"
+    },
+    "people": {
+      "note": "Pour rendre muet ou bannir un spectateur précis, utilisez Modération.",
+      "go": "Aller à Modération"
+    },
+    "toast": {
+      "saveError": "Impossible d’enregistrer la modification. Réessayez."
+    }
   }
 }
