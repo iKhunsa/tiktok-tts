@@ -1,5 +1,7 @@
 'use strict';
 
+const { CHAT_GUARD_LOCALES } = require('../../core/chat-guard-options');
+
 const DEFAULT_CONFIG = {
   LIKE_DEBOUNCE_MS: 1500,
   TTS_MAX_CHARS: 200,
@@ -32,6 +34,11 @@ const DEFAULT_CONFIG = {
   // de contenido, por cuenta. shadow = solo registra discrepancias; enforce = aplica.
   rustGuardEnabled: false,
   rustGuardMode: 'shadow',
+  // Nivel (SOFT/BALANCED/STRICT/CUSTOM del motor), idiomas del filtro (todos por defecto)
+  // y detectores del nivel 'custom'. Ver core/chat-guard-options.js.
+  chatGuardLevel: 'balanced',
+  chatGuardLangs: [...CHAT_GUARD_LOCALES],
+  chatGuardCustom: { tricks: true, similar: false },
   // Servidor MCP (agentes). Endpoint solo-localhost; las tools destructivas
   // van detras de su propio toggle + prompt del host del agente.
   mcpEnabled: true,

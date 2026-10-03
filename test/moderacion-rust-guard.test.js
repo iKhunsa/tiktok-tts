@@ -196,7 +196,9 @@ function busWith(config) {
 
 test('buildRustConfig: por defecto apagado y en shadow', () => {
   const result = buildRustConfig({ bus: busWith({}), blockedWords: new Set(['x']) });
-  assert.deepEqual(result, { enabled: false, mode: 'shadow', engineConfig: {}, blockedWords: ['x'] });
+  assert.deepEqual(result, {
+    enabled: false, mode: 'shadow', engineConfig: { preset: 'balanced' }, blockedWords: ['x'], allowedWords: [],
+  });
 });
 
 test('buildRustConfig: respeta enabled y enforce; un modo invalido cae a shadow', () => {

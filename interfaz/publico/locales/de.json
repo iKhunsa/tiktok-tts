@@ -1108,7 +1108,7 @@
     "generic": "Ein Fehler ist aufgetreten. Versuche es erneut.",
     "notImplemented": "Diese Funktion ist noch nicht verfügbar",
     "weakPassword": "Das Passwort ist zu kurz.",
-    "passwordMismatch": "Die Passwörter stimmen nicht überein.", "ideasRequired":"Fülle die Pflichtfelder der Idee aus.","ideasInvalidAudience":"Wähle eine gültige Zielgruppe.","ideasRateLimited":"Warte eine Minute vor einer weiteren Idee.","ideasUnavailable":"Vorschläge sind vorübergehend nicht verfügbar.","ideasSendFailed":"Idee konnte nicht gesendet werden. Versuche es erneut."
+    "passwordMismatch": "Die Passwörter stimmen nicht überein.", "ideasRequired":"Fülle die Pflichtfelder der Idee aus.","ideasInvalidAudience":"Wähle eine gültige Zielgruppe.","ideasRateLimited":"Warte eine Minute vor einer weiteren Idee.","ideasUnavailable":"Vorschläge sind vorübergehend nicht verfügbar.","ideasSendFailed":"Idee konnte nicht gesendet werden. Versuche es erneut.", "chatGuardUnavailable": "Der Filter ist nicht erreichbar. Versuche es erneut.", "chatGuardInvalidWord": "Ungültiges Wort.", "chatGuardWordConflict": "Dieses Wort steht in der anderen Liste.", "chatGuardAllowedSingleWord": "Hier werden nur einzelne Wörter akzeptiert, keine Sätze."
   },
   "mcp": {
     "title": "MCP-Agent",
@@ -1337,5 +1337,98 @@
     "body": "Kopiere den Code und füge ihn beim Bezahlen deines Tarifs ein, um den Rabatt zu erhalten.",
     "copyAria": "Code kopieren",
     "viewPlans": "Tarife ansehen"
+  },
+  "chatGuard": {
+    "title": "Chat-Moderation",
+    "desc": "Lege fest, welche Nachrichten angezeigt und vorgelesen werden.",
+    "enable": "Erweiterten Filter aktivieren",
+    "enableDesc": "Erkennt Beleidigungen und unerwünschte Nachrichten, auch wenn sie mit Tricks geschrieben sind. Deine Liste gesperrter Wörter gilt immer.",
+    "peopleNote": "Stummschalten und Sperren einzelner Personen funktioniert weiter, auch wenn du dies ausschaltest.",
+    "level": {
+      "title": "Schutzstufe",
+      "soft": "Mild",
+      "softDesc": "Nur das Offensichtlichste. Blockiert fast nie versehentlich.",
+      "balanced": "Ausgewogen",
+      "balancedDesc": "Empfohlen. Blockiert klare Fälle und Versuche, den Filter zu umgehen.",
+      "strict": "Streng",
+      "strictDesc": "Blockiert auch zweifelhafte Fälle. Kann harmlose Nachrichten aufhalten.",
+      "custom": "Benutzerdefiniert",
+      "customDesc": "Du wählst, was erkannt wird."
+    },
+    "custom": {
+      "tricks": "Mit Tricks geschriebene Wörter erkennen",
+      "tricksHint": "Zum Beispiel mit Symbolen, Leerzeichen oder wiederholten Buchstaben.",
+      "similar": "Ähnliche Varianten erkennen",
+      "similarHint": "Wörter mit kleinen Schreibfehlern."
+    },
+    "mode": {
+      "title": "Was soll der Filter mit dem Erkannten tun?",
+      "shadow": "Nur warnen",
+      "shadowDesc": "Testmodus: Dein Chat ändert sich nicht. Der Filter notiert nur, was er blockiert hätte, damit du siehst, ob er richtig liegt.",
+      "enforce": "Anwenden",
+      "enforceDesc": "Nachrichten, die der Filter erkennt, werden weder angezeigt noch vorgelesen."
+    },
+    "lang": {
+      "title": "Filtersprachen",
+      "hint": "Nachrichten in anderen Sprachen werden nicht nach Wörtern gefiltert. Das ändert nicht die Sprache der Stimme.",
+      "minOne": "Lass mindestens eine Sprache aktiv.",
+      "es": "Spanisch",
+      "esLatam": "Spanisch (Lateinamerika)",
+      "en": "Englisch",
+      "esAr": "Spanisch (Argentinien)",
+      "esCl": "Spanisch (Chile)",
+      "esCo": "Spanisch (Kolumbien)",
+      "esEc": "Spanisch (Ecuador)",
+      "esMx": "Spanisch (Mexiko)",
+      "esPe": "Spanisch (Peru)",
+      "esVe": "Spanisch (Venezuela)"
+    },
+    "words": {
+      "title": "Wörter",
+      "blockedTab": "Gesperrt ({n})",
+      "allowedTab": "Erlaubt ({n})",
+      "blockedHelp": "Nachrichten mit diesen Wörtern werden weder angezeigt noch vorgelesen. Diese Liste gilt immer, auch wenn der erweiterte Filter aus ist.",
+      "allowedHelp": "Diese Wörter werden nie blockiert, auch wenn der Filter sie erkennt.",
+      "allowedSingleWord": "Hier werden nur einzelne Wörter akzeptiert, keine Sätze.",
+      "inputLabel": "Wort oder kurze Wendung",
+      "inputPlaceholder": "Wort eingeben...",
+      "add": "Hinzufügen",
+      "remove": "{word} entfernen",
+      "search": "In der Liste suchen",
+      "empty": "Gib zuerst ein Wort ein.",
+      "duplicate": "Steht schon in der Liste.",
+      "conflict": "Dieses Wort steht schon in der Liste „{other}“. Entferne es zuerst dort.",
+      "listBlocked": "Gesperrt",
+      "listAllowed": "Erlaubt",
+      "tooLong": "Es ist zu lang.",
+      "emptyBlocked": "Noch keine gesperrten Wörter.",
+      "emptyAllowed": "Noch keine erlaubten Wörter.",
+      "noResults": "Keine Ergebnisse für diese Suche.",
+      "truncated": "{shown} von {total} angezeigt. Nutze die Suche für den Rest.",
+      "added": "Wort hinzugefügt",
+      "removed": "Wort entfernt"
+    },
+    "status": {
+      "title": "Filterstatus",
+      "loading": "Filter wird geprüft...",
+      "loadError": "Der Filter konnte nicht geprüft werden.",
+      "off": "Aus",
+      "unavailable": "Der erweiterte Filter ist in dieser Installation nicht verfügbar. Dein Chat funktioniert weiter mit dem Basisfilter.",
+      "error": "Der Filter hat Probleme. Wir nutzen den Basisfilter, dein Chat funktioniert weiter.",
+      "okShadow": "Läuft im Testmodus: warnt, blockiert aber nichts.",
+      "okEnforce": "Läuft: blockiert, was er erkennt.",
+      "versions": "Engine {engine} · Wörter {dict}",
+      "retry": "Erneut versuchen"
+    },
+    "announce": {
+      "levelChanged": "Stufe geändert auf {level}"
+    },
+    "people": {
+      "note": "Um einen bestimmten Zuschauer stummzuschalten oder zu sperren, nutze Moderation.",
+      "go": "Zu Moderation"
+    },
+    "toast": {
+      "saveError": "Die Änderung konnte nicht gespeichert werden. Versuche es erneut."
+    }
   }
 }

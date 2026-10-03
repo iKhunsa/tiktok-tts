@@ -1108,7 +1108,7 @@
     "generic": "发生错误。请重试。",
     "notImplemented": "此功能暂不可用",
     "weakPassword": "密码太短。",
-    "passwordMismatch": "两次输入的密码不一致。", "ideasRequired":"请完成必填想法字段。","ideasInvalidAudience":"请选择有效受众。","ideasRateLimited":"请等待一分钟再发送想法。","ideasUnavailable":"建议暂时不可用。","ideasSendFailed":"无法发送想法，请重试。"
+    "passwordMismatch": "两次输入的密码不一致。", "ideasRequired":"请完成必填想法字段。","ideasInvalidAudience":"请选择有效受众。","ideasRateLimited":"请等待一分钟再发送想法。","ideasUnavailable":"建议暂时不可用。","ideasSendFailed":"无法发送想法，请重试。", "chatGuardUnavailable": "无法连接到过滤器，请重试。", "chatGuardInvalidWord": "词语无效。", "chatGuardWordConflict": "该词在另一个列表中。", "chatGuardAllowedSingleWord": "这里只接受单个词，不接受短语。"
   },
   "mcp": {
     "title": "MCP 代理",
@@ -1337,5 +1337,98 @@
     "body": "复制优惠码，在支付套餐时粘贴即可享受折扣。",
     "copyAria": "复制优惠码",
     "viewPlans": "查看套餐"
+  },
+  "chatGuard": {
+    "title": "聊天审核",
+    "desc": "决定哪些消息会显示并被朗读。",
+    "enable": "开启高级过滤",
+    "enableDesc": "可识别辱骂和不良消息，即使用了各种变形写法。你的屏蔽词列表始终生效。",
+    "peopleNote": "即使关闭此项，对个人的禁言和封禁仍然有效。",
+    "level": {
+      "title": "保护级别",
+      "soft": "宽松",
+      "softDesc": "只处理最明显的内容，几乎不会误拦。",
+      "balanced": "均衡",
+      "balancedDesc": "推荐。拦截明确的内容以及试图绕过过滤的行为。",
+      "strict": "严格",
+      "strictDesc": "连有疑问的内容也会拦截，可能误拦正常消息。",
+      "custom": "自定义",
+      "customDesc": "由你选择要识别的内容。"
+    },
+    "custom": {
+      "tricks": "识别变形写法的词",
+      "tricksHint": "例如使用符号、空格或重复字母。",
+      "similar": "识别相近变体",
+      "similarHint": "带有细小拼写错误的词。"
+    },
+    "mode": {
+      "title": "过滤器对识别到的内容怎么处理？",
+      "shadow": "仅提醒",
+      "shadowDesc": "测试模式：聊天不会有任何变化。过滤器只记录它本来会拦截什么，方便你查看是否准确。",
+      "enforce": "执行",
+      "enforceDesc": "被过滤器识别的消息不会显示，也不会被朗读。"
+    },
+    "lang": {
+      "title": "过滤语言",
+      "hint": "其他语言的消息不会按词过滤。这不会改变语音的语言。",
+      "minOne": "请至少保留一种语言。",
+      "es": "西班牙语",
+      "esLatam": "西班牙语（拉丁美洲）",
+      "en": "英语",
+      "esAr": "西班牙语（阿根廷）",
+      "esCl": "西班牙语（智利）",
+      "esCo": "西班牙语（哥伦比亚）",
+      "esEc": "西班牙语（厄瓜多尔）",
+      "esMx": "西班牙语（墨西哥）",
+      "esPe": "西班牙语（秘鲁）",
+      "esVe": "西班牙语（委内瑞拉）"
+    },
+    "words": {
+      "title": "词语",
+      "blockedTab": "已屏蔽（{n}）",
+      "allowedTab": "已允许（{n}）",
+      "blockedHelp": "包含这些词的消息不会显示，也不会被朗读。即使高级过滤已关闭，此列表也始终生效。",
+      "allowedHelp": "这些词永远不会被拦截，即使过滤器识别到它们。",
+      "allowedSingleWord": "这里只接受单个词，不接受短语。",
+      "inputLabel": "词语或短句",
+      "inputPlaceholder": "输入一个词...",
+      "add": "添加",
+      "remove": "移除 {word}",
+      "search": "在列表中搜索",
+      "empty": "请先输入一个词。",
+      "duplicate": "已经在列表中。",
+      "conflict": "该词已在{other}列表中，请先从那里移除。",
+      "listBlocked": "已屏蔽",
+      "listAllowed": "已允许",
+      "tooLong": "太长了。",
+      "emptyBlocked": "还没有已屏蔽的词。",
+      "emptyAllowed": "还没有已允许的词。",
+      "noResults": "没有符合该搜索的结果。",
+      "truncated": "显示 {shown} / {total}。使用搜索查看其余内容。",
+      "added": "词语已添加",
+      "removed": "词语已移除"
+    },
+    "status": {
+      "title": "过滤器状态",
+      "loading": "正在检查过滤器...",
+      "loadError": "无法检查过滤器。",
+      "off": "已关闭",
+      "unavailable": "此安装中无法使用高级过滤。你的聊天仍会使用基础过滤正常运行。",
+      "error": "过滤器出现问题。我们正在使用基础过滤，你的聊天仍正常运行。",
+      "okShadow": "测试模式运行中：只提醒，不拦截任何内容。",
+      "okEnforce": "运行中：会拦截识别到的内容。",
+      "versions": "引擎 {engine} · 词库 {dict}",
+      "retry": "重试"
+    },
+    "announce": {
+      "levelChanged": "级别已更改为{level}"
+    },
+    "people": {
+      "note": "如需禁言或封禁某位观众，请使用“管理”。",
+      "go": "前往“管理”"
+    },
+    "toast": {
+      "saveError": "无法保存更改，请重试。"
+    }
   }
 }

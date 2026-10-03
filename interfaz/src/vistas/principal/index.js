@@ -31,6 +31,7 @@ import { iniciarBarraTitulo } from './barra-titulo/index.js';
 import { abrirCuentaDesdeSidebar, cargarSesion, almacenSesion, appBloqueada } from '../../nucleo/estado/sesion.js';
 import { aplicarBloqueoVista } from '../../nucleo/estado/vista-bloqueada.js';
 import { iniciarCuenta } from './cuenta/index.js';
+import { initModeracionContenido } from './moderacion-contenido/index.js';
 import { reproducirEventoActivo, reproducirEvento } from '../../componentes/eventos/index.js';
 import { iniciarBotonEfectosEvento } from './efectos-evento.js';
 import { iniciarAvisoConexionFallida } from './aviso-conexion-fallida.js';
@@ -227,6 +228,7 @@ function iniciarArranque() {
   loadRuntimeConfig();
   mostrarVersionApp();
   iniciarCuenta();
+  initModeracionContenido();
   iniciarBotonEfectosEvento();
   iniciarAvisoConexionFallida();
   iniciarAvisoCodigoDescuento();

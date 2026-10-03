@@ -1,0 +1,157 @@
+/* Ajustes > Moderacion del chat (interfaz/src/vistas/principal/moderacion-contenido/).
+   Solo anima opacity/transform/color con propiedades explicitas; ease-out en feedback. */
+
+.cg-intro { margin: 0 0 14px; }
+.cg-hint { font-size: var(--text-2xs); color: var(--text-muted); line-height: 1.45; }
+
+.cg-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  margin-bottom: 12px;
+}
+.cg-subtitle {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-bright);
+  margin-bottom: 10px;
+}
+.cg-sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+/* ── Interruptor maestro ─────────────────────────────── */
+.cg-master { display: flex; align-items: center; gap: 12px; }
+.cg-master-icon { width: 22px; height: 22px; flex-shrink: 0; opacity: 0.85; }
+.cg-master-text { flex: 1; min-width: 0; }
+.cg-master-title { font-size: var(--text-sm); font-weight: 600; color: var(--text-bright); }
+.cg-people-note { margin-top: 10px; }
+
+.cg-switch {
+  position: relative; flex-shrink: 0;
+  width: 42px; height: 24px; padding: 0;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-raised);
+  cursor: pointer;
+  transition: background-color var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out), opacity var(--dur-1) var(--ease-out);
+}
+.cg-switch-thumb {
+  position: absolute; top: 2px; left: 2px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--text-secondary);
+  transition: transform var(--dur-2) var(--ease-out), background-color var(--dur-2) var(--ease-out);
+}
+.cg-switch[aria-checked="true"] { background: var(--ok); border-color: var(--ok); }
+.cg-switch[aria-checked="true"] .cg-switch-thumb { transform: translateX(18px); background: #0a0a0a; }
+.cg-switch:active:not(:disabled) .cg-switch-thumb { transform: scale(0.92); }
+.cg-switch[aria-checked="true"]:active:not(:disabled) .cg-switch-thumb { transform: translateX(18px) scale(0.92); }
+.cg-switch:disabled { opacity: 0.5; cursor: default; }
+.cg-switch:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ── Opciones (radios / casillas) ────────────────────── */
+.cg-options { display: flex; flex-direction: column; gap: 4px; }
+.cg-option, .cg-check {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 8px 10px; border-radius: 8px; cursor: pointer;
+  border: 1px solid transparent;
+  transition: background-color var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out);
+}
+.cg-option:has(input:checked) { background: var(--surface-raised); border-color: var(--border-strong); }
+.cg-option input, .cg-check input { margin-top: 3px; flex-shrink: 0; accent-color: var(--ok); }
+.cg-option-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.cg-option-title { font-size: var(--text-sm); color: var(--text-bright); font-weight: 500; }
+.cg-option:has(input:focus-visible), .cg-check:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 1px; }
+.cg-custom { margin: 6px 0 0 26px; display: flex; flex-direction: column; gap: 2px; }
+.cg-custom[hidden] { display: none; }
+.cg-lang-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 2px 8px; margin-bottom: 8px; }
+.cg-check-compact { padding: 6px 10px; align-items: center; }
+.cg-check-compact input { margin-top: 0; }
+
+/* Con el filtro apagado se ve lo que se recupera al encenderlo, pero atenuado. */
+.is-locked .cg-option, .is-locked .cg-check, .is-locked .cg-lang-grid { opacity: 0.5; cursor: default; }
+.cg-option, .cg-check, .cg-lang-grid { transition: opacity var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out); }
+
+/* ── Palabras ────────────────────────────────────────── */
+.cg-tabs { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+.cg-tab {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; min-height: 32px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: transparent; color: var(--text-muted);
+  font: 500 var(--text-sm) 'Inter', sans-serif; cursor: pointer;
+  transition: background-color var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out), transform var(--dur-press) var(--ease-out);
+}
+.cg-tab[aria-selected="true"] { background: var(--surface-raised); border-color: var(--text-bright-a30); color: var(--text-bright); }
+.cg-tab:active { transform: scale(0.97); }
+.cg-tab:focus-visible, .cg-chip-remove:focus-visible, .cg-input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.cg-words-panel { display: flex; flex-direction: column; gap: 8px; }
+.cg-add { display: flex; gap: 8px; align-items: center; }
+.cg-add-btn { min-height: 32px; gap: 6px; transition: border-color 0.2s, color 0.2s, background-color 0.2s, transform var(--dur-press) var(--ease-out); }
+.cg-add-btn:active:not(:disabled), .cfg-btn.small.cg-retry:active, #cgGoModeration:active { transform: scale(0.97); }
+.cg-input {
+  flex: 1; min-width: 0; min-height: 32px; padding: 6px 12px;
+  border-radius: 8px; border: 1px solid var(--border-strong);
+  background: var(--surface-0); color: var(--text-bright);
+  font: 400 var(--text-sm) 'Inter', sans-serif;
+  transition: border-color var(--dur-2) var(--ease-out);
+}
+.cg-input[aria-invalid="true"] { border-color: var(--danger); }
+.cg-input:disabled { opacity: 0.5; }
+.cg-search { display: flex; align-items: center; gap: 8px; }
+.cg-search .icon-inline { opacity: 0.6; flex-shrink: 0; }
+.cg-problem { font-size: var(--text-xs); color: var(--danger); }
+.cg-problem[hidden], .cg-empty[hidden], .cg-hint[hidden], .cg-retry[hidden] { display: none; }
+.cg-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.cg-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 4px 3px 12px; border-radius: var(--radius-pill);
+  background: var(--surface-raised); border: 1px solid var(--border);
+  font-size: var(--text-xs); color: var(--text-bright); max-width: 100%;
+}
+.cg-chip > span { overflow-wrap: anywhere; }
+.cg-chip-remove {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; flex-shrink: 0; padding: 0;
+  border-radius: 50%; border: 0; background: transparent; cursor: pointer;
+  transition: background-color var(--dur-1) var(--ease-out), transform var(--dur-press) var(--ease-out);
+}
+.cg-chip-remove .icon-inline { width: 14px; height: 14px; opacity: 0.7; }
+.cg-chip-remove:active { transform: scale(0.9); }
+.cg-empty { display: flex; align-items: center; gap: 8px; font-size: var(--text-xs); color: var(--text-muted); padding: 6px 0; }
+.cg-empty .icon-inline { opacity: 0.6; }
+
+/* ── Estado del motor ────────────────────────────────── */
+.cg-status { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.cg-status-icon { width: 20px; height: 20px; flex-shrink: 0; }
+.cg-status-body { flex: 1; min-width: 0; }
+.cg-status-text { font-size: var(--text-sm); color: var(--text-bright); }
+.cg-status-icon.is-spinning { animation: cg-spin 1s linear infinite; }
+@keyframes cg-spin { to { transform: rotate(360deg); } }
+
+.cg-people { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+@media (hover: hover) and (pointer: fine) {
+  .cg-switch:hover:not(:disabled) { border-color: var(--text-bright-a30); }
+  .cg-option:hover:not(:has(input:disabled)), .cg-check:hover:not(:has(input:disabled)) { background: var(--hover-05); }
+  .cg-tab:hover { border-color: var(--text-bright-a30); color: var(--text-bright); }
+  .cg-chip-remove:hover { background: var(--hover-05); }
+  .cg-chip-remove:hover .icon-inline { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cg-switch-thumb, .cg-tab, .cg-chip-remove, .cg-add-btn { transition-property: background-color, border-color, color, opacity; }
+  .cg-status-icon.is-spinning { animation: none; }
+}
+body.reduce-motion .cg-switch-thumb,
+body.reduce-motion .cg-tab,
+body.reduce-motion .cg-chip-remove,
+body.reduce-motion .cg-add-btn { transition-property: background-color, border-color, color, opacity; }
+body.reduce-motion .cg-status-icon.is-spinning { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .cg-switch:active:not(:disabled) .cg-switch-thumb { transform: none; }
+  .cg-switch[aria-checked="true"]:active:not(:disabled) .cg-switch-thumb { transform: translateX(18px); }
+}
