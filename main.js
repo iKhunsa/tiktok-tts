@@ -30,18 +30,29 @@ const { GLOBAL_SHORTCUT } = require('./features/clips/global-shortcut');
 const telemetryRuntime = require('./features/telemetria/runtime');
 const glitchtip = require('./electron-shell/glitchtip');
 const aptabase = require('./electron-shell/aptabase');
+const { hasAcceptedTerms } = require('./electron-shell/terms-acceptance');
 const { resolveConfigValue } = require('./electron-shell/resolve-config-value');
 const { getActiveAccount, accountDataDir } = require('./core/account-data-path');
+
+// Sin aceptación de Términos y Privacidad guardada no se envía ningún dato:
+// ni GlitchTip, ni Aptabase, ni telemetría propia se inicializan (sus `enabled`
+// quedan en false y attach/track/shutdown son no-op). Se calcula una sola vez.
+const termsAccepted = hasAcceptedTerms({
+  isPackaged: app.isPackaged,
+  userDataDir: app.getPath('userData'),
+});
 
 // GlitchTip (error tracking) — se inicia lo antes posible, antes de cargar
 // server.js, para captar hasta un fallo de arranque de los dominios. El
 // enganche al bus (attach) viene después, cuando ya existe el logger.
-glitchtip.init({
-  appVersion: app.getVersion(),
-  isDebug: !app.isPackaged,
-  userDataDir: app.getPath('userData'),
-  logger: null,
-});
+if (termsAccepted) {
+  glitchtip.init({
+    appVersion: app.getVersion(),
+    isDebug: !app.isPackaged,
+    userDataDir: app.getPath('userData'),
+    logger: null,
+  });
+}
 
 let mainWindow = null;
 let tray = null;
@@ -59,13 +70,15 @@ ensureSingleInstance(app, () => showMainWindow(mainWindow));
 // app.isReady(), requisito del SDK) pero DESPUÉS del lock de instancia única:
 // así una 2ª instancia ya hizo process.exit(0) y no dispara installacion /
 // app_started por duplicado. attach al bus más abajo cuando ya hay logger.
-aptabase.init({
-  appVersion: app.getVersion(),
-  isPackaged: app.isPackaged,
-  isDebug: !app.isPackaged,
-  userDataDir: app.getPath('userData'),
-  logger: null,
-});
+if (termsAccepted) {
+  aptabase.init({
+    appVersion: app.getVersion(),
+    isPackaged: app.isPackaged,
+    isDebug: !app.isPackaged,
+    userDataDir: app.getPath('userData'),
+    logger: null,
+  });
+}
 
 // Arranca /core + los 16 dominios de negocio (server.js ya no tiene logica
 // propia desde la Fase 1). Envuelto para mostrar un dialogo recuperable en
@@ -82,6 +95,13 @@ try {
 const bus = serverModule && serverModule.bus;
 const logger = serverModule && serverModule.logger;
 
+if (!termsAccepted && logger) {
+  logger.log(
+    'info', 'electron-shell', 'main.js#termsGate', 'app.telemetria.omitida_sin_aceptacion',
+    'Sin aceptacion de Terminos y Privacidad: telemetria, analitica y error tracking desactivados',
+    {}
+  );
+}
 if (bus) glitchtip.attach(bus, logger);
 if (bus) aptabase.attach(bus, logger);
 // uncaughtException / unhandledRejection: los registra server.js (siempre, para
@@ -181,15 +201,17 @@ app.whenReady().then(() => {
       });
     }
 
-    telemetryRuntime.init({
-      url: resolveTelemetryUrl(),
-      token: resolveIngestToken(),
-      appVersion: app.getVersion(),
-      dataDir: app.getPath('userData'),
-      creatorDataDir: accountDataDir(),
-      bus,
-      logger,
-    });
+    if (termsAccepted) {
+      telemetryRuntime.init({
+        url: resolveTelemetryUrl(),
+        token: resolveIngestToken(),
+        appVersion: app.getVersion(),
+        dataDir: app.getPath('userData'),
+        creatorDataDir: accountDataDir(),
+        bus,
+        logger,
+      });
+    }
     if (telemetryRuntime.enabled) glitchtip.setTelemetryIdentity(telemetryRuntime.identity);
 
     startUiohook(logger);
