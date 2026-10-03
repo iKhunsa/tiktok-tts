@@ -91,6 +91,7 @@ function init({ url, token, appVersion, dataDir, creatorDataDir = dataDir, bus, 
   }
 
   track('app', 'startup', { locale: runtime.identity.os.locale });
+  bus.emit('telemetry:ready'); // conectores con trabajo diferido (blocked-words) arrancan aqui
 
   runtime.heartbeatTimer = setInterval(() => {
     bus.emit('telemetry:heartbeat');

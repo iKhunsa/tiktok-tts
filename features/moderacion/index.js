@@ -65,7 +65,17 @@ module.exports = {
       bus.emit('ws:broadcast', { type: 'moderation-reset' });
     }, 'moderacion');
 
-    const deps = { app, bus, logger, store, blockedWords, moderation, guardOptions, configure };
+    // Contrato por bus para telemetria (sin que importe internals de moderacion):
+    // lectura sincrona de la lista por callback + aviso cuando una ruta la edita.
+    bus.on('moderacion:palabras-get', (respond) => {
+      if (typeof respond === 'function') respond([...blockedWords]);
+    }, 'moderacion');
+    const configureAndNotify = () => {
+      configure();
+      bus.emit('moderacion:palabras-cambiadas');
+    };
+
+    const deps = { app, bus, logger, store, blockedWords, moderation, guardOptions, configure: configureAndNotify };
     // Inyeccion en tiempo de registro: /chat (Fase 7) consume la interfaz de
     // core/contracts/moderacion-policy.js sin importar moderacion/ directo.
     moderacionPolicyContract.review = ({ platform, raw }) => {

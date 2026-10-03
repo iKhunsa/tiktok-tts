@@ -236,6 +236,18 @@
       <input type="file" id="mdFileInput" accept=".md" style="flex:1;cursor:pointer;" />
       <button class="btn-add" onclick="uploadMdFile()"><img class="icon-inline" src="icons/upload.svg" alt=""> <span data-i18n="adv.mdUploadBtn">Subir y reemplazar</span></button>
     </div>
+
+    <div class="section-label"><img class="icon-inline" src="icons/privacy_tip.svg" alt=""> <span data-i18n="adv.bwShareLabel">Ayudar a mejorar el filtro</span></div>
+    <div class="toggle-row">
+      <div class="toggle-info">
+        <div class="toggle-name" data-i18n="adv.bwShareName">Compartir mi lista de palabras bloqueadas</div>
+        <div class="toggle-hint" data-i18n="adv.bwShareHint">Envía de forma anónima las palabras de tu lista, sin tu nombre ni el de tus espectadores, para mejorar el filtro de moderación. Solo se usan las palabras que bloquean varias personas. Está desactivado hasta que lo actives y puedes apagarlo cuando quieras.</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="blockedWordsTelemetryEnabled" onchange="saveBlockedWordsSharing()" />
+        <span class="switch-track"></span>
+      </label>
+    </div>
   </div>
 
   <!-- ═══ PANEL 4: ESTADO DEL SISTEMA ═══ -->

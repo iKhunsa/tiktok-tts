@@ -10,6 +10,7 @@ import { toggleRateLimit, saveRateLimit } from './rate-limit.js';
 import { saveGeneral } from './config-general.js';
 import { saveAccessibility } from './accesibilidad.js';
 import { addBlockedWord, loadBlockedWords, saveBlockedWords } from './palabras-bloqueadas.js';
+import { saveBlockedWordsSharing } from './compartir-palabras.js';
 import { loadMdContent, saveMdContent, uploadMdFile, downloadMd } from './editor-md.js';
 import { downloadAllLogs } from './logs.js';
 import { refreshStatus, iniciarPollingEstado } from './estado-servidor.js';
@@ -22,7 +23,7 @@ Object.assign(window, {
   toggleRateLimit, saveRateLimit,
   saveGeneral,
   saveAccessibility,
-  addBlockedWord, saveBlockedWords,
+  addBlockedWord, saveBlockedWords, saveBlockedWordsSharing,
   loadMdContent, saveMdContent, uploadMdFile, downloadMd,
   downloadAllLogs,
   refreshStatus,

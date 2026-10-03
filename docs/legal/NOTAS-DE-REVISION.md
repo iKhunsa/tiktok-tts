@@ -69,3 +69,11 @@ Se quitaron de los Términos y la Privacidad (ES y EN) porque el producto aún n
 | Garantía de que los registros enviados a errores y reportes se recortan | Privacidad §2 | Sanitizar logs antes de GlitchTip y Discord |
 
 **Importante:** hoy la baja de la publicidad se hace escribiendo a info@tiklivetts.es o eliminando la cuenta. Antes de enviar el **primer correo comercial** debe existir un enlace de baja en el propio correo: lo exigen las leyes de correo comercial (CAN-SPAM, RGPD/ePrivacy, LGPD) aunque el texto no lo prometa.
+
+## 6. BORRADOR pendiente de aprobación del dueño: palabras bloqueadas (telemetría opt-in)
+
+**Estado: BORRADOR, NO PUBLICADO.** La app incluye (rama `telemetria-palabras-cliente`) un interruptor por cuenta, **desactivado por defecto**, que envía la lista de palabras bloqueadas (saneada, sin nombres ni chat) al servidor de telemetría. Los textos vigentes **no** se modificaron. Borradores: `politica-de-privacidad-borrador.md`, `privacy-policy-borrador.en.md`, `terminos-y-condiciones-borrador.md` y `terms-and-conditions-borrador.en.md` (qué se envía, para qué, solo palabras bloqueadas por varios usuarios, base legal = consentimiento por el interruptor, retención 365 días, cómo desactivarlo y pedir el borrado).
+
+Antes de activar el envío en producción: (1) el dueño aprueba el texto; (2) un abogado lo revisa; (3) se publica la política y se avisa a usuarios existentes; (4) se despliega la migración del servidor. Decisiones abiertas al final de cada borrador (umbral K, lógica "solo sumar", fecha de entrada en vigor).
+
+**Límite conocido:** un snapshot ya encolado localmente antes de apagar el interruptor puede salir en el siguiente latido (máx. ~5 min); lo posterior no se genera.

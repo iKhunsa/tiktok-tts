@@ -212,6 +212,7 @@ Dominio aparte que reporta uso agregado y anónimo a un servicio propio
   `%APPDATA%\tiktok-live-tts\telemetry.json` — archivo separado de
   `config.json` a propósito, porque `features/configuracion/` descarta claves que no
   reconoce y lo borraría en el primer guardado.
+- `connectors/blocked-words.js` (+ `blocked-words/`) — snapshot opt-in de la lista de palabras bloqueadas (`blockedWordsTelemetryEnabled`, por cuenta, default `false`; apagado = cero eventos). Lee la lista por el bus (`moderacion:palabras-get`, aviso `moderacion:palabras-cambiadas`), sanea igual que el servidor, hash sha256, estado del ultimo envio en `accountDataPath('blocked-words-telemetry.json')`. Envia al arrancar si pasaron >7 dias, al cambiar la lista (debounce 10 min) y cada semana; mismo hash y <7 dias = nada. Texto legal: borradores en `docs/legal/*-borrador*`.
 - Casi todos los eventos se emiten directo desde los conectores. Solo
   `tts:skipped`, `tts:queue-overflow`, `ui:language-set`, `ui:discord-opened` y
   `ui:discord-joined` nacen en el renderer
