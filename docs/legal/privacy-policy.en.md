@@ -37,7 +37,7 @@ This policy explains what data TikLiveTTS (the "App") processes, why, who we sha
 **Clarifications:**
 - The device fingerprint is **pseudonymized** data: it does not contain your name, but it is still personal data because it stably identifies your installation.
 - Your IP is used only to estimate your **approximate location** (country and city), not your exact location, and we do not use it to identify you. This approximation gives us a general idea of where the App is used.
-- The session logs attached to errors and reports **may contain usernames** from the connected platforms. We trim them, but we cannot guarantee that none appears.
+- The session logs attached to errors and reports **may contain usernames** from the connected platforms. We do not guarantee that they are filtered.
 - We **do not process** the content of your viewers' chat messages as part of telemetry, nor your TikTok, Twitch, YouTube or Kick passwords. The TikTok session is stored locally.
 - We do not make **automated decisions** or build profiles that produce legal effects on you.
 - We do not process special categories of data (health, biometrics, origin, etc.).
@@ -75,7 +75,7 @@ You have the right to **access, rectification, erasure, objection, restriction, 
 
 - **Delete your account and account data:** **"Delete account"** button in your profile (Account view). It is immediate and irreversible.
 - **Telemetry and analytics linked to your installation:** write to info@tiklivetts.es or on Discord and we will help you identify and delete it. Today the App does not include a switch to turn telemetry off; you can stop sending it by uninstalling the App or by writing to us.
-- **Email advertising:** unsubscribe link in every email or by writing to us.
+- **Email advertising:** write to info@tiklivetts.es or delete your account.
 - **Withdraw the image-use authorization:** by deleting your account or writing to us (see §7).
 
 You may also **object** to processing based on our legitimate interest. To protect you, we may ask you to confirm your identity before handing over or deleting data.
@@ -88,7 +88,7 @@ With your acceptance, we use the **public data** of your channels (username, pub
 
 ## 8. Email advertising
 
-By accepting the Terms and sharing your email, you consent to our using it to send you advertising, offers and news about TikLiveTTS and other iKhunsa projects. We do not share or sell your email to third parties for their own advertising. You can withdraw your consent at any time with the unsubscribe link in each email, by writing to info@tiklivetts.es or by deleting your account; you will still receive the transactional emails that are necessary (payments, security, changes to terms).
+By accepting the Terms and sharing your email, you consent to our using it to send you advertising, offers and news about TikLiveTTS and other iKhunsa projects. We do not share or sell your email to third parties for their own advertising. You can withdraw your consent at any time by writing to info@tiklivetts.es or by deleting your account; you will still receive the transactional emails that are necessary (payments, security, changes to terms).
 
 ## 9. Security
 

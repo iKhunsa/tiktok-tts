@@ -19,7 +19,7 @@ TikLiveTTS es un proyecto **independiente**. No está afiliado, patrocinado ni r
 2.1. Aceptas estos términos al pulsar "Acepto" en el instalador. **El instalador te los muestra en cada instalación y en cada actualización**, y debes aceptarlos de nuevo cada vez: si no los aceptas, la instalación o la actualización no continúa.
 2.2. Debes tener la edad legal para contratar en tu país (18 años en Ecuador). Si eres menor de edad, solo puedes usar la App con el permiso y bajo la responsabilidad de tu representante legal, quien acepta estos términos por ti.
 2.3. Usas la App bajo tu propia responsabilidad y declaras que la información que nos proporcionas es veraz.
-2.4. **Registro de aceptación:** guardamos en tu equipo (y en tu cuenta, si la tienes) la versión de estos términos que aceptaste y la fecha, para poder demostrarlo. Si no aceptas una actualización, puedes seguir usando la versión instalada, que se rige por los términos que aceptaste antes, pero no recibirás nuevas funciones ni correcciones.
+2.4. **Registro de aceptación:** el instalador guarda en tu equipo la versión de estos términos que aceptaste y la fecha, para poder demostrarlo. Si no aceptas una actualización, puedes seguir usando la versión instalada, que se rige por los términos que aceptaste antes, pero no recibirás nuevas funciones ni correcciones.
 
 ## 3. Software de código abierto y verificable
 
@@ -49,7 +49,7 @@ TikLiveTTS es un proyecto **independiente**. No está afiliado, patrocinado ni r
 6.5. **No hay reembolsos.** Todos los pagos de planes, mensuales o anuales, son **definitivos y no reembolsables**, incluidos los períodos no utilizados, la cancelación anticipada, la eliminación de la cuenta y los cambios de plan. Esta cláusula se aplica en la máxima medida permitida por la ley aplicable.
 6.6. Podemos cambiar los precios o las características de los planes; los cambios de precio se aplican en la siguiente renovación y se anuncian con antelación razonable en la App.
 6.7. Los códigos de descuento son personales, temporales, no acumulables salvo que se indique lo contrario, y se aplican al momento de pagar.
-6.8. **Cómo cancelar:** desde la App, en tu perfil (vista Cuenta) → botón de cancelar suscripción, sin llamadas ni trámites. La cancelación es inmediata en la App y se aplica al final del período en curso. Antes de pagar te mostramos el precio, la periodicidad y que la renovación es automática; en los planes anuales te enviaremos un recordatorio por correo antes de la renovación.
+6.8. **Cómo cancelar:** desde la App, en tu perfil (vista Cuenta) → botón de cancelar suscripción, sin llamadas ni trámites. La cancelación es inmediata en la App y se aplica al final del período en curso. Antes de pagar te mostramos el precio, la periodicidad y que la renovación es automática.
 6.9. **Derecho de desistimiento (UE, EEE y Reino Unido):** si resides en estos territorios, al contratar un plan solicitas expresamente que el servicio digital comience de inmediato y reconoces que, una vez iniciado, **pierdes el derecho de desistimiento de 14 días**. Si tu ley de consumo te reconoce derechos irrenunciables adicionales (por ejemplo, el arrepentimiento en compras a distancia en otros países), esta cláusula no los limita.
 
 ## 7. Datos y permisos que nos otorgas
@@ -80,8 +80,8 @@ No vendemos tus datos. El contenido de los mensajes del chat de tus espectadores
 
 9.1. Los correos **transaccionales** (confirmaciones, avisos de pago, seguridad de la cuenta, cambios en estos términos) son necesarios para prestar el servicio.
 9.2. **Al aceptar estos términos y compartir tu correo electrónico** (por ejemplo, al crear tu cuenta o al pagar un plan), **consientes que usemos tu correo para enviarte publicidad, ofertas y novedades de TikLiveTTS y de otros proyectos de mi propiedad** (iKhunsa). Este consentimiento forma parte de la aceptación de estos términos; puedes retirarlo en cualquier momento, sin costo, como se explica abajo.
-9.3. Puedes **retirar tu consentimiento** en cualquier momento mediante el enlace de baja de cada correo, escribiendo a info@tiklivetts.es o eliminando tu cuenta. No cederemos ni venderemos tu correo a terceros para su propia publicidad.
-9.4. Guardamos la prueba de tu aceptación (fecha y versión de estos términos). Cada correo comercial identificará al remitente, incluirá un enlace de baja que funciona con un solo clic y dejaremos de enviártelos en un máximo de 10 días tras tu baja.
+9.3. Puedes **retirar tu consentimiento** en cualquier momento escribiendo a info@tiklivetts.es o eliminando tu cuenta. No cederemos ni venderemos tu correo a terceros para su propia publicidad.
+9.4. Dejaremos de enviarte correos comerciales en un máximo de 10 días tras tu solicitud de baja.
 
 ## 10. Uso aceptable y plataformas de terceros
 

@@ -21,7 +21,7 @@ TikLiveTTS is an **independent** project. It is not affiliated with, sponsored b
 2.1. You accept these terms by clicking "I agree" in the installer. **The installer shows them to you on every installation and every update**, and you must accept them again each time: if you do not accept, the installation or update does not continue.
 2.2. You must have the legal age to enter into contracts in your country (18 in Ecuador). If you are a minor, you may use the App only with the permission and under the responsibility of your legal guardian, who accepts these terms on your behalf.
 2.3. You use the App at your own risk and declare that the information you give us is true.
-2.4. **Record of acceptance:** we store on your device (and in your account, if you have one) the version of these terms you accepted and the date, so we can prove it. If you do not accept an update, you may keep using the installed version, which is governed by the terms you accepted earlier, but you will not receive new features or fixes.
+2.4. **Record of acceptance:** the installer stores on your device the version of these terms you accepted and the date, so we can prove it. If you do not accept an update, you may keep using the installed version, which is governed by the terms you accepted earlier, but you will not receive new features or fixes.
 
 ## 3. Open-source, verifiable software
 
@@ -51,7 +51,7 @@ TikLiveTTS is an **independent** project. It is not affiliated with, sponsored b
 6.5. **There are no refunds.** All payments for plans, monthly or annual, are **final and non-refundable**, including unused periods, early cancellation, account deletion and plan changes. This clause applies to the maximum extent permitted by applicable law.
 6.6. We may change prices or plan features; price changes apply at the next renewal and are announced with reasonable notice in the App.
 6.7. Discount codes are personal, temporary, not combinable unless stated otherwise, and are applied at checkout.
-6.8. **How to cancel:** in the App, in your profile (Account view) → cancel subscription button, with no calls or paperwork. Cancellation is immediate in the App and takes effect at the end of the current period. Before you pay we show you the price, the billing period and that renewal is automatic; for annual plans we will send you an email reminder before renewal.
+6.8. **How to cancel:** in the App, in your profile (Account view) → cancel subscription button, with no calls or paperwork. Cancellation is immediate in the App and takes effect at the end of the current period. Before you pay we show you the price, the billing period and that renewal is automatic.
 6.9. **Right of withdrawal (EU, EEA and UK):** if you reside in these territories, by purchasing a plan you expressly request that the digital service begin immediately and acknowledge that, once it has begun, **you lose the 14-day right of withdrawal**. If your consumer law grants you additional non-waivable rights (for example, the right of regret in distance sales in other countries), this clause does not limit them.
 
 ## 7. Data and permissions you grant us
@@ -82,8 +82,8 @@ We do not sell your data. The content of your viewers' chat messages is not part
 
 9.1. **Transactional** emails (confirmations, payment notices, account security, changes to these terms) are necessary to provide the service.
 9.2. **By accepting these terms and sharing your email address** (for example, when creating your account or paying for a plan), **you consent to our using your email to send you advertising, offers and news about TikLiveTTS and other projects I own** (iKhunsa). This consent is part of your acceptance of these terms; you can withdraw it at any time, free of charge, as explained below.
-9.3. You can **withdraw your consent** at any time through the unsubscribe link in each email, by writing to info@tiklivetts.es or by deleting your account. We will not transfer or sell your email to third parties for their own advertising.
-9.4. We keep proof of your acceptance (date and version of these terms). Each commercial email will identify the sender, include a one-click unsubscribe link, and we will stop sending them within 10 days of your unsubscribing.
+9.3. You can **withdraw your consent** at any time by writing to info@tiklivetts.es or by deleting your account. We will not transfer or sell your email to third parties for their own advertising.
+9.4. We will stop sending you commercial emails within 10 days of your unsubscribe request.
 
 ## 10. Acceptable use and third-party platforms
 

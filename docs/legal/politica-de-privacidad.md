@@ -35,7 +35,7 @@ Esta política explica qué datos trata TikLiveTTS (la "App"), para qué, con qu
 **Aclaraciones:**
 - La huella de equipo es un dato **seudonimizado**: no contiene tu nombre, pero sigue siendo un dato personal porque identifica de forma estable tu instalación.
 - Tu IP se usa solo para estimar tu **ubicación aproximada** (país y ciudad), no tu ubicación exacta, y no la usamos para identificarte. Esa aproximación nos da una idea general de dónde se usa la App.
-- Los registros de sesión que se adjuntan a errores y reportes **pueden contener nombres de usuario** de las plataformas conectadas. Los recortamos, pero no podemos garantizar que no aparezca alguno.
+- Los registros de sesión que se adjuntan a errores y reportes **pueden contener nombres de usuario** de las plataformas conectadas. No garantizamos que se filtren.
 - **No tratamos** el contenido de los mensajes del chat de tus espectadores como parte de la telemetría, ni tus contraseñas de TikTok, Twitch, YouTube o Kick. La sesión de TikTok se guarda localmente.
 - No tomamos **decisiones automatizadas** ni elaboramos perfiles que produzcan efectos jurídicos sobre ti.
 - No tratamos categorías especiales de datos (salud, biometría, origen, etc.).
@@ -73,7 +73,7 @@ Tienes derecho a **acceso, rectificación, eliminación, oposición, limitación
 
 - **Eliminar tu cuenta y tus datos de cuenta:** botón **"Eliminar cuenta"** en tu perfil (vista Cuenta). Es inmediato e irreversible.
 - **Telemetría y analítica asociadas a tu instalación:** escríbenos a info@tiklivetts.es o por Discord y te ayudamos a identificarla y borrarla. Hoy la App no incluye un interruptor para desactivar la telemetría; puedes dejar de enviarla desinstalando la App o escribiéndonos.
-- **Publicidad por correo:** enlace de baja en cada correo o escribiéndonos.
+- **Publicidad por correo:** escríbenos a info@tiklivetts.es o elimina tu cuenta.
 - **Retirar la autorización de uso de imagen:** eliminando tu cuenta o escribiéndonos (ver §7).
 
 También puedes **oponerte** a los tratamientos basados en nuestro interés legítimo. Para protegerte, podemos pedirte que confirmes tu identidad antes de entregar o borrar datos.
@@ -86,7 +86,7 @@ Con tu aceptación, usamos los **datos públicos** de tus canales (nombre de usu
 
 ## 8. Publicidad por correo electrónico
 
-Al aceptar los Términos y compartir tu correo, consientes que lo usemos para enviarte publicidad, ofertas y novedades de TikLiveTTS y de otros proyectos de iKhunsa. No compartimos ni vendemos tu correo a terceros para su propia publicidad. Puedes retirar tu consentimiento cuando quieras con el enlace de baja de cada correo, escribiendo a info@tiklivetts.es o eliminando tu cuenta; seguirás recibiendo los correos transaccionales necesarios (pagos, seguridad, cambios de términos).
+Al aceptar los Términos y compartir tu correo, consientes que lo usemos para enviarte publicidad, ofertas y novedades de TikLiveTTS y de otros proyectos de iKhunsa. No compartimos ni vendemos tu correo a terceros para su propia publicidad. Puedes retirar tu consentimiento cuando quieras escribiendo a info@tiklivetts.es o eliminando tu cuenta; seguirás recibiendo los correos transaccionales necesarios (pagos, seguridad, cambios de términos).
 
 ## 9. Seguridad
 

@@ -1,4 +1,4 @@
-# Notas de revisión legal — Términos y Privacidad (v2.0, borrador)
+# Notas de revisión legal — Términos y Privacidad (v2.0)
 
 > Revisión de cumplimiento (LOPDP Ecuador, RGPD/UK GDPR, LGPD, CCPA/CPRA, consumo). **No es asesoría legal**: antes de publicar, revisa con un abogado con experiencia en protección de datos y comercio electrónico.
 
@@ -55,3 +55,17 @@ Resueltos: proveedor y ubicación del hosting (Hostinger, Manchester, Reino Unid
 | Abogado (datos personales + comercio electrónico, Ecuador) | Validar bases legales, cláusulas de responsabilidad, consumo y prueba del consentimiento | Pendiente |
 | Revisión por mercado objetivo (UE/UK/Brasil) | Representante en la UE, SCC, DPO/encarregado, plazos | Pendiente si se promociona allí |
 | Polar | Confirmar quién notifica la renovación y cómo configurar el aviso de desistimiento en el checkout | Pendiente |
+
+
+## 5. Promesas retiradas del texto (no están implementadas)
+
+Se quitaron de los Términos y la Privacidad (ES y EN) porque el producto aún no las cumple. Volver a agregarlas **solo cuando existan**:
+
+| Promesa retirada | Dónde estaba | Qué se necesita para cumplirla |
+|---|---|---|
+| Recordatorio por correo antes de renovar un plan anual | T&C 6.8 | Que Polar lo envíe o un correo propio programado |
+| Enlace de baja de un clic en cada correo comercial, con identificación del remitente | T&C 9.3 y 9.4, Privacidad §6 y §8 | Herramienta de envío con baja automática |
+| Prueba del consentimiento de correo (fecha y versión) guardada en la cuenta | T&C 2.4 y 9.4 | Registrar la aceptación en el backend de cuentas al registrarse |
+| Garantía de que los registros enviados a errores y reportes se recortan | Privacidad §2 | Sanitizar logs antes de GlitchTip y Discord |
+
+**Importante:** hoy la baja de la publicidad se hace escribiendo a info@tiklivetts.es o eliminando la cuenta. Antes de enviar el **primer correo comercial** debe existir un enlace de baja en el propio correo: lo exigen las leyes de correo comercial (CAN-SPAM, RGPD/ePrivacy, LGPD) aunque el texto no lo prometa.
