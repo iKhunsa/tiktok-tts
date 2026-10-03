@@ -4,7 +4,7 @@
  * de sesion. Toda la logica de plan/entitlements vive en el server
  * (features/auth/); aca solo se refleja el estado y se disparan acciones.
  */
-import { t, aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
+import { t, aplicarTraducciones, idiomaActual } from '../../../nucleo/i18n/i18n.js';
 import { showToast } from '../../../componentes/toast.js';
 import { almacenSesion, aplicarSesion, pintarBadgeSidebar } from '../../../nucleo/estado/sesion.js';
 import { borrarDatosDeCuenta } from '../../../nucleo/estado/datos-por-cuenta.js';
@@ -13,6 +13,8 @@ import { pedir, toastError } from './api.js';
 import { abrirModalEliminarCuenta } from './modal-eliminar-cuenta.js';
 import { abrirPopupPlanes } from '../../../componentes/popup-planes.js';
 import { escaparAtributo as esc } from '../../../../compartido/escapar-html.js';
+import { avisoRegistroHtml } from './aviso-registro-html.js';
+import { enlazarAvisoRegistro } from './enlazar-aviso-registro.js';
 
 const MIN_PASS = 8;
 // La sesion pasa a anonymous y la ventana se recarga: el aviso sobrevive al reload.
@@ -44,6 +46,7 @@ function formAuth() {
             ${campo({ id: 'cuentaPass2', labelKey: 'cuenta.passwordConfirm', type: 'password', autocomplete: 'new-password', required: true })}
           </div>
           <p class="cuenta-hint" data-i18n="cuenta.passwordRule"></p>
+          ${avisoRegistroHtml(esReg)}
         ` : campo({ id: 'cuentaPass', labelKey: 'cuenta.password', type: 'password', autocomplete: 'current-password', required: true })}
 
         <button type="submit" class="cuenta-btn-primary" id="cuentaSubmit" data-i18n="${esReg ? 'cuenta.doRegister' : 'cuenta.doLogin'}"></button>
@@ -155,6 +158,7 @@ export function renderCuentaPanel() {
 
   el.innerHTML = s.signedIn ? panelPerfil(s) : formAuth();
   aplicarTraducciones(el);
+  enlazarAvisoRegistro({ raiz: el, idioma: idiomaActual() });
 
   if (!s.signedIn) {
     el.querySelector('#cuentaSwitch').addEventListener('click', () => {
