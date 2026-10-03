@@ -59,6 +59,9 @@ const estado = {
   soundpadTotal: 0,
   errorCount: 0,
   modMensajesFiltrados: 0,
+  rustBloqueados: 0,
+  rustRevisiones: 0,
+  rustFallos: 0,
   primerTtsEnviado: false,
 };
 
@@ -127,6 +130,9 @@ function construirResumenSesion() {
     soundpad_total: bucket(estado.soundpadTotal, [1, 10, 50]),
     errores:       bucket(estado.errorCount, [1, 5, 20]),
     mod_filtrados: bucket(estado.modMensajesFiltrados, [1, 10, 100]),
+    rust_bloqueados: bucket(estado.rustBloqueados, [1, 10, 100]),
+    rust_revisiones: bucket(estado.rustRevisiones, [1, 10, 100]),
+    rust_fallos: bucket(estado.rustFallos, [1, 5, 20]),
     musica:        Boolean(cfg.musicEnabled),
     playlist:      Boolean(cfg.playlistEnabled),
     filtro_idioma: Boolean(cfg.langFilterEnabled),
@@ -287,6 +293,18 @@ function attach(bus, logger) {
         // ── Moderación ───────────────────────────────────────────────────
         case 'moderacion.filtro.mensaje_bloqueado': {
           estado.modMensajesFiltrados++;
+          break;
+        }
+        case 'moderacion.rust.bloqueado': {
+          estado.rustBloqueados++;
+          break;
+        }
+        case 'moderacion.rust.revision': {
+          estado.rustRevisiones++;
+          break;
+        }
+        case 'moderacion.rust.fallo_evaluacion': {
+          estado.rustFallos++;
           break;
         }
         case 'moderacion.palabras.guardado': {

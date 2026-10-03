@@ -8,6 +8,10 @@ const moderacionPolicyContract = require('../../core/contracts/moderacion-policy
 const mcpRegistry = require('../../core/contracts/mcp-registry');
 const { resolveModTarget, resolveUntil } = require('./apply-mod-action');
 const { accountDataDir } = require('../../core/account-data-path');
+const { createRustGuard } = require('./rust-guard/create-rust-guard'); // rust-guard
+const { loadEngine } = require('./rust-guard/load-engine'); // rust-guard
+const { buildRustConfig } = require('./rust-guard/build-rust-config'); // rust-guard
+const { createRustReviewer } = require('./rust-guard/review-with-rust'); // rust-guard
 
 const { preview } = require('./routes/preview');
 const { viewers } = require('./routes/viewers');
@@ -27,6 +31,7 @@ const { blockWord } = require('./routes/block-word');
 const { unblockWord } = require('./routes/unblock-word');
 
 let storeInstance = null;
+let rustGuardInstance = null;
 
 module.exports = {
   name: 'moderacion',
@@ -39,7 +44,13 @@ module.exports = {
     const moderation = { guard: null };
     const guardOptions = () => buildGuardOptions({ bus, blockedWords });
     const createGuard = () => createChatGuard({ registry: store.registry, ...guardOptions() });
-    const configure = () => moderation.guard.configure(guardOptions());
+    const rustGuard = createRustGuard({ logger, loadEngine }); // rust-guard
+    rustGuardInstance = rustGuard; // rust-guard
+    const reviewWithRust = createRustReviewer({ rustGuard, logger }); // rust-guard
+    const configure = () => {
+      moderation.guard.configure(guardOptions());
+      rustGuard.sync(buildRustConfig({ bus, blockedWords })); // rust-guard
+    };
     moderation.guard = createGuard();
     configure();
 
@@ -49,6 +60,7 @@ module.exports = {
       blockedWords.clear();
       loadBlockedWordsFromFile(blockedWords, logger);
       moderation.guard = createGuard();
+      rustGuard.stop(); // rust-guard: hot-swap, el motor arranca de nuevo con la config de la cuenta
       configure();
       bus.emit('ws:broadcast', { type: 'moderation-reset' });
     }, 'moderacion');
@@ -57,7 +69,7 @@ module.exports = {
     // Inyeccion en tiempo de registro: /chat (Fase 7) consume la interfaz de
     // core/contracts/moderacion-policy.js sin importar moderacion/ directo.
     moderacionPolicyContract.review = ({ platform, raw }) => {
-      const verdict = moderation.guard.review({ platform, raw });
+      const verdict = reviewWithRust(moderation.guard.review({ platform, raw })); // rust-guard
       if (!verdict.message) return verdict;
       const key = viewerKey({ platform, id: verdict.message.author.id, handle: verdict.message.author.handle });
       const status = store.registry.statusOf(key);
@@ -90,7 +102,10 @@ module.exports = {
     // ── MCP ──────────────────────────────────────────────────────────────
     mcpRegistry.registerStateProvider(() => {
       const s = store.stats();
-      return { moderation: { viewers: s.total, followers: s.followers, muted: s.muted, banned: s.banned } };
+      return {
+        moderation: { viewers: s.total, followers: s.followers, muted: s.muted, banned: s.banned },
+        rustGuard: rustGuard.status(), // rust-guard
+      };
     }, 'moderacion');
 
     mcpRegistry.registerTool({
@@ -110,6 +125,14 @@ module.exports = {
         const limit = Math.min(Number(a.limit) || 50, 200);
         return store.list({ tab: a.tab, platform: a.platform, q: a.q, limit });
       },
+    });
+
+    mcpRegistry.registerTool({ // rust-guard
+      name: 'moderation_get_rust_guard_status', domain: 'moderacion', readOnly: true,
+      title: 'Rust Chat Guard status',
+      description: 'Native content-moderation engine: enabled, mode (shadow | enforce), running and engine version.',
+      inputSchema: { type: 'object', properties: {} },
+      handler: () => rustGuard.status(),
     });
 
     mcpRegistry.registerTool({
@@ -166,6 +189,7 @@ module.exports = {
   },
 
   shutdown() {
+    if (rustGuardInstance) rustGuardInstance.stop(); // rust-guard
     if (storeInstance) storeInstance.shutdown();
   },
 };

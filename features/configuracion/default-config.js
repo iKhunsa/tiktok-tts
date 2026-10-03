@@ -28,6 +28,10 @@ const DEFAULT_CONFIG = {
   // true = el TTS lee a todo el mundo (comportamiento historico).
   // false = solo lee a seguidores y a la whitelist manual.
   ttsReadNonFollowers: true,
+  // Rust Chat Guard (features/moderacion/rust-guard/): segunda capa de moderacion
+  // de contenido, por cuenta. shadow = solo registra discrepancias; enforce = aplica.
+  rustGuardEnabled: false,
+  rustGuardMode: 'shadow',
   // Servidor MCP (agentes). Endpoint solo-localhost; las tools destructivas
   // van detras de su propio toggle + prompt del host del agente.
   mcpEnabled: true,

@@ -130,6 +130,8 @@ const EVENTO_A_TIPO = {
   'moderacion.palabras.guardado_fallido': 'error_palabras_bloqueadas',
   'moderacion.palabras.export_fallido': 'error_palabras_bloqueadas',
   'moderacion.policy.fallo_evaluacion': 'error_evaluacion_moderacion',
+  'moderacion.rust.fallo_evaluacion': 'error_rust_chat_guard',
+  'moderacion.rust.no_disponible': 'error_rust_chat_guard',
   'moderacion.accion.fallida': 'error_moderacion_accion',
   'chat.policy_fallo_evaluacion': 'error_evaluacion_moderacion',
   'configuracion.store.guardado_fallido': 'error_config_guardado',
@@ -216,6 +218,7 @@ const WARN_PROMOVIDOS = new Set([
   'electron_shell.shortcut.registro_fallido',
   'electron_shell.atajo_clip_fallido',
   'idioma.dict.carga_fallida',
+  'moderacion.rust.no_disponible', // solo se loguea con rustGuardEnabled=true
 ]);
 
 // Cola del log de sesión como texto (para meterla en el context del issue —

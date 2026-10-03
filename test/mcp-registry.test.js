@@ -102,6 +102,8 @@ test('varias tools por dominio y flags destructive correctos', () => {
   assert.ok(ban && ban.annotations.destructiveHint, 'moderation_ban debe ser destructive');
   const list = tools.find((t) => t.name === 'moderation_list_viewers');
   assert.ok(list && list.annotations.readOnlyHint && !list.annotations.destructiveHint);
+  const rustStatus = tools.find((t) => t.name === 'moderation_get_rust_guard_status');
+  assert.ok(rustStatus && rustStatus.annotations.readOnlyHint && !rustStatus.annotations.destructiveHint);
   assert.ok(tools.some((t) => t.name === 'speak' && t.domain === 'sonido'));
   assert.ok(tools.some((t) => t.name === 'channels_connect'));
 });

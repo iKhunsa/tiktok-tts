@@ -46,6 +46,8 @@ const CONFIG_VALIDATORS = {
   announceTemplates: isAnnounceTemplates,
   ttsSlowSpeech: (v) => typeof v === 'boolean',
   ttsReadNonFollowers: (v) => typeof v === 'boolean',
+  rustGuardEnabled: (v) => typeof v === 'boolean',
+  rustGuardMode: (v) => v === 'shadow' || v === 'enforce',
   mcpEnabled: (v) => typeof v === 'boolean',
   mcpDestructiveToolsEnabled: (v) => typeof v === 'boolean',
   mcpDevToolsEnabled: (v) => typeof v === 'boolean',
