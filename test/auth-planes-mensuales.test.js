@@ -22,7 +22,7 @@ const USUARIO = { id: 'u1', email: 'streamer@ejemplo.com' };
 function crearAppFalsa() {
   const handlers = {};
   const registrar = (ruta, ...fns) => { handlers[ruta] = fns[fns.length - 1]; };
-  return { post: registrar, get: registrar, patch: registrar, handlers };
+  return { post: registrar, get: registrar, patch: registrar, delete: registrar, handlers };
 }
 
 function crearRespuestaFalsa() {

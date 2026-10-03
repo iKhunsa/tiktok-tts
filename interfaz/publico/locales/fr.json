@@ -1072,6 +1072,10 @@
     "suggestIdeaDesc": "Dites-nous quel outil vous aimeriez utiliser."
   },
   "errors": {
+    "wrongPassword": "Mot de passe incorrect",
+    "polarUnavailable": "Impossible de résilier votre abonnement ; rien n'a été supprimé. Réessayez.",
+    "rateLimited": "Trop de tentatives. Réessayez dans quelques minutes.",
+    "invalidBody": "Des données manquent dans la requête",
     "textRequired": "Texte requis",
     "ttsRateLimited": "Limite de débit active",
     "ttsServiceError": "Un problème est survenu avec le service de voix (Google TTS)",
@@ -1213,7 +1217,17 @@
     "switchToMonthly": "Passer au mensuel au prochain renouvellement",
     "switchNote": "Aucun remboursement : l'offre annuelle va jusqu'à son terme et le changement s'applique au renouvellement.",
     "changesAt": "Passera au mensuel le {fecha}",
-    "switchRequested": "C'est fait : vous passerez au mensuel au prochain renouvellement."
+    "switchRequested": "C'est fait : vous passerez au mensuel au prochain renouvellement.",
+    "deleteAccount": "Supprimer le compte",
+    "deleteHint": "Supprime définitivement votre compte et vos données.",
+    "deleteModalTitle": "Supprimer votre compte ?",
+    "deleteWhat": "Votre compte, votre e-mail et votre historique d'abonnement seront supprimés.",
+    "deletePlan": "Si vous avez un abonnement actif, il est résilié immédiatement sans remboursement et vous perdez l'accès.",
+    "deleteIrreversible": "Cette action est irréversible.",
+    "deletePassword": "Saisissez votre mot de passe pour confirmer",
+    "deleteConfirm": "Supprimer définitivement",
+    "deleteCancel": "Annuler",
+    "deleteDone": "Votre compte a été supprimé."
   },
   "sidebarAccount": {
     "badgeFree": "FREE",

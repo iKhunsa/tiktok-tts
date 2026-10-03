@@ -1072,6 +1072,10 @@
     "suggestIdeaDesc": "사용하고 싶은 도구를 알려주세요."
   },
   "errors": {
+    "wrongPassword": "비밀번호가 올바르지 않습니다",
+    "polarUnavailable": "구독을 해지하지 못해 아무것도 삭제되지 않았습니다. 다시 시도해 주세요.",
+    "rateLimited": "시도 횟수가 너무 많습니다. 몇 분 후에 다시 시도하세요.",
+    "invalidBody": "요청에 필요한 데이터가 없습니다",
     "textRequired": "텍스트가 필요합니다",
     "ttsRateLimited": "요청 제한이 활성화되어 있습니다",
     "ttsServiceError": "Google TTS 음성 서비스에 문제가 발생했습니다",
@@ -1213,7 +1217,17 @@
     "switchToMonthly": "다음 갱신 시 월간으로 변경",
     "switchNote": "환불 없음: 연간 요금제는 기간이 끝날 때까지 유지되며 변경은 갱신 시 적용됩니다.",
     "changesAt": "{fecha}에 월간으로 전환됩니다",
-    "switchRequested": "완료: 다음 갱신 시 월간으로 전환됩니다."
+    "switchRequested": "완료: 다음 갱신 시 월간으로 전환됩니다.",
+    "deleteAccount": "계정 삭제",
+    "deleteHint": "계정과 데이터를 영구적으로 삭제합니다.",
+    "deleteModalTitle": "계정을 삭제하시겠습니까?",
+    "deleteWhat": "계정, 이메일, 구독 내역이 삭제됩니다.",
+    "deletePlan": "활성 플랜이 있으면 환불 없이 즉시 해지되며 이용 권한을 잃습니다.",
+    "deleteIrreversible": "이 작업은 되돌릴 수 없습니다.",
+    "deletePassword": "확인을 위해 비밀번호를 입력하세요",
+    "deleteConfirm": "영구 삭제",
+    "deleteCancel": "취소",
+    "deleteDone": "계정이 삭제되었습니다."
   },
   "sidebarAccount": {
     "badgeFree": "무료",

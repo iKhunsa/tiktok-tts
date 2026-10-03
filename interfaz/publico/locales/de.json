@@ -1072,6 +1072,10 @@
     "suggestIdeaDesc": "Sag uns, welches Tool du nutzen möchtest."
   },
   "errors": {
+    "wrongPassword": "Falsches Passwort",
+    "polarUnavailable": "Dein Abo konnte nicht gekündigt werden; es wurde nichts gelöscht. Versuche es erneut.",
+    "rateLimited": "Zu viele Versuche. Versuche es in ein paar Minuten erneut.",
+    "invalidBody": "In der Anfrage fehlen Daten",
     "textRequired": "Text erforderlich",
     "ttsRateLimited": "Rate limit aktiv",
     "ttsServiceError": "Es gab ein Problem mit dem Sprachdienst (Google TTS)",
@@ -1213,7 +1217,17 @@
     "switchToMonthly": "Zur nächsten Verlängerung auf monatlich wechseln",
     "switchNote": "Keine Erstattung: Der Jahrestarif läuft bis zum Ende und der Wechsel gilt ab der Verlängerung.",
     "changesAt": "Wechselt am {fecha} auf monatlich",
-    "switchRequested": "Erledigt: Du wechselst zur nächsten Verlängerung auf monatlich."
+    "switchRequested": "Erledigt: Du wechselst zur nächsten Verlängerung auf monatlich.",
+    "deleteAccount": "Konto löschen",
+    "deleteHint": "Löscht dein Konto und deine Daten dauerhaft.",
+    "deleteModalTitle": "Dein Konto löschen?",
+    "deleteWhat": "Dein Konto, deine E-Mail-Adresse und dein Abo-Verlauf werden gelöscht.",
+    "deletePlan": "Wenn du einen aktiven Tarif hast, wird er sofort ohne Erstattung gekündigt und du verlierst den Zugriff.",
+    "deleteIrreversible": "Das kann nicht rückgängig gemacht werden.",
+    "deletePassword": "Gib zur Bestätigung dein Passwort ein",
+    "deleteConfirm": "Endgültig löschen",
+    "deleteCancel": "Abbrechen",
+    "deleteDone": "Dein Konto wurde gelöscht."
   },
   "sidebarAccount": {
     "badgeFree": "FREE",

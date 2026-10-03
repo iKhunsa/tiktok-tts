@@ -750,6 +750,10 @@
     "settingSaveFailed": "Could not save the setting ({keys}). Check your connection."
   },
   "errors": {
+    "wrongPassword": "Wrong password",
+    "polarUnavailable": "Your subscription could not be canceled; nothing was deleted. Please try again.",
+    "rateLimited": "Too many attempts. Try again in a few minutes.",
+    "invalidBody": "The request is missing data",
     "textRequired": "Text required",
     "ttsRateLimited": "Rate limit active",
     "ttsServiceError": "There was a problem with the voice service (Google TTS)",
@@ -1215,7 +1219,17 @@
     "switchToMonthly": "Switch to monthly at next renewal",
     "switchNote": "No refund: the yearly plan runs its full term and the change applies on renewal.",
     "changesAt": "Switches to monthly on {fecha}",
-    "switchRequested": "Done: you'll switch to monthly at the next renewal."
+    "switchRequested": "Done: you'll switch to monthly at the next renewal.",
+    "deleteAccount": "Delete account",
+    "deleteHint": "Permanently deletes your account and your data.",
+    "deleteModalTitle": "Delete your account?",
+    "deleteWhat": "Your account, your email and your subscription history will be deleted.",
+    "deletePlan": "If you have an active plan, it is canceled right now with no refund and you lose access.",
+    "deleteIrreversible": "This cannot be undone.",
+    "deletePassword": "Enter your password to confirm",
+    "deleteConfirm": "Delete permanently",
+    "deleteCancel": "Cancel",
+    "deleteDone": "Your account was deleted."
   },
   "sidebarAccount": {
     "badgeFree": "FREE",

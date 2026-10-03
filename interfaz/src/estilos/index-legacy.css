@@ -2602,6 +2602,17 @@
     .cuenta-btn-danger { border-color: var(--danger-a30); color: var(--danger); }
     .cuenta-btn-danger:hover { border-color: var(--danger-soft); color: var(--danger-soft); background: var(--danger-a12); }
 
+    .cuenta-danger-zone { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); margin-top: var(--space-2); padding: var(--space-4) 0 0; border-top: 1px solid var(--border-strong); }
+    .cuenta-danger-zone .cuenta-hint { margin: 0; }
+    .cuenta-delete-modal { max-width: 460px; padding: var(--space-8); }
+    .cuenta-delete-modal .notice-icon-badge { width: 44px; height: 44px; margin: 0 0 var(--space-5); border-radius: 50%; background: var(--danger-a12); }
+    .cuenta-delete-modal .notice-icon-badge .notice-icon-warn { display: inline-block; width: 20px; height: 20px; background: var(--danger); -webkit-mask: url('/icons/warning.svg') center / contain no-repeat; mask: url('/icons/warning.svg') center / contain no-repeat; }
+    .cuenta-delete-modal h2 { margin-bottom: var(--space-4); }
+    .cuenta-delete-list { margin: 0 0 var(--space-5); padding-left: var(--space-5); color: var(--text-muted); font-size: var(--text-base); line-height: 1.6; }
+    .cuenta-delete-actions { display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-5); }
+    .cuenta-delete-modal .modal-close:focus-visible { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
+    @media (max-width: 520px) { .cuenta-danger-zone { flex-direction: column; align-items: flex-start; } .cuenta-delete-modal { width: calc(100% - 24px); padding: 24px 18px; } }
+
     /* Perfil */
     .cuenta-perfil { display: flex; flex-direction: column; gap: 18px; }
     .cuenta-perfil-head { display: flex; align-items: center; gap: 14px; }

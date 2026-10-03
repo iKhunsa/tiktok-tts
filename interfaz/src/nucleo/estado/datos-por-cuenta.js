@@ -25,6 +25,15 @@ export function remove(key) {
   try { localStorage.removeItem(clavePorCuenta(key)); } catch (_) { /* storage unavailable */ }
 }
 
+// Borra del localStorage todo lo de la cuenta activa (eliminacion de cuenta).
+// Llamar ANTES de que la sesion pase a anonymous.
+export function borrarDatosDeCuenta() {
+  const prefijo = `${PREFIX}${cuentaActiva()}_`;
+  try {
+    Object.keys(localStorage).filter((k) => k.startsWith(prefijo)).forEach((k) => localStorage.removeItem(k));
+  } catch (_) { /* storage unavailable */ }
+}
+
 // Los datos legacy no tenian propietario: se entregan una sola vez al primer
 // usuario autenticado y nunca se mezclan con el namespace anonymous.
 export function migrarDatosLegacy() {

@@ -1072,6 +1072,10 @@
     "suggestIdeaDesc": "使いたいツールを教えてください。"
   },
   "errors": {
+    "wrongPassword": "パスワードが違います",
+    "polarUnavailable": "サブスクリプションを解約できなかったため、何も削除されていません。もう一度お試しください。",
+    "rateLimited": "試行回数が多すぎます。数分後にもう一度お試しください。",
+    "invalidBody": "リクエストに不足しているデータがあります",
     "textRequired": "テキストを入力してください",
     "ttsRateLimited": "レート制限が有効です",
     "ttsServiceError": "音声サービス（Google TTS）で問題が発生しました",
@@ -1213,7 +1217,17 @@
     "switchToMonthly": "次回更新時に月額へ変更",
     "switchNote": "返金はありません。年額プランは期間満了まで継続し、変更は更新時に適用されます。",
     "changesAt": "{fecha} に月額へ切り替わります",
-    "switchRequested": "完了しました。次回更新時に月額へ切り替わります。"
+    "switchRequested": "完了しました。次回更新時に月額へ切り替わります。",
+    "deleteAccount": "アカウントを削除",
+    "deleteHint": "アカウントとデータを完全に削除します。",
+    "deleteModalTitle": "アカウントを削除しますか？",
+    "deleteWhat": "アカウント、メールアドレス、サブスクリプション履歴が削除されます。",
+    "deletePlan": "有効なプランがある場合は、返金なしで今すぐ解約され、アクセスできなくなります。",
+    "deleteIrreversible": "この操作は元に戻せません。",
+    "deletePassword": "確認のためパスワードを入力してください",
+    "deleteConfirm": "完全に削除",
+    "deleteCancel": "キャンセル",
+    "deleteDone": "アカウントを削除しました。"
   },
   "sidebarAccount": {
     "badgeFree": "無料",

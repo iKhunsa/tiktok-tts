@@ -1,6 +1,7 @@
 'use strict';
 
 const estado = require('./estado-sesion');
+const { removeAccountData } = require('../../core/account-data-path');
 
 // Las rutas /api/auth/* de la app. Son proxies finos a servicio-cuentas
 // (via cliente): la app agrega/gestiona el token, servicio-cuentas habla con
@@ -65,6 +66,26 @@ function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
     if (!r.ok) return propagarError(res, r, logger);
     const s = await cliente.session(token); // re-hidrata el estado completo
     if (s.ok) estado.aplicar({ session: s.body }, logger);
+    res.json(estado.getSesion());
+  });
+
+  // Eliminacion de cuenta: irreversible. Solo cierra sesion y borra datos locales
+  // si el backend confirmo el borrado. NO se expone como tool MCP a proposito:
+  // es destructiva y exige la contrasena del usuario (un agente no la tiene).
+  app.delete('/api/auth/account', guard, async (req, res) => {
+    const token = estado.getToken();
+    if (!token) return res.status(401).json({ error: 'No autenticado', errorKey: 'errors.unauthorized' });
+    const { password } = req.body || {};
+    if (typeof password !== 'string' || !password) {
+      return res.status(400).json({ error: 'Falta la contrasena', errorKey: 'errors.invalidBody' });
+    }
+    const antes = estado.getSesion();
+    const r = await cliente.eliminarCuenta(token, { password });
+    if (!r.ok) return propagarError(res, r, logger);
+    estado.cerrar(logger);
+    logger.log('info', 'auth', 'auth/routes.js#eliminarCuenta', 'auth.cuenta.eliminada', 'Cuenta eliminada', {});
+    refresh.emitirCambio(antes, estado.getSesion());
+    removeAccountData(antes.user.id);
     res.json(estado.getSesion());
   });
 
