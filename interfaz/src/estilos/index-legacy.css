@@ -2542,6 +2542,8 @@
       color: var(--text-muted);
       line-height: 1.5;
     }
+    .cuenta-register-terms a { color: var(--accent); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+    .cuenta-register-terms a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: var(--radius-xs); }
     .cuenta-legal {
       margin: 16px 0 0;
       font-size: var(--text-3xs);
