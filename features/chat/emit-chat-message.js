@@ -6,6 +6,7 @@ const { resolveDisplayName } = require('./resolve-display-name');
 const { cleanName } = require('./clean-name');
 const { isAdminIdentity } = require('./is-admin-identity');
 const { extractAuthorMeta } = require('./author-meta/extract-author-meta');
+const { describeModeration } = require('./describe-moderation');
 const moderacionPolicy = require('../../core/contracts/moderacion-policy');
 const { ADMIN_ANNOUNCE_TEXT, pickAnnounceText } = require('../../core/announce-texts');
 
@@ -25,6 +26,8 @@ function emitChatMessage({ bus, logger }) {
     if (!verdict.message || verdict.action === 'drop') {
       return reportBlocked({ bus, logger, platform, verdict });
     }
+    reportMuted({ bus, logger, platform, verdict });
+    reportShadow({ bus, logger, platform, verdict });
 
     const payload = buildPayload({ bus, channel, platform, verdict, raw });
     broadcastMessage(bus, payload);
@@ -129,19 +132,57 @@ function announceAdminOnce({ bus, isAdmin }) {
 }
 
 function reportBlocked({ bus, logger, platform, verdict }) {
+  const detail = describeModeration(verdict.reasons) || { origen: 'guard-js', motivo: verdict.reasons[0] || 'unknown' };
+  const entry = moderationEntry({ platform, verdict, accion: 'drop', detail });
+  logModeration(logger, entry);
+  bus.emit('chat:mensaje-bloqueado', { ...entry, userId: verdict.message && verdict.message.author.id });
+  if (verdict.message) broadcastModeration(bus, entry);
+}
+
+function reportMuted({ bus, logger, platform, verdict }) {
+  if (verdict.action !== 'mute') return;
+  const detail = describeModeration(verdict.reasons);
+  if (!detail) return;
+  const entry = moderationEntry({ platform, verdict, accion: 'mute', detail });
+  logModeration(logger, entry);
+  broadcastModeration(bus, entry);
+}
+
+// Rust en modo aviso: el mensaje pasa, pero se muestra aparte como "detectado".
+function reportShadow({ bus, verdict, platform }) {
+  if (!verdict.shadow) return;
+  const detail = { origen: 'motor-rust', motivo: verdict.shadow.category || 'sin_categoria' };
+  broadcastModeration(bus, moderationEntry({ platform, verdict, accion: 'shadow', detail }));
+}
+
+// Entrada en memoria del cliente: lleva texto y nick (solo por WS, nunca al log ni a disco).
+function moderationEntry({ platform, verdict, accion, detail }) {
   const author = verdict.message && verdict.message.author;
-  const userId = author && author.id;
-  const nick = author && displayName(platform, author);
-  const motivo = verdict.reasons[0] || 'unknown';
+  return {
+    platform,
+    accion,
+    origen: detail.origen,
+    motivo: detail.motivo,
+    nick: author ? displayName(platform, author) : null,
+    text: verdict.message ? verdict.message.text.display : '',
+    timestamp: Date.now(),
+  };
+}
+
+// Sin texto ni nick (privacidad). Alimenta counters.js / aptabase.
+function logModeration(logger, { platform, accion, origen, motivo }) {
   logger.log(
     'info',
-    'chat',
-    'chat/emit-chat-message.js#reportBlocked',
-    'chat.mensaje.bloqueado',
-    'Mensaje bloqueado por moderacion',
-    { platform, userId, nick, motivo }
+    'moderacion',
+    'chat/emit-chat-message.js#logModeration',
+    'moderacion.filtro.mensaje_bloqueado',
+    'Mensaje filtrado por moderacion',
+    { platform, accion, origen, motivo }
   );
-  bus.emit('chat:mensaje-bloqueado', { platform, userId, nick, motivo });
+}
+
+function broadcastModeration(bus, entry) {
+  bus.emit('ws:broadcast', { type: 'moderation-blocked', ...entry });
 }
 
 function displayName(platform, author) {

@@ -1430,5 +1430,75 @@
     "toast": {
       "saveError": "无法保存更改，请重试。"
     }
+  },
+  "queueBadge": {
+    "queueOne": "队列：{n} 条消息",
+    "queueMany": "队列：{n} 条消息",
+    "dropped": "已丢弃：{n}",
+    "droppedHint": "因语音队列已满而被丢弃的消息，并非被审核拦截。点击了解更多。",
+    "blocked": "已拦截：{n}",
+    "blockedHint": "本次会话中被审核拦截或静音的消息。点击查看列表。",
+    "shadow": "提示模式下检测到：{n}",
+    "shadowHint": "审核引擎本应拦截但因处于提示模式而放行的消息。点击查看。",
+    "ttsErrors": "TTS 错误：{n}/{max}"
+  },
+  "modPopup": {
+    "title": "聊天审核",
+    "close": "关闭",
+    "tab": {
+      "blocked": "本次会话已拦截",
+      "words": "已屏蔽词",
+      "queue": "TTS 队列"
+    },
+    "blocked": {
+      "intro": "自打开应用以来被自动审核拦截或静音的消息。仅保存在内存中，关闭应用后即消失。",
+      "filter": "按用户、文本或原因筛选",
+      "clear": "清空",
+      "summary": "已拦截或静音：{blocked} · 提示模式下检测到：{shadow}",
+      "empty": "本次会话尚未拦截任何消息。",
+      "emptyFilter": "没有符合筛选条件的消息。",
+      "unknownUser": "未知用户",
+      "why": "原因：{reason} · 拦截来源：{origin}"
+    },
+    "action": {
+      "drop": "已拦截",
+      "mute": "已静音（可见，不朗读）",
+      "shadow": "提示模式下检测到（已放行）"
+    },
+    "origin": {
+      "user": "被静音或封禁的用户",
+      "ownList": "你的屏蔽词列表",
+      "dictionary": "语言过滤 / 词典",
+      "guard": "自动过滤",
+      "rust": "审核引擎（Rust）"
+    },
+    "reason": {
+      "blockedWord": "屏蔽词",
+      "language": "不允许的语言",
+      "tooLong": "消息过长",
+      "repeatedChar": "重复字符",
+      "flood": "重复消息（刷屏）",
+      "duplicate": "重复消息",
+      "banned": "用户已被封禁",
+      "muted": "用户已被静音",
+      "other": "其他原因",
+      "rustCategory": "类别 {category}"
+    },
+    "words": {
+      "intro": "你在账号中屏蔽的词。可在“设置 > 聊天审核”中添加或移除。",
+      "search": "搜索词",
+      "count": "列表中共 {n} 个词",
+      "empty": "你还没有屏蔽任何词。",
+      "emptySearch": "没有符合搜索的词。",
+      "error": "无法加载列表，请稍后重试。",
+      "dictionaryNote": "除了你的列表，审核引擎还使用包含数千个词的词典，此处不会列出。"
+    },
+    "queue": {
+      "explain": "当收到的消息多于语音能朗读的数量时，队列会被填满，新消息将被丢弃。这与审核无关：这些消息只是没能进入语音队列。",
+      "dropped": "因队列已满被丢弃",
+      "waiting": "当前队列中",
+      "waitingValue": "{n} / {max}",
+      "tip": "你可以在聊天控件中跳过当前消息或清空队列。"
+    }
   }
 }

@@ -76,7 +76,9 @@ test('shadow: registra la discrepancia pero no cambia el veredicto', () => {
   const engine = createFakeEngine({ check: () => rustVerdict('BLOCK') });
   const { review, logger } = setup({ engine, mode: 'shadow' });
   const original = jsVerdict('allow');
-  assert.equal(review(original), original);
+  const result = review(original);
+  // Solo se anota `shadow` (para el popup de moderacion); accion y razones intactas.
+  assert.deepEqual(result, { ...original, shadow: { category: result.shadow.category } });
   assert.ok(eventsOf(logger).includes('moderacion.rust.shadow_bloqueado'));
 });
 

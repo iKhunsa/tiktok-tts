@@ -1430,5 +1430,75 @@
     "toast": {
       "saveError": "Die Änderung konnte nicht gespeichert werden. Versuche es erneut."
     }
+  },
+  "queueBadge": {
+    "queueOne": "Warteschlange: {n} Nachricht",
+    "queueMany": "Warteschlange: {n} Nachrichten",
+    "dropped": "verworfen: {n}",
+    "droppedHint": "Nachrichten, die verworfen wurden, weil die Sprachwarteschlange voll war. Die Moderation hat sie nicht blockiert. Tippen für mehr Infos.",
+    "blocked": "blockiert: {n}",
+    "blockedHint": "Nachrichten, die die Moderation in dieser Sitzung blockiert oder stummgeschaltet hat. Tippen, um die Liste zu sehen.",
+    "shadow": "im Hinweismodus erkannt: {n}",
+    "shadowHint": "Nachrichten, die die Moderations-Engine blockiert hätte, die aber durchkamen, weil sie im Hinweismodus ist. Tippen zum Ansehen.",
+    "ttsErrors": "TTS-Fehler: {n}/{max}"
+  },
+  "modPopup": {
+    "title": "Chat-Moderation",
+    "close": "Schließen",
+    "tab": {
+      "blocked": "In dieser Sitzung blockiert",
+      "words": "Blockierte Wörter",
+      "queue": "TTS-Warteschlange"
+    },
+    "blocked": {
+      "intro": "Nachrichten, die die automatische Moderation seit dem Start der App blockiert oder stummgeschaltet hat. Sie liegen nur im Arbeitsspeicher und verschwinden beim Schließen der App.",
+      "filter": "Nach Nutzer, Text oder Grund filtern",
+      "clear": "Leeren",
+      "summary": "Blockiert oder stummgeschaltet: {blocked} · Im Hinweismodus erkannt: {shadow}",
+      "empty": "In dieser Sitzung wurde noch keine Nachricht blockiert.",
+      "emptyFilter": "Keine Nachricht passt zum Filter.",
+      "unknownUser": "Unbekannter Nutzer",
+      "why": "Grund: {reason} · Blockiert durch: {origin}"
+    },
+    "action": {
+      "drop": "blockiert",
+      "mute": "stummgeschaltet (sichtbar, nicht vorgelesen)",
+      "shadow": "im Hinweismodus erkannt (kam durch)"
+    },
+    "origin": {
+      "user": "Stummgeschalteter oder gesperrter Nutzer",
+      "ownList": "Deine Wortliste",
+      "dictionary": "Sprachfilter / Wörterbuch",
+      "guard": "Automatischer Filter",
+      "rust": "Moderations-Engine (Rust)"
+    },
+    "reason": {
+      "blockedWord": "blockiertes Wort",
+      "language": "Sprache nicht erlaubt",
+      "tooLong": "Nachricht zu lang",
+      "repeatedChar": "wiederholte Zeichen",
+      "flood": "wiederholte Nachricht (Spam)",
+      "duplicate": "doppelte Nachricht",
+      "banned": "gesperrter Nutzer",
+      "muted": "stummgeschalteter Nutzer",
+      "other": "anderer Grund",
+      "rustCategory": "Kategorie {category}"
+    },
+    "words": {
+      "intro": "Wörter, die du in deinem Konto blockierst. Du kannst sie unter Einstellungen > Chat-Moderation hinzufügen oder entfernen.",
+      "search": "Wort suchen",
+      "count": "{n} Wörter in deiner Liste",
+      "empty": "Du hast noch kein Wort blockiert.",
+      "emptySearch": "Kein Wort passt zur Suche.",
+      "error": "Die Liste konnte nicht geladen werden. Versuche es gleich noch einmal.",
+      "dictionaryNote": "Zusätzlich zu deiner Liste nutzt die Moderations-Engine ein Wörterbuch mit Tausenden Wörtern, die hier nicht aufgelistet sind."
+    },
+    "queue": {
+      "explain": "Wenn mehr Nachrichten eintreffen, als die Stimme vorlesen kann, füllt sich die Warteschlange und neue werden verworfen. Das hat nichts mit Moderation zu tun: Diese Nachrichten haben einfach nicht in die Sprachwarteschlange gepasst.",
+      "dropped": "Verworfen, weil die Warteschlange voll war",
+      "waiting": "Aktuell in der Warteschlange",
+      "waitingValue": "{n} von {max}",
+      "tip": "Du kannst die aktuelle Nachricht überspringen oder die Warteschlange über die Chat-Steuerung leeren."
+    }
   }
 }

@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="./src/estilos/index-legacy.css">
   <link rel="stylesheet" href="./src/estilos/campos-overlay.css">
   <link rel="stylesheet" href="./src/estilos/moderacion-contenido.css">
+  <link rel="stylesheet" href="./src/estilos/moderacion-popup.css">
   <link rel="stylesheet" href="./src/estilos/portal-view.css">
   <link rel="stylesheet" href="./src/estilos/barra-titulo.css">
 </head>
@@ -250,7 +251,7 @@
           <span id="speakingText">Leyendo...</span>
           <button type="button" class="speaking-goto" id="speakingGoto" data-i18n-title="chat.gotoSpeaking" data-i18n-aria-label="chat.gotoSpeaking" title="Ir al mensaje" aria-label="Ir al mensaje"><img class="icon-inline" src="icons/my_location-white.svg" alt=""></button>
         </div>
-        <div class="queue-badge" id="queueBadge">Cola: 0 mensajes</div>
+        <div class="queue-badge" id="queueBadge" aria-live="polite">Cola: 0 mensajes</div>
       </div>
 
       <!-- Fuera de .chat-section a propósito: es un espacio de publicidad,

@@ -189,6 +189,14 @@ UI en Ajustes > «Moderación del chat» (`interfaz/src/vistas/principal/moderac
 por cuenta, solo palabras sueltas) y estado del motor (`GET /api/chat-guard/status`: `off|unavailable|error|ok`).
 Las bloqueadas reusan `/api/block-word`. Desviaciones respecto al plan: `docs/06_FRONTEND_PLAN.md` §15 del repo del motor.
 
+**Popup de moderación (badge de la vista Chat)** — `emit-chat-message.js` publica por WS
+`moderation-blocked` `{platform, accion: drop|mute|shadow, origen, motivo, nick, text, timestamp}`
+(`features/chat/describe-moderation.js` deduce origen/motivo de `verdict.reasons`; `shadow` lo anota
+`rust-guard/review-with-rust.js`). El cliente lo guarda en `nucleo/estado/moderacion-sesion.js`: buffer
+**solo en memoria**, máx. 200, jamás a disco ni telemetría (política de privacidad). El log
+`moderacion.filtro.mensaje_bloqueado` lleva solo plataforma/acción/origen/motivo, sin texto ni nick.
+UI: `vistas/principal/moderacion-popup/`. «descartados» del badge = cola TTS llena, no moderación.
+
 ## Telemetría (`features/telemetria/`)
 
 Dominio aparte que reporta uso agregado y anónimo a un servicio propio

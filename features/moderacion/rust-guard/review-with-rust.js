@@ -13,7 +13,8 @@ function createRustReviewer({ rustGuard, logger }) {
     if (!rustVerdict || !wouldHarden(verdict, rustVerdict)) return verdict;
     const enforcing = rustGuard.mode() === 'enforce';
     logDiscrepancy(logger, enforcing, verdict, rustVerdict);
-    return enforcing ? hardenVerdict(verdict, rustVerdict) : verdict;
+    if (enforcing) return hardenVerdict(verdict, rustVerdict);
+    return { ...verdict, shadow: { category: rustVerdict.category || null } };
   };
 }
 

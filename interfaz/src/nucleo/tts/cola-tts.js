@@ -20,6 +20,7 @@ import { getClipsData, getLocalDateStr, obtenerStreamStartTime } from '../../vis
 import { chatFollowSpeaking } from '../../vistas/principal/chat-ui.js';
 import { MAX_QUEUE_SIZE } from '../estado/config-runtime.js';
 import { stopAudio } from './stop-audio.js';
+import { moderationSession } from '../estado/moderacion-sesion.js';
 
 export let ttsGlobalEnabled = true;
 export let ttsPaused = false;
@@ -389,13 +390,32 @@ export function resetTtsCounters() {
   ttsErrorCount = 0;
 }
 
+export function getQueueStats() {
+  return { dropped: ttsDroppedCount, waiting: speechQueue.length, max: MAX_QUEUE_SIZE };
+}
+
+function badgeLink(text, hint, tab) {
+  const link = document.createElement('button');
+  link.type = 'button';
+  link.className = 'queue-badge-link';
+  link.dataset.popupTab = tab;
+  link.title = hint;
+  link.textContent = text;
+  return link;
+}
+
+// "descartados" = cola de voz llena; "bloqueados" = moderacion. Son cosas distintas.
 export function updateQueueBadge() {
   const el = document.getElementById('queueBadge');
   if (!el) return;
-  const parts = [`Cola: ${speechQueue.length} mensaje${speechQueue.length !== 1 ? 's' : ''}`];
-  if (ttsDroppedCount > 0) parts.push(`descartados: ${ttsDroppedCount}`);
-  if (ttsErrorCount > 0) parts.push(`errores TTS: ${ttsErrorCount}/${TTS_MAX_ERRORS}`);
-  el.textContent = parts.join(' · ');
+  const { blocked, shadow } = moderationSession.counts();
+  const parts = [document.createTextNode(t(speechQueue.length === 1 ? 'queueBadge.queueOne' : 'queueBadge.queueMany', { n: speechQueue.length }))];
+  if (ttsDroppedCount > 0) parts.push(badgeLink(t('queueBadge.dropped', { n: ttsDroppedCount }), t('queueBadge.droppedHint'), 'queue'));
+  parts.push(badgeLink(t('queueBadge.blocked', { n: blocked }), t('queueBadge.blockedHint'), 'blocked'));
+  if (shadow > 0) parts.push(badgeLink(t('queueBadge.shadow', { n: shadow }), t('queueBadge.shadowHint'), 'blocked'));
+  if (ttsErrorCount > 0) parts.push(document.createTextNode(t('queueBadge.ttsErrors', { n: ttsErrorCount, max: TTS_MAX_ERRORS })));
+  const nodes = parts.flatMap((part, i) => (i ? [document.createTextNode(' · '), part] : [part]));
+  el.replaceChildren(...nodes);
 }
 
 export function sendStateSync() {

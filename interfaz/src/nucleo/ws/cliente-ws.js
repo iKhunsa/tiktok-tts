@@ -8,6 +8,7 @@
 import { t, tLike } from '../i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
 import { logStorage } from '../log-storage.js';
+import { moderationSession } from '../estado/moderacion-sesion.js';
 import { appSettings, saveSettings } from '../estado/ajustes-app.js';
 import { options } from '../estado/opciones-lectura.js';
 import { applyA11yConfig, applyReadNonFollowers, applyFiltroIdiomaConfig, applyAnnounceTemplates, announceTemplates } from '../estado/config-runtime.js';
@@ -15,7 +16,7 @@ import { resolverAnuncio } from '../i18n/plantilla-anuncio.js';
 import { cargarSesion } from '../estado/sesion.js';
 import {
   ttsPaused, setTtsGlobalEnabled, togglePauseTts, skipCurrentTTS,
-  enableEmergencyTTSMode, sendStateSync, speak,
+  enableEmergencyTTSMode, sendStateSync, speak, updateQueueBadge,
 } from '../tts/cola-tts.js';
 import { incrementarMsgCount, handleChatData, addSystemMsg } from '../../vistas/principal/chat-ui.js';
 import { setStatus, getSayUsernameConnector } from '../../vistas/principal/modales-avisos.js';
@@ -372,6 +373,10 @@ function handleMessage(data) {
       // features/auth/estado-sesion.js#getSesionPublica) -> se pide el
       // estado completo por HTTP, que es solo-localhost.
       cargarSesion();
+      break;
+    case 'moderation-blocked':
+      moderationSession.add(data);
+      updateQueueBadge();
       break;
     case 'moderation-updated':
     case 'moderation-reset':

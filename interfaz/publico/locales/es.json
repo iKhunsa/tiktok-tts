@@ -1432,5 +1432,75 @@
     "toast": {
       "saveError": "No se pudo guardar el cambio. Reintenta."
     }
+  },
+  "queueBadge": {
+    "queueOne": "Cola: {n} mensaje",
+    "queueMany": "Cola: {n} mensajes",
+    "dropped": "descartados: {n}",
+    "droppedHint": "Mensajes que se tiraron porque la cola de voz estaba llena. No los bloqueó la moderación. Tocá para ver más.",
+    "blocked": "bloqueados: {n}",
+    "blockedHint": "Mensajes que la moderación bloqueó o silenció en esta sesión. Tocá para ver la lista.",
+    "shadow": "detectados en modo aviso: {n}",
+    "shadowHint": "Mensajes que el motor de moderación habría bloqueado, pero pasaron porque está en modo aviso. Tocá para verlos.",
+    "ttsErrors": "errores TTS: {n}/{max}"
+  },
+  "modPopup": {
+    "title": "Moderación del chat",
+    "close": "Cerrar",
+    "tab": {
+      "blocked": "Bloqueados en esta sesión",
+      "words": "Palabras bloqueadas",
+      "queue": "Cola TTS"
+    },
+    "blocked": {
+      "intro": "Mensajes que la moderación automática bloqueó o silenció desde que abriste la app. Se guardan solo en la memoria: al cerrar la app desaparecen.",
+      "filter": "Filtrar por usuario, texto o motivo",
+      "clear": "Limpiar",
+      "summary": "Bloqueados o silenciados: {blocked} · Detectados en modo aviso: {shadow}",
+      "empty": "Todavía no se bloqueó ningún mensaje en esta sesión.",
+      "emptyFilter": "Ningún mensaje coincide con el filtro.",
+      "unknownUser": "Usuario desconocido",
+      "why": "Motivo: {reason} · Lo bloqueó: {origin}"
+    },
+    "action": {
+      "drop": "bloqueado",
+      "mute": "silenciado (se ve, no se lee)",
+      "shadow": "detectado en modo aviso (pasó igual)"
+    },
+    "origin": {
+      "user": "Usuario silenciado o bloqueado",
+      "ownList": "Tu lista de palabras",
+      "dictionary": "Filtro de idioma / diccionario",
+      "guard": "Filtro automático",
+      "rust": "Motor de moderación (Rust)"
+    },
+    "reason": {
+      "blockedWord": "palabra bloqueada",
+      "language": "idioma no permitido",
+      "tooLong": "mensaje demasiado largo",
+      "repeatedChar": "caracteres repetidos",
+      "flood": "mensaje repetido (spam)",
+      "duplicate": "mensaje duplicado",
+      "banned": "usuario bloqueado",
+      "muted": "usuario silenciado",
+      "other": "otro motivo",
+      "rustCategory": "categoría {category}"
+    },
+    "words": {
+      "intro": "Palabras que bloqueás vos en tu cuenta. Podés agregarlas o quitarlas en Ajustes > Moderación del chat.",
+      "search": "Buscar palabra",
+      "count": "{n} palabras en tu lista",
+      "empty": "Todavía no bloqueaste ninguna palabra.",
+      "emptySearch": "Ninguna palabra coincide con la búsqueda.",
+      "error": "No se pudo cargar la lista. Reintentá en un momento.",
+      "dictionaryNote": "Además de tu lista, el motor de moderación usa un diccionario de miles de palabras que no se muestran acá."
+    },
+    "queue": {
+      "explain": "Cuando llegan más mensajes de los que la voz alcanza a leer, la cola se llena y los nuevos se descartan. Esto no tiene que ver con la moderación: son mensajes que simplemente no entraron en la cola de voz.",
+      "dropped": "Descartados por cola llena",
+      "waiting": "En cola ahora",
+      "waitingValue": "{n} de {max}",
+      "tip": "Podés saltar el mensaje actual o vaciar la cola desde los controles del chat."
+    }
   }
 }

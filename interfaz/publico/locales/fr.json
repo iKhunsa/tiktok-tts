@@ -1430,5 +1430,75 @@
     "toast": {
       "saveError": "Impossible d’enregistrer la modification. Réessayez."
     }
+  },
+  "queueBadge": {
+    "queueOne": "File : {n} message",
+    "queueMany": "File : {n} messages",
+    "dropped": "écartés : {n}",
+    "droppedHint": "Messages écartés car la file vocale était pleine. La modération ne les a pas bloqués. Touchez pour en savoir plus.",
+    "blocked": "bloqués : {n}",
+    "blockedHint": "Messages que la modération a bloqués ou rendus muets pendant cette session. Touchez pour voir la liste.",
+    "shadow": "détectés en mode alerte : {n}",
+    "shadowHint": "Messages que le moteur de modération aurait bloqués, mais qui sont passés car il est en mode alerte. Touchez pour les voir.",
+    "ttsErrors": "erreurs TTS : {n}/{max}"
+  },
+  "modPopup": {
+    "title": "Modération du chat",
+    "close": "Fermer",
+    "tab": {
+      "blocked": "Bloqués cette session",
+      "words": "Mots bloqués",
+      "queue": "File TTS"
+    },
+    "blocked": {
+      "intro": "Messages que la modération automatique a bloqués ou rendus muets depuis l'ouverture de l'app. Ils restent uniquement en mémoire : ils disparaissent à la fermeture de l'app.",
+      "filter": "Filtrer par utilisateur, texte ou motif",
+      "clear": "Effacer",
+      "summary": "Bloqués ou rendus muets : {blocked} · Détectés en mode alerte : {shadow}",
+      "empty": "Aucun message n'a encore été bloqué pendant cette session.",
+      "emptyFilter": "Aucun message ne correspond au filtre.",
+      "unknownUser": "Utilisateur inconnu",
+      "why": "Motif : {reason} · Bloqué par : {origin}"
+    },
+    "action": {
+      "drop": "bloqué",
+      "mute": "rendu muet (affiché, non lu)",
+      "shadow": "détecté en mode alerte (passé quand même)"
+    },
+    "origin": {
+      "user": "Utilisateur muet ou banni",
+      "ownList": "Votre liste de mots",
+      "dictionary": "Filtre de langue / dictionnaire",
+      "guard": "Filtre automatique",
+      "rust": "Moteur de modération (Rust)"
+    },
+    "reason": {
+      "blockedWord": "mot bloqué",
+      "language": "langue non autorisée",
+      "tooLong": "message trop long",
+      "repeatedChar": "caractères répétés",
+      "flood": "message répété (spam)",
+      "duplicate": "message en double",
+      "banned": "utilisateur banni",
+      "muted": "utilisateur muet",
+      "other": "autre motif",
+      "rustCategory": "catégorie {category}"
+    },
+    "words": {
+      "intro": "Mots que vous bloquez sur votre compte. Vous pouvez les ajouter ou les retirer dans Paramètres > Modération du chat.",
+      "search": "Rechercher un mot",
+      "count": "{n} mots dans votre liste",
+      "empty": "Vous n'avez encore bloqué aucun mot.",
+      "emptySearch": "Aucun mot ne correspond à la recherche.",
+      "error": "Impossible de charger la liste. Réessayez dans un instant.",
+      "dictionaryNote": "En plus de votre liste, le moteur de modération utilise un dictionnaire de milliers de mots qui ne sont pas affichés ici."
+    },
+    "queue": {
+      "explain": "Quand il arrive plus de messages que la voix ne peut en lire, la file se remplit et les nouveaux sont écartés. Cela n'a rien à voir avec la modération : ces messages n'ont simplement pas tenu dans la file vocale.",
+      "dropped": "Écartés car la file était pleine",
+      "waiting": "Dans la file maintenant",
+      "waitingValue": "{n} sur {max}",
+      "tip": "Vous pouvez passer le message en cours ou vider la file depuis les commandes du chat."
+    }
   }
 }

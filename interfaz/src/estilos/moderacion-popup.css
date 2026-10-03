@@ -1,0 +1,83 @@
+/* Popup de moderacion (interfaz/src/vistas/principal/moderacion-popup/) y enlaces del badge de cola.
+   Solo anima opacity/transform/color con propiedades explicitas; ease-out en feedback. */
+
+.queue-badge-link {
+  padding: 0; border: 0; background: none; font: inherit; color: inherit; cursor: pointer;
+  text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px;
+  border-radius: 4px;
+  transition: color var(--dur-1) var(--ease-out), transform var(--dur-press) var(--ease-out);
+}
+.queue-badge-link:active { transform: scale(0.97); }
+.queue-badge-link:focus-visible, .mp-tab:focus-visible, .mp-input:focus-visible, .mp-clear:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.mp-dialog { max-width: 680px; padding: 28px 28px 20px; display: flex; flex-direction: column; gap: 12px; }
+.mp-dialog h2 { margin: 0; }
+.mp-overlay.show .mp-dialog { animation: mpIn 0.2s var(--ease-out); }
+@keyframes mpIn { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
+
+.mp-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.mp-tab {
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; min-height: 32px;
+  border-radius: var(--radius-pill); border: 1px solid var(--border);
+  background: transparent; color: var(--text-muted);
+  font: 500 var(--text-sm) 'Inter', sans-serif; cursor: pointer;
+  transition: background-color var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out), transform var(--dur-press) var(--ease-out);
+}
+.mp-tab[aria-selected="true"] { background: var(--surface-raised); border-color: var(--text-bright-a30); color: var(--text-bright); }
+.mp-tab:active { transform: scale(0.97); }
+
+.mp-panel { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+.mp-panel[hidden] { display: none; }
+.mp-hint { margin: 0; font-size: var(--text-2xs); color: var(--text-muted); line-height: 1.45; }
+.mp-summary { font-size: var(--text-xs); color: var(--text-bright); }
+.mp-sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+.mp-toolbar { display: flex; gap: 8px; align-items: center; }
+.mp-input {
+  flex: 1; min-width: 0; min-height: 32px; padding: 6px 12px;
+  border-radius: 8px; border: 1px solid var(--border-strong);
+  background: var(--surface-0); color: var(--text-bright);
+  font: 400 var(--text-sm) 'Inter', sans-serif;
+  transition: border-color var(--dur-2) var(--ease-out);
+}
+.mp-clear { min-height: 32px; gap: 6px; transition: border-color 0.2s var(--ease-out), color 0.2s var(--ease-out), transform var(--dur-press) var(--ease-out); }
+.mp-clear:active { transform: scale(0.97); }
+
+.mp-list, .mp-chips { list-style: none; margin: 0; padding: 0; overflow-y: auto; max-height: 45vh; }
+.mp-list { display: flex; flex-direction: column; gap: 8px; }
+.mp-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.mp-row { padding: 10px 12px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--surface); }
+.mp-row--shadow { border-style: dashed; }
+.mp-row-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: var(--text-2xs); color: var(--text-muted); }
+.mp-row-meta strong { color: var(--text-bright); font-size: var(--text-xs); }
+.mp-platform { padding: 1px 6px; border-radius: var(--radius-pill); border: 1px solid var(--border); }
+.mp-action { margin-left: auto; }
+.mp-row-text { margin: 6px 0 4px; font-size: var(--text-sm); color: var(--text-bright); overflow-wrap: anywhere; }
+.mp-row-why { font-size: var(--text-2xs); color: var(--text-muted); }
+.mp-chip {
+  padding: 3px 12px; border-radius: var(--radius-pill); background: var(--surface-raised);
+  border: 1px solid var(--border); font-size: var(--text-xs); color: var(--text-bright); overflow-wrap: anywhere;
+}
+.mp-empty { padding: 18px 0; text-align: center; font-size: var(--text-sm); color: var(--text-muted); }
+
+.mp-stats { margin: 0; display: grid; gap: 8px; }
+.mp-stats > div { display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--surface); }
+.mp-stats dt { font-size: var(--text-sm); color: var(--text-muted); }
+.mp-stats dd { margin: 0; font-size: var(--text-sm); font-weight: 600; color: var(--text-bright); }
+
+@media (hover: hover) and (pointer: fine) {
+  .queue-badge-link:hover { color: var(--text-bright); }
+  .mp-tab:hover { border-color: var(--text-bright-a30); color: var(--text-bright); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mp-overlay.show .mp-dialog { animation: none; }
+  .queue-badge-link, .mp-tab, .mp-clear { transition-property: background-color, border-color, color, opacity; }
+}
+body.reduce-motion .mp-overlay.show .mp-dialog { animation: none; }
+body.reduce-motion .queue-badge-link,
+body.reduce-motion .mp-tab,
+body.reduce-motion .mp-clear { transition-property: background-color, border-color, color, opacity; }

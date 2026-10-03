@@ -1432,5 +1432,75 @@
     "toast": {
       "saveError": "The change could not be saved. Try again."
     }
+  },
+  "queueBadge": {
+    "queueOne": "Queue: {n} message",
+    "queueMany": "Queue: {n} messages",
+    "dropped": "discarded: {n}",
+    "droppedHint": "Messages dropped because the voice queue was full. Moderation did not block them. Click to learn more.",
+    "blocked": "blocked: {n}",
+    "blockedHint": "Messages moderation blocked or muted in this session. Click to see the list.",
+    "shadow": "detected in notice mode: {n}",
+    "shadowHint": "Messages the moderation engine would have blocked, but they went through because it is in notice mode. Click to see them.",
+    "ttsErrors": "TTS errors: {n}/{max}"
+  },
+  "modPopup": {
+    "title": "Chat moderation",
+    "close": "Close",
+    "tab": {
+      "blocked": "Blocked this session",
+      "words": "Blocked words",
+      "queue": "TTS queue"
+    },
+    "blocked": {
+      "intro": "Messages that automatic moderation blocked or muted since you opened the app. They are kept in memory only: they disappear when you close the app.",
+      "filter": "Filter by user, text or reason",
+      "clear": "Clear",
+      "summary": "Blocked or muted: {blocked} · Detected in notice mode: {shadow}",
+      "empty": "No messages have been blocked yet in this session.",
+      "emptyFilter": "No messages match the filter.",
+      "unknownUser": "Unknown user",
+      "why": "Reason: {reason} · Blocked by: {origin}"
+    },
+    "action": {
+      "drop": "blocked",
+      "mute": "muted (shown, not read aloud)",
+      "shadow": "detected in notice mode (went through)"
+    },
+    "origin": {
+      "user": "Muted or banned user",
+      "ownList": "Your word list",
+      "dictionary": "Language filter / dictionary",
+      "guard": "Automatic filter",
+      "rust": "Moderation engine (Rust)"
+    },
+    "reason": {
+      "blockedWord": "blocked word",
+      "language": "language not allowed",
+      "tooLong": "message too long",
+      "repeatedChar": "repeated characters",
+      "flood": "repeated message (spam)",
+      "duplicate": "duplicate message",
+      "banned": "banned user",
+      "muted": "muted user",
+      "other": "other reason",
+      "rustCategory": "category {category}"
+    },
+    "words": {
+      "intro": "Words you block on your account. You can add or remove them in Settings > Chat moderation.",
+      "search": "Search word",
+      "count": "{n} words in your list",
+      "empty": "You have not blocked any words yet.",
+      "emptySearch": "No words match the search.",
+      "error": "Could not load the list. Try again in a moment.",
+      "dictionaryNote": "Besides your list, the moderation engine uses a dictionary of thousands of words that are not listed here."
+    },
+    "queue": {
+      "explain": "When more messages arrive than the voice can read, the queue fills up and new ones are discarded. This has nothing to do with moderation: these messages simply did not fit in the voice queue.",
+      "dropped": "Discarded because the queue was full",
+      "waiting": "In queue now",
+      "waitingValue": "{n} of {max}",
+      "tip": "You can skip the current message or clear the queue from the chat controls."
+    }
   }
 }
