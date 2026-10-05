@@ -187,67 +187,7 @@
     </div>
   </div>
 
-  <!-- ═══ PANEL 3: FILTROS DE MENSAJES ═══ -->
-  <div class="panel panel-filter" id="palabras-bloqueadas">
-    <div class="panel-title"><img class="icon-inline" src="icons/search.svg" alt=""> <span data-i18n="adv.filtersTitle">Filtros de Mensajes</span></div>
-    <div class="panel-desc" data-i18n="adv.filtersDesc">Palabras prohibidas en el servidor</div>
-
-    <div class="explainer">
-      <div class="explainer-title" data-i18n="adv.filtersExplainerTitle">Reglas automáticas del servidor</div>
-      <p data-i18n-html="adv.filtersExplainerP1">El servidor ya filtra automáticamente: <strong>mensajes repetitivos</strong> (aaaaaa), <strong>URLs</strong> (se reemplazan por "link"), <strong>menciones</strong> (@usuario se eliminan), <strong>emojis</strong> (se convierten a espacio) y <strong>mensajes mayores a 300 caracteres</strong>.</p>
-      <p data-i18n-html="adv.filtersExplainerP2">Aquí puedes añadir <strong>palabras adicionales</strong> para bloquear mensajes que las contengan.</p>
-    </div>
-
-    <div class="section-label" data-i18n="adv.blockedLabel">Palabras bloqueadas</div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;" data-i18n="adv.blockedDesc">
-      Los mensajes que contengan estas palabras serán ignorados completamente por el TTS. El filtro no distingue mayúsculas/minúsculas.
-    </p>
-
-    <div class="tag-input-row">
-      <input type="text" id="blockedWordInput" data-i18n-placeholder="adv.blockedPlaceholder" placeholder="Escribe una palabra y presiona Agregar..."
-        onkeydown="if(event.key==='Enter') addBlockedWord()" />
-      <button class="btn-add" onclick="addBlockedWord()" data-i18n="adv.blockedAdd">+ Agregar</button>
-    </div>
-
-    <div class="tags-container" id="blockedWordsTags">
-      <span class="tags-empty" id="blockedEmpty" data-i18n="adv.blockedEmpty">Sin palabras bloqueadas</span>
-    </div>
-
-    <div class="save-row" style="margin-top:10px;">
-      <button class="btn-save" id="btnSaveFilters" onclick="saveBlockedWords()" data-i18n="adv.blockedSync">Sincronizar con servidor</button>
-    </div>
-
-    <div class="section-label" data-i18n="adv.mdLabel">Editar lista completa</div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;" data-i18n-html="adv.mdDesc">
-      Puedes editar el archivo <code>blocked-words.md</code> directamente aquí o subir uno nuevo. El formato es una palabra por línea empezando con <code>- </code>.
-    </p>
-
-    <textarea id="mdEditor" style="width:100%;min-height:160px;resize:vertical;" placeholder="- palabra1
-- palabra2"></textarea>
-
-    <div class="save-row" style="margin-top:12px;gap:10px;display:flex;justify-content:flex-end;flex-wrap:wrap;">
-      <button class="btn-refresh" onclick="loadMdContent()"><img class="icon-inline" src="icons/refresh.svg" alt=""> <span data-i18n="adv.mdReload">Recargar desde archivo</span></button>
-      <button class="btn-add" onclick="downloadMd()"><img class="icon-inline" src="icons/download.svg" alt=""> <span data-i18n="adv.mdDownload">Descargar .md</span></button>
-      <button class="btn-save" onclick="saveMdContent()"><img class="icon-inline" src="icons/save.svg" alt=""> <span data-i18n="adv.mdSave">Guardar cambios al archivo</span></button>
-    </div>
-
-    <div class="section-label" data-i18n="adv.mdUploadLabel">Subir archivo .md</div>
-    <div class="tag-input-row">
-      <input type="file" id="mdFileInput" accept=".md" style="flex:1;cursor:pointer;" />
-      <button class="btn-add" onclick="uploadMdFile()"><img class="icon-inline" src="icons/upload.svg" alt=""> <span data-i18n="adv.mdUploadBtn">Subir y reemplazar</span></button>
-    </div>
-
-    <div class="section-label"><img class="icon-inline" src="icons/privacy_tip.svg" alt=""> <span data-i18n="adv.bwShareLabel">Ayudar a mejorar el filtro</span></div>
-    <div class="toggle-row">
-      <div class="toggle-info">
-        <div class="toggle-name" data-i18n="adv.bwShareName">Compartir mi lista de palabras bloqueadas</div>
-        <div class="toggle-hint" data-i18n="adv.bwShareHint">Envía de forma anónima las palabras de tu lista, sin tu nombre ni el de tus espectadores, para mejorar el filtro de moderación. Solo se usan las palabras que bloquean varias personas. Está desactivado hasta que lo actives y puedes apagarlo cuando quieras.</div>
-      </div>
-      <label class="switch">
-        <input type="checkbox" id="blockedWordsTelemetryEnabled" onchange="saveBlockedWordsSharing()" />
-        <span class="switch-track"></span>
-      </label>
-    </div>
+  <div class="panel panel-filter">
   </div>
 
   <!-- ═══ PANEL 4: ESTADO DEL SISTEMA ═══ -->

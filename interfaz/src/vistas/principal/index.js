@@ -92,7 +92,7 @@ import {
 } from './bot-musica.js';
 import {
   modPage, modSetTab, modOnSearch, modWipe, checkModWipeConfirmInput, closeModWipeConfirm,
-  confirmModWipe, openBlockWordModal, closeBlockWordModal, submitBlockWord,
+  confirmModWipe, openBlockWordModal, closeBlockWordModal, submitBlockWord, openChatGuardWords,
   iniciarMenusModeracion, modReload,
 } from './moderacion.js';
 import {
@@ -152,7 +152,7 @@ Object.assign(window, {
   playlistSave, playlistSetEnabled, playlistSetShuffle, playlistPlay, updatePlaylistInfo,
   // moderacion / bloqueo de palabras
   modPage, modSetTab, modOnSearch, modWipe, checkModWipeConfirmInput, closeModWipeConfirm,
-  confirmModWipe, openBlockWordModal, closeBlockWordModal, submitBlockWord, modReload,
+  confirmModWipe, openBlockWordModal, closeBlockWordModal, submitBlockWord, openChatGuardWords, modReload,
   // tours
   startModerationTour, startSoundpadTour, startBotTour, startPluginStoreTour,
   startChatActionsTour, startClipsTour, startOverlaysTour, startVoiceTour,

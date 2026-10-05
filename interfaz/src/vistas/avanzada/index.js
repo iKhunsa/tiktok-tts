@@ -9,10 +9,8 @@ import { cargarIdioma, idiomaGuardado, aplicarTraducciones, t, tErr } from '../.
 import { toggleRateLimit, saveRateLimit } from './rate-limit.js';
 import { saveGeneral } from './config-general.js';
 import { saveAccessibility } from './accesibilidad.js';
-import { saveBlockedWordsSharing } from './compartir-palabras.js';
 import { downloadAllLogs } from './logs.js';
 import { refreshStatus, iniciarPollingEstado } from './estado-servidor.js';
-import { focusHashPanel, iniciarModoPopup } from './deep-link.js';
 import { iniciarCargaInicial } from './carga-inicial.js';
 
 // ─── Puente onclick/onchange: el markup los invoca como globales ──────────
@@ -21,7 +19,6 @@ Object.assign(window, {
   toggleRateLimit, saveRateLimit,
   saveGeneral,
   saveAccessibility,
-  saveBlockedWordsSharing,
   downloadAllLogs,
   refreshStatus,
 });
@@ -37,10 +34,7 @@ function iniciarArranque() {
   iniciarI18n();
   iniciarCargaInicial();
   refreshStatus();
-  focusHashPanel();
-  window.addEventListener('hashchange', focusHashPanel);
   iniciarPollingEstado();
-  iniciarModoPopup();
 }
 
 iniciarArranque();

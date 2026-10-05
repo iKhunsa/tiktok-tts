@@ -30,6 +30,7 @@ const { deleteAllViewers } = require('./routes/delete-all-viewers');
 const { blockedWordsGet } = require('./routes/blocked-words-get');
 const { blockedWordsExport } = require('./routes/blocked-words-export');
 const { blockedWordsImport } = require('./routes/blocked-words-import');
+const { blockedWordsClear } = require('./routes/blocked-words-clear');
 const { blockWord } = require('./routes/block-word');
 const { unblockWord } = require('./routes/unblock-word');
 const { chatGuardStatus, describeChatGuard } = require('./routes/chat-guard-status'); // rust-guard
@@ -120,6 +121,7 @@ module.exports = {
     app.get('/api/blocked-words', blockedWordsGet(blockedWords));
     app.get('/api/blocked-words/export', blockedWordsExport(logger));
     app.post('/api/blocked-words/import', blockedWordsImport(deps));
+    app.delete('/api/blocked-words', blockedWordsClear(deps));
     app.post('/api/block-word', blockWord(deps));
     app.delete('/api/block-word', unblockWord(deps));
     app.get('/api/chat-guard/status', chatGuardStatus(deps)); // rust-guard
@@ -160,6 +162,18 @@ module.exports = {
       description: 'Native content-moderation engine: enabled, mode (shadow | enforce), running and engine version.',
       inputSchema: { type: 'object', properties: {} },
       handler: () => describeChatGuard(deps),
+    });
+
+    mcpRegistry.registerTool({
+      name: 'moderation_clear_blocked_words', domain: 'moderacion', destructive: true, idempotent: true,
+      title: 'Clear blocked words', description: 'Remove every locally blocked word.', inputSchema: { type: 'object', properties: {} },
+      handler: () => {
+        blockedWords.clear();
+        const { saveBlockedWordsToFile } = require('./filters/blocked-words-file');
+        if (!saveBlockedWordsToFile(blockedWords, logger)) return { ok: false };
+        configureAndNotify();
+        return { ok: true, words: [] };
+      },
     });
 
     const allowedWordSchema = { // rust-guard

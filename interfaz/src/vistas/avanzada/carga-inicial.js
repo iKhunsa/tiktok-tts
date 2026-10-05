@@ -28,7 +28,6 @@ export async function loadConfig() {
     document.getElementById('a11yHighContrast').checked = !!cfg.a11yHighContrast;
     document.getElementById('a11yUiFontScale').value = String(cfg.a11yUiFontScale ?? 1);
     applyA11ySelf(cfg);
-    document.getElementById('blockedWordsTelemetryEnabled').checked = cfg.blockedWordsTelemetryEnabled === true;
 
     updateRlBadge(cfg.rateLimitEnabled);
   } catch (e) {

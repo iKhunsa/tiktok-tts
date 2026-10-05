@@ -41,10 +41,14 @@ export function mountWordLists(container, { store, actions }) {
       <div class="cg-problem" id="cgWordProblem" role="alert" hidden></div>
       <div class="cg-word-tools">
         <input type="file" id="cgWordsImport" accept=".json,.md,.txt,text/plain,application/json" hidden>
-        <button type="button" class="cfg-btn small" id="cgWordsImportButton"><img class="icon-inline" src="icons/upload.svg" alt=""><span data-i18n="chatGuard.words.add"></span></button>
-        <button type="button" class="cfg-btn small" id="cgWordsExport"><img class="icon-inline" src="icons/download.svg" alt=""><span data-i18n="chatGuard.words.search"></span></button>
-        <button type="button" class="cfg-btn small danger" id="cgWordsClear"><img class="icon-inline" src="icons/delete.svg" alt=""><span data-i18n="chatGuard.words.remove"></span></button>
+        <button type="button" class="cfg-btn small" id="cgWordsImportButton" data-i18n-title="chatGuard.words.import"><img class="icon-inline" src="icons/upload.svg" alt=""><span data-i18n="chatGuard.words.import"></span></button>
+        <button type="button" class="cfg-btn small" id="cgWordsExport" data-i18n-title="chatGuard.words.export"><img class="icon-inline" src="icons/download.svg" alt=""><span data-i18n="chatGuard.words.export"></span></button>
+        <button type="button" class="cfg-btn small danger" id="cgWordsClear" data-i18n-title="chatGuard.words.clear"><img class="icon-inline" src="icons/delete.svg" alt=""><span data-i18n="chatGuard.words.clear"></span></button>
       </div>
+      <div class="cg-confirm" id="cgWordsConfirm" hidden role="alertdialog" aria-modal="false" aria-labelledby="cgWordsConfirmText">
+        <span id="cgWordsConfirmText"></span><button type="button" class="cfg-btn small danger" id="cgWordsConfirmYes" data-i18n="chatGuard.words.clear"></button><button type="button" class="cfg-btn small" id="cgWordsConfirmNo" data-i18n="mod.wipeModal.cancel"></button>
+      </div>
+      <label class="cg-check cg-check-compact"><input type="checkbox" id="cgWordsShare" role="switch"><span><strong data-i18n="chatGuard.words.shareName"></strong><br><span class="cg-hint" data-i18n="chatGuard.words.shareHint"></span></span></label>
       <div class="cg-search">
         <img class="icon-inline" src="icons/search.svg" alt="">
         <label class="cg-sr-only" for="cgWordSearch" data-i18n="chatGuard.words.search"></label>
@@ -66,6 +70,9 @@ export function mountWordLists(container, { store, actions }) {
   const empty = container.querySelector('.cg-empty');
   const truncated = container.querySelector('#cgWordsTruncated');
   const importInput = container.querySelector('#cgWordsImport');
+  const confirm = container.querySelector('#cgWordsConfirm');
+  const confirmYes = container.querySelector('#cgWordsConfirmYes');
+  const share = container.querySelector('#cgWordsShare');
   let renderedKey = '';
 
   const currentList = () => store.getState().tab;
@@ -92,7 +99,7 @@ export function mountWordLists(container, { store, actions }) {
   container.querySelector('#cgWordsImportButton').addEventListener('click', () => importInput.click());
   importInput.addEventListener('change', async () => {
     const file = importInput.files[0];
-    if (file && await actions.importBlockedWords(await file.text())) input.focus();
+    if (file && file.size <= 1024 * 1024 && await actions.importBlockedWords(await file.text())) input.focus();
     importInput.value = '';
   });
   container.querySelector('#cgWordsExport').addEventListener('click', async () => {
@@ -103,9 +110,15 @@ export function mountWordLists(container, { store, actions }) {
     link.click();
     URL.revokeObjectURL(url);
   });
-  container.querySelector('#cgWordsClear').addEventListener('click', async () => {
-    if (window.confirm(t('chatGuard.words.empty'))) await actions.importBlockedWords('[]');
+  container.querySelector('#cgWordsClear').addEventListener('click', () => {
+    confirm.hidden = false;
+    confirm.querySelector('#cgWordsConfirmText').textContent = t('chatGuard.words.clearConfirm', { n: store.getState().words.blocked.length });
+    confirmYes.focus();
   });
+  confirmYes.addEventListener('click', async () => { if (await actions.clearBlockedWords()) confirm.hidden = true; input.focus(); });
+  container.querySelector('#cgWordsConfirmNo').addEventListener('click', () => { confirm.hidden = true; input.focus(); });
+  confirm.addEventListener('keydown', (event) => { if (event.key === 'Escape') { confirm.hidden = true; input.focus(); } });
+  share.addEventListener('change', () => actions.saveConfig({ blockedWordsTelemetryEnabled: share.checked }));
 
   chips.addEventListener('click', async (event) => {
     const remove = event.target.closest('.cg-chip-remove');
@@ -159,6 +172,7 @@ export function mountWordLists(container, { store, actions }) {
     renderProblem(state);
     renderChips(state);
     if (search.value !== state.query) search.value = state.query;
+    share.checked = state.status?.blockedWordsTelemetryEnabled === true;
   }
 
   render(store.getState());

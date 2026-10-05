@@ -138,6 +138,14 @@ export function createActions({ store, api, notify }) {
     return result.data;
   }
 
+  async function clearBlockedWords() {
+    const result = await api.clearBlockedWords();
+    if (!result.ok) { notify(result.errorKey); return false; }
+    replaceBlockedWords(result.data.words);
+    announce('chatGuard.words.removed');
+    return true;
+  }
+
   async function addWord(list, rawWord) {
     const word = normalizeWord(rawWord);
     const problem = findWordProblem({ word, list, words: store.getState().words });
@@ -168,6 +176,6 @@ export function createActions({ store, api, notify }) {
 
   return {
     load, setEnabled, setMode, setLevel, setCustomOption, setLanguage,
-    setTab, setQuery, clearWordProblem, addWord, removeWord, replaceBlockedWords, importBlockedWords, exportBlockedWords,
+    setTab, setQuery, clearWordProblem, addWord, removeWord, replaceBlockedWords, importBlockedWords, exportBlockedWords, clearBlockedWords, saveConfig,
   };
 }
