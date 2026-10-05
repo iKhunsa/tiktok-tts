@@ -728,18 +728,122 @@
       padding: 22px 26px;
     }
 
-    #settingsSectionVoice .settings-panel {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+    .voz-audio-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      margin-bottom: var(--space-5);
+      text-transform: none;
+      letter-spacing: normal;
     }
 
-    #voiceAnnounceGroup { grid-column: 1 / -1; }
-
-    @media (max-width: 1200px) {
-      #settingsSectionVoice .settings-panel { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .voz-audio-heading {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      min-width: 0;
     }
 
-    @media (max-width: 700px) {
-      #settingsSectionVoice .settings-panel { grid-template-columns: 1fr; gap: 14px; padding: 18px; }
+    .voz-audio-heading-icon {
+      display: grid;
+      flex: 0 0 40px;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      border: 1px solid var(--accent-border);
+      border-radius: var(--radius-md);
+      background: var(--brand-a10);
+      color: var(--accent);
+    }
+
+    .voz-audio-heading-icon .icon-inline { width: 20px; height: 20px; filter: brightness(0) invert(1); }
+    .voz-audio-heading-copy { min-width: 0; }
+    .voz-audio-heading-copy h3 { margin: 0; color: var(--text); font: 600 var(--text-lg)/1.25 'Inter', sans-serif; }
+    .voz-audio-heading-copy p { margin: var(--space-1) 0 0; color: var(--text-muted); font: 400 var(--text-sm)/1.45 'Inter', sans-serif; }
+
+    .voz-audio-layout {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+      align-items: start;
+      gap: var(--space-4);
+      min-width: 0;
+    }
+
+    .voz-audio-column { display: grid; gap: var(--space-4); min-width: 0; }
+
+    .voz-audio-card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      min-width: 0;
+      padding: var(--card-pad);
+      background: var(--card-bg);
+      border: var(--card-border);
+      border-radius: var(--card-radius);
+    }
+
+    .voz-audio-eyebrow {
+      color: var(--text-muted);
+      font: 600 var(--text-3xs)/1.2 'Source Code Pro', monospace;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    .voz-audio-card > .setting-group + .setting-group,
+    #announceTplFields .setting-group + .setting-group {
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--divider);
+    }
+
+    .voz-audio-card .voice-dropdown,
+    .voz-audio-card .voice-dropdown-trigger,
+    .voz-audio-card input[type="text"] { width: 100%; min-width: 0; }
+
+    #voiceDropdownText { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #voiceTestGroup .settings-row-flex { flex-wrap: wrap; }
+    #voiceTestGroup .settings-row-flex > input { flex: 1 1 180px; }
+
+    .voz-audio-card .voice-dropdown-trigger,
+    .voz-audio-card input[type="text"],
+    .voz-audio-card input[type="range"],
+    .voz-audio-card .toggle-chip,
+    .voz-audio-card button { min-height: 40px; }
+
+    .voz-audio-card .toggle-chip { align-self: flex-start; width: fit-content; max-width: 100%; }
+    .voz-audio-hint { color: var(--text-muted); font-size: var(--text-2xs); line-height: 1.5; }
+    .voz-audio-language-button { align-self: flex-start; gap: var(--space-1-5); margin-top: var(--space-1-5); }
+
+    .voz-audio-header .cfg-btn,
+    .voz-audio-language-button,
+    #settingsSectionVoice .voice-dropdown-trigger {
+      transition: border-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out),
+                  background var(--dur-2) var(--ease-out), transform var(--dur-press) var(--ease-out);
+    }
+
+    .voz-audio-header .cfg-btn { min-height: 40px; }
+
+    .voz-audio-header .cfg-btn:active,
+    .voz-audio-language-button:active,
+    #settingsSectionVoice .voice-dropdown-trigger:active { transform: scale(0.97); }
+
+    #settingsSectionVoice button:focus-visible,
+    #settingsSectionVoice input:focus-visible,
+    #settingsSectionVoice .voice-dropdown-trigger:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    @media (max-width: 520px) {
+      .voz-audio-header { align-items: flex-start; flex-direction: column; }
+      .voz-audio-card { padding: var(--space-4); }
+      #voiceTestGroup .btn-test { width: 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .voz-audio-header .cfg-btn,
+      .voz-audio-language-button,
+      #settingsSectionVoice .voice-dropdown-trigger { transition: none; }
     }
 
     .setting-group { display: flex; flex-direction: column; min-width: 0; gap: 8px; }

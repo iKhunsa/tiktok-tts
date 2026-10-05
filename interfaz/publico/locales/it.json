@@ -209,6 +209,10 @@
              },
     "settings":  {
                      "voice":  "Voce e audio",
+                     "voiceDescription":  "Configura come parlo e cosa dico.",
+                     "voiceSelector":  "Selettore vocale",
+                     "languageFilters":  "Filtri lingua",
+                     "announcementEndings":  "Finali degli annunci",
                      "shortcuts":  "Scorciatoie da tastiera",
                      "channels":  "Canali collegati",
                      "advanced":  "Impostazioni avanzate",

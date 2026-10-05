@@ -772,61 +772,78 @@
       </div>
 
       <div class="settings-section" id="settingsSectionVoice">
-        <div class="settings-section-title settings-row-flex" style="justify-content:space-between;">
-          <span data-i18n="settings.voice">Voz y audio</span>
+        <div class="settings-section-title voz-audio-header">
+          <div class="voz-audio-heading">
+            <span class="voz-audio-heading-icon"><img class="icon-inline" src="icons/mic.svg" alt=""></span>
+            <div class="voz-audio-heading-copy">
+              <h3 data-i18n="settings.voice">Voz y audio</h3>
+              <p data-i18n="settings.voiceDescription">Configura cómo hablo y qué digo.</p>
+            </div>
+          </div>
           <button class="cfg-btn" id="btnVoiceTour" onclick="startVoiceTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
         </div>
-        <div class="settings-panel">
-          <div class="setting-group" id="voiceSelectGroup">
-            <label><img class="icon-inline" src="icons/mic.svg" alt=""> <span data-i18n="label.voice">Voz</span></label>
-            <div class="voice-dropdown" id="voiceDropdown">
-              <div class="voice-dropdown-trigger" id="voiceDropdownTrigger" onclick="toggleVoiceDropdown()">
-                <img class="flag-icon" id="voiceDropdownFlag" src="flags/ES.svg" alt="">
-                <span id="voiceDropdownText">Español (España)</span>
-                <span class="arrow">▼</span>
+        <div class="voz-audio-layout">
+          <div class="voz-audio-card">
+            <div class="voz-audio-eyebrow" data-i18n="label.voice">Voz</div>
+            <div class="setting-group" id="voiceSelectGroup">
+              <label data-i18n="settings.voiceSelector">Selector de voz</label>
+              <div class="voice-dropdown" id="voiceDropdown">
+                <div class="voice-dropdown-trigger" id="voiceDropdownTrigger" onclick="toggleVoiceDropdown()">
+                  <img class="flag-icon" id="voiceDropdownFlag" src="flags/ES.svg" alt="">
+                  <span id="voiceDropdownText">Español (España)</span>
+                  <span class="arrow">▼</span>
+                </div>
+                <div class="voice-dropdown-menu" id="voiceDropdownMenu"></div>
               </div>
-              <div class="voice-dropdown-menu" id="voiceDropdownMenu"></div>
+              <input type="hidden" id="voiceSelect" />
             </div>
-            <input type="hidden" id="voiceSelect" />
-          </div>
-          <div class="setting-group" id="voiceTestGroup">
-            <label><img class="icon-inline" src="icons/science.svg" alt=""> <span data-i18n="label.testVoice">Probar voz</span></label>
-            <div class="settings-row-flex">
-              <input type="text" id="testVoiceInput" data-i18n-placeholder="label.testVoicePlaceholder" placeholder="Escribe algo para probar..." style="flex:1;" />
-              <button id="btnTestVoice" class="btn-test" onclick="testVoice()">▶ Probar</button>
+            <div class="setting-group" id="voiceTestGroup">
+              <label><img class="icon-inline" src="icons/science.svg" alt=""> <span data-i18n="label.testVoice">Probar voz</span></label>
+              <div class="settings-row-flex">
+                <input type="text" id="testVoiceInput" data-i18n-placeholder="label.testVoicePlaceholder" placeholder="Escribe algo para probar..." />
+                <button id="btnTestVoice" class="btn-test" onclick="testVoice()">▶ Probar</button>
+              </div>
+            </div>
+            <div class="setting-group" id="voiceRateGroup">
+              <label><img class="icon-inline" src="icons/flash_on.svg" alt=""> Velocidad — <span id="rateVal">1.0</span>x</label>
+              <input type="range" id="rateRange" min="0.5" max="2" step="0.1" value="1" oninput="updateRate(this.value)" />
+              <div class="range-labels"><span data-i18n="label.slow">Lento</span><span data-i18n="label.fast">Rápido</span></div>
+            </div>
+            <div class="setting-group" id="voiceVolGroup">
+              <label><img class="icon-inline" src="icons/volume_up.svg" alt=""> Volumen — <span id="volVal">100</span>%</label>
+              <input type="range" id="volRange" min="0" max="1" step="0.05" value="1" oninput="updateVol(this.value)" />
+              <div class="range-labels"><span data-i18n="label.mute">Mute</span><span data-i18n="label.max">Máx</span></div>
             </div>
           </div>
-          <div class="setting-group" id="voiceRateGroup">
-            <label><img class="icon-inline" src="icons/flash_on.svg" alt=""> Velocidad — <span id="rateVal">1.0</span>x</label>
-            <input type="range" id="rateRange" min="0.5" max="2" step="0.1" value="1" oninput="updateRate(this.value)" />
-            <div class="range-labels"><span data-i18n="label.slow">Lento</span><span data-i18n="label.fast">Rápido</span></div>
-          </div>
-          <div class="setting-group" id="voiceVolGroup">
-            <label><img class="icon-inline" src="icons/volume_up.svg" alt=""> Volumen — <span id="volVal">100</span>%</label>
-            <input type="range" id="volRange" min="0" max="1" step="0.05" value="1" oninput="updateVol(this.value)" />
-            <div class="range-labels"><span data-i18n="label.mute">Mute</span><span data-i18n="label.max">Máx</span></div>
-          </div>
-          <div class="setting-group" id="voiceLangFilterGroup">
-            <label class="toggle-chip" style="width:max-content;">
-              <input type="checkbox" id="langFilterToggle" onchange="toggleLangFilter(this)" />
-              <span data-i18n="toggle.langFilter">Filtrar caracteres de otros idiomas</span>
-            </label>
-            <div style="font-size:11px;color:var(--text-muted);margin-top:4px;" data-i18n="toggle.langFilterHint">Ignora mensajes de chat con caracteres que no correspondan al idioma de la voz activa (ej: bloquea chino/japonés si tu voz está en Español, y viceversa).</div>
-          </div>
-          <div class="setting-group" id="voiceDictFilterGroup">
-            <label class="toggle-chip" style="width:max-content;">
-              <input type="checkbox" id="dictFilterToggle" onchange="toggleDictFilter(this)" />
-              <span data-i18n="toggle.dictFilter">Filtrar por idioma (palabras)</span>
-            </label>
-            <button onclick="openDictLangModal()" id="btnOpenDictLangModal" style="margin-top:6px;display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.14);background:transparent;color:var(--text-muted);font-size:12px;cursor:pointer;width:max-content;">
-              <img class="icon-inline" src="icons/settings.svg" alt=""> <span data-i18n="dictLang.title">Idiomas permitidos</span>
-            </button>
-            <div style="font-size:11px;color:var(--text-muted);margin-top:4px;" data-i18n="toggle.dictFilterHint">Solo lee mensajes escritos en el idioma de la voz activa o en los idiomas extra que permitas. Las palabras desconocidas (nombres, typos) no bloquean.</div>
-          </div>
-          <div class="setting-group" id="voiceAnnounceGroup">
-            <label><img class="icon-inline" src="icons/chat.svg" alt=""> <span data-i18n="settings.announceTplTitle">Personaliza el final de los anuncios</span></label>
-            <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;" data-i18n="settings.announceTplDesc">Opcional: escribe lo que va después del nombre. Los datos se añaden solos; si lo dejas vacío, se usa el texto estándar.</div>
-            <div id="announceTplFields"></div>
+          <div class="voz-audio-column">
+            <div class="voz-audio-card">
+              <div class="voz-audio-eyebrow" data-i18n="settings.languageFilters">Filtros de idioma</div>
+              <div class="setting-group" id="voiceLangFilterGroup">
+                <label class="toggle-chip">
+                  <input type="checkbox" id="langFilterToggle" onchange="toggleLangFilter(this)" />
+                  <span data-i18n="toggle.langFilter">Filtrar caracteres de otros idiomas</span>
+                </label>
+                <div class="voz-audio-hint" data-i18n="toggle.langFilterHint">Ignora mensajes de chat con caracteres que no correspondan al idioma de la voz activa (ej: bloquea chino/japonés si tu voz está en Español, y viceversa).</div>
+              </div>
+              <div class="setting-group" id="voiceDictFilterGroup">
+                <label class="toggle-chip">
+                  <input type="checkbox" id="dictFilterToggle" onchange="toggleDictFilter(this)" />
+                  <span data-i18n="toggle.dictFilter">Filtrar por idioma (palabras)</span>
+                </label>
+                <button class="cfg-btn voz-audio-language-button" onclick="openDictLangModal()" id="btnOpenDictLangModal">
+                  <img class="icon-inline" src="icons/settings.svg" alt=""> <span data-i18n="dictLang.title">Idiomas permitidos</span>
+                </button>
+                <div class="voz-audio-hint" data-i18n="toggle.dictFilterHint">Solo lee mensajes escritos en el idioma de la voz activa o en los idiomas extra que permitas. Las palabras desconocidas (nombres, typos) no bloquean.</div>
+              </div>
+            </div>
+            <div class="voz-audio-card">
+              <div class="voz-audio-eyebrow" data-i18n="settings.announcementEndings">Finales de anuncios</div>
+              <div class="setting-group" id="voiceAnnounceGroup">
+                <label><img class="icon-inline" src="icons/chat.svg" alt=""> <span data-i18n="settings.announceTplTitle">Personaliza el final de los anuncios</span></label>
+                <div class="voz-audio-hint" data-i18n="settings.announceTplDesc">Opcional: escribe lo que va después del nombre. Los datos se añaden solos; si lo dejas vacío, se usa el texto estándar.</div>
+                <div id="announceTplFields"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

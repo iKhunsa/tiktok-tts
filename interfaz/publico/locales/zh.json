@@ -209,6 +209,10 @@
              },
     "settings":  {
                      "voice":  "语音与音频",
+                     "voiceDescription":  "配置我的说话方式和内容。",
+                     "voiceSelector":  "语音选择",
+                     "languageFilters":  "语言筛选",
+                     "announcementEndings":  "播报结尾",
                      "shortcuts":  "键盘快捷键",
                      "channels":  "已关联频道",
                      "advanced":  "高级设置",
