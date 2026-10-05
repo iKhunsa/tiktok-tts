@@ -102,3 +102,14 @@ test('motor que no expone sus idiomas: se le deja usar los suyos sin filtrar', (
   guard.sync(settingsFor({ ttsVoiceLang: 'fr' }));
   assert.equal('languages' in engine.calls.at(-1), false);
 });
+
+test('motor 0.2.0: descubre los idiomas por supportedLanguages aunque por defecto active menos', () => {
+  const supported = [...SPANISH_LOCALES, 'en', 'pt', 'pt_br', 'fr', 'de', 'it', 'ja', 'ko', 'ru', 'zh'];
+  const engine = fakeEngine(supported);
+  const baseStatus = engine.getStatus;
+  engine.getStatus = () => ({ ...baseStatus(), languages: [...SPANISH_LOCALES, 'en'], supportedLanguages: supported });
+  const { guard } = guardWith(engine);
+  guard.sync(settingsFor({ ttsVoiceLang: 'fr' }));
+  assert.deepEqual(engine.calls.at(-1).languages, ['fr', 'en']);
+  assert.deepEqual(guard.status().supportedLangs, supported);
+});

@@ -40,7 +40,7 @@ function createRustGuard({ logger, loadEngine }) {
     state.engine = callSafely('loadEngine', () => loadEngine(logger, baseConfig));
     if (!state.engine) return;
     const engineStatus = callSafely('getStatus', () => state.engine.getStatus());
-    state.supportedLangs = engineStatus && Array.isArray(engineStatus.languages) ? [...engineStatus.languages] : [];
+    state.supportedLangs = supportedFrom(engineStatus);
     applyEngineConfig({ ...baseConfig, languages });
     syncBlockedWords(settings.blockedWords);
     syncAllowedWords(settings.allowedWords);
@@ -149,6 +149,14 @@ function createRustGuard({ logger, loadEngine }) {
   }
 
   return { sync, check, stop, status, isRunning: () => Boolean(state.engine), mode: () => state.mode };
+}
+
+// 0.2.0+ expone supportedLanguages (por defecto solo activa español e inglés);
+// 0.1.0 no lo tiene, pero arrancado sin `languages` activa todos los que trae.
+function supportedFrom(engineStatus) {
+  if (!engineStatus) return [];
+  if (Array.isArray(engineStatus.supportedLanguages)) return [...engineStatus.supportedLanguages];
+  return Array.isArray(engineStatus.languages) ? [...engineStatus.languages] : [];
 }
 
 function withoutLanguages({ languages, ...config }) {
