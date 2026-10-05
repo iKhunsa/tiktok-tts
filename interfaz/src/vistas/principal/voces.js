@@ -161,7 +161,7 @@ export async function testVoice() {
 
   btn.disabled = true;
   btn.innerHTML = '<img class="icon-inline" src="icons/volume_up.svg" alt=""> Reproduciendo...';
-  const done = () => { btn.disabled = false; btn.textContent = '▶ Probar'; };
+  const done = () => { btn.disabled = false; btn.innerHTML = '<img class="icon-inline" src="icons/play_arrow.svg" alt=""> Probar'; };
 
   try {
     const res = await fetch('/api/tts', {

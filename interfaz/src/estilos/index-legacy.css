@@ -2228,6 +2228,7 @@
       flex-shrink: 0; display: block;
     }
     .voice-dropdown-trigger .arrow {
+      display: inline-flex;
       margin-left: auto;
       font-size: var(--text-3xs);
       color: var(--text-muted);
