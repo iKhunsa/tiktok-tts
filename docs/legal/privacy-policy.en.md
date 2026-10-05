@@ -1,6 +1,6 @@
 # TikLiveTTS Privacy Policy
 
-**Document version:** 2.0 · **Effective:** October 2, 2026
+**Document version:** 2.1 · **Effective:** October 5, 2026
 **Data controller:** iKhunsa (Ecuador)
 **Privacy contact and data officer (DPO/encarregado):** iKhunsa — info@tiklivetts.es
 
@@ -14,6 +14,7 @@ This policy explains what data TikLiveTTS (the "App") processes, why, who we sha
 
 - The App works **on your device**: overlays, TTS, soundpad and moderation run locally.
 - We send usage telemetry, analytics and errors to **our own servers**. We do not sell your data.
+- We send the words from your blocked words list, pseudonymized (linked to a technical identifier of your installation, never to your name), to improve the moderation filter.
 - If you create an account, we store your **email and name**. Payments are processed by **Polar**.
 - The text that is **read aloud** is sent to **Google** to generate the audio.
 - You can **delete your account** and your data with the "Delete account" button in your profile.
@@ -26,15 +27,17 @@ This policy explains what data TikLiveTTS (the "App") processes, why, who we sha
 | **Subscription**: plan, interval (monthly/annual), status, renewal date, Polar customer identifier | Enable your paid features, cancel/renew | Performance of the contract |
 | **Payments**: processed by Polar. We do not receive or store your card number | Billing and invoicing | Performance of the contract (Polar is responsible for payment data) |
 | **Own telemetry** (`telemetria.tiklivetts.es`): pseudonymized, non-reversible fingerprint of your device (hash of Windows user and computer name), session identifier, App and system version, language, **approximate location (country and city from IP)**, connected platforms and channels, feature usage counts, enabled settings (yes/no) and trimmed technical errors | Measure usage, prioritize features, detect failures | Consent (by accepting these terms) and legitimate interest in improving and protecting the service |
+| **Words from your blocked words list**: the text of each word as you wrote it in your list, normalized (lowercase, accents removed except ñ), the configured voice language and the send date. **No name of yours or of your viewers, no chat messages.** Before sending, the App discards entries containing `@`, links, emails, long numbers (6 or more digits), more than 3 words or more than 40 characters | Improve the App's moderation filter | Acceptance of the **Terms** and **legitimate interest** in improving the filter |
 | **Public identity of your channels**: username, public name, profile picture, followers (from each platform's public APIs) | Usage statistics and promotion (see §7) | Consent |
 | **Product analytics with Aptabase** (`aptabase.tiklivetts.es`, self-hosted): installation, session and feature-usage events, country, App version. No usernames, messages or free text | Understand which features are used | Consent and legitimate interest |
 | **Error reports with GlitchTip** (`glitchtip.tiklivetts.es`, self-hosted): errors and unexpected crashes, App state (platforms, OBS, settings), excerpt of the session log, installation and session identifier and the name of connected channels | Fix errors | Legitimate interest and consent |
 | **Bug reports and suggestions** that you send: your Discord username, your channel link, your description and, for bugs, the session log | Handle your report | Consent (you send it) |
 | **Text read aloud** (may include the name of the person who wrote it if you enable that option) | Generate audio with Google Translate's voice service | Performance of the service |
-| **Local logs and settings** (in the App's data folder): configuration, moderation, soundpad, TikTok session | Operation of the App on your device | Performance of the service — **we do not receive them** |
+| **Local logs and settings** (in the App's data folder): configuration, moderation, soundpad, TikTok session | Operation of the App on your device | Performance of the service — **we do not receive them**, except the blocked words list described above |
 | **Email for advertising** (the one you share when creating your account or paying) | Advertising, offers and news about TikLiveTTS and other iKhunsa projects | Consent (included in acceptance of the Terms), revocable |
 
 **Clarifications:**
+- Words are linked to a pseudonymized identifier of your installation only to count **how many distinct users** block the same word. We never display or export which user blocked which word. To improve the filter we only use words blocked by **several users** (at least 3); the rest are stored but not viewed or used. Sending is cumulative: if you later remove a word from your list, the word sent earlier is not removed from the count; you can request its deletion (see §6).
 - The device fingerprint is **pseudonymized** data: it does not contain your name, but it is still personal data because it stably identifies your installation.
 - Your IP is used only to estimate your **approximate location** (country and city), not your exact location, and we do not use it to identify you. This approximation gives us a general idea of where the App is used.
 - The session logs attached to errors and reports **may contain usernames** from the connected platforms. We do not guarantee that they are filtered.
@@ -62,6 +65,7 @@ Some providers (Google, Discord, GitHub, Polar, Hostinger) may process data outs
 ## 5. How long we keep data
 
 - **Telemetry and analytics:** up to **365 days**; then they are deleted automatically.
+- **Shared blocked words:** each word stays linked to your installation for up to **365 days after the last submission that includes it**; it is then deleted automatically. While you keep it in your list, the weekly submission renews it. The aggregated weekly count (not linked to any installation) is also deleted after 365 days.
 - **Account and subscription:** while your account exists. When you delete it we erase your account, email and subscription history from our systems.
 - **Payments:** Polar keeps transaction records for as long as accounting and tax rules require; we do not control them.
 - **Errors (GlitchTip):** no fixed period; they are kept while useful to fix errors and improve stability, and you can ask for their deletion.
@@ -74,7 +78,7 @@ Some providers (Google, Discord, GitHub, Polar, Hostinger) may process data outs
 You have the right to **access, rectification, erasure, objection, restriction, portability** and to **withdraw your consent** at any time, without retroactive effect.
 
 - **Delete your account and account data:** **"Delete account"** button in your profile (Account view). It is immediate and irreversible.
-- **Telemetry and analytics linked to your installation:** write to info@tiklivetts.es or on Discord and we will help you identify and delete it. Today the App does not include a switch to turn telemetry off; you can stop sending it by uninstalling the App or by writing to us.
+- **Telemetry, analytics and blocked words linked to your installation:** write to info@tiklivetts.es or on Discord and we will help you identify and delete it. Today the App does not include a switch to turn telemetry off; you can stop sending it by uninstalling the App or by writing to us.
 - **Email advertising:** write to info@tiklivetts.es or delete your account.
 - **Withdraw the image-use authorization:** by deleting your account or writing to us (see §7).
 

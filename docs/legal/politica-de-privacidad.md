@@ -1,6 +1,6 @@
 # Política de Privacidad de TikLiveTTS
 
-**Versión del documento:** 2.0 · **Vigencia desde:** 2 de octubre de 2026
+**Versión del documento:** 2.1 · **Vigencia desde:** 5 de octubre de 2026
 **Responsable del tratamiento:** iKhunsa (Ecuador)
 **Contacto de privacidad y encargado de datos (DPO/encarregado):** iKhunsa — info@tiklivetts.es
 
@@ -12,6 +12,7 @@ Esta política explica qué datos trata TikLiveTTS (la "App"), para qué, con qu
 
 - La App funciona **en tu equipo**: overlays, TTS, soundpad y moderación se ejecutan localmente.
 - Enviamos a **servidores propios** telemetría de uso, analítica y errores. No vendemos tus datos.
+- Enviamos las palabras de tu lista de palabras bloqueadas, seudonimizadas (asociadas a un identificador técnico de tu instalación, nunca a tu nombre), para mejorar el filtro de moderación.
 - Si creas una cuenta, guardamos tu **correo y nombre**. Los pagos los procesa **Polar**.
 - El texto que se **lee en voz alta** se envía a **Google** para generar el audio.
 - Puedes **eliminar tu cuenta** y tus datos desde el botón "Eliminar cuenta" de tu perfil.
@@ -24,15 +25,17 @@ Esta política explica qué datos trata TikLiveTTS (la "App"), para qué, con qu
 | **Suscripción**: plan, intervalo (mensual/anual), estado, fecha de renovación, identificador de cliente en Polar | Activar tus funciones de pago, cancelar/renovar | Ejecución del contrato |
 | **Pagos**: los procesa Polar. No recibimos ni guardamos tu número de tarjeta | Cobro y facturación | Ejecución del contrato (Polar es responsable de los datos de pago) |
 | **Telemetría propia** (`telemetria.tiklivetts.es`): huella seudonimizada y no reversible de tu equipo (hash de usuario de Windows y nombre del equipo), identificador de sesión, versión de la App y del sistema, idioma, **ubicación aproximada (país y ciudad por IP)**, plataformas y canales conectados, conteos de uso de funciones, ajustes activados (sí/no) y errores técnicos recortados | Medir el uso, priorizar funciones, detectar fallos | Consentimiento (al aceptar estos términos) e interés legítimo en mejorar y proteger el servicio |
+| **Palabras de tu lista de palabras bloqueadas**: el texto de cada palabra tal como lo escribiste en tu lista, normalizado (minúsculas, sin tildes salvo la ñ), el idioma de voz configurado y la fecha del envío. **Sin tu nombre ni el de tus espectadores, sin mensajes de chat.** Antes de enviar, la App descarta entradas que contengan `@`, enlaces, correos, números largos (6 o más dígitos), más de 3 palabras o más de 40 caracteres | Mejorar el filtro de moderación de la App | Aceptación de los **Términos** e **interés legítimo** de mejorar el filtro |
 | **Identidad pública de tus canales**: nombre de usuario, nombre público, foto de perfil, seguidores (de las API públicas de cada plataforma) | Estadísticas de uso y promoción (ver §7) | Consentimiento |
 | **Analítica de producto con Aptabase** (`aptabase.tiklivetts.es`, instancia propia): eventos de instalación, sesión y uso de funciones, país, versión de la App. Sin nombres de usuario, mensajes ni textos libres | Entender qué funciones se usan | Consentimiento e interés legítimo |
 | **Reportes de errores con GlitchTip** (`glitchtip.tiklivetts.es`, instancia propia): errores y cierres inesperados, estado de la App (plataformas, OBS, ajustes), fragmento del registro de la sesión, el identificador de instalación y sesión y el nombre de los canales conectados | Corregir errores | Interés legítimo y consentimiento |
 | **Reportes de bug y sugerencias** que tú envíes: tu usuario de Discord, el enlace de tu canal, tu descripción y, en bugs, el registro de la sesión | Atender tu reporte | Consentimiento (lo envías tú) |
 | **Texto leído en voz alta** (puede incluir el nombre de quien escribió si activas esa opción) | Generar el audio con el servicio de voz de Google Translate | Ejecución del servicio |
-| **Registros locales y ajustes** (en tu carpeta de datos de la App): configuración, moderación, soundpad, sesión de TikTok | Funcionamiento de la App en tu equipo | Ejecución del servicio — **no los recibimos** |
+| **Registros locales y ajustes** (en tu carpeta de datos de la App): configuración, moderación, soundpad, sesión de TikTok | Funcionamiento de la App en tu equipo | Ejecución del servicio — **no los recibimos**, salvo la lista de palabras bloqueadas descrita arriba |
 | **Correo para publicidad** (el que compartes al crear tu cuenta o al pagar) | Publicidad, ofertas y novedades de TikLiveTTS y de otros proyectos de iKhunsa | Consentimiento (incluido en la aceptación de los Términos), revocable |
 
 **Aclaraciones:**
+- Las palabras se asocian a un identificador seudonimizado de tu instalación solo para contar **cuántos usuarios distintos** bloquean una misma palabra. Nunca se muestra ni se exporta qué usuario bloqueó qué palabra. Para mejorar el filtro solo se usan las palabras bloqueadas por **varios usuarios** (como mínimo 3); las demás se guardan, pero no se ven ni se utilizan. El envío es acumulativo: si más adelante quitas una palabra de tu lista, la palabra enviada antes no se elimina del recuento; puedes pedir su borrado (ver §6).
 - La huella de equipo es un dato **seudonimizado**: no contiene tu nombre, pero sigue siendo un dato personal porque identifica de forma estable tu instalación.
 - Tu IP se usa solo para estimar tu **ubicación aproximada** (país y ciudad), no tu ubicación exacta, y no la usamos para identificarte. Esa aproximación nos da una idea general de dónde se usa la App.
 - Los registros de sesión que se adjuntan a errores y reportes **pueden contener nombres de usuario** de las plataformas conectadas. No garantizamos que se filtren.
@@ -60,6 +63,7 @@ Algunos proveedores (Google, Discord, GitHub, Polar, Hostinger) pueden tratar da
 ## 5. Cuánto tiempo guardamos los datos
 
 - **Telemetría y analítica:** hasta **365 días**; después se borran automáticamente.
+- **Palabras bloqueadas compartidas:** cada palabra queda asociada a tu instalación hasta **365 días después del último envío que la incluya**; después se borra automáticamente. Mientras la conserves en tu lista, el envío semanal la renueva. El recuento semanal agregado (sin asociación a ninguna instalación) también se borra a los 365 días.
 - **Cuenta y suscripción:** mientras tu cuenta exista. Al eliminarla borramos tu cuenta, correo e historial de suscripción de nuestros sistemas.
 - **Pagos:** Polar conserva los registros de transacciones el tiempo que exijan las normas contables y fiscales; no los controlamos.
 - **Errores (GlitchTip):** sin plazo fijo; se conservan mientras sean útiles para corregir errores y mejorar la estabilidad, y puedes pedir su eliminación.
@@ -72,7 +76,7 @@ Algunos proveedores (Google, Discord, GitHub, Polar, Hostinger) pueden tratar da
 Tienes derecho a **acceso, rectificación, eliminación, oposición, limitación, portabilidad** y a **retirar tu consentimiento** en cualquier momento, sin efecto retroactivo.
 
 - **Eliminar tu cuenta y tus datos de cuenta:** botón **"Eliminar cuenta"** en tu perfil (vista Cuenta). Es inmediato e irreversible.
-- **Telemetría y analítica asociadas a tu instalación:** escríbenos a info@tiklivetts.es o por Discord y te ayudamos a identificarla y borrarla. Hoy la App no incluye un interruptor para desactivar la telemetría; puedes dejar de enviarla desinstalando la App o escribiéndonos.
+- **Telemetría, analítica y palabras bloqueadas asociadas a tu instalación:** escríbenos a info@tiklivetts.es o por Discord y te ayudamos a identificarla y borrarla. Hoy la App no incluye un interruptor para desactivar la telemetría; puedes dejar de enviarla desinstalando la App o escribiéndonos.
 - **Publicidad por correo:** escríbenos a info@tiklivetts.es o elimina tu cuenta.
 - **Retirar la autorización de uso de imagen:** eliminando tu cuenta o escribiéndonos (ver §7).
 

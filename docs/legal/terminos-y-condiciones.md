@@ -1,6 +1,6 @@
 # Términos y Condiciones de Uso de TikLiveTTS
 
-**Versión del documento:** 2.0 · **Vigencia desde:** 2 de octubre de 2026
+**Versión del documento:** 2.1 · **Vigencia desde:** 5 de octubre de 2026
 **Proveedor:** iKhunsa (Ecuador)
 **Contacto:** info@tiklivetts.es · Discord: <https://discord.com/invite/mwY859tcQK> · Sitio: <https://tiklivetts.es>
 
@@ -62,6 +62,7 @@ c) **Reportes de errores con GlitchTip** (instancia propia): errores y cierres i
 d) **Datos de tu cuenta** (correo, nombre) y del estado de tu suscripción.
 e) **Datos públicos de tus canales** (nombre de usuario, nombre público, foto de perfil y métricas públicas), obtenidos de las API públicas de cada plataforma.
 f) **Reportes y sugerencias** que decidas enviar, que se publican en nuestro Discord junto con los datos que incluyas y, en el caso de los bugs, el registro de la sesión. **Ese registro puede contener nombres de usuario de las plataformas que tienes conectadas**: revisa que estés de acuerdo antes de enviarlo.
+g) **Palabras de tu lista de palabras bloqueadas**. Se envían seudonimizadas (asociadas a un identificador técnico de tu instalación), sin tu nombre ni el de tus espectadores ni mensajes del chat, para mejorar el filtro de moderación. Solo se usan para mejorar el filtro las palabras bloqueadas por varios usuarios; se conservan hasta 365 días desde el último envío que las incluya. Al aceptar estos Términos aceptas este tratamiento, basado también en el interés legítimo de mejorar el filtro. Puedes pedir su borrado a info@tiklivetts.es o por Discord; el detalle está en la Política de Privacidad.
 
 Puedes retirar tu consentimiento a la telemetría y a la analítica en cualquier momento escribiéndonos o eliminando tu cuenta; el retiro no afecta a lo tratado antes. Parte del tratamiento técnico mínimo (por ejemplo, errores y seguridad del servicio) se basa en nuestro interés legítimo en mantener la App estable y segura.
 
