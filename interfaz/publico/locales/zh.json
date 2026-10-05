@@ -209,7 +209,6 @@
              },
     "settings":  {
                      "voice":  "语音与音频",
-                     "voiceDescription":  "配置我的说话方式和内容。",
                      "voiceSelector":  "语音选择",
                      "languageFilters":  "语言筛选",
                      "announcementEndings":  "播报结尾",

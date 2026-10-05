@@ -209,7 +209,6 @@
              },
     "settings":  {
                      "voice":  "Stimme \u0026 Audio",
-                     "voiceDescription":  "Lege fest, wie ich spreche und was ich sage.",
                      "voiceSelector":  "Stimmenauswahl",
                      "languageFilters":  "Sprachfilter",
                      "announcementEndings":  "Enden der Ansagen",

@@ -209,7 +209,6 @@
              },
     "settings":  {
                      "voice":  "音声・オーディオ",
-                     "voiceDescription":  "話し方と読み上げ内容を設定します。",
                      "voiceSelector":  "音声を選択",
                      "languageFilters":  "言語フィルター",
                      "announcementEndings":  "アナウンスの語尾",

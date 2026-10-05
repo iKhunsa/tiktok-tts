@@ -209,7 +209,6 @@
              },
     "settings":  {
                      "voice":  "음성 및 오디오",
-                     "voiceDescription":  "말하는 방식과 내용을 설정하세요.",
                      "voiceSelector":  "음성 선택",
                      "languageFilters":  "언어 필터",
                      "announcementEndings":  "알림 문구 끝부분",

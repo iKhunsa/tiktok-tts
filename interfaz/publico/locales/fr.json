@@ -209,7 +209,6 @@
              },
     "settings":  {
                      "voice":  "Voix et audio",
-                     "voiceDescription":  "Configurez ma façon de parler et ce que je dis.",
                      "voiceSelector":  "Sélecteur de voix",
                      "languageFilters":  "Filtres de langue",
                      "announcementEndings":  "Fins des annonces",

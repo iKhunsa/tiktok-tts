@@ -209,7 +209,6 @@
              },
     "settings":  {
                      "voice":  "Voice \u0026 audio",
-                     "voiceDescription":  "Configure how I speak and what I say.",
                      "voiceSelector":  "Voice selector",
                      "languageFilters":  "Language filters",
                      "announcementEndings":  "Announcement endings",
