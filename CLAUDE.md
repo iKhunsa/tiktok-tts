@@ -233,14 +233,14 @@ Dominio aparte que reporta uso agregado y anónimo a un servicio propio
   reconoce y lo borraría en el primer guardado.
 - `connectors/blocked-words.js` (+ `blocked-words/`) — snapshot de la lista de palabras bloqueadas, activo por defecto; `blockedWordsTelemetryDisabled` (default `false`) queda como llave técnica por cuenta para apagarlo (`true` = cero eventos); se renombró desde `blockedWordsTelemetryEnabled` para que el `false` guardado por el antiguo interruptor opt-in no deje cuentas apagadas. Lee la lista por el bus (`moderacion:palabras-get`, aviso `moderacion:palabras-cambiadas`), la sanea igual que el servidor, calcula hash sha256 y guarda el último envío en `accountDataPath('blocked-words-telemetry.json')`. Envía al arrancar si pasaron >7 días, al cambiar la lista (debounce 10 min) y cada semana; mismo hash y <7 días = nada. No incluye nick ni IDs de espectadores, solo palabras de la lista del streamer. Texto legal: publicado en la v2.1 de `docs/legal/` (ver `NOTAS-DE-REVISION.md` §6).
 - Casi todos los eventos se emiten directo desde los conectores. Solo
-  `tts:skipped`, `tts:queue-overflow`, `ui:language-set`, `ui:discord-opened` y
-  `ui:discord-joined` nacen en el renderer
-  (`interfaz/src/nucleo/tts/cola-tts.js`, `interfaz/src/vistas/principal/i18n-app.js`,
-  `interfaz/src/vistas/principal/modales-avisos.js`)
-  y llegan al bus vía IPC:
-  `window.electronAPI.trackEvent(name[, payload])` → `preload.js` →
-  `ipcMain.on('telemetry:track', ...)` en `electron-shell/ipc-bridge.js`, con
-  lista blanca de esos cinco nombres (`payload` solo se reenvía si es string corto).
+  `tts:skipped`, `tts:queue-overflow`, `ui:language-set` y los `ui:*` de uso de
+  la interfaz (Discord, vistas, overlays, promos, planes, tours…) nacen en el
+  renderer y llegan al bus vía IPC: `trackUi(evento, valor)`
+  (`interfaz/src/nucleo/telemetria-ui.js`) → `window.electronAPI.trackEvent` →
+  `preload.js` → `ipcMain.on('telemetry:track', ...)` en `electron-shell/ipc-bridge.js`,
+  con la misma lista blanca de nombres en ambos lados. `payload` solo se reenvía
+  si es string, recortado a 24 chars; el valor es siempre de lista cerrada y lo
+  valida `aptabase.js` (`EVENTOS_UI`) — nunca texto libre.
 
 ## Error tracking (`electron-shell/glitchtip.js`)
 
@@ -278,13 +278,22 @@ bakeado) es un no-op total.
   `session_ended`), activación (`platform_connected`, `platform_connect_failed`,
   `first_tts`), adopción (`overlay_opened`,
   `mobile_paired`, `mobile_command`, `clip_marked`, `music_requested`,
-  `promo_fired`, `bug_report_sent`, `soundpad` en resumen,
-  `discord_modal_opened` y `discord_join_clicked` con `source` =
-  `titlebar|sidebar|account_menu|banner`, para medir qué entrada a Discord
-  convierte), config
+  `promo_fired`, `bug_report_sent` (solo `version`, nunca el canal),
+  `soundpad` en resumen, `overlay_test` (`tipo`), `overlay_url_copied`
+  (`overlay`), `view_opened` (`view`, 1 vez por vista y sesión),
+  `tour_started` (`tour`), `event_effects_toggled` (`state`), `news_opened`,
+  `donations_opened`, `portalview_opened`), Discord y promos
+  (`discord_modal_opened` y `discord_join_clicked` con `source` =
+  `titlebar|sidebar|account_menu|sidebar_banner|connect_fail|bug_report|chat_banner_2..4`
+  — lo que no esté en la lista cae a `otro` —, `promo_code_opened`,
+  `promo_code_copied`, `promo_plans_clicked`, `tiktok_banner_clicked`),
+  cuentas y planes (`auth_signed_in`, `auth_signed_out`, `plans_opened`,
+  `checkout_started` con `plan`/`intervalo`, `pro_gate_hit` con `featureId`,
+  `account_deleted` sin props), config
   (`config_changed` **solo la clave, nunca el valor**, `voice_changed`,
   `ui_language_set`), moderación (`moderation_action`, `moderation_action_failed`,
-  `mod_words_saved`).
+  `mod_words_saved`). `platform_connect_failed` sale de `canales.conexion.fallida`
+  con `platform` + `code` (nunca el mensaje: puede traer el canal).
 - **Resúmenes de sesión:** los de alta frecuencia (TTS, música, errores,
   mensajes filtrados) se acumulan en memoria y salen como props bucketeadas de
   `session_ended` (1 POST al cerrar), nunca 1 evento por ocurrencia. `bucket()`
