@@ -120,6 +120,24 @@ export function createActions({ store, api, notify }) {
     store.setState((state) => ({ wordProblem: null, words: { ...state.words, [list]: words } }));
   }
 
+  function replaceBlockedWords(words) {
+    store.setState((state) => ({ words: { ...state.words, blocked: sortWords(words || []) } }));
+  }
+
+  async function importBlockedWords(content) {
+    const result = await api.importBlockedWords(content);
+    if (!result.ok) { notify(result.errorKey); return false; }
+    replaceBlockedWords(result.data.words);
+    announce('chatGuard.words.added');
+    return true;
+  }
+
+  async function exportBlockedWords() {
+    const result = await api.exportBlockedWords();
+    if (!result.ok || !Array.isArray(result.data)) { notify(result.errorKey); return null; }
+    return result.data;
+  }
+
   async function addWord(list, rawWord) {
     const word = normalizeWord(rawWord);
     const problem = findWordProblem({ word, list, words: store.getState().words });
@@ -150,6 +168,6 @@ export function createActions({ store, api, notify }) {
 
   return {
     load, setEnabled, setMode, setLevel, setCustomOption, setLanguage,
-    setTab, setQuery, clearWordProblem, addWord, removeWord,
+    setTab, setQuery, clearWordProblem, addWord, removeWord, replaceBlockedWords, importBlockedWords, exportBlockedWords,
   };
 }

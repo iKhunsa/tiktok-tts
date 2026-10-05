@@ -33,6 +33,8 @@ export function createChatGuardApi(fetchImpl = (...args) => globalThis.fetch(...
     removeBlockedWord: (word) => request('DELETE', '/api/block-word', { word }),
     addAllowedWord: (word) => request('POST', '/api/chat-guard/allowed-words', { word }),
     removeAllowedWord: (word) => request('DELETE', '/api/chat-guard/allowed-words', { word }),
+    importBlockedWords: (content) => request('POST', '/api/blocked-words/import', { content }),
+    exportBlockedWords: () => request('GET', '/api/blocked-words/export'),
   };
 }
 

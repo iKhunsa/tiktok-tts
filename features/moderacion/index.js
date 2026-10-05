@@ -83,6 +83,7 @@ module.exports = {
     const configureAndNotify = () => {
       configure();
       bus.emit('moderacion:palabras-cambiadas');
+      bus.emit('ws:broadcast', { type: 'moderation-words-changed', words: [...blockedWords].sort() });
     };
 
     const deps = {

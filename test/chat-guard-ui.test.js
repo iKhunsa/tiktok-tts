@@ -179,6 +179,15 @@ test('acciones: removeWord actualiza la lista y avisa si falla', async () => {
   assert.deepEqual(failing.s.getState().words.blocked, ['alfa', 'zeta']);
 });
 
+test('acciones: la respuesta del servidor reemplaza el estado y provoca un nuevo render', async () => {
+  const { s, actions } = await setup({ addBlockedWord: async () => ({ ok: true, data: { words: ['zeta', 'alfa', 'nuevo'] }, errorKey: '' }) });
+  const renders = [];
+  s.subscribe((state) => renders.push([...state.words.blocked]));
+  await actions.addWord('blocked', 'nuevo');
+  assert.deepEqual(s.getState().words.blocked, ['alfa', 'nuevo', 'zeta']);
+  assert.ok(renders.some((words) => words.join(',') === 'alfa,nuevo,zeta'));
+});
+
 test('i18n: toda clave chatGuard.* / errors.chatGuard* usada en el panel existe en es.json', () => {
   const es = require('../interfaz/publico/locales/es.json');
   const lookup = (key) => key.split('.').reduce((node, part) => (node ? node[part] : undefined), es);

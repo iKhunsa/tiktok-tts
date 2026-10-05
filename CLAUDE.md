@@ -45,7 +45,7 @@ server.js (Express + WS en puerto 3000)
       ├── configuracion/             ← único dueño de config.json y platform-config.json
       ├── idioma/                    ← filtro de idioma/script de voz (puro)
       ├── reporte-bug/                ← webhook de Discord, retención de logs
-      ├── moderacion/                ← moderation.json, blocked-words.md, @tiklivetts/chat-guard
+      ├── moderacion/                ← moderation.json, blocked-words.json, @tiklivetts/chat-guard
       ├── canales/                   ← TikTok/Twitch/YouTube/Kick + OBS — único productor de eventos crudos
       ├── chat/                      ← orquesta: crudo → moderación → chat:mensaje-permitido
       ├── promo/                     ← avisos promocionales periódicos (announce-texts)
@@ -525,7 +525,7 @@ todo lo de las secciones **i18n** e **Íconos** de arriba.
 - Overlays: alertas de regalos, contador de likes, contador de seguidores
 - Top likers tracking durante el stream
 - Refresco de follower count cada 5 minutos
-- Palabras bloqueadas persistidas en `blocked-words.md`
+- Palabras bloqueadas persistidas por cuenta en `blocked-words.json` (migra una vez el `blocked-words.md` legado sin borrarlo)
 - Single-instance lock (doble clic → bring to front)
 - Atajo global Ctrl+Shift+M → marca clip en OBS
 

@@ -33,6 +33,7 @@ import {
   musicOnEngineStatus,
 } from '../../vistas/principal/bot-musica.js';
 import { modOnViewerUpdated } from '../../vistas/principal/moderacion.js';
+import { updateBlockedWords } from '../../vistas/principal/moderacion-contenido/index.js';
 
 export const LIKE_COOLDOWN_MS = 15 * 60 * 1000;
 export const likeCooldownMap = new Map();
@@ -381,6 +382,9 @@ function handleMessage(data) {
     case 'moderation-updated':
     case 'moderation-reset':
       modOnViewerUpdated();
+      break;
+    case 'moderation-words-changed':
+      updateBlockedWords(data.words);
       break;
     case 'play-soundpad':
       if (data.soundId) spPlaySound(data.soundId);

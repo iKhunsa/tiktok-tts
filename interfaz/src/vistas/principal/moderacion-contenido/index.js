@@ -63,6 +63,10 @@ export function reloadModeracionContenido() {
   if (actions) actions.load();
 }
 
+export function updateBlockedWords(words) {
+  if (actions && Array.isArray(words)) actions.replaceBlockedWords(words);
+}
+
 // Cambio de idioma de la UI: los textos armados con t() se redibujan.
 export function retranslateModeracionContenido() {
   if (store) store.setState({});

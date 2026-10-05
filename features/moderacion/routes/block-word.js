@@ -12,8 +12,8 @@ function blockWord(deps) {
     // bloqueaba el chat entero en silencio.
     if (!w) return res.status(400).json({ error: 'Palabra requerida', errorKey: 'errors.textRequired' });
     deps.blockedWords.add(w);
+    if (!saveBlockedWordsToFile(deps.blockedWords, deps.logger)) return res.status(500).json({ error: 'No se pudo guardar la lista', errorKey: 'errors.chatGuardUnavailable' });
     if (deps.configure) deps.configure();
-    saveBlockedWordsToFile(deps.blockedWords, deps.logger);
     res.json({ words: [...deps.blockedWords] });
   };
 }
