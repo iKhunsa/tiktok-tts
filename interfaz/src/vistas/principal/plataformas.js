@@ -370,8 +370,14 @@ export async function renderSettingsChannels() {
     status.textContent = stateLabel(state);
     const removeBtn = document.createElement('button');
     removeBtn.type = 'button';
-    removeBtn.title = `Eliminar ${PLATFORM_LABELS[platform]} ${formatChannelDisplay(platform, ch)}`;
-    removeBtn.textContent = 'x';
+    const removeLabel = `${t('btn.delete')} ${PLATFORM_LABELS[platform]} ${formatChannelDisplay(platform, ch)}`;
+    removeBtn.title = removeLabel;
+    removeBtn.setAttribute('aria-label', removeLabel);
+    const removeIcon = document.createElement('img');
+    removeIcon.className = 'icon-inline';
+    removeIcon.src = 'icons/close.svg';
+    removeIcon.alt = '';
+    removeBtn.append(removeIcon);
     removeBtn.onclick = () => removeChannel(platform, ch);
     tag.append(icon, platformLabel, label, status, removeBtn);
     el.appendChild(tag);
