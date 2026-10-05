@@ -1250,6 +1250,8 @@
                    "deletePlan":  "Si vous avez un abonnement actif, il est résilié immédiatement sans remboursement et vous perdez l\u0027accès.",
                    "deleteIrreversible":  "Cette action est irréversible.",
                    "deletePassword":  "Saisissez votre mot de passe pour confirmer",
+                   "deleteTypeWord":  "Saisissez « {word} » pour confirmer",
+                   "deleteWord":  "supprimer",
                    "deleteConfirm":  "Supprimer définitivement",
                    "deleteCancel":  "Annuler",
                    "deleteDone":  "Votre compte a été supprimé."

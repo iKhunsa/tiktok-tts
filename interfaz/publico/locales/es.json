@@ -1270,6 +1270,8 @@
                    "deletePlan":  "Si tienes un plan activo, se cancela ahora mismo sin reembolso y pierdes el acceso.",
                    "deleteIrreversible":  "Esta acción no se puede deshacer.",
                    "deletePassword":  "Escribe tu contraseña para confirmar",
+                   "deleteTypeWord":  "Escribe «{word}» para confirmar",
+                   "deleteWord":  "borrar",
                    "deleteConfirm":  "Eliminar definitivamente",
                    "deleteCancel":  "Cancelar",
                    "deleteDone":  "Tu cuenta fue eliminada."

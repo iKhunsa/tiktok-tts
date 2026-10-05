@@ -1250,6 +1250,8 @@
                    "deletePlan":  "如果你有有效套餐，将立即取消且不退款，你会失去访问权限。",
                    "deleteIrreversible":  "此操作无法撤销。",
                    "deletePassword":  "输入密码以确认",
+                   "deleteTypeWord":  "输入“{word}”以确认",
+                   "deleteWord":  "删除",
                    "deleteConfirm":  "永久删除",
                    "deleteCancel":  "取消",
                    "deleteDone":  "你的账号已删除。"

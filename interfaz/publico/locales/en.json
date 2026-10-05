@@ -1250,6 +1250,8 @@
                    "deletePlan":  "If you have an active plan, it is canceled right now with no refund and you lose access.",
                    "deleteIrreversible":  "This cannot be undone.",
                    "deletePassword":  "Enter your password to confirm",
+                   "deleteTypeWord":  "Type “{word}” to confirm",
+                   "deleteWord":  "delete",
                    "deleteConfirm":  "Delete permanently",
                    "deleteCancel":  "Cancel",
                    "deleteDone":  "Your account was deleted."

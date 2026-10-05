@@ -1250,6 +1250,8 @@
                    "deletePlan":  "有効なプランがある場合は、返金なしで今すぐ解約され、アクセスできなくなります。",
                    "deleteIrreversible":  "この操作は元に戻せません。",
                    "deletePassword":  "確認のためパスワードを入力してください",
+                   "deleteTypeWord":  "確認のため「{word}」と入力してください",
+                   "deleteWord":  "削除",
                    "deleteConfirm":  "完全に削除",
                    "deleteCancel":  "キャンセル",
                    "deleteDone":  "アカウントを削除しました。"

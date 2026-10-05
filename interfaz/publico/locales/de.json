@@ -1250,6 +1250,8 @@
                    "deletePlan":  "Wenn du einen aktiven Tarif hast, wird er sofort ohne Erstattung gekündigt und du verlierst den Zugriff.",
                    "deleteIrreversible":  "Das kann nicht rückgängig gemacht werden.",
                    "deletePassword":  "Gib zur Bestätigung dein Passwort ein",
+                   "deleteTypeWord":  "Gib „{word}“ zur Bestätigung ein",
+                   "deleteWord":  "löschen",
                    "deleteConfirm":  "Endgültig löschen",
                    "deleteCancel":  "Abbrechen",
                    "deleteDone":  "Dein Konto wurde gelöscht."

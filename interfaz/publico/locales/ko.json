@@ -1250,6 +1250,8 @@
                    "deletePlan":  "활성 플랜이 있으면 환불 없이 즉시 해지되며 이용 권한을 잃습니다.",
                    "deleteIrreversible":  "이 작업은 되돌릴 수 없습니다.",
                    "deletePassword":  "확인을 위해 비밀번호를 입력하세요",
+                   "deleteTypeWord":  "확인하려면 “{word}”을(를) 입력하세요",
+                   "deleteWord":  "삭제",
                    "deleteConfirm":  "영구 삭제",
                    "deleteCancel":  "취소",
                    "deleteDone":  "계정이 삭제되었습니다."
