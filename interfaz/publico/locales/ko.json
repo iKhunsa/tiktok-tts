@@ -1308,6 +1308,10 @@
                         "myAccount":  "내 계정"
                     },
     "pro":  {
+                "bannerTitle":  "Pro로 업그레이드",
+                "bannerSub":  "뮤직 봇, 사운드패드, 클립 등을 사용해 보세요.",
+                "bannerBadge":  "월 US$3부터",
+                "bannerClose":  "닫기",
                 "popupTitle":  "Pro로 이 기능 잠금 해제",
                 "popupSub":  "지금은 데모를 보고 있어요 — Pro 플랜에서는 완전히 작동합니다.",
                 "benefit":  {

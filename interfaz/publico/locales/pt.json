@@ -1308,6 +1308,10 @@
                         "myAccount":  "Minha conta"
                     },
     "pro":  {
+                "bannerTitle":  "Faça upgrade para o Pro",
+                "bannerSub":  "para desbloquear bot musical, soundpad, clipes e mais.",
+                "bannerBadge":  "A partir de US$3/mês",
+                "bannerClose":  "Fechar",
                 "popupTitle":  "Desbloqueie esta função com o Pro",
                 "popupSub":  "Você está vendo uma demonstração — no plano Pro fica 100% funcional.",
                 "benefit":  {

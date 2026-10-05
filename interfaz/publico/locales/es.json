@@ -1277,6 +1277,10 @@
                    "deleteDone":  "Tu cuenta fue eliminada."
                },
     "pro":  {
+                "bannerTitle":  "Mejora tu plan a Pro",
+                "bannerSub":  "para desbloquear bot musical, soundpad, clips y más.",
+                "bannerBadge":  "Desde US$3/mes",
+                "bannerClose":  "Cerrar",
                 "popupTitle":  "Desbloqueá esta función con Pro",
                 "popupSub":  "Estás viendo una demo — con el plan Pro queda 100% funcional.",
                 "benefit":  {

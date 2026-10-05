@@ -1308,6 +1308,10 @@
                         "myAccount":  "我的账户"
                     },
     "pro":  {
+                "bannerTitle":  "升级到 Pro",
+                "bannerSub":  "解锁音乐机器人、音效板、剪辑标记等功能。",
+                "bannerBadge":  "每月 US$3 起",
+                "bannerClose":  "关闭",
                 "popupTitle":  "使用 Pro 解锁此功能",
                 "popupSub":  "你正在查看演示版——升级到 Pro 即可完全使用。",
                 "benefit":  {

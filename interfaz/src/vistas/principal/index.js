@@ -37,6 +37,7 @@ import { reproducirEventoActivo, reproducirEvento } from '../../componentes/even
 import { iniciarBotonEfectosEvento } from './efectos-evento.js';
 import { iniciarAvisoConexionFallida } from './aviso-conexion-fallida.js';
 import { iniciarAvisoCodigoDescuento } from './aviso-codigo-descuento.js';
+import { iniciarBannerPro } from './banner-pro.js';
 import { iniciarRotacionAnuncio } from './anuncio-rotativo.js';
 import { copyToClipboard } from './utils-app.js';
 import {
@@ -207,6 +208,7 @@ function mostrarVersionApp() {
 
 function iniciarArranque() {
   iniciarRotacionAnuncio('chatAdSlot', 20000);
+  iniciarBannerPro();
   iniciarCapturaErroresCliente();
   iniciarI18nApp();
   iniciarModalesYAvisos();

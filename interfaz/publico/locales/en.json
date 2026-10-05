@@ -1308,6 +1308,10 @@
                         "myAccount":  "My account"
                     },
     "pro":  {
+                "bannerTitle":  "Upgrade to Pro",
+                "bannerSub":  "to unlock the music bot, soundpad, clips and more.",
+                "bannerBadge":  "From US$3/mo",
+                "bannerClose":  "Close",
                 "popupTitle":  "Unlock this feature with Pro",
                 "popupSub":  "You\u0027re viewing a demo — with the Pro plan it\u0027s fully functional.",
                 "benefit":  {

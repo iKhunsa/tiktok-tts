@@ -1308,6 +1308,10 @@
                         "myAccount":  "マイアカウント"
                     },
     "pro":  {
+                "bannerTitle":  "Proにアップグレード",
+                "bannerSub":  "ミュージックボット、サウンドパッド、クリップなどが使えます。",
+                "bannerBadge":  "月額US$3から",
+                "bannerClose":  "閉じる",
                 "popupTitle":  "Proでこの機能をアンロック",
                 "popupSub":  "現在デモを表示中です — Proプランで完全に使えるようになります。",
                 "benefit":  {

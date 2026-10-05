@@ -1308,6 +1308,10 @@
                         "myAccount":  "Mein Konto"
                     },
     "pro":  {
+                "bannerTitle":  "Auf Pro upgraden",
+                "bannerSub":  "und Musikbot, Soundpad, Clips und mehr freischalten.",
+                "bannerBadge":  "Ab 3 US$/Monat",
+                "bannerClose":  "Schließen",
                 "popupTitle":  "Diese Funktion mit Pro freischalten",
                 "popupSub":  "Du siehst gerade eine Demo — mit dem Pro-Plan ist sie voll funktionsfähig.",
                 "benefit":  {
