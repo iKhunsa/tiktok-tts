@@ -209,6 +209,10 @@
              },
     "settings":  {
                      "voice":  "Голос и аудио",
+                     "voiceDescription":  "Настройте, как и что я говорю.",
+                     "voiceSelector":  "Выбор голоса",
+                     "languageFilters":  "Языковые фильтры",
+                     "announcementEndings":  "Окончания оповещений",
                      "shortcuts":  "Горячие клавиши",
                      "channels":  "Связанные каналы",
                      "advanced":  "Расширенные настройки",
