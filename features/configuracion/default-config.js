@@ -32,7 +32,7 @@ const DEFAULT_CONFIG = {
   ttsReadNonFollowers: true,
   // Rust Chat Guard (features/moderacion/rust-guard/): segunda capa de moderacion
   // de contenido, por cuenta. shadow = solo registra discrepancias; enforce = aplica.
-  rustGuardEnabled: false,
+  rustGuardEnabled: true,
   rustGuardMode: 'shadow',
   // Nivel (SOFT/BALANCED/STRICT/CUSTOM del motor), idiomas del filtro (todos por defecto)
   // y detectores del nivel 'custom'. Ver core/chat-guard-options.js.

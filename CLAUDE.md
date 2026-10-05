@@ -178,7 +178,7 @@ está migrado un archivo por función (`features/moderacion/store/*.js`) sobre u
   seguidores sobre la misma tabla.
 
 **Rust Chat Guard (`features/moderacion/rust-guard/`)** — segunda capa de contenido,
-apagada por defecto (`rustGuardEnabled: false`, `rustGuardMode: 'shadow'|'enforce'`, por
+encendida por defecto en shadow (`rustGuardEnabled: true`, `rustGuardMode: 'shadow'|'enforce'`, por
 cuenta). Corre dentro de `moderacionPolicy.review` DESPUÉS del guard JS y solo endurece
 (BLOCK→drop, REVIEW→mute). Fail-open: cualquier fallo/paquete ausente conserva el veredicto
 JS y loguea `moderacion.rust.*` (nunca silencioso). Paquete `@tiklivetts/rust-chat-guard`

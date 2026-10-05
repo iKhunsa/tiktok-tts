@@ -26,11 +26,11 @@ async function call(method, url, body) {
   return { status: response.status, body: await response.json() };
 }
 
-test('GET /api/chat-guard/status: apagado por defecto, nivel equilibrado y todos los idiomas', async () => {
+test('GET /api/chat-guard/status: encendido por defecto en shadow, nivel equilibrado y todos los idiomas', async () => {
   const { status, body } = await call('GET', '/api/chat-guard/status');
   assert.equal(status, 200);
-  assert.equal(body.state, 'off');
-  assert.equal(body.enabled, false);
+  assert.ok(['unavailable', 'ok'].includes(body.state), body.state);
+  assert.equal(body.enabled, true);
   assert.equal(body.mode, 'shadow');
   assert.equal(body.level, 'balanced');
   assert.equal(body.langs.length, 19);

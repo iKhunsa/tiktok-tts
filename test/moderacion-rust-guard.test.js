@@ -214,7 +214,7 @@ test('buildRustConfig: respeta enabled y enforce; un modo invalido cae a shadow'
 test('config: validators y defaults de las claves nuevas', () => {
   const { CONFIG_VALIDATORS } = require('../features/configuracion/validators');
   const { DEFAULT_CONFIG } = require('../features/configuracion/default-config');
-  assert.equal(DEFAULT_CONFIG.rustGuardEnabled, false);
+  assert.equal(DEFAULT_CONFIG.rustGuardEnabled, true);
   assert.equal(DEFAULT_CONFIG.rustGuardMode, 'shadow');
   assert.equal(CONFIG_VALIDATORS.rustGuardEnabled('si'), false);
   assert.equal(CONFIG_VALIDATORS.rustGuardMode('enforce'), true);
