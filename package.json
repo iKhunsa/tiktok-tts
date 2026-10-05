@@ -34,6 +34,9 @@
     "directories": {
       "output": "release-output"
     },
+    "asarUnpack": [
+      "node_modules/@tiklivetts/rust-chat-guard*/**/*.node"
+    ],
     "win": {
       "target": "nsis",
       "icon": "tray-icon.ico",
@@ -115,6 +118,9 @@
       "!node_modules/bufferutil/build/Release/*.pdb",
       "!node_modules/utf-8-validate/build/Release/*.pdb"
     ]
+  },
+  "optionalDependencies": {
+    "@tiklivetts/rust-chat-guard": "0.2.0"
   },
   "dependencies": {
     "@aptabase/electron": "^0.3.1",

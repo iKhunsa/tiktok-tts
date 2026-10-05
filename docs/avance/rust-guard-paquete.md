@@ -57,12 +57,17 @@ del adaptador; no incluye ingestión de red ni renderizado Electron.
 
 ## Empaquetado Electron
 
-El cambio que debe aplicarse **cuando el paquete esté publicado** es:
+**Aplicado el 2026-10-05 con 0.2.0 publicado en GitHub Packages** (`@tiklivetts/rust-chat-guard`
+y `@tiklivetts/rust-chat-guard-win32-x64-msvc`, tag `v0.2.0` del repo del motor). La app empaquetada con
+`electron-builder --dir` carga el motor desde `app.asar.unpacked` con estado `ok`. Para instalar en local hace
+falta `NODE_AUTH_TOKEN` (el `.npmrc` lo lee de la variable); el CI usa `TIKLIVETTS_PACKAGES_TOKEN`.
+
+El cambio original, con la versión ya actualizada a 0.2.0:
 
 ```json
 {
   "optionalDependencies": {
-    "@tiklivetts/rust-chat-guard": "0.1.0"
+    "@tiklivetts/rust-chat-guard": "0.2.0"
   },
   "build": {
     "asarUnpack": [
