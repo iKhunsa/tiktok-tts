@@ -1424,13 +1424,13 @@
                                     "truncated":  "Mostrate {shown} su {total}. Usa la ricerca per vedere il resto.",
                                     "added":  "Parola aggiunta",
                                     "removed":  "Parola rimossa",
-                                    "import":  "Import",
-                                    "export":  "Export",
-                                    "clear":  "Clear",
-                                    "clearConfirm":  "Clear the {n} blocked words? This cannot be undone.",
-                                    "imported":  "{n} words imported",
-                                    "shareName":  "Share blocked words",
-                                    "shareHint":  "Anonymously share your blocked words to improve the filter. You can turn this off anytime."
+                                    "import":  "Importa",
+                                    "export":  "Esporta",
+                                    "clear":  "Svuota",
+                                    "clearConfirm":  "Svuotare le {n} parole bloccate? Non si può annullare.",
+                                    "imported":  "{n} parole importate",
+                                    "shareName":  "Condividi il mio elenco di parole bloccate",
+                                    "shareHint":  "Invia in forma anonima le parole del tuo elenco, senza il tuo nome né quello dei tuoi spettatori, per migliorare il filtro di moderazione. Vengono usate solo le parole bloccate da più persone. È disattivato finché non lo attivi e puoi spegnerlo quando vuoi."
                                 },
                       "status":  {
                                      "title":  "Stato del filtro",

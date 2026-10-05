@@ -1424,13 +1424,13 @@
                                     "truncated":  "{total} ä»¶ä¸­ {shown} ä»¶ã‚’è¡¨ç¤ºä¸­ã€‚æ®‹ã‚Šã¯æ¤œç´¢ã§ç¢ºèªã—ã¦ãã ã•ã„ã€‚",
                                     "added":  "å˜èªžã‚’è¿½åŠ ã—ã¾ã—ãŸ",
                                     "removed":  "å˜èªžã‚’å‰Šé™¤ã—ã¾ã—ãŸ",
-                                    "import":  "Import",
-                                    "export":  "Export",
-                                    "clear":  "Clear",
-                                    "clearConfirm":  "Clear the {n} blocked words? This cannot be undone.",
-                                    "imported":  "{n} words imported",
-                                    "shareName":  "Share blocked words",
-                                    "shareHint":  "Anonymously share your blocked words to improve the filter. You can turn this off anytime."
+                                    "import":  "インポート",
+                                    "export":  "エクスポート",
+                                    "clear":  "空にする",
+                                    "clearConfirm":  "ブロックワード {n} 件をすべて空にしますか？この操作は元に戻せません。",
+                                    "imported":  "{n} 件のワードをインポートしました",
+                                    "shareName":  "ブロックワードのリストを共有する",
+                                    "shareHint":  "あなたの名前や視聴者の名前を含めず、リストの単語を匿名で送信して、モデレーションフィルターの改善に役立てます。複数の人がブロックしている単語のみが使われます。オンにするまでオフで、いつでもオフにできます。"
                                 },
                       "status":  {
                                      "title":  "ãƒ•ã‚£ãƒ«ã‚¿ãƒ¼ã®çŠ¶æ…‹",

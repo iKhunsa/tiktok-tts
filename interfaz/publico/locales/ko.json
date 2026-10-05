@@ -1424,13 +1424,13 @@
                                     "truncated":  "{total}ê°œ ì¤‘ {shown}ê°œ í‘œì‹œ ì¤‘. ë‚˜ë¨¸ì§€ëŠ” ê²€ìƒ‰ìœ¼ë¡œ í™•ì¸í•˜ì„¸ìš”.",
                                     "added":  "ë‹¨ì–´ë¥¼ ì¶”ê°€í–ˆìŠµë‹ˆë‹¤",
                                     "removed":  "ë‹¨ì–´ë¥¼ ì‚­ì œí–ˆìŠµë‹ˆë‹¤",
-                                    "import":  "Import",
-                                    "export":  "Export",
-                                    "clear":  "Clear",
-                                    "clearConfirm":  "Clear the {n} blocked words? This cannot be undone.",
-                                    "imported":  "{n} words imported",
-                                    "shareName":  "Share blocked words",
-                                    "shareHint":  "Anonymously share your blocked words to improve the filter. You can turn this off anytime."
+                                    "import":  "가져오기",
+                                    "export":  "내보내기",
+                                    "clear":  "비우기",
+                                    "clearConfirm":  "차단 단어 {n}개를 모두 비울까요? 되돌릴 수 없습니다.",
+                                    "imported":  "단어 {n}개를 가져왔습니다",
+                                    "shareName":  "내 차단 단어 목록 공유",
+                                    "shareHint":  "이름이나 시청자 이름 없이 목록의 단어를 익명으로 전송하여 조정 필터를 개선합니다. 여러 사람이 차단한 단어만 사용됩니다. 켜기 전까지는 꺼져 있으며 언제든지 끌 수 있습니다."
                                 },
                       "status":  {
                                      "title":  "í•„í„° ìƒíƒœ",

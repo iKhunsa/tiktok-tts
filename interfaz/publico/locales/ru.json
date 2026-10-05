@@ -1424,13 +1424,13 @@
                                     "truncated":  "ÐŸÐ¾ÐºÐ°Ð·Ð°Ð½Ð¾ {shown} Ð¸Ð· {total}. Ð˜ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÐ¹Ñ‚Ðµ Ð¿Ð¾Ð¸ÑÐº, Ñ‡Ñ‚Ð¾Ð±Ñ‹ ÑƒÐ²Ð¸Ð´ÐµÑ‚ÑŒ Ð¾ÑÑ‚Ð°Ð»ÑŒÐ½Ð¾Ðµ.",
                                     "added":  "Ð¡Ð»Ð¾Ð²Ð¾ Ð´Ð¾Ð±Ð°Ð²Ð»ÐµÐ½Ð¾",
                                     "removed":  "Ð¡Ð»Ð¾Ð²Ð¾ ÑƒÐ´Ð°Ð»ÐµÐ½Ð¾",
-                                    "import":  "Import",
-                                    "export":  "Export",
-                                    "clear":  "Clear",
-                                    "clearConfirm":  "Clear the {n} blocked words? This cannot be undone.",
-                                    "imported":  "{n} words imported",
-                                    "shareName":  "Share blocked words",
-                                    "shareHint":  "Anonymously share your blocked words to improve the filter. You can turn this off anytime."
+                                    "import":  "Импорт",
+                                    "export":  "Экспорт",
+                                    "clear":  "Очистить",
+                                    "clearConfirm":  "Очистить все заблокированные слова ({n})? Это действие нельзя отменить.",
+                                    "imported":  "Импортировано слов: {n}",
+                                    "shareName":  "Делиться моим списком заблокированных слов",
+                                    "shareHint":  "Анонимно отправляет слова из вашего списка — без вашего имени и имён зрителей — чтобы улучшить фильтр модерации. Используются только слова, которые блокируют несколько человек. Пока вы не включите, функция выключена, и её можно отключить в любой момент."
                                 },
                       "status":  {
                                      "title":  "Ð¡Ð¾ÑÑ‚Ð¾ÑÐ½Ð¸Ðµ Ñ„Ð¸Ð»ÑŒÑ‚Ñ€Ð°",
