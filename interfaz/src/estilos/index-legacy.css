@@ -762,15 +762,24 @@
     .voz-audio-heading-copy h3 { margin: 0; color: var(--text); font: 600 var(--text-lg)/1.25 'Inter', sans-serif; }
     .voz-audio-heading-copy p { margin: var(--space-1) 0 0; color: var(--text-muted); font: 400 var(--text-sm)/1.45 'Inter', sans-serif; }
 
+    #settingsSectionVoice { container: voz-audio / inline-size; }
+
     .voz-audio-layout {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
-      align-items: start;
+      grid-template-columns: minmax(0, 1fr);
       gap: var(--space-4);
       min-width: 0;
     }
 
-    .voz-audio-column { display: grid; gap: var(--space-4); min-width: 0; }
+    .voz-audio-column { display: contents; }
+
+    /* Ancho suficiente: Voz y Filtros apilados a la izquierda, Finales a la derecha a toda la altura. */
+    @container voz-audio (min-width: 740px) {
+      .voz-audio-layout { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .voz-audio-layout > .voz-audio-card { grid-column: 1; grid-row: 1; }
+      .voz-audio-column > .voz-audio-card:first-child { grid-column: 1; grid-row: 2; }
+      .voz-audio-column > .voz-audio-card:last-child { grid-column: 2; grid-row: 1 / span 2; }
+    }
 
     .voz-audio-card {
       display: flex;
@@ -2946,7 +2955,7 @@
     .atajos-tabs .seg-btn:focus-visible { position: relative; z-index: 1; outline: 2px solid var(--text); outline-offset: -3px; }
     .atajos-tabs .icon-inline { width: 17px; height: 17px; flex: 0 0 auto; }
 
-    .atajos-panel { display: block; padding: 0; overflow: hidden; }
+    .atajos-panel { display: block; padding: 0; overflow: hidden; container: atajos / inline-size; }
     .atajos-tab-panel { display: grid; }
     .atajos-tab-panel[hidden] { display: none; }
 
@@ -3069,12 +3078,18 @@
       .atajos-pause-button:hover { background: var(--brand-a15); }
     }
 
-    @media (max-width: 760px) {
+    /* Compacto: nombre y atajo activo en una línea, campo + borrar en la siguiente, presets como chips. */
+    @container atajos (max-width: 660px) {
       .atajos-row,
-      .atajos-playback-row { grid-template-columns: 1fr; gap: var(--space-3); padding: var(--space-4); }
+      .atajos-playback-row { grid-template-columns: minmax(0, 1fr); gap: var(--space-2); padding: var(--space-3) var(--space-4); }
+      .atajos-action { gap: var(--space-2); }
+      .atajos-action-icon { width: 16px; height: 16px; }
+      .atajos-action-copy { display: flex; flex: 1; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-1) var(--space-2); }
+      .atajos-hint { margin-top: 0; }
+      .atajos-hint [data-i18n="conn.shortcutHint"] { display: none; }
       .atajos-controls { grid-template-columns: minmax(0, 1fr) 40px; }
-      .atajos-presets { grid-column: 1 / -1; }
-      .atajos-preset { flex: 1 1 120px; }
+      .atajos-presets { grid-column: 1 / -1; gap: var(--space-1-5); }
+      .atajos-preset { flex: 0 0 auto; min-height: 32px; padding: 0 var(--space-3); }
       .atajos-pause-button { width: 100%; justify-self: stretch; }
     }
 
