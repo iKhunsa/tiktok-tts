@@ -11,6 +11,12 @@ require.cache[rutaElectron] = {
   id: rutaElectron, filename: rutaElectron, loaded: true,
   exports: { ipcMain: { on: (canal, fn) => { listeners[canal] = fn; }, handle() {} } },
 };
+// uiohook-napi es nativo y aborta el proceso en Linux sin display (CI): se stubea.
+const rutaUiohook = require.resolve('../electron-shell/uiohook');
+require.cache[rutaUiohook] = {
+  id: rutaUiohook, filename: rutaUiohook, loaded: true,
+  exports: { registerUiohookShortcut() {}, unregisterUiohookShortcut() {}, isUiohookActive: () => false },
+};
 const { attachIpcBridge } = require('../electron-shell/ipc-bridge');
 
 const bus = new EventEmitter();
