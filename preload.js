@@ -25,6 +25,7 @@ function off(channel, cb) {
 //  - ui:discord-* → entradas a Discord (payload: origen). ui:view-opened, ui:overlay-copied,
 //    ui:promo-*, ui:plans-opened, ui:news-opened, etc. → uso de secciones (payload: valor de lista cerrada,
 //    la valida electron-shell/aptabase.js).
+const MAX_PAYLOAD = 24; // mismo tope que electron-shell/ipc-bridge.js
 const TRACKABLE_EVENTS = new Set([
   'tts:skipped', 'tts:queue-overflow', 'ui:language-set', 'ui:discord-opened', 'ui:discord-joined',
   'ui:view-opened', 'ui:overlay-copied', 'ui:promo-code-opened', 'ui:promo-code-copied', 'ui:promo-plans-clicked',
@@ -38,7 +39,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   trackEvent: (name, payload) => {
     if (!TRACKABLE_EVENTS.has(name)) return;
     // Solo se reenvía payload cuando es un string corto (idioma, origen, vista...).
-    if (typeof payload === 'string') ipcRenderer.send('telemetry:track', name, payload.slice(0, 24));
+    if (typeof payload === 'string') ipcRenderer.send('telemetry:track', name, payload.slice(0, MAX_PAYLOAD));
     else ipcRenderer.send('telemetry:track', name);
   },
   onMarkClip: (cb) => on('mark-clip', () => cb()),

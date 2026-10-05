@@ -9,6 +9,9 @@ const SPECIAL_PAUSE_SHORTCUTS = new Set(['MediaPlayPause', 'F8', 'F9', 'F10', 'F
 const TTS_SHORTCUT_ACTIONS = new Set(['pause', 'skip', 'clear', 'musicPause', 'musicSkip']);
 // Lista blanca por seguridad: el renderer no puede mandar cualquier nombre
 // de evento al bus.
+// Payload del renderer: un valor corto de lista cerrada (origen, vista...), que
+// electron-shell/aptabase.js valida; el tope corta cualquier texto libre.
+const MAX_PAYLOAD_RENDERER = 24;
 const RENDERER_TELEMETRY_EVENTS = new Set([
   'tts:skipped', 'tts:queue-overflow', 'ui:language-set', 'ui:discord-opened', 'ui:discord-joined',
   'ui:view-opened', 'ui:overlay-copied', 'ui:promo-code-opened', 'ui:promo-code-copied', 'ui:promo-plans-clicked',
@@ -67,7 +70,7 @@ function attachIpcBridge({ app, bus, logger, getMainWindow, globalShortcut }) {
 
   ipcMain.on('telemetry:track', (_event, name, payload) => {
     if (!RENDERER_TELEMETRY_EVENTS.has(name)) return;
-    bus.emit(name, typeof payload === 'string' ? payload.slice(0, 24) : undefined);
+    bus.emit(name, typeof payload === 'string' ? payload.slice(0, MAX_PAYLOAD_RENDERER) : undefined);
   });
 
   // ── TTS shortcuts (pause / skip / clear) ────────────────────────────────

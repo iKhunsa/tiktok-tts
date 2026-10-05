@@ -1,7 +1,7 @@
 /**
  * Primer banner del chat (Halloween): en vez de ir al Discord, abre un modal con
  * el codigo de descuento para copiarlo y un boton a los planes, donde se pega al
- * pagar. Los demas banners siguen yendo al Discord.
+ * pagar. Los demas banners siguen yendo al Discord (analitica: `chat_banner_<n>`).
  */
 import { abrirPopupPlanes } from '../../componentes/popup-planes.js';
 import { copyToClipboard } from './utils-app.js';
@@ -13,6 +13,12 @@ const MS_ICONO_COPIADO = 1500;
 
 const ICONO_COPIAR = 'icons/content_copy.svg';
 const ICONO_COPIADO = 'icons/check_circle.svg';
+
+// Posicion (1..n) del banner visible dentro de data-ads del slot; 0 si no esta.
+function numeroBanner(enlace, capa) {
+  const ads = JSON.parse(enlace.closest('#chatAdSlot').dataset.ads || '[]');
+  return ads.findIndex((src) => capa.src.endsWith(src)) + 1;
+}
 
 export function iniciarAvisoCodigoDescuento() {
   const overlay = document.getElementById('promoCodeModal');
@@ -32,9 +38,7 @@ export function iniciarAvisoCodigoDescuento() {
     const activa = enlace.querySelector('.ad-layer.is-active');
     if (!activa) return;
     if (!activa.src.includes(BANNER_CODIGO)) {
-      // Banners que van al Discord: se distinguen por su posición en data-ads.
-      const ads = JSON.parse(document.getElementById('chatAdSlot').dataset.ads || '[]');
-      const n = ads.findIndex((src) => activa.src.endsWith(src)) + 1;
+      const n = numeroBanner(enlace, activa);
       if (n > 0) trackUi('ui:discord-joined', `chat_banner_${n}`);
       return;
     }
