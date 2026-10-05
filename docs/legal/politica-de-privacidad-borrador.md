@@ -24,7 +24,7 @@ Las palabras se envían solo a nuestro servidor propio de telemetría (Hostinger
 
 ## §5 Cuánto tiempo guardamos los datos — agregar viñeta
 
-- **Palabras bloqueadas compartidas:** hasta **365 días** asociadas a tu instalación, igual que el resto de la telemetría; después se borran automáticamente.
+- **Palabras bloqueadas compartidas:** cada palabra queda asociada a tu instalación hasta **365 días después del último envío que la incluya**; después se borra automáticamente. Mientras la conserves en tu lista, el envío semanal la renueva. El recuento semanal agregado (sin asociación a ninguna instalación) también se borra a los 365 días.
 
 ## §6 Tus derechos — agregar / ajustar
 

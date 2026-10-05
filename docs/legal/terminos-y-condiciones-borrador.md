@@ -4,7 +4,7 @@
 
 ## §7 (lista de datos tratados) — agregar un inciso
 
-g) **Palabras de tu lista de palabras bloqueadas**. Se envían seudonimizadas (asociadas a un identificador técnico de tu instalación), sin tu nombre ni el de tus espectadores ni mensajes del chat, para mejorar el filtro de moderación. Solo se usan para mejorar el filtro las palabras bloqueadas por varios usuarios; se conservan hasta 365 días. Al aceptar estos Términos aceptas este tratamiento, basado también en el interés legítimo de mejorar el filtro. Puedes pedir su borrado a info@tiklivetts.es o por Discord; el detalle está en la Política de Privacidad.
+g) **Palabras de tu lista de palabras bloqueadas**. Se envían seudonimizadas (asociadas a un identificador técnico de tu instalación), sin tu nombre ni el de tus espectadores ni mensajes del chat, para mejorar el filtro de moderación. Solo se usan para mejorar el filtro las palabras bloqueadas por varios usuarios; se conservan hasta 365 días desde el último envío que las incluya. Al aceptar estos Términos aceptas este tratamiento, basado también en el interés legítimo de mejorar el filtro. Puedes pedir su borrado a info@tiklivetts.es o por Discord; el detalle está en la Política de Privacidad.
 
 ## Nota
 

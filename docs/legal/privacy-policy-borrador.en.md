@@ -24,7 +24,7 @@ Words are sent only to our own telemetry server (Hostinger, Manchester). They ar
 
 ## §5 How long we keep data — add a bullet
 
-- **Shared blocked words:** up to **365 days** linked to your installation, like the rest of the telemetry; they are then deleted automatically.
+- **Shared blocked words:** each word stays linked to your installation for up to **365 days after the last submission that includes it**; it is then deleted automatically. While you keep it in your list, the weekly submission renews it. The aggregated weekly count (not linked to any installation) is also deleted after 365 days.
 
 ## §6 Your rights — add / adjust
 
