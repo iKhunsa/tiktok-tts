@@ -135,3 +135,10 @@ test('créditos se redibuja al cargar el idioma para no dejar claves a la vista'
   const fuente = leer('interfaz/overlay-creditos.js');
   assert.match(fuente, /cargarLocaleOverlay\(\)\.then\(\(\) => \{\s*aplicarI18nOverlay\(\);\s*renderTrack\(\);/);
 });
+
+test('la vista previa del chat muestra las 4 plataformas y atenúa las excluidas por el filtro', () => {
+  const js = readFileSync(resolve(raiz, 'interfaz/overlay-chat.js'), 'utf8');
+  assert.match(js, /if \(!plataformaVisible && !vistaPrevia\) return;/, 'fuera de la vista previa (OBS) se sigue filtrando');
+  assert.match(js, /if \(!plataformaVisible\) elemento\.classList\.add\('msg-excluido'\)/);
+  assert.match(readFileSync(resolve(raiz, 'interfaz/overlay-chat.css'), 'utf8'), /\.msg-excluido \{ filter: /);
+});

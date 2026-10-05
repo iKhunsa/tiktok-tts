@@ -142,11 +142,14 @@ function ocultarTras(elemento, segundos) {
 }
 
 function addMessage(mensaje) {
-  if (!cfg.platforms[mensaje.platform]) return;
+  const plataformaVisible = cfg.platforms[mensaje.platform];
+  if (!plataformaVisible && !vistaPrevia) return;
   const rol = rolDe(mensaje);
   if (!roles[rol].mostrar) return;
 
   const elemento = crearMensaje(mensaje, rol);
+  // Vista previa: las 4 plataformas se ven siempre; la que el filtro excluye sale atenuada.
+  if (!plataformaVisible) elemento.classList.add('msg-excluido');
   container.appendChild(elemento);
   if (cfg.ocultarTras > 0 && !vistaPrevia) ocultarTras(elemento, cfg.ocultarTras);
   while (container.children.length > cfg.maxmsgs) container.removeChild(container.firstChild);
