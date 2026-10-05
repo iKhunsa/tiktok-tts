@@ -1425,13 +1425,7 @@
                                     "truncated":  "Affichage de {shown} sur {total}. Utilisez la recherche pour voir le reste.",
                                     "added":  "Mot ajouté",
                                     "removed":  "Mot retiré",
-                                    "import":  "Importer",
-                                    "export":  "Exporter",
-                                    "clear":  "Vider",
-                                    "clearConfirm":  "Vider les {n} mots bloqués ? Cette action est irréversible.",
-                                    "imported":  "{n} mots importés",
-                                    "shareName":  "Partager ma liste de mots bloqués",
-                                    "shareHint":  "Envoie de façon anonyme les mots de votre liste, sans votre nom ni celui de vos spectateurs, pour améliorer le filtre de modération. Seuls les mots bloqués par plusieurs personnes sont utilisés. Désactivé tant que vous ne l'activez pas, et vous pouvez l'éteindre à tout moment."
+                                    "export":  "Exporter"
                                 },
                       "status":  {
                                      "title":  "État du filtre",

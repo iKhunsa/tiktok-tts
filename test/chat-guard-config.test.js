@@ -14,6 +14,9 @@ test('defaults: nivel equilibrado y todos los idiomas activos', () => {
   assert.equal(DEFAULT_CONFIG.chatGuardLevel, 'balanced');
   assert.deepEqual(DEFAULT_CONFIG.chatGuardLangs, CHAT_GUARD_LOCALES);
   assert.equal(CONFIG_VALIDATORS.chatGuardLangs(DEFAULT_CONFIG.chatGuardLangs), true);
+  assert.equal(DEFAULT_CONFIG.blockedWordsTelemetryDisabled, false);
+  assert.equal(CONFIG_VALIDATORS.blockedWordsTelemetryDisabled(true), true);
+  assert.equal('blockedWordsTelemetryEnabled' in DEFAULT_CONFIG, false);
 });
 
 test('validador chatGuardLevel: solo los 4 niveles', () => {

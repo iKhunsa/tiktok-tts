@@ -1425,13 +1425,7 @@
                                     "truncated":  "{shown} von {total} angezeigt. Nutze die Suche für den Rest.",
                                     "added":  "Wort hinzugefügt",
                                     "removed":  "Wort entfernt",
-                                    "import":  "Importieren",
-                                    "export":  "Exportieren",
-                                    "clear":  "Leeren",
-                                    "clearConfirm":  "Alle {n} blockierten Wörter leeren? Das lässt sich nicht rückgängig machen.",
-                                    "imported":  "{n} Wörter importiert",
-                                    "shareName":  "Meine Liste blockierter Wörter teilen",
-                                    "shareHint":  "Sendet die Wörter deiner Liste anonym, ohne deinen Namen und ohne die Namen deiner Zuschauer, um den Moderationsfilter zu verbessern. Es werden nur Wörter verwendet, die mehrere Personen blockieren. Standardmäßig ist es aus, bis du es aktivierst, und du kannst es jederzeit ausschalten."
+                                    "export":  "Exportieren"
                                 },
                       "status":  {
                                      "title":  "Filterstatus",

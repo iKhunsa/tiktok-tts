@@ -14,7 +14,7 @@ function describeChatGuard({ bus, rustGuard, blockedWords, allowedWords }) {
     level: config.chatGuardLevel,
     langs: config.chatGuardLangs,
     custom: config.chatGuardCustom,
-    blockedWordsTelemetryEnabled: config.blockedWordsTelemetryEnabled === true,
+    blockedWordsTelemetryEnabled: config.blockedWordsTelemetryDisabled !== true,
     engineVersion: engine.version,
     dictionaryVersion: engine.dictionaryVersion,
     blockedCount: blockedWords.size,

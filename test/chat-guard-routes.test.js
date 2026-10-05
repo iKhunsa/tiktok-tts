@@ -95,7 +95,7 @@ test('estado: ok con motor vivo, con versiones y lista permitida', () => {
   const ctx = setup({ config: { rustGuardEnabled: true, rustGuardMode: 'enforce', chatGuardLevel: 'strict', chatGuardLangs: ['es'] } });
   post(allowWord(ctx), 'hola');
   assert.deepEqual(describeChatGuard(ctx), {
-    state: 'ok', enabled: true, mode: 'enforce', level: 'strict', langs: ['es'], custom: undefined, blockedWordsTelemetryEnabled: false,
+    state: 'ok', enabled: true, mode: 'enforce', level: 'strict', langs: ['es'], custom: undefined, blockedWordsTelemetryEnabled: true,
     engineVersion: '0.3.1', dictionaryVersion: '2026-09-30', blockedCount: 1, allowedWords: ['hola'],
   });
 });

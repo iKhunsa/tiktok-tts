@@ -11,8 +11,8 @@ const { createSync, WEEK_MS, DEBOUNCE_MS } = require('../features/telemetria/con
 
 const DAY = 24 * 60 * 60 * 1000;
 
-function harness({ enabled = true, runtime = true, words = ['tonto', 'Grosería'] } = {}) {
-  const state = { config: { blockedWordsTelemetryEnabled: enabled, ttsVoiceLang: 'es-MX' }, words, clock: 1_000_000, timers: [], sent: [] };
+function harness({ technicalEnabled = true, runtime = true, words = ['tonto', 'Grosería'] } = {}) {
+  const state = { config: { blockedWordsTelemetryDisabled: !technicalEnabled, ttsVoiceLang: 'es-MX' }, words, clock: 1_000_000, timers: [], sent: [] };
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'bw-'));
   state.file = path.join(dir, 'a.json');
   const bus = {
@@ -57,8 +57,8 @@ test('hash estable e independiente del orden de entrada', () => {
   assert.notEqual(a, listHash(sanitizeWords(['uno'])));
 });
 
-test('apagado => cero envios y cero estado', () => {
-  const h = harness({ enabled: false });
+test('llave tecnica apagada => cero envios y cero estado', () => {
+  const h = harness({ technicalEnabled: false });
   h.sync.check(); h.sync.onListChanged(); h.sync.send();
   assert.equal(h.sent.length, 0);
   assert.equal(h.timers.length, 0);
@@ -120,7 +120,7 @@ test('apagar el interruptor durante el debounce cancela el envio', () => {
   h.sync.check();
   h.words = ['otra'];
   h.sync.onListChanged();
-  h.config.blockedWordsTelemetryEnabled = false;
+  h.config.blockedWordsTelemetryDisabled = true;
   h.sync.check(); // config:actualizado con la clave
   h.fire();
   assert.equal(h.sent.length, 1);

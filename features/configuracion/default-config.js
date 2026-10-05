@@ -51,9 +51,10 @@ const DEFAULT_CONFIG = {
   // features Pro quedan detras del plan y aparece la UI de cuenta.
   // Interruptor de panico: apagar revierte al estado conocido sin re-deploy.
   subscriptionsEnabled: false,
-  // Telemetria opt-in: comparte (sin nombre ni espectadores) las palabras de la
-  // lista de bloqueadas de la cuenta para mejorar el filtro. Por cuenta, default OFF.
-  blockedWordsTelemetryEnabled: false,
+  // Llave técnica de apagado (true = cero envíos). Por defecto se envía la lista saneada,
+  // sin nombres ni chat. Renombrada desde blockedWordsTelemetryEnabled para que el `false`
+  // que guardó el antiguo interruptor opt-in no deje cuentas apagadas sin querer.
+  blockedWordsTelemetryDisabled: false,
   adminIdentities: {
     tiktok: ['ikhunsa_tiklivetts', 'soykurorai'],
     twitch: ['soykurorai'],

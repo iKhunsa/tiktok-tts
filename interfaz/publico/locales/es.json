@@ -1425,13 +1425,7 @@
                                     "truncated":  "Mostrando {shown} de {total}. Usa el buscador para ver el resto.",
                                     "added":  "Palabra agregada",
                                     "removed":  "Palabra quitada",
-                                    "import":  "Importar",
-                                    "export":  "Exportar",
-                                    "clear":  "Vaciar",
-                                    "clearConfirm":  "¿Vaciar las {n} palabras bloqueadas? No se puede deshacer.",
-                                    "imported":  "{n} palabras importadas",
-                                    "shareName":  "Compartir mi lista de palabras bloqueadas",
-                                    "shareHint":  "Envía de forma anónima las palabras de tu lista, sin tu nombre ni el de tus espectadores, para mejorar el filtro de moderación. Solo se usan las palabras que bloquean varias personas. Está desactivado hasta que lo actives y puedes apagarlo cuando quieras."
+                                    "export":  "Exportar"
                                 },
                       "status":  {
                                      "title":  "Estado del filtro",

@@ -66,6 +66,26 @@ test('reglas de palabra: vacia, larga, frase en permitidas, duplicada y en confl
   assert.deepEqual(visibleWords(['a', 'b', 'c'], '', 2), { items: ['a', 'b'], total: 3, truncated: true });
 });
 
+test('listas de palabras: el render memoizado se rehace al cargar el idioma (nunca queda la clave cruda)', async () => {
+  // Bug real: el primer render ocurria antes de cargar el diccionario con idiomaActual() ya en 'es';
+  // al cargarlo, la clave de cache no cambiaba y el estado vacio quedaba como 'chatGuard.words.emptyBlocked'.
+  const i18n = await import(pathToFileURL(path.join(__dirname, '..', 'interfaz', 'src', 'nucleo', 'i18n', 'i18n.js')).href);
+  const source = fs.readFileSync(path.join(FOLDER, 'word-lists.js'), 'utf8');
+  assert.match(source, /const key = `${versionIdioma()}|/, 'la clave de cache debe incluir versionIdioma()');
+  assert.doesNotMatch(source, /WORD_FALLBACKS|Aún no hay/, 'sin textos de UI escritos a mano en el JS');
+
+  const previousFetch = globalThis.fetch;
+  globalThis.fetch = async () => jsonResponse(200, require('../interfaz/publico/locales/es.json'));
+  try {
+    const before = i18n.versionIdioma();
+    await i18n.cargarIdioma('es');
+    assert.equal(i18n.versionIdioma(), before + 1, 'cada carga de diccionario cambia la version');
+    assert.equal(i18n.t('chatGuard.words.emptyBlocked'), require('../interfaz/publico/locales/es.json').chatGuard.words.emptyBlocked);
+  } finally {
+    globalThis.fetch = previousFetch;
+  }
+});
+
 function fakeApi(overrides = {}) {
   const ok = (data) => ({ ok: true, data, errorKey: '' });
   const status = { state: 'ok', enabled: true, mode: 'shadow', level: 'balanced', langs: [...CHAT_GUARD_LOCALES], custom: { tricks: true, similar: false }, allowedWords: [] };
@@ -177,6 +197,12 @@ test('acciones: removeWord actualiza la lista y avisa si falla', async () => {
   assert.equal(await failing.actions.removeWord('blocked', 'alfa'), false);
   assert.deepEqual(failing.notified, ['errors.chatGuardUnavailable']);
   assert.deepEqual(failing.s.getState().words.blocked, ['alfa', 'zeta']);
+});
+
+test('acciones: exporta la pestaña activa', async () => {
+  const { actions } = await setup({ exportBlockedWords: async () => ({ ok: true, data: ['alfa'], errorKey: '' }) });
+  assert.deepEqual(await actions.exportWords('blocked'), ['alfa']);
+  assert.deepEqual(await actions.exportWords('allowed'), []);
 });
 
 test('acciones: la respuesta del servidor reemplaza el estado y provoca un nuevo render', async () => {

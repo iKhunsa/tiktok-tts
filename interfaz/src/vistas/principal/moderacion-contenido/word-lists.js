@@ -1,9 +1,8 @@
-import { t, idiomaActual, aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
+import { t, versionIdioma, aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
 import { WORD_LISTS, MAX_WORD_LENGTH } from './chat-guard-options.js';
 import { visibleWords } from './word-rules.js';
 
 const TAB_ICON = { blocked: 'icons/block.svg', allowed: 'icons/verified_user.svg' };
-
 const tabMarkup = (list) => `
   <button type="button" class="cg-tab" role="tab" id="cgTab-${list}" data-list="${list}" aria-controls="cgWordsPanel">
     <img class="icon-inline" src="${TAB_ICON[list]}" alt=""><span class="cg-tab-label"></span>
@@ -28,7 +27,10 @@ function buildChip(word, list) {
 export function mountWordLists(container, { store, actions }) {
   container.innerHTML = `
     <div class="cg-subtitle" id="cgWordsTitle" data-i18n="chatGuard.words.title"></div>
-    <div class="cg-tabs" role="tablist" aria-labelledby="cgWordsTitle">${WORD_LISTS.map(tabMarkup).join('')}</div>
+    <div class="cg-tabs-row">
+      <div class="cg-tabs" role="tablist" aria-labelledby="cgWordsTitle">${WORD_LISTS.map(tabMarkup).join('')}</div>
+      <button type="button" class="cfg-btn small" id="cgWordsExport" data-i18n-title="chatGuard.words.export"><img class="icon-inline" src="icons/download.svg" alt=""><span data-i18n="chatGuard.words.export"></span></button>
+    </div>
     <div class="cg-words-panel" id="cgWordsPanel" role="tabpanel">
       <div class="cg-hint" id="cgWordsHelp"></div>
       <div class="cg-hint" id="cgWordsNote" data-i18n="chatGuard.words.allowedSingleWord"></div>
@@ -39,16 +41,6 @@ export function mountWordLists(container, { store, actions }) {
         <button type="submit" class="cfg-btn cg-add-btn"><img class="icon-inline" src="icons/add.svg" alt=""><span data-i18n="chatGuard.words.add"></span></button>
       </form>
       <div class="cg-problem" id="cgWordProblem" role="alert" hidden></div>
-      <div class="cg-word-tools">
-        <input type="file" id="cgWordsImport" accept=".json,.md,.txt,text/plain,application/json" hidden>
-        <button type="button" class="cfg-btn small" id="cgWordsImportButton" data-i18n-title="chatGuard.words.import"><img class="icon-inline" src="icons/upload.svg" alt=""><span data-i18n="chatGuard.words.import"></span></button>
-        <button type="button" class="cfg-btn small" id="cgWordsExport" data-i18n-title="chatGuard.words.export"><img class="icon-inline" src="icons/download.svg" alt=""><span data-i18n="chatGuard.words.export"></span></button>
-        <button type="button" class="cfg-btn small danger" id="cgWordsClear" data-i18n-title="chatGuard.words.clear"><img class="icon-inline" src="icons/delete.svg" alt=""><span data-i18n="chatGuard.words.clear"></span></button>
-      </div>
-      <div class="cg-confirm" id="cgWordsConfirm" hidden role="alertdialog" aria-modal="false" aria-labelledby="cgWordsConfirmText">
-        <span id="cgWordsConfirmText"></span><button type="button" class="cfg-btn small danger" id="cgWordsConfirmYes" data-i18n="chatGuard.words.clear"></button><button type="button" class="cfg-btn small" id="cgWordsConfirmNo" data-i18n="mod.wipeModal.cancel"></button>
-      </div>
-      <label class="cg-check cg-check-compact"><input type="checkbox" id="cgWordsShare" role="switch"><span><strong data-i18n="chatGuard.words.shareName"></strong><br><span class="cg-hint" data-i18n="chatGuard.words.shareHint"></span></span></label>
       <div class="cg-search">
         <img class="icon-inline" src="icons/search.svg" alt="">
         <label class="cg-sr-only" for="cgWordSearch" data-i18n="chatGuard.words.search"></label>
@@ -69,10 +61,6 @@ export function mountWordLists(container, { store, actions }) {
   const chips = container.querySelector('.cg-chips');
   const empty = container.querySelector('.cg-empty');
   const truncated = container.querySelector('#cgWordsTruncated');
-  const importInput = container.querySelector('#cgWordsImport');
-  const confirm = container.querySelector('#cgWordsConfirm');
-  const confirmYes = container.querySelector('#cgWordsConfirmYes');
-  const share = container.querySelector('#cgWordsShare');
   let renderedKey = '';
 
   const currentList = () => store.getState().tab;
@@ -96,29 +84,14 @@ export function mountWordLists(container, { store, actions }) {
     if (await actions.addWord(currentList(), input.value)) input.value = '';
     input.focus();
   });
-  container.querySelector('#cgWordsImportButton').addEventListener('click', () => importInput.click());
-  importInput.addEventListener('change', async () => {
-    const file = importInput.files[0];
-    if (file && file.size <= 1024 * 1024 && await actions.importBlockedWords(await file.text())) input.focus();
-    importInput.value = '';
-  });
   container.querySelector('#cgWordsExport').addEventListener('click', async () => {
-    const words = await actions.exportBlockedWords();
+    const words = await actions.exportWords(currentList());
     if (!words) return;
     const url = URL.createObjectURL(new Blob([JSON.stringify(words, null, 2)], { type: 'application/json' }));
-    const link = Object.assign(document.createElement('a'), { href: url, download: 'blocked-words.json' });
+    const link = Object.assign(document.createElement('a'), { href: url, download: `${currentList()}-words.json` });
     link.click();
     URL.revokeObjectURL(url);
   });
-  container.querySelector('#cgWordsClear').addEventListener('click', () => {
-    confirm.hidden = false;
-    confirm.querySelector('#cgWordsConfirmText').textContent = t('chatGuard.words.clearConfirm', { n: store.getState().words.blocked.length });
-    confirmYes.focus();
-  });
-  confirmYes.addEventListener('click', async () => { if (await actions.clearBlockedWords()) confirm.hidden = true; input.focus(); });
-  container.querySelector('#cgWordsConfirmNo').addEventListener('click', () => { confirm.hidden = true; input.focus(); });
-  confirm.addEventListener('keydown', (event) => { if (event.key === 'Escape') { confirm.hidden = true; input.focus(); } });
-  share.addEventListener('change', () => actions.saveConfig({ blockedWordsTelemetryEnabled: share.checked }));
 
   chips.addEventListener('click', async (event) => {
     const remove = event.target.closest('.cg-chip-remove');
@@ -151,8 +124,9 @@ export function mountWordLists(container, { store, actions }) {
 
   function renderChips(state) {
     const words = state.words[state.tab];
-    // El idioma entra en la clave: al cambiarlo hay que redibujar (aria-label traducido).
-    const key = `${idiomaActual()}|${state.tab}|${state.query}|${words.join('\n')}`;
+    // La version del diccionario entra en la clave: el primer render puede ocurrir antes
+    // de cargar el idioma y, sin esto, el texto vacio y los aria-label quedaban con la clave cruda.
+    const key = `${versionIdioma()}|${state.tab}|${state.query}|${words.join('\n')}`;
     if (key === renderedKey) return;
     renderedKey = key;
     const { items, total, truncated: cut } = visibleWords(words, state.query);
@@ -172,7 +146,6 @@ export function mountWordLists(container, { store, actions }) {
     renderProblem(state);
     renderChips(state);
     if (search.value !== state.query) search.value = state.query;
-    share.checked = state.status?.blockedWordsTelemetryEnabled === true;
   }
 
   render(store.getState());

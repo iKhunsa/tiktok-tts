@@ -70,10 +70,8 @@ Se quitaron de los Términos y la Privacidad (ES y EN) porque el producto aún n
 
 **Importante:** hoy la baja de la publicidad se hace escribiendo a info@tiklivetts.es o eliminando la cuenta. Antes de enviar el **primer correo comercial** debe existir un enlace de baja en el propio correo: lo exigen las leyes de correo comercial (CAN-SPAM, RGPD/ePrivacy, LGPD) aunque el texto no lo prometa.
 
-## 6. BORRADOR pendiente de aprobación del dueño: palabras bloqueadas (telemetría opt-in)
+## 6. BORRADORES pendientes de publicación: palabras bloqueadas
 
-**Estado: BORRADOR, NO PUBLICADO.** La app incluye (rama `telemetria-palabras-cliente`) un interruptor por cuenta, **desactivado por defecto**, que envía la lista de palabras bloqueadas (saneada, sin nombres ni chat) al servidor de telemetría. Los textos vigentes **no** se modificaron. Borradores: `politica-de-privacidad-borrador.md`, `privacy-policy-borrador.en.md`, `terminos-y-condiciones-borrador.md` y `terms-and-conditions-borrador.en.md` (qué se envía, para qué, solo palabras bloqueadas por varios usuarios, base legal = consentimiento por el interruptor, retención 365 días, cómo desactivarlo y pedir el borrado).
+**Estado: BORRADOR, NO PUBLICADO.** La app envía por defecto la lista de palabras bloqueadas saneada, sin nombres ni IDs de espectadores ni mensajes de chat, al servidor propio de telemetría. Para mejorar el filtro solo se usan palabras bloqueadas por varios usuarios. `blockedWordsTelemetryDisabled` (default `false`) queda únicamente como llave técnica de apagado, sin UI. Los textos vigentes **no** se modificaron. Los borradores son `politica-de-privacidad-borrador.md`, `privacy-policy-borrador.en.md`, `terminos-y-condiciones-borrador.md` y `terms-and-conditions-borrador.en.md`: base legal = aceptación de los Términos e interés legítimo, retención de 365 días y borrado por info@tiklivetts.es o Discord.
 
-Antes de activar el envío en producción: (1) el dueño aprueba el texto; (2) un abogado lo revisa; (3) se publica la política y se avisa a usuarios existentes; (4) se despliega la migración del servidor. Decisiones abiertas al final de cada borrador (umbral K, lógica "solo sumar", fecha de entrada en vigor).
-
-**Límite conocido:** un snapshot ya encolado localmente antes de apagar el interruptor puede salir en el siguiente latido (máx. ~5 min); lo posterior no se genera.
+**Obligatorio antes del lanzamiento:** estos cuatro borradores deben publicarse **antes de lanzar una versión con este envío activo**. Además, el dueño debe aprobarlos, un abogado debe revisarlos, se debe avisar a usuarios existentes y debe estar desplegada la migración del servidor. Decisiones abiertas al final de cada borrador (umbral K, lógica "solo sumar", fecha de entrada en vigor).

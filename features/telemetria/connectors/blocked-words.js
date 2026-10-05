@@ -1,13 +1,12 @@
 'use strict';
 
-// Snapshot de la lista de palabras bloqueadas de la cuenta, SOLO si la cuenta
-// activa tiene blockedWordsTelemetryEnabled (opt-in, default false). Con el interruptor
-// apagado no emite nada. Plan: telemetria-tts/docs/PLAN-palabras-bloqueadas.md.
+// Snapshot de la lista de palabras bloqueadas de la cuenta. Activo por defecto;
+// la llave técnica blockedWordsTelemetryDisabled=true lo apaga (cero eventos).
 //
 //  - Lee la lista por el bus ('moderacion:palabras-get'), sin importar moderacion/.
 //  - Envia el estado completo (el servidor solo suma, nunca resta).
-//  - Cuando: al arrancar/cambiar de cuenta/activar el interruptor si pasaron >7
-//    dias; al cambiar la lista (debounce 10 min); y reenvio semanal. Mismo hash
+//  - Cuando: al arrancar/cambiar de cuenta si pasaron >7 dias; al cambiar la
+//    lista (debounce 10 min); y reenvio semanal. Mismo hash
 //    y <7 dias => nada.
 const { accountDataPath } = require('../../../core/account-data-path');
 const { getConfigSnapshot } = require('../../../core/config-snapshot');
@@ -21,7 +20,7 @@ function createSync({ bus, track, isEnabled, stateFile, now = Date.now, setTimer
   let timer = null;
 
   const stop = () => { if (timer) clearTimer(timer); timer = null; };
-  const optedIn = () => getConfigSnapshot(bus).blockedWordsTelemetryEnabled === true;
+  const isAllowed = () => getConfigSnapshot(bus).blockedWordsTelemetryDisabled !== true;
 
   function send() {
     const config = getConfigSnapshot(bus);
@@ -41,18 +40,18 @@ function createSync({ bus, track, isEnabled, stateFile, now = Date.now, setTimer
     writeSyncState(stateFile(), { hash, sentAt: now() });
   }
 
-  // Reevalua: apagado => cero; sin runtime de telemetria no se marca como enviado.
-  const guarded = () => { if (optedIn() && isEnabled()) send(); };
+  // Reevalua: apagado técnico => cero; sin runtime no se marca como enviado.
+  const guarded = () => { if (isAllowed() && isEnabled()) send(); };
 
   function onListChanged() {
     stop();
-    if (!optedIn()) return;
+    if (!isAllowed()) return;
     timer = setTimer(() => { timer = null; guarded(); }, DEBOUNCE_MS);
     if (timer && timer.unref) timer.unref();
   }
 
   function check() {
-    if (!optedIn() || !isEnabled()) return stop();
+    if (!isAllowed() || !isEnabled()) return stop();
     const state = readSyncState(stateFile());
     if (!state || now() - state.sentAt >= WEEK_MS) return send();
     // Lista editada con la app cerrada: se entera por el hash, con el mismo debounce.
@@ -73,7 +72,7 @@ function attach(bus, track, { isEnabled = () => false } = {}) {
   const later = () => setTimeout(sync.check, 0);
   bus.on('account:changed', () => { sync.stop(); later(); }, 'telemetria');
   bus.on('config:actualizado', (e) => {
-    if (e && Array.isArray(e.keysChanged) && e.keysChanged.includes('blockedWordsTelemetryEnabled')) later();
+    if (e && Array.isArray(e.keysChanged) && e.keysChanged.includes('blockedWordsTelemetryDisabled')) later();
   }, 'telemetria');
 }
 

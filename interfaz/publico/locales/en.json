@@ -1425,13 +1425,7 @@
                                     "truncated":  "Showing {shown} of {total}. Use the search to see the rest.",
                                     "added":  "Word added",
                                     "removed":  "Word removed",
-                                    "import":  "Import",
-                                    "export":  "Export",
-                                    "clear":  "Clear",
-                                    "clearConfirm":  "Clear all {n} blocked words? This can't be undone.",
-                                    "imported":  "{n} words imported",
-                                    "shareName":  "Share my blocked words list",
-                                    "shareHint":  "Anonymously sends the words from your list, without your name or your viewers' names, to improve the moderation filter. Only words blocked by several people are used. It is off until you turn it on, and you can turn it off at any time."
+                                    "export":  "Export"
                                 },
                       "status":  {
                                      "title":  "Filter status",

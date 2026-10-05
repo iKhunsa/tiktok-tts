@@ -9,6 +9,7 @@ const I18N_KEY = 'tikliveTTS_lang';
 
 let _locale = {};
 let _lang = 'es';
+let _version = 0;
 
 function _get(obj, path) {
   return path.split('.').reduce((o, k) => (o && o[k] !== undefined ? o[k] : null), obj);
@@ -43,6 +44,12 @@ export function tErr(data, fallbackKey) {
 
 export function idiomaActual() {
   return _lang;
+}
+
+/** Sube cada vez que se carga un diccionario: sirve de clave de cache para
+ * renders memoizados, porque `idiomaActual()` ya vale 'es' antes de cargar. */
+export function versionIdioma() {
+  return _version;
 }
 
 /** Aplica el locale cargado a todo el markup estatico con data-i18n*. */
@@ -82,6 +89,7 @@ export async function cargarIdioma(lang) {
     }
   }
   _lang = lang;
+  _version += 1;
   return _locale;
 }
 

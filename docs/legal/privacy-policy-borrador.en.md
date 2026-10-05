@@ -1,18 +1,18 @@
 # DRAFT — Privacy Policy update: blocked words
 
-> **STATUS: DRAFT PENDING OWNER APPROVAL. DO NOT PUBLISH.** It does not replace `privacy-policy.en.md` (in force). Do not enable sending in production or ship the app with the switch available until the owner approves this text and a lawyer reviews it. See `NOTAS-DE-REVISION.md` §6.
+> **STATUS: DRAFT PENDING OWNER APPROVAL. DO NOT PUBLISH.** It does not replace `privacy-policy.en.md` (in force). It must be published before releasing a version with this sending enabled. See `NOTAS-DE-REVISION.md` §6.
 
 Proposed changes to the current policy. Each block states the section and whether it **adds** or **replaces** text.
 
 ## §1 Summary — add a bullet
 
-- If you turn it on, you can anonymously share the words from your blocked words list to improve the moderation filter. It is **off by default**.
+- We send the words from your blocked words list, pseudonymized (linked to a technical identifier of your installation, never to your name), to improve the moderation filter.
 
 ## §2 Data we process — add a row to the table
 
 | Data | Why | Basis |
 |---|---|---|
-| **Words from your blocked words list** (only if you turn on "Share my blocked words list" in Settings): the text of each word as you wrote it in your list, normalized (lowercase, accents removed except ñ), the configured voice language and the send date. **No name of yours or of your viewers, no chat messages.** Before sending, the App discards entries containing `@`, links, emails, long numbers (6 or more digits), more than 3 words or more than 40 characters | Improve the App's moderation filter | **Consent**, which you give by turning the switch on and can withdraw by turning it off |
+| **Words from your blocked words list**: the text of each word as you wrote it in your list, normalized (lowercase, accents removed except ñ), the configured voice language and the send date. **No name of yours or of your viewers, no chat messages.** Before sending, the App discards entries containing `@`, links, emails, long numbers (6 or more digits), more than 3 words or more than 40 characters | Improve the App's moderation filter | Acceptance of the **Terms** and **legitimate interest** in improving the filter |
 
 Explanatory text (add below the table):
 
@@ -28,8 +28,7 @@ Words are sent only to our own telemetry server (Hostinger, Manchester). They ar
 
 ## §6 Your rights — add / adjust
 
-- **Turn sending off:** in *Settings → Message Filters → "Share my blocked words list"*. Turning it off stops sending immediately. It is a **per-account** setting.
-- **Deletion:** write to info@tiklivetts.es and we will delete the words linked to your installation.
+- **Deletion:** write to info@tiklivetts.es or contact us on Discord and we will delete the words linked to your installation.
 
 ## Open questions for the owner
 

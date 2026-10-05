@@ -1425,13 +1425,7 @@
                                     "truncated":  "Mostrate {shown} su {total}. Usa la ricerca per vedere il resto.",
                                     "added":  "Parola aggiunta",
                                     "removed":  "Parola rimossa",
-                                    "import":  "Importa",
-                                    "export":  "Esporta",
-                                    "clear":  "Svuota",
-                                    "clearConfirm":  "Svuotare le {n} parole bloccate? Non si può annullare.",
-                                    "imported":  "{n} parole importate",
-                                    "shareName":  "Condividi il mio elenco di parole bloccate",
-                                    "shareHint":  "Invia in forma anonima le parole del tuo elenco, senza il tuo nome né quello dei tuoi spettatori, per migliorare il filtro di moderazione. Vengono usate solo le parole bloccate da più persone. È disattivato finché non lo attivi e puoi spegnerlo quando vuoi."
+                                    "export":  "Esporta"
                                 },
                       "status":  {
                                      "title":  "Stato del filtro",

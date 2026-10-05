@@ -1,18 +1,18 @@
 # BORRADOR — Actualización de la Política de Privacidad: palabras bloqueadas
 
-> **ESTADO: BORRADOR PENDIENTE DE APROBACIÓN DEL DUEÑO. NO PUBLICAR.** No sustituye a `politica-de-privacidad.md` (vigente). No activar el envío en producción ni publicar la app con el interruptor disponible hasta que el dueño apruebe este texto y un abogado lo revise. Ver `NOTAS-DE-REVISION.md` §6.
+> **ESTADO: BORRADOR PENDIENTE DE APROBACIÓN DEL DUEÑO. NO PUBLICAR.** No sustituye a `politica-de-privacidad.md` (vigente). Debe publicarse antes de lanzar una versión que active este envío. Ver `NOTAS-DE-REVISION.md` §6.
 
 Cambios propuestos sobre la política vigente. Cada bloque indica la sección y si **agrega** o **reemplaza** texto.
 
 ## §1 Resumen — agregar una viñeta
 
-- Si lo activas, puedes compartir de forma anónima las palabras de tu lista de palabras bloqueadas para mejorar el filtro de moderación. Está **desactivado por defecto**.
+- Enviamos las palabras de tu lista de palabras bloqueadas, seudonimizadas (asociadas a un identificador técnico de tu instalación, nunca a tu nombre), para mejorar el filtro de moderación.
 
 ## §2 Datos que tratamos — agregar una fila a la tabla
 
 | Dato | Para qué | Base |
 |---|---|---|
-| **Palabras de tu lista de palabras bloqueadas** (solo si activas "Compartir mi lista de palabras bloqueadas" en Configuración): el texto de cada palabra tal como lo escribiste en tu lista, normalizado (minúsculas, sin tildes salvo la ñ), el idioma de voz configurado y la fecha del envío. **Sin tu nombre ni el de tus espectadores, sin mensajes de chat.** Antes de enviar, la App descarta entradas que contengan `@`, enlaces, correos, números largos (6 o más dígitos), más de 3 palabras o más de 40 caracteres | Mejorar el filtro de moderación de la App | **Consentimiento**, que das al activar el interruptor y puedes retirar al apagarlo |
+| **Palabras de tu lista de palabras bloqueadas**: el texto de cada palabra tal como lo escribiste en tu lista, normalizado (minúsculas, sin tildes salvo la ñ), el idioma de voz configurado y la fecha del envío. **Sin tu nombre ni el de tus espectadores, sin mensajes de chat.** Antes de enviar, la App descarta entradas que contengan `@`, enlaces, correos, números largos (6 o más dígitos), más de 3 palabras o más de 40 caracteres | Mejorar el filtro de moderación de la App | Aceptación de los **Términos** e **interés legítimo** de mejorar el filtro |
 
 Texto explicativo (agregar bajo la tabla):
 
@@ -28,8 +28,7 @@ Las palabras se envían solo a nuestro servidor propio de telemetría (Hostinger
 
 ## §6 Tus derechos — agregar / ajustar
 
-- **Desactivar el envío:** en *Configuración → Filtros de Mensajes → "Compartir mi lista de palabras bloqueadas"*. Al apagarlo la App deja de enviar de inmediato. Es un ajuste **por cuenta**.
-- **Borrado:** escribe a info@tiklivetts.es y borraremos las palabras asociadas a tu instalación.
+- **Borrado:** escribe a info@tiklivetts.es o por Discord y borraremos las palabras asociadas a tu instalación.
 
 ## Preguntas abiertas para el dueño
 
