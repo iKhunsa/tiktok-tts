@@ -11,21 +11,30 @@ const checkboxMarkup = ({ code }) => `
 
 export function mountLanguagePicker(container, { store, actions }) {
   container.innerHTML = `
-    <div class="cg-subtitle" id="cgLangTitle" data-i18n="chatGuard.lang.title"></div>
-    <div class="cg-master cg-lang-auto">
-      <div class="cg-master-text">
-        <div class="cg-option-title" id="cgLangAutoLabel" data-i18n="chatGuard.lang.auto"></div>
-        <div class="cg-hint" id="cgLangAutoDesc" data-i18n="chatGuard.lang.autoHint"></div>
+    <details class="cg-lang-accordion">
+      <summary class="cg-lang-summary">
+        <span class="cg-lang-heading">
+          <span class="cg-subtitle" id="cgLangTitle" data-i18n="chatGuard.lang.title"></span>
+          <span class="cg-hint cg-lang-now" id="cgLangNow" aria-live="polite"></span>
+        </span>
+        <img class="icon-inline cg-lang-chevron" src="icons/expand_more.svg" alt="">
+      </summary>
+      <div class="cg-lang-content">
+        <div class="cg-master cg-lang-auto">
+          <div class="cg-master-text">
+            <div class="cg-option-title" id="cgLangAutoLabel" data-i18n="chatGuard.lang.auto"></div>
+            <div class="cg-hint" id="cgLangAutoDesc" data-i18n="chatGuard.lang.autoHint"></div>
+          </div>
+          <button type="button" class="cg-switch" role="switch" aria-checked="false"
+            aria-labelledby="cgLangAutoLabel" aria-describedby="cgLangAutoDesc" disabled>
+            <span class="cg-switch-thumb"></span>
+          </button>
+        </div>
+        <div class="cg-lang-grid" role="group" aria-labelledby="cgLangTitle" aria-describedby="cgLangHint">${LOCALES.map(checkboxMarkup).join('')}</div>
+        <div class="cg-hint" id="cgLangHint" data-i18n="chatGuard.lang.hint"></div>
+        <div class="cg-problem" id="cgLangProblem" role="alert" hidden></div>
       </div>
-      <button type="button" class="cg-switch" role="switch" aria-checked="false"
-        aria-labelledby="cgLangAutoLabel" aria-describedby="cgLangAutoDesc" disabled>
-        <span class="cg-switch-thumb"></span>
-      </button>
-    </div>
-    <div class="cg-hint cg-lang-now" id="cgLangNow" aria-live="polite"></div>
-    <div class="cg-lang-grid" role="group" aria-labelledby="cgLangTitle">${LOCALES.map(checkboxMarkup).join('')}</div>
-    <div class="cg-hint" id="cgLangHint" data-i18n="chatGuard.lang.hint"></div>
-    <div class="cg-problem" id="cgLangProblem" role="alert" hidden></div>`;
+    </details>`;
   aplicarTraducciones(container);
 
   const autoSwitch = container.querySelector('.cg-switch');

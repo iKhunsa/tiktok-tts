@@ -87,6 +87,17 @@ test('listas de palabras: abre el popup sin chips permanentes', async () => {
   }
 });
 
+test('selector de idiomas: el acordeon conserva los contratos del panel', () => {
+  const source = fs.readFileSync(path.join(FOLDER, 'language-picker.js'), 'utf8');
+  assert.match(source, /<details class="cg-lang-accordion">/);
+  assert.match(source, /<summary class="cg-lang-summary">/);
+  assert.doesNotMatch(source, /<details class="cg-lang-accordion" open>/);
+  assert.match(source, /id="cgLangTitle"/);
+  assert.match(source, /id="cgLangNow" aria-live="polite"/);
+  assert.match(source, /class="cg-lang-grid" role="group" aria-labelledby="cgLangTitle" aria-describedby="cgLangHint"/);
+  assert.match(source, /id="cgLangHint"/);
+});
+
 function fakeApi(overrides = {}) {
   const ok = (data) => ({ ok: true, data, errorKey: '' });
   const status = { state: 'ok', enabled: true, mode: 'shadow', level: 'balanced', langs: [...CHAT_GUARD_LOCALES], custom: { tricks: true, similar: false }, allowedWords: [] };

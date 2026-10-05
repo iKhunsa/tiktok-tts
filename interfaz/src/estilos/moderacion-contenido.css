@@ -1,5 +1,5 @@
 /* Ajustes > Moderacion del chat (interfaz/src/vistas/principal/moderacion-contenido/).
-   Solo anima opacity/transform/color con propiedades explicitas; ease-out en feedback. */
+   Transiciones explicitas y ease-out en feedback. */
 
 .cg-intro { margin: 0 0 14px; }
 .cg-hint { font-size: var(--text-2xs); color: var(--text-muted); line-height: 1.45; }
@@ -41,11 +41,11 @@
 .cg-switch-thumb {
   position: absolute; top: 2px; left: 2px;
   width: 18px; height: 18px; border-radius: 50%;
-  background: var(--text-secondary);
+  background: #fff;
   transition: transform var(--dur-2) var(--ease-out), background-color var(--dur-2) var(--ease-out);
 }
 .cg-switch[aria-checked="true"] { background: var(--brand); border-color: var(--brand); }
-.cg-switch[aria-checked="true"] .cg-switch-thumb { transform: translateX(18px); background: #0a0a0a; }
+.cg-switch[aria-checked="true"] .cg-switch-thumb { transform: translateX(18px); }
 .cg-switch:active:not(:disabled) .cg-switch-thumb { transform: scale(0.92); }
 .cg-switch[aria-checked="true"]:active:not(:disabled) .cg-switch-thumb { transform: translateX(18px) scale(0.92); }
 .cg-switch:disabled { opacity: 0.5; cursor: default; }
@@ -69,6 +69,31 @@
 .cg-lang-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 2px 8px; margin-bottom: 8px; }
 .cg-check-compact { padding: 6px 10px; align-items: center; }
 .cg-check-compact input { margin-top: 0; }
+
+/* -- Acordeon de idiomas ------------------------------------- */
+.cg-lang-summary {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
+  list-style: none; cursor: pointer; border-radius: var(--radius-sm);
+}
+.cg-lang-summary::-webkit-details-marker { display: none; }
+.cg-lang-heading { display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; }
+.cg-lang-summary .cg-subtitle, .cg-lang-summary .cg-lang-now { margin: 0; }
+.cg-lang-chevron {
+  flex-shrink: 0; opacity: 0.75;
+  transition: transform var(--dur-1) var(--ease-out), opacity var(--dur-1) var(--ease-out);
+}
+.cg-lang-accordion[open] .cg-lang-chevron { transform: rotate(180deg); opacity: 1; }
+.cg-lang-accordion::details-content {
+  opacity: 0; transform: translateY(-4px);
+  transition: content-visibility var(--dur-1) allow-discrete, opacity var(--dur-1) var(--ease-out), transform var(--dur-1) var(--ease-out);
+}
+.cg-lang-accordion[open]::details-content { opacity: 1; transform: translateY(0); }
+.cg-lang-content { padding-top: var(--space-3); }
+.cg-lang-summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+@starting-style {
+  .cg-lang-accordion[open]::details-content { opacity: 0; transform: translateY(-4px); }
+}
 
 /* Con el filtro apagado se ve lo que se recupera al encenderlo, pero atenuado. */
 .is-locked .cg-option, .is-locked .cg-check, .is-locked .cg-lang-grid { opacity: 0.5; cursor: default; }
@@ -125,15 +150,19 @@
   .cg-switch:hover:not(:disabled) { border-color: var(--text-bright-a30); }
   .cg-option:hover:not(:has(input:disabled)), .cg-check:hover:not(:has(input:disabled)) { background: var(--hover-05); }
   .cg-tab:hover { border-color: var(--text-bright-a30); color: var(--text-bright); }
+  .cg-lang-summary:hover .cg-lang-chevron { opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cg-switch-thumb, .cg-tab, .cg-add-btn { transition-property: background-color, border-color, color, opacity; }
+  .cg-switch-thumb, .cg-tab, .cg-add-btn, .cg-lang-chevron { transition-property: background-color, border-color, color, opacity; }
+  .cg-lang-accordion::details-content { transition-property: content-visibility, opacity; }
   .cg-status-icon.is-spinning { animation: none; }
 }
 body.reduce-motion .cg-switch-thumb,
 body.reduce-motion .cg-tab,
-body.reduce-motion .cg-add-btn { transition-property: background-color, border-color, color, opacity; }
+body.reduce-motion .cg-add-btn,
+body.reduce-motion .cg-lang-chevron { transition-property: background-color, border-color, color, opacity; }
+body.reduce-motion .cg-lang-accordion::details-content { transition-property: content-visibility, opacity; }
 body.reduce-motion .cg-status-icon.is-spinning { animation: none; }
 @media (prefers-reduced-motion: reduce) {
   .cg-switch:active:not(:disabled) .cg-switch-thumb { transform: none; }
