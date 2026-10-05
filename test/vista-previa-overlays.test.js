@@ -1,4 +1,4 @@
-const { test, mock } = require('node:test');
+const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { readFileSync, readdirSync } = require('node:fs');
 const { resolve } = require('node:path');
@@ -30,20 +30,6 @@ test('conMuestra usa la muestra solo en vista previa y sin datos reales', async 
   assert.equal(conMuestra(real, muestra, true), real, 'con datos reales, siempre los reales');
 });
 
-test('repetirMuestra encola de inmediato y rota los eventos en bucle', async () => {
-  const { repetirMuestra } = await importar('interfaz/compartido/vista-previa.js');
-  mock.timers.enable({ apis: ['setInterval'] });
-  try {
-    const vistos = [];
-    repetirMuestra((evento) => vistos.push(evento), ['a', 'b'], 1000);
-    assert.deepEqual(vistos, ['a'], 'el primero sale sin esperar al intervalo');
-    mock.timers.tick(3000);
-    assert.deepEqual(vistos, ['a', 'b', 'a', 'b']);
-  } finally {
-    mock.timers.reset();
-  }
-});
-
 test('las muestras tienen la forma que consume cada overlay', async () => {
   const m = await importar('interfaz/compartido/muestras-vista-previa.js');
   const plataformas = ['tiktok', 'twitch', 'youtube', 'kick'];
@@ -57,29 +43,29 @@ test('las muestras tienen la forma que consume cada overlay', async () => {
   assert.ok(m.MUESTRA_CHAT.every((c) => c.type === 'chat' && plataformas.includes(c.platform) && c.user && c.comment));
   assert.deepEqual([...new Set(m.MUESTRA_CHAT.map((c) => c.platform))].sort(), [...plataformas].sort(), 'una por plataforma');
   assert.ok(m.MUESTRA_CHAT.some((c) => c.isModerator) && m.MUESTRA_CHAT.some((c) => c.isSubscriber), 'cubre los 3 roles');
-  assert.ok(m.MUESTRA_ALERTAS_SOCIAL.some((e) => e.type === 'follow') && m.MUESTRA_ALERTAS_SOCIAL.some((e) => e.type === 'share'));
-  assert.ok(m.MUESTRA_REGALOS.every((g) => g.type === 'gift' && g.giftName && g.user && g.repeatCount >= 1));
+  assert.ok(['follow', 'share'].includes(m.MUESTRA_ALERTA_SOCIAL.type) && plataformas.includes(m.MUESTRA_ALERTA_SOCIAL.platform) && m.MUESTRA_ALERTA_SOCIAL.user);
+  assert.ok(m.MUESTRA_REGALO.type === 'gift' && m.MUESTRA_REGALO.giftName && m.MUESTRA_REGALO.user && m.MUESTRA_REGALO.repeatCount >= 1);
   assert.ok(m.MUESTRA_VIEWERS > 0 && m.MUESTRA_SEGUIDORES.sesion > 0 && m.MUESTRA_SEGUIDORES.base > 0);
   assert.ok(m.MUESTRA_SOCIAL.seguidores.length && m.MUESTRA_SOCIAL.compartidos.length);
   assert.ok(m.MUESTRA_CREDITOS.donantes.length && m.MUESTRA_CREDITOS.seguidores.length && m.MUESTRA_CREDITOS.compartidos.length);
 });
 
 test('los regalos de ejemplo existen en gifts/ para mostrar su imagen real', async () => {
-  const { MUESTRA_REGALOS } = await importar('interfaz/compartido/muestras-vista-previa.js');
+  const { MUESTRA_REGALO } = await importar('interfaz/compartido/muestras-vista-previa.js');
   // Misma normalización que overlay-alertas.js (normalizeStr) sobre el nombre del PNG.
   const normalizar = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
   const slugs = new Set(readdirSync(resolve(raiz, 'gifts')).flatMap((f) => {
     const m = f.match(/^\d+_(.+)\.png$/i);
     return m ? [normalizar(m[1])] : [];
   }));
-  for (const { giftName } of MUESTRA_REGALOS) assert.ok(slugs.has(normalizar(giftName)), `no hay imagen para "${giftName}"`);
+  assert.ok(slugs.has(normalizar(MUESTRA_REGALO.giftName)), `no hay imagen para "${MUESTRA_REGALO.giftName}"`);
 });
 
 test('cada overlay con muestra importa el modo vista previa', () => {
   const esperado = {
     'overlay-chat.js': 'MUESTRA_CHAT', 'overlay-viewers.js': 'MUESTRA_VIEWERS', 'overlay-likes.js': 'MUESTRA_LIKES',
-    'overlay-donadores.js': 'MUESTRA_DONADORES', 'overlay-alertas.js': 'MUESTRA_REGALOS',
-    'overlay-alertas-social.js': 'MUESTRA_ALERTAS_SOCIAL', 'overlay-social.js': 'MUESTRA_SOCIAL',
+    'overlay-donadores.js': 'MUESTRA_DONADORES', 'overlay-alertas.js': 'MUESTRA_REGALO',
+    'overlay-alertas-social.js': 'MUESTRA_ALERTA_SOCIAL', 'overlay-social.js': 'MUESTRA_SOCIAL',
     'overlay-seguidores.js': 'MUESTRA_SEGUIDORES', 'overlay-creditos.js': 'MUESTRA_CREDITOS',
   };
   for (const [archivo, muestra] of Object.entries(esperado)) {
@@ -141,4 +127,12 @@ test('la vista previa del chat muestra las 4 plataformas y atenúa las excluidas
   assert.match(js, /if \(!plataformaVisible && !vistaPrevia\) return;/, 'fuera de la vista previa (OBS) se sigue filtrando');
   assert.match(js, /if \(!plataformaVisible\) elemento\.classList\.add\('msg-excluido'\)/);
   assert.match(readFileSync(resolve(raiz, 'interfaz/overlay-chat.css'), 'utf8'), /\.msg-excluido \{ filter: /);
+});
+
+test('las alertas de la vista previa quedan fijas; en vivo se retiran como siempre', () => {
+  for (const archivo of ['overlay-alertas.js', 'overlay-alertas-social.js']) {
+    const fuente = readFileSync(resolve(raiz, `interfaz/${archivo}`), 'utf8');
+    assert.match(fuente, /if \(!vistaPrevia\) programarRetiro\(card,/, `${archivo}: la vista previa debe saltarse el retiro`);
+    assert.doesNotMatch(fuente, /repetirMuestra|setInterval/, `${archivo}: la vista previa no debe repetir alertas en bucle`);
+  }
 });

@@ -5,11 +5,12 @@ import { iniciarAccesibilidadOverlay } from './compartido/accesibilidad.js';
 import { registrarErroresOverlay } from './compartido/registrar-errores.js';
 import { escaparHtml } from './compartido/escapar-html.js';
 import { crearColaAlertas, programarRetiro, PLATFORM_META } from './compartido/cola-alertas.js';
-import { esVistaPrevia, repetirMuestra } from './compartido/vista-previa.js';
-import { MUESTRA_REGALOS } from './compartido/muestras-vista-previa.js';
+import { esVistaPrevia } from './compartido/vista-previa.js';
+import { MUESTRA_REGALO } from './compartido/muestras-vista-previa.js';
 
 registrarErroresOverlay();
 const params = leerParametros();
+const vistaPrevia = esVistaPrevia(params);
 aplicarParametrosVisuales(params);
 const alertDur = intParam(params, 'dur', 4000);
 const userSetColor = !!params.get('color');
@@ -76,16 +77,15 @@ function showAlert(gift, done) {
   card.appendChild(info);
   if ((gift.repeatCount || 1) > 1) { const badge = document.createElement('div'); badge.className = 'qty-badge'; badge.textContent = 'x' + gift.repeatCount; card.appendChild(badge); }
   document.body.appendChild(card);
-  programarRetiro(card, gift.duration || alertDur, done);
+  if (!vistaPrevia) programarRetiro(card, gift.duration || alertDur, done); // la vista previa deja la tarjeta fija
 }
 
 const cola = crearColaAlertas(showAlert);
-const PAUSA_ENTRE_MUESTRAS_MS = 1500;
 const ESPERA_IMAGENES_MS = 600; // deja cargar la lista de regalos para que el primero salga con su imagen
 const aplicarA11y = iniciarAccesibilidadOverlay();
 cargarLocaleOverlay().then(() => {
   aplicarI18nOverlay();
-  if (esVistaPrevia(params)) setTimeout(() => repetirMuestra(cola.encolar, MUESTRA_REGALOS, alertDur + PAUSA_ENTRE_MUESTRAS_MS), ESPERA_IMAGENES_MS);
+  if (vistaPrevia) setTimeout(() => cola.encolar(MUESTRA_REGALO), ESPERA_IMAGENES_MS);
   conectarWSOverlay((d) => {
     if (['gift', 'superchat'].includes(d.type)) cola.encolar(d);
     else if (d.type === 'config-updated') aplicarA11y(d.config || {});

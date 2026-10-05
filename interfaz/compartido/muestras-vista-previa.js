@@ -17,18 +17,10 @@ export const MUESTRA_LIKES = conValores('totalLikes', [4820, 3910, 3275, 2140, 1
 export const MUESTRA_DONADORES = conValores('totalCoins', [8800, 5200, 3100, 2450, 1800, 1250, 990, 640, 420, 250]);
 export const MUESTRA_VIEWERS = 1284;
 
-// Nombres que existen en gifts/ para que la tarjeta muestre la imagen real del regalo.
-export const MUESTRA_REGALOS = [
-  { type: 'gift', giftName: 'Corona de TikTok', user: 'luna_vibes', repeatCount: 3 },
-  { type: 'gift', giftName: 'TikTok', user: 'pixel_fox', repeatCount: 1 },
-];
-
-export const MUESTRA_ALERTAS_SOCIAL = [
-  { type: 'follow', platform: 'tiktok', user: 'luna_vibes' },
-  { type: 'share', platform: 'tiktok', user: 'pixel_fox' },
-  { type: 'follow', platform: 'twitch', user: 'nova_star' },
-  { type: 'share', platform: 'kick', user: 'sam.plays' },
-];
+// Las alertas se muestran fijas (una sola tarjeta) solo como guia visual en la vista previa.
+// El nombre del regalo existe en gifts/ para que salga su imagen real.
+export const MUESTRA_REGALO = { type: 'gift', giftName: 'Corona de TikTok', user: 'luna_vibes', repeatCount: 3 };
+export const MUESTRA_ALERTA_SOCIAL = { type: 'follow', platform: 'tiktok', user: 'luna_vibes' };
 
 export const MUESTRA_SEGUIDORES = { sesion: 37, base: 12400 };
 

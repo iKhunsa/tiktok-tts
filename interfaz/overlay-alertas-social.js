@@ -5,12 +5,13 @@ import { iniciarAccesibilidadOverlay } from './compartido/accesibilidad.js';
 import { registrarErroresOverlay } from './compartido/registrar-errores.js';
 import { escaparHtml } from './compartido/escapar-html.js';
 import { crearColaAlertas, programarRetiro } from './compartido/cola-alertas.js';
-import { esVistaPrevia, repetirMuestra } from './compartido/vista-previa.js';
-import { MUESTRA_ALERTAS_SOCIAL } from './compartido/muestras-vista-previa.js';
+import { esVistaPrevia } from './compartido/vista-previa.js';
+import { MUESTRA_ALERTA_SOCIAL } from './compartido/muestras-vista-previa.js';
 
 registrarErroresOverlay();
 
 const params = leerParametros();
+const vistaPrevia = esVistaPrevia(params);
 aplicarParametrosVisuales(params);
 const alertDur = intParam(params, 'dur', 4000);
 const userSetColor = !!params.get('color');
@@ -57,11 +58,10 @@ function showAlert(event, alTerminar) {
   card.appendChild(badge);
 
   document.body.appendChild(card);
-  programarRetiro(card, event.duration || alertDur, alTerminar);
+  if (!vistaPrevia) programarRetiro(card, event.duration || alertDur, alTerminar); // la vista previa deja la tarjeta fija
 }
 
 const cola = crearColaAlertas(showAlert);
-const PAUSA_ENTRE_MUESTRAS_MS = 1500;
 
 function alManejarMensaje(d) {
   if (d.type === 'follow' || d.type === 'share') cola.encolar(d);
@@ -72,6 +72,6 @@ const aplicarA11y = iniciarAccesibilidadOverlay();
 
 cargarLocaleOverlay().then(() => {
   aplicarI18nOverlay();
-  if (esVistaPrevia(params)) repetirMuestra(cola.encolar, MUESTRA_ALERTAS_SOCIAL, alertDur + PAUSA_ENTRE_MUESTRAS_MS);
+  if (vistaPrevia) cola.encolar(MUESTRA_ALERTA_SOCIAL);
   conectarWSOverlay(alManejarMensaje);
 });
