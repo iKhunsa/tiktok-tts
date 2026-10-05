@@ -8,6 +8,8 @@ import { aplicarTipografia } from './compartido/estilo/aplicar-tipografia.js';
 import { estilizarTexto } from './compartido/estilo/estilizar-texto.js';
 import { crearIconoPlataforma, crearInsigniaPlataforma } from './compartido/iconos-plataforma.js';
 import { AVATAR_PLACEHOLDER } from './compartido/leaderboard-iconos.js';
+import { esVistaPrevia } from './compartido/vista-previa.js';
+import { MUESTRA_CHAT } from './compartido/muestras-vista-previa.js';
 
 registrarErroresOverlay();
 
@@ -15,6 +17,7 @@ const ROLES = ['viewer', 'moderador', 'suscriptor'];
 const SALIDA_MS = 300;
 
 const params = leerParametros();
+const vistaPrevia = esVistaPrevia(params);
 const cfg = leerConfig(ESQUEMAS.chat, params);
 const roles = Object.fromEntries(ROLES.map((rol) => [rol, leerRol(rol)]));
 const container = document.getElementById('chat-container');
@@ -145,7 +148,7 @@ function addMessage(mensaje) {
 
   const elemento = crearMensaje(mensaje, rol);
   container.appendChild(elemento);
-  if (cfg.ocultarTras > 0) ocultarTras(elemento, cfg.ocultarTras);
+  if (cfg.ocultarTras > 0 && !vistaPrevia) ocultarTras(elemento, cfg.ocultarTras);
   while (container.children.length > cfg.maxmsgs) container.removeChild(container.firstChild);
 }
 
@@ -164,4 +167,5 @@ function aplicarA11y(config) {
 }
 
 fetch('/api/config').then((r) => r.json()).then(aplicarA11y).catch(() => {});
+if (vistaPrevia) MUESTRA_CHAT.forEach(addMessage); // la vista previa no oculta los mensajes con el tiempo
 conectarWSOverlay(alManejarMensaje);

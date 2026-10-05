@@ -3,11 +3,16 @@ import { leerParametros, aplicarParametrosVisuales } from './compartido/parametr
 import { conectarWSOverlay } from './compartido/ws-cliente.js';
 import { iniciarAccesibilidadOverlay } from './compartido/accesibilidad.js';
 import { registrarErroresOverlay } from './compartido/registrar-errores.js';
+import { esVistaPrevia } from './compartido/vista-previa.js';
+import { MUESTRA_VIEWERS } from './compartido/muestras-vista-previa.js';
 
 registrarErroresOverlay();
-aplicarParametrosVisuales(leerParametros());
+const params = leerParametros();
+aplicarParametrosVisuales(params);
 
-let viewerCount = 0;
+// En la vista previa, sin espectadores reales se muestra una cifra de ejemplo.
+const contarEspectadores = (valor) => Number(valor) || (esVistaPrevia(params) ? MUESTRA_VIEWERS : 0);
+let viewerCount = contarEspectadores(0);
 
 function render() {
   const count = document.getElementById('viewerCount');
@@ -19,14 +24,14 @@ function render() {
 
 fetch('/api/overlay-stats')
   .then((response) => response.json())
-  .then((stats) => { viewerCount = Number(stats.viewerCount) || 0; render(); })
+  .then((stats) => { viewerCount = contarEspectadores(stats.viewerCount); render(); })
   .catch(() => {});
 
 cargarLocaleOverlay().then(() => {
   aplicarI18nOverlay();
   conectarWSOverlay((message) => {
     if (message.type === 'viewers') {
-      viewerCount = Number(message.total) || 0;
+      viewerCount = contarEspectadores(message.total);
       render();
     }
     if (message.type === 'config-updated') aplicarA11y(message.config || {});

@@ -4,6 +4,7 @@ import { showToast } from '../../componentes/toast.js';
 import { construirQuery } from '../../../compartido/estilo/query.js';
 import { ESQUEMAS, DEFAULTS_OVERLAYS } from '../../../compartido/estilo/esquemas.js';
 import { trackUi } from '../../nucleo/telemetria-ui.js';
+import { urlConVistaPrevia } from '../../../compartido/vista-previa.js';
 
 export function buildOverlayUrl(type) {
   const base = `${location.origin}/overlay-${type}.html`;
@@ -16,9 +17,10 @@ const temporizadoresVistaPrevia = new Map();
 
 // Recarga la vista previa con un pequeno retardo: arrastrar un slider dispara
 // decenas de cambios y cada recarga abre el WebSocket del overlay de nuevo.
-function actualizarVistaPrevia(type, url) {
+function actualizarVistaPrevia(type, urlOverlay) {
   const marco = document.querySelector(`[data-preview="${type}"]`);
   if (!marco) return;
+  const url = urlConVistaPrevia(urlOverlay); // solo el iframe lleva datos de ejemplo; la URL copiada no
   clearTimeout(temporizadoresVistaPrevia.get(type));
   temporizadoresVistaPrevia.set(type, setTimeout(() => { if (marco.src !== url) marco.src = url; }, RETARDO_VISTA_PREVIA_MS));
 }

@@ -1,7 +1,7 @@
 /**
- * i18n minimo para los overlays vanilla (sin interpolacion {var} — los
- * overlays no la necesitan). Reemplaza las 9 copias de t()/loadLocale con
- * 4 firmas distintas de los overlays + mobile.html.
+ * i18n minimo para los overlays vanilla, con interpolacion {var} como la
+ * del resto de la app (p. ej. overlayStr.giftFrom lleva {user}). Reemplaza las
+ * 9 copias de t()/loadLocale con 4 firmas distintas de los overlays + mobile.html.
  */
 
 let _locale = {};
@@ -25,14 +25,15 @@ export async function cargarLocaleOverlay() {
   return _locale;
 }
 
-export function t(key) {
+export function t(key, vars) {
   const parts = key.split('.');
   let val = _locale;
   for (const p of parts) {
     val = val?.[p];
     if (val === undefined) break;
   }
-  return typeof val === 'string' ? val : key;
+  if (typeof val !== 'string') return key;
+  return vars ? val.replace(/\{(\w+)\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : `{${k}}`)) : val;
 }
 
 export function aplicarI18nOverlay(raiz = document) {

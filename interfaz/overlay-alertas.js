@@ -5,6 +5,8 @@ import { iniciarAccesibilidadOverlay } from './compartido/accesibilidad.js';
 import { registrarErroresOverlay } from './compartido/registrar-errores.js';
 import { escaparHtml } from './compartido/escapar-html.js';
 import { crearColaAlertas, programarRetiro, PLATFORM_META } from './compartido/cola-alertas.js';
+import { esVistaPrevia, repetirMuestra } from './compartido/vista-previa.js';
+import { MUESTRA_REGALOS } from './compartido/muestras-vista-previa.js';
 
 registrarErroresOverlay();
 const params = leerParametros();
@@ -78,9 +80,12 @@ function showAlert(gift, done) {
 }
 
 const cola = crearColaAlertas(showAlert);
+const PAUSA_ENTRE_MUESTRAS_MS = 1500;
+const ESPERA_IMAGENES_MS = 600; // deja cargar la lista de regalos para que el primero salga con su imagen
 const aplicarA11y = iniciarAccesibilidadOverlay();
 cargarLocaleOverlay().then(() => {
   aplicarI18nOverlay();
+  if (esVistaPrevia(params)) setTimeout(() => repetirMuestra(cola.encolar, MUESTRA_REGALOS, alertDur + PAUSA_ENTRE_MUESTRAS_MS), ESPERA_IMAGENES_MS);
   conectarWSOverlay((d) => {
     if (['gift', 'superchat'].includes(d.type)) cola.encolar(d);
     else if (d.type === 'config-updated') aplicarA11y(d.config || {});

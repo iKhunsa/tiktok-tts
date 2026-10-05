@@ -6,6 +6,7 @@ import { registrarErroresOverlay } from './registrar-errores.js';
 import { leerConfig } from './estilo/query.js';
 import { aplicarTipografia } from './estilo/aplicar-tipografia.js';
 import { crearLeaderboard } from './leaderboard.js';
+import { esVistaPrevia, conMuestra } from './vista-previa.js';
 
 async function pedirRankingInicial(claveLista) {
   try {
@@ -21,13 +22,16 @@ async function pedirRankingInicial(claveLista) {
  * verdad: manda el top ya ordenado (estado inicial por HTTP, cambios por
  * WebSocket) y el overlay solo lo pinta.
  *
- * ranking: { esquema, claveLista, tipoMensajeWs, campoValor, simboloHtml, claveTextoVacio }
+ * ranking: { esquema, claveLista, tipoMensajeWs, campoValor, simboloHtml, claveTextoVacio, muestra }
+ * `muestra`: entradas de ejemplo que la vista previa pinta mientras no hay datos reales.
  */
 export async function iniciarRanking(ranking) {
   registrarErroresOverlay();
   const aplicarAccesibilidad = iniciarAccesibilidadOverlay();
 
-  const cfg = leerConfig(ranking.esquema, leerParametros());
+  const params = leerParametros();
+  const vistaPrevia = esVistaPrevia(params);
+  const cfg = leerConfig(ranking.esquema, params);
   aplicarTipografia(cfg);
 
   const [entradasIniciales] = await Promise.all([pedirRankingInicial(ranking.claveLista), cargarLocaleOverlay()]);
@@ -38,11 +42,12 @@ export async function iniciarRanking(ranking) {
     simboloHtml: ranking.simboloHtml,
     textoVacio: t(ranking.claveTextoVacio),
   });
-  leaderboard.pintar(entradasIniciales);
+  const conEjemplo = (entradas) => conMuestra(entradas, ranking.muestra, vistaPrevia);
+  leaderboard.pintar(conEjemplo(entradasIniciales));
 
   conectarWSOverlay((mensaje) => {
-    if (mensaje.type === ranking.tipoMensajeWs) leaderboard.pintarAnimado(mensaje[ranking.claveLista]);
-    else if (mensaje.type === 'connected' && mensaje.isFirst) leaderboard.pintar([]);
+    if (mensaje.type === ranking.tipoMensajeWs) leaderboard.pintarAnimado(conEjemplo(mensaje[ranking.claveLista]));
+    else if (mensaje.type === 'connected' && mensaje.isFirst) leaderboard.pintar(conEjemplo([]));
     else if (mensaje.type === 'config-updated') aplicarAccesibilidad(mensaje.config || {});
   });
 }
