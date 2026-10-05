@@ -689,37 +689,37 @@
 
       <!-- CANALES VINCULADOS -->
       <div class="settings-section" id="settingsSectionChannels">
-        <div class="settings-section-title settings-row-flex" style="justify-content:space-between;">
+        <div class="settings-section-title settings-row-flex settings-title-split">
           <span data-i18n="settings.channels">Canales vinculados</span>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
+          <div class="canales-actions">
             <button class="btn-supabase-primary" id="btn-toggle-add-channel" onclick="toggleAddChannelForm()">
               <img class="icon-inline" src="icons/add.svg" alt=""> <span data-i18n="btn.addChannel">Agregar canal</span>
             </button>
             <button class="cfg-btn" id="btnChannelsTour" onclick="startChannelsTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
           </div>
         </div>
-        <div id="settings-channels-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:20px;margin-bottom:4px;"></div>
-        <div id="add-channel-form" style="display:none;flex-direction:column;gap:10px;margin-top:10px;">
-          <div class="settings-row-flex" style="justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div id="settings-channels-list" class="canales-list"></div>
+        <div id="add-channel-form" class="canales-form" style="display:none;">
+          <div class="settings-row-flex canales-platform-row">
             <div class="seg-control" id="platform-seg">
               <button class="seg-btn active" id="seg-tiktok" onclick="selectAddPlatform('tiktok')">
-                <img style="width:13px;height:13px;vertical-align:middle;" src="icons/tiktok.svg" alt=""> TikTok
+                <img class="canales-platform-icon" src="icons/tiktok.svg" alt=""> TikTok
               </button>
               <button class="seg-btn" id="seg-twitch" onclick="selectAddPlatform('twitch')">
-                <img style="width:13px;height:13px;vertical-align:middle;" src="icons/sports_esports.svg" alt=""> Twitch
+                <img class="canales-platform-icon" src="icons/sports_esports.svg" alt=""> Twitch
               </button>
               <button class="seg-btn" id="seg-youtube" onclick="selectAddPlatform('youtube')">
-                <img style="width:13px;height:13px;vertical-align:middle;" src="icons/tv.svg" alt=""> YouTube
+                <img class="canales-platform-icon" src="icons/tv.svg" alt=""> YouTube
               </button>
               <button class="seg-btn" id="seg-kick" onclick="selectAddPlatform('kick')">
-                <img style="width:13px;height:13px;vertical-align:middle;" src="icons/kick.svg" alt=""> Kick
+                <img class="canales-platform-icon" src="icons/kick.svg" alt=""> Kick
               </button>
             </div>
             <!-- Solo visible con sesion de TikTok activa (cerrar sesion) — minimalista,
                  al lado del selector de plataforma en vez de una fila propia arriba de
                  todo. El login en si vive en tiktok-login-prompt, mas abajo. -->
-            <div id="tiktok-session-row" style="display:none;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);">
-              <img class="icon-inline" src="icons/tiktok.svg" alt="" style="width:13px;height:13px;">
+            <div id="tiktok-session-row" class="canales-session-row" style="display:none;">
+              <img class="icon-inline" src="icons/tiktok.svg" alt="">
               <span id="tiktok-session-status" data-i18n="conn.tiktokSessionActive">Sesión de TikTok iniciada.</span>
               <button type="button" class="cfg-btn small icon-only" id="btnTiktokLogout" onclick="tiktokLogout()" data-i18n-title="conn.tiktokLogout" title="Cerrar sesión de TikTok"><img class="icon-inline" src="icons/exit_to_app.svg" alt=""></button>
             </div>
@@ -729,7 +729,7 @@
                TikTok es un requisito para leer el chat, no una forma de elegir
                canal, pero mostrarlo justo aca evita que se lea como "2 cosas
                de TikTok" separadas. -->
-          <div id="tiktok-login-prompt" style="display:none;flex-direction:column;gap:8px;">
+          <div id="tiktok-login-prompt" class="canales-login-prompt" style="display:none;">
             <div class="tiktok-login-flow">
               <div class="tiktok-login-step tiktok-login-step-one">
                 <span class="tiktok-login-badge">1</span>
@@ -748,31 +748,31 @@
             </div>
             <div class="settings-row-flex">
               <button type="button" class="btn-supabase-primary" id="btn-tiktok-login-prompt" onclick="tiktokLogin()"><img class="icon-inline" src="icons/login.svg" alt=""> <span data-i18n="conn.tiktokLogin">Iniciar sesión en TikTok</span></button>
-              <button class="btn btn-disconnect" onclick="toggleAddChannelForm()"
-                style="font-size:12px;padding:9px 14px;border-radius:9999px;">Cancelar</button>
+              <button class="btn btn-disconnect canales-cancel" onclick="toggleAddChannelForm()"
+                data-i18n="btn.cancel">Cancelar</button>
             </div>
           </div>
           <div class="settings-row-flex" id="tiktok-add-channel-row">
-            <div class="input-wrapper" style="flex:1;">
+            <div class="input-wrapper canales-field">
               <input type="text" id="add-channel-input" placeholder="@usuario"
                 autocomplete="off" onkeydown="if(event.key==='Enter')addChannelFromSettings()" />
             </div>
             <button class="btn-supabase-primary" id="btn-add-channel" onclick="addChannelFromSettings()" data-i18n="btn.saveChannel">Guardar</button>
-            <button class="btn btn-disconnect" onclick="toggleAddChannelForm()"
-              style="font-size:12px;padding:9px 14px;border-radius:9999px;">Cancelar</button>
+            <button class="btn btn-disconnect canales-cancel" onclick="toggleAddChannelForm()"
+              data-i18n="btn.cancel">Cancelar</button>
           </div>
-          <div id="channel-live-hint" style="display:flex;gap:6px;font-size:11px;color:var(--text-muted);line-height:1.5;">
-            <img class="icon-inline" src="icons/info.svg" alt="" style="opacity:.6;flex-shrink:0;width:13px;height:13px;">
+          <div id="channel-live-hint" class="canales-hint" style="display:flex;">
+            <img class="icon-inline" src="icons/info.svg" alt="">
             <span data-i18n-html="conn.liveRequiredHint"><strong style="color:var(--danger);">La conexión solo ocurre cuando el canal está EN VIVO.</strong> Si aún no empiezas el directo, guarda el canal y pulsa «Conectar todo» desde Chat cuando estés en vivo.</span>
           </div>
-          <div id="youtube-channel-hint" style="display:none;font-size:11px;color:var(--text-muted);line-height:1.5;">
+          <div id="youtube-channel-hint" class="canales-hint" style="display:none;">
             Usa @canal o Channel ID para reconectar sin pegar link nuevo. Links watch/youtu.be se guardan como live temporal manual.
           </div>
         </div>
       </div>
 
       <div class="settings-section" id="settingsSectionVoice">
-        <div class="settings-section-title settings-row-flex voz-audio-header">
+        <div class="settings-section-title settings-row-flex settings-title-split">
           <span class="voz-audio-heading"><img class="icon-inline" src="icons/mic.svg" alt=""> <span data-i18n="settings.voice">Voz y audio</span></span>
           <button class="cfg-btn" id="btnVoiceTour" onclick="startVoiceTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
         </div>
@@ -844,7 +844,7 @@
 
       <!-- KEYBOARD SHORTCUTS SECTION -->
       <div class="settings-section" id="settingsSectionShortcuts">
-        <div class="settings-section-title settings-row-flex atajos-section-title">
+        <div class="settings-section-title settings-row-flex settings-title-split">
           <span class="atajos-section-heading"><img class="icon-inline" src="icons/keyboard.svg" alt=""> <span data-i18n="settings.shortcuts">Atajos de teclado (TTS)</span></span>
           <button class="cfg-btn" id="btnShortcutsTour" onclick="startShortcutsTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
         </div>

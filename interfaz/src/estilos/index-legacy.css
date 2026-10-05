@@ -596,6 +596,8 @@
       .sp-shortcut-value.capturing { animation: none !important; }
       .tts-switch.on .tts-bars i { animation: none !important; transform: scaleY(0.55) !important; }
       .ad-slot--banner .ad-layer { transition: opacity .3s linear !important; transform: none !important; }
+      .cfg-btn:active,
+      .toggle-chip:active { transform: none; }
     }
     body.reduce-motion .view.active,
     body.reduce-motion .chat-msg,
@@ -606,6 +608,8 @@
     body.reduce-motion .badge-new,
     body.reduce-motion .sp-shortcut-value.capturing { animation: none !important; }
     body.reduce-motion .tts-switch.on .tts-bars i { animation: none !important; transform: scaleY(0.55) !important; }
+    body.reduce-motion .cfg-btn:active,
+    body.reduce-motion .toggle-chip:active { transform: none; }
 
     .view-header { margin-bottom: var(--space-6); }
     .view-header h2 { font-size: var(--text-lg); font-weight: 600; color: var(--text); letter-spacing: -0.4px; line-height: 1.25; margin-bottom: var(--space-1); }
@@ -728,7 +732,24 @@
       padding: 22px 26px;
     }
 
-    .voz-audio-header { justify-content: space-between; }
+    /* Título de sección con acciones a la derecha (Canales, Voz y audio, Atajos). */
+    .settings-title-split { justify-content: space-between; }
+
+    /* Canales vinculados */
+    .canales-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-2); }
+    .canales-list { display: flex; flex-wrap: wrap; gap: var(--space-1-5); min-height: 20px; margin-bottom: var(--space-1); }
+    .canales-form { flex-direction: column; gap: var(--space-2-5); margin-top: var(--space-2-5); }
+    .canales-platform-row { justify-content: space-between; flex-wrap: wrap; gap: var(--space-2); }
+    .canales-platform-icon,
+    .canales-session-row .icon-inline,
+    .canales-hint .icon-inline { width: 13px; height: 13px; flex-shrink: 0; }
+    .canales-platform-icon { vertical-align: middle; }
+    .canales-session-row { align-items: center; gap: var(--space-1-5); font-size: var(--text-2xs); color: var(--text-muted); }
+    .canales-login-prompt { flex-direction: column; gap: var(--space-2); }
+    .canales-field { flex: 1; }
+    .canales-cancel { padding: 9px 14px; border-radius: var(--radius-pill); font-size: var(--text-xs); }
+    .canales-hint { gap: var(--space-1-5); font-size: var(--text-2xs); line-height: 1.5; color: var(--text-muted); }
+    .canales-hint .icon-inline { opacity: 0.6; }
     .voz-audio-heading { display: inline-flex; align-items: center; gap: var(--space-2); }
     .voz-audio-heading .icon-inline { width: 16px; height: 16px; filter: brightness(0) invert(1); opacity: 0.72; }
 
@@ -954,7 +975,7 @@
       border-radius: var(--radius-pill);
       padding: 6px 14px;
       cursor: pointer;
-      transition: border-color 0.2s, background 0.2s, color 0.2s;
+      transition: border-color var(--dur-2) var(--ease-out), background var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out), transform var(--dur-press) var(--ease-out);
       font-size: var(--text-sm);
       font-weight: 500;
       font-family: 'Inter', sans-serif;
@@ -964,6 +985,7 @@
 
     .toggle-chip input { display: none; }
     .toggle-chip:hover { border-color: var(--text-bright-a30); color: var(--text-bright); }
+    .toggle-chip:active { transform: scale(0.97); }
     .toggle-chip.active, .toggle-chip:has(input:checked) { background: var(--surface-raised); border-color: var(--text-bright-a30); color: var(--text-bright); }
     .toggle-chip.active:hover, .toggle-chip:has(input:checked):hover { border-color: rgba(242, 242, 242, 0.5); background: var(--border-strong); }
     /* chip-dot removido — usado por toggle chips antiguos */
@@ -1518,13 +1540,14 @@
       white-space: nowrap;
       flex-shrink: 0;
       font-family: 'Inter', sans-serif;
-      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      transition: border-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out), background var(--dur-2) var(--ease-out), transform var(--dur-press) var(--ease-out);
       text-decoration: none;
       display: inline-flex;
       align-items: center;
     }
 
     .cfg-btn:hover { border-color: var(--text-bright-a30); color: var(--text-bright); background: var(--surface-raised); }
+    .cfg-btn:active { transform: scale(0.97); }
 
     /* Banderas del selector de idioma: SVG servido, no emoji (Windows no
        renderiza los emoji de bandera y quedaban como "IT", "GB"...). */
@@ -2894,7 +2917,6 @@
     .promo-code-plans .icon-inline { width: 20px; height: 20px; }
 
     /* ── Atajos TTS: pestañas y filas compactas ─────────── */
-    .atajos-section-title { justify-content: space-between; }
     .atajos-section-heading { display: inline-flex; align-items: center; gap: var(--space-2); }
     .atajos-section-heading .icon-inline { width: 16px; height: 16px; filter: brightness(0) invert(1); opacity: 0.72; }
 
