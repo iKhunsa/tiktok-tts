@@ -11,12 +11,15 @@ const DEFAULT_FILE = path.join(RESOURCE_BASE, 'blocked-words.md');
 function blockedWordsFile() { return accountDataPath('blocked-words.json'); }
 function legacyBlockedWordsFile() { return accountDataPath('blocked-words.md'); }
 
+const LIST_ITEM = /^[-*]\s+(.+)$/;
+
+// Markdown (como el blocked-words.md semilla): solo los items de lista, nunca los
+// parrafos de explicacion. Texto plano sin items: una palabra por linea.
 function wordsFromText(content) {
-  return String(content).split(/\r?\n/)
-    .map((line) => line.trim().replace(/^[-*]\s+/, ''))
-    .filter((line) => line && !line.startsWith('#'))
-    .map(normalizeWord)
-    .filter(Boolean);
+  const lines = String(content).split(/\r?\n/).map((line) => line.trim());
+  const items = lines.map((line) => LIST_ITEM.exec(line)).filter(Boolean).map((match) => match[1]);
+  const candidates = items.length ? items : lines.filter((line) => line && !line.startsWith('#'));
+  return candidates.map(normalizeWord).filter(Boolean);
 }
 
 function parseWords(content) {

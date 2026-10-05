@@ -1,16 +1,22 @@
-import { aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
+import { t, aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
 import { moderationSession } from '../../../nucleo/estado/moderacion-sesion.js';
 import { updateQueueBadge } from '../../../nucleo/tts/cola-tts.js';
 import { atraparFoco } from '../../../componentes/atrapar-foco.js';
 import { mountBlockedTab } from './tab-blocked.js';
-import { mountWordsTab } from './tab-words.js';
+import { mountAllowedWordsTab, mountBlockedWordsTab } from './tab-words.js';
 import { mountQueueTab } from './tab-queue.js';
 
 const TABS = [
   { id: 'blocked', icon: 'icons/block.svg', mount: mountBlockedTab },
-  { id: 'words', icon: 'icons/search.svg', mount: mountWordsTab },
+  { id: 'words', icon: 'icons/search.svg', mount: mountBlockedWordsTab },
+  { id: 'allowedWords', icon: 'icons/verified_user.svg', mount: mountAllowedWordsTab },
   { id: 'queue', icon: 'icons/queue.svg', mount: mountQueueTab },
 ];
+
+const TAB_TITLE_KEY = {
+  words: 'modPopup.tab.words',
+  allowedWords: 'modPopup.tab.allowedWords',
+};
 
 let overlay = null;
 const views = {};
@@ -56,6 +62,7 @@ function onTabKey(event) {
 }
 
 function selectTab(id) {
+  overlay.querySelector('#mpTitle').textContent = t(TAB_TITLE_KEY[id] || 'modPopup.title');
   TABS.forEach((tab) => {
     const active = tab.id === id;
     const button = overlay.querySelector(`#mpTab-${tab.id}`);

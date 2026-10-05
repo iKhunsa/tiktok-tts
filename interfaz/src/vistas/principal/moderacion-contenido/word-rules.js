@@ -1,4 +1,4 @@
-import { MAX_WORD_LENGTH, MAX_RENDERED_WORDS } from './chat-guard-options.js';
+import { MAX_WORD_LENGTH } from './chat-guard-options.js';
 
 const OTHER_LIST = { blocked: 'allowed', allowed: 'blocked' };
 const LIST_LABEL_KEY = { blocked: 'chatGuard.words.listBlocked', allowed: 'chatGuard.words.listAllowed' };
@@ -18,10 +18,4 @@ export function findWordProblem({ word, list, words }) {
   const other = OTHER_LIST[list];
   if (words[other].includes(word)) return { key: 'chatGuard.words.conflict', otherListKey: LIST_LABEL_KEY[other] };
   return null;
-}
-
-export function visibleWords(words, query, limit = MAX_RENDERED_WORDS) {
-  const needle = normalizeWord(query);
-  const matching = needle ? words.filter((word) => word.includes(needle)) : words;
-  return { items: matching.slice(0, limit), total: matching.length, truncated: matching.length > limit };
 }

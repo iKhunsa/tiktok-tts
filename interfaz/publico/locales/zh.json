@@ -1429,7 +1429,8 @@
                                     "truncated":  "显示 {shown} / {total}。使用搜索查看其余内容。",
                                     "added":  "词语已添加",
                                     "removed":  "词语已移除",
-                                    "export":  "导出"
+                                    "export":  "导出",
+                                    "viewAll":  "查看所有词语"
                                 },
                       "status":  {
                                      "title":  "过滤器状态",
@@ -1471,6 +1472,7 @@
                      "tab":  {
                                  "blocked":  "本次会话已拦截",
                                  "words":  "已屏蔽词",
+                                 "allowedWords":  "允许的词语",
                                  "queue":  "TTS 队列"
                              },
                      "blocked":  {

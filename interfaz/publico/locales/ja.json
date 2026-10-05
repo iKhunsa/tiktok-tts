@@ -1429,7 +1429,8 @@
                                     "truncated":  "{total} 件中 {shown} 件を表示中。残りは検索で確認してください。",
                                     "added":  "単語を追加しました",
                                     "removed":  "単語を削除しました",
-                                    "export":  "エクスポート"
+                                    "export":  "エクスポート",
+                                    "viewAll":  "すべての単語を見る"
                                 },
                       "status":  {
                                      "title":  "フィルターの状態",
@@ -1471,6 +1472,7 @@
                      "tab":  {
                                  "blocked":  "このセッションでブロック",
                                  "words":  "ブロックした単語",
+                                 "allowedWords":  "許可された単語",
                                  "queue":  "TTSキュー"
                              },
                      "blocked":  {

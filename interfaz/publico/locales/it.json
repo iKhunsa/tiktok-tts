@@ -1429,7 +1429,8 @@
                                     "truncated":  "Mostrate {shown} su {total}. Usa la ricerca per vedere il resto.",
                                     "added":  "Parola aggiunta",
                                     "removed":  "Parola rimossa",
-                                    "export":  "Esporta"
+                                    "export":  "Esporta",
+                                    "viewAll":  "Vedi tutte le parole"
                                 },
                       "status":  {
                                      "title":  "Stato del filtro",
@@ -1471,6 +1472,7 @@
                      "tab":  {
                                  "blocked":  "Bloccati in questa sessione",
                                  "words":  "Parole bloccate",
+                                 "allowedWords":  "Parole consentite",
                                  "queue":  "Coda TTS"
                              },
                      "blocked":  {

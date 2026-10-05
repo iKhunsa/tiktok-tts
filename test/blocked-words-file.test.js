@@ -43,7 +43,9 @@ test('cuenta nueva migra la semilla y JSON corrupto no impide arrancar', () => {
 test('acepta JSON y líneas .md/.txt y escribe de forma atómica', () => {
   const f = files();
   assert.deepEqual(parseWords('[" Uno ", "dos"]'), ['uno', 'dos']);
-  assert.deepEqual(parseWords('- uno\ndos'), ['uno', 'dos']);
+  assert.deepEqual(parseWords('uno\ndos'), ['uno', 'dos']);
+  // Markdown con parrafos (como la semilla real): solo cuentan los items de lista.
+  assert.deepEqual(parseWords('# Titulo\n\nEdita este archivo directamente.\nOtra frase.\n\n- uno\n* dos'), ['uno', 'dos']);
   assert.equal(saveBlockedWordsToFile(new Set(['b', 'a']), createStubLogger(), f.file), true);
   assert.deepEqual(JSON.parse(fs.readFileSync(f.file, 'utf8')), ['a', 'b']);
   assert.equal(fs.existsSync(`${f.file}.tmp`), false);

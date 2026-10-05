@@ -52,7 +52,7 @@ test('cliente: DELETE y POST envian la palabra en el body JSON', async () => {
 });
 
 test('reglas de palabra: vacia, larga, frase en permitidas, duplicada y en conflicto', async () => {
-  const { findWordProblem, normalizeWord, visibleWords } = await front('word-rules.js');
+  const { findWordProblem, normalizeWord } = await front('word-rules.js');
   const words = { blocked: ['malo'], allowed: ['bueno'] };
   const problem = (word, list) => findWordProblem({ word: normalizeWord(word), list, words });
   assert.equal(problem('  ', 'blocked').key, 'chatGuard.words.empty');
@@ -62,24 +62,25 @@ test('reglas de palabra: vacia, larga, frase en permitidas, duplicada y en confl
   assert.equal(problem('MALO', 'blocked').key, 'chatGuard.words.duplicate');
   assert.deepEqual(problem('malo', 'allowed'), { key: 'chatGuard.words.conflict', otherListKey: 'chatGuard.words.listBlocked' });
   assert.equal(problem('nuevo', 'allowed'), null);
-  assert.deepEqual(visibleWords(['ab', 'bc', 'cd'], 'B'), { items: ['ab', 'bc'], total: 2, truncated: false });
-  assert.deepEqual(visibleWords(['a', 'b', 'c'], '', 2), { items: ['a', 'b'], total: 3, truncated: true });
 });
 
-test('listas de palabras: el render memoizado se rehace al cargar el idioma (nunca queda la clave cruda)', async () => {
-  // Bug real: el primer render ocurria antes de cargar el diccionario con idiomaActual() ya en 'es';
-  // al cargarlo, la clave de cache no cambiaba y el estado vacio quedaba como 'chatGuard.words.emptyBlocked'.
+test('listas de palabras: abre el popup sin chips permanentes', async () => {
   const i18n = await import(pathToFileURL(path.join(__dirname, '..', 'interfaz', 'src', 'nucleo', 'i18n', 'i18n.js')).href);
   const source = fs.readFileSync(path.join(FOLDER, 'word-lists.js'), 'utf8');
-  assert.match(source, /const key = `${versionIdioma()}|/, 'la clave de cache debe incluir versionIdioma()');
-  assert.doesNotMatch(source, /WORD_FALLBACKS|Aún no hay/, 'sin textos de UI escritos a mano en el JS');
+  const popupFolder = path.join(__dirname, '..', 'interfaz', 'src', 'vistas', 'principal', 'moderacion-popup');
+  const popup = fs.readFileSync(path.join(popupFolder, 'index.js'), 'utf8');
+  const wordsTab = fs.readFileSync(path.join(popupFolder, 'tab-words.js'), 'utf8');
+  assert.match(source, /openModerationPopup\('words'\)/);
+  assert.doesNotMatch(source, /cg-chips/);
+  assert.match(popup, /id: 'allowedWords'/, 'el modal incluye una pestaña para palabras permitidas');
+  assert.match(popup, /allowedWords: 'modPopup.tab.allowedWords'/);
+  assert.match(wordsTab, /chatGuardApi\.getStatus\(\)/, 'el popup también carga las palabras permitidas');
+  assert.match(wordsTab, /chatGuardApi\.removeAllowedWord/, 'las palabras permitidas conservan la acción de quitar');
 
   const previousFetch = globalThis.fetch;
   globalThis.fetch = async () => jsonResponse(200, require('../interfaz/publico/locales/es.json'));
   try {
-    const before = i18n.versionIdioma();
     await i18n.cargarIdioma('es');
-    assert.equal(i18n.versionIdioma(), before + 1, 'cada carga de diccionario cambia la version');
     assert.equal(i18n.t('chatGuard.words.emptyBlocked'), require('../interfaz/publico/locales/es.json').chatGuard.words.emptyBlocked);
   } finally {
     globalThis.fetch = previousFetch;

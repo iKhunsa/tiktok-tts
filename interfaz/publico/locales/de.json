@@ -1429,7 +1429,8 @@
                                     "truncated":  "{shown} von {total} angezeigt. Nutze die Suche für den Rest.",
                                     "added":  "Wort hinzugefügt",
                                     "removed":  "Wort entfernt",
-                                    "export":  "Exportieren"
+                                    "export":  "Exportieren",
+                                    "viewAll":  "Alle Wörter anzeigen"
                                 },
                       "status":  {
                                      "title":  "Filterstatus",
@@ -1471,6 +1472,7 @@
                      "tab":  {
                                  "blocked":  "In dieser Sitzung blockiert",
                                  "words":  "Blockierte Wörter",
+                                 "allowedWords":  "Erlaubte Wörter",
                                  "queue":  "TTS-Warteschlange"
                              },
                      "blocked":  {

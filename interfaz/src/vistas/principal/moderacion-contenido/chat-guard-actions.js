@@ -17,7 +17,6 @@ export function initialState() {
     status: null,
     words: { blocked: [], allowed: [] },
     tab: 'blocked',
-    query: '',
     wordProblem: null,
     langProblem: false,
     saving: false,
@@ -107,11 +106,7 @@ export function createActions({ store, api, notify }) {
   }
 
   function setTab(tab) {
-    store.setState({ tab, query: '', wordProblem: null });
-  }
-
-  function setQuery(query) {
-    store.setState({ query });
+    store.setState({ tab, wordProblem: null });
   }
 
   function clearWordProblem() {
@@ -164,6 +159,6 @@ export function createActions({ store, api, notify }) {
 
   return {
     load, refreshStatus, setEnabled, setMode, setLevel, setCustomOption, setLanguage, setLangsAuto,
-    setTab, setQuery, clearWordProblem, addWord, removeWord, replaceBlockedWords, exportWords, saveConfig,
+    setTab, clearWordProblem, addWord, removeWord, replaceBlockedWords, exportWords, saveConfig,
   };
 }

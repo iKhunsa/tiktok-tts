@@ -1,28 +1,12 @@
-import { t, versionIdioma, aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
+import { t, aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
+import { openModerationPopup } from '../moderacion-popup/index.js';
 import { WORD_LISTS, MAX_WORD_LENGTH } from './chat-guard-options.js';
-import { visibleWords } from './word-rules.js';
 
 const TAB_ICON = { blocked: 'icons/block.svg', allowed: 'icons/verified_user.svg' };
 const tabMarkup = (list) => `
   <button type="button" class="cg-tab" role="tab" id="cgTab-${list}" data-list="${list}" aria-controls="cgWordsPanel">
     <img class="icon-inline" src="${TAB_ICON[list]}" alt=""><span class="cg-tab-label"></span>
   </button>`;
-
-function buildChip(word, list) {
-  const item = document.createElement('li');
-  item.className = 'cg-chip';
-  const label = document.createElement('span');
-  label.textContent = word;
-  const remove = document.createElement('button');
-  remove.type = 'button';
-  remove.className = 'cg-chip-remove';
-  remove.dataset.word = word;
-  remove.dataset.list = list;
-  remove.setAttribute('aria-label', t('chatGuard.words.remove', { word }));
-  remove.innerHTML = '<img class="icon-inline" src="icons/close.svg" alt="">';
-  item.append(label, remove);
-  return item;
-}
 
 export function mountWordLists(container, { store, actions }) {
   container.innerHTML = `
@@ -41,14 +25,7 @@ export function mountWordLists(container, { store, actions }) {
         <button type="submit" class="cfg-btn cg-add-btn"><img class="icon-inline" src="icons/add.svg" alt=""><span data-i18n="chatGuard.words.add"></span></button>
       </form>
       <div class="cg-problem" id="cgWordProblem" role="alert" hidden></div>
-      <div class="cg-search">
-        <img class="icon-inline" src="icons/search.svg" alt="">
-        <label class="cg-sr-only" for="cgWordSearch" data-i18n="chatGuard.words.search"></label>
-        <input type="search" id="cgWordSearch" class="cg-input" autocomplete="off" data-i18n-placeholder="chatGuard.words.search">
-      </div>
-      <ul class="cg-chips"></ul>
-      <div class="cg-empty" hidden><img class="icon-inline" src="icons/search_off.svg" alt=""><span></span></div>
-      <div class="cg-hint" id="cgWordsTruncated" hidden></div>
+      <button type="button" class="cfg-btn small" id="cgWordsViewAll" data-i18n="chatGuard.words.viewAll"></button>
     </div>`;
   aplicarTraducciones(container);
 
@@ -56,12 +33,7 @@ export function mountWordLists(container, { store, actions }) {
   const panel = container.querySelector('#cgWordsPanel');
   const form = container.querySelector('.cg-add');
   const input = container.querySelector('#cgWordInput');
-  const search = container.querySelector('#cgWordSearch');
   const problem = container.querySelector('#cgWordProblem');
-  const chips = container.querySelector('.cg-chips');
-  const empty = container.querySelector('.cg-empty');
-  const truncated = container.querySelector('#cgWordsTruncated');
-  let renderedKey = '';
 
   const currentList = () => store.getState().tab;
 
@@ -78,7 +50,6 @@ export function mountWordLists(container, { store, actions }) {
   });
 
   input.addEventListener('input', () => actions.clearWordProblem());
-  search.addEventListener('input', () => actions.setQuery(search.value));
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (await actions.addWord(currentList(), input.value)) input.value = '';
@@ -92,15 +63,7 @@ export function mountWordLists(container, { store, actions }) {
     link.click();
     URL.revokeObjectURL(url);
   });
-
-  chips.addEventListener('click', async (event) => {
-    const remove = event.target.closest('.cg-chip-remove');
-    if (!remove) return;
-    const index = [...chips.children].indexOf(remove.parentElement);
-    if (!(await actions.removeWord(remove.dataset.list, remove.dataset.word))) return;
-    const buttons = chips.querySelectorAll('.cg-chip-remove');
-    (buttons[Math.min(index, buttons.length - 1)] || input).focus();
-  });
+  container.querySelector('#cgWordsViewAll').addEventListener('click', () => openModerationPopup('words'));
 
   function renderTabs(state) {
     for (const tab of tabs) {
@@ -122,30 +85,13 @@ export function mountWordLists(container, { store, actions }) {
     input.setAttribute('aria-invalid', String(Boolean(found)));
   }
 
-  function renderChips(state) {
-    const words = state.words[state.tab];
-    // La version del diccionario entra en la clave: el primer render puede ocurrir antes
-    // de cargar el idioma y, sin esto, el texto vacio y los aria-label quedaban con la clave cruda.
-    const key = `${versionIdioma()}|${state.tab}|${state.query}|${words.join('\n')}`;
-    if (key === renderedKey) return;
-    renderedKey = key;
-    const { items, total, truncated: cut } = visibleWords(words, state.query);
-    chips.replaceChildren(...items.map((word) => buildChip(word, state.tab)));
-    const emptyKey = words.length === 0 ? `chatGuard.words.empty${state.tab === 'blocked' ? 'Blocked' : 'Allowed'}` : 'chatGuard.words.noResults';
-    empty.hidden = items.length > 0;
-    empty.querySelector('span').textContent = t(emptyKey);
-    truncated.hidden = !cut;
-    truncated.textContent = cut ? t('chatGuard.words.truncated', { shown: items.length, total }) : '';
-  }
-
   function render(state) {
     const disabled = state.phase !== 'ready';
     container.setAttribute('aria-busy', String(state.phase === 'loading'));
-    [input, search, form.querySelector('button')].forEach((control) => { control.disabled = disabled; });
+    [input, form.querySelector('button')].forEach((control) => { control.disabled = disabled; });
     renderTabs(state);
     renderProblem(state);
-    renderChips(state);
-    if (search.value !== state.query) search.value = state.query;
+    container.querySelector('#cgWordsViewAll').disabled = disabled;
   }
 
   render(store.getState());

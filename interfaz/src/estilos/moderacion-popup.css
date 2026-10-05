@@ -10,7 +10,8 @@
 .queue-badge-link:active { transform: scale(0.97); }
 .queue-badge-link:focus-visible, .mp-tab:focus-visible, .mp-input:focus-visible, .mp-clear:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-.mp-dialog { max-width: 680px; padding: 28px 28px 20px; display: flex; flex-direction: column; gap: 12px; }
+/* Alto fijo: al cambiar de pestaña el modal no salta de posición. */
+.mp-dialog { max-width: 680px; height: min(640px, 86vh); padding: 28px 28px 20px; display: flex; flex-direction: column; gap: 12px; }
 .mp-dialog h2 { margin: 0; }
 .mp-overlay.show .mp-dialog { animation: mpIn 0.2s var(--ease-out); }
 @keyframes mpIn { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
@@ -26,7 +27,7 @@
 .mp-tab[aria-selected="true"] { background: var(--surface-raised); border-color: var(--text-bright-a30); color: var(--text-bright); }
 .mp-tab:active { transform: scale(0.97); }
 
-.mp-panel { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+.mp-panel { display: flex; flex-direction: column; gap: 10px; min-height: 0; flex: 1; }
 .mp-panel[hidden] { display: none; }
 .mp-hint { margin: 0; font-size: var(--text-2xs); color: var(--text-muted); line-height: 1.45; }
 .mp-summary { font-size: var(--text-xs); color: var(--text-bright); }
@@ -58,9 +59,14 @@
 .mp-row-text { margin: 6px 0 4px; font-size: var(--text-sm); color: var(--text-bright); overflow-wrap: anywhere; }
 .mp-row-why { font-size: var(--text-2xs); color: var(--text-muted); }
 .mp-chip {
-  padding: 3px 12px; border-radius: var(--radius-pill); background: var(--surface-raised);
-  border: 1px solid var(--border); font-size: var(--text-xs); color: var(--text-bright); overflow-wrap: anywhere;
+  display: inline-flex; align-items: center; gap: 4px; padding: 3px 4px 3px 12px;
+  border-radius: var(--radius-pill); background: var(--surface-raised); border: 1px solid var(--border);
+  font-size: var(--text-xs); color: var(--text-bright); overflow-wrap: anywhere;
 }
+.mp-chip-remove { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; }
+.mp-chip-remove .icon-inline { width: 14px; height: 14px; opacity: 0.7; }
+.mp-chip-remove:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
+.mp-chip-remove:disabled { opacity: 0.45; cursor: default; }
 .mp-empty { padding: 18px 0; text-align: center; font-size: var(--text-sm); color: var(--text-muted); }
 
 .mp-stats { margin: 0; display: grid; gap: 8px; }
@@ -71,6 +77,7 @@
 @media (hover: hover) and (pointer: fine) {
   .queue-badge-link:hover { color: var(--text-bright); }
   .mp-tab:hover { border-color: var(--text-bright-a30); color: var(--text-bright); }
+  .mp-chip-remove:hover:not(:disabled) { background: var(--brand-a12); }
 }
 
 @media (prefers-reduced-motion: reduce) {

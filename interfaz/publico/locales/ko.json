@@ -1429,7 +1429,8 @@
                                     "truncated":  "{total}개 중 {shown}개 표시 중. 나머지는 검색으로 확인하세요.",
                                     "added":  "단어를 추가했습니다",
                                     "removed":  "단어를 삭제했습니다",
-                                    "export":  "내보내기"
+                                    "export":  "내보내기",
+                                    "viewAll":  "모든 단어 보기"
                                 },
                       "status":  {
                                      "title":  "필터 상태",
@@ -1471,6 +1472,7 @@
                      "tab":  {
                                  "blocked":  "이번 세션에서 차단됨",
                                  "words":  "차단된 단어",
+                                 "allowedWords":  "허용된 단어",
                                  "queue":  "TTS 대기열"
                              },
                      "blocked":  {

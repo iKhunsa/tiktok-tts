@@ -29,5 +29,4 @@ export const SPANISH_LOCALES = ['es', 'es_419', 'es_ar', 'es_cl', 'es_co', 'es_e
 
 export const CUSTOM_OPTIONS = ['tricks', 'similar'];
 export const MAX_WORD_LENGTH = 40;
-export const MAX_RENDERED_WORDS = 200;
 export const WORD_LISTS = ['blocked', 'allowed'];
