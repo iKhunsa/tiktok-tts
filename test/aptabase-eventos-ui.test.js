@@ -53,3 +53,25 @@ test('fallo de conexión: solo plataforma y código', () => {
   bus.emit('log:entry', { event: 'canales.conexion.fallida', data: { platform: 'tiktok', code: 'X', error: 'canal @alguien' } });
   assert.deepEqual(ultimo(), ['platform_connect_failed', { platform: 'tiktok', code: 'X' }]);
 });
+
+test('account_deleted sale sin props', () => {
+  bus.emit('log:entry', { event: 'auth.cuenta.eliminada', data: {} });
+  assert.deepEqual(ultimo(), ['account_deleted', {}]);
+});
+
+test('checkout_started lleva plan e intervalo de lista cerrada', () => {
+  bus.emit('log:entry', { event: 'auth.checkout.solicitado', data: { plan: 'sin-promos', intervalo: 'month' } });
+  assert.deepEqual(ultimo(), ['checkout_started', { plan: 'sin-promos', intervalo: 'month' }]);
+  bus.emit('log:entry', { event: 'auth.checkout.solicitado', data: { plan: 'texto libre', intervalo: 'semana' } });
+  assert.deepEqual(ultimo(), ['checkout_started', { plan: 'otro', intervalo: 'otro' }]);
+});
+
+test('promos del chat y del código: cada entrada tiene su evento', () => {
+  bus.emit('ui:discord-joined', 'chat_banner_4');
+  assert.deepEqual(ultimo(), ['discord_join_clicked', { source: 'chat_banner_4' }]);
+  for (const [bus_, nombre] of [['ui:promo-code-opened', 'promo_code_opened'], ['ui:promo-code-copied', 'promo_code_copied'],
+    ['ui:promo-plans-clicked', 'promo_plans_clicked'], ['ui:tiktok-banner-clicked', 'tiktok_banner_clicked']]) {
+    bus.emit(bus_);
+    assert.deepEqual(ultimo(), [nombre, {}]);
+  }
+});

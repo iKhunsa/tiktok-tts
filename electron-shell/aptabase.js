@@ -58,6 +58,9 @@ const TOURS = new Set([
   'overlays', 'chat_actions', 'voice', 'shortcuts', 'soundpad', 'clips', 'moderacion', 'plugin_store', 'channels', 'music_bot',
 ]);
 const ESTADOS_EFECTOS = new Set(['on', 'off']);
+// Embudo de planes (auth.checkout.solicitado): valores que acepta el servicio de cuentas.
+const PLANES = new Set(['pro', 'sin-promos']);
+const INTERVALOS = new Set(['month', 'year']);
 // [evento del bus, evento Aptabase, prop, valores permitidos, fallback si no está (null = descartar)]
 const EVENTOS_UI = [
   ['ui:discord-opened', 'discord_modal_opened', 'source', ORIGENES_DISCORD, 'otro'],
@@ -309,7 +312,14 @@ function attach(bus, logger) {
           break;
         }
         case 'auth.checkout.solicitado': {
-          track('checkout_started', {});
+          track('checkout_started', {
+            plan: PLANES.has(d.plan) ? d.plan : 'otro',
+            intervalo: INTERVALOS.has(d.intervalo) ? d.intervalo : 'otro',
+          });
+          break;
+        }
+        case 'auth.cuenta.eliminada': {
+          track('account_deleted', {});
           break;
         }
         case 'auth.gating.bloqueado': {

@@ -93,9 +93,10 @@ function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
     const token = estado.getToken();
     if (!token) return res.status(401).json({ error: 'No autenticado', errorKey: 'errors.unauthorized' });
     const body = req.body || {};
-    const r = await cliente.checkout(token, { plan: body.plan || 'pro', intervalo: intervaloValido(body.intervalo) });
+    const pedido = { plan: body.plan || 'pro', intervalo: intervaloValido(body.intervalo) };
+    const r = await cliente.checkout(token, pedido);
     if (!r.ok) return propagarError(res, r, logger);
-    logger.log('info', 'auth', 'auth/routes.js#checkout', 'auth.checkout.solicitado', 'Checkout iniciado', {});
+    logger.log('info', 'auth', 'auth/routes.js#checkout', 'auth.checkout.solicitado', 'Checkout iniciado', pedido);
     res.json({ url: r.body.url });
   });
 
