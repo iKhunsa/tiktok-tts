@@ -216,7 +216,7 @@
                      "shortcutsTabTtsChat":  "TTS・チャット",
                      "shortcutsTabMusic":  "ボットの音楽",
                      "shortcutsTabGeneral":  "一般",
-                     "shortcutsGeneralEmpty":  "設定できる一般ショートカットはありません。",
+                     "shortcutsGeneralEmpty":  "ショートカットは今後追加予定です。",
                      "channels":  "連携チャンネル",
                      "advanced":  "詳細設定",
                      "obs":  "OBS WebSocket 接続",
