@@ -1469,6 +1469,8 @@
                                 }
                   },
     "queueBadge":  {
+                       "queueEmpty":  "음성 대기열 비어 있음",
+                       "blockedNone":  "차단 없음",
                        "queueOne":  "대기열: {n}개",
                        "queueMany":  "대기열: {n}개",
                        "dropped":  "버려짐: {n}",

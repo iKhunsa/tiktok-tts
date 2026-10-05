@@ -1469,6 +1469,8 @@
                                 }
                   },
     "queueBadge":  {
+                       "queueEmpty":  "Sprachwarteschlange leer",
+                       "blockedNone":  "keine blockiert",
                        "queueOne":  "Warteschlange: {n} Nachricht",
                        "queueMany":  "Warteschlange: {n} Nachrichten",
                        "dropped":  "verworfen: {n}",

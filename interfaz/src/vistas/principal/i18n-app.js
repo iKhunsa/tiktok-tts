@@ -1,7 +1,7 @@
 import { cargarPlantillas } from './plantillas-anuncio.js';
 import { cargarIdioma, setIdioma, idiomaGuardado, aplicarTraducciones, detectarIdiomaNavegador, t } from '../../nucleo/i18n/i18n.js';
 import { updateChatTogglesSummary, renderChatTogglesState } from './toggles-chat.js';
-import { ttsPaused } from '../../nucleo/tts/cola-tts.js';
+import { ttsPaused, updateQueueBadge } from '../../nucleo/tts/cola-tts.js';
 import { modReload } from './moderacion.js';
 import { spRender } from './soundpad.js';
 import { renderClipsHistory } from './clips.js';
@@ -53,6 +53,7 @@ function retranslateDynamic() {
   safe(updatePlaylistInfo);
   safe(musicRenderQueue);
   safe(renderCuentaPanel);
+  safe(updateQueueBadge); // sin mensajes nada lo repinta: quedaba con las claves si dibujaba antes del idioma
   safe(retranslateModeracionContenido);
   safe(renderizarTodosLosCamposOverlay);
   // Boton pausa TTS: su label se setea sin data-i18n; refrescar segun estado.

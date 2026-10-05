@@ -1469,6 +1469,8 @@
                                 }
                   },
     "queueBadge":  {
+                       "queueEmpty":  "Cola de voz vacía",
+                       "blockedNone":  "sin bloqueados",
                        "queueOne":  "Cola: {n} mensaje",
                        "queueMany":  "Cola: {n} mensajes",
                        "dropped":  "descartados: {n}",

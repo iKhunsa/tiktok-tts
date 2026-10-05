@@ -1469,6 +1469,8 @@
                                 }
                   },
     "queueBadge":  {
+                       "queueEmpty":  "语音队列为空",
+                       "blockedNone":  "无拦截",
                        "queueOne":  "队列：{n} 条消息",
                        "queueMany":  "队列：{n} 条消息",
                        "dropped":  "已丢弃：{n}",

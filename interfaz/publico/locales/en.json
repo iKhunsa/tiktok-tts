@@ -1469,6 +1469,8 @@
                                 }
                   },
     "queueBadge":  {
+                       "queueEmpty":  "Voice queue empty",
+                       "blockedNone":  "none blocked",
                        "queueOne":  "Queue: {n} message",
                        "queueMany":  "Queue: {n} messages",
                        "dropped":  "discarded: {n}",

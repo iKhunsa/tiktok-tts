@@ -1469,6 +1469,8 @@
                                 }
                   },
     "queueBadge":  {
+                       "queueEmpty":  "Fila de voz vazia",
+                       "blockedNone":  "nenhum bloqueado",
                        "queueOne":  "Fila: {n} mensagem",
                        "queueMany":  "Fila: {n} mensagens",
                        "dropped":  "descartados: {n}",

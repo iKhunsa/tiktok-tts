@@ -1469,6 +1469,8 @@
                                 }
                   },
     "queueBadge":  {
+                       "queueEmpty":  "音声キューは空です",
+                       "blockedNone":  "ブロックなし",
                        "queueOne":  "キュー：{n} 件",
                        "queueMany":  "キュー：{n} 件",
                        "dropped":  "破棄：{n}",

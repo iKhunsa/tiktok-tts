@@ -1469,6 +1469,8 @@
                                 }
                   },
     "queueBadge":  {
+                       "queueEmpty":  "File vocale vide",
+                       "blockedNone":  "aucun bloqué",
                        "queueOne":  "File : {n} message",
                        "queueMany":  "File : {n} messages",
                        "dropped":  "écartés : {n}",

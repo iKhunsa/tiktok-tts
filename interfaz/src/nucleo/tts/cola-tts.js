@@ -409,9 +409,11 @@ export function updateQueueBadge() {
   const el = document.getElementById('queueBadge');
   if (!el) return;
   const { blocked, shadow } = moderationSession.counts();
-  const parts = [document.createTextNode(t(speechQueue.length === 1 ? 'queueBadge.queueOne' : 'queueBadge.queueMany', { n: speechQueue.length }))];
+  const claveCola = speechQueue.length === 0 ? 'queueBadge.queueEmpty' : speechQueue.length === 1 ? 'queueBadge.queueOne' : 'queueBadge.queueMany';
+  const parts = [document.createTextNode(t(claveCola, { n: speechQueue.length }))];
   if (ttsDroppedCount > 0) parts.push(badgeLink(t('queueBadge.dropped', { n: ttsDroppedCount }), t('queueBadge.droppedHint'), 'queue'));
-  parts.push(badgeLink(t('queueBadge.blocked', { n: blocked }), t('queueBadge.blockedHint'), 'blocked'));
+  // Sin bloqueados no hay nada que abrir: texto plano en vez de un enlace a una lista vacia.
+  parts.push(blocked > 0 ? badgeLink(t('queueBadge.blocked', { n: blocked }), t('queueBadge.blockedHint'), 'blocked') : document.createTextNode(t('queueBadge.blockedNone')));
   if (shadow > 0) parts.push(badgeLink(t('queueBadge.shadow', { n: shadow }), t('queueBadge.shadowHint'), 'blocked'));
   if (ttsErrorCount > 0) parts.push(document.createTextNode(t('queueBadge.ttsErrors', { n: ttsErrorCount, max: TTS_MAX_ERRORS })));
   const nodes = parts.flatMap((part, i) => (i ? [document.createTextNode(' · '), part] : [part]));
