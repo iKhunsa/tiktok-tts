@@ -850,144 +850,137 @@
 
       <!-- KEYBOARD SHORTCUTS SECTION -->
       <div class="settings-section" id="settingsSectionShortcuts">
-        <div class="settings-section-title settings-row-flex" style="justify-content:space-between;">
-          <span data-i18n="settings.shortcuts">Atajos de teclado</span>
+        <div class="settings-section-title settings-row-flex atajos-section-title">
+          <span class="atajos-section-heading"><img class="icon-inline" src="icons/keyboard.svg" alt=""> <span data-i18n="settings.shortcuts">Atajos de teclado (TTS)</span></span>
           <button class="cfg-btn" id="btnShortcutsTour" onclick="startShortcutsTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
         </div>
-        <div class="settings-panel">
-          <div class="setting-group" id="scGroupPauseBtn" style="gap:8px;">
-            <label style="margin-bottom:2px;display:flex;align-items:center;gap:6px;">
-              <img class="icon-inline" src="icons/volume_off.svg" alt="" onerror="this.style.display='none'">
-              <span data-i18n="label.playbackControl">Control de reproducción</span>
-            </label>
-            <button id="btnPauseTTS" onclick="togglePauseTts()"
-              style="width:100%;padding:10px 16px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:2px solid var(--accent);background:rgba(240,33,58,0.12);color:var(--accent);transition:all .2s;letter-spacing:.3px;">
-              <span data-i18n="btn.pauseTTS">⏸ Pausar TTS</span>
-            </button>
-          </div>
-          <div class="setting-group" id="scGroupPause">
-            <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
-              <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
-              <span data-i18n="label.pauseShortcut">Pausar / Reanudar TTS</span>
-            </label>
-            <div class="settings-row-flex">
-              <input id="pauseShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" placeholder="Clic aquí y presiona teclas..."
-  onclick="startCapturingShortcut('pause')"
-                style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
-              <button onclick="clearTtsShortcut('pause')"
-                style="padding:8px 12px;border-radius:8px;font-size:12px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--text-muted);cursor:pointer;" data-i18n="btn.clearShortcut">
-                ✕ Limpiar
-              </button>
+        <div class="seg-control atajos-tabs" role="tablist" aria-label="Atajos de teclado" data-i18n-aria-label="settings.shortcuts">
+          <button type="button" class="seg-btn active" id="atajosTabTts" role="tab" aria-selected="true" aria-controls="atajosPanelTts" tabindex="0">
+            <img class="icon-inline" src="icons/record_voice_over.svg" alt=""> <span data-i18n="settings.shortcutsTabTtsChat">TTS y chat</span>
+          </button>
+          <button type="button" class="seg-btn" id="atajosTabMusic" role="tab" aria-selected="false" aria-controls="atajosPanelMusic" tabindex="-1">
+            <img class="icon-inline" src="icons/music_note.svg" alt=""> <span data-i18n="settings.shortcutsTabMusic">Música del bot</span>
+          </button>
+          <button type="button" class="seg-btn" id="atajosTabGeneral" role="tab" aria-selected="false" aria-controls="atajosPanelGeneral" tabindex="-1">
+            <img class="icon-inline" src="icons/settings.svg" alt=""> <span data-i18n="settings.shortcutsTabGeneral">General</span>
+          </button>
+        </div>
+        <div class="settings-panel atajos-panel">
+          <div class="atajos-tab-panel" id="atajosPanelTts" role="tabpanel" aria-labelledby="atajosTabTts">
+            <div class="setting-group atajos-playback-row" id="scGroupPauseBtn">
+              <div class="atajos-action">
+                <img class="icon-inline atajos-action-icon" src="icons/volume_off.svg" alt="" onerror="this.style.display='none'">
+                <label data-i18n="label.playbackControl">Control de reproducción</label>
+              </div>
+              <button class="atajos-pause-button" id="btnPauseTTS" onclick="togglePauseTts()" data-i18n="btn.pauseTTS">Pausar TTS</button>
             </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
-              <button onclick="applyTtsShortcutPreset('pause', 'F8')"
-                style="padding:6px 10px;border-radius:8px;font-size:11px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--text-secondary);cursor:pointer;" data-i18n="btn.useF8">
-                Usar F8
-              </button>
-              <button onclick="applyTtsShortcutPreset('pause', 'MediaPlayPause')"
-                style="padding:6px 10px;border-radius:8px;font-size:11px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--text-secondary);cursor:pointer;" data-i18n="btn.usePlayPause">
-                Usar tecla Play/Pausa
-              </button>
+            <div class="setting-group atajos-row" id="scGroupPause">
+              <div class="atajos-action">
+                <img class="icon-inline atajos-action-icon" src="icons/pause.svg" alt="" onerror="this.style.display='none'">
+                <div class="atajos-action-copy">
+                  <label data-i18n="label.pauseShortcut">Pausar / Reanudar TTS</label>
+                  <div class="atajos-hint" id="pauseShortcutHint">
+                    <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span class="atajos-active-key">—</span>
+                  </div>
+                </div>
+              </div>
+              <div class="atajos-controls">
+                <input class="atajos-capture" id="pauseShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" data-i18n-aria-label="label.pauseShortcut" placeholder="Clic aquí y presiona teclas..." onclick="startCapturingShortcut('pause')" />
+                <button type="button" class="atajos-clear" onclick="clearTtsShortcut('pause')">
+                  <img class="icon-inline" src="icons/close.svg" alt=""><span class="atajos-visually-hidden" data-i18n="btn.clearShortcut">Limpiar</span>
+                </button>
+                <div class="atajos-presets">
+                  <button type="button" class="atajos-preset" onclick="applyTtsShortcutPreset('pause', 'F8')" data-i18n="btn.useF8">Usar F8</button>
+                  <button type="button" class="atajos-preset" onclick="applyTtsShortcutPreset('pause', 'MediaPlayPause')" data-i18n="btn.usePlayPause">Usar tecla Play/Pausa</button>
+                </div>
+              </div>
             </div>
-            <div id="pauseShortcutHint" style="font-size:11px;color:var(--text-muted);margin-top:4px;">
-              <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
+            <div class="setting-group atajos-row" id="scGroupSkip">
+              <div class="atajos-action">
+                <img class="icon-inline atajos-action-icon" src="icons/skip_next.svg" alt="" onerror="this.style.display='none'">
+                <div class="atajos-action-copy">
+                  <label data-i18n="label.skipShortcut">Saltar mensaje actual</label>
+                  <div class="atajos-hint" id="skipShortcutHint">
+                    <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span class="atajos-active-key">—</span>
+                  </div>
+                </div>
+              </div>
+              <div class="atajos-controls">
+                <input class="atajos-capture" id="skipShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" data-i18n-aria-label="label.skipShortcut" placeholder="Clic aquí y presiona teclas..." onclick="startCapturingShortcut('skip')" />
+                <button type="button" class="atajos-clear" onclick="clearTtsShortcut('skip')">
+                  <img class="icon-inline" src="icons/close.svg" alt=""><span class="atajos-visually-hidden" data-i18n="btn.clearShortcut">Limpiar</span>
+                </button>
+                <div class="atajos-presets">
+                  <button type="button" class="atajos-preset" onclick="applyTtsShortcutPreset('skip', 'F9')">F9</button>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="setting-group" id="scGroupSkip">
-            <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
-              <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
-              <span data-i18n="label.skipShortcut">Saltar mensaje actual</span>
-            </label>
-            <div class="settings-row-flex">
-              <input id="skipShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" placeholder="Clic aquí y presiona teclas..."
-  onclick="startCapturingShortcut('skip')"
-                style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
-              <button onclick="clearTtsShortcut('skip')"
-                style="padding:8px 12px;border-radius:8px;font-size:12px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--text-muted);cursor:pointer;" data-i18n="btn.clearShortcut">
-                ✕ Limpiar
-              </button>
-            </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
-              <button onclick="applyTtsShortcutPreset('skip', 'F9')"
-                style="padding:6px 10px;border-radius:8px;font-size:11px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--text-secondary);cursor:pointer;">
-                F9
-              </button>
-            </div>
-            <div id="skipShortcutHint" style="font-size:11px;color:var(--text-muted);margin-top:4px;">
-              <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
-            </div>
-          </div>
-          <div class="setting-group" id="scGroupClear">
-            <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
-              <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
-              <span data-i18n="label.clearChatAndQueueShortcut">Limpiar chat y cola</span>
-            </label>
-            <div class="settings-row-flex">
-              <input id="clearShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" placeholder="Clic aquí y presiona teclas..."
-  onclick="startCapturingShortcut('clear')"
-                style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
-              <button onclick="clearTtsShortcut('clear')"
-                style="padding:8px 12px;border-radius:8px;font-size:12px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--text-muted);cursor:pointer;" data-i18n="btn.clearShortcut">
-                ✕ Limpiar
-              </button>
-            </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
-              <button onclick="applyTtsShortcutPreset('clear', 'F10')"
-                style="padding:6px 10px;border-radius:8px;font-size:11px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--text-secondary);cursor:pointer;">
-                F10
-              </button>
-            </div>
-            <div id="clearShortcutHint" style="font-size:11px;color:var(--text-muted);margin-top:4px;">
-              <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
+            <div class="setting-group atajos-row" id="scGroupClear">
+              <div class="atajos-action">
+                <img class="icon-inline atajos-action-icon" src="icons/delete.svg" alt="" onerror="this.style.display='none'">
+                <div class="atajos-action-copy">
+                  <label data-i18n="label.clearChatAndQueueShortcut">Limpiar chat y cola</label>
+                  <div class="atajos-hint" id="clearShortcutHint">
+                    <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span class="atajos-active-key">—</span>
+                  </div>
+                </div>
+              </div>
+              <div class="atajos-controls">
+                <input class="atajos-capture" id="clearShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" data-i18n-aria-label="label.clearChatAndQueueShortcut" placeholder="Clic aquí y presiona teclas..." onclick="startCapturingShortcut('clear')" />
+                <button type="button" class="atajos-clear" onclick="clearTtsShortcut('clear')">
+                  <img class="icon-inline" src="icons/close.svg" alt=""><span class="atajos-visually-hidden" data-i18n="btn.clearShortcut">Limpiar</span>
+                </button>
+                <div class="atajos-presets">
+                  <button type="button" class="atajos-preset" onclick="applyTtsShortcutPreset('clear', 'F10')">F10</button>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="setting-group" id="scGroupMusicPause">
-            <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
-              <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
-              <span data-i18n="label.musicPauseShortcut">Pausar/Reanudar música del bot</span>
-            </label>
-            <div class="settings-row-flex">
-              <input id="musicPauseShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" placeholder="Clic aquí y presiona teclas..."
-  onclick="startCapturingShortcut('musicPause')"
-                style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
-              <button onclick="clearTtsShortcut('musicPause')"
-                style="padding:8px 12px;border-radius:8px;font-size:12px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--text-muted);cursor:pointer;" data-i18n="btn.clearShortcut">
-                ✕ Limpiar
-              </button>
+          <div class="atajos-tab-panel" id="atajosPanelMusic" role="tabpanel" aria-labelledby="atajosTabMusic" hidden>
+            <div class="setting-group atajos-row" id="scGroupMusicPause">
+              <div class="atajos-action">
+                <img class="icon-inline atajos-action-icon" src="icons/pause.svg" alt="" onerror="this.style.display='none'">
+                <div class="atajos-action-copy">
+                  <label data-i18n="label.musicPauseShortcut">Pausar/Reanudar música del bot</label>
+                  <div class="atajos-hint" id="musicPauseShortcutHint">
+                    <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span class="atajos-active-key">—</span>
+                  </div>
+                </div>
+              </div>
+              <div class="atajos-controls">
+                <input class="atajos-capture" id="musicPauseShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" data-i18n-aria-label="label.musicPauseShortcut" placeholder="Clic aquí y presiona teclas..." onclick="startCapturingShortcut('musicPause')" />
+                <button type="button" class="atajos-clear" onclick="clearTtsShortcut('musicPause')">
+                  <img class="icon-inline" src="icons/close.svg" alt=""><span class="atajos-visually-hidden" data-i18n="btn.clearShortcut">Limpiar</span>
+                </button>
+                <div class="atajos-presets">
+                  <button type="button" class="atajos-preset" onclick="applyTtsShortcutPreset('musicPause', 'F11')">F11</button>
+                </div>
+              </div>
             </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
-              <button onclick="applyTtsShortcutPreset('musicPause', 'F11')"
-                style="padding:6px 10px;border-radius:8px;font-size:11px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--text-secondary);cursor:pointer;">
-                F11
-              </button>
-            </div>
-            <div id="musicPauseShortcutHint" style="font-size:11px;color:var(--text-muted);margin-top:4px;">
-              <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
+            <div class="setting-group atajos-row" id="scGroupMusicSkip">
+              <div class="atajos-action">
+                <img class="icon-inline atajos-action-icon" src="icons/skip_next.svg" alt="" onerror="this.style.display='none'">
+                <div class="atajos-action-copy">
+                  <label data-i18n="label.musicSkipShortcut">Saltar canción del bot</label>
+                  <div class="atajos-hint" id="musicSkipShortcutHint">
+                    <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span class="atajos-active-key">—</span>
+                  </div>
+                </div>
+              </div>
+              <div class="atajos-controls">
+                <input class="atajos-capture" id="musicSkipShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" data-i18n-aria-label="label.musicSkipShortcut" placeholder="Clic aquí y presiona teclas..." onclick="startCapturingShortcut('musicSkip')" />
+                <button type="button" class="atajos-clear" onclick="clearTtsShortcut('musicSkip')">
+                  <img class="icon-inline" src="icons/close.svg" alt=""><span class="atajos-visually-hidden" data-i18n="btn.clearShortcut">Limpiar</span>
+                </button>
+                <div class="atajos-presets">
+                  <button type="button" class="atajos-preset" onclick="applyTtsShortcutPreset('musicSkip', 'F12')">F12</button>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="setting-group" id="scGroupMusicSkip">
-            <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
-              <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
-              <span data-i18n="label.musicSkipShortcut">Saltar canción del bot</span>
-            </label>
-            <div class="settings-row-flex">
-              <input id="musicSkipShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" placeholder="Clic aquí y presiona teclas..."
-  onclick="startCapturingShortcut('musicSkip')"
-                style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
-              <button onclick="clearTtsShortcut('musicSkip')"
-                style="padding:8px 12px;border-radius:8px;font-size:12px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--text-muted);cursor:pointer;" data-i18n="btn.clearShortcut">
-                ✕ Limpiar
-              </button>
-            </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
-              <button onclick="applyTtsShortcutPreset('musicSkip', 'F12')"
-                style="padding:6px 10px;border-radius:8px;font-size:11px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--text-secondary);cursor:pointer;">
-                F12
-              </button>
-            </div>
-            <div id="musicSkipShortcutHint" style="font-size:11px;color:var(--text-muted);margin-top:4px;">
-              <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
-            </div>
+          <div class="atajos-tab-panel atajos-empty" id="atajosPanelGeneral" role="tabpanel" aria-labelledby="atajosTabGeneral" hidden>
+            <img class="icon-inline" src="icons/keyboard.svg" alt="">
+            <p data-i18n="settings.shortcutsGeneralEmpty">No hay atajos generales configurables.</p>
           </div>
         </div>
       </div>
