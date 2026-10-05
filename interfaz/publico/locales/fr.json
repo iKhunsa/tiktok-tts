@@ -131,6 +131,7 @@
                     "off":  "Animations et sons de saison : désactivés. Cliquer pour activer"
                 },
     "btn":  {
+                "blockedWordsShortcut": "Mots bloqués",
                 "skipCurrent":  "Passer actuel",
                 "clearChatAndQueue":  "Effacer le chat et la file",
                 "emergency":  "Mode urgence",

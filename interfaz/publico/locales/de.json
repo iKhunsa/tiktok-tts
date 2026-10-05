@@ -131,6 +131,7 @@
                     "off":  "Saisonale Animationen und Sounds: aus. Klicken zum Einschalten"
                 },
     "btn":  {
+                "blockedWordsShortcut": "Gesperrte Wörter",
                 "skipCurrent":  "Aktuelles überspringen",
                 "clearChatAndQueue":  "Chat und Warteschlange leeren",
                 "emergency":  "Notfallmodus",

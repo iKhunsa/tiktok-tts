@@ -131,6 +131,7 @@
                     "off":  "季節のアニメーションと効果音：オフ。クリックでオン"
                 },
     "btn":  {
+                "blockedWordsShortcut": "ブロック単語",
                 "skipCurrent":  "現在をスキップ",
                 "clearChatAndQueue":  "チャットとキューをクリア",
                 "emergency":  "緊急モード",

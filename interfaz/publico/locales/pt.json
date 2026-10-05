@@ -131,6 +131,7 @@
                     "off":  "Animações e sons de temporada: desativados. Clique para ativar"
                 },
     "btn":  {
+                "blockedWordsShortcut": "Palavras bloqueadas",
                 "skipCurrent":  "Pular atual",
                 "clearChatAndQueue":  "Limpar chat e fila",
                 "emergency":  "Modo emergência",

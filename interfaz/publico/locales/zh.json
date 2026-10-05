@@ -131,6 +131,7 @@
                     "off":  "节日动画和音效：已关闭。点击开启"
                 },
     "btn":  {
+                "blockedWordsShortcut": "屏蔽词",
                 "skipCurrent":  "跳过当前",
                 "clearChatAndQueue":  "清除聊天和队列",
                 "emergency":  "紧急模式",

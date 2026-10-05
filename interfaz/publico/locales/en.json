@@ -131,6 +131,7 @@
                     "off":  "Seasonal animations and sounds: off. Click to turn on"
                 },
     "btn":  {
+                "blockedWordsShortcut": "Blocked words",
                 "skipCurrent":  "Skip current",
                 "clearChatAndQueue":  "Clear chat and queue",
                 "emergency":  "Emergency mode",

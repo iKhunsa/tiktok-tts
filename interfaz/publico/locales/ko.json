@@ -131,6 +131,7 @@
                     "off":  "시즌 애니메이션과 사운드: 꺼짐. 클릭하여 켜기"
                 },
     "btn":  {
+                "blockedWordsShortcut": "차단 단어",
                 "skipCurrent":  "현재 건너뛰기",
                 "clearChatAndQueue":  "채팅과 대기열 지우기",
                 "emergency":  "비상 모드",

@@ -131,6 +131,7 @@
                     "off":  "Animazioni e suoni stagionali: disattivati. Clic per attivare"
                 },
     "btn":  {
+                "blockedWordsShortcut": "Parole bloccate",
                 "skipCurrent":  "Salta attuale",
                 "clearChatAndQueue":  "Pulisci chat e coda",
                 "emergency":  "Modalità emergenza",
