@@ -6,7 +6,7 @@ const { pathToFileURL } = require('node:url');
 
 const raiz = resolve(__dirname, '..');
 const html = readFileSync(resolve(raiz, 'interfaz/index.html'), 'utf8');
-const importar = (ruta) => import(pathToFileURL(resolve(raiz, ruta)).href);
+const importar = (ruta) => import(pathToFileURL(resolve(raiz, ruta.split('?')[0])).href + (ruta.includes('?') ? `?${ruta.split('?')[1]}` : ''));
 
 test('el banner va bajo la barra "Se lee" y antes del chat, oculto de inicio', () => {
   const toggles = html.indexOf('id="chatTogglesBox"');
@@ -26,8 +26,7 @@ test('las claves del banner existen en los 10 idiomas', () => {
 });
 
 // DOM mínimo: el banner con sus dos botones y un localStorage en memoria.
-async function montar() {
-  const memoria = new Map();
+async function montar({ memoria = new Map(), version = 1 } = {}) {
   const botones = {};
   const crearBoton = () => ({ listeners: {}, addEventListener(tipo, fn) { this.listeners[tipo] = fn; }, click() { this.listeners.click(); } });
   const banner = {
@@ -42,10 +41,10 @@ async function montar() {
   global.localStorage = { getItem: (k) => memoria.get(k) ?? null, setItem: (k, v) => memoria.set(k, String(v)), removeItem: (k) => memoria.delete(k) };
 
   const { almacenSesion } = await importar('interfaz/src/nucleo/estado/sesion.js');
-  const { iniciarBannerPro } = await importar('interfaz/src/vistas/principal/banner-pro.js');
+  const { iniciarBannerPro } = await importar(`interfaz/src/vistas/principal/banner-pro.js?v=${version}`);
   iniciarBannerPro();
   return {
-    banner, botones, almacenSesion,
+    banner, botones, almacenSesion, memoria,
     restaurar() { global.document = originales.document; global.localStorage = originales.localStorage; global.window = originales.window; },
   };
 }
@@ -67,19 +66,22 @@ test('solo se muestra con plan Free y cuentas activas', async () => {
   } finally { m.restaurar(); }
 });
 
-test('la X lo oculta solo para esa cuenta', async () => {
+test('la X lo oculta mientras la app está abierta y no se guarda: al reabrir vuelve', async () => {
   const m = await montar();
   try {
     m.almacenSesion.setState({ activo: true, plan: 'free', user: { id: 'u2' } });
     assert.equal(m.banner.hidden, false);
 
     m.botones['#proBannerClose'].click();
-    assert.equal(m.banner.hidden, true);
+    assert.equal(m.banner.hidden, true, 'cerrado en esta sesión');
+    m.almacenSesion.setState({ plan: 'free' });
+    assert.equal(m.banner.hidden, true, 'los cambios de sesión no lo reviven');
+    assert.equal(m.memoria.size, 0, 'no escribe nada en el almacenamiento');
 
-    m.almacenSesion.setState({ user: { id: 'u3' } });
-    assert.equal(m.banner.hidden, false, 'otra cuenta lo ve');
-
-    m.almacenSesion.setState({ user: { id: 'u2' } });
-    assert.equal(m.banner.hidden, true, 'la cuenta que lo cerró sigue sin verlo');
+    // Reabrir la app = módulo y DOM nuevos, con el mismo almacenamiento.
+    const reabierto = await montar({ memoria: m.memoria, version: 2 });
+    reabierto.almacenSesion.setState({ activo: true, plan: 'free', user: { id: 'u2' } });
+    assert.equal(reabierto.banner.hidden, false, 'al abrir la app de nuevo se ve otra vez');
+    reabierto.restaurar();
   } finally { m.restaurar(); }
 });
