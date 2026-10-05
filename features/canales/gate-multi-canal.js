@@ -27,6 +27,8 @@ function gateMultiCanal(deps) {
     const platform = bodyPlatform || (req.path === '/api/connect' ? 'tiktok' : null);
     if (!platform) return next(); // sin platform en /platforms/connect o /channels/add: que el handler real reporte el campo faltante
     if (yaTieneCanalDe(deps.state, platform) && !entitlements.check('multi-canal')) {
+      deps.logger.log('info', 'auth', 'canales/gate-multi-canal.js#gateMultiCanal', 'auth.gating.bloqueado',
+        `Conexion multi-canal bloqueada (plan free, plataforma: ${platform})`, { featureId: 'multi-canal', platform });
       return res.status(403).json({
         error: `Conectar 2+ canales de ${platform} requiere el plan Pro`,
         errorKey: 'errors.proRequired',

@@ -6,6 +6,7 @@ import { switchView } from './vistas-router.js';
 import { driverTourDefaults } from './tours/index.js';
 import { spCancelCapture, spResetDeleteBtn } from './soundpad.js';
 import { closeIdeaModal } from './ideas/modal.js';
+import { trackUi } from '../../nucleo/telemetria-ui.js';
 
 export function setStatus(type, text) {
   const dot = document.getElementById('statusDot');
@@ -16,11 +17,11 @@ export function setStatus(type, text) {
   label.textContent = text;
 }
 
-export function openDonationsModal() { document.getElementById('donationsModal').classList.add('show'); }
-// Origen de la última apertura del modal (titlebar / sidebar / account_menu): se
+export function openDonationsModal() { trackUi('ui:donations-opened'); document.getElementById('donationsModal').classList.add('show'); }
+// Origen de la última apertura del modal (titlebar / sidebar / account_menu, ver ORIGENES_DISCORD): se
 // manda a analítica para saber qué entrada a Discord convierte.
 let discordOrigen = 'otro';
-const trackDiscord = (evento, origen) => { try { window.electronAPI?.trackEvent?.(evento, origen); } catch (_) { /* noop */ } };
+const trackDiscord = trackUi;
 
 export function openDiscordModal(origen) {
   discordOrigen = typeof origen === 'string' ? origen : 'otro';
@@ -274,7 +275,9 @@ export function arrancarAvisosOnboarding() {
 
 export function iniciarModalesYAvisos() {
   document.querySelector('#discordModal .discord-cta').addEventListener('click', () => trackDiscord('ui:discord-joined', discordOrigen));
-  document.querySelector('.community-banner').addEventListener('click', () => trackDiscord('ui:discord-joined', 'banner'));
+  document.querySelector('.community-banner').addEventListener('click', () => trackDiscord('ui:discord-joined', 'sidebar_banner'));
+  document.querySelector('.tiktok-banner').addEventListener('click', () => trackUi('ui:tiktok-banner-clicked'));
+  document.querySelector('#bugReportModal a[href*="discord"]')?.addEventListener('click', () => trackDiscord('ui:discord-joined', 'bug_report'));
   const toggleDonationCard = (heading) => {
     const card = heading.closest('.qr-card');
     const expanded = card.classList.toggle('is-expanded');

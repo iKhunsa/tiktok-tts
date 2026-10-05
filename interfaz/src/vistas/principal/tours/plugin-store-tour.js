@@ -1,7 +1,9 @@
 import { t } from '../../../nucleo/i18n/i18n.js';
 import { driverTourDefaults } from '../../../nucleo/tours/driver.js';
+import { trackUi } from '../../../nucleo/telemetria-ui.js';
 
 export function startPluginStoreTour() {
+  trackUi('ui:tour-started', 'plugin_store');
   if (!(window.driver && window.driver.js)) return;
   const showGridPanel = () => {
     document.getElementById('pluginStoreDetail').style.display = 'none';

@@ -9,6 +9,7 @@ import { almacenSesion } from '../../nucleo/estado/sesion.js';
 import {
   efectosActivados, hayEventoActivo, previsualizarEventoActivo, detenerEvento,
 } from '../../componentes/eventos/index.js';
+import { trackUi } from '../../nucleo/telemetria-ui.js';
 
 const ID_BOTON = 'btnEventEffects';
 
@@ -27,6 +28,7 @@ function alternarEfectos() {
   appSettings.eventEffects = !efectosActivados();
   saveSettings();
   pintarBoton();
+  trackUi('ui:event-fx-toggled', efectosActivados() ? 'on' : 'off');
   if (efectosActivados()) previsualizarEventoActivo();
   else detenerEvento();
 }

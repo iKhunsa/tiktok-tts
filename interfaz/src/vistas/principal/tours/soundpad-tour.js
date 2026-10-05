@@ -1,8 +1,10 @@
 import { t } from '../../../nucleo/i18n/i18n.js';
 import { driverTourDefaults } from '../../../nucleo/tours/driver.js';
 import { switchView } from '../vistas-router.js';
+import { trackUi } from '../../../nucleo/telemetria-ui.js';
 
 export function startSoundpadTour() {
+  trackUi('ui:tour-started', 'soundpad');
   if (!(window.driver && window.driver.js)) return;
   const inSoundpad = () => switchView('soundpad');
 

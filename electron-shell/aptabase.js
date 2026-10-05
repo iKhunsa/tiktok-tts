@@ -43,6 +43,39 @@ const MAX_PROPS = 20;
 // Plataformas que cuentan como "canal usado" en el resumen de sesión.
 const PLATAFORMAS = new Set(['tiktok', 'twitch', 'youtube', 'kick', 'obs']);
 
+// Valores permitidos por prop de los eventos de UI del renderer.
+const ORIGENES_DISCORD = new Set([
+  'titlebar', 'sidebar', 'account_menu', 'sidebar_banner', 'connect_fail',
+  'chat_banner_2', 'chat_banner_3', 'chat_banner_4', 'bug_report', 'otro',
+]);
+const VISTAS = new Set([
+  'chat', 'overlays', 'clips', 'soundpad', 'mobile', 'bot', 'moderacion', 'mcp', 'tools', 'settings', 'cuenta',
+]);
+const OVERLAYS = new Set([
+  'chat', 'seguidores', 'viewers', 'likes', 'donadores', 'alertas', 'alertas-social', 'creditos', 'social',
+]);
+const TOURS = new Set([
+  'overlays', 'chat_actions', 'voice', 'shortcuts', 'soundpad', 'clips', 'moderacion', 'plugin_store', 'channels', 'music_bot',
+]);
+const ESTADOS_EFECTOS = new Set(['on', 'off']);
+// [evento del bus, evento Aptabase, prop, valores permitidos, fallback si no está (null = descartar)]
+const EVENTOS_UI = [
+  ['ui:discord-opened', 'discord_modal_opened', 'source', ORIGENES_DISCORD, 'otro'],
+  ['ui:discord-joined', 'discord_join_clicked', 'source', ORIGENES_DISCORD, 'otro'],
+  ['ui:view-opened', 'view_opened', 'view', VISTAS, null],
+  ['ui:overlay-copied', 'overlay_url_copied', 'overlay', OVERLAYS, null],
+  ['ui:promo-code-opened', 'promo_code_opened'],
+  ['ui:promo-code-copied', 'promo_code_copied'],
+  ['ui:promo-plans-clicked', 'promo_plans_clicked'],
+  ['ui:tiktok-banner-clicked', 'tiktok_banner_clicked'],
+  ['ui:plans-opened', 'plans_opened'],
+  ['ui:news-opened', 'news_opened'],
+  ['ui:donations-opened', 'donations_opened'],
+  ['ui:portalview-opened', 'portalview_opened'],
+  ['ui:tour-started', 'tour_started', 'tour', TOURS, null],
+  ['ui:event-fx-toggled', 'event_effects_toggled', 'state', ESTADOS_EFECTOS, null],
+];
+
 const estado = {
   enabled: false,
   logger: null,
@@ -54,6 +87,9 @@ const estado = {
   // acumuladores de sesión (→ props de session_ended)
   plataformasUsadas: new Set(),
   overlaysVistos: new Set(),
+  vistasVistas: new Set(),
+  ttsSaltados: 0,
+  ttsDesborde: 0,
   ttsTotal: 0,
   musicaTotal: 0,
   soundpadTotal: 0,
@@ -127,6 +163,9 @@ function construirResumenSesion() {
     plataformas_n: estado.plataformasUsadas.size,
     tts_total:     bucket(estado.ttsTotal, [1, 10, 50, 200]),
     music_total:   bucket(estado.musicaTotal, [1, 10, 50, 200]),
+    tts_saltados:  bucket(estado.ttsSaltados, [1, 10, 50]),
+    tts_desborde:  bucket(estado.ttsDesborde, [1, 10]),
+    overlays_n:    estado.overlaysVistos.size,
     soundpad_total: bucket(estado.soundpadTotal, [1, 10, 50]),
     errores:       bucket(estado.errorCount, [1, 5, 20]),
     mod_filtrados: bucket(estado.modMensajesFiltrados, [1, 10, 100]),
@@ -323,6 +362,21 @@ function attach(bus, logger) {
           break;
         }
 
+        // ── Canales: fallo al conectar (canal:estado nunca emite 'error') ──
+        case 'canales.conexion.fallida': {
+          track('platform_connect_failed', {
+            platform: String(d.platform || '').slice(0, 20),
+            code: String(d.code || 'desconocido').slice(0, 30),   // código, nunca el mensaje (puede traer el canal)
+          });
+          break;
+        }
+
+        // ── Overlays: botones de test ────────────────────────────────────
+        case 'overlay.test.disparado': {
+          track('overlay_test', { tipo: String(d.tipo || '').slice(0, 20) });
+          break;
+        }
+
         // ── Promo ────────────────────────────────────────────────────────
         case 'promo.autopromocion.disparada': {
           track('promo_fired', {});
@@ -359,11 +413,6 @@ function attach(bus, logger) {
         track('platform_auth_required', { platform: p.platform });
       } else if (p.state === 'sesion-restaurada') {
         track('platform_auth_restored', { platform: p.platform });
-      } else if (p.state === 'error') {
-        track('platform_connect_failed', {
-          platform: p.platform,
-          motivo: sanear(String(p.error || 'desconocido')).slice(0, 80),
-        });
       }
     } catch (_) { /* noop */ }
   });
@@ -393,7 +442,6 @@ function attach(bus, logger) {
   bus.on('reporte-bug:enviado', (p) => {
     try {
       track('bug_report_sent', {
-        canal: String((p && p.canal) || '').slice(0, 60),   // sin descripcion/extra (texto libre)
         version: String((p && p.version) || '').slice(0, 20),
       });
     } catch (_) { /* noop */ }
@@ -411,17 +459,31 @@ function attach(bus, logger) {
     } catch (_) { /* noop */ }
   });
 
-  // Entradas a Discord (llegan del renderer vía IPC telemetry:track). `origen`
-  // viaja en `source`; lista cerrada para que el payload no meta texto libre.
-  const ORIGENES_DISCORD = new Set(['titlebar', 'sidebar', 'account_menu', 'banner', 'otro']);
-  for (const [evento, nombre] of [['ui:discord-opened', 'discord_modal_opened'], ['ui:discord-joined', 'discord_join_clicked']]) {
-    bus.on(evento, (origen) => {
+  // Eventos de UI que nacen en el renderer (llegan por IPC telemetry:track, ver
+  // preload.js + ipc-bridge.js). Cada uno lleva a lo sumo UNA prop con valor de
+  // lista cerrada: lo que no esté en la lista cae a `fallback` (o se descarta
+  // si es null) para que el payload nunca meta texto libre.
+  for (const [evento, nombre, prop, permitidos, fallback] of EVENTOS_UI) {
+    bus.on(evento, (valor) => {
       try {
-        const source = ORIGENES_DISCORD.has(origen) ? origen : 'otro';
-        track(nombre, { source });
+        let v = valor;
+        if (prop && !permitidos.has(v)) {
+          if (fallback === null) return;
+          v = fallback;
+        }
+        // Una vista cuenta una vez por sesión (como overlay_opened): se mide
+        // cuántos la usan, no cuántas veces navegan.
+        if (evento === 'ui:view-opened') {
+          if (estado.vistasVistas.has(v)) return;
+          estado.vistasVistas.add(v);
+        }
+        track(nombre, prop ? { [prop]: v } : {});
       } catch (_) { /* noop */ }
     });
   }
+  bus.on('ui:soundpad-played', () => { estado.soundpadTotal++; });
+  bus.on('tts:skipped', () => { estado.ttsSaltados++; });
+  bus.on('tts:queue-overflow', () => { estado.ttsDesborde++; });
 
   // Errores → solo se cuentan (GlitchTip los maneja con contexto). El conteo
   // sale como `errores` (bucket) en session_ended.

@@ -3,6 +3,7 @@ import { parsearChangelog } from './parse-changelog.js';
 import { extraerIdYoutube } from './extraer-id-youtube.js';
 import { crearVideoNovedades } from './crear-video-novedades.js';
 import { t } from '../../../nucleo/i18n/i18n.js';
+import { trackUi } from '../../../nucleo/telemetria-ui.js';
 
 const MARCAS_INLINE = /(\*\*[^*]+\*\*|`[^`]+`|\[[^\]]+\]\(https?:\/\/(?:www\.)?(?:youtube\.com|youtu\.be)\/[^)\s]+\))/;
 const ENLACE_YOUTUBE = /^\[([^\]]+)\]\((https?:\/\/(?:www\.)?(?:youtube\.com|youtu\.be)\/[^)\s]+)\)$/;
@@ -74,6 +75,7 @@ let renderizado = false;
 let idVideoNovedades = null;
 
 export function abrirNovedades() {
+  trackUi('ui:news-opened');
   const lista = document.getElementById('newsList');
   if (!renderizado) {
     const { idVideo, versiones } = separarVideo(parsearChangelog(changelogRaw));

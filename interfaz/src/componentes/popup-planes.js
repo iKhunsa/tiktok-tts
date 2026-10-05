@@ -1,6 +1,7 @@
 import { t, aplicarTraducciones } from '../nucleo/i18n/i18n.js';
 import { almacenSesion } from '../nucleo/estado/sesion.js';
 import { irACheckout } from '../vistas/principal/cuenta/checkout.js';
+import { trackUi } from '../nucleo/telemetria-ui.js';
 
 const INTERVALO_DEFAULT = 'year';
 const SUFIJO_PRECIO = { month: 'Monthly', year: '' };
@@ -31,6 +32,7 @@ function accion(planActual, plan, actionKey) {
 }
 
 export function abrirPopupPlanes() {
+  trackUi('ui:plans-opened');
   const { plan } = almacenSesion.getState();
   const planAlAbrir = plan;
   const overlay = document.createElement('div');

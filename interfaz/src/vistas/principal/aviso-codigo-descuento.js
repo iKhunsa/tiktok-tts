@@ -5,6 +5,7 @@
  */
 import { abrirPopupPlanes } from '../../componentes/popup-planes.js';
 import { copyToClipboard } from './utils-app.js';
+import { trackUi } from '../../nucleo/telemetria-ui.js';
 
 const CODIGO = 'WASSUPTTS';
 const BANNER_CODIGO = 'banner-sale-octubre';
@@ -29,19 +30,29 @@ export function iniciarAvisoCodigoDescuento() {
   // El banner activo es la capa visible del carrusel; solo el del codigo abre el modal.
   enlace.addEventListener('click', (e) => {
     const activa = enlace.querySelector('.ad-layer.is-active');
-    if (!activa || !activa.src.includes(BANNER_CODIGO)) return;
+    if (!activa) return;
+    if (!activa.src.includes(BANNER_CODIGO)) {
+      // Banners que van al Discord: se distinguen por su posición en data-ads.
+      const ads = JSON.parse(document.getElementById('chatAdSlot').dataset.ads || '[]');
+      const n = ads.findIndex((src) => activa.src.endsWith(src)) + 1;
+      if (n > 0) trackUi('ui:discord-joined', `chat_banner_${n}`);
+      return;
+    }
     e.preventDefault();
+    trackUi('ui:promo-code-opened');
     overlay.classList.add('show');
   });
 
   boton.addEventListener('click', () => {
     copyToClipboard(CODIGO);
+    trackUi('ui:promo-code-copied');
     icono.src = ICONO_COPIADO;
     clearTimeout(temporizador);
     temporizador = setTimeout(() => { icono.src = ICONO_COPIAR; }, MS_ICONO_COPIADO);
   });
 
   overlay.querySelector('.promo-code-plans').addEventListener('click', () => {
+    trackUi('ui:promo-plans-clicked');
     cerrar();
     abrirPopupPlanes();
   });

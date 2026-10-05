@@ -11,8 +11,14 @@ module.exports = {
     bus.on('chat:mensaje-permitido', (payload) => {
       // bot-musical es feature Pro (entitlements). Con subscriptionsEnabled=false
       // check() devuelve true -> comportamiento actual.
-      if (!payload || !entitlements.check('bot-musical')) return;
+      if (!payload) return;
       const parsed = parseCommand(payload.comment);
+      if (!entitlements.check('bot-musical')) {
+        // Solo cuenta cuando el mensaje era de verdad un comando (si no, seria 1 hit por mensaje de chat).
+        if (parsed) logger.log('info', 'auth', 'bot/index.js#register', 'auth.gating.bloqueado',
+          'Comando de bot bloqueado (plan free)', { featureId: 'bot-musical' });
+        return;
+      }
 
       if (!parsed) {
         const config = getConfigSnapshot(bus);

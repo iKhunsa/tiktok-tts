@@ -2,8 +2,10 @@ import { t } from '../../../nucleo/i18n/i18n.js';
 import { driverTourDefaults } from '../../../nucleo/tours/driver.js';
 import { switchView } from '../vistas-router.js';
 import { toggleAddChannelForm, selectAddPlatform } from '../plataformas.js';
+import { trackUi } from '../../../nucleo/telemetria-ui.js';
 
 export function startChannelsTour() {
+  trackUi('ui:tour-started', 'channels');
   if (!(window.driver && window.driver.js)) return;
   switchView('settings');
   const form = document.getElementById('add-channel-form');

@@ -1,8 +1,10 @@
 import { t } from '../../../nucleo/i18n/i18n.js';
 import { driverTourDefaults } from '../../../nucleo/tours/driver.js';
 import { switchView } from '../vistas-router.js';
+import { trackUi } from '../../../nucleo/telemetria-ui.js';
 
 export function startModerationTour() {
+  trackUi('ui:tour-started', 'moderacion');
   if (!(window.driver && window.driver.js)) return;
   const inModeration = () => switchView('moderacion');
   const inChat = () => switchView('chat');

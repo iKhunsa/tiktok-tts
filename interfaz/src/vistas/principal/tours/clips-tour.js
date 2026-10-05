@@ -1,8 +1,10 @@
 import { t } from '../../../nucleo/i18n/i18n.js';
 import { driverTourDefaults } from '../../../nucleo/tours/driver.js';
 import { switchView } from '../vistas-router.js';
+import { trackUi } from '../../../nucleo/telemetria-ui.js';
 
 export function startClipsTour() {
+  trackUi('ui:tour-started', 'clips');
   if (!(window.driver && window.driver.js)) return;
   const inClips = () => switchView('clips');
 

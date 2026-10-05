@@ -5,6 +5,7 @@
  * fallar, no se repite el modal ni el sonido).
  */
 import { reproducirSonidoUi } from '../../componentes/sonido-ui.js';
+import { trackUi } from '../../nucleo/telemetria-ui.js';
 
 const ID_MODAL = 'connectFailModal';
 const ORIGEN_ANALITICA = 'connect_fail';
@@ -15,7 +16,7 @@ const SONIDO_RISA = { src: 'audio/ui/cat-laugh.mp3', volumen: 0.4 };
 let yaMostrado = false;
 
 const modal = () => document.getElementById(ID_MODAL);
-const track = (evento) => { try { window.electronAPI?.trackEvent?.(evento, ORIGEN_ANALITICA); } catch (_) { /* noop */ } };
+const track = (evento) => trackUi(evento, ORIGEN_ANALITICA);
 
 export function mostrarAvisoConexionFallida() {
   if (yaMostrado) return;

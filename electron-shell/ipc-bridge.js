@@ -9,7 +9,12 @@ const SPECIAL_PAUSE_SHORTCUTS = new Set(['MediaPlayPause', 'F8', 'F9', 'F10', 'F
 const TTS_SHORTCUT_ACTIONS = new Set(['pause', 'skip', 'clear', 'musicPause', 'musicSkip']);
 // Lista blanca por seguridad: el renderer no puede mandar cualquier nombre
 // de evento al bus.
-const RENDERER_TELEMETRY_EVENTS = new Set(['tts:skipped', 'tts:queue-overflow', 'ui:language-set', 'ui:discord-opened', 'ui:discord-joined']);
+const RENDERER_TELEMETRY_EVENTS = new Set([
+  'tts:skipped', 'tts:queue-overflow', 'ui:language-set', 'ui:discord-opened', 'ui:discord-joined',
+  'ui:view-opened', 'ui:overlay-copied', 'ui:promo-code-opened', 'ui:promo-code-copied', 'ui:promo-plans-clicked',
+  'ui:tiktok-banner-clicked', 'ui:plans-opened', 'ui:news-opened', 'ui:donations-opened', 'ui:portalview-opened',
+  'ui:tour-started', 'ui:event-fx-toggled', 'ui:soundpad-played',
+]);
 
 function normalizeShortcut(shortcut) {
   if (!shortcut || typeof shortcut !== 'string') return '';
@@ -62,7 +67,7 @@ function attachIpcBridge({ app, bus, logger, getMainWindow, globalShortcut }) {
 
   ipcMain.on('telemetry:track', (_event, name, payload) => {
     if (!RENDERER_TELEMETRY_EVENTS.has(name)) return;
-    bus.emit(name, typeof payload === 'string' ? payload.slice(0, 12) : undefined);
+    bus.emit(name, typeof payload === 'string' ? payload.slice(0, 24) : undefined);
   });
 
   // ── TTS shortcuts (pause / skip / clear) ────────────────────────────────

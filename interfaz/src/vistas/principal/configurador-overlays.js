@@ -3,6 +3,7 @@ import { t } from '../../nucleo/i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
 import { construirQuery } from '../../../compartido/estilo/query.js';
 import { ESQUEMAS, DEFAULTS_OVERLAYS } from '../../../compartido/estilo/esquemas.js';
+import { trackUi } from '../../nucleo/telemetria-ui.js';
 
 export function buildOverlayUrl(type) {
   const base = `${location.origin}/overlay-${type}.html`;
@@ -40,7 +41,7 @@ export function onCfgChange(type, field, value) {
 export function copyCfgUrl(type) {
   navigator.clipboard
     .writeText(buildOverlayUrl(type))
-    .then(() => showToast(t('toast.urlCopied')))
+    .then(() => { trackUi('ui:overlay-copied', type); showToast(t('toast.urlCopied')); })
     .catch(() => showToast(t('toast.copyError')));
 }
 
