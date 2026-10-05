@@ -3,7 +3,7 @@ import { almacenSesion } from '../nucleo/estado/sesion.js';
 import { irACheckout } from '../vistas/principal/cuenta/checkout.js';
 import { trackUi } from '../nucleo/telemetria-ui.js';
 
-const INTERVALO_DEFAULT = 'year';
+const INTERVALO_DEFAULT = 'month';
 const SUFIJO_PRECIO = { month: 'Monthly', year: '' };
 
 function toggleIntervalo() {
@@ -55,7 +55,7 @@ export function abrirPopupPlanes() {
         </section>
         <section class="planes-popup-card${plan === 'sin-promos' ? ' is-current' : ''}">
           <h3 data-i18n="planesPopup.noAdsName"></h3>
-          <p class="planes-popup-price" data-price="noAds" data-i18n="planesPopup.noAdsPrice"></p>
+          <p class="planes-popup-price" data-price="noAds" data-i18n="planesPopup.noAdsPrice${SUFIJO_PRECIO[INTERVALO_DEFAULT]}"></p>
           <ul class="planes-popup-benefits">
             <li data-i18n="planesPopup.noAdsFree"></li><li data-i18n="planesPopup.noAdsPromos"></li>
           </ul>
@@ -63,7 +63,7 @@ export function abrirPopupPlanes() {
         </section>
         <section class="planes-popup-card${plan === 'pro' ? ' is-current' : ''}">
           <h3 data-i18n="planesPopup.proName"></h3>
-          <p class="planes-popup-price" data-price="pro" data-i18n="planesPopup.proPrice"></p>
+          <p class="planes-popup-price" data-price="pro" data-i18n="planesPopup.proPrice${SUFIJO_PRECIO[INTERVALO_DEFAULT]}"></p>
           <ul class="planes-popup-benefits">
             <li data-i18n="planesPopup.proNoAds"></li><li data-i18n="planesPopup.proMusic"></li>
             <li data-i18n="planesPopup.proSoundpad"></li><li data-i18n="planesPopup.proMobile"></li>

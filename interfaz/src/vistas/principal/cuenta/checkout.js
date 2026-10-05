@@ -7,7 +7,7 @@ import { t } from '../../../nucleo/i18n/i18n.js';
 import { showToast } from '../../../componentes/toast.js';
 import { pedir, toastError } from './api.js';
 
-export async function irACheckout(btn, plan = 'pro', intervalo = 'year') {
+export async function irACheckout(btn, plan = 'pro', intervalo = 'month') {
   btn.disabled = true;
   try {
     const r = await pedir('/api/auth/checkout', { method: 'POST', body: { plan, intervalo } });
