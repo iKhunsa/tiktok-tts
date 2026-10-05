@@ -28,7 +28,8 @@ test('validador chatGuardLangs: no vacio, sin duplicados, solo locales conocidos
   assert.equal(CONFIG_VALIDATORS.chatGuardLangs(['es', 'en']), true);
   assert.equal(CONFIG_VALIDATORS.chatGuardLangs([]), false);
   assert.equal(CONFIG_VALIDATORS.chatGuardLangs(['es', 'es']), false);
-  assert.equal(CONFIG_VALIDATORS.chatGuardLangs(['fr']), false);
+  assert.equal(CONFIG_VALIDATORS.chatGuardLangs(['fr', 'zh']), true);
+  assert.equal(CONFIG_VALIDATORS.chatGuardLangs(['xx']), false);
   assert.equal(CONFIG_VALIDATORS.chatGuardLangs('es'), false);
 });
 
@@ -40,12 +41,13 @@ test('validador chatGuardCustom: exactamente tricks y similar booleanos', () => 
   assert.equal(CONFIG_VALIDATORS.chatGuardCustom(null), false);
 });
 
-test('buildRustConfig: el nivel pasa como preset y todos los idiomas omiten languages', () => {
-  assert.deepEqual(engineConfigOf({ chatGuardLevel: 'strict', chatGuardLangs: CHAT_GUARD_LOCALES }), { preset: 'strict' });
+test('buildRustConfig: en modo automatico los idiomas siguen a la voz del TTS mas ingles', () => {
+  assert.deepEqual(engineConfigOf({ chatGuardLevel: 'strict', ttsVoiceLang: 'fr', chatGuardLangs: ['es'] }), { preset: 'strict', languages: ['fr', 'en'] });
 });
 
-test('buildRustConfig: un subconjunto de idiomas se envia al motor', () => {
-  assert.deepEqual(engineConfigOf({ chatGuardLevel: 'soft', chatGuardLangs: ['es', 'en'] }), { preset: 'soft', languages: ['es', 'en'] });
+test('buildRustConfig: en modo manual se envia la lista elegida', () => {
+  assert.deepEqual(engineConfigOf({ chatGuardLevel: 'soft', chatGuardLangsAuto: false, chatGuardLangs: ['es', 'en'] }), { preset: 'soft', languages: ['es', 'en'] });
+  assert.deepEqual(engineConfigOf({ chatGuardLangsAuto: false, chatGuardLangs: CHAT_GUARD_LOCALES }).languages, CHAT_GUARD_LOCALES);
 });
 
 test('buildRustConfig: nivel invalido cae a balanced', () => {

@@ -2,6 +2,7 @@
 
 const { getConfigSnapshot } = require('../../../core/config-snapshot');
 const { CHAT_GUARD_LEVELS, CHAT_GUARD_LOCALES } = require('../../../core/chat-guard-options');
+const { localesForVoice } = require('../../../core/chat-guard-voice-languages');
 
 const MODES = ['shadow', 'enforce'];
 const DEFAULT_MODE = 'shadow';
@@ -16,18 +17,19 @@ function buildCustomOptions(custom = {}) {
   };
 }
 
-// Con todos los idiomas activos se omite `languages`: el motor ya los activa todos.
-function buildLanguages(langs) {
-  const known = Array.isArray(langs) ? langs.filter((locale) => CHAT_GUARD_LOCALES.includes(locale)) : [];
-  if (known.length === 0 || known.length === CHAT_GUARD_LOCALES.length) return {};
-  return { languages: known };
+// Idiomas pedidos al motor. create-rust-guard.js los recorta a los que el motor
+// instalado soporta antes de aplicarlos.
+function requestedLanguages(config) {
+  if (config.chatGuardLangsAuto !== false) return localesForVoice(config.ttsVoiceLang);
+  const known = Array.isArray(config.chatGuardLangs) ? config.chatGuardLangs.filter((locale) => CHAT_GUARD_LOCALES.includes(locale)) : [];
+  return known.length ? known : [...CHAT_GUARD_LOCALES];
 }
 
 function buildEngineConfig(config) {
   const level = CHAT_GUARD_LEVELS.includes(config.chatGuardLevel) ? config.chatGuardLevel : DEFAULT_LEVEL;
   return {
     preset: level,
-    ...buildLanguages(config.chatGuardLangs),
+    languages: requestedLanguages(config),
     ...(level === 'custom' ? { custom: buildCustomOptions(config.chatGuardCustom) } : {}),
   };
 }
@@ -43,4 +45,4 @@ function buildRustConfig({ bus, blockedWords, allowedWords = [] }) {
   };
 }
 
-module.exports = { buildRustConfig, DEFAULT_MODE };
+module.exports = { buildRustConfig, requestedLanguages, DEFAULT_MODE };

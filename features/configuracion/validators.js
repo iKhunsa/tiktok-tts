@@ -51,6 +51,7 @@ const CONFIG_VALIDATORS = {
   rustGuardMode: (v) => v === 'shadow' || v === 'enforce',
   chatGuardLevel: (v) => CHAT_GUARD_LEVELS.includes(v),
   chatGuardLangs: isChatGuardLangs,
+  chatGuardLangsAuto: (v) => typeof v === 'boolean',
   chatGuardCustom: isChatGuardCustom,
   mcpEnabled: (v) => typeof v === 'boolean',
   mcpDestructiveToolsEnabled: (v) => typeof v === 'boolean',

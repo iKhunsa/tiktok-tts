@@ -94,10 +94,14 @@ test('disallow-word quita la palabra y avisa al motor', () => {
 test('estado: ok con motor vivo, con versiones y lista permitida', () => {
   const ctx = setup({ config: { rustGuardEnabled: true, rustGuardMode: 'enforce', chatGuardLevel: 'strict', chatGuardLangs: ['es'] } });
   post(allowWord(ctx), 'hola');
-  assert.deepEqual(describeChatGuard(ctx), {
+  const { langsAuto, effectiveLangs, supportedLangs, ...rest } = describeChatGuard(ctx);
+  assert.deepEqual(rest, {
     state: 'ok', enabled: true, mode: 'enforce', level: 'strict', langs: ['es'], custom: undefined, blockedWordsTelemetryEnabled: true,
     engineVersion: '0.3.1', dictionaryVersion: '2026-09-30', blockedCount: 1, allowedWords: ['hola'],
   });
+  assert.equal(langsAuto, true);
+  assert.ok(effectiveLangs.includes('en'));
+  assert.ok(Array.isArray(supportedLangs));
 });
 
 test('estado: off cuando esta apagado', () => {

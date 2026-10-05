@@ -6,6 +6,7 @@ const STATUS_KEY_BY_CONFIG_KEY = {
   rustGuardMode: 'mode',
   chatGuardLevel: 'level',
   chatGuardLangs: 'langs',
+  chatGuardLangsAuto: 'langsAuto',
   chatGuardCustom: 'custom',
 };
 
@@ -92,6 +93,8 @@ export function createActions({ store, api, notify }) {
     return saveConfig({ chatGuardCustom: { ...custom, [option]: enabled } });
   }
 
+  const setLangsAuto = (enabled) => saveConfig({ chatGuardLangsAuto: enabled });
+
   function setLanguage(code, enabled) {
     const current = store.getState().status.langs;
     const next = LOCALES.map((locale) => locale.code).filter((candidate) => (candidate === code ? enabled : current.includes(candidate)));
@@ -160,7 +163,7 @@ export function createActions({ store, api, notify }) {
   }
 
   return {
-    load, setEnabled, setMode, setLevel, setCustomOption, setLanguage,
+    load, refreshStatus, setEnabled, setMode, setLevel, setCustomOption, setLanguage, setLangsAuto,
     setTab, setQuery, clearWordProblem, addWord, removeWord, replaceBlockedWords, exportWords, saveConfig,
   };
 }

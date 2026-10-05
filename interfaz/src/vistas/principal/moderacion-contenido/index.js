@@ -63,6 +63,11 @@ export function reloadModeracionContenido() {
   if (actions) actions.load();
 }
 
+// Un cambio de config (p. ej. la voz del TTS) puede cambiar los idiomas efectivos del filtro.
+export function refreshModeracionStatus() {
+  if (actions) actions.refreshStatus();
+}
+
 export function updateBlockedWords(words) {
   if (actions && Array.isArray(words)) actions.replaceBlockedWords(words);
 }

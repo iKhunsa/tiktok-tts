@@ -8,7 +8,10 @@ const KNOWN_ACTIONS = ['ALLOW', 'BLOCK', 'REVIEW'];
 // excepcion sale de aqui (fail-open) y cada fallo queda logueado.
 function createRustGuard({ logger, loadEngine }) {
   const logFailure = createRateLimitedLog(logger);
-  const state = { engine: null, mode: 'shadow', blockedWords: new Set(), allowedWords: new Set(), wanted: false, lastFailure: null };
+  const state = {
+    engine: null, mode: 'shadow', blockedWords: new Set(), allowedWords: new Set(), wanted: false, lastFailure: null,
+    supportedLangs: [], effectiveLangs: [], reportedMissing: '',
+  };
 
   function callSafely(operation, work, fallback = null) {
     try {
@@ -25,18 +28,50 @@ function createRustGuard({ logger, loadEngine }) {
     if (!settings.enabled) return stop();
     state.mode = settings.mode;
     if (!state.engine) return startEngine(settings);
-    callSafely('updateConfig', () => state.engine.updateConfig(settings.engineConfig));
+    applyEngineConfig(settings.engineConfig);
     syncBlockedWords(settings.blockedWords);
     syncAllowedWords(settings.allowedWords);
   }
 
+  // Se arranca sin `languages`: el motor activa todos los que trae y asi se
+  // descubren los soportados sin que un idioma nuevo tumbe el constructor.
   function startEngine(settings) {
-    state.engine = callSafely('loadEngine', () => loadEngine(logger, settings.engineConfig));
+    const { languages, ...baseConfig } = settings.engineConfig;
+    state.engine = callSafely('loadEngine', () => loadEngine(logger, baseConfig));
     if (!state.engine) return;
+    const engineStatus = callSafely('getStatus', () => state.engine.getStatus());
+    state.supportedLangs = engineStatus && Array.isArray(engineStatus.languages) ? [...engineStatus.languages] : [];
+    applyEngineConfig({ ...baseConfig, languages });
     syncBlockedWords(settings.blockedWords);
     syncAllowedWords(settings.allowedWords);
     logger.log('info', 'moderacion', 'rust-guard/create-rust-guard.js#startEngine', 'moderacion.rust.iniciado',
       'Rust Chat Guard iniciado', { mode: state.mode });
+  }
+
+  function applyEngineConfig(engineConfig) {
+    const languages = usableLanguages(engineConfig.languages);
+    const config = languages ? { ...engineConfig, languages } : withoutLanguages(engineConfig);
+    callSafely('updateConfig', () => state.engine.updateConfig(config));
+    state.effectiveLangs = languages || [...state.supportedLangs];
+  }
+
+  // Solo los idiomas que el motor instalado entiende; sin lista de soportados
+  // (motor que no la expone) se deja que el motor use los suyos.
+  function usableLanguages(requested) {
+    if (!Array.isArray(requested) || state.supportedLangs.length === 0) return null;
+    const missing = requested.filter((locale) => !state.supportedLangs.includes(locale));
+    reportMissing(missing);
+    const usable = requested.filter((locale) => state.supportedLangs.includes(locale));
+    return usable.length ? usable : null;
+  }
+
+  function reportMissing(missing) {
+    const key = missing.join(',');
+    if (key === state.reportedMissing) return;
+    state.reportedMissing = key;
+    if (!missing.length) return;
+    logger.log('warn', 'moderacion', 'rust-guard/create-rust-guard.js#usableLanguages', 'moderacion.rust.idioma_no_soportado',
+      'El motor instalado no soporta algunos idiomas pedidos; se omiten', { missing, supported: state.supportedLangs });
   }
 
   function syncBlockedWords(words) {
@@ -84,6 +119,9 @@ function createRustGuard({ logger, loadEngine }) {
     state.engine = null;
     state.blockedWords = new Set();
     state.allowedWords = new Set();
+    state.supportedLangs = [];
+    state.effectiveLangs = [];
+    state.reportedMissing = '';
     if (engine) callSafely('stop', () => engine.stop());
   }
 
@@ -98,6 +136,8 @@ function createRustGuard({ logger, loadEngine }) {
       running,
       version: engineStatus ? engineStatus.versions.engine : null,
       dictionaryVersion: engineStatus ? engineStatus.versions.dictionary : null,
+      supportedLangs: [...state.supportedLangs],
+      effectiveLangs: [...state.effectiveLangs],
       state: describeState(running),
     };
   }
@@ -109,6 +149,10 @@ function createRustGuard({ logger, loadEngine }) {
   }
 
   return { sync, check, stop, status, isRunning: () => Boolean(state.engine), mode: () => state.mode };
+}
+
+function withoutLanguages({ languages, ...config }) {
+  return config;
 }
 
 module.exports = { createRustGuard };

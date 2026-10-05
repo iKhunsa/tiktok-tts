@@ -8,6 +8,7 @@ const { createRustReviewer } = require('../features/moderacion/rust-guard/review
 const { hardenVerdict } = require('../features/moderacion/rust-guard/map-rust-result');
 const { loadEngine } = require('../features/moderacion/rust-guard/load-engine');
 const { buildRustConfig } = require('../features/moderacion/rust-guard/build-rust-config');
+const { localesForVoice } = require('../core/chat-guard-voice-languages');
 
 function rustVerdict(action, extra = {}) {
   return { action, category: 'insulto', matchType: 'exact', confidence: 1, ...extra };
@@ -199,7 +200,7 @@ function busWith(config) {
 test('buildRustConfig: por defecto apagado y en shadow', () => {
   const result = buildRustConfig({ bus: busWith({}), blockedWords: new Set(['x']) });
   assert.deepEqual(result, {
-    enabled: false, mode: 'shadow', engineConfig: { preset: 'balanced' }, blockedWords: ['x'], allowedWords: [],
+    enabled: false, mode: 'shadow', engineConfig: { preset: 'balanced', languages: localesForVoice(undefined) }, blockedWords: ['x'], allowedWords: [],
   });
 });
 

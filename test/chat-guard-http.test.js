@@ -33,7 +33,9 @@ test('GET /api/chat-guard/status: apagado por defecto, nivel equilibrado y todos
   assert.equal(body.enabled, false);
   assert.equal(body.mode, 'shadow');
   assert.equal(body.level, 'balanced');
-  assert.equal(body.langs.length, 10);
+  assert.equal(body.langs.length, 19);
+  assert.equal(body.langsAuto, true);
+  assert.deepEqual(body.effectiveLangs, ['es', 'es_419', 'es_ar', 'es_cl', 'es_co', 'es_ec', 'es_mx', 'es_pe', 'es_ve', 'en']);
   assert.deepEqual(body.allowedWords, []);
 });
 

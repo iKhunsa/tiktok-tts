@@ -73,6 +73,11 @@
 /* Con el filtro apagado se ve lo que se recupera al encenderlo, pero atenuado. */
 .is-locked .cg-option, .is-locked .cg-check, .is-locked .cg-lang-grid { opacity: 0.5; cursor: default; }
 .cg-option, .cg-check, .cg-lang-grid { transition: opacity var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out); }
+/* Idiomas en modo automatico: la voz decide, las casillas solo informan. */
+.cg-lang-auto { margin-bottom: 6px; }
+.cg-lang-now { margin-bottom: 10px; }
+.is-auto .cg-lang-grid { opacity: 0.65; }
+.is-auto .cg-check { cursor: default; }
 
 /* ── Palabras ────────────────────────────────────────── */
 .cg-tabs-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }

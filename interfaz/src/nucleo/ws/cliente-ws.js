@@ -33,7 +33,7 @@ import {
   musicOnEngineStatus,
 } from '../../vistas/principal/bot-musica.js';
 import { modOnViewerUpdated } from '../../vistas/principal/moderacion.js';
-import { updateBlockedWords } from '../../vistas/principal/moderacion-contenido/index.js';
+import { updateBlockedWords, refreshModeracionStatus } from '../../vistas/principal/moderacion-contenido/index.js';
 
 export const LIKE_COOLDOWN_MS = 15 * 60 * 1000;
 export const likeCooldownMap = new Map();
@@ -368,6 +368,8 @@ function handleMessage(data) {
       // El toggle de subscriptionsEnabled cambia si /api/auth/* existe (404
       // vs real) -> re-hidratar en vez de quedarse con el badge/vista viejos.
       if (data.config && 'subscriptionsEnabled' in data.config) cargarSesion();
+      // La voz del TTS decide los idiomas del filtro en modo automatico.
+      refreshModeracionStatus();
       break;
     case 'auth-updated':
       // El payload del WS viene recortado (sin email/user-id, ver

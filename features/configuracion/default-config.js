@@ -38,6 +38,9 @@ const DEFAULT_CONFIG = {
   // y detectores del nivel 'custom'. Ver core/chat-guard-options.js.
   chatGuardLevel: 'balanced',
   chatGuardLangs: [...CHAT_GUARD_LOCALES],
+  // true: los idiomas del filtro siguen a la voz del TTS (core/chat-guard-voice-languages.js)
+  // y chatGuardLangs solo se usa con el modo manual.
+  chatGuardLangsAuto: true,
   chatGuardCustom: { tricks: true, similar: false },
   // Servidor MCP (agentes). Endpoint solo-localhost; las tools destructivas
   // van detras de su propio toggle + prompt del host del agente.

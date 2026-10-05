@@ -13,7 +13,19 @@ export const LOCALES = [
   { code: 'es_mx', labelKey: 'chatGuard.lang.esMx' },
   { code: 'es_pe', labelKey: 'chatGuard.lang.esPe' },
   { code: 'es_ve', labelKey: 'chatGuard.lang.esVe' },
+  // Idiomas nuevos: el nombre lo da Intl.DisplayNames en el idioma de la UI (language-label.js).
+  { code: 'pt', displayCode: 'pt' },
+  { code: 'pt_br', displayCode: 'pt-BR' },
+  { code: 'fr', displayCode: 'fr' },
+  { code: 'de', displayCode: 'de' },
+  { code: 'it', displayCode: 'it' },
+  { code: 'ja', displayCode: 'ja' },
+  { code: 'ko', displayCode: 'ko' },
+  { code: 'ru', displayCode: 'ru' },
+  { code: 'zh', displayCode: 'zh' },
 ];
+
+export const SPANISH_LOCALES = ['es', 'es_419', 'es_ar', 'es_cl', 'es_co', 'es_ec', 'es_mx', 'es_pe', 'es_ve'];
 
 export const CUSTOM_OPTIONS = ['tricks', 'similar'];
 export const MAX_WORD_LENGTH = 40;

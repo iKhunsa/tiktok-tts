@@ -188,6 +188,12 @@ UI en Ajustes > «Moderación del chat» (`interfaz/src/vistas/principal/moderac
 `core/chat-guard-options.js`), modo `rustGuardMode`, palabras permitidas (`chat-guard-allowed-words.json`
 por cuenta, solo palabras sueltas) y estado del motor (`GET /api/chat-guard/status`: `off|unavailable|error|ok`).
 Las bloqueadas reusan `/api/block-word`. Desviaciones respecto al plan: `docs/06_FRONTEND_PLAN.md` §15 del repo del motor.
+**Idiomas según la voz:** con `chatGuardLangsAuto` (default `true`) los idiomas del motor = `localesForVoice(ttsVoiceLang)`
+(`core/chat-guard-voice-languages.js`, siempre + inglés); con `false` manda `chatGuardLangs`. `create-rust-guard.js` arranca el
+motor SIN `languages` para descubrir los soportados (`getStatus().languages`) y recorta lo pedido a eso (log
+`moderacion.rust.idioma_no_soportado`, nunca excepción). Un cambio de voz llega por `config:actualizado` y se aplica en caliente;
+la UI se refresca con el WS `config-updated`. Cuentas antiguas: `normalizeStoredConfig` pone auto=false solo si eligieron idiomas
+distintos de la lista por defecto vieja (`LEGACY_DEFAULT_LANGS`).
 
 **Popup de moderación (badge de la vista Chat)** — `emit-chat-message.js` publica por WS
 `moderation-blocked` `{platform, accion: drop|mute|shadow, origen, motivo, nick, text, timestamp}`

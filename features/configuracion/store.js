@@ -6,6 +6,7 @@ const { RESOURCE_BASE, DATA_BASE } = require('../../core/paths');
 const { accountDataPath } = require('../../core/account-data-path');
 const { DEFAULT_CONFIG } = require('./default-config');
 const { applyConfigPatch } = require('./apply-patch');
+const { LEGACY_DEFAULT_LANGS } = require('../../core/chat-guard-options');
 
 function configFile() { return accountDataPath('config.json'); }
 const INSTALLATION_KEYS = ['subscriptionsEnabled', 'mcpEnabled', 'mcpDestructiveToolsEnabled', 'mcpDevToolsEnabled'];
@@ -17,7 +18,17 @@ function pick(object, keys) {
   return Object.fromEntries(keys.filter((key) => key in object).map((key) => [key, object[key]]));
 }
 
-function normalizeStoredConfig(config) {
+const sameLocales = (a, b) => a.length === b.length && a.every((locale) => b.includes(locale));
+
+// Cuentas guardadas antes del modo automatico: si eligieron idiomas a mano se
+// respeta (auto=false); si tenian la lista por defecto pasan a seguir la voz.
+function migrateLangsAuto(config) {
+  if ('chatGuardLangsAuto' in config || !Array.isArray(config.chatGuardLangs)) return config;
+  return { ...config, chatGuardLangsAuto: sameLocales(config.chatGuardLangs, LEGACY_DEFAULT_LANGS) };
+}
+
+function normalizeStoredConfig(stored) {
+  const config = migrateLangsAuto(stored);
   if (Number.isInteger(config.TTS_MAX_CHARS) && config.TTS_MAX_CHARS > DEFAULT_CONFIG.TTS_MAX_CHARS) {
     return { ...config, TTS_MAX_CHARS: DEFAULT_CONFIG.TTS_MAX_CHARS };
   }
