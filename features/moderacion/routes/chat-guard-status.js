@@ -19,6 +19,7 @@ function describeChatGuard({ bus, rustGuard, blockedWords, allowedWords }) {
     effectiveLangs: engine.effectiveLangs && engine.effectiveLangs.length ? engine.effectiveLangs : requestedLanguages(config),
     supportedLangs: engine.supportedLangs || [],
     custom: config.chatGuardCustom,
+    gibberishMode: config.gibberishMode || 'enforce',
     blockedWordsTelemetryEnabled: config.blockedWordsTelemetryDisabled !== true,
     engineVersion: engine.version,
     dictionaryVersion: engine.dictionaryVersion,

@@ -11,4 +11,14 @@ function filtrar(msg) {
   throw new Error('idioma.filtrar no implementado todavia (se implementa en la Fase 3 — /idioma)');
 }
 
-module.exports = { filtrar };
+/**
+ * ¿La palabra (minusculas) esta en algun diccionario de idioma? Sin proveedor
+ * responde false (nada se reconoce), asi /moderacion arranca igual sin /idioma.
+ * @param {string} word
+ * @returns {boolean}
+ */
+function isKnownWord(word) {
+  return false;
+}
+
+module.exports = { filtrar, isKnownWord };

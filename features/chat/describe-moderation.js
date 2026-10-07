@@ -9,6 +9,7 @@ const ORIGIN_BY_REASON = {
   muted: 'usuario',
   'blocked-word': 'lista-propia',
   language: 'diccionario',
+  gibberish: 'texto-sin-sentido',
 };
 
 function originOf(reason) {

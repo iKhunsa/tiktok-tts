@@ -1392,6 +1392,16 @@
                                      "similar":  "Detect similar variants",
                                      "similarHint":  "Words with small spelling mistakes."
                                  },
+                      "noise":  {
+                          "title":  "Nonsense text",
+                          "desc":  "Random keyboard mashing like \"asdfghjkl;\". If someone sends several in a row, that message shows in the chat but is not read aloud. It never mutes the person: that is up to you.",
+                          "enforce":  "Do not read it",
+                          "enforceDesc":  "The message shows in the chat, but the voice skips it while the person keeps sending nonsense.",
+                          "shadow":  "Only warn",
+                          "shadowDesc":  "Everything is still read. It only notes what it would have caught so you can see if it is right.",
+                          "off":  "Off",
+                          "offDesc":  "Everything is read, even if it makes no sense."
+                      },
                       "mode":  {
                                    "title":  "What should the filter do with what it detects?",
                                    "shadow":  "Only warn",
@@ -1498,6 +1508,9 @@
                                      "empty":  "No messages have been blocked yet in this session.",
                                      "emptyFilter":  "No messages match the filter.",
                                      "unknownUser":  "Unknown user",
+                                     "muteUser":  "Mute user",
+                                     "muteDone":  "Muted",
+                                     "muteFailed":  "Could not mute the user.",
                                      "why":  "Reason: {reason} · Blocked by: {origin}"
                                  },
                      "action":  {
@@ -1510,6 +1523,7 @@
                                     "ownList":  "Your word list",
                                     "dictionary":  "Language filter / dictionary",
                                     "guard":  "Automatic filter",
+                                    "noise":  "Nonsense text filter",
                                     "rust":  "Moderation engine (Rust)"
                                 },
                      "reason":  {
@@ -1522,6 +1536,7 @@
                                     "banned":  "banned user",
                                     "muted":  "muted user",
                                     "other":  "other reason",
+                                    "gibberish":  "nonsense text",
                                     "rustCategory":  "category {category}"
                                 },
                      "words":  {

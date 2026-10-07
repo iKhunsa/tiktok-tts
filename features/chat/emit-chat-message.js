@@ -150,9 +150,15 @@ function reportMuted({ bus, logger, platform, verdict }) {
 
 // Rust en modo aviso: el mensaje pasa, pero se muestra aparte como "detectado".
 function reportShadow({ bus, verdict, platform }) {
-  if (!verdict.shadow) return;
-  const detail = { origen: 'motor-rust', motivo: verdict.shadow.category || 'sin_categoria' };
-  broadcastModeration(bus, moderationEntry({ platform, verdict, accion: 'shadow', detail }));
+  const detail = shadowDetail(verdict);
+  if (detail) broadcastModeration(bus, moderationEntry({ platform, verdict, accion: 'shadow', detail }));
+}
+
+// Texto sin sentido que el guard detecto pero no aplico (modo aviso o aun bajo el umbral).
+function shadowDetail(verdict) {
+  if (verdict.shadow) return { origen: 'motor-rust', motivo: verdict.shadow.category || 'sin_categoria' };
+  const noisy = verdict.action === 'allow' && (verdict.advisories || []).some((advisory) => advisory.reason === 'gibberish');
+  return noisy ? { origen: 'texto-sin-sentido', motivo: 'gibberish' } : null;
 }
 
 // Entrada en memoria del cliente: lleva texto y nick (solo por WS, nunca al log ni a disco).
@@ -164,6 +170,7 @@ function moderationEntry({ platform, verdict, accion, detail }) {
     origen: detail.origen,
     motivo: detail.motivo,
     nick: author ? displayName(platform, author) : null,
+    key: verdict.moderationKey || null, // para "Silenciar" desde el popup; solo por WS, nunca al log
     text: verdict.message ? verdict.message.text.display : '',
     timestamp: Date.now(),
   };

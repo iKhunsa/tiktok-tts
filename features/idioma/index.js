@@ -3,6 +3,7 @@
 const { messageMatchesVoiceScriptLogged } = require('./message-matches-voice-script');
 const { messageMatchesDictLang } = require('./message-matches-dict-lang');
 const idiomaFiltrarContract = require('../../core/contracts/idioma-filtrar');
+const { loadLangDicts } = require('./lang-dicts');
 
 /**
  * Combina messageMatchesVoiceScript + messageMatchesDictLang segun la
@@ -29,6 +30,7 @@ module.exports = {
     // interfaz de core/contracts/idioma-filtrar.js (definida vacia en la
     // Fase 1) sin importar idioma/ directo — mismo patron que moderacion-policy.
     idiomaFiltrarContract.filtrar = (text, voiceId, opts) => filtrar(logger, text, voiceId, opts);
+    idiomaFiltrarContract.isKnownWord = (word) => [...loadLangDicts(logger).values()].some((dict) => dict.has(word));
 
     return { rutas: 0, listeners: 0 };
   },

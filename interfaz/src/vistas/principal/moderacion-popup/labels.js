@@ -9,6 +9,7 @@ const REASON_KEY = {
   'duplicate-redelivery': 'duplicate',
   banned: 'banned',
   muted: 'muted',
+  gibberish: 'gibberish',
 };
 const ORIGIN_KEY = {
   usuario: 'user',
@@ -16,6 +17,7 @@ const ORIGIN_KEY = {
   diccionario: 'dictionary',
   'guard-js': 'guard',
   'motor-rust': 'rust',
+  'texto-sin-sentido': 'noise',
 };
 
 export function reasonLabel(entry) {

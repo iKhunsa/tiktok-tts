@@ -53,6 +53,7 @@ const CONFIG_VALIDATORS = {
   chatGuardLangs: isChatGuardLangs,
   chatGuardLangsAuto: (v) => typeof v === 'boolean',
   chatGuardCustom: isChatGuardCustom,
+  gibberishMode: (v) => v === 'off' || v === 'shadow' || v === 'enforce',
   mcpEnabled: (v) => typeof v === 'boolean',
   mcpDestructiveToolsEnabled: (v) => typeof v === 'boolean',
   mcpDevToolsEnabled: (v) => typeof v === 'boolean',

@@ -8,6 +8,7 @@ const STATUS_KEY_BY_CONFIG_KEY = {
   chatGuardLangs: 'langs',
   chatGuardLangsAuto: 'langsAuto',
   chatGuardCustom: 'custom',
+  gibberishMode: 'gibberishMode',
 };
 
 export function initialState() {
@@ -81,6 +82,7 @@ export function createActions({ store, api, notify }) {
 
   const setEnabled = (enabled) => saveConfig({ rustGuardEnabled: enabled });
   const setMode = (mode) => saveConfig({ rustGuardMode: mode });
+  const setGibberishMode = (mode) => saveConfig({ gibberishMode: mode });
 
   async function setLevel(level, labelKey) {
     const saved = await saveConfig({ chatGuardLevel: level });
@@ -158,7 +160,7 @@ export function createActions({ store, api, notify }) {
   }
 
   return {
-    load, refreshStatus, setEnabled, setMode, setLevel, setCustomOption, setLanguage, setLangsAuto,
+    load, refreshStatus, setEnabled, setMode, setGibberishMode, setLevel, setCustomOption, setLanguage, setLangsAuto,
     setTab, clearWordProblem, addWord, removeWord, replaceBlockedWords, exportWords, saveConfig,
   };
 }

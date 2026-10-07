@@ -42,6 +42,9 @@ const DEFAULT_CONFIG = {
   // y chatGuardLangs solo se usa con el modo manual.
   chatGuardLangsAuto: true,
   chatGuardCustom: { tricks: true, similar: false },
+  // Texto sin sentido (@tiklivetts/chat-guard): off | shadow (solo avisa) | enforce (no se lee).
+  // Nunca silencia al usuario: eso lo decide el streamer.
+  gibberishMode: 'enforce',
   // Servidor MCP (agentes). Endpoint solo-localhost; las tools destructivas
   // van detras de su propio toggle + prompt del host del agente.
   mcpEnabled: true,

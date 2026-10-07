@@ -29,3 +29,22 @@ test('languageCheck usa la configuracion actual sin recrear el guard', () => {
     idiomaFiltrar.filtrar = originalFilter;
   }
 });
+
+test('gibberishMode sale de la config (default enforce) y knownWord usa el contrato de idioma', () => {
+  let config = {};
+  const bus = { emit: (_event, respond) => respond(config) };
+  const originalKnown = idiomaFiltrar.isKnownWord;
+  idiomaFiltrar.isKnownWord = (word) => word === 'hola';
+
+  try {
+    const options = buildGuardOptions({ bus, blockedWords: new Set() });
+    assert.equal(options.rules.gibberishMode, 'enforce');
+    assert.equal(options.knownWord('hola'), true);
+    assert.equal(options.knownWord('asdfg'), false);
+
+    config = { gibberishMode: 'shadow' };
+    assert.equal(buildGuardOptions({ bus, blockedWords: new Set() }).rules.gibberishMode, 'shadow');
+  } finally {
+    idiomaFiltrar.isKnownWord = originalKnown;
+  }
+});

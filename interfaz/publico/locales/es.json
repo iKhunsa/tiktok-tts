@@ -1392,6 +1392,16 @@
                                      "similar":  "Detectar variantes parecidas",
                                      "similarHint":  "Palabras con pequeños errores de escritura."
                                  },
+                      "noise":  {
+                          "title":  "Texto sin sentido",
+                          "desc":  "Teclazos al azar como «asdfghjkl;». Si alguien manda varios seguidos, ese mensaje se ve en el chat pero no se lee. Nunca silencia a la persona: eso lo decides tú.",
+                          "enforce":  "No leerlo",
+                          "enforceDesc":  "El mensaje se ve en el chat, pero la voz no lo lee mientras la persona siga mandando texto sin sentido.",
+                          "shadow":  "Solo avisar",
+                          "shadowDesc":  "Se lee todo igual. Solo anota lo que habría detectado para que veas si acierta.",
+                          "off":  "Apagado",
+                          "offDesc":  "Se lee todo, aunque no tenga sentido."
+                      },
                       "mode":  {
                                    "title":  "¿Qué hace el filtro con lo que detecta?",
                                    "shadow":  "Solo avisar",
@@ -1498,6 +1508,9 @@
                                      "empty":  "Todavía no se bloqueó ningún mensaje en esta sesión.",
                                      "emptyFilter":  "Ningún mensaje coincide con el filtro.",
                                      "unknownUser":  "Usuario desconocido",
+                                     "muteUser":  "Silenciar usuario",
+                                     "muteDone":  "Silenciado",
+                                     "muteFailed":  "No se pudo silenciar al usuario.",
                                      "why":  "Motivo: {reason} · Lo bloqueó: {origin}"
                                  },
                      "action":  {
@@ -1510,6 +1523,7 @@
                                     "ownList":  "Tu lista de palabras",
                                     "dictionary":  "Filtro de idioma / diccionario",
                                     "guard":  "Filtro automático",
+                                    "noise":  "Filtro de texto sin sentido",
                                     "rust":  "Motor de moderación (Rust)"
                                 },
                      "reason":  {
@@ -1522,6 +1536,7 @@
                                     "banned":  "usuario bloqueado",
                                     "muted":  "usuario silenciado",
                                     "other":  "otro motivo",
+                                    "gibberish":  "texto sin sentido",
                                     "rustCategory":  "categoría {category}"
                                 },
                      "words":  {

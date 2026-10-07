@@ -7,6 +7,7 @@ import { mountMasterToggle } from './master-toggle.js';
 import { mountLevelPicker } from './level-picker.js';
 import { mountCustomOptions } from './custom-options.js';
 import { mountModePicker } from './mode-picker.js';
+import { mountNoisePicker } from './noise-picker.js';
 import { mountLanguagePicker } from './language-picker.js';
 import { mountWordLists } from './word-lists.js';
 import { mountEngineStatus } from './engine-status.js';
@@ -18,6 +19,7 @@ const TEMPLATE = `
   <div class="cg-card" id="cgMaster"></div>
   <div class="cg-card" id="cgLevel"><div id="cgLevelPicker"></div><div id="cgCustom" class="cg-custom"></div></div>
   <div class="cg-card" id="cgMode"></div>
+  <div class="cg-card" id="cgNoise"></div>
   <div class="cg-card" id="cgLanguages"></div>
   <div class="cg-card" id="cgWords"></div>
   <div class="cg-card" id="cgStatus"></div>
@@ -49,6 +51,7 @@ export function initModeracionContenido() {
   mountLevelPicker(at('cgLevelPicker'), part);
   mountCustomOptions(at('cgCustom'), part);
   mountModePicker(at('cgMode'), part);
+  mountNoisePicker(at('cgNoise'), part);
   mountLanguagePicker(at('cgLanguages'), part);
   mountWordLists(at('cgWords'), part);
   mountEngineStatus(at('cgStatus'), part);

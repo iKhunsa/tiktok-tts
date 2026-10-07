@@ -1,5 +1,6 @@
 import { t, aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
 import { moderationSession } from '../../../nucleo/estado/moderacion-sesion.js';
+import { showToast } from '../../../componentes/toast.js';
 import { filterEntries } from './filter-entries.js';
 import { reasonLabel, originLabel } from './labels.js';
 
@@ -30,7 +31,40 @@ function buildRow(entry) {
   why.className = 'mp-row-why';
   why.textContent = t('modPopup.blocked.why', { reason: reasonLabel(entry), origin: originLabel(entry.origen) });
   item.append(meta, text, why);
+  if (entry.motivo === 'gibberish' && entry.key) item.append(buildMuteButton(entry.key));
   return item;
+}
+
+// El programa solo avisa; silenciar a la persona lo decide el streamer.
+function buildMuteButton(key) {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'cfg-btn mp-mute';
+  button.innerHTML = '<img class="icon-inline" src="icons/block.svg" alt=""><span></span>';
+  button.lastElementChild.textContent = t('modPopup.blocked.muteUser');
+  button.addEventListener('click', async () => {
+    button.disabled = true;
+    const muted = await muteViewer(key);
+    if (muted) button.lastElementChild.textContent = t('modPopup.blocked.muteDone');
+    else {
+      button.disabled = false;
+      showToast(t('modPopup.blocked.muteFailed'), 'error');
+    }
+  });
+  return button;
+}
+
+async function muteViewer(key) {
+  try {
+    const response = await fetch('/api/moderation/mute', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key }),
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
 }
 
 export function mountBlockedTab(panel) {

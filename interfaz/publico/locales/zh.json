@@ -1392,6 +1392,16 @@
                                      "similar":  "识别相近变体",
                                      "similarHint":  "带有细小拼写错误的词。"
                                  },
+                      "noise":  {
+                          "title":  "无意义文字",
+                          "desc":  "像“asdfghjkl;”这样的随机乱敲。如果有人连续发送多条，该消息会显示在聊天中但不会被朗读。它不会自动禁言该用户，是否禁言由你决定。",
+                          "enforce":  "不朗读",
+                          "enforceDesc":  "消息会显示在聊天中，但在该用户持续发送无意义文字期间，语音不会朗读。",
+                          "shadow":  "仅提示",
+                          "shadowDesc":  "一切照常朗读。只记录本来会检测到的内容，方便你查看是否准确。",
+                          "off":  "关闭",
+                          "offDesc":  "全部朗读，即使毫无意义。"
+                      },
                       "mode":  {
                                    "title":  "过滤器对识别到的内容怎么处理？",
                                    "shadow":  "仅提醒",
@@ -1498,6 +1508,9 @@
                                      "empty":  "本次会话尚未拦截任何消息。",
                                      "emptyFilter":  "没有符合筛选条件的消息。",
                                      "unknownUser":  "未知用户",
+                                     "muteUser":  "禁言用户",
+                                     "muteDone":  "已禁言",
+                                     "muteFailed":  "无法禁言该用户。",
                                      "why":  "原因：{reason} · 拦截来源：{origin}"
                                  },
                      "action":  {
@@ -1510,6 +1523,7 @@
                                     "ownList":  "你的屏蔽词列表",
                                     "dictionary":  "语言过滤 / 词典",
                                     "guard":  "自动过滤",
+                                    "noise":  "无意义文字过滤",
                                     "rust":  "审核引擎（Rust）"
                                 },
                      "reason":  {
@@ -1522,6 +1536,7 @@
                                     "banned":  "用户已被封禁",
                                     "muted":  "用户已被静音",
                                     "other":  "其他原因",
+                                    "gibberish":  "无意义文字",
                                     "rustCategory":  "类别 {category}"
                                 },
                      "words":  {

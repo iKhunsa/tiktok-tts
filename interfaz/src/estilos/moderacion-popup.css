@@ -46,6 +46,8 @@
 }
 .mp-clear { min-height: 32px; gap: 6px; transition: border-color 0.2s var(--ease-out), color 0.2s var(--ease-out), transform var(--dur-press) var(--ease-out); }
 .mp-clear:active { transform: scale(0.97); }
+.mp-mute { min-height: 32px; gap: 6px; margin-top: 8px; transition: border-color 0.2s var(--ease-out), color 0.2s var(--ease-out), transform var(--dur-press) var(--ease-out); }
+.mp-mute:active:not(:disabled) { transform: scale(0.97); }
 
 .mp-list, .mp-chips { list-style: none; margin: 0; padding: 0; overflow-y: auto; max-height: 45vh; }
 .mp-list { display: flex; flex-direction: column; gap: 8px; }

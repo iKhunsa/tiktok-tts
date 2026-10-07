@@ -1392,6 +1392,16 @@
                                      "similar":  "Détecter les variantes proches",
                                      "similarHint":  "Des mots avec de petites fautes d’écriture."
                                  },
+                      "noise":  {
+                          "title":  "Texte sans sens",
+                          "desc":  "Touches tapées au hasard comme « asdfghjkl; ». Si quelqu'un en envoie plusieurs d'affilée, ce message s'affiche dans le chat mais n'est pas lu. Cela ne rend jamais la personne muette : c'est à vous de décider.",
+                          "enforce":  "Ne pas le lire",
+                          "enforceDesc":  "Le message s'affiche dans le chat, mais la voix l'ignore tant que la personne continue d'envoyer du texte sans sens.",
+                          "shadow":  "Avertir seulement",
+                          "shadowDesc":  "Tout est lu quand même. Le filtre note seulement ce qu'il aurait détecté pour que vous voyiez s'il a raison.",
+                          "off":  "Désactivé",
+                          "offDesc":  "Tout est lu, même sans sens."
+                      },
                       "mode":  {
                                    "title":  "Que doit faire le filtre de ce qu’il détecte ?",
                                    "shadow":  "Seulement avertir",
@@ -1498,6 +1508,9 @@
                                      "empty":  "Aucun message n\u0027a encore été bloqué pendant cette session.",
                                      "emptyFilter":  "Aucun message ne correspond au filtre.",
                                      "unknownUser":  "Utilisateur inconnu",
+                                     "muteUser":  "Rendre muet",
+                                     "muteDone":  "Rendu muet",
+                                     "muteFailed":  "Impossible de rendre l'utilisateur muet.",
                                      "why":  "Motif : {reason} · Bloqué par : {origin}"
                                  },
                      "action":  {
@@ -1510,6 +1523,7 @@
                                     "ownList":  "Votre liste de mots",
                                     "dictionary":  "Filtre de langue / dictionnaire",
                                     "guard":  "Filtre automatique",
+                                    "noise":  "Filtre de texte sans sens",
                                     "rust":  "Moteur de modération (Rust)"
                                 },
                      "reason":  {
@@ -1522,6 +1536,7 @@
                                     "banned":  "utilisateur banni",
                                     "muted":  "utilisateur muet",
                                     "other":  "autre motif",
+                                    "gibberish":  "texte sans sens",
                                     "rustCategory":  "catégorie {category}"
                                 },
                      "words":  {

@@ -1392,6 +1392,16 @@
                                      "similar":  "Ähnliche Varianten erkennen",
                                      "similarHint":  "Wörter mit kleinen Schreibfehlern."
                                  },
+                      "noise":  {
+                          "title":  "Unsinniger Text",
+                          "desc":  "Zufälliges Tastengehämmer wie „asdfghjkl;“. Schickt jemand mehrere hintereinander, erscheint die Nachricht im Chat, wird aber nicht vorgelesen. Die Person wird nie stummgeschaltet: Das entscheidest du.",
+                          "enforce":  "Nicht vorlesen",
+                          "enforceDesc":  "Die Nachricht erscheint im Chat, aber die Stimme überspringt sie, solange die Person weiter Unsinn schickt.",
+                          "shadow":  "Nur warnen",
+                          "shadowDesc":  "Alles wird trotzdem vorgelesen. Es wird nur notiert, was erkannt worden wäre, damit du siehst, ob es stimmt.",
+                          "off":  "Aus",
+                          "offDesc":  "Alles wird vorgelesen, auch ohne Sinn."
+                      },
                       "mode":  {
                                    "title":  "Was soll der Filter mit dem Erkannten tun?",
                                    "shadow":  "Nur warnen",
@@ -1498,6 +1508,9 @@
                                      "empty":  "In dieser Sitzung wurde noch keine Nachricht blockiert.",
                                      "emptyFilter":  "Keine Nachricht passt zum Filter.",
                                      "unknownUser":  "Unbekannter Nutzer",
+                                     "muteUser":  "Nutzer stummschalten",
+                                     "muteDone":  "Stummgeschaltet",
+                                     "muteFailed":  "Der Nutzer konnte nicht stummgeschaltet werden.",
                                      "why":  "Grund: {reason} · Blockiert durch: {origin}"
                                  },
                      "action":  {
@@ -1510,6 +1523,7 @@
                                     "ownList":  "Deine Wortliste",
                                     "dictionary":  "Sprachfilter / Wörterbuch",
                                     "guard":  "Automatischer Filter",
+                                    "noise":  "Filter für unsinnigen Text",
                                     "rust":  "Moderations-Engine (Rust)"
                                 },
                      "reason":  {
@@ -1522,6 +1536,7 @@
                                     "banned":  "gesperrter Nutzer",
                                     "muted":  "stummgeschalteter Nutzer",
                                     "other":  "anderer Grund",
+                                    "gibberish":  "unsinniger Text",
                                     "rustCategory":  "Kategorie {category}"
                                 },
                      "words":  {
