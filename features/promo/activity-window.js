@@ -1,43 +1,31 @@
 'use strict';
 
-const WINDOW_MINUTES = 10;
-const WINDOW_MS = WINDOW_MINUTES * 60 * 1000;
+const WINDOW_MS = 5 * 60 * 1000;
 
-// ponytail: valores iniciales sin telemetría; recalibrar con actividad real si
-// las promos siguen siendo demasiado frecuentes o escasas.
-const BASE_MINUTES = 30;
-const PISO_MINUTES = 10;
-const TECHO_MINUTES = 90;
-const MIN_FACTOR = 0.1;
-const MAX_FACTOR = 5;
-
-const timestamps = [];
-
-function clamp(value, min, max) {
-  return Math.min(Math.max(value, min), max);
-}
+// Ultima vez que escribio cada persona. Contar personas distintas (y no
+// mensajes) evita que un solo usuario hablando mucho active la promo.
+const lastSeen = new Map();
 
 function podar(now) {
   const cutoff = now - WINDOW_MS;
-  while (timestamps.length && timestamps[0] < cutoff) timestamps.shift();
+  for (const [clave, ts] of lastSeen) if (ts < cutoff) lastSeen.delete(clave);
 }
 
-/** Registra cada chat porque los mensajes miden compromiso en todas las plataformas. */
-function registrarMensaje() {
+/** `clave` identifica a la persona entre plataformas (`plataforma:id`). */
+function registrarMensaje(clave) {
+  if (!clave) return;
   const now = Date.now();
   podar(now);
-  timestamps.push(now);
+  lastSeen.set(clave, now);
 }
 
-/** Devuelve una tasa estable, en vez del ultimo pico puntual del chat. */
-function mensajesPorMinuto() {
+function personasDistintas() {
   podar(Date.now());
-  return timestamps.length / WINDOW_MINUTES;
+  return lastSeen.size;
 }
 
-function calcularIntervaloMinutos(mensajesPorMinuto) {
-  const factor = clamp(mensajesPorMinuto, MIN_FACTOR, MAX_FACTOR);
-  return clamp(BASE_MINUTES / factor, PISO_MINUTES, TECHO_MINUTES);
+function reiniciar() {
+  lastSeen.clear();
 }
 
-module.exports = { registrarMensaje, mensajesPorMinuto, calcularIntervaloMinutos };
+module.exports = { registrarMensaje, personasDistintas, reiniciar, WINDOW_MS };

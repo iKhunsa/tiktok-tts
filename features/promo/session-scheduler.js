@@ -2,37 +2,54 @@
 
 const MINUTE_MS = 60 * 1000;
 const FIRST_PROMO_MINUTES = 15;
-const { mensajesPorMinuto, calcularIntervaloMinutos } = require('./activity-window');
+const CYCLE_MINUTES = 25;
+const WATCH_MINUTES = 5;
 
 /**
- * Dispara onMilestone() en cadena mientras haya una sesion de vivo activa
- * (ver promo/index.js). El primer aviso espera el warm-up fijo de 15 min;
- * cada aviso siguiente usa la actividad reciente del chat.
+ * Dispara onMilestone() mientras haya una sesion de vivo activa (ver
+ * promo/index.js). Primer aviso: 15 min fijos, sin condicion. Despues, 25 min
+ * tras cada aviso se evalua hayAudiencia(): si hay, suena; si no, se vigila
+ * cada 5 min y suena en cuanto aparezca audiencia. Cada aviso reinicia el ciclo.
  */
-function createSessionScheduler({ onMilestone, logger }) {
+function createSessionScheduler({ onMilestone, hayAudiencia, logger }) {
   let timer = null;
-  let stepIndex = 0;
   let running = false;
 
-  function scheduleNext() {
-    const deltaMinutes = stepIndex === 0
-      ? FIRST_PROMO_MINUTES
-      : calcularIntervaloMinutos(mensajesPorMinuto());
-    stepIndex++;
+  function fire() {
+    // Sin este try/catch, un throw en onMilestone() corta el ciclo y mata la
+    // autopromocion para toda la sesion en silencio.
+    try {
+      onMilestone();
+    } catch (error) {
+      if (logger) logger.log(
+        'warn', 'promo', 'promo/session-scheduler.js#fire', 'promo.autopromocion.fallo_callback',
+        `El callback de autopromocion lanzo: ${error.message}`, { error: error.message, stack: error.stack }
+      );
+    }
+  }
+
+  function arm(minutes, fn) {
     timer = setTimeout(() => {
-      if (!running) return;
-      // Sin este try/catch, un throw en onMilestone() corta scheduleNext() y
-      // mata la autopromocion para toda la sesion en silencio.
-      try {
-        onMilestone();
-      } catch (error) {
-        if (logger) logger.log(
-          'warn', 'promo', 'promo/session-scheduler.js#scheduleNext', 'promo.autopromocion.fallo_callback',
-          `El callback de autopromocion lanzo: ${error.message}`, { error: error.message, stack: error.stack }
-        );
-      }
-      scheduleNext();
-    }, deltaMinutes * MINUTE_MS);
+      if (running) fn();
+    }, minutes * MINUTE_MS);
+  }
+
+  function startCycle() {
+    arm(CYCLE_MINUTES, () => evaluate('ciclo'));
+  }
+
+  function evaluate(fase) {
+    const { ok, viewers, personas } = hayAudiencia();
+    if (logger) logger.log(
+      'info', 'promo', 'promo/session-scheduler.js#evaluate', 'promo.autopromocion.evaluada',
+      `Evaluacion de audiencia (${fase}): ${ok ? 'suena' : 'sin audiencia'}`, { fase, viewers, personas, ok }
+    );
+    if (ok) {
+      fire();
+      startCycle();
+    } else {
+      arm(WATCH_MINUTES, () => evaluate('vigilancia'));
+    }
   }
 
   /** No reinicia el conteo si ya hay una sesion en curso: conectar un canal
@@ -41,14 +58,15 @@ function createSessionScheduler({ onMilestone, logger }) {
   function startIfNeeded() {
     if (running) return;
     running = true;
-    stepIndex = 0;
     if (timer) { clearTimeout(timer); timer = null; }
-    scheduleNext();
+    arm(FIRST_PROMO_MINUTES, () => {
+      fire();
+      startCycle();
+    });
   }
 
   function stop() {
     running = false;
-    stepIndex = 0;
     if (timer) clearTimeout(timer);
     timer = null;
   }
@@ -56,4 +74,4 @@ function createSessionScheduler({ onMilestone, logger }) {
   return { startIfNeeded, stop };
 }
 
-module.exports = { createSessionScheduler, FIRST_PROMO_MINUTES };
+module.exports = { createSessionScheduler, FIRST_PROMO_MINUTES, CYCLE_MINUTES, WATCH_MINUTES };
