@@ -690,6 +690,7 @@
                     "connectionError":  "연결 오류"
                 },
     "announce":  {
+                     "anonymousUser":  "사용자",
                      "gift":  "{user}님이 {gift}을(를) {count}개 보냈습니다",
                      "giftUsd":  "{user}님이 {gift}을(를) {count}개 보냈습니다 (약 {amount}달러)",
                      "join":  "{user}님이 방송에 입장했습니다",

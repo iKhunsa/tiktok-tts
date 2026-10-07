@@ -2,8 +2,7 @@
 
 const { adaptMessage } = require('@tiklivetts/chat-guard');
 const { getConfigSnapshot } = require('../../core/config-snapshot');
-const { resolveDisplayName } = require('./resolve-display-name');
-const { cleanName } = require('./clean-name');
+const { resolveDisplayName, resolveSpokenName, cleanName } = require('../../core/display-name');
 const { isAdminIdentity } = require('./is-admin-identity');
 const { extractAuthorMeta } = require('./author-meta/extract-author-meta');
 const { describeModeration } = require('./describe-moderation');
@@ -96,6 +95,7 @@ function buildPayload({ bus, channel, platform, verdict, raw }) {
     platform,
     channel,
     user,
+    ttsUser: resolveSpokenName(message.author.displayName, message.author.handle),
     userId: message.author.id || null,
     comment: message.text.display,
     ttsComment: message.text.speech,

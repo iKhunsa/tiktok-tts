@@ -690,6 +690,7 @@
                     "connectionError":  "连接错误"
                 },
     "announce":  {
+                     "anonymousUser":  "用户",
                      "gift":  "{user} 送出了 {count} 个 {gift}",
                      "giftUsd":  "{user} 送出了 {count} 个 {gift}，约合 {amount} 美元",
                      "join":  "{user} 加入了直播",

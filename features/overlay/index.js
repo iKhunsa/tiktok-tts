@@ -17,6 +17,7 @@ const { MAX_TOP_ROWS } = require('./state/top-limits');
 const { broadcastTopDonors } = require('./state/broadcast-top-donors');
 const { broadcastTopLikers } = require('./state/broadcast-top-likers');
 const { cleanNick } = require('./clean-nick');
+const { resolveSpokenName } = require('../../core/display-name');
 const { setViewerCount } = require('./state/set-viewer-count');
 const { removeViewerCount } = require('./state/remove-viewer-count');
 const { totalViewerCount } = require('./state/total-viewer-count');
@@ -59,7 +60,7 @@ module.exports = {
         broadcastTopDonors(bus, state.topDonors);
       }
       bus.emit('ws:broadcast', {
-        type: 'gift', user, giftName: data.giftName, giftId: data.giftId,
+        type: 'gift', user, ttsUser: resolveSpokenName(data.nickname, data.uniqueId), giftName: data.giftName, giftId: data.giftId,
         giftPictureUrl: data.giftPictureUrl || null, repeatCount, usdValue, timestamp: Date.now(),
       });
     }, 'overlay');
@@ -67,7 +68,7 @@ module.exports = {
     bus.on('canal:follow', (payload) => {
       const user = cleanNick(payload.nick, payload.userId);
       addFollower(state.credits, { platform: payload.platform, userId: payload.userId, user });
-      bus.emit('ws:broadcast', { type: 'follow', platform: payload.platform, user, userId: payload.userId || null, timestamp: Date.now() });
+      bus.emit('ws:broadcast', { type: 'follow', platform: payload.platform, user, ttsUser: resolveSpokenName(payload.nick, payload.userId), userId: payload.userId || null, timestamp: Date.now() });
       if (payload.platform === 'tiktok') state.followCount += 1;
     }, 'overlay');
 
@@ -84,10 +85,11 @@ module.exports = {
       const pending = state.likePendingTimers.get(user);
       pending.count += (payload.likeCount || 1);
       pending.avatar = payload.avatar || pending.avatar;
+      pending.ttsUser = resolveSpokenName(payload.nick, payload.userId);
       pending.timer = setTimeout(() => {
         const likeCount = pending.count;
         state.likePendingTimers.delete(user);
-        bus.emit('ws:broadcast', { type: 'like', user, likeCount, timestamp: Date.now() });
+        bus.emit('ws:broadcast', { type: 'like', user, ttsUser: pending.ttsUser, likeCount, timestamp: Date.now() });
         addTopEntry(state.topLikers, 'totalLikes', { user, amount: likeCount, avatar: pending.avatar });
         purgeTopLikersIfNeeded(state.topLikers);
         broadcastTopLikers(bus, state.topLikers);
@@ -104,13 +106,13 @@ module.exports = {
       if (kind === 'share') {
         const user = cleanNick(nick, userId);
         addSharer(state.credits, { platform, userId, user });
-        bus.emit('ws:broadcast', { type: 'share', platform, user, timestamp: Date.now() });
+        bus.emit('ws:broadcast', { type: 'share', platform, user, ttsUser: resolveSpokenName(nick, userId), timestamp: Date.now() });
       } else if (kind === 'join') {
-        bus.emit('ws:broadcast', { type: 'join', platform, user: cleanNick(nick, userId), userId: userId || null, timestamp: Date.now() });
+        bus.emit('ws:broadcast', { type: 'join', platform, user: cleanNick(nick, userId), ttsUser: resolveSpokenName(nick, userId), userId: userId || null, timestamp: Date.now() });
       } else if (kind === 'superchat') {
         const authorName = raw.author && raw.author.name;
         bus.emit('ws:broadcast', {
-          type: 'superchat', platform, user: cleanNick(authorName, null),
+          type: 'superchat', platform, user: cleanNick(authorName, null), ttsUser: resolveSpokenName(authorName, null),
           amount: raw.amount || '', color: raw.color || '', sticker: (raw.sticker && raw.sticker.url) || null,
           channel, timestamp: Date.now(),
         });

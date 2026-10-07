@@ -690,6 +690,7 @@
                     "connectionError":  "接続エラー"
                 },
     "announce":  {
+                     "anonymousUser":  "ユーザー",
                      "gift":  "{user}さんが{gift}を{count}個送りました",
                      "giftUsd":  "{user}さんが{gift}を{count}個送りました（約{amount}ドル相当）",
                      "join":  "{user}さんが配信に参加しました",

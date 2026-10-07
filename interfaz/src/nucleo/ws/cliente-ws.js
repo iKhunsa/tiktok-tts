@@ -13,13 +13,14 @@ import { appSettings, saveSettings } from '../estado/ajustes-app.js';
 import { options } from '../estado/opciones-lectura.js';
 import { applyA11yConfig, applyReadNonFollowers, applyFiltroIdiomaConfig, applyAnnounceTemplates, announceTemplates } from '../estado/config-runtime.js';
 import { resolverAnuncio } from '../i18n/plantilla-anuncio.js';
+import { nombreHablado } from '../i18n/nombre-hablado.js';
 import { cargarSesion } from '../estado/sesion.js';
 import {
   ttsPaused, setTtsGlobalEnabled, togglePauseTts, skipCurrentTTS,
   enableEmergencyTTSMode, sendStateSync, speak, updateQueueBadge,
 } from '../tts/cola-tts.js';
 import { incrementarMsgCount, handleChatData, addSystemMsg } from '../../vistas/principal/chat-ui.js';
-import { setStatus, getSayUsernameConnector } from '../../vistas/principal/modales-avisos.js';
+import { setStatus } from '../../vistas/principal/modales-avisos.js';
 import { updateFollowerDisplay } from '../../vistas/principal/configurador-overlays.js';
 import { renderSettingsChannels } from '../../vistas/principal/plataformas.js';
 import { renderTiktokSession, tiktokLogin } from '../../vistas/principal/tiktok-sesion.js';
@@ -129,12 +130,13 @@ function handleMessage(data) {
     case 'gift':
       if (options.readGifts) {
         const giftId = nuevoMsgId();
-        const giftVars = { user: data.user, count: data.repeatCount, gift: data.giftName, amount: data.usdValue };
-        const tplVars = { usuario: data.user, cantidad: data.repeatCount, regalo: data.giftName, monto: data.usdValue };
-        const giftBase = resolverAnuncio(announceTemplates, 'gift', { ...tplVars, monto: undefined }, () => t('announce.gift', giftVars));
-        const giftText = (options.readGiftAmount && data.usdValue)
-          ? resolverAnuncio(announceTemplates, 'giftUsd', tplVars, () => t('announce.giftUsd', giftVars))
-          : giftBase;
+        const giftAnuncio = (evento, usuario) => {
+          const giftVars = { user: usuario, count: data.repeatCount, gift: data.giftName, amount: data.usdValue };
+          const tplVars = { usuario, cantidad: data.repeatCount, regalo: data.giftName, monto: evento === 'giftUsd' ? data.usdValue : undefined };
+          return resolverAnuncio(announceTemplates, evento, tplVars, () => t(`announce.${evento}`, giftVars));
+        };
+        const giftBase = giftAnuncio('gift', data.user);
+        const giftText = giftAnuncio(options.readGiftAmount && data.usdValue ? 'giftUsd' : 'gift', nombreHablado(data));
         addSystemMsg(giftBase, 'gift', giftId, {
           iconSrc: 'icons/card_giftcard.svg',
           accentText: data.usdValue ? `≈ $${data.usdValue} USD` : '',
@@ -146,18 +148,18 @@ function handleMessage(data) {
     case 'join':
       if (options.readJoins) {
         const joinId = nuevoMsgId();
-        const joinText = resolverAnuncio(announceTemplates, 'join', { usuario: data.user }, () => t('announce.join', { user: data.user }));
-        addSystemMsg(joinText, 'join', joinId, { iconSrc: 'icons/emoji_people.svg' });
-        speak(joinText, joinId, data.timestamp);
+        const joinText = (usuario) => resolverAnuncio(announceTemplates, 'join', { usuario }, () => t('announce.join', { user: usuario }));
+        addSystemMsg(joinText(data.user), 'join', joinId, { iconSrc: 'icons/emoji_people.svg' });
+        speak(joinText(nombreHablado(data)), joinId, data.timestamp);
       }
       break;
 
     case 'follow': {
       if (options.readFollows) {
         const followId = nuevoMsgId();
-        const followText = resolverAnuncio(announceTemplates, 'follow', { usuario: data.user }, () => t('announce.follow', { user: data.user }));
-        addSystemMsg(followText, 'join', followId, { iconSrc: 'icons/person_add.svg' });
-        speak(followText, followId, data.timestamp);
+        const followText = (usuario) => resolverAnuncio(announceTemplates, 'follow', { usuario }, () => t('announce.follow', { user: usuario }));
+        addSystemMsg(followText(data.user), 'join', followId, { iconSrc: 'icons/person_add.svg' });
+        speak(followText(nombreHablado(data)), followId, data.timestamp);
       }
       break;
     }
@@ -169,9 +171,9 @@ function handleMessage(data) {
         if (now - last >= LIKE_COOLDOWN_MS) {
           likeCooldownMap.set(data.user, now);
           const likeId = nuevoMsgId();
-          const likeText = resolverAnuncio(announceTemplates, 'like', { usuario: data.user, cantidad: data.likeCount }, () => tLike(data.user, data.likeCount));
-          addSystemMsg(likeText, 'join', likeId, { iconSrc: 'icons/thumb_up.svg' });
-          speak(likeText, likeId, data.timestamp);
+          const likeText = (usuario) => resolverAnuncio(announceTemplates, 'like', { usuario, cantidad: data.likeCount }, () => tLike(usuario, data.likeCount));
+          addSystemMsg(likeText(data.user), 'join', likeId, { iconSrc: 'icons/thumb_up.svg' });
+          speak(likeText(nombreHablado(data)), likeId, data.timestamp);
         }
       }
       break;
@@ -179,9 +181,9 @@ function handleMessage(data) {
     case 'share':
       if (options.readShares) {
         const shareId = nuevoMsgId();
-        const shareText = resolverAnuncio(announceTemplates, 'share', { usuario: data.user }, () => t('announce.share', { user: data.user }));
-        addSystemMsg(shareText, 'join', shareId, { iconSrc: 'icons/public.svg' });
-        speak(shareText, shareId, data.timestamp);
+        const shareText = (usuario) => resolverAnuncio(announceTemplates, 'share', { usuario }, () => t('announce.share', { user: usuario }));
+        addSystemMsg(shareText(data.user), 'join', shareId, { iconSrc: 'icons/public.svg' });
+        speak(shareText(nombreHablado(data)), shareId, data.timestamp);
       }
       break;
 

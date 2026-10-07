@@ -28,7 +28,7 @@
 - `broadcastMessage` — `chat:mensaje-permitido` + `ws:broadcast`
 - `reportBlocked` — `chat:mensaje-bloqueado` con motivo
 - <ins>**[FIX #42]**</ins> Todo `drop` del guard se respeta, también el del admin (antes el admin reenviado se volvía a leer)
-- `announceAdminOnce`, `resolve-display-name.js`, `clean-name.js` — nombre visible y aviso de admin
+- `announceAdminOnce`, `core/display-name/` (`resolveDisplayName`, `resolveSpokenName`, `cleanName`) — nombre visible y aviso de admin
 
 ## 4. Moderación (features/moderacion)
 

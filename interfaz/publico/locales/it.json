@@ -690,6 +690,7 @@
                     "connectionError":  "Errore di connessione"
                 },
     "announce":  {
+                     "anonymousUser":  "utente",
                      "gift":  "{user} ha inviato {count} {gift}",
                      "giftUsd":  "{user} ha inviato {count} {gift}, pari a ${amount} dollari",
                      "join":  "{user} è entrato nella diretta",

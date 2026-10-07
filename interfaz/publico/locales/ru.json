@@ -690,6 +690,7 @@
                     "connectionError":  "Ошибка соединения"
                 },
     "announce":  {
+                     "anonymousUser":  "пользователь",
                      "gift":  "{user} отправил(а) {count} {gift}",
                      "giftUsd":  "{user} отправил(а) {count} {gift}, это примерно {amount} долларов",
                      "join":  "{user} зашёл(зашла) на стрим",
