@@ -10,7 +10,6 @@ module.exports = [
   require('./mobile'),
   require('./overlays'),
   require('./updates'),
-  require('./errors'),
   require('./settings'),
   require('./blocked-words'),
 ];

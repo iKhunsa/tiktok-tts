@@ -221,7 +221,7 @@ Dominio aparte que reporta uso agregado y anónimo a un servicio propio
   (`features/telemetria/buffer.js`) y reintentos. 4xx ya no se trata como éxito
   silencioso: todo fallo de red queda logueado (`telemetria.envio.*`).
 - `features/telemetria/connectors/*.js` — un conector por área (creators, platforms,
-  counters, obs, mobile, overlays, updates, errors, settings). Cada uno
+  counters, obs, mobile, overlays, updates, settings). Cada uno
   escucha el bus de dominios (`canal:estado`, `movil:comando`, etc.) o el
   espejo de logs (`core/logger.js` emite **todo** log como `log:entry` al
   bus) en vez de que cada dominio de negocio tenga que conocer telemetría.
