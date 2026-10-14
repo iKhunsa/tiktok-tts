@@ -113,7 +113,10 @@
                    "langFilterHint":  "Ignora i messaggi in chat con caratteri che non corrispondono alla lingua della voce attiva (es: blocca cinese/giapponese se la voce è in Spagnolo, e viceversa).",
                    "dictFilter":  "Filtra per lingua (parole)",
                    "dictFilterHint":  "Legge solo i messaggi scritti nella lingua della voce attiva o nelle lingue extra che consenti. Le parole sconosciute (nomi, errori di battitura) non bloccano.",
-                   "readNonFollowers":  "Leggi i non follower"
+                   "readNonFollowers":  "Leggi i non follower",
+                   "closeToTray":  "Riduci nell'area di notifica alla chiusura",
+                   "closeToTrayHint":  "Con la X l'app continua a funzionare nell'area di notifica. Per chiuderla del tutto: clic destro sull'icona → Esci.",
+                   "openAtLogin":  "Apri all'avvio di Windows"
                },
     "tts":  {
                 "on":  "TTS Attivo",
@@ -232,7 +235,8 @@
                      "announceTplLike":  "Dopo aver ricevuto like",
                      "announceTplExLike":  "dà il massimo",
                      "announceTplShare":  "Dopo che qualcuno condivide",
-                     "announceTplExShare":  "ha fatto girare la voce"
+                     "announceTplExShare":  "ha fatto girare la voce",
+                     "window":  "Finestra e avvio"
                  },
     "label":  {
                   "voice":  "Voce",
@@ -1126,7 +1130,10 @@
                    "chatGuardUnavailable":  "Impossibile contattare il filtro. Riprova.",
                    "chatGuardInvalidWord":  "Parola non valida.",
                    "chatGuardWordConflict":  "Questa parola è nell’altra lista.",
-                   "chatGuardAllowedSingleWord":  "Qui sono accettate solo parole singole, non frasi."
+                   "chatGuardAllowedSingleWord":  "Qui sono accettate solo parole singole, non frasi.",
+                   "chatGuardImportTooLarge":  "Il file è troppo grande (max 1 MB).",
+                   "chatGuardImportTooMany":  "Troppe parole (max 5000).",
+                   "chatGuardImportInvalid":  "Formato non valido: deve essere un elenco JSON di parole tra virgolette."
                },
     "mcp":  {
                 "title":  "Agente MCP",
@@ -1454,7 +1461,31 @@
                                     "added":  "Parola aggiunta",
                                     "removed":  "Parola rimossa",
                                     "export":  "Esporta",
-                                    "viewAll":  "Vedi tutte le parole"
+                                    "viewAll":  "Vedi tutte le parole",
+                                    "import":  "Importa",
+                                    "importTitle":  "Importa parole bloccate",
+                                    "importStepFormat":  "Formato",
+                                    "importStepFile":  "Importa",
+                                    "importStepConfirm":  "Conferma",
+                                    "importIntro":  "Importa un file JSON con le parole che vuoi aggiungere alla tua lista di blocco. Le parole importate si aggiungono alla tua lista attuale, non la sostituiscono.",
+                                    "importFormatTitle":  "Formato del file JSON",
+                                    "importFormatNote":  "Il file deve contenere un array JSON di parole o frasi tra virgolette, separate da virgole.",
+                                    "importCopy":  "Copia esempio",
+                                    "importCopied":  "Esempio copiato",
+                                    "importDrop":  "Trascina qui il tuo file .json",
+                                    "importBrowse":  "oppure fai clic per sceglierlo",
+                                    "importNext":  "Avanti",
+                                    "importBack":  "Indietro",
+                                    "importFileReady":  "{file} · {n} parole",
+                                    "importSummary":  "Il file contiene {total} parole; {n} sono nuove e verranno aggiunte alla tua lista.",
+                                    "importNoneNew":  "Tutte le parole del file sono già nella tua lista.",
+                                    "importMore":  "+{n} altre",
+                                    "importConfirm":  "Importa",
+                                    "importCancel":  "Annulla",
+                                    "importEmpty":  "Il file non contiene parole.",
+                                    "importReadError":  "Impossibile leggere il file.",
+                                    "importNotJson":  "Sono accettati solo file .json.",
+                                    "imported":  "Importate {n} nuove parole"
                                 },
                       "status":  {
                                      "title":  "Stato del filtro",
@@ -1556,5 +1587,16 @@
                                    "waitingValue":  "{n} di {max}",
                                    "tip":  "Puoi saltare il messaggio corrente o svuotare la coda dai controlli della chat."
                                }
-                 }
+                 },
+    "creatorProgram":  {
+                           "title":  "Crei contenuti? Ottieni 1 mese Pro",
+                           "text":  "Fai un video su TikLiveTTS a modo tuo e ricevi 1 mese Pro gratis.",
+                           "cta":  "Voglio il mio mese gratis",
+                           "howItWorks":  "Scopri come funziona",
+                           "modalTitle":  "Crea un video e ottieni 1 mese Pro",
+                           "modalBody1":  "Se sei un creator, pubblica un video in cui parli, recensisci o consigli TikLiveTTS.",
+                           "modalBody2":  "Puoi farlo come vuoi e con il tuo stile.",
+                           "modalBody3":  "Una volta approvato, potrai riscattare <strong>1 mese di TikLiveTTS Pro completamente gratis.</strong>",
+                           "join":  "Partecipa"
+                       }
 }

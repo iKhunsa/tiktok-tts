@@ -57,6 +57,8 @@ const DEFAULT_CONFIG = {
   // features Pro quedan detras del plan y aparece la UI de cuenta.
   // Interruptor de panico: apagar revierte al estado conocido sin re-deploy.
   subscriptionsEnabled: false,
+  // X de la ventana: false = cierra la app, true = la esconde en la bandeja.
+  closeToTray: false,
   // Llave técnica de apagado (true = cero envíos). Por defecto se envía la lista saneada,
   // sin nombres ni chat. Renombrada desde blockedWordsTelemetryEnabled para que el `false`
   // que guardó el antiguo interruptor opt-in no deje cuentas apagadas sin querer.

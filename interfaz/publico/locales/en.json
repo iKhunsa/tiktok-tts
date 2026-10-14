@@ -113,7 +113,10 @@
                    "langFilterHint":  "Ignores chat messages with characters that don\u0027t match the active voice\u0027s language (e.g. blocks Chinese/Japanese if your voice is Spanish, and vice versa).",
                    "dictFilter":  "Filter by language (words)",
                    "dictFilterHint":  "Only reads messages written in the active voice language or in the extra languages you allow. Unknown words (names, typos) never block.",
-                   "readNonFollowers":  "Read non-followers"
+                   "readNonFollowers":  "Read non-followers",
+                   "closeToTray":  "Minimize to tray on close",
+                   "closeToTrayHint":  "The X keeps the app running in the system tray. To quit completely: right-click the tray icon → Exit.",
+                   "openAtLogin":  "Open when Windows starts"
                },
     "tts":  {
                 "on":  "TTS On",
@@ -232,7 +235,8 @@
                      "announceTplLike":  "After receiving likes",
                      "announceTplExLike":  "gives it everything",
                      "announceTplShare":  "After someone shares",
-                     "announceTplExShare":  "spread the word"
+                     "announceTplExShare":  "spread the word",
+                     "window":  "Window & startup"
                  },
     "label":  {
                   "voice":  "Voice",
@@ -802,7 +806,10 @@
                    "chatGuardUnavailable":  "Could not reach the filter. Try again.",
                    "chatGuardInvalidWord":  "Invalid word.",
                    "chatGuardWordConflict":  "That word is in the other list.",
-                   "chatGuardAllowedSingleWord":  "Only single words are accepted here, not phrases."
+                   "chatGuardAllowedSingleWord":  "Only single words are accepted here, not phrases.",
+                   "chatGuardImportTooLarge":  "The file is too large (max 1 MB).",
+                   "chatGuardImportTooMany":  "Too many words (max 5000).",
+                   "chatGuardImportInvalid":  "Invalid format: it must be a JSON list of quoted words."
                },
     "dictLang":  {
                      "title":  "Allowed languages",
@@ -1454,7 +1461,31 @@
                                     "added":  "Word added",
                                     "removed":  "Word removed",
                                     "export":  "Export",
-                                    "viewAll":  "View all words"
+                                    "viewAll":  "View all words",
+                                    "import":  "Import",
+                                    "importTitle":  "Import blocked words",
+                                    "importStepFormat":  "Format",
+                                    "importStepFile":  "Import",
+                                    "importStepConfirm":  "Confirm",
+                                    "importIntro":  "Import a JSON file with the words you want to add to your block list. Imported words are added to your current list, not replacing it.",
+                                    "importFormatTitle":  "JSON file format",
+                                    "importFormatNote":  "The file must contain a JSON array of quoted words or phrases, separated by commas.",
+                                    "importCopy":  "Copy example",
+                                    "importCopied":  "Example copied",
+                                    "importDrop":  "Drag your .json file here",
+                                    "importBrowse":  "or click to choose it",
+                                    "importNext":  "Next",
+                                    "importBack":  "Back",
+                                    "importFileReady":  "{file} · {n} words",
+                                    "importSummary":  "The file has {total} words; {n} are new and will be added to your list.",
+                                    "importNoneNew":  "All the words in the file are already on your list.",
+                                    "importMore":  "+{n} more",
+                                    "importConfirm":  "Import",
+                                    "importCancel":  "Cancel",
+                                    "importEmpty":  "The file contains no words.",
+                                    "importReadError":  "Could not read the file.",
+                                    "importNotJson":  "Only .json files are accepted.",
+                                    "imported":  "Imported {n} new words"
                                 },
                       "status":  {
                                      "title":  "Filter status",
@@ -1556,5 +1587,16 @@
                                    "waitingValue":  "{n} of {max}",
                                    "tip":  "You can skip the current message or clear the queue from the chat controls."
                                }
-                 }
+                 },
+    "creatorProgram":  {
+                           "title":  "Make content? Get 1 month of Pro",
+                           "text":  "Make a video about TikLiveTTS your way and get 1 month of Pro for free.",
+                           "cta":  "I want my free month",
+                           "howItWorks":  "See how it works",
+                           "modalTitle":  "Make a video and get 1 month of Pro",
+                           "modalBody1":  "If you're a content creator, post a video talking about, reviewing or recommending TikLiveTTS.",
+                           "modalBody2":  "Do it however you like, in your own style.",
+                           "modalBody3":  "Once approved, you can redeem <strong>1 month of TikLiveTTS Pro completely free.</strong>",
+                           "join":  "Join"
+                       }
 }

@@ -1,5 +1,7 @@
 import { t, aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
 import { openModerationPopup } from '../moderacion-popup/index.js';
+import { showToast } from '../../../componentes/toast.js';
+import { openImportModal } from './import-modal.js';
 import { WORD_LISTS, MAX_WORD_LENGTH } from './chat-guard-options.js';
 
 const TAB_ICON = { blocked: 'icons/block.svg', allowed: 'icons/verified_user.svg' };
@@ -13,6 +15,7 @@ export function mountWordLists(container, { store, actions }) {
     <div class="cg-subtitle" id="cgWordsTitle" data-i18n="chatGuard.words.title"></div>
     <div class="cg-tabs-row">
       <div class="cg-tabs" role="tablist" aria-labelledby="cgWordsTitle">${WORD_LISTS.map(tabMarkup).join('')}</div>
+      <button type="button" class="cfg-btn small" id="cgWordsImport" data-i18n-title="chatGuard.words.import"><img class="icon-inline" src="icons/upload.svg" alt=""><span data-i18n="chatGuard.words.import"></span></button>
       <button type="button" class="cfg-btn small" id="cgWordsExport" data-i18n-title="chatGuard.words.export"><img class="icon-inline" src="icons/download.svg" alt=""><span data-i18n="chatGuard.words.export"></span></button>
     </div>
     <div class="cg-words-panel" id="cgWordsPanel" role="tabpanel">
@@ -63,6 +66,15 @@ export function mountWordLists(container, { store, actions }) {
     link.click();
     URL.revokeObjectURL(url);
   });
+  container.querySelector('#cgWordsImport').addEventListener('click', () => openImportModal({
+    existing: store.getState().words.blocked,
+    importar: async (content) => {
+      const added = await actions.importWords(content);
+      if (added === null) return false;
+      showToast(t('chatGuard.words.imported', { n: added }), 'success');
+      return true;
+    },
+  }));
   container.querySelector('#cgWordsViewAll').addEventListener('click', () => openModerationPopup('words'));
 
   function renderTabs(state) {
@@ -92,6 +104,9 @@ export function mountWordLists(container, { store, actions }) {
     renderTabs(state);
     renderProblem(state);
     container.querySelector('#cgWordsViewAll').disabled = disabled;
+    const importBtn = container.querySelector('#cgWordsImport');
+    importBtn.hidden = state.tab !== 'blocked';
+    importBtn.disabled = disabled;
   }
 
   render(store.getState());

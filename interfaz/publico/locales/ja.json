@@ -113,7 +113,10 @@
                    "langFilterHint":  "現在の音声の言語に合わない文字を含むチャットメッセージを無視します（例：音声がスペイン語の場合、中国語・日本語はブロックされ、逆も同様です）。",
                    "dictFilter":  "言語で絞り込み（単語）",
                    "dictFilterHint":  "アクティブな音声の言語、または許可した追加言語で書かれたメッセージのみ読み上げます。未知の単語（名前、タイプミス）はブロックされません。",
-                   "readNonFollowers":  "非フォロワーも読む"
+                   "readNonFollowers":  "非フォロワーも読む",
+                   "closeToTray":  "閉じるときにトレイへ最小化",
+                   "closeToTrayHint":  "X を押してもアプリはシステムトレイで動作し続けます。完全に終了するには、トレイアイコンを右クリック → 終了。",
+                   "openAtLogin":  "Windows の起動時に開く"
                },
     "tts":  {
                 "on":  "TTS オン",
@@ -232,7 +235,8 @@
                      "announceTplLike":  "いいねを受け取った後",
                      "announceTplExLike":  "全力です",
                      "announceTplShare":  "シェアされた後",
-                     "announceTplExShare":  "みんなに広めました"
+                     "announceTplExShare":  "みんなに広めました",
+                     "window":  "ウィンドウと起動"
                  },
     "label":  {
                   "voice":  "音声",
@@ -1126,7 +1130,10 @@
                    "chatGuardUnavailable":  "フィルターに接続できませんでした。もう一度お試しください。",
                    "chatGuardInvalidWord":  "無効な単語です。",
                    "chatGuardWordConflict":  "その単語はもう一方のリストにあります。",
-                   "chatGuardAllowedSingleWord":  "ここでは単語のみ受け付けます。フレーズは使えません。"
+                   "chatGuardAllowedSingleWord":  "ここでは単語のみ受け付けます。フレーズは使えません。",
+                   "chatGuardImportTooLarge":  "ファイルが大きすぎます（最大 1 MB）。",
+                   "chatGuardImportTooMany":  "単語が多すぎます（最大 5000）。",
+                   "chatGuardImportInvalid":  "形式が正しくありません：引用符で囲んだ単語の JSON リストである必要があります。"
                },
     "mcp":  {
                 "title":  "MCP エージェント",
@@ -1454,7 +1461,31 @@
                                     "added":  "単語を追加しました",
                                     "removed":  "単語を削除しました",
                                     "export":  "エクスポート",
-                                    "viewAll":  "すべての単語を見る"
+                                    "viewAll":  "すべての単語を見る",
+                                    "import":  "インポート",
+                                    "importTitle":  "ブロックワードをインポート",
+                                    "importStepFormat":  "形式",
+                                    "importStepFile":  "インポート",
+                                    "importStepConfirm":  "確認",
+                                    "importIntro":  "ブロックリストに追加したい単語を含む JSON ファイルをインポートします。インポートした単語は現在のリストに追加され、置き換えられません。",
+                                    "importFormatTitle":  "JSON ファイルの形式",
+                                    "importFormatNote":  "ファイルには、引用符で囲みカンマで区切った単語やフレーズの JSON 配列が必要です。",
+                                    "importCopy":  "例をコピー",
+                                    "importCopied":  "例をコピーしました",
+                                    "importDrop":  ".json ファイルをここにドラッグ",
+                                    "importBrowse":  "またはクリックして選択",
+                                    "importNext":  "次へ",
+                                    "importBack":  "戻る",
+                                    "importFileReady":  "{file} · {n} 語",
+                                    "importSummary":  "ファイルには {total} 語あり、そのうち {n} 語が新規でリストに追加されます。",
+                                    "importNoneNew":  "ファイルの単語はすべてリストに登録済みです。",
+                                    "importMore":  "ほか {n} 件",
+                                    "importConfirm":  "インポート",
+                                    "importCancel":  "キャンセル",
+                                    "importEmpty":  "ファイルに単語が含まれていません。",
+                                    "importReadError":  "ファイルを読み込めませんでした。",
+                                    "importNotJson":  ".json ファイルのみ受け付けます。",
+                                    "imported":  "新しい単語を {n} 件インポートしました"
                                 },
                       "status":  {
                                      "title":  "フィルターの状態",
@@ -1556,5 +1587,16 @@
                                    "waitingValue":  "{n} / {max}",
                                    "tip":  "チャットの操作から、現在のメッセージをスキップしたりキューを空にしたりできます。"
                                }
-                 }
+                 },
+    "creatorProgram":  {
+                           "title":  "コンテンツを作っていますか？Pro 1か月分をプレゼント",
+                           "text":  "TikLiveTTS の動画を自由に作って、Pro 1か月分を無料でゲット。",
+                           "cta":  "無料の1か月を受け取る",
+                           "howItWorks":  "仕組みを見る",
+                           "modalTitle":  "動画を作って Pro 1か月分をゲット",
+                           "modalBody1":  "コンテンツクリエイターなら、TikLiveTTS について話す・レビューする・おすすめする動画を投稿してください。",
+                           "modalBody2":  "内容や形式は自由。あなたらしいスタイルでどうぞ。",
+                           "modalBody3":  "承認されると、<strong>TikLiveTTS Pro 1か月分を完全無料</strong>で利用できます。",
+                           "join":  "参加する"
+                       }
 }

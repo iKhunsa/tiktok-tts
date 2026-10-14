@@ -37,6 +37,7 @@ import { reproducirEventoActivo, reproducirEvento } from '../../componentes/even
 import { iniciarBotonEfectosEvento } from './efectos-evento.js';
 import { iniciarAvisoConexionFallida } from './aviso-conexion-fallida.js';
 import { iniciarAvisoCodigoDescuento } from './aviso-codigo-descuento.js';
+import { iniciarProgramaCreadores } from './programa-creadores.js';
 import { iniciarBannerPro } from './banner-pro.js';
 import { iniciarRotacionAnuncio } from './anuncio-rotativo.js';
 import { copyToClipboard } from './utils-app.js';
@@ -46,6 +47,7 @@ import {
   testTopLikers, testTopDonors, testViewers, testChatOverlay, restablecerOverlay,
 } from './configurador-overlays.js';
 import { iniciarCamposOverlay } from './campos-overlay/index.js';
+import { iniciarAcordeonOverlays } from './overlays-acordeon.js';
 import {
   toggleChatToggles, toggleOption, setSoloChatMode,
   iniciarObservadorTogglesChat,
@@ -86,6 +88,7 @@ import {
 } from './plataformas.js';
 import { renderTiktokSession, tiktokLogin, tiktokLogout } from './tiktok-sesion.js';
 import { doInstallUpdate, iniciarEventosElectron } from './eventos-electron.js';
+import { iniciarAjustesVentana } from './ajustes-ventana.js';
 import {
   musicRemoveFromQueue, musicSkip, musicTogglePause, musicSetEnabled, musicSetVolume,
   musicSaveCooldown, musicSaveMaxQueue, musicClearQueue, musicBanUser, musicUnbanUser,
@@ -219,6 +222,7 @@ function iniciarArranque() {
   iniciarCierreDropdownVoces();
   iniciarPintadoDeRangos();
   iniciarCamposOverlay();
+  iniciarAcordeonOverlays();
   iniciarHoverConnectAllChat();
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -238,6 +242,7 @@ function iniciarArranque() {
   iniciarBotonEfectosEvento();
   iniciarAvisoConexionFallida();
   iniciarAvisoCodigoDescuento();
+  iniciarProgramaCreadores();
   // Puente para interfaz/publico/plugin-store/ (scripts clasicos, sin import
   // ES) -- mismo patron que window.refreshPluginStoreTexts/__langReady.
   window.__sesionActual = () => almacenSesion.getState();
@@ -268,6 +273,7 @@ function iniciarArranque() {
 
   iniciarBarraTitulo();
   iniciarEventosElectron();
+  iniciarAjustesVentana();
   musicInit();
   iniciarPortalView();
 }

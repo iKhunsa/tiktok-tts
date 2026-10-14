@@ -16,6 +16,8 @@
   <link rel="stylesheet" href="./src/estilos/moderacion-popup.css">
   <link rel="stylesheet" href="./src/estilos/portal-view.css">
   <link rel="stylesheet" href="./src/estilos/barra-titulo.css">
+  <link rel="stylesheet" href="./src/estilos/programa-creadores.css">
+  <link rel="stylesheet" href="./src/estilos/ajustes-ventana.css">
 </head>
 <body>
 
@@ -102,7 +104,7 @@
     </nav>
 
     <a href="https://www.tiktok.com/@ikhunsa_tiklivetts" target="_blank" rel="noopener" class="tiktok-banner">
-      <img src="asset/ads/banner-tiktok.png" width="1536" height="728" loading="lazy" decoding="async" alt="Síguenos en TikTok">
+      <img src="asset/ads/fantasma-gatito.png" width="193" height="461" loading="lazy" decoding="async" alt="Síguenos en TikTok">
     </a>
 
     <a href="https://discord.com/invite/mwY859tcQK" target="_blank" rel="noopener" class="community-banner">
@@ -254,6 +256,13 @@
           <div class="empty-state" id="emptyState">
             <div class="empty-icon"><img class="icon-inline" src="icons/mic.svg" alt=""></div>
             <div class="empty-text" data-i18n-html="chat.empty">Conectá o transmití tu Live<br>para ver tu chat acá</div>
+            <!-- Programa de creadores: reemplaza al texto de arriba solo sin canales conectados (.chat-section.sin-live) -->
+            <div class="creator-promo">
+              <img class="creator-promo-icon" src="img/regalo-creadores.webp" width="192" height="192" alt="">
+              <div class="creator-promo-title" data-i18n="creatorProgram.title">¿Creas contenido? Gana 1 mes Pro</div>
+              <div class="creator-promo-text" data-i18n="creatorProgram.text">Haz un video sobre TikLiveTTS a tu manera y recibe 1 mes Pro gratis.</div>
+              <button type="button" class="btn creator-promo-cta" data-creator-program><span data-i18n="creatorProgram.cta">Quiero mi mes gratis</span><span class="creator-promo-arrow" aria-hidden="true">→</span></button>
+            </div>
           </div>
         </div>
         <div class="speaking-now" id="speakingNow">
@@ -461,7 +470,7 @@
       <!-- Alertas Seguidor / Compartir -->
       <div class="cfg-card">
         <div class="cfg-header">
-          <div class="cfg-icon">💜</div>
+          <div class="cfg-icon"><img class="icon-inline" src="icons/person_add.svg" alt=""></div>
           <div class="cfg-meta">
             <div class="cfg-title" data-i18n="overlay2.socialTitle">Alerta de Follow / Share</div>
             <div class="cfg-subtitle" data-i18n="overlay2.socialSubtitle">Aparece en OBS unos segundos cuando alguien te sigue o comparte</div>
@@ -998,6 +1007,32 @@
 
       <div class="settings-section" id="chatGuardPanel"><!-- interfaz/src/vistas/principal/moderacion-contenido/ la llena --></div>
 
+      <!-- interfaz/src/vistas/principal/ajustes-ventana.js la cablea -->
+      <div class="settings-section ajustes-ventana" id="settingsSectionWindow">
+        <div class="settings-section-title" data-i18n="settings.window">Ventana e inicio</div>
+        <label class="ajustes-ventana-fila">
+          <img class="ajustes-ventana-icono" src="icons/inbox.svg" alt="">
+          <span class="ajustes-ventana-texto">
+            <span class="ajustes-ventana-titulo" data-i18n="toggle.closeToTray">Minimizar a la bandeja al cerrar</span>
+            <span class="ajustes-ventana-desc" data-i18n="toggle.closeToTrayHint">Con la X la app sigue funcionando en la bandeja del sistema. Para cerrarla del todo: clic derecho en el ícono de la bandeja y «Salir».</span>
+          </span>
+          <span class="switch">
+            <input type="checkbox" id="closeToTrayToggle" />
+            <span class="switch-track"></span>
+          </span>
+        </label>
+        <label class="ajustes-ventana-fila" id="openAtLoginGroup">
+          <img class="ajustes-ventana-icono" src="icons/windows-start.svg" alt="">
+          <span class="ajustes-ventana-texto">
+            <span class="ajustes-ventana-titulo" data-i18n="toggle.openAtLogin">Abrir al iniciar Windows</span>
+          </span>
+          <span class="switch">
+            <input type="checkbox" id="openAtLoginToggle" />
+            <span class="switch-track"></span>
+          </span>
+        </label>
+      </div>
+
       <div class="settings-section">
         <div class="settings-section-title" data-i18n="settings.advanced">Configuración avanzada</div>
         <a href="/advanced.html?popup=1" target="_blank" rel="noopener" class="btn-nav"><img class="icon-inline" src="icons/build.svg" alt=""> <span data-i18n="btn.openAdvanced">Abrir panel avanzado (filtros, rate limit, logs)</span> <img class="icon-inline" src="icons/open_in_new.svg" alt=""></a>
@@ -1254,6 +1289,22 @@
     <h2 data-i18n="connectFail.title">¡Ups! No se pudo conectar</h2>
     <p data-i18n="connectFail.body"></p>
     <a class="discord-cta" href="https://discord.com/invite/mwY859tcQK" target="_blank" rel="noopener"><img class="icon-inline" src="icons/discord.svg" alt=""> <span data-i18n="discordInvite.cta">Unirme al Discord</span></a>
+  </div>
+</div>
+
+<!-- ══ MODAL: Programa de creadores (CTA del empty state del chat) ═══ -->
+<div id="creatorProgramModal" class="modal-overlay">
+  <div class="modal-content cuenta-cancel-modal creator-program-modal" role="dialog" aria-modal="true" aria-labelledby="creatorProgramTitle">
+    <button class="modal-close" type="button" data-i18n-aria-label="news.close"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <div class="cuenta-cancel-copy">
+      <div class="notice-icon-badge creator-program-badge"><span class="creator-program-badge-icon" aria-hidden="true"></span></div>
+      <h2 id="creatorProgramTitle" data-i18n="creatorProgram.modalTitle">Crea un video y gana 1 mes Pro</h2>
+      <p class="cuenta-cancel-description" data-i18n="creatorProgram.modalBody1">Si eres creador de contenido, publica un video hablando, reseñando o recomendando TikLiveTTS.</p>
+      <button type="button" class="btn btn-connect cuenta-cancel-confirm creator-program-join" data-i18n="creatorProgram.join">Participar</button>
+      <button type="button" class="btn btn-disconnect cuenta-cancel-back creator-program-how" data-i18n="creatorProgram.howItWorks">Ver cómo funciona</button>
+      <p class="cuenta-cancel-notice"><img class="icon-inline" src="icons/gift.svg" alt=""><span data-i18n-html="creatorProgram.modalBody3">Una vez aprobado, podrás canjear <strong>1 mes de TikLiveTTS Pro completamente gratis.</strong></span></p>
+    </div>
+    <div class="cuenta-cancel-image"><img src="img/gato-regalo-creadores.png" width="1254" height="1254" alt=""></div>
   </div>
 </div>
 

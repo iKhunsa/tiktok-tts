@@ -10,7 +10,10 @@ const { removeAccountData } = require('../../core/account-data-path');
 function propagarError(res, r, logger) {
   if (r.status === 0 || !r.body) {
     logger.log('warn', 'auth', 'auth/routes.js#propagarError', 'auth.servicio.error',
-      'servicio-cuentas no disponible', { status: r.status });
+      'servicio-cuentas no disponible', {
+        status: r.status,
+        causa: r.error && ((r.error.cause && r.error.cause.code) || r.error.message),
+      });
     return res.status(502).json({ error: 'Servicio de cuentas no disponible', errorKey: 'errors.serviceUnavailable' });
   }
   const b = r.body;

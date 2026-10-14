@@ -35,7 +35,11 @@ function cambiarValor(entrada, campo) {
   if (campo.ui === 'rango') {
     entrada.closest('.cfg-field').querySelector('[data-cfg-valor]').textContent = textoValor(campo, valor);
   }
-  guardarCambio(entrada.dataset.cfgOverlay, campo.clave, valor);
+  const overlay = entrada.dataset.cfgOverlay;
+  const prender = campo.activa && !appSettings.overlays[overlay][campo.activa];
+  if (prender) appSettings.overlays[overlay][campo.activa] = true;
+  guardarCambio(overlay, campo.clave, valor);
+  if (prender) sincronizarCamposOverlay(overlay);
 }
 
 function alEditarCampo(evento) {

@@ -47,6 +47,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onUpdateEvent: (cb) => on('update-event', (_e, data) => cb(data)),
   offUpdateEvent: (cb) => off('update-event', cb),
   installUpdate: () => ipcRenderer.send('install-update'),
+  getOpenAtLogin: () => ipcRenderer.invoke('login-item:get'),
+  setOpenAtLogin: (enabled) => ipcRenderer.invoke('login-item:set', enabled === true),
   registerTtsShortcut: (action, shortcut) => ipcRenderer.invoke('register-tts-shortcut', { action, shortcut }),
   onTtsShortcut: (cb) => on('tts-shortcut', (_e, action) => cb(action)),
   offTtsShortcut: (cb) => off('tts-shortcut', cb),

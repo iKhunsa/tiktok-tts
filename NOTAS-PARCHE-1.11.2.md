@@ -13,6 +13,7 @@ Actualización grande (todo lo hecho desde la 1.10.0). Si algo falla, usa **Repo
 - El filtro respeta los veredictos del guard y las acciones de moderación se guardan al instante.
 - Nuevo filtro de **texto sin sentido** (teclazos al azar como «asdfghjkl;»): si alguien manda varios seguidos, el mensaje se ve en el chat pero no se lee. Viene activo de fábrica y puedes cambiarlo en Ajustes > «Moderación del chat» a «Solo avisar» o «Apagado». Nunca silencia a la persona: eso lo decides tú. Los mensajes con palabras reales, risas (`jajaja`, `wkwkwk`, `ㅋㅋㅋ`), emotes o enlaces no se marcan.
 - En el popup de mensajes bloqueados, los de texto sin sentido llevan un botón **«Silenciar usuario»** por si quieres cortar al spammer.
+- **Importar palabras bloqueadas** desde un archivo `.json`, con un asistente de 3 pasos: *Formato* (ejemplo listo para copiar), *Importar* (arrastra o elige el archivo) y *Confirmar* (cuántas son nuevas y una vista previa). Las palabras se suman a tu lista actual, no la reemplazan.
 
 **Overlays de OBS**
 - Nuevo **overlay de espectadores de TikTok** con personalización, vista previa y botón de prueba.
@@ -46,6 +47,8 @@ Actualización grande (todo lo hecho desde la 1.10.0). Si algo falla, usa **Repo
 - Efectos de evento y aviso de conexión fallida.
 - Novedades con video de YouTube embebido.
 - Conexión del agente **MCP** simplificada (snippets más claros).
+- Ahora puedes cerrar la ventana sin apagar la app. Si activas **Minimizar a la bandeja al cerrar** en Ajustes, al pulsar la X TikLiveTTS se esconde en la bandeja del sistema (junto al reloj) y sigue leyendo el chat. Para cerrarla del todo, haz clic derecho en su ícono y elige **Salir**. Viene desactivado, así que la X sigue cerrando la app como antes hasta que lo actives.
+- Nueva opción **Abrir al iniciar Windows**: TikLiveTTS arranca solo al encender el PC, así ya está listo cuando empiezas tu directo.
 
 ### Correcciones
 - Badge de la cola con texto claro y repintado al cargar el idioma.
@@ -58,14 +61,19 @@ Actualización grande (todo lo hecho desde la 1.10.0). Si algo falla, usa **Repo
 - TTS: se corta el audio que se queda colgado y se limita el largo del texto.
 - Se respeta `--user-data-dir` cuando se indica explícitamente.
 - Varios ajustes de iconos, modales y estados en la interfaz.
+- Importar palabras bloqueadas ya no acepta archivos con formato inválido: un JSON roto o que no sea una lista de palabras se rechaza con un aviso claro, en vez de dar un error genérico o llenar la lista de texto basura.
 - Avisos de voz de TikLiveTTS más inteligentes: el primero suena a los 15 minutos y los siguientes, como mucho cada 25 minutos y solo cuando hay gente en tu directo. Si el directo está vacío, esperan a que llegue audiencia en vez de sonar igual. Antes podían repetirse muy seguido o tardar muchísimo en sonar. Con el plan Pro no suenan.
+- La voz ya no lee los números largos de los nicks: `pablito434435433453` se lee «pablito», y las cuentas sin nombre propio (`user14423423…`, `usuario14423423…`) se leen como «usuario», en el idioma de la app. Vale para el chat y para los avisos de entradas, follows, regalos, likes y shares. Los nombres con pocos números (`lu15`, `pablo2024`) se leen igual que antes, y en pantalla, OBS y rankings el nick se sigue viendo completo.
+- Bot de música: pedir una canción con un link de YouTube (`!p https://youtu.be/...`) vuelve a poner esa canción. Antes el link se perdía y el bot buscaba la palabra «link», así que sonaba otra canción. En el chat y en la voz el link se sigue mostrando como «link».
+- Bot de música: el motor de YouTube ahora recibe los arreglos el mismo día que salen, en vez de esperar semanas a la siguiente versión estable. Así los pedidos dejan de fallar mucho antes cuando YouTube cambia algo. Si una actualización del motor quedaba a medias porque había música sonando, se termina de aplicar sola al volver a abrir la app.
 
 ### Interno
 - Analítica de producto y telemetría anónima más completas (sin nicks, IDs ni texto del chat); firma de lotes de telemetría y reporte de errores con más contexto.
 - Dependencias: `@tiklivetts/chat-guard` 0.2.0, `@tiklivetts/rust-chat-guard` 0.2.0, `@tiklivetts/tiktok-live-client` 0.1.9.
+- El motor de música usa yt-dlp del canal nightly (`yt-dlp/yt-dlp-nightly-builds`) y se actualiza con `--update-to nightly`; los usuarios que tenían la versión estable se pasan solos en el primer chequeo.
 
 ---
 
 ## TikLiveTTS 1.11.2 — English summary
 
-Big update since 1.10.0: the new **Rust Chat Guard** moderation engine (observe mode by default) with a dedicated settings block and a blocked-messages popup, a **nonsense-text filter** that stops reading keyboard-mashing spam (on by default, never mutes anyone on its own), a **TikTok viewers overlay** plus fully customizable chat / top likers / top donors overlays with live-less previews, **persistent TikTok login per account** with much more stable reconnection, **Delete account**, monthly/yearly plans, redesigned donation and cancellation modals, **Terms & Privacy v2.1** accepted on every install/update, a redesigned **Voice & audio** view with tabbed keyboard shortcuts, smarter promo announcements (spaced at least 25 minutes apart and only when your live has an audience), and many fixes.
+Big update since 1.10.0: the new **Rust Chat Guard** moderation engine (observe mode by default) with a dedicated settings block and a blocked-messages popup, a **nonsense-text filter** that stops reading keyboard-mashing spam (on by default, never mutes anyone on its own), a **TikTok viewers overlay** plus fully customizable chat / top likers / top donors overlays with live-less previews, **persistent TikTok login per account** with much more stable reconnection, **Delete account**, monthly/yearly plans, redesigned donation and cancellation modals, **Terms & Privacy v2.1** accepted on every install/update, a redesigned **Voice & audio** view with tabbed keyboard shortcuts, smarter promo announcements (spaced at least 25 minutes apart and only when your live has an audience), the voice no longer reads long digit tails in nicknames (`user1442342…` is read as "user"), the option to keep the app running in the system tray when you close the window and to launch it automatically with Windows, YouTube links in music requests (`!p <link>`) working again with a music engine that now gets YouTube fixes the same day, and many fixes.

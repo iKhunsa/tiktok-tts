@@ -113,7 +113,10 @@
                    "langFilterHint":  "Ignore les messages du chat contenant des caractères ne correspondant pas à la langue de la voix active (ex : bloque le chinois/japonais si votre voix est en espagnol, et inversement).",
                    "dictFilter":  "Filtrer par langue (mots)",
                    "dictFilterHint":  "Ne lit que les messages écrits dans la langue de la voix active ou dans les langues supplémentaires autorisées. Les mots inconnus (noms, fautes de frappe) ne bloquent pas.",
-                   "readNonFollowers":  "Lire les non-abonnés"
+                   "readNonFollowers":  "Lire les non-abonnés",
+                   "closeToTray":  "Réduire dans la zone de notification à la fermeture",
+                   "closeToTrayHint":  "Avec le X, l'app continue de tourner dans la zone de notification. Pour la quitter : clic droit sur l'icône → Quitter.",
+                   "openAtLogin":  "Ouvrir au démarrage de Windows"
                },
     "tts":  {
                 "on":  "TTS Activé",
@@ -232,7 +235,8 @@
                      "announceTplLike":  "Après avoir reçu des likes",
                      "announceTplExLike":  "donne tout",
                      "announceTplShare":  "Après que quelqu\u0027un partage",
-                     "announceTplExShare":  "a fait passer le mot"
+                     "announceTplExShare":  "a fait passer le mot",
+                     "window":  "Fenêtre et démarrage"
                  },
     "label":  {
                   "voice":  "Voix",
@@ -1126,7 +1130,10 @@
                    "chatGuardUnavailable":  "Impossible de joindre le filtre. Réessayez.",
                    "chatGuardInvalidWord":  "Mot non valide.",
                    "chatGuardWordConflict":  "Ce mot est dans l’autre liste.",
-                   "chatGuardAllowedSingleWord":  "Seuls les mots seuls sont acceptés ici, pas les phrases."
+                   "chatGuardAllowedSingleWord":  "Seuls les mots seuls sont acceptés ici, pas les phrases.",
+                   "chatGuardImportTooLarge":  "Le fichier est trop volumineux (max. 1 Mo).",
+                   "chatGuardImportTooMany":  "Trop de mots (max. 5000).",
+                   "chatGuardImportInvalid":  "Format non valide : il doit s'agir d'une liste JSON de mots entre guillemets."
                },
     "mcp":  {
                 "title":  "Agent MCP",
@@ -1454,7 +1461,31 @@
                                     "added":  "Mot ajouté",
                                     "removed":  "Mot retiré",
                                     "export":  "Exporter",
-                                    "viewAll":  "Voir tous les mots"
+                                    "viewAll":  "Voir tous les mots",
+                                    "import":  "Importer",
+                                    "importTitle":  "Importer des mots bloqués",
+                                    "importStepFormat":  "Format",
+                                    "importStepFile":  "Importer",
+                                    "importStepConfirm":  "Confirmer",
+                                    "importIntro":  "Importe un fichier JSON avec les mots que tu veux ajouter à ta liste de blocage. Les mots importés s'ajoutent à ta liste actuelle, sans la remplacer.",
+                                    "importFormatTitle":  "Format du fichier JSON",
+                                    "importFormatNote":  "Le fichier doit contenir un tableau JSON de mots ou de phrases entre guillemets, séparés par des virgules.",
+                                    "importCopy":  "Copier l'exemple",
+                                    "importCopied":  "Exemple copié",
+                                    "importDrop":  "Glisse ton fichier .json ici",
+                                    "importBrowse":  "ou clique pour le choisir",
+                                    "importNext":  "Suivant",
+                                    "importBack":  "Retour",
+                                    "importFileReady":  "{file} · {n} mots",
+                                    "importSummary":  "Le fichier contient {total} mots ; {n} sont nouveaux et seront ajoutés à ta liste.",
+                                    "importNoneNew":  "Tous les mots du fichier sont déjà dans ta liste.",
+                                    "importMore":  "+{n} de plus",
+                                    "importConfirm":  "Importer",
+                                    "importCancel":  "Annuler",
+                                    "importEmpty":  "Le fichier ne contient aucun mot.",
+                                    "importReadError":  "Impossible de lire le fichier.",
+                                    "importNotJson":  "Seuls les fichiers .json sont acceptés.",
+                                    "imported":  "{n} nouveaux mots importés"
                                 },
                       "status":  {
                                      "title":  "État du filtre",
@@ -1556,5 +1587,16 @@
                                    "waitingValue":  "{n} sur {max}",
                                    "tip":  "Vous pouvez passer le message en cours ou vider la file depuis les commandes du chat."
                                }
-                 }
+                 },
+    "creatorProgram":  {
+                           "title":  "Tu crées du contenu ? Gagne 1 mois Pro",
+                           "text":  "Fais une vidéo sur TikLiveTTS à ta façon et reçois 1 mois Pro gratuit.",
+                           "cta":  "Je veux mon mois gratuit",
+                           "howItWorks":  "Voir comment ça marche",
+                           "modalTitle":  "Crée une vidéo et gagne 1 mois Pro",
+                           "modalBody1":  "Si tu es créateur de contenu, publie une vidéo où tu parles de TikLiveTTS, le testes ou le recommandes.",
+                           "modalBody2":  "Fais-le comme tu veux, avec ton propre style.",
+                           "modalBody3":  "Une fois approuvée, tu pourras obtenir <strong>1 mois de TikLiveTTS Pro entièrement gratuit.</strong>",
+                           "join":  "Participer"
+                       }
 }

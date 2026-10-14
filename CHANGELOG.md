@@ -4,77 +4,70 @@ Todas las novedades relevantes de este proyecto se documentan aquí.
 
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
-## [1.11.0-beta.0] — 2026-09-28 (prerelease)
+## [1.11.2] — 2026-10-09
 
-### Añadido
-- **Planes mensuales.** Además del plan anual, ahora puedes elegir Sin Promos
-  (US$3 al mes) o Pro (US$8 al mes). El popup de planes tiene un selector
-  Mensual/Anual y, desde Cuenta, un plan anual se puede pasar a mensual: el
-  cambio se aplica en la próxima renovación, sin reembolso, y el año ya
-  pagado se cumple completo.
-- **Contador de espectadores.** Overlay nuevo para OBS con las personas que
-  están viendo tu directo de TikTok en tiempo real. Se suma entre todos tus
-  canales de TikTok conectados, se actualiza solo y se personaliza (color y
-  fondo) desde la vista Overlays.
-- **Video de novedades** dentro de la app: esta ventana lo muestra arriba de
-  todo, con pantalla completa de YouTube.
-- **Overlays personalizables.** Chat, Top Likers y Top Donadores tienen un
-  panel "Personalizar" con vista previa en vivo y botón Restablecer. Tus
-  URLs actuales siguen funcionando.
-- **Chat para OBS:** fuente, tamaño y espaciados; ocultar mensajes tras unos
-  segundos; una sola línea; ancho ajustado al mensaje; colores aleatorios;
-  estilo por rol (espectador, moderador, suscriptor); avatar con anillo y
-  burbuja con el logo de la plataforma; y opacidad de fondo de 0 a 100 %.
-- **Top Likers y Top Donadores rediseñados** con medallas, corona, avatar y
-  contador animado.
-- **Efectos de temporada (Halloween):** animaciones y sonidos que puedes
-  activar o desactivar con el botón "Efectos de evento" del chat.
-- **Aviso de conexión fallida:** si "Conectar todo" no logra conectar ningún
-  canal, la app te invita a nuestro Discord para ayudarte.
-- **Barra de título propia** con botones de atrás y adelante entre vistas, y
-  la vista de Novedades.
-- **Banners:** el banner del chat rota solo cada 20 segundos; el de Halloween
-  abre una ventana para copiar el código de descuento y ver los planes. En
-  la barra lateral, un banner para seguirnos en TikTok.
-- Moderación de chat unificada para TikTok, Twitch, YouTube y Kick en un
-  solo módulo: las mismas reglas y el mismo criterio para las cuatro
-  plataformas.
-- Los reportes de errores ahora incluyen identificadores de sesión y de
-  instalación, para relacionarlos con la sesión correspondiente en el panel
-  de telemetría.
-- Kick aparece en el panel de telemetría cuando se usa como plataforma de
-  transmisión.
+### Moderación del chat
+- Nuevo motor **Rust Chat Guard**, encendido de fábrica en modo observación (no bloquea, solo registra qué habría filtrado).
+- Nuevo bloque **«Moderación del chat»** en Ajustes: nivel, idiomas, palabras permitidas, palabras bloqueadas y estado del motor.
+- Los idiomas del filtro **siguen al idioma de la voz** del TTS automáticamente.
+- Popup de **mensajes bloqueados** desde el badge de la cola (bloqueados, palabras y cola TTS).
+- Gestión de palabras bloqueadas unificada y **guardada por cuenta** (se migra sola desde el formato anterior).
+- El filtro respeta los veredictos del guard y las acciones de moderación se guardan al instante.
+- Nuevo filtro de **texto sin sentido** (teclazos al azar como «asdfghjkl;»): si alguien manda varios seguidos, el mensaje se ve en el chat pero no se lee. Viene activo de fábrica y puedes cambiarlo en Ajustes > «Moderación del chat» a «Solo avisar» o «Apagado». Nunca silencia a la persona: eso lo decides tú. Los mensajes con palabras reales, risas (`jajaja`, `wkwkwk`, `ㅋㅋㅋ`), emotes o enlaces no se marcan.
+- En el popup de mensajes bloqueados, los de texto sin sentido llevan un botón **«Silenciar usuario»** por si quieres cortar al spammer.
+- **Importar palabras bloqueadas** desde un archivo `.json`, con un asistente de 3 pasos: «Formato» (ejemplo listo para copiar), «Importar» (arrastra o elige el archivo) y «Confirmar» (cuántas son nuevas y una vista previa). Las palabras se suman a tu lista actual, no la reemplazan.
 
-### Cambiado
-- Tus datos de moderación (baneos, silenciados, seguidores y lista
-  blanca) se migran solos al nuevo formato al abrir la app; se guarda una
-  copia del archivo anterior como `moderation.v1.json`.
-- El máximo de caracteres que se leen en voz alta pasa a ser 200, el límite
-  real del servicio de voz (antes se cortaba ahí sin avisar).
-- Al cerrar la app, el panel recibe de inmediato el aviso de que la
-  transmisión terminó, sin esperar a que venza el tiempo de detección.
-- Los avatares y roles de los overlays salen de los datos de cada mensaje,
-  por lo que el avatar de TikTok se ve en el chat y en los rankings.
+### Overlays de OBS
+- Nuevo **overlay de espectadores de TikTok** con personalización, vista previa y botón de prueba.
+- Chat, Top Likers y **Top Donadores** con ajustes completos desde «Personalizar»; avatares, roles (moderador/suscriptor) y anillo con burbuja de plataforma en el avatar.
+- **Vista previa con datos de ejemplo** sin necesidad de estar conectado (chat con las 4 plataformas, alertas fijas).
+- Alertas de Follow/Share simplificadas y color de acento en Top Likers. Se retira el fondo personalizado.
 
-### Arreglado
-- Ya no se leen palabras repetidas: "hola hola hola hola" se lee
-  "hola hola".
-- Tras una reconexión, los mensajes que ya se habían leído no se vuelven a
-  leer.
-- Ya no suenan dos voces a la vez cuando el audio tarda en arrancar.
-- Twitch, YouTube y Kick vuelven a conectarse solos cuando regresa internet
-  tras un corte largo, en lugar de quedar desconectados.
-- Los baneos y silenciados se guardan al instante y ya no se pierden si la
-  app se cierra de golpe.
-- Si la moderación falla, el mensaje se muestra pero no se lee en voz alta.
-- Cuando TikTok confirma que un directo terminó, la app deja de reportarlo
-  como si siguiera en vivo mientras espera el próximo directo o requiere
-  autenticación.
+### Canales
+- **TikTok con sesión persistente por cuenta**: login/logout dentro de «Agregar canal», aviso de sesión caducada y tutorial que explica el login.
+- Reconexión mucho más estable: recupera ante cambio de sala, vigila con doble señal para no reconectar lives silenciosos y reintenta Twitch y YouTube tras silencios.
+- Los reintentos de conexión de los canales se conservan entre intentos.
+- Carga más rápida al arrancar (el cliente de TikTok se carga solo cuando se usa).
 
-### Seguridad
-- Cada instalación usa una credencial propia para firmar sus envíos de
-  telemetría. Sigue siendo compatible con servidores que aún usan el token
-  compartido.
+### Cuenta y planes
+- Botón **Eliminar cuenta** en el perfil, con contraseña y confirmación escribiendo la palabra.
+- Toggle **mensual / anual** y cambio de intervalo desde la cuenta; el popup de planes y el checkout abren en mensual.
+- Banner de upgrade a Pro bajo la barra «Se lee» (solo plan Free), banner rotativo en el chat y modal de código de descuento.
+- Modales de **donaciones** y de **cancelación de Pro** rediseñados; videos demo de las funciones Pro; **Clips** pasa a ser función Pro con su demo.
+- El botón de mejorar plan abre la comparación de planes; el popup ya no aparece al iniciar.
+- Paywall del panel móvil y panel móvil con badge Pro y menú de cuenta.
+
+### Legal y privacidad
+- **Términos y Política de Privacidad v2.1** (con traducción al inglés).
+- El instalador pide aceptarlos en cada instalación y actualización; sin aceptarlos no se inicia telemetría, analítica ni reporte de errores.
+- Se informan los términos al registrarse.
+
+### Interfaz
+- **Voz y audio** rediseñado en 3 tarjetas, adaptable al ancho de la ventana.
+- **Atajos de teclado en pestañas**: TTS y chat, Música y General.
+- Íconos SVG en lugar de símbolos en Ajustes, feedback al pulsar y Canales con estilos unificados.
+- Efectos de evento y aviso de conexión fallida.
+- Novedades con video de YouTube embebido.
+- Conexión del agente **MCP** simplificada (snippets más claros).
+- Ahora puedes cerrar la ventana sin apagar la app. Si activas **Minimizar a la bandeja al cerrar** en Ajustes, al pulsar la X TikLiveTTS se esconde en la bandeja del sistema (junto al reloj) y sigue leyendo el chat. Para cerrarla del todo, haz clic derecho en su ícono y elige **Salir**. Viene desactivado, así que la X sigue cerrando la app como antes hasta que lo actives.
+- Nueva opción **Abrir al iniciar Windows**: TikLiveTTS arranca solo al encender el PC, así ya está listo cuando empiezas tu directo.
+
+### Correcciones
+- Badge de la cola con texto claro y repintado al cargar el idioma.
+- El banner de Pro vuelve a verse en cada apertura.
+- Textos corruptos (mojibake) reparados en los 10 idiomas y claves nuevas traducidas.
+- Tutorial de canales apuntaba a un elemento oculto; el login de TikTok no desaparecía al iniciar sesión.
+- Chips de plataforma del chat overlay mostraban mal su estado marcado.
+- Sidebar por defecto en instalación nueva (chat, overlays, clips, moderación).
+- Soundpad valida mejor la lista recibida; mensaje de chat simulado con id único.
+- TTS: se corta el audio que se queda colgado y se limita el largo del texto.
+- Se respeta `--user-data-dir` cuando se indica explícitamente.
+- Varios ajustes de iconos, modales y estados en la interfaz.
+- Importar palabras bloqueadas ya no acepta archivos con formato inválido: un JSON roto o que no sea una lista de palabras se rechaza con un aviso claro, en vez de dar un error genérico o llenar la lista de texto basura.
+- Avisos de voz de TikLiveTTS más inteligentes: el primero suena a los 15 minutos y los siguientes, como mucho cada 25 minutos y solo cuando hay gente en tu directo. Si el directo está vacío, esperan a que llegue audiencia en vez de sonar igual. Antes podían repetirse muy seguido o tardar muchísimo en sonar. Con el plan Pro no suenan.
+- La voz ya no lee los números largos de los nicks: `pablito434435433453` se lee «pablito», y las cuentas sin nombre propio (`user14423423…`, `usuario14423423…`) se leen como «usuario», en el idioma de la app. Vale para el chat y para los avisos de entradas, follows, regalos, likes y shares. Los nombres con pocos números (`lu15`, `pablo2024`) se leen igual que antes, y en pantalla, OBS y rankings el nick se sigue viendo completo.
+- Bot de música: pedir una canción con un link de YouTube (`!p https://youtu.be/...`) vuelve a poner esa canción. Antes el link se perdía y el bot buscaba la palabra «link», así que sonaba otra canción. En el chat y en la voz el link se sigue mostrando como «link».
+- Bot de música: el motor de YouTube ahora recibe los arreglos el mismo día que salen, en vez de esperar semanas a la siguiente versión estable. Así los pedidos dejan de fallar mucho antes cuando YouTube cambia algo. Si una actualización del motor quedaba a medias porque había música sonando, se termina de aplicar sola al volver a abrir la app.
 
 ### Videos de YouTube
 - [Ver video de novedades](https://www.youtube.com/watch?v=JBLPEXGKRlM)

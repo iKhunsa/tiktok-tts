@@ -131,6 +131,15 @@ export function createActions({ store, api, notify }) {
     return result.data;
   }
 
+  // Suma (no reemplaza) las palabras importadas; devuelve cuantas eran nuevas o null si fallo.
+  async function importWords(content) {
+    const before = store.getState().words.blocked.length;
+    const result = await api.importBlockedWords(content);
+    if (!result.ok) { notify(result.errorKey); return null; }
+    replaceBlockedWords(result.data.words);
+    return store.getState().words.blocked.length - before;
+  }
+
   async function addWord(list, rawWord) {
     const word = normalizeWord(rawWord);
     const problem = findWordProblem({ word, list, words: store.getState().words });
@@ -161,6 +170,6 @@ export function createActions({ store, api, notify }) {
 
   return {
     load, refreshStatus, setEnabled, setMode, setGibberishMode, setLevel, setCustomOption, setLanguage, setLangsAuto,
-    setTab, clearWordProblem, addWord, removeWord, replaceBlockedWords, exportWords, saveConfig,
+    setTab, clearWordProblem, addWord, removeWord, replaceBlockedWords, exportWords, importWords, saveConfig,
   };
 }

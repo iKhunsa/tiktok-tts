@@ -58,6 +58,7 @@ const CONFIG_VALIDATORS = {
   mcpDestructiveToolsEnabled: (v) => typeof v === 'boolean',
   mcpDevToolsEnabled: (v) => typeof v === 'boolean',
   subscriptionsEnabled: (v) => typeof v === 'boolean',
+  closeToTray: (v) => typeof v === 'boolean',
   // Llave técnica de apagado de la telemetría de palabras (true = apagada).
   blockedWordsTelemetryDisabled: (v) => typeof v === 'boolean',
   adminIdentities: (v) => v && typeof v === 'object'

@@ -287,6 +287,8 @@ async function updateChatConnectAllState(preloadedChannels) {
     } catch (e) { /* noop */ }
   }
   const activeCount = PLATFORMS.reduce((sum, platform) => sum + (channels[platform] || []).length, 0);
+  // Recien tras confirmar 0 canales: asi el empty state no muestra la promo de creadores un instante durante el autoconnect.
+  chatBtn.closest('.chat-section')?.classList.toggle('sin-live', activeCount === 0);
   if (activeCount > 0) {
     chatBtn.classList.add('channels-connected');
     chatBtn.title = `${activeCount} canal(es) conectado(s) — clic para desconectar`;

@@ -113,7 +113,10 @@
                    "langFilterHint":  "忽略与当前语音语言不匹配字符的聊天消息（例如：语音为西班牙语时会屏蔽中文/日文，反之亦然）。",
                    "dictFilter":  "按语言过滤（单词）",
                    "dictFilterHint":  "仅朗读使用当前语音语言或你允许的额外语言书写的消息。未知单词（名字、拼写错误）不会被屏蔽。",
-                   "readNonFollowers":  "朗读非关注者"
+                   "readNonFollowers":  "朗读非关注者",
+                   "closeToTray":  "关闭时最小化到托盘",
+                   "closeToTrayHint":  "点击 X 后应用会继续在系统托盘中运行。要完全退出：右键单击托盘图标 → 退出。",
+                   "openAtLogin":  "Windows 启动时打开"
                },
     "tts":  {
                 "on":  "TTS 开启",
@@ -232,7 +235,8 @@
                      "announceTplLike":  "收到点赞后",
                      "announceTplExLike":  "全力以赴",
                      "announceTplShare":  "有人分享后",
-                     "announceTplExShare":  "帮忙传开了"
+                     "announceTplExShare":  "帮忙传开了",
+                     "window":  "窗口与启动"
                  },
     "label":  {
                   "voice":  "语音",
@@ -1126,7 +1130,10 @@
                    "chatGuardUnavailable":  "无法连接到过滤器，请重试。",
                    "chatGuardInvalidWord":  "词语无效。",
                    "chatGuardWordConflict":  "该词在另一个列表中。",
-                   "chatGuardAllowedSingleWord":  "这里只接受单个词，不接受短语。"
+                   "chatGuardAllowedSingleWord":  "这里只接受单个词，不接受短语。",
+                   "chatGuardImportTooLarge":  "文件过大（最大 1 MB）。",
+                   "chatGuardImportTooMany":  "词语过多（最多 5000 个）。",
+                   "chatGuardImportInvalid":  "格式无效：必须是用引号括起的词语组成的 JSON 列表。"
                },
     "mcp":  {
                 "title":  "MCP 代理",
@@ -1454,7 +1461,31 @@
                                     "added":  "词语已添加",
                                     "removed":  "词语已移除",
                                     "export":  "导出",
-                                    "viewAll":  "查看所有词语"
+                                    "viewAll":  "查看所有词语",
+                                    "import":  "导入",
+                                    "importTitle":  "导入屏蔽词",
+                                    "importStepFormat":  "格式",
+                                    "importStepFile":  "导入",
+                                    "importStepConfirm":  "确认",
+                                    "importIntro":  "导入一个 JSON 文件，其中包含你想添加到屏蔽列表的词语。导入的词会添加到当前列表中，不会替换它。",
+                                    "importFormatTitle":  "JSON 文件格式",
+                                    "importFormatNote":  "文件必须包含一个 JSON 数组，其中是用引号括起、以逗号分隔的词语或短语。",
+                                    "importCopy":  "复制示例",
+                                    "importCopied":  "示例已复制",
+                                    "importDrop":  "将 .json 文件拖到此处",
+                                    "importBrowse":  "或点击选择文件",
+                                    "importNext":  "下一步",
+                                    "importBack":  "返回",
+                                    "importFileReady":  "{file} · {n} 个词",
+                                    "importSummary":  "文件中共有 {total} 个词，其中 {n} 个是新词，将添加到你的列表中。",
+                                    "importNoneNew":  "文件中的词都已在你的列表中。",
+                                    "importMore":  "还有 {n} 个",
+                                    "importConfirm":  "导入",
+                                    "importCancel":  "取消",
+                                    "importEmpty":  "文件中没有任何词语。",
+                                    "importReadError":  "无法读取该文件。",
+                                    "importNotJson":  "仅接受 .json 文件。",
+                                    "imported":  "已导入 {n} 个新词"
                                 },
                       "status":  {
                                      "title":  "过滤器状态",
@@ -1556,5 +1587,16 @@
                                    "waitingValue":  "{n} / {max}",
                                    "tip":  "你可以在聊天控件中跳过当前消息或清空队列。"
                                }
-                 }
+                 },
+    "creatorProgram":  {
+                           "title":  "你是内容创作者吗？免费获得 1 个月 Pro",
+                           "text":  "用你自己的方式制作一个关于 TikLiveTTS 的视频，即可免费获得 1 个月 Pro。",
+                           "cta":  "领取我的免费月份",
+                           "howItWorks":  "了解规则",
+                           "modalTitle":  "制作视频，赢取 1 个月 Pro",
+                           "modalBody1":  "如果你是内容创作者，发布一个介绍、评测或推荐 TikLiveTTS 的视频。",
+                           "modalBody2":  "形式不限，展现你自己的风格。",
+                           "modalBody3":  "审核通过后，即可兑换 <strong>1 个月完全免费的 TikLiveTTS Pro。</strong>",
+                           "join":  "参与"
+                       }
 }

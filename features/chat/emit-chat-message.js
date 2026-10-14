@@ -6,6 +6,7 @@ const { resolveDisplayName, resolveSpokenName, cleanName } = require('../../core
 const { isAdminIdentity } = require('./is-admin-identity');
 const { extractAuthorMeta } = require('./author-meta/extract-author-meta');
 const { describeModeration } = require('./describe-moderation');
+const { rawCommentText } = require('./raw-comment-text');
 const moderacionPolicy = require('../../core/contracts/moderacion-policy');
 const { ADMIN_ANNOUNCE_TEXT, pickAnnounceText } = require('../../core/announce-texts');
 
@@ -98,6 +99,7 @@ function buildPayload({ bus, channel, platform, verdict, raw }) {
     ttsUser: resolveSpokenName(message.author.displayName, message.author.handle),
     userId: message.author.id || null,
     comment: message.text.display,
+    rawComment: rawCommentText(platform, raw),
     ttsComment: message.text.speech,
     emotes: Object.keys(message.emotes).length ? message.emotes : undefined,
     ytMsgId: platform === 'youtube' ? message.messageId : undefined,

@@ -113,7 +113,10 @@
                    "langFilterHint":  "Ignoriert Chat-Nachrichten mit Zeichen, die nicht zur Sprache der aktiven Stimme passen (z. B. Chinesisch/Japanisch blockieren, wenn die Stimme Spanisch ist, und umgekehrt).",
                    "dictFilter":  "Nach Sprache filtern (Wörter)",
                    "dictFilterHint":  "Liest nur Nachrichten in der Sprache der aktiven Stimme oder in den zusätzlich erlaubten Sprachen. Unbekannte Wörter (Namen, Tippfehler) blockieren nicht.",
-                   "readNonFollowers":  "Nicht-Follower vorlesen"
+                   "readNonFollowers":  "Nicht-Follower vorlesen",
+                   "closeToTray":  "Beim Schließen in den Infobereich minimieren",
+                   "closeToTrayHint":  "Mit dem X läuft die App im Infobereich weiter. Zum vollständigen Beenden: Rechtsklick auf das Symbol → Beenden.",
+                   "openAtLogin":  "Beim Windows-Start öffnen"
                },
     "tts":  {
                 "on":  "TTS An",
@@ -232,7 +235,8 @@
                      "announceTplLike":  "Nach Likes",
                      "announceTplExLike":  "gibt alles",
                      "announceTplShare":  "Nachdem jemand teilt",
-                     "announceTplExShare":  "hat es weitererzählt"
+                     "announceTplExShare":  "hat es weitererzählt",
+                     "window":  "Fenster & Start"
                  },
     "label":  {
                   "voice":  "Stimme",
@@ -1126,7 +1130,10 @@
                    "chatGuardUnavailable":  "Der Filter ist nicht erreichbar. Versuche es erneut.",
                    "chatGuardInvalidWord":  "Ungültiges Wort.",
                    "chatGuardWordConflict":  "Dieses Wort steht in der anderen Liste.",
-                   "chatGuardAllowedSingleWord":  "Hier werden nur einzelne Wörter akzeptiert, keine Sätze."
+                   "chatGuardAllowedSingleWord":  "Hier werden nur einzelne Wörter akzeptiert, keine Sätze.",
+                   "chatGuardImportTooLarge":  "Die Datei ist zu groß (max. 1 MB).",
+                   "chatGuardImportTooMany":  "Zu viele Wörter (max. 5000).",
+                   "chatGuardImportInvalid":  "Ungültiges Format: Es muss eine JSON-Liste von Wörtern in Anführungszeichen sein."
                },
     "mcp":  {
                 "title":  "MCP-Agent",
@@ -1454,7 +1461,31 @@
                                     "added":  "Wort hinzugefügt",
                                     "removed":  "Wort entfernt",
                                     "export":  "Exportieren",
-                                    "viewAll":  "Alle Wörter anzeigen"
+                                    "viewAll":  "Alle Wörter anzeigen",
+                                    "import":  "Importieren",
+                                    "importTitle":  "Blockierte Wörter importieren",
+                                    "importStepFormat":  "Format",
+                                    "importStepFile":  "Importieren",
+                                    "importStepConfirm":  "Bestätigen",
+                                    "importIntro":  "Importiere eine JSON-Datei mit den Wörtern, die du deiner Sperrliste hinzufügen möchtest. Die importierten Wörter werden zu deiner aktuellen Liste hinzugefügt und ersetzen sie nicht.",
+                                    "importFormatTitle":  "Format der JSON-Datei",
+                                    "importFormatNote":  "Die Datei muss ein JSON-Array mit Wörtern oder Sätzen in Anführungszeichen enthalten, durch Kommas getrennt.",
+                                    "importCopy":  "Beispiel kopieren",
+                                    "importCopied":  "Beispiel kopiert",
+                                    "importDrop":  "Ziehe deine .json-Datei hierher",
+                                    "importBrowse":  "oder klicke, um sie auszuwählen",
+                                    "importNext":  "Weiter",
+                                    "importBack":  "Zurück",
+                                    "importFileReady":  "{file} · {n} Wörter",
+                                    "importSummary":  "Die Datei enthält {total} Wörter; {n} sind neu und werden deiner Liste hinzugefügt.",
+                                    "importNoneNew":  "Alle Wörter der Datei sind bereits in deiner Liste.",
+                                    "importMore":  "+{n} weitere",
+                                    "importConfirm":  "Importieren",
+                                    "importCancel":  "Abbrechen",
+                                    "importEmpty":  "Die Datei enthält keine Wörter.",
+                                    "importReadError":  "Die Datei konnte nicht gelesen werden.",
+                                    "importNotJson":  "Nur .json-Dateien werden akzeptiert.",
+                                    "imported":  "{n} neue Wörter importiert"
                                 },
                       "status":  {
                                      "title":  "Filterstatus",
@@ -1556,5 +1587,16 @@
                                    "waitingValue":  "{n} von {max}",
                                    "tip":  "Du kannst die aktuelle Nachricht überspringen oder die Warteschlange über die Chat-Steuerung leeren."
                                }
-                 }
+                 },
+    "creatorProgram":  {
+                           "title":  "Du erstellst Content? Hol dir 1 Monat Pro",
+                           "text":  "Mach ein Video über TikLiveTTS auf deine Art und erhalte 1 Monat Pro gratis.",
+                           "cta":  "Ich will meinen Gratismonat",
+                           "howItWorks":  "So funktioniert's",
+                           "modalTitle":  "Erstelle ein Video und erhalte 1 Monat Pro",
+                           "modalBody1":  "Wenn du Content Creator bist, veröffentliche ein Video, in dem du über TikLiveTTS sprichst, es testest oder empfiehlst.",
+                           "modalBody2":  "Mach es, wie du willst, in deinem eigenen Stil.",
+                           "modalBody3":  "Nach der Freigabe kannst du <strong>1 Monat TikLiveTTS Pro komplett kostenlos</strong> einlösen.",
+                           "join":  "Mitmachen"
+                       }
 }

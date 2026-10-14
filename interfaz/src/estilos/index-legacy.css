@@ -374,6 +374,12 @@
     .community-banner:hover { opacity: 0.88; }
     /* El de TikTok va primero: su margen auto empuja ambos banners y el footer al fondo. */
     .tiktok-banner { margin-top: auto; }
+    /* Tamaño fijo: la columna flex del sidebar nunca lo encoge. */
+    .community-banner { flex-shrink: 0; }
+    .community-banner img { height: 80px; object-fit: cover; }
+    /* Banner vertical: si no cabe, recorta arriba y abajo por igual y mantiene el centro visible. */
+    .tiktok-banner { flex: 1 1 auto; min-height: 80px; max-height: 461px; }
+    .tiktok-banner img { height: 100%; object-fit: cover; object-position: center; }
 
     .lang-selector-row {
       display: flex;
@@ -3169,3 +3175,12 @@
     body.reduce-motion .atajos-clear:active,
     body.reduce-motion .atajos-preset:active,
     body.reduce-motion .atajos-pause-button:active { transform: none; }
+
+/* Acordeón de tarjetas de overlay (overlays-acordeon.js): contraídas muestran solo la cabecera. */
+#view-overlays .cfg-card > .cfg-header { cursor: pointer; user-select: none; }
+#view-overlays .cfg-card:not(.abierta) > .cfg-header { margin-bottom: 0; }
+#view-overlays .cfg-card:not(.abierta) > :not(.cfg-header) { display: none; }
+#view-overlays .cfg-header:focus-visible { outline: 2px solid var(--accent, currentColor); outline-offset: 4px; border-radius: 6px; }
+.cfg-acordeon-flecha { flex-shrink: 0; opacity: 0.7; transition: transform 200ms cubic-bezier(.23, 1, .32, 1); }
+#view-overlays .cfg-card.abierta .cfg-acordeon-flecha { transform: rotate(180deg); }
+@media (prefers-reduced-motion: reduce) { .cfg-acordeon-flecha { transition: none; } }

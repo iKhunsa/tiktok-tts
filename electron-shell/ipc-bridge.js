@@ -64,6 +64,22 @@ function attachIpcBridge({ app, bus, logger, getMainWindow, globalShortcut }) {
     try { win.setTitleBarOverlay(dimmed === true ? TITLEBAR_OVERLAY_DIMMED : TITLEBAR_OVERLAY); } catch (_) { /* plataforma sin overlay: sin efecto */ }
   });
 
+  // Arranque con Windows. Empaquetado: mismo nombre de valor (Run del registro)
+  // que escribe la casilla del instalador (build/installer.nsh). En dev hay que
+  // pasar la carpeta del proyecto como argumento (si no, arranca electron.exe
+  // vacio) y otro nombre, para no pisar la entrada de la app instalada.
+  const loginItem = () => (app.isPackaged
+    ? { name: 'TikLiveTTS' }
+    : { name: 'TikLiveTTS-dev', path: process.execPath, args: [app.getAppPath()] });
+  ipcMain.handle('login-item:get', () => {
+    const { path, args } = loginItem();
+    return { available: true, enabled: app.getLoginItemSettings({ path, args }).executableWillLaunchAtLogin };
+  });
+  ipcMain.handle('login-item:set', (_event, enabled) => {
+    app.setLoginItemSettings({ openAtLogin: enabled === true, ...loginItem() });
+    return { ok: true };
+  });
+
   ipcMain.on('install-update', () => {
     require('./updater').installUpdate();
   });

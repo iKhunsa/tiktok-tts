@@ -107,7 +107,96 @@
 /* ── Palabras ────────────────────────────────────────── */
 .cg-tabs-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
 .cg-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
-.cg-tabs-row #cgWordsExport { margin-left: auto; }
+.cg-tabs-row #cgWordsImport,
+.cg-tabs-row #cgWordsImport[hidden] + #cgWordsExport { margin-left: auto; }
+/* ── Popup importar palabras (3 pasos) ───────────────── */
+.cg-imp { max-width: 480px; padding: var(--space-7); }
+.cg-imp-title { margin: 0 var(--space-7) var(--space-5) 0; font-size: var(--text-lg); font-weight: 600; letter-spacing: -0.3px; line-height: 1.25; color: var(--text-bright); }
+.cg-imp-ico {
+  display: inline-block; flex-shrink: 0; width: 16px; height: 16px; background: currentColor;
+  -webkit-mask: var(--ico) center / contain no-repeat; mask: var(--ico) center / contain no-repeat;
+}
+.cg-imp-ico-check { --ico: url('/icons/check.svg'); }
+.cg-imp-ico-copy { --ico: url('/icons/content_copy.svg'); }
+.cg-imp-ico-info { --ico: url('/icons/info.svg'); }
+.cg-imp-ico-upload { --ico: url('/icons/upload.svg'); }
+.cg-imp-ico-file { --ico: url('/icons/description.svg'); }
+
+/* Stepper: numero en circulo + etiqueta, unidos por una linea. */
+.cg-imp-steps { display: flex; gap: var(--space-2); margin: 0 0 var(--space-6); padding: 0; list-style: none; counter-reset: none; }
+.cg-imp-step { display: flex; flex: 1; align-items: center; gap: var(--space-2); min-width: 0; color: var(--text-muted); font-size: var(--text-xs); font-weight: 500; }
+.cg-imp-step:not(:last-child)::after { content: ''; flex: 1; height: 1px; min-width: 12px; background: var(--border-strong); }
+.cg-imp-step-num {
+  display: inline-grid; place-items: center; flex-shrink: 0; width: 24px; height: 24px;
+  border: 1px solid var(--border-strong); border-radius: 50%; font-size: var(--text-2xs); font-weight: 600;
+  transition: background-color var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out);
+}
+.cg-imp-step-num > * { grid-area: 1 / 1; }
+.cg-imp-step-num .cg-imp-ico-check { width: 14px; height: 14px; display: none; }
+.cg-imp-step-label { white-space: nowrap; }
+.cg-imp-step.is-active { color: var(--text-bright); }
+.cg-imp-step.is-active .cg-imp-step-num { background: var(--brand); border-color: var(--brand); color: #fff; }
+.cg-imp-step.is-done { color: var(--text-secondary); }
+.cg-imp-step.is-done .cg-imp-step-num { background: var(--brand-a12); border-color: var(--brand-a40); color: var(--brand); }
+.cg-imp-step.is-done .cg-imp-step-digit { display: none; }
+.cg-imp-step.is-done .cg-imp-ico-check { display: block; }
+.cg-imp-step.is-done:not(:last-child)::after { background: var(--brand-a40); }
+
+.cg-imp-panel { animation: cgImpPanelIn var(--dur-2) var(--ease-out); }
+@keyframes cgImpPanelIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.cg-imp-lead { margin: 0 0 var(--space-5); color: var(--text-secondary); font-size: var(--text-base); line-height: 1.6; }
+.cg-imp-heading { margin: 0 0 var(--space-2); color: var(--text-bright); font-size: var(--text-sm); font-weight: 600; }
+
+.cg-imp-code { position: relative; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--surface); }
+.cg-imp-code pre { margin: 0; padding: var(--space-3) var(--space-8) var(--space-3) var(--space-4); overflow-x: auto; }
+.cg-imp-code code { font: 500 var(--text-sm)/1.6 ui-monospace, 'Cascadia Code', Consolas, monospace; color: var(--text); }
+.cg-imp-copy {
+  position: absolute; top: var(--space-2); right: var(--space-2);
+  display: grid; place-items: center; width: 30px; height: 30px; padding: 0;
+  border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--bg);
+  color: var(--text-muted); cursor: pointer;
+  transition: color var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out), transform var(--dur-press) var(--ease-out);
+}
+.cg-imp-copy > * { grid-area: 1 / 1; }
+.cg-imp-copy:hover { color: var(--text-bright); border-color: var(--text-bright-a30); }
+.cg-imp-copy:active { transform: scale(0.95); }
+.cg-imp-copy:focus-visible, .cg-imp-drop:focus-visible { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
+.cg-imp-copy.is-copied { color: var(--brand-green); border-color: var(--brand-green); }
+.cg-imp-copy.is-copied .cg-imp-ico { --ico: url('/icons/check.svg'); }
+
+.cg-imp-note { display: flex; align-items: flex-start; gap: var(--space-2); margin: var(--space-3) 0 0; color: var(--text-muted); font-size: var(--text-xs); line-height: 1.5; }
+.cg-imp-note .cg-imp-ico { width: 14px; height: 14px; margin-top: 2px; }
+
+.cg-imp-drop {
+  display: flex; flex-direction: column; align-items: center; gap: var(--space-1);
+  padding: var(--space-7) var(--space-5); text-align: center; cursor: pointer;
+  border: 1px dashed var(--border-strong); border-radius: var(--radius-md); color: var(--text-muted);
+  transition: border-color var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out);
+}
+.cg-imp-drop:hover, .cg-imp-drop.is-over { border-color: var(--brand-a40); background: var(--brand-a05); }
+.cg-imp-drop-badge { display: grid; place-items: center; width: 40px; height: 40px; margin-bottom: var(--space-2); border-radius: 50%; background: var(--brand-a12); color: var(--brand); }
+.cg-imp-drop-badge .cg-imp-ico { width: 20px; height: 20px; }
+.cg-imp-drop-title { color: var(--text-bright); font-size: var(--text-sm); font-weight: 500; }
+.cg-imp-drop-sub { font-size: var(--text-xs); }
+.cg-imp-file { display: flex; align-items: center; gap: var(--space-2); margin: var(--space-3) 0 0; color: var(--text-secondary); font-size: var(--text-xs); }
+.cg-imp-file .cg-imp-ico { color: var(--brand-green); }
+
+.cg-imp-summary { margin-bottom: var(--space-3); }
+.cg-imp-chips { display: flex; flex-wrap: wrap; gap: var(--space-1-5); margin: 0; padding: 0; list-style: none; }
+.cg-imp-chip { padding: 3px 10px; border: 1px solid var(--border-strong); border-radius: var(--radius-pill); color: var(--text); font-size: var(--text-xs); }
+.cg-imp-chip.is-more { color: var(--text-muted); border-style: dashed; }
+
+.cg-imp-problem { margin-top: var(--space-3); }
+.cg-imp-actions { display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-6); padding-top: var(--space-5); border-top: 1px solid var(--border-strong); }
+.cg-imp-actions .cuenta-btn-ghost { padding: 9px 16px; font-size: var(--text-sm); }
+.cg-imp-actions .cuenta-btn-primary { width: auto; min-width: 112px; margin: 0; padding: 9px 18px; }
+@media (max-width: 520px) {
+  .cg-imp { width: calc(100% - 24px); padding: var(--space-6) var(--space-4); }
+  .cg-imp-step-label { display: none; }
+  .cg-imp-step.is-active .cg-imp-step-label { display: inline; }
+}
+@media (prefers-reduced-motion: reduce) { .cg-imp-panel { animation: none; } }
+body.reduce-motion .cg-imp-panel { animation: none; }
 .cg-tab {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 6px 14px; min-height: 32px;

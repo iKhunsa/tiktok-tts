@@ -708,3 +708,9 @@ Rules:
 - IF graphify-out/wiki/index.md EXISTS, navigate it instead of reading raw files
 - For cross-module "how does X relate to Y" questions, prefer `graphify query "<question>"`, `graphify path "<A>" "<B>"`, or `graphify explain "<concept>"` over grep — these traverse the graph's EXTRACTED + INFERRED edges instead of scanning files
 - After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
+
+## Notas de parche (bitácora de cambios por versión)
+
+- Las notas se escriben en `NOTAS-PARCHE-1.11.2.md` (raíz del repo). **Nunca escribir ahí por iniciativa propia**: solo cuando el usuario dé la señal. Al recibirla, primero mostrarle el texto exacto que se va a agregar y esperar su aprobación; recién entonces escribirlo.
+- Una vez aprobada, la misma nota se redacta **también en las notas de la app** (modal de Novedades): `CHANGELOG.md` (español, fuente) y su traducción en los 9 `changelog/<idioma>.md` (`en, pt, it, fr, de, ru, zh, ja, ko`), en la sección equivalente de la versión en curso. Solo lo visible para el usuario; lo de «Interno» no va a la app.
+- Cuando el usuario publique el release público de esa versión, **preguntarle cuál es la próxima versión** y renombrar el md a `NOTAS-PARCHE-<próxima-versión>.md`. A partir de ahí, anotar ahí todo lo que se haga en las siguientes versiones, y repetir el ciclo en cada release público.

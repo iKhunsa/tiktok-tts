@@ -28,6 +28,8 @@ body.rtl { direction: rtl; }
   display: flex;
   flex-direction: column;
   gap: 5px;
+  /* Si no entran todos, que se corten los viejos (arriba), nunca el ultimo. */
+  justify-content: flex-end;
   overflow: hidden;
 }
 body.fit #chat-container { align-items: flex-start; }

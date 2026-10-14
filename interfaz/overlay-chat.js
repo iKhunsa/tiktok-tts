@@ -153,7 +153,17 @@ function addMessage(mensaje) {
   container.appendChild(elemento);
   if (cfg.ocultarTras > 0 && !vistaPrevia) ocultarTras(elemento, cfg.ocultarTras);
   while (container.children.length > cfg.maxmsgs) container.removeChild(container.firstChild);
+  quitarCortados();
 }
+
+// Los viejos desbordan por arriba: el que ya no entra entero se quita, asi solo se ven recuadros completos.
+function quitarCortados() {
+  const tope = container.getBoundingClientRect().top;
+  while (container.children.length > 1 && container.firstElementChild.getBoundingClientRect().top < tope) {
+    container.firstElementChild.remove();
+  }
+}
+window.addEventListener('resize', quitarCortados);
 
 function alManejarMensaje(d) {
   if (d.type === 'chat') addMessage(d);

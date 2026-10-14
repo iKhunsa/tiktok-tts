@@ -33,6 +33,7 @@ const aptabase = require('./electron-shell/aptabase');
 const { hasAcceptedTerms } = require('./electron-shell/terms-acceptance');
 const { resolveConfigValue } = require('./electron-shell/resolve-config-value');
 const { getActiveAccount, accountDataDir } = require('./core/account-data-path');
+const { getConfigSnapshot } = require('./core/config-snapshot');
 
 // Sin aceptación de Términos y Privacidad guardada no se envía ningún dato:
 // ni GlitchTip, ni Aptabase, ni telemetría propia se inicializan (sus `enabled`
@@ -167,8 +168,13 @@ app.whenReady().then(() => {
     mainWindow = createWindow({
       iconPath: ICON_PATH,
       bus,
-      onClose: () => {
+      onClose: (event) => {
         if (isQuitting) return;
+        if (tray && getConfigSnapshot(bus).closeToTray) {
+          event.preventDefault();
+          mainWindow.hide();
+          return;
+        }
         isQuitting = true;
         app.quit();
       },

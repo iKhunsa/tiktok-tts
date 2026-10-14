@@ -48,3 +48,50 @@
     Pop $0
   ${endIf}
 !macroend
+
+; Pagina final propia: la de electron-builder (casilla "Ejecutar TikLiveTTS")
+; + una casilla "Abrir al iniciar Windows", reusando el slot SHOWREADME de MUI.
+; Solo se ve en la instalacion nueva: una actualizacion respeta lo ya elegido
+; (tambien desde Ajustes). Mismo nombre de valor del registro que usa
+; app.setLoginItemSettings en electron-shell/ipc-bridge.js.
+!macro customFinishPage
+  Function StartApp
+    ${if} ${isUpdated}
+      StrCpy $1 "--updated"
+    ${else}
+      StrCpy $1 ""
+    ${endif}
+    ${StdUtils.ExecShellAsUser} $0 "$launchLink" "open" "$1"
+  FunctionEnd
+
+  Function EnableAutostart
+    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "TikLiveTTS" '"$INSTDIR\${APP_EXECUTABLE_FILENAME}"'
+  FunctionEnd
+
+  !define MUI_FINISHPAGE_RUN
+  !define MUI_FINISHPAGE_RUN_FUNCTION "StartApp"
+  !define MUI_FINISHPAGE_SHOWREADME
+  !define MUI_FINISHPAGE_SHOWREADME_TEXT "Open TikLiveTTS when Windows starts"
+  !define MUI_FINISHPAGE_SHOWREADME_FUNCTION "EnableAutostart"
+  !define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
+  !define MUI_PAGE_CUSTOMFUNCTION_SHOW FinishPageShow
+  !insertmacro MUI_PAGE_FINISH
+
+  ; Va despues de MUI_PAGE_FINISH: ahi se declara $mui.FinishPage.ShowReadme.
+  Function FinishPageShow
+    ${if} ${isUpdated}
+      ShowWindow $mui.FinishPage.ShowReadme ${SW_HIDE}
+    ${elseIf} $LANGUAGE == 1034
+    ${orIf} $LANGUAGE == 3082
+      SendMessage $mui.FinishPage.ShowReadme ${WM_SETTEXT} 0 "STR:Abrir TikLiveTTS al iniciar Windows"
+    ${endIf}
+  FunctionEnd
+!macroend
+
+; Desinstalar de verdad (no la desinstalacion previa a una actualizacion)
+; quita el arranque con Windows.
+!macro customUnInstall
+  ${ifNot} ${isUpdated}
+    DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "TikLiveTTS"
+  ${endIf}
+!macroend

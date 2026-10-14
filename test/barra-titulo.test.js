@@ -37,8 +37,19 @@ test('changelog: parsea versiones, secciones y viñetas multilínea del CHANGELO
   const { parsearChangelog } = await front('vistas/principal/novedades/parse-changelog.js');
   const versiones = parsearChangelog(fs.readFileSync(path.join(__dirname, '..', 'CHANGELOG.md'), 'utf8'));
   assert.ok(versiones.length > 10);
-  assert.equal(versiones[0].etiqueta, 'prerelease');
   assert.ok(versiones.every((v) => v.version && v.secciones.every((s) => s.items.length > 0)));
-  const moderacion = versiones[0].secciones.flatMap((s) => s.items).find((item) => item.startsWith('**Moderación') || item.startsWith('Moderación de chat'));
-  assert.match(moderacion, /cuatro plataformas\.$/); // une las líneas de continuación
+  const experimento = versiones.find((v) => v.version === '1.9.3').secciones.flatMap((s) => s.items)[0];
+  assert.match(experimento, /^\*\*Experimento.*sigue en observación\.$/); // une las líneas de continuación
+});
+
+test('changelog: cada traducción de changelog/ trae la última versión del CHANGELOG con sus mismas secciones', async () => {
+  const { parsearChangelog } = await front('vistas/principal/novedades/parse-changelog.js');
+  const [ultima] = parsearChangelog(fs.readFileSync(path.join(__dirname, '..', 'CHANGELOG.md'), 'utf8'));
+  const dir = path.join(__dirname, '..', 'changelog');
+  for (const archivo of fs.readdirSync(dir)) {
+    const [version] = parsearChangelog(fs.readFileSync(path.join(dir, archivo), 'utf8'));
+    assert.equal(version.version, ultima.version, archivo);
+    assert.deepEqual(version.secciones.map((s) => s.items.length), ultima.secciones.map((s) => s.items.length), archivo);
+    assert.equal(version.secciones.at(-1).titulo, 'Videos de YouTube', archivo);
+  }
 });

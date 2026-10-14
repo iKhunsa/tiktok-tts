@@ -2,12 +2,14 @@ import changelogRaw from '../../../../../CHANGELOG.md?raw';
 import { parsearChangelog } from './parse-changelog.js';
 import { extraerIdYoutube } from './extraer-id-youtube.js';
 import { crearVideoNovedades } from './crear-video-novedades.js';
-import { t } from '../../../nucleo/i18n/i18n.js';
+import { t, idiomaActual } from '../../../nucleo/i18n/i18n.js';
 import { trackUi } from '../../../nucleo/telemetria-ui.js';
 
 const MARCAS_INLINE = /(\*\*[^*]+\*\*|`[^`]+`|\[[^\]]+\]\(https?:\/\/(?:www\.)?(?:youtube\.com|youtu\.be)\/[^)\s]+\))/;
 const ENLACE_YOUTUBE = /^\[([^\]]+)\]\((https?:\/\/(?:www\.)?(?:youtube\.com|youtu\.be)\/[^)\s]+)\)$/;
 const SECCION_VIDEOS = 'Videos de YouTube';
+// Traducciones de la última versión (changelog/<idioma>.md); sin archivo para el idioma, se usa CHANGELOG.md en español.
+const CHANGELOG_TRADUCIDO = import.meta.glob('../../../../../changelog/*.md', { query: '?raw', import: 'default', eager: true });
 
 function crear(etiqueta, clase, texto) {
   const el = document.createElement(etiqueta);
@@ -71,17 +73,19 @@ function separarVideo(versiones) {
   return { idVideo, versiones: sinVideos };
 }
 
-let renderizado = false;
+let idiomaRenderizado = null;
 let idVideoNovedades = null;
 
 export function abrirNovedades() {
   trackUi('ui:news-opened');
   const lista = document.getElementById('newsList');
-  if (!renderizado) {
-    const { idVideo, versiones } = separarVideo(parsearChangelog(changelogRaw));
+  const idioma = idiomaActual();
+  if (idiomaRenderizado !== idioma) {
+    const texto = CHANGELOG_TRADUCIDO[`../../../../../changelog/${idioma}.md`] || changelogRaw;
+    const { idVideo, versiones } = separarVideo(parsearChangelog(texto));
     idVideoNovedades = idVideo;
     lista.replaceChildren(...versiones.map(crearVersion));
-    renderizado = true;
+    idiomaRenderizado = idioma;
   }
   // El reproductor existe solo mientras el modal está abierto: al cerrarlo se
   // destruye y el video deja de sonar.

@@ -6,6 +6,23 @@ const { runYtdlp } = require('./run-ytdlp');
 const { detectJsRuntime } = require('./detect-js-runtime');
 const { emitStatus } = require('./get-status');
 
+// En Windows `yt-dlp --update-to` deja `yt-dlp.exe.new` y lo mueve con un
+// proceso aparte al salir; si en ese momento otro yt-dlp (un stream) tiene el
+// .exe abierto, el move falla y el update queda colgado. Aca, antes de lanzar
+// ningun yt-dlp, nada lo tiene abierto: se aplica.
+function applyPendingUpdate(state) {
+  const pending = `${state.ytdlpPath}.new`;
+  if (!fs.existsSync(pending)) return;
+  try {
+    fs.renameSync(pending, state.ytdlpPath);
+  } catch (error) {
+    state.logger.log(
+      'warn', 'sonido', 'sonido/musica/engine/ensure-ready.js#applyPendingUpdate', 'sonido.musica.update_pendiente_fallido',
+      `No se pudo aplicar el update pendiente de yt-dlp: ${error.message}`, { path: pending, error: error.message }
+    );
+  }
+}
+
 function ensureReady(state) {
   if (state.status.state === 'ready') return Promise.resolve();
   if (state.readyPromise) return state.readyPromise;
@@ -17,6 +34,7 @@ function ensureReady(state) {
       // hace falta bajar el binario; la extraccion del PyInstaller en el
       // primer --version tambien cae bajo este estado.
       emitStatus(state, 'preparing');
+      applyPendingUpdate(state);
       if (!fs.existsSync(state.ytdlpPath)) await downloadBinary(state);
       // Primer arranque puede tardar (PyInstaller extrae a temp) -> timeout generoso
       let ver = await runYtdlp(state, ['--version'], { timeoutMs: 60000 });

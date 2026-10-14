@@ -12,7 +12,8 @@ module.exports = {
       // bot-musical es feature Pro (entitlements). Con subscriptionsEnabled=false
       // check() devuelve true -> comportamiento actual.
       if (!payload) return;
-      const parsed = parseCommand(payload.comment);
+      // rawComment: el display de chat-guard cambia las URLs por "link".
+      const parsed = parseCommand(payload.rawComment || payload.comment);
       if (!entitlements.check('bot-musical')) {
         // Solo cuenta cuando el mensaje era de verdad un comando (si no, seria 1 hit por mensaje de chat).
         if (parsed) logger.log('info', 'auth', 'bot/index.js#register', 'auth.gating.bloqueado',

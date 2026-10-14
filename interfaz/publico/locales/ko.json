@@ -113,7 +113,10 @@
                    "langFilterHint":  "활성 음성의 언어와 일치하지 않는 문자가 포함된 채팅 메시지를 무시합니다 (예: 음성이 스페인어면 중국어/일본어를 차단하며, 반대의 경우도 마찬가지입니다).",
                    "dictFilter":  "언어별 필터 (단어)",
                    "dictFilterHint":  "활성 음성 언어 또는 허용한 추가 언어로 작성된 메시지만 읽습니다. 알 수 없는 단어(이름, 오타)는 차단되지 않습니다.",
-                   "readNonFollowers":  "비팔로워도 읽기"
+                   "readNonFollowers":  "비팔로워도 읽기",
+                   "closeToTray":  "닫을 때 트레이로 최소화",
+                   "closeToTrayHint":  "X를 눌러도 앱이 시스템 트레이에서 계속 실행됩니다. 완전히 종료하려면 트레이 아이콘을 우클릭 → 종료.",
+                   "openAtLogin":  "Windows 시작 시 열기"
                },
     "tts":  {
                 "on":  "TTS 켜짐",
@@ -232,7 +235,8 @@
                      "announceTplLike":  "좋아요를 받은 후",
                      "announceTplExLike":  "최선을 다해요",
                      "announceTplShare":  "누군가 공유한 후",
-                     "announceTplExShare":  "소문을 퍼뜨렸어요"
+                     "announceTplExShare":  "소문을 퍼뜨렸어요",
+                     "window":  "창 및 시작"
                  },
     "label":  {
                   "voice":  "음성",
@@ -1126,7 +1130,10 @@
                    "chatGuardUnavailable":  "필터에 연결할 수 없습니다. 다시 시도하세요.",
                    "chatGuardInvalidWord":  "올바르지 않은 단어입니다.",
                    "chatGuardWordConflict":  "그 단어는 다른 목록에 있습니다.",
-                   "chatGuardAllowedSingleWord":  "여기에는 단어만 입력할 수 있으며 문장은 안 됩니다."
+                   "chatGuardAllowedSingleWord":  "여기에는 단어만 입력할 수 있으며 문장은 안 됩니다.",
+                   "chatGuardImportTooLarge":  "파일이 너무 큽니다(최대 1MB).",
+                   "chatGuardImportTooMany":  "단어가 너무 많습니다(최대 5000개).",
+                   "chatGuardImportInvalid":  "형식이 올바르지 않습니다: 따옴표로 감싼 단어의 JSON 목록이어야 합니다."
                },
     "mcp":  {
                 "title":  "MCP 에이전트",
@@ -1454,7 +1461,31 @@
                                     "added":  "단어를 추가했습니다",
                                     "removed":  "단어를 삭제했습니다",
                                     "export":  "내보내기",
-                                    "viewAll":  "모든 단어 보기"
+                                    "viewAll":  "모든 단어 보기",
+                                    "import":  "가져오기",
+                                    "importTitle":  "차단 단어 가져오기",
+                                    "importStepFormat":  "형식",
+                                    "importStepFile":  "가져오기",
+                                    "importStepConfirm":  "확인",
+                                    "importIntro":  "차단 목록에 추가할 단어가 담긴 JSON 파일을 가져옵니다. 가져온 단어는 현재 목록에 추가되며 대체되지 않습니다.",
+                                    "importFormatTitle":  "JSON 파일 형식",
+                                    "importFormatNote":  "파일에는 따옴표로 감싸고 쉼표로 구분한 단어나 문구의 JSON 배열이 있어야 합니다.",
+                                    "importCopy":  "예시 복사",
+                                    "importCopied":  "예시를 복사했습니다",
+                                    "importDrop":  ".json 파일을 여기로 끌어오세요",
+                                    "importBrowse":  "또는 클릭해서 선택하세요",
+                                    "importNext":  "다음",
+                                    "importBack":  "뒤로",
+                                    "importFileReady":  "{file} · 단어 {n}개",
+                                    "importSummary":  "파일에 단어 {total}개가 있으며, 그중 새 단어 {n}개가 목록에 추가됩니다.",
+                                    "importNoneNew":  "파일의 모든 단어가 이미 목록에 있습니다.",
+                                    "importMore":  "+{n}개 더",
+                                    "importConfirm":  "가져오기",
+                                    "importCancel":  "취소",
+                                    "importEmpty":  "파일에 단어가 없습니다.",
+                                    "importReadError":  "파일을 읽을 수 없습니다.",
+                                    "importNotJson":  ".json 파일만 사용할 수 있습니다.",
+                                    "imported":  "새 단어 {n}개를 가져왔습니다"
                                 },
                       "status":  {
                                      "title":  "필터 상태",
@@ -1556,5 +1587,16 @@
                                    "waitingValue":  "{n} / {max}",
                                    "tip":  "채팅 컨트롤에서 현재 메시지를 건너뛰거나 대기열을 비울 수 있습니다."
                                }
-                 }
+                 },
+    "creatorProgram":  {
+                           "title":  "콘텐츠를 만드시나요? Pro 1개월 받기",
+                           "text":  "원하는 방식으로 TikLiveTTS 영상을 만들고 Pro 1개월을 무료로 받으세요.",
+                           "cta":  "무료 1개월 받기",
+                           "howItWorks":  "참여 방법 보기",
+                           "modalTitle":  "영상 만들고 Pro 1개월 받기",
+                           "modalBody1":  "콘텐츠 크리에이터라면 TikLiveTTS를 소개하거나 리뷰하거나 추천하는 영상을 올려 주세요.",
+                           "modalBody2":  "형식은 자유, 나만의 스타일로 만들면 됩니다.",
+                           "modalBody3":  "승인되면 <strong>TikLiveTTS Pro 1개월을 완전히 무료로</strong> 사용할 수 있습니다.",
+                           "join":  "참여하기"
+                       }
 }
