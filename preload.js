@@ -22,14 +22,24 @@ function off(channel, cb) {
 // proceso principal o en server.js y no necesita este canal.
 //  - tts:skipped / tts:queue-overflow → cola TTS (sin payload).
 //  - ui:language-set → cambio de idioma de UI (payload: código de idioma).
-const TRACKABLE_EVENTS = new Set(['tts:skipped', 'tts:queue-overflow', 'ui:language-set']);
+//  - ui:discord-* → entradas a Discord (payload: origen). ui:view-opened, ui:overlay-copied,
+//    ui:promo-*, ui:plans-opened, ui:news-opened, etc. → uso de secciones (payload: valor de lista cerrada,
+//    la valida electron-shell/aptabase.js).
+const MAX_PAYLOAD = 24; // mismo tope que electron-shell/ipc-bridge.js
+const TRACKABLE_EVENTS = new Set([
+  'tts:skipped', 'tts:queue-overflow', 'ui:language-set', 'ui:discord-opened', 'ui:discord-joined',
+  'ui:view-opened', 'ui:overlay-copied', 'ui:promo-code-opened', 'ui:promo-code-copied', 'ui:promo-plans-clicked',
+  'ui:tiktok-banner-clicked', 'ui:plans-opened', 'ui:news-opened', 'ui:donations-opened', 'ui:portalview-opened',
+  'ui:tour-started', 'ui:event-fx-toggled', 'ui:soundpad-played',
+]);
 
 contextBridge.exposeInMainWorld('electronAPI', {
   getAppVersion: () => ipcRenderer.invoke('get-app-version'),
+  dimTitleBar: (dimmed) => ipcRenderer.send('titlebar:dim', dimmed === true),
   trackEvent: (name, payload) => {
     if (!TRACKABLE_EVENTS.has(name)) return;
-    // Solo se reenvía payload cuando es un string corto (código de idioma).
-    if (typeof payload === 'string') ipcRenderer.send('telemetry:track', name, payload.slice(0, 12));
+    // Solo se reenvía payload cuando es un string corto (idioma, origen, vista...).
+    if (typeof payload === 'string') ipcRenderer.send('telemetry:track', name, payload.slice(0, MAX_PAYLOAD));
     else ipcRenderer.send('telemetry:track', name);
   },
   onMarkClip: (cb) => on('mark-clip', () => cb()),
@@ -37,6 +47,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onUpdateEvent: (cb) => on('update-event', (_e, data) => cb(data)),
   offUpdateEvent: (cb) => off('update-event', cb),
   installUpdate: () => ipcRenderer.send('install-update'),
+  getOpenAtLogin: () => ipcRenderer.invoke('login-item:get'),
+  setOpenAtLogin: (enabled) => ipcRenderer.invoke('login-item:set', enabled === true),
   registerTtsShortcut: (action, shortcut) => ipcRenderer.invoke('register-tts-shortcut', { action, shortcut }),
   onTtsShortcut: (cb) => on('tts-shortcut', (_e, action) => cb(action)),
   offTtsShortcut: (cb) => off('tts-shortcut', cb),

@@ -9,8 +9,8 @@ const {
   clearKickWatchdog,
 } = require('../features/canales/kick/stale-watchdog');
 
-// connect-kick.js llama armKickWatchdog() en CADA frame del socket Pusher
-// (subscription_succeeded, pusher:pong del ping cada 100s, chat), no solo en
+// connect-kick.js llama armKickWatchdog() en CADA frame del socket Centrifugo
+// (respuestas a comandos, ping `{}` del servidor cada ~25s, chat), no solo en
 // CHAT_MESSAGE_EVENT. Estos tests fijan ese contrato: cualquier frame re-arma;
 // solo el silencio total de frames dispara la reconexion.
 
@@ -34,7 +34,7 @@ test('frames que NO son chat (pong del ping cada 100s) re-arman el watchdog: can
   let stale = 0;
   const onStale = () => { stale += 1; };
 
-  // Simula 30 min de canal sin chat pero con el ping de Pusher entrando cada
+  // Simula 30 min de canal sin chat pero con un ping entrando cada
   // 100s (el unico frame). Cada frame re-arma → nunca vence el timeout de 5 min.
   armKickWatchdog({ state }, 'canal', onStale);
   for (let i = 0; i < 18; i += 1) {

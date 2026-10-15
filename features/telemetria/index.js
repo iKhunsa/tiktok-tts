@@ -4,7 +4,8 @@
 // aunque la telemetria todavia no este inicializada — track() es un no-op
 // barato mientras runtime.enabled sea false, asi que enganchar temprano es
 // seguro y evita que /electron-shell tenga que coordinar el orden.
-const { track, creatorCache, markPlatform, platformsUsed } = require('./runtime');
+const runtime = require('./runtime');
+const { track, creatorCache, markPlatform, platformsUsed } = runtime;
 const connectors = require('./connectors');
 const { accountDataDir } = require('../../core/account-data-path');
 
@@ -18,7 +19,7 @@ module.exports = {
     let attached = 0;
     for (const connector of connectors) {
       try {
-        connector.attach(bus, track, { creatorCache, platformsUsed, markPlatform });
+        connector.attach(bus, track, { creatorCache, platformsUsed, markPlatform, isEnabled: () => runtime.enabled, logger });
         attached++;
       } catch (error) {
         logger.log(

@@ -4,6 +4,8 @@
 // hacia arriba y nunca bloquear a la app. Si el servidor no responde, los
 // eventos se quedan en la cola y se reintentan.
 
+const crypto = require('crypto');
+
 const BATCH_SIZE = 50;
 const RETRY_DELAYS = [1000, 4000, 15000];
 
@@ -37,6 +39,23 @@ class Transport {
     }
   }
 
+  // X-Ingest-Token siempre (respaldo si el servidor aun no tiene el secreto);
+  // la firma HMAC por instalacion se suma cuando hay credencial (BE-027).
+  headers() {
+    const headers = { 'Content-Type': 'application/json' };
+    if (this.token) headers['X-Ingest-Token'] = this.token;
+    const { ingestSecret, machineId, sessionId } = this.identity;
+    if (ingestSecret) {
+      const ts = Date.now().toString();
+      const nonce = crypto.randomBytes(8).toString('hex');
+      headers['X-Ingest-Signature'] = crypto.createHmac('sha256', ingestSecret)
+        .update(`${machineId}.${sessionId}.${ts}.${nonce}`).digest('hex');
+      headers['X-Ingest-Ts'] = ts;
+      headers['X-Ingest-Nonce'] = nonce;
+    }
+    return headers;
+  }
+
   async send(events, deadline, retries) {
     for (let attempt = 0; attempt <= retries; attempt++) {
       const remaining = deadline - Date.now();
@@ -45,9 +64,7 @@ class Transport {
       try {
         const res = await fetch(this.url, {
           method: 'POST',
-          headers: this.token
-            ? { 'Content-Type': 'application/json', 'X-Ingest-Token': this.token }
-            : { 'Content-Type': 'application/json' },
+          headers: this.headers(),
           body: JSON.stringify({
             schema: 2,
             machine_id: this.identity.machineId,

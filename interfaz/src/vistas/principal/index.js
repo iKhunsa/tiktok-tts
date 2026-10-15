@@ -15,7 +15,7 @@
  */
 import { paintRangeFill, iniciarPintadoDeRangos } from '../../componentes/campos-formulario.js';
 import { showToast } from '../../componentes/toast.js';
-import { iniciarCapturaErroresCliente } from '../../nucleo/log-storage.js';
+import { iniciarCapturaErroresCliente, logStorage } from '../../nucleo/log-storage.js';
 import { loadSettings, applySettings, appSettings } from '../../nucleo/estado/ajustes-app.js';
 import { loadRuntimeConfig } from '../../nucleo/estado/config-runtime.js';
 import { connectWS } from '../../nucleo/ws/cliente-ws.js';
@@ -27,17 +27,27 @@ import {
 import { t, tErr } from '../../nucleo/i18n/i18n.js';
 import { iniciarI18nApp, pickLanguage, setLanguage } from './i18n-app.js';
 import { switchView } from './vistas-router.js';
+import { iniciarBarraTitulo } from './barra-titulo/index.js';
 import { abrirCuentaDesdeSidebar, cargarSesion, almacenSesion, appBloqueada } from '../../nucleo/estado/sesion.js';
-import { aplicarBloqueoVista, aplicarBadgesInlinePro } from '../../nucleo/estado/vista-bloqueada.js';
+import { aplicarBloqueoVista } from '../../nucleo/estado/vista-bloqueada.js';
 import { iniciarCuenta } from './cuenta/index.js';
-import { iniciarRotacionAnuncioLateral } from './anuncio-lateral.js';
-import { copyToClipboard, showKnownIssuesNotice } from './utils-app.js';
-import { uploadBg, removeBg } from './subida-fondo.js';
+import { initModeracionContenido } from './moderacion-contenido/index.js';
+import { initModerationPopup } from './moderacion-popup/index.js';
+import { reproducirEventoActivo, reproducirEvento } from '../../componentes/eventos/index.js';
+import { iniciarBotonEfectosEvento } from './efectos-evento.js';
+import { iniciarAvisoConexionFallida } from './aviso-conexion-fallida.js';
+import { iniciarAvisoCodigoDescuento } from './aviso-codigo-descuento.js';
+import { iniciarProgramaCreadores } from './programa-creadores.js';
+import { iniciarBannerPro } from './banner-pro.js';
+import { iniciarRotacionAnuncio } from './anuncio-rotativo.js';
+import { copyToClipboard } from './utils-app.js';
 import {
-  buildOverlayUrl, updateOverlayUrl, onCfgChange, onChatPlatformChange, copyCfgUrl,
+  buildOverlayUrl, updateOverlayUrl, onCfgChange, copyCfgUrl,
   updateFollowerDisplay, testGiftAlert, testSocialAlert,
-  updateSocialOverlayUrl, copySocialAlertUrl, testTopLikers,
+  testTopLikers, testTopDonors, testViewers, testChatOverlay, restablecerOverlay,
 } from './configurador-overlays.js';
+import { iniciarCamposOverlay } from './campos-overlay/index.js';
+import { iniciarAcordeonOverlays } from './overlays-acordeon.js';
 import {
   toggleChatToggles, toggleOption, setSoloChatMode,
   iniciarObservadorTogglesChat,
@@ -46,6 +56,7 @@ import {
   startCapturingShortcut, clearTtsShortcut, renderShortcutDisplay, registerTtsShortcut,
   applyTtsShortcutPreset, iniciarAtajosTeclado, TTS_SHORTCUT_ACTIONS_KEYS,
 } from './atajos-teclado.js';
+import { iniciarTabsAtajos } from './tabs-atajos.js';
 import { setReadNonFollowers } from '../../nucleo/estado/config-runtime.js';
 import {
   toggleVoiceDropdown, patchConfigSetting, syncTtsVoiceLang, toggleLangFilter,
@@ -54,14 +65,14 @@ import {
 } from './voces.js';
 import { escapeHtml, initChatScrollFollow, initSpeakingGoto, clearChatAndQueue } from './chat-ui.js';
 import {
-  openDonationsModal, closeDonationsModal,
+  openDonationsModal, closeDonationsModal, openDiscordModal, closeDiscordModal,
   openBugReportModal, closeBugReportModal, submitBugReport, openDictLangModal,
   closeDictLangModal, closeDonationNotice, openDonationsFromNotice, closeBugReportNotice,
   openBugReportFromNotice, closeOnboardingWelcome, closeOnboardingComplete, startOnboardingTour,
   iniciarModalesYAvisos, arrancarAvisosOnboarding,
 } from './modales-avisos.js';
 import { closeIdeaModal, openIdeaModal, submitIdea } from './ideas/modal.js';
-import { loadMobileURL, copyMobileURL, refreshMobileQR } from './mobile-remote.js';
+import { loadMobileURL, copyMobileURL, refreshMobileQR, showMobileQRPlaceholder } from './mobile-remote.js';
 import {
   markClip, clearAllClips, startStreamManual, stopStream, connectOBSFromUI,
   disconnectOBSFromUI,
@@ -73,9 +84,11 @@ import {
 } from './soundpad.js';
 import {
   toggleAddChannelForm, selectAddPlatform, addChannelFromSettings, toggleConnectAllChat,
-  renderSettingsChannels,
+  renderSettingsChannels, iniciarHoverConnectAllChat,
 } from './plataformas.js';
+import { renderTiktokSession, tiktokLogin, tiktokLogout } from './tiktok-sesion.js';
 import { doInstallUpdate, iniciarEventosElectron } from './eventos-electron.js';
+import { iniciarAjustesVentana } from './ajustes-ventana.js';
 import {
   musicRemoveFromQueue, musicSkip, musicTogglePause, musicSetEnabled, musicSetVolume,
   musicSaveCooldown, musicSaveMaxQueue, musicClearQueue, musicBanUser, musicUnbanUser,
@@ -84,7 +97,7 @@ import {
 } from './bot-musica.js';
 import {
   modPage, modSetTab, modOnSearch, modWipe, checkModWipeConfirmInput, closeModWipeConfirm,
-  confirmModWipe, openBlockWordModal, closeBlockWordModal, submitBlockWord,
+  confirmModWipe, openBlockWordModal, closeBlockWordModal, submitBlockWord, openChatGuardWords,
   iniciarMenusModeracion, modReload,
 } from './moderacion.js';
 import {
@@ -103,12 +116,10 @@ Object.assign(window, {
   // vistas
   switchView, abrirCuentaDesdeSidebar,
   // utils
-  copyToClipboard, showKnownIssuesNotice,
-  // fondo de overlays
-  uploadBg, removeBg,
+  copyToClipboard,
   // configurador de overlays
-  onCfgChange, onChatPlatformChange, copyCfgUrl, testGiftAlert, testSocialAlert,
-  copySocialAlertUrl, testTopLikers, updateSocialOverlayUrl,
+  onCfgChange, copyCfgUrl, testGiftAlert, testSocialAlert,
+  testTopLikers, testTopDonors, testViewers, testChatOverlay, restablecerOverlay,
   // toggles de chat
   toggleChatToggles, toggleOption, setSoloChatMode,
   // atajos de teclado
@@ -122,13 +133,13 @@ Object.assign(window, {
   clearChatAndQueue, skipCurrentTTS, togglePauseTts, toggleGlobalTTS,
   enableEmergencyTTSMode, updateRate, updateVol,
   // modales y avisos
-  openDonationsModal, closeDonationsModal,
+  openDonationsModal, closeDonationsModal, openDiscordModal, closeDiscordModal,
   openBugReportModal, closeBugReportModal, submitBugReport, openDictLangModal,
   openIdeaModal, closeIdeaModal, submitIdea,
   closeDictLangModal, closeDonationNotice, openDonationsFromNotice, closeBugReportNotice,
   openBugReportFromNotice, closeOnboardingWelcome, closeOnboardingComplete, startOnboardingTour,
   // movil remoto
-  copyMobileURL, refreshMobileQR,
+  copyMobileURL, refreshMobileQR, showMobileQRPlaceholder,
   // clips / obs
   markClip, clearAllClips, startStreamManual, stopStream, connectOBSFromUI, disconnectOBSFromUI,
   // soundpad
@@ -137,6 +148,7 @@ Object.assign(window, {
   spSettingsDelete, spFilterIcons, spChooseIcon,
   // plataformas
   toggleAddChannelForm, selectAddPlatform, addChannelFromSettings, toggleConnectAllChat,
+  tiktokLogin, tiktokLogout,
   // auto-update
   doInstallUpdate,
   // musica
@@ -145,7 +157,7 @@ Object.assign(window, {
   playlistSave, playlistSetEnabled, playlistSetShuffle, playlistPlay, updatePlaylistInfo,
   // moderacion / bloqueo de palabras
   modPage, modSetTab, modOnSearch, modWipe, checkModWipeConfirmInput, closeModWipeConfirm,
-  confirmModWipe, openBlockWordModal, closeBlockWordModal, submitBlockWord, modReload,
+  confirmModWipe, openBlockWordModal, closeBlockWordModal, submitBlockWord, openChatGuardWords, modReload,
   // tours
   startModerationTour, startSoundpadTour, startBotTour, startPluginStoreTour,
   startChatActionsTour, startClipsTour, startOverlaysTour, startVoiceTour,
@@ -171,7 +183,7 @@ function aplicarBloqueoApp() {
   // 401 contra el muro — nadie mas los vuelve a pedir, hay que re-hidratarlos.
   if (!bloq && _estabaBloqueada) {
     loadVoices();
-    spLoad().then(() => spRestoreShortcuts());
+    spLoad().then(() => spRestoreShortcuts()).catch((err) => logStorage.addLog('warn', 'client', `spLoad/spRestoreShortcuts fallo: ${err.message}`));
     musicInit();
   }
   _estabaBloqueada = bloq;
@@ -179,12 +191,16 @@ function aplicarBloqueoApp() {
   // cuentas apagado), nunca en la pantalla de login. arrancarAvisosOnboarding
   // es idempotente.
   if (!bloq) arrancarAvisosOnboarding();
-  // Vistas Pro enteras (Sonidos/Bot/MCP): re-evaluar el aviso visual cada vez
-  // que cambia la sesion (login, pago, degradado) sin re-fetchear su estado.
+  // Evento de temporada (Halloween...): una vez por carga, ya desbloqueada la app.
+  if (!bloq) reproducirEventoActivo();
+  // Vistas Pro enteras (Sonidos/Bot/MCP/Panel movil/Clips): re-evaluar el aviso
+  // visual cada vez que cambia la sesion (login, pago, degradado) sin
+  // re-fetchear su estado.
   aplicarBloqueoVista('view-soundpad', 'soundpad');
   aplicarBloqueoVista('view-bot', 'bot-musical');
   aplicarBloqueoVista('mcpPanel', 'mcp-agente');
-  aplicarBadgesInlinePro();
+  aplicarBloqueoVista('view-mobile', 'panel-movil');
+  aplicarBloqueoVista('view-clips', 'clips');
 }
 
 function mostrarVersionApp() {
@@ -194,15 +210,20 @@ function mostrarVersionApp() {
 }
 
 function iniciarArranque() {
-  iniciarRotacionAnuncioLateral();
+  iniciarRotacionAnuncio('chatAdSlot', 20000);
+  iniciarBannerPro();
   iniciarCapturaErroresCliente();
   iniciarI18nApp();
   iniciarModalesYAvisos();
   iniciarMenusModeracion();
   iniciarObservadorTogglesChat();
   iniciarAtajosTeclado();
+  iniciarTabsAtajos();
   iniciarCierreDropdownVoces();
   iniciarPintadoDeRangos();
+  iniciarCamposOverlay();
+  iniciarAcordeonOverlays();
+  iniciarHoverConnectAllChat();
 
   document.addEventListener('DOMContentLoaded', () => {
     initChatScrollFollow();
@@ -216,12 +237,20 @@ function iniciarArranque() {
   loadRuntimeConfig();
   mostrarVersionApp();
   iniciarCuenta();
+  initModeracionContenido();
+  initModerationPopup();
+  iniciarBotonEfectosEvento();
+  iniciarAvisoConexionFallida();
+  iniciarAvisoCodigoDescuento();
+  iniciarProgramaCreadores();
   // Puente para interfaz/publico/plugin-store/ (scripts clasicos, sin import
   // ES) -- mismo patron que window.refreshPluginStoreTexts/__langReady.
   window.__sesionActual = () => almacenSesion.getState();
   almacenSesion.subscribe(() => window.renderPluginStore?.());
   almacenSesion.subscribe(aplicarBloqueoApp);
   cargarSesion();
+  const eventoForzado = new URLSearchParams(window.location.search).get('evento');
+  if (eventoForzado) reproducirEvento(eventoForzado); // prueba manual: ?evento=halloween
   renderShortcutDisplay();
   if (window.electronAPI?.registerTtsShortcut) {
     for (const action of TTS_SHORTCUT_ACTIONS_KEYS) {
@@ -233,15 +262,18 @@ function iniciarArranque() {
   connectWS();
   updateQueueBadge();
   renderSettingsChannels();
+  renderTiktokSession();
   loadMobileURL();
-  spLoad().then(() => spRestoreShortcuts());
+  spLoad().then(() => spRestoreShortcuts()).catch((err) => logStorage.addLog('warn', 'client', `spLoad/spRestoreShortcuts fallo: ${err.message}`));
 
   fetch('/api/overlay-stats')
     .then((r) => r.json())
     .then((d) => { if (d.baseFollowerCount) updateFollowerDisplay(d.baseFollowerCount); })
     .catch(() => {});
 
+  iniciarBarraTitulo();
   iniciarEventosElectron();
+  iniciarAjustesVentana();
   musicInit();
   iniciarPortalView();
 }

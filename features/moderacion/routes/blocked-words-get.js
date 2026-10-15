@@ -1,7 +1,7 @@
 'use strict';
 
-function blockedWordsGet(blockedMatchersState) {
-  return (_req, res) => res.json({ words: [...blockedMatchersState.blockedWords] });
+function blockedWordsGet(blockedWords) {
+  return (_req, res) => res.json({ words: [...blockedWords] });
 }
 
 module.exports = { blockedWordsGet };

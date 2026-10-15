@@ -1,6 +1,13 @@
 import { t } from '../../nucleo/i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
+import { reproducirSonidoUi } from '../../componentes/sonido-ui.js';
+import { mostrarAvisoConexionFallida } from './aviso-conexion-fallida.js';
 import * as datosPorCuenta from '../../nucleo/estado/datos-por-cuenta.js';
+import { toggleTiktokAddPrompt } from './tiktok-sesion.js';
+
+// Suena cuando el servidor confirma la conexion (junto al aviso "N conectados").
+// El archivo original esta a -15 LUFS: 0.35 lo deja ~-24 LUFS, bajo el TTS.
+const SONIDO_CONECTADO = { src: 'audio/ui/connect-wallet.mp3', volumen: 0.35 };
 
 const PLATFORM_CHANNELS_KEY = 'tikliveTTS_platforms_v1';
 export const PLATFORMS = ['tiktok', 'twitch', 'youtube', 'kick'];
@@ -136,9 +143,14 @@ export function selectAddPlatform(platform) {
     const btn = document.getElementById(`seg-${p}`);
     if (btn) btn.classList.toggle('active', p === platform);
   });
+  toggleTiktokAddPrompt(platform);
   const placeholders = { tiktok: '@usuario', twitch: 'nombre_del_canal', youtube: '@canal, Channel ID o link live', kick: 'nombre_del_canal' };
   const input = document.getElementById('add-channel-input');
-  if (input) { input.placeholder = placeholders[platform] || '@usuario'; input.focus(); }
+  const addChannelRow = document.getElementById('tiktok-add-channel-row');
+  if (input) {
+    input.placeholder = placeholders[platform] || '@usuario';
+    if (addChannelRow?.style.display !== 'none') input.focus();
+  }
   const hint = document.getElementById('youtube-channel-hint');
   if (hint) hint.style.display = platform === 'youtube' ? 'block' : 'none';
 }
@@ -221,6 +233,8 @@ async function connectSavedChannels() {
 
   if (chatBtn) { chatBtn.disabled = false; chatBtn.textContent = t('btn.connectAll'); }
   renderSettingsChannels();
+  if (connected > 0) reproducirSonidoUi(SONIDO_CONECTADO);
+  else if (failed > 0) mostrarAvisoConexionFallida();
   const parts = [`${connected} conectados`];
   if (failed) parts.push(`${failed} fallidos`);
   if (manualCount) parts.push(`${manualCount} manual`);
@@ -273,13 +287,30 @@ async function updateChatConnectAllState(preloadedChannels) {
     } catch (e) { /* noop */ }
   }
   const activeCount = PLATFORMS.reduce((sum, platform) => sum + (channels[platform] || []).length, 0);
+  // Recien tras confirmar 0 canales: asi el empty state no muestra la promo de creadores un instante durante el autoconnect.
+  chatBtn.closest('.chat-section')?.classList.toggle('sin-live', activeCount === 0);
   if (activeCount > 0) {
     chatBtn.classList.add('channels-connected');
     chatBtn.title = `${activeCount} canal(es) conectado(s) — clic para desconectar`;
+    chatBtn.textContent = chatBtn.matches(':hover') ? t('btn.disconnectAll') : t('btn.allConnected');
   } else {
     chatBtn.classList.remove('channels-connected');
     chatBtn.title = 'Sin canales conectados — clic para conectar todo';
+    chatBtn.textContent = t('btn.connectAll');
   }
+}
+
+export function iniciarHoverConnectAllChat() {
+  const chatBtn = document.getElementById('btn-connect-all-chat');
+  if (!chatBtn) return;
+  chatBtn.addEventListener('mouseenter', () => {
+    if (chatBtn.disabled || !chatBtn.classList.contains('channels-connected')) return;
+    chatBtn.textContent = t('btn.disconnectAll');
+  });
+  chatBtn.addEventListener('mouseleave', () => {
+    if (chatBtn.disabled || !chatBtn.classList.contains('channels-connected')) return;
+    chatBtn.textContent = t('btn.allConnected');
+  });
 }
 
 export async function renderSettingsChannels() {
@@ -341,8 +372,14 @@ export async function renderSettingsChannels() {
     status.textContent = stateLabel(state);
     const removeBtn = document.createElement('button');
     removeBtn.type = 'button';
-    removeBtn.title = `Eliminar ${PLATFORM_LABELS[platform]} ${formatChannelDisplay(platform, ch)}`;
-    removeBtn.textContent = 'x';
+    const removeLabel = `${t('btn.delete')} ${PLATFORM_LABELS[platform]} ${formatChannelDisplay(platform, ch)}`;
+    removeBtn.title = removeLabel;
+    removeBtn.setAttribute('aria-label', removeLabel);
+    const removeIcon = document.createElement('img');
+    removeIcon.className = 'icon-inline';
+    removeIcon.src = 'icons/close.svg';
+    removeIcon.alt = '';
+    removeBtn.append(removeIcon);
     removeBtn.onclick = () => removeChannel(platform, ch);
     tag.append(icon, platformLabel, label, status, removeBtn);
     el.appendChild(tag);

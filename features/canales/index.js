@@ -14,6 +14,9 @@ const { disconnect } = require('./routes/disconnect');
 const { platformsStatus } = require('./routes/platforms-status');
 const { platformsConnect } = require('./routes/platforms-connect');
 const { platformsDisconnect } = require('./routes/platforms-disconnect');
+const { tiktokSessionStatus } = require('./routes/tiktok-session-status');
+const { tiktokLogin } = require('./routes/tiktok-login');
+const { tiktokLogout } = require('./routes/tiktok-logout');
 const { listChannels } = require('./routes/list-channels');
 const { addChannel } = require('./routes/add-channel');
 const { removeChannel } = require('./routes/remove-channel');
@@ -44,6 +47,9 @@ module.exports = {
     app.get('/api/platforms/status', platformsStatus(state));
     app.post('/api/platforms/connect', rateLimit, gateCanal, platformsConnect(deps));
     app.post('/api/platforms/disconnect', platformsDisconnect(deps));
+    app.get('/api/platforms/tiktok/session', tiktokSessionStatus(state));
+    app.post('/api/platforms/tiktok/login', tiktokLogin(deps));
+    app.post('/api/platforms/tiktok/logout', tiktokLogout(deps));
     app.get('/api/channels', listChannels(state));
     app.post('/api/channels/add', rateLimit, gateCanal, addChannel(deps));
     app.post('/api/channels/remove', removeChannel(deps));
@@ -70,23 +76,6 @@ module.exports = {
     // consumido por advanced.html — sin tocar el Map de canales directo.
     bus.on('canales:tiktok-conectado', (respond) => {
       if (typeof respond === 'function') respond(state.tiktokChannels.size > 0);
-    }, 'canales');
-
-    // /overlay (Fase 8) pide refrescar el conteo de followers periodicamente
-    // sin tocar los `conn` de TikTok directo (son privados de este dominio).
-    bus.on('canales:refrescar-followers', () => {
-      for (const [username, entry] of state.tiktokChannels) {
-        entry.conn.fetchRoomInfo()
-          .then((roomInfo) => {
-            bus.emit('canal:estado', { platform: 'tiktok', channel: username, state: 'followers-refrescado', roomInfo });
-          })
-          .catch((error) => {
-            logger.log(
-              'warn', 'canales', 'canales/index.js#register', 'canales.tiktok.refresco_followers_fallido',
-              `No se pudo refrescar followers de ${username}: ${error.message}`, { channel: username, error: error.message, stack: error.stack }
-            );
-          });
-      }
     }, 'canales');
 
     // ── MCP ──────────────────────────────────────────────────────────────
@@ -148,7 +137,7 @@ module.exports = {
       },
     });
 
-    return { rutas: 11, listeners: 3 };
+    return { rutas: 14, listeners: 3 };
   },
 
   shutdown() {
@@ -171,6 +160,7 @@ module.exports = {
       try { c.disconnect(); } catch (_) { /* best-effort */ }
     }
     state.twitchChannels.clear();
+    state.twitchReconnectDesired.clear();
 
     for (const timer of state.youtubeWatchdogTimers.values()) clearTimeout(timer);
     state.youtubeWatchdogTimers.clear();
@@ -181,6 +171,7 @@ module.exports = {
       try { c.stop('shutdown'); c.removeAllListeners(); } catch (_) { /* best-effort */ }
     }
     state.youtubeChannels.clear();
+    state.youtubeReconnectDesired.clear();
 
     if (state.obs.reconnectTimer) { clearTimeout(state.obs.reconnectTimer); state.obs.reconnectTimer = null; }
     if (state.obs.ws) {
@@ -199,6 +190,6 @@ module.exports = {
       try { entry.ws.removeAllListeners(); entry.ws.close(); } catch (_) { /* best-effort */ }
     }
     state.kickChannels.clear();
-    state.kickSeenIds.clear();
+    state.kickReconnectDesired.clear();
   },
 };

@@ -1,5 +1,7 @@
 # TikLiveTTS — Contexto del Proyecto para IA
 
+> **OBLIGATORIO para todo agente (Codex, Claude): skill clean-code.** Antes de escribir, modificar o revisar código lee `.agents/skills/clean-code/SKILL.md` y `.agents/skills/clean-code/references/smells-and-heuristics.md`, y aplícalas a todo el código y los tests. Todo reporte de trabajo incluye una tabla "archivo → reglas/smells de la skill aplicados". Si una regla choca con este documento, gana este documento y se anota el choque.
+
 ## Qué es
 
 App de escritorio Electron que lee en voz alta el chat de TikTok Live, Twitch y YouTube en tiempo real. Diseñada para streamers que quieren TTS integrado sin depender de herramientas externas. La UI corre dentro de la app (no en navegador externo). Los overlays (alertas, likes, seguidores) se pegan en OBS como Browser Source via `http://localhost:3000/overlay-*.html`.
@@ -35,7 +37,6 @@ server.js (Express en puerto 3000)
   ├── POST /api/tts                ← Google TTS → stream MP3
   ├── WS   /                       ← broadcast eventos al browser
   ├── GET  /api/gifts-list         ← lista PNGs de regalos
-  ├── POST /api/upload-bg          ← sube imagen fondo overlay
   ├── PATCH /api/config            ← ajusta config en runtime
   ├── GET  /api/platforms/status   ← estado twitch/youtube
   ├── POST /api/platforms/connect  ← conecta twitch o youtube
@@ -59,7 +60,6 @@ server.js (Express en puerto 3000)
     asset\                ← flags SVG, iconos
     blocked-words.md      ← palabras bloqueadas (r/w en runtime)
     tray-icon.ico
-    public\uploads\       ← imágenes subidas por usuario (r/w)
 ```
 
 ## Flujo de build y release
@@ -103,7 +103,6 @@ git push origin main --tags
 - Debounce de likes (agrupa likes del mismo usuario en ventana de 1.5s)
 - Auto-reconexión con backoff exponencial (máx 5 intentos)
 - Overlays: alertas de regalos, contador de likes, contador de seguidores
-- Subida de imagen de fondo para overlays (PNG/JPG/WebP/GIF, máx 8MB)
 - Top likers tracking durante el stream
 - Refresco de follower count cada 5 minutos
 - Palabras bloqueadas persistidas en `blocked-words.md`

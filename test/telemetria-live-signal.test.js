@@ -59,3 +59,14 @@ test('un ciclo completo no deja timers colgados (el proceso puede salir)', () =>
   // Si stopLive() no hiciera clearInterval, node:test avisaria de un handle
   // abierto al terminar la suite.
 });
+
+test('telemetry:shutdown corta el live (sin esperar la ventana de 150s)', () => {
+  const bus = new EventEmitter();
+  const events = [];
+  attach(bus, (c, n) => events.push(`${c}/${n}`), { markPlatform() {} });
+  bus.emit('telemetry:shutdown');
+  assert.ok(!events.includes('app/live_stopped'), 'sin live no hay nada que cortar');
+  bus.emit('canal:estado', { platform: 'tiktok', channel: 'ana', state: 'conectado' });
+  bus.emit('telemetry:shutdown');
+  assert.deepEqual(events.filter((e) => e === 'app/live_stopped'), ['app/live_stopped']);
+});

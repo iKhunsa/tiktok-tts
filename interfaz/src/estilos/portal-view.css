@@ -6,7 +6,7 @@
 #app-shell {
   display: flex;
   width: 100%;
-  min-height: 100vh;
+  min-height: calc(100vh - var(--titlebar-h));
 }
 #app-shell>.app-layout {
   flex: 1 1 auto;
@@ -35,7 +35,7 @@
    razon que el override de arriba: cerrado, el scroll de documento original
    (con .sidebar en position:sticky persiguiendolo) sigue intacto. */
 #app-shell.portal-view-open {
-  height: 100vh;
+  height: calc(100vh - var(--titlebar-h));
   overflow: hidden;
 }
 #app-shell.portal-view-open>.app-layout {
@@ -97,7 +97,7 @@ body.divisor-resizing {
   }
 }
 .portal-view-tab-bar {
-  height: 34px;
+  height: 36px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -165,7 +165,7 @@ body.divisor-resizing {
   height: 14px;
 }
 .portal-view-toolbar {
-  height: 36px;
+  height: 40px;
   flex-shrink: 0;
   display: flex;
   align-items: center;

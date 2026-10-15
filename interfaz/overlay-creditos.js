@@ -3,6 +3,8 @@ import { leerParametros, aplicarParametrosVisuales } from './compartido/parametr
 import { conectarWSOverlay } from './compartido/ws-cliente.js';
 import { registrarErroresOverlay } from './compartido/registrar-errores.js';
 import { crearCreditos } from './compartido/creditos-agregados.js';
+import { esVistaPrevia } from './compartido/vista-previa.js';
+import { MUESTRA_CREDITOS } from './compartido/muestras-vista-previa.js';
 
 registrarErroresOverlay();
 
@@ -18,6 +20,14 @@ const credits = crearCreditos();
 const RENDER_MS = 2000;
 let ultimoRender = 0;
 let renderTimer = null;
+
+// Vista previa: sin eventos reales se cargan donantes, seguidores y compartidos de ejemplo.
+function cargarMuestra() {
+  if (!esVistaPrevia(params) || credits.donors.length || credits.followers.length || credits.sharers.length) return;
+  MUESTRA_CREDITOS.donantes.forEach(credits.agregarDonante);
+  MUESTRA_CREDITOS.seguidores.forEach(credits.agregarSeguidor);
+  MUESTRA_CREDITOS.compartidos.forEach(credits.agregarSharer);
+}
 
 function buildRows(list) {
   return list.map((item) => {
@@ -93,9 +103,10 @@ fetch('/api/overlay-stats')
   .then((r) => r.json())
   .then((d) => {
     if (d.credits) credits.cargar(d.credits);
+    cargarMuestra();
     renderTrack();
   })
-  .catch(() => renderTrack());
+  .catch(() => { cargarMuestra(); renderTrack(); });
 
 // Como mucho un render cada RENDER_MS: una rafaga de gifts/follows no
 // reconstruye el DOM (y reinicia el scroll) por cada evento.
@@ -120,6 +131,7 @@ function alManejarMensaje(d) {
     pedirRender();
   } else if (d.type === 'connected' && d.isFirst) {
     credits.vaciar();
+    cargarMuestra();
     pedirRender();
   } else if (d.type === 'config-updated') {
     aplicarA11y(d.config || {});
@@ -138,5 +150,6 @@ fetch('/api/config').then((r) => r.json()).then(aplicarA11y).catch(() => {});
 
 cargarLocaleOverlay().then(() => {
   aplicarI18nOverlay();
+  renderTrack(); // el primer dibujado pudo ocurrir antes de cargar el idioma y mostrar las claves
   conectarWSOverlay(alManejarMensaje);
 });

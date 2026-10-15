@@ -1,0 +1,158 @@
+:root {
+  --ff: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --fs: 14px;
+  --lh: 1.4;
+  --ls: 0px;
+  --tiktok: #fe2c55;
+  --twitch: #9146ff;
+  --youtube: #ff0000;
+  --kick: #53fc18;
+}
+body {
+  background: transparent;
+  width: 420px;
+  height: 100vh;
+  font-family: var(--ff);
+  font-size: var(--fs);
+  line-height: var(--lh);
+  letter-spacing: var(--ls);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 8px;
+}
+body.rtl { direction: rtl; }
+#chat-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  /* Si no entran todos, que se corten los viejos (arriba), nunca el ultimo. */
+  justify-content: flex-end;
+  overflow: hidden;
+}
+body.fit #chat-container { align-items: flex-start; }
+body.rtl.fit #chat-container { align-items: flex-end; }
+
+.msg {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  max-width: 100%;
+  background: color-mix(in srgb, var(--rol-fondo) calc(var(--bg-alpha) * 100%), transparent);
+  border: 1px solid rgba(255, 255, 255, calc(var(--bg-alpha) * 0.1));
+  border-radius: 12px;
+  padding: 7px 11px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  word-break: break-word;
+  transition: opacity 0.3s ease-out;
+}
+body.fit .msg { width: fit-content; }
+.msg.saliendo { opacity: 0; }
+/* Solo vista previa: plataforma que el filtro del overlay no mostraria en OBS. */
+.msg-excluido { filter: grayscale(1) brightness(0.6); }
+
+/* Entrada: slide-up (por defecto), slide-left, fade o ninguna. */
+.anim-slide-up { animation: entra-abajo 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.anim-slide-left { animation: entra-izquierda 0.3s cubic-bezier(0.23, 1, 0.32, 1) both; }
+.anim-fade { animation: entra-fade 0.25s ease-out both; }
+@keyframes entra-abajo {
+  from { opacity: 0; transform: translateY(12px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes entra-izquierda {
+  from { opacity: 0; transform: translateX(-24px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes entra-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+body.rtl .anim-slide-left { animation-name: entra-derecha; }
+@keyframes entra-derecha {
+  from { opacity: 0; transform: translateX(24px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .msg { animation: none; }
+}
+
+/* Avatar: la foto, un anillo del color de la plataforma y la burbuja con su logo. */
+.avatar-plataforma {
+  --diametro: 2.2em;
+  position: relative;
+  flex-shrink: 0;
+  width: var(--diametro);
+  height: var(--diametro);
+  padding: 2.5px;
+  border-radius: 50%;
+  background: var(--anillo);
+}
+.msg-avatar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #2a2a2a;
+}
+.insignia {
+  position: absolute;
+  top: -0.18em;
+  right: -0.3em;
+  display: grid;
+  place-items: center;
+  width: 40%;
+  height: 40%;
+  border: 2px solid #0b0b0b;
+  border-radius: 50%;
+  box-sizing: content-box;
+  background: var(--insignia-fondo);
+  color: var(--insignia-logo);
+}
+.insignia svg { width: 62%; height: 62%; }
+.plat-tiktok { --anillo: #38bdf8; --insignia-fondo: #111; --insignia-logo: #fff; }
+.plat-twitch { --anillo: var(--twitch); --insignia-fondo: var(--twitch); --insignia-logo: #fff; }
+.plat-youtube { --anillo: var(--youtube); --insignia-fondo: var(--youtube); --insignia-logo: #fff; }
+.plat-kick { --anillo: var(--kick); --insignia-fondo: var(--kick); --insignia-logo: #0b0b0b; }
+.platform-icon {
+  flex-shrink: 0;
+  width: 1.2em;
+  height: 1.2em;
+  margin-top: 0.15em;
+}
+.platform-icon svg { display: block; width: 100%; height: 100%; }
+.platform-icon.icon-tiktok {
+  color: #fff;
+  /* Las dos sombras desplazadas imitan el efecto rosa/cian del logo de TikTok. */
+  filter: drop-shadow(0.06em 0.06em 0 var(--tiktok)) drop-shadow(-0.06em -0.06em 0 #25f4ee);
+}
+.platform-icon.icon-twitch { color: var(--twitch); }
+.platform-icon.icon-youtube { color: var(--youtube); }
+.platform-icon.icon-kick { color: var(--kick); }
+
+.msg-body { display: flex; align-items: baseline; gap: 5px; flex: 1; min-width: 0; }
+.msg-user {
+  font-weight: 700;
+  color: var(--c-user);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+  flex-shrink: 0;
+  font-size: calc(var(--fs) - 1px);
+}
+.msg-sep { color: rgba(255, 255, 255, 0.35); flex-shrink: 0; font-size: calc(var(--fs) - 1px); }
+.msg-text { color: var(--c-texto); flex: 1; min-width: 0; }
+body.single .msg-body { white-space: nowrap; }
+body.single .msg-text { overflow: hidden; text-overflow: ellipsis; }
+
+.chat-emote {
+  height: 1.3em;
+  width: auto;
+  vertical-align: middle;
+  display: inline-block;
+  margin: 0 1px;
+}

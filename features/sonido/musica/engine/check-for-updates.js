@@ -22,7 +22,8 @@ async function checkForUpdates(state) {
     );
   }
 
-  const out = await runYtdlp(state, ['-U'], { timeoutMs: 120000 });
+  // --update-to (no -U): migra tambien los binarios estables ya instalados.
+  const out = await runYtdlp(state, ['--update-to', 'nightly'], { timeoutMs: 120000 });
   const summary = (out.stdout || out.stderr || '').trim().split('\n').pop() || '';
   state.logger.log(
     'info', 'sonido', 'sonido/musica/engine/check-for-updates.js#checkForUpdates', 'sonido.musica.chequeo_actualizacion',

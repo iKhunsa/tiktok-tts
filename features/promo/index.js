@@ -1,7 +1,9 @@
 'use strict';
 
 const { createSessionScheduler } = require('./session-scheduler');
-const { registrarMensaje } = require('./activity-window');
+const activity = require('./activity-window');
+const viewers = require('./viewers-snapshot');
+const { hayAudiencia } = require('./audience-check');
 const { PROMO_ANNOUNCE_TEXT, pickAnnounceText } = require('../../core/announce-texts');
 const entitlements = require('../../core/contracts/entitlements');
 const { getConfigSnapshot } = require('../../core/config-snapshot');
@@ -31,6 +33,7 @@ module.exports = {
   register({ bus, logger }) {
     scheduler = createSessionScheduler({
       logger,
+      hayAudiencia,
       onMilestone: () => {
         const config = getConfigSnapshot(bus);
         // Gate invertido: en Pro (entitlement 'sin-promos') los avisos NO suenan.
@@ -77,23 +80,32 @@ module.exports = {
         stopGraceTimer = setTimeout(() => {
           stopGraceTimer = null;
           scheduler.stop();
+          activity.reiniciar();
+          viewers.reiniciar();
         }, STOP_GRACE_MS);
         if (stopGraceTimer.unref) stopGraceTimer.unref();
       }
     }, 'promo');
 
-    // Cuenta mensajes ya deduplicados de todas las plataformas: la promo mide
-    // conversacion real, no viewers ni mensajes crudos reentregados al reconectar.
+    // Cuenta personas distintas (mensajes ya deduplicados de las 4
+    // plataformas): la promo mide conversacion real, no un solo usuario hablando
+    // mucho ni mensajes crudos reentregados al reconectar.
     bus.on('chat:mensaje-recibido', (payload) => {
       if (!payload) return;
-      registrarMensaje();
+      const id = payload.userId || payload.user;
+      if (id) activity.registrarMensaje(`${payload.platform}:${id}`);
     }, 'promo');
 
-    return { rutas: 0, listeners: 2 };
+    // viewerCount de TikTok: senal principal de audiencia (ver audience-check.js).
+    bus.on('canal:viewers', (payload) => viewers.registrarViewers(payload), 'promo');
+
+    return { rutas: 0, listeners: 3 };
   },
 
   shutdown() {
     if (stopGraceTimer) { clearTimeout(stopGraceTimer); stopGraceTimer = null; }
     if (scheduler) scheduler.stop();
+    activity.reiniciar();
+    viewers.reiniciar();
   },
 };

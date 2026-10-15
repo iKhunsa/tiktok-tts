@@ -181,13 +181,6 @@
       position: relative;
     }
 
-    /* Resalte temporal al llegar por deep-link (#palabras-bloqueadas) */
-    .panel-highlight {
-      outline: 2px solid var(--accent);
-      box-shadow: 0 0 0 4px var(--accent-a15);
-      transition: box-shadow .3s ease, outline-color .3s ease;
-    }
-
     .panel-title {
       font-family: 'Source Code Pro', monospace;
       font-size: 11px;

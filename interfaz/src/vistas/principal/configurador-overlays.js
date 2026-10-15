@@ -1,52 +1,28 @@
-import { appSettings, saveSettings } from '../../nucleo/estado/ajustes-app.js';
+import { appSettings, saveSettings, applySettings } from '../../nucleo/estado/ajustes-app.js';
 import { t } from '../../nucleo/i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
-import { setChecked } from '../../componentes/campos-formulario.js';
-import { PLATFORMS } from './plataformas.js';
+import { construirQuery } from '../../../compartido/estilo/query.js';
+import { ESQUEMAS, DEFAULTS_OVERLAYS } from '../../../compartido/estilo/esquemas.js';
+import { trackUi } from '../../nucleo/telemetria-ui.js';
+import { urlConVistaPrevia } from '../../../compartido/vista-previa.js';
 
 export function buildOverlayUrl(type) {
   const base = `${location.origin}/overlay-${type}.html`;
-  const cfg = appSettings.overlays[type];
-  const p = new URLSearchParams();
+  const query = construirQuery(ESQUEMAS[type], appSettings.overlays[type]);
+  return query ? `${base}?${query}` : base;
+}
 
-  if (type === 'seguidores') {
-    if (cfg.goal) p.set('goal', cfg.goal);
-    if (cfg.color && cfg.color !== '#FFBB00') p.set('color', cfg.color.replace('#', ''));
-    if (cfg.bg !== 0.80) p.set('bg', cfg.bg);
-  } else if (type === 'likes') {
-    if (cfg.rows && cfg.rows !== 10) p.set('rows', cfg.rows);
-    if (cfg.color && cfg.color !== '#FFBB00') p.set('color', cfg.color.replace('#', ''));
-    if (cfg.bg !== 0.80) p.set('bg', cfg.bg);
-  } else if (type === 'alertas') {
-    if (cfg.dur && cfg.dur !== 4000) p.set('dur', cfg.dur);
-    if (cfg.color && cfg.color !== '#FFBB00') p.set('color', cfg.color.replace('#', ''));
-    if (cfg.bg !== 0.90) p.set('bg', cfg.bg);
-  } else if (type === 'creditos') {
-    if (cfg.speed && cfg.speed !== 40) p.set('speed', cfg.speed);
-    if (cfg.color && cfg.color !== '#FFBB00') p.set('color', cfg.color.replace('#', ''));
-    if (cfg.bg !== 0.85) p.set('bg', cfg.bg);
-  } else if (type === 'social') {
-    if (cfg.layout && cfg.layout !== 'cols') p.set('layout', cfg.layout);
-    if (cfg.color && cfg.color !== '#FFBB00') p.set('color', cfg.color.replace('#', ''));
-    if (cfg.bg !== 0.80) p.set('bg', cfg.bg);
-  } else if (type === 'chat') {
-    if (cfg.color && cfg.color !== '#FFBB00') p.set('color', cfg.color.replace('#', ''));
-    if (cfg.bg !== 0.82) p.set('bg', cfg.bg);
-    if (cfg.maxmsgs && cfg.maxmsgs !== 30) p.set('maxmsgs', cfg.maxmsgs);
-    if (cfg.size && cfg.size !== 14) p.set('size', cfg.size);
-    if (cfg.usernames === false) p.set('usernames', '0');
-    const platforms = cfg.platforms || {};
-    const visible = ['tiktok', 'twitch', 'youtube', 'kick'].filter((name) => platforms[name] !== false);
-    if (visible.length > 0 && visible.length < PLATFORMS.length) p.set('platforms', visible.join(','));
-  } else if (type === 'alertas-social') {
-    if (cfg.color && cfg.color !== '#FFBB00') p.set('color', cfg.color.replace('#', ''));
-    if (cfg.bg !== 0.90) p.set('bg', cfg.bg);
-  }
+const RETARDO_VISTA_PREVIA_MS = 250;
+const temporizadoresVistaPrevia = new Map();
 
-  if (cfg && cfg.bgimg) p.set('bgimg', cfg.bgimg);
-
-  const qs = p.toString();
-  return qs ? `${base}?${qs}` : base;
+// Recarga la vista previa con un pequeno retardo: arrastrar un slider dispara
+// decenas de cambios y cada recarga abre el WebSocket del overlay de nuevo.
+function actualizarVistaPrevia(type, urlOverlay) {
+  const marco = document.querySelector(`[data-preview="${type}"]`);
+  if (!marco) return;
+  const url = urlConVistaPrevia(urlOverlay); // solo el iframe lleva datos de ejemplo; la URL copiada no
+  clearTimeout(temporizadoresVistaPrevia.get(type));
+  temporizadoresVistaPrevia.set(type, setTimeout(() => { if (marco.src !== url) marco.src = url; }, RETARDO_VISTA_PREVIA_MS));
 }
 
 export function updateOverlayUrl(type) {
@@ -55,6 +31,7 @@ export function updateOverlayUrl(type) {
   const openEl = document.getElementById('cfg-open-' + type);
   if (urlEl) urlEl.textContent = url;
   if (openEl) openEl.href = url;
+  actualizarVistaPrevia(type, url);
 }
 
 export function onCfgChange(type, field, value) {
@@ -63,23 +40,10 @@ export function onCfgChange(type, field, value) {
   saveSettings();
 }
 
-export function onChatPlatformChange(platform, checked) {
-  const chatCfg = appSettings.overlays.chat;
-  chatCfg.platforms = chatCfg.platforms || { tiktok: true, twitch: true, youtube: true, kick: true };
-  chatCfg.platforms[platform] = checked;
-  if (!Object.values(chatCfg.platforms).some(Boolean)) {
-    chatCfg.platforms[platform] = true;
-    setChecked('cfg-chat-platform-' + platform, true);
-    showToast(t('toast.minOnePlatform'));
-  }
-  updateOverlayUrl('chat');
-  saveSettings();
-}
-
 export function copyCfgUrl(type) {
   navigator.clipboard
     .writeText(buildOverlayUrl(type))
-    .then(() => showToast(t('toast.urlCopied')))
+    .then(() => { trackUi('ui:overlay-copied', type); showToast(t('toast.urlCopied')); })
     .catch(() => showToast(t('toast.copyError')));
 }
 
@@ -113,44 +77,68 @@ export async function testSocialAlert(eventType, platform) {
   }
 }
 
-export function updateSocialOverlayUrl() {
-  const followImg = (document.getElementById('cfg-social-follow-img')?.value || '').trim();
-  const shareImg = (document.getElementById('cfg-social-share-img')?.value || '').trim();
-  const color = document.getElementById('cfg-alertas-social-color')?.value || '#FFBB00';
-  const bg = parseFloat(document.getElementById('cfg-alertas-social-bg')?.value || '0.90');
-  const cfg = appSettings.overlays['alertas-social'];
-  const p = new URLSearchParams();
-  if (followImg) p.set('followImg', followImg);
-  if (shareImg) p.set('shareImg', shareImg);
-  if (color !== '#FFBB00') p.set('color', color.replace('#', ''));
-  if (bg !== 0.90) p.set('bg', bg);
-  if (cfg?.bgimg) p.set('bgimg', cfg.bgimg);
-  cfg.color = color;
-  cfg.bg = bg;
-  saveSettings();
-  const qs = p.toString();
-  const url = `${location.origin}/overlay-alertas-social.html` + (qs ? '?' + qs : '');
-  const urlEl = document.getElementById('cfg-url-social-alert');
-  const openEl = document.getElementById('cfg-open-social-alert');
-  if (urlEl) urlEl.textContent = url;
-  if (openEl) openEl.href = url;
-}
-
-export function copySocialAlertUrl() {
-  const url = document.getElementById('cfg-url-social-alert')?.textContent || 'http://localhost:3000/overlay-alertas-social.html';
-  navigator.clipboard
-    .writeText(url)
-    .then(() => showToast(t('toast.urlCopied')))
-    .catch(() => showToast(t('toast.copyError')));
-}
-
-export async function testTopLikers() {
+async function testRanking(endpoint, sentKey) {
   try {
-    const res = await fetch('/api/test/likes', { method: 'POST' });
+    const res = await fetch(endpoint, { method: 'POST' });
     const data = await res.json();
-    if (data.success) showToast(t('toast.testLikesSent').replace('{count}', data.count));
+    if (data.success) showToast(t(sentKey).replace('{count}', data.count));
     else showToast(t('toast.testError'));
-  } catch (e) {
+  } catch {
     showToast(t('toast.testError'));
   }
+}
+
+export const testTopLikers = () => testRanking('/api/test/likes', 'toast.testLikesSent');
+export const testTopDonors = () => testRanking('/api/test/donors', 'toast.testDonorsSent');
+export const testViewers = () => testRanking('/api/test/viewers', 'toast.testViewersSent');
+
+// Un mensaje por plataforma y por rol, para ver el logo y el estilo de cada uno.
+// TikTok no informa moderadores, asi que ese rol se simula desde las demas.
+const MENSAJES_PRUEBA_CHAT = [
+  { platform: 'tiktok', user: 'ViewerAna', comment: 'Hola a todos!' },
+  { platform: 'tiktok', user: 'SuscriptorMia', comment: 'Gracias por el directo!', role: 'subscriber' },
+  { platform: 'twitch', user: 'ModeradorLeo', comment: 'Recuerden respetar las reglas', role: 'moderator' },
+  { platform: 'youtube', user: 'MiembroSofi', comment: 'Saludos desde YouTube', role: 'subscriber' },
+  { platform: 'kick', user: 'ViewerMax', comment: 'Buen stream!' },
+];
+
+// Secuencial (no Promise.all) para que los mensajes lleguen en el orden de la lista.
+export async function testChatOverlay() {
+  try {
+    for (const mensaje of MENSAJES_PRUEBA_CHAT) {
+      const respuesta = await fetch('/api/test/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(mensaje),
+      });
+      if (!respuesta.ok) throw new Error(`test/chat ${respuesta.status}`);
+    }
+    showToast(t('toast.testChatSent'));
+  } catch {
+    showToast(t('toast.testError'));
+  }
+}
+
+const CONFIRMACION_MS = 3000;
+
+// Dos clics para no perder ajustes por accidente: el primero pide confirmar
+// (el boton cambia de texto unos segundos), el segundo restablece.
+export function restablecerOverlay(type, boton) {
+  if (boton.dataset.confirmar) return aplicarRestablecer(type, boton);
+  boton.dataset.confirmar = '1';
+  boton.querySelector('span').textContent = t('btn.resetConfirm');
+  setTimeout(() => cancelarConfirmacion(boton), CONFIRMACION_MS);
+}
+
+function cancelarConfirmacion(boton) {
+  delete boton.dataset.confirmar;
+  boton.querySelector('span').textContent = t('btn.reset');
+}
+
+function aplicarRestablecer(type, boton) {
+  cancelarConfirmacion(boton);
+  appSettings.overlays[type] = JSON.parse(JSON.stringify(DEFAULTS_OVERLAYS[type]));
+  saveSettings();
+  applySettings();
+  showToast(t('toast.overlayReset'));
 }

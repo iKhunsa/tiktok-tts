@@ -1,4 +1,5 @@
 import { t } from '../../nucleo/i18n/i18n.js';
+import { nombreHablado } from '../../nucleo/i18n/nombre-hablado.js';
 import { escaparHtml as escapeHtml, escaparAtributo } from '../../../compartido/escapar-html.js';
 import { options } from '../../nucleo/estado/opciones-lectura.js';
 import { CHAT_TTS_MAX_LEN } from '../../nucleo/estado/config-runtime.js';
@@ -288,7 +289,8 @@ export function handleChatData(data, chatId) {
       raw = ttsBase;
     } else {
       const connector = getSayUsernameConnector();
-      raw = connector ? `${data.user} ${connector} ${ttsBase}` : `${data.user}: ${ttsBase}`;
+      const usuario = nombreHablado(data);
+      raw = connector ? `${usuario} ${connector} ${ttsBase}` : `${usuario}: ${ttsBase}`;
     }
     const text = raw.length > CHAT_TTS_MAX_LEN ? raw.substring(0, CHAT_TTS_MAX_LEN) : raw;
     speak(text, chatId, data.timestamp);

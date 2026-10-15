@@ -5,62 +5,63 @@ const path = require('path');
 const { RESOURCE_BASE } = require('../../../core/paths');
 const { accountDataPath } = require('../../../core/account-data-path');
 const { atomicWriteFileSync } = require('../../../core/atomic-write');
-const { invalidateBlockedMatchers } = require('./blocked-matchers');
+const { normalizeWord } = require('./normalize-word');
 
-const DEFAULT_BLOCKED_WORDS_FILE = path.join(RESOURCE_BASE, 'blocked-words.md');
-function blockedWordsFile() { return accountDataPath('blocked-words.md'); }
+const DEFAULT_FILE = path.join(RESOURCE_BASE, 'blocked-words.md');
+function blockedWordsFile() { return accountDataPath('blocked-words.json'); }
+function legacyBlockedWordsFile() { return accountDataPath('blocked-words.md'); }
 
-function loadBlockedWordsFromFile(state, logger) {
+const LIST_ITEM = /^[-*]\s+(.+)$/;
+
+// Markdown (como el blocked-words.md semilla): solo los items de lista, nunca los
+// parrafos de explicacion. Texto plano sin items: una palabra por linea.
+function wordsFromText(content) {
+  const lines = String(content).split(/\r?\n/).map((line) => line.trim());
+  const items = lines.map((line) => LIST_ITEM.exec(line)).filter(Boolean).map((match) => match[1]);
+  const candidates = items.length ? items : lines.filter((line) => line && !line.startsWith('#'));
+  return candidates.map(normalizeWord).filter(Boolean);
+}
+
+function parseWords(content) {
   try {
-    const file = blockedWordsFile();
-    if (!fs.existsSync(file) && fs.existsSync(DEFAULT_BLOCKED_WORDS_FILE)) {
-      fs.copyFileSync(DEFAULT_BLOCKED_WORDS_FILE, file);
-    }
-    if (!fs.existsSync(file)) return;
-    const content = fs.readFileSync(file, 'utf-8');
-    for (const line of content.split(/\r?\n/)) {
-      const trimmed = line.trim();
-      if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
-        const word = trimmed.slice(2).toLowerCase().trim();
-        if (word) state.blockedWords.add(word);
-      }
-    }
-    invalidateBlockedMatchers(state);
-    logger.log(
-      'info', 'moderacion', 'moderacion/filters/blocked-words-file.js#loadBlockedWordsFromFile', 'moderacion.palabras.cargado',
-      `blocked-words.md cargado con ${state.blockedWords.size} palabra(s)`, { count: state.blockedWords.size }
-    );
+    const parsed = JSON.parse(content);
+    if (Array.isArray(parsed)) return parsed.map(normalizeWord).filter(Boolean);
   } catch (error) {
-    logger.log(
-      'error', 'moderacion', 'moderacion/filters/blocked-words-file.js#loadBlockedWordsFromFile', 'moderacion.palabras.carga_fallida',
-      `No se pudo cargar blocked-words.md: ${error.message}`, { path: blockedWordsFile(), error: error.message, stack: error.stack }
-    );
+    if (/^\s*[\[{]/.test(content)) throw error;
+  }
+  return wordsFromText(content);
+}
+
+function saveBlockedWordsToFile(words, logger, file = blockedWordsFile()) {
+  try {
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    atomicWriteFileSync(file, JSON.stringify([...words].sort(), null, 2));
+    return true;
+  } catch (error) {
+    logger.log('error', 'moderacion', 'moderacion/filters/blocked-words-file.js#saveBlockedWordsToFile', 'moderacion.palabras.guardado_fallido', 'No se pudo guardar blocked-words.json', { error: error.message });
+    return false;
   }
 }
 
-function saveBlockedWordsToFile(state, logger) {
+function loadBlockedWordsFromFile(words, logger, files = {}) {
+  const file = files.file || blockedWordsFile();
+  const legacyFile = files.legacyFile || legacyBlockedWordsFile();
+  const defaultFile = files.defaultFile || DEFAULT_FILE;
   try {
-    const sorted = [...state.blockedWords].sort((a, b) => a.localeCompare(b));
-    const lines = [
-      '# Palabras Prohibidas — TikLiveTTS',
-      '',
-      'Edita este archivo directamente o usa la web en `/advanced.html`.',
-      'Las palabras se comparan en minusculas, sin importar acentos.',
-      '',
-    ];
-    for (const word of sorted) lines.push(`- ${word}`);
-    lines.push('');
-    atomicWriteFileSync(blockedWordsFile(), lines.join('\n'));
-    logger.log(
-      'info', 'moderacion', 'moderacion/filters/blocked-words-file.js#saveBlockedWordsToFile', 'moderacion.palabras.guardado',
-      `blocked-words.md guardado con ${sorted.length} palabra(s)`, { count: sorted.length }
-    );
+    if (fs.existsSync(file)) {
+      for (const word of parseWords(fs.readFileSync(file, 'utf8'))) words.add(word);
+      return;
+    }
+    const source = fs.existsSync(legacyFile) ? legacyFile : (fs.existsSync(defaultFile) ? defaultFile : null);
+    if (!source) return;
+    for (const word of wordsFromText(fs.readFileSync(source, 'utf8'))) words.add(word);
+    saveBlockedWordsToFile(words, logger, file);
   } catch (error) {
-    logger.log(
-      'error', 'moderacion', 'moderacion/filters/blocked-words-file.js#saveBlockedWordsToFile', 'moderacion.palabras.guardado_fallido',
-      `No se pudo guardar blocked-words.md: ${error.message}`, { path: blockedWordsFile(), error: error.message, stack: error.stack }
-    );
+    if (fs.existsSync(file)) {
+      try { fs.renameSync(file, `${file}.corrupt-${Date.now()}`); } catch (_) { /* best effort */ }
+    }
+    logger.log('error', 'moderacion', 'moderacion/filters/blocked-words-file.js#loadBlockedWordsFromFile', 'moderacion.palabras.carga_fallida', 'No se pudo cargar blocked-words.json', { error: error.message });
   }
 }
 
-module.exports = { loadBlockedWordsFromFile, saveBlockedWordsToFile, blockedWordsFile };
+module.exports = { loadBlockedWordsFromFile, saveBlockedWordsToFile, blockedWordsFile, legacyBlockedWordsFile, parseWords, wordsFromText };

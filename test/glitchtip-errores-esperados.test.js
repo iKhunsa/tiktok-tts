@@ -11,6 +11,13 @@ test('TikTok "isn\'t online" es esperado — no se promueve a issue', () => {
   }), true);
 });
 
+test('TikTok AuthRequiredError (redirect a /login, GlitchTip #77) es esperado — la UI ya pide login', () => {
+  assert.equal(esErrorConexionEsperado({
+    event: 'canales.conexion.fallida',
+    data: { error: 'TikTok requires login to open @yxaraujo._01/live' },
+  }), true);
+});
+
 test('YouTube "Live Stream was not found" es esperado', () => {
   assert.equal(esErrorConexionEsperado({
     event: 'canales.youtube.error',

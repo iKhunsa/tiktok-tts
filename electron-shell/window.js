@@ -4,6 +4,7 @@ const path = require('path');
 const http = require('http');
 const { BrowserWindow } = require('electron');
 const { openExternalSafe } = require('./open-external');
+const { TITLEBAR_WINDOW_OPTIONS } = require('./titlebar');
 
 const PORT = process.env.PORT || 3000;
 
@@ -65,6 +66,7 @@ function createWindow({ iconPath, onClose, bus }) {
     icon: iconPath,
     title: 'TikLiveTTS',
     show: false,
+    ...TITLEBAR_WINDOW_OPTIONS,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -148,8 +150,8 @@ function createWindow({ iconPath, onClose, bus }) {
 
   win.once('ready-to-show', () => win.show());
 
-  // Close (X) -> apaga todo, no minimiza a tray.
-  win.on('close', () => onClose());
+  // Close (X) -> onClose decide: apagar todo o esconder en la bandeja (closeToTray).
+  win.on('close', (event) => onClose(event));
 
   return win;
 }

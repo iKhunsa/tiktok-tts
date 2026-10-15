@@ -11,14 +11,15 @@ function createOverlayState() {
     // Espejo local de los canales TikTok activos (via canal:estado de
     // /canales) — /overlay no puede leer el Map privado de /canales.
     activeTiktokChannels: new Set(),
+    viewerCountByChannel: new Map(), // platform:channel -> live viewer count
     topLikers: new Map(),
+    topDonors: new Map(), // user -> { user, totalCoins }
     credits: {
       // Agregados por usuario (ver credits.js), no un push por evento.
       donors: new Map(),
       followers: new Map(),
       sharers: new Map(),
     },
-    followerRefreshTimer: null,
   };
 }
 

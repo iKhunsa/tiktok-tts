@@ -34,6 +34,9 @@ const LOG_ENTRY_COUNTED = [
   ['sonido.musica.solicitud_recibida', 'music', 'request'],
   ['moderacion.filtro.mensaje_bloqueado', 'moderation', 'message_filtered'],
   ['moderacion.filtro.palabra_bloqueada', 'moderation', 'word_blocked'],
+  ['moderacion.rust.bloqueado', 'moderation', 'rust_blocked'],
+  ['moderacion.rust.revision', 'moderation', 'rust_review'],
+  ['moderacion.rust.fallo_evaluacion', 'moderation', 'rust_error'],
 ];
 
 const BUS_COUNTED = [

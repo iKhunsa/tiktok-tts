@@ -13,7 +13,7 @@ App de escritorio Electron que lee en voz alta el chat de TikTok Live, Twitch y 
 | TikTok connection | tiktok-live-connector (WebSocket scraping) |
 | Twitch connection | tmi.js (IRC anónimo o autenticado) |
 | YouTube connection | youtube-chat (scraping, requiere stream activo) |
-| Kick connection | API pública kick.com + Pusher WS (`ws`, sin auth) |
+| Kick connection | API pública kick.com + Centrifugo WS (`ws`, token de invitado, sin login) |
 | TTS | Google Translate TTS API (google-tts-api, online) |
 | Auto-update | electron-updater → GitHub Releases |
 | Build/CI | electron-builder + GitHub Actions (windows-latest) |
@@ -45,7 +45,7 @@ server.js (Express + WS en puerto 3000)
       ├── configuracion/             ← único dueño de config.json y platform-config.json
       ├── idioma/                    ← filtro de idioma/script de voz (puro)
       ├── reporte-bug/                ← webhook de Discord, retención de logs
-      ├── moderacion/                ← moderation.json, blocked-words.md, policy.evaluate()
+      ├── moderacion/                ← moderation.json, blocked-words.json, @tiklivetts/chat-guard
       ├── canales/                   ← TikTok/Twitch/YouTube/Kick + OBS — único productor de eventos crudos
       ├── chat/                      ← orquesta: crudo → moderación → chat:mensaje-permitido
       ├── promo/                     ← avisos promocionales periódicos (announce-texts)
@@ -125,9 +125,8 @@ a n=1** — solo si compra una de estas tres:
 Si no compra ninguna de las tres, es solo mover una función detrás de una capa
 → `core/<nombre>.js` pelado, sin la ceremonia del contrato.
 
-Excepciones documentadas (copias deliberadas, NO tocar): `normalize-aggressive.js`
-/ `sanitize-for-tts.js` entre dominios (funciones puras, se eligió copiar
-antes que un contrato); los `toast.js` de `avanzada/` y `movil/` (cada vista
+Excepciones documentadas (copias deliberadas, NO tocar): los `toast.js` de
+`avanzada/` y `movil/` (cada vista
 legacy conserva el suyo hasta unificar la paleta CSS — ver `plan-fases/06`).
 
 Endpoints HTTP relevantes (repartidos por dominio, ver cada carpeta para
@@ -140,7 +139,6 @@ POST /api/connect            ← conecta a TikTok Live (features/canales/)
 POST /api/tts                ← Google TTS → stream MP3 (features/sonido/)
 WS   /                       ← broadcast eventos al browser (core/broadcast.js)
 GET  /api/gifts-list         ← lista PNGs de regalos (features/overlay/)
-POST /api/upload-bg          ← sube imagen fondo overlay (features/overlay/)
 PATCH /api/config            ← ajusta config en runtime (features/configuracion/)
 GET  /api/platforms/status   ← estado twitch/youtube (features/canales/)
 POST /api/platforms/connect  ← conecta twitch o youtube (features/canales/)
@@ -149,7 +147,7 @@ GET  /api/moderation/viewers ← registro de espectadores (moderacion/)
 POST /api/moderation/{mute,unmute,ban,unban,clear,follower}
 ```
 
-## Moderación de espectadores (`features/moderacion/store/`)
+## Moderación de espectadores (`features/moderacion/`)
 
 Registro persistente de todo espectador que interactúa, más los seguidores, con
 moderación **local** por usuario (no se toca la plataforma). Único dueño de
@@ -179,6 +177,32 @@ está migrado un archivo por función (`features/moderacion/store/*.js`) sobre u
 - UI: vista "Moderación" en el menú izquierdo, con pestañas Seguidores / No
   seguidores sobre la misma tabla.
 
+**Rust Chat Guard (`features/moderacion/rust-guard/`)** — segunda capa de contenido,
+encendida por defecto en shadow (`rustGuardEnabled: true`, `rustGuardMode: 'shadow'|'enforce'`, por
+cuenta). Corre dentro de `moderacionPolicy.review` DESPUÉS del guard JS y solo endurece
+(BLOCK→drop, REVIEW→mute). Fail-open: cualquier fallo/paquete ausente conserva el veredicto
+JS y loguea `moderacion.rust.*` (nunca silencioso). Paquete `@tiklivetts/rust-chat-guard`
+opcional, cargado solo en `load-engine.js`. El cableado en `index.js` lleva `// rust-guard`.
+UI en Ajustes > «Moderación del chat» (`interfaz/src/vistas/principal/moderacion-contenido/`): maestro
+(`rustGuardEnabled`), nivel/idiomas/personalizado (`chatGuardLevel|Langs|Custom`, constantes en
+`core/chat-guard-options.js`), modo `rustGuardMode`, palabras permitidas (`chat-guard-allowed-words.json`
+por cuenta, solo palabras sueltas) y estado del motor (`GET /api/chat-guard/status`: `off|unavailable|error|ok`).
+Las bloqueadas reusan `/api/block-word`. Desviaciones respecto al plan: `docs/06_FRONTEND_PLAN.md` §15 del repo del motor.
+**Idiomas según la voz:** con `chatGuardLangsAuto` (default `true`) los idiomas del motor = `localesForVoice(ttsVoiceLang)`
+(`core/chat-guard-voice-languages.js`, siempre + inglés); con `false` manda `chatGuardLangs`. `create-rust-guard.js` arranca el
+motor SIN `languages` para descubrir los soportados (`getStatus().languages`) y recorta lo pedido a eso (log
+`moderacion.rust.idioma_no_soportado`, nunca excepción). Un cambio de voz llega por `config:actualizado` y se aplica en caliente;
+la UI se refresca con el WS `config-updated`. Cuentas antiguas: `normalizeStoredConfig` pone auto=false solo si eligieron idiomas
+distintos de la lista por defecto vieja (`LEGACY_DEFAULT_LANGS`).
+
+**Popup de moderación (badge de la vista Chat)** — `emit-chat-message.js` publica por WS
+`moderation-blocked` `{platform, accion: drop|mute|shadow, origen, motivo, nick, text, timestamp}`
+(`features/chat/describe-moderation.js` deduce origen/motivo de `verdict.reasons`; `shadow` lo anota
+`rust-guard/review-with-rust.js`). El cliente lo guarda en `nucleo/estado/moderacion-sesion.js`: buffer
+**solo en memoria**, máx. 200, jamás a disco ni telemetría (política de privacidad). El log
+`moderacion.filtro.mensaje_bloqueado` lleva solo plataforma/acción/origen/motivo, sin texto ni nick.
+UI: `vistas/principal/moderacion-popup/`. «descartados» del badge = cola TTS llena, no moderación.
+
 ## Telemetría (`features/telemetria/`)
 
 Dominio aparte que reporta uso agregado y anónimo a un servicio propio
@@ -197,7 +221,7 @@ Dominio aparte que reporta uso agregado y anónimo a un servicio propio
   (`features/telemetria/buffer.js`) y reintentos. 4xx ya no se trata como éxito
   silencioso: todo fallo de red queda logueado (`telemetria.envio.*`).
 - `features/telemetria/connectors/*.js` — un conector por área (creators, platforms,
-  counters, obs, mobile, overlays, updates, errors, settings). Cada uno
+  counters, obs, mobile, overlays, updates, settings). Cada uno
   escucha el bus de dominios (`canal:estado`, `movil:comando`, etc.) o el
   espejo de logs (`core/logger.js` emite **todo** log como `log:entry` al
   bus) en vez de que cada dominio de negocio tenga que conocer telemetría.
@@ -207,13 +231,16 @@ Dominio aparte que reporta uso agregado y anónimo a un servicio propio
   `%APPDATA%\tiktok-live-tts\telemetry.json` — archivo separado de
   `config.json` a propósito, porque `features/configuracion/` descarta claves que no
   reconoce y lo borraría en el primer guardado.
+- `connectors/blocked-words.js` (+ `blocked-words/`) — snapshot de la lista de palabras bloqueadas, activo por defecto; `blockedWordsTelemetryDisabled` (default `false`) queda como llave técnica por cuenta para apagarlo (`true` = cero eventos); se renombró desde `blockedWordsTelemetryEnabled` para que el `false` guardado por el antiguo interruptor opt-in no deje cuentas apagadas. Lee la lista por el bus (`moderacion:palabras-get`, aviso `moderacion:palabras-cambiadas`), la sanea igual que el servidor, calcula hash sha256 y guarda el último envío en `accountDataPath('blocked-words-telemetry.json')`. Envía al arrancar si pasaron >7 días, al cambiar la lista (debounce 10 min) y cada semana; mismo hash y <7 días = nada. No incluye nick ni IDs de espectadores, solo palabras de la lista del streamer. Texto legal: publicado en la v2.1 de `docs/legal/` (ver `NOTAS-DE-REVISION.md` §6).
 - Casi todos los eventos se emiten directo desde los conectores. Solo
-  `tts:skipped`, `tts:queue-overflow` y `ui:language-set` nacen en el renderer
-  (`interfaz/src/nucleo/tts/cola-tts.js`, `interfaz/src/vistas/principal/i18n-app.js`)
-  y llegan al bus vía IPC:
-  `window.electronAPI.trackEvent(name[, payload])` → `preload.js` →
-  `ipcMain.on('telemetry:track', ...)` en `electron-shell/ipc-bridge.js`, con
-  lista blanca de esos tres nombres (`payload` solo se reenvía si es string corto).
+  `tts:skipped`, `tts:queue-overflow`, `ui:language-set` y los `ui:*` de uso de
+  la interfaz (Discord, vistas, overlays, promos, planes, tours…) nacen en el
+  renderer y llegan al bus vía IPC: `trackUi(evento, valor)`
+  (`interfaz/src/nucleo/telemetria-ui.js`) → `window.electronAPI.trackEvent` →
+  `preload.js` → `ipcMain.on('telemetry:track', ...)` en `electron-shell/ipc-bridge.js`,
+  con la misma lista blanca de nombres en ambos lados. `payload` solo se reenvía
+  si es string, recortado a 24 chars; el valor es siempre de lista cerrada y lo
+  valida `aptabase.js` (`EVENTOS_UI`) — nunca texto libre.
 
 ## Error tracking (`electron-shell/glitchtip.js`)
 
@@ -249,12 +276,24 @@ bakeado) es un no-op total.
   `machine_id` a propósito (máxima privacidad).
 - **Eventos:** ciclo de vida (`installacion`, `app_started`, `app_updated`,
   `session_ended`), activación (`platform_connected`, `platform_connect_failed`,
-  `first_tts`), adopción (`overlay_opened`, `overlay_bg_uploaded`,
+  `first_tts`), adopción (`overlay_opened`,
   `mobile_paired`, `mobile_command`, `clip_marked`, `music_requested`,
-  `promo_fired`, `bug_report_sent`, `soundpad` en resumen), config
+  `promo_fired`, `bug_report_sent` (solo `version`, nunca el canal),
+  `soundpad` en resumen, `overlay_test` (`tipo`), `overlay_url_copied`
+  (`overlay`), `view_opened` (`view`, 1 vez por vista y sesión),
+  `tour_started` (`tour`), `event_effects_toggled` (`state`), `news_opened`,
+  `donations_opened`, `portalview_opened`), Discord y promos
+  (`discord_modal_opened` y `discord_join_clicked` con `source` =
+  `titlebar|sidebar|account_menu|sidebar_banner|connect_fail|bug_report|chat_banner_2..4`
+  — lo que no esté en la lista cae a `otro` —, `promo_code_opened`,
+  `promo_code_copied`, `promo_plans_clicked`, `tiktok_banner_clicked`),
+  cuentas y planes (`auth_signed_in`, `auth_signed_out`, `plans_opened`,
+  `checkout_started` con `plan`/`intervalo`, `pro_gate_hit` con `featureId`,
+  `account_deleted` sin props), config
   (`config_changed` **solo la clave, nunca el valor**, `voice_changed`,
   `ui_language_set`), moderación (`moderation_action`, `moderation_action_failed`,
-  `mod_words_saved`).
+  `mod_words_saved`). `platform_connect_failed` sale de `canales.conexion.fallida`
+  con `platform` + `code` (nunca el mensaje: puede traer el canal).
 - **Resúmenes de sesión:** los de alta frecuencia (TTS, música, errores,
   mensajes filtrados) se acumulan en memoria y salen como props bucketeadas de
   `session_ended` (1 POST al cerrar), nunca 1 evento por ocurrencia. `bucket()`
@@ -313,6 +352,24 @@ nuevos por request). `features/mcp/` se registra **último** en `server.js`.
   (fallback al `description` inglés). El endpoint URL y los snippets JSON no se traducen.
 - `GET /api/mcp/info` — estado + catálogo de tools para la UI (GET, sin auth).
 
+## Overlays de OBS — esquema de ajustes (`interfaz/compartido/estilo/`)
+
+Chat, Top Likers y Top Donadores se personalizan con un **esquema declarativo**
+(`esquemas.js` + `campos-*.js`): cada campo `{ clave, param, tipo, def, grupo }` es la
+única fuente de su default, su nombre en la URL y su control en el configurador.
+`construirQuery`/`leerConfig` (`query.js`, puras y testeadas) convierten config ↔
+querystring omitiendo defaults; `ajustes-app.js` deriva `DEFAULTS_OVERLAYS` del esquema.
+Para agregar un ajuste: un campo en el esquema + sus claves `overlayCfg.campo.<clave>`
+en los 10 locales; el panel "Personalizar" (`vistas/principal/campos-overlay/`) lo dibuja solo.
+Los params históricos (`rows,color,bg,size,maxmsgs,usernames,platforms`) no se renombran.
+
+- Rankings: el **servidor es la fuente de verdad** (`top-likers`/`top-donors` por WS, snapshot en
+  `/api/overlay-stats`); `compartido/iniciar-ranking.js` + `leaderboard.js` solo pintan.
+- Avatar y roles (moderador/suscriptor) salen de `raw` en `features/chat/author-meta/` (chat-guard
+  no los transporta). El avatar de TikTok lo decodifica `@tiklivetts/tiktok-live-client` (`avatarUrl`,
+  desde v0.1.10); las URLs son firmadas y caducan → placeholder. TikTok no informa moderadores.
+- Fuentes: Google Fonts por CDN, solo desde `cargarFuente()` (`fuentes.js`); el default es la del sistema.
+
 ## Variables de entorno clave
 
 - `TIKTOK_RESOURCES_PATH` — set por `main.js` en modo packaged para que `core/paths.js` (`RESOURCE_BASE`) resuelva `gifts/`, `public/` (output empaquetado de `interfaz/dist/`, ver extraResources), `asset/`, `lang-words/`, `blocked-words.md` en `process.resourcesPath` (fuera del asar)
@@ -341,7 +398,6 @@ cubierto ahora por `test/serve-ui.test.js`.
     lang-words\           ← diccionarios de frecuencia por idioma (filtro dictFilterEnabled, `features/idioma/lang-dicts.js`)
     blocked-words.md      ← palabras bloqueadas (r/w en runtime)
     tray-icon.ico
-    public\uploads\       ← imágenes subidas por usuario (r/w)
 ```
 
 ## Flujo de build y release
@@ -473,7 +529,7 @@ todo lo de las secciones **i18n** e **Íconos** de arriba.
 ## Funcionalidades actuales
 
 - TTS en 13 idiomas via Google Translate (es, es-MX, es-AR, en, en-GB, pt, pt-PT, fr, de, it, ja, zh-CN, ru, ko)
-- Chat multi-plataforma: TikTok Live + Twitch (tmi.js) + YouTube (youtube-chat, requiere stream activo) + Kick (API + Pusher WS)
+- Chat multi-plataforma: TikTok Live + Twitch (tmi.js) + YouTube (youtube-chat, requiere stream activo) + Kick (API + Centrifugo WS)
 - Badge de plataforma en cada mensaje del chat (tiktok / twitch / youtube)
 - Cola TTS ordenada por timestamp: mensajes de 3 plataformas simultáneas se leen en orden cronológico real
 - Un solo narrador (1 Audio activo a la vez, cola serializada con `isSpeaking` flag)
@@ -482,10 +538,9 @@ todo lo de las secciones **i18n** e **Íconos** de arriba.
 - Debounce de likes (agrupa likes del mismo usuario en ventana de 1.5s)
 - Auto-reconexión con backoff exponencial (máx 5 intentos)
 - Overlays: alertas de regalos, contador de likes, contador de seguidores
-- Subida de imagen de fondo para overlays (PNG/JPG/WebP/GIF, máx 8MB)
 - Top likers tracking durante el stream
 - Refresco de follower count cada 5 minutos
-- Palabras bloqueadas persistidas en `blocked-words.md`
+- Palabras bloqueadas persistidas por cuenta en `blocked-words.json` (migra una vez el `blocked-words.md` legado sin borrarlo)
 - Single-instance lock (doble clic → bring to front)
 - Atajo global Ctrl+Shift+M → marca clip en OBS
 
@@ -542,10 +597,15 @@ telemetría vía `TELEMETRY_URL`/su secret correspondiente.
 
 **Kick — conexión directa desde Node (2026-08):** el bloqueo de Cloudflare que
 antes forzaba descartar Kick ya no aplica a `https://kick.com/api/v2/channels/{slug}`
-(responde 200 a Node sin headers especiales). El chat va por Pusher público
-(`wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679`, cluster us2, canal
-`chatrooms.{chatroom_id}.v2`, sin auth). `features/canales/kick/`:
-`fetch-chatroom.js` (slug → chatroom.id) + `pusher.js` (URL/frames) +
+(responde 200 a Node sin headers especiales). El chat va por el Centrifugo
+propio de Kick (2026-10; antes era Pusher `32cbd69e…`, Kick dio de baja esa app
+y responde `4001 App key not in this cluster`). Handshake sin login:
+`POST web.kick.com/api/v1/realtime/channels/{channelId}/chat/connection` → URL
+del WS; `POST /v1/realtime/auth/connection {client_id}` → token de invitado
+(caduca ~45 min, se renueva con el MISMO client_id vía comando `refresh`).
+Canal `chatrooms.{chatroom_id}.v2`, mismo payload `ChatMessageEvent` que Pusher.
+`features/canales/kick/`: `fetch-chatroom.js` (slug → chatroom.id/channel_id) +
+`fetch-realtime-session.js` (URL + token) + `centrifugo.js` (frames) +
 `connect-kick.js` (WS + subscribe + dedup + watchdog + backoff, mismo patrón
 que YouTube) + `handle-event.js` (parse del `ChatMessageEvent`). **No usa
 Electron** — funciona igual en `node server.js` que empaquetado. Los emotes
@@ -637,7 +697,7 @@ telemetría, logs y binarios) permanecen en `DATA_BASE`.
 
 La transición se anuncia como `account:changing` (flush y desconexión) y
 `account:changed` (contexto y recarga). Los dominios no importan auth: escuchan
-ese bus. `config.json`, `moderation.json`, uploads, soundpad, PortalView y la
+ese bus. `config.json`, `moderation.json`, soundpad, PortalView y la
 cache de identidad de telemetría son por cuenta; `installation-config.json`
 conserva globales `subscriptionsEnabled` y los flags MCP. El renderer recarga
 la ventana tras un cambio efectivo de `user.id`, para no reutilizar caches,
@@ -653,3 +713,9 @@ Rules:
 - IF graphify-out/wiki/index.md EXISTS, navigate it instead of reading raw files
 - For cross-module "how does X relate to Y" questions, prefer `graphify query "<question>"`, `graphify path "<A>" "<B>"`, or `graphify explain "<concept>"` over grep — these traverse the graph's EXTRACTED + INFERRED edges instead of scanning files
 - After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
+
+## Notas de parche (bitácora de cambios por versión)
+
+- Las notas se escriben en `NOTAS-PARCHE-1.11.2.md` (raíz del repo). **Nunca escribir ahí por iniciativa propia**: solo cuando el usuario dé la señal. Al recibirla, primero mostrarle el texto exacto que se va a agregar y esperar su aprobación; recién entonces escribirlo.
+- Una vez aprobada, la misma nota se redacta **también en las notas de la app** (modal de Novedades): `CHANGELOG.md` (español, fuente) y su traducción en los 9 `changelog/<idioma>.md` (`en, pt, it, fr, de, ru, zh, ja, ko`), en la sección equivalente de la versión en curso. Solo lo visible para el usuario; lo de «Interno» no va a la app.
+- Cuando el usuario publique el release público de esa versión, **preguntarle cuál es la próxima versión** y renombrar el md a `NOTAS-PARCHE-<próxima-versión>.md`. A partir de ahí, anotar ahí todo lo que se haga en las siguientes versiones, y repetir el ciclo en cada release público.

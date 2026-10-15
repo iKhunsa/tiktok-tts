@@ -1,14 +1,24 @@
 import { spCancelCapture } from './soundpad.js';
 import { modReload, modStartAutoRefresh, modStopAutoRefresh, maybeShowModerationTour } from './moderacion.js';
 import { renderMcpPanel } from './mcp/index.js';
+import { reloadModeracionContenido } from './moderacion-contenido/index.js';
 import { renderCuentaPanel } from './cuenta/index.js';
 import { appBloqueada } from '../../nucleo/estado/sesion.js';
 import { aplicarBloqueoVista } from '../../nucleo/estado/vista-bloqueada.js';
+import { crearHistorialVistas } from '../../nucleo/estado/historial-vistas.js';
+import { trackUi } from '../../nucleo/telemetria-ui.js';
 
-export function switchView(name) {
+// La app abre en 'chat' sin pasar por switchView.
+export const historialVistas = crearHistorialVistas();
+historialVistas.registrar('chat');
+
+// desdeHistorial: atrás/adelante de la barra de título ya movió el puntero.
+export function switchView(name, { desdeHistorial = false } = {}) {
   // App bloqueada (sistema de cuentas activo + sin sesión): la única vista
   // accesible es "cuenta". Cualquier otro destino rebota ahí.
   if (appBloqueada() && name !== 'cuenta') name = 'cuenta';
+  trackUi('ui:view-opened', name);
+  if (!desdeHistorial) historialVistas.registrar(name);
   // Si se estaba capturando un atajo del soundpad, cancelarlo: si no, el
   // listener global de keydown queda pegado y se come todas las teclas.
   spCancelCapture();
@@ -23,11 +33,14 @@ export function switchView(name) {
   if (name === 'tools' && window.renderPluginStore) window.renderPluginStore();
   if (name === 'mcp') renderMcpPanel();
   if (name === 'cuenta') renderCuentaPanel();
+  if (name === 'settings') reloadModeracionContenido();
   // Sonidos/Bot ya se pintaron una vez al arrancar (spLoad/musicInit) -- acá
   // solo se re-evalua el bloqueo Pro al entrar de verdad a la
   // vista, sin repetir sus fetches.
   if (name === 'soundpad') aplicarBloqueoVista('view-soundpad', 'soundpad');
   if (name === 'bot') aplicarBloqueoVista('view-bot', 'bot-musical');
+  if (name === 'mobile') aplicarBloqueoVista('view-mobile', 'panel-movil');
+  if (name === 'clips') aplicarBloqueoVista('view-clips', 'clips');
   // El refresco de la tabla de moderacion solo corre con la vista visible.
   if (name === 'moderacion') {
     modReload(true);

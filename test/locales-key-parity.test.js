@@ -2,10 +2,7 @@
 
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
-
-const LOCALES_DIR = path.join(__dirname, '..', 'interfaz', 'publico', 'locales');
+const { readLocales } = require('./helpers/read-locales');
 
 function flatten(obj, prefix = '') {
   const out = {};
@@ -18,15 +15,16 @@ function flatten(obj, prefix = '') {
 }
 
 test('es.json (fallback universal de i18n) tiene las mismas claves que los otros locales', () => {
-  const files = fs.readdirSync(LOCALES_DIR).filter((f) => f.endsWith('.json'));
-  assert.ok(files.includes('es.json'), 'debe existir es.json');
+  const locales = readLocales();
+  const spanishLocale = locales.find(({ file }) => file === 'es.json');
+  assert.ok(spanishLocale, 'debe existir es.json');
 
-  const es = flatten(JSON.parse(fs.readFileSync(path.join(LOCALES_DIR, 'es.json'), 'utf8')));
+  const es = flatten(spanishLocale.data);
   const esKeys = new Set(Object.keys(es));
 
-  for (const file of files) {
+  for (const { file, data: locale } of locales) {
     if (file === 'es.json') continue;
-    const data = flatten(JSON.parse(fs.readFileSync(path.join(LOCALES_DIR, file), 'utf8')));
+    const data = flatten(locale);
     const dataKeys = new Set(Object.keys(data));
 
     const faltanEnEs = [...dataKeys].filter((k) => !esKeys.has(k));

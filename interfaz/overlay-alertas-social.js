@@ -1,18 +1,19 @@
 import { cargarLocaleOverlay, t, aplicarI18nOverlay } from './compartido/i18n-overlay.js';
-import { leerParametros, aplicarParametrosVisuales, intParam, strParam } from './compartido/parametros.js';
+import { leerParametros, aplicarParametrosVisuales, intParam } from './compartido/parametros.js';
 import { conectarWSOverlay } from './compartido/ws-cliente.js';
 import { iniciarAccesibilidadOverlay } from './compartido/accesibilidad.js';
 import { registrarErroresOverlay } from './compartido/registrar-errores.js';
 import { escaparHtml } from './compartido/escapar-html.js';
 import { crearColaAlertas, programarRetiro } from './compartido/cola-alertas.js';
+import { esVistaPrevia } from './compartido/vista-previa.js';
+import { MUESTRA_ALERTA_SOCIAL } from './compartido/muestras-vista-previa.js';
 
 registrarErroresOverlay();
 
 const params = leerParametros();
+const vistaPrevia = esVistaPrevia(params);
 aplicarParametrosVisuales(params);
 const alertDur = intParam(params, 'dur', 4000);
-const followImg = strParam(params, 'followImg', '');
-const shareImg = strParam(params, 'shareImg', '');
 const userSetColor = !!params.get('color');
 
 // PLATFORM_META aca es distinto al de overlay-alertas.js (agrega tiktok con
@@ -39,17 +40,7 @@ function showAlert(event, alTerminar) {
   card.className = 'alert-card';
   if (meta && !userSetColor) card.style.setProperty('--accent', meta.color);
 
-  const customImg = isFollow ? followImg : shareImg;
-  if (customImg) {
-    const img = document.createElement('img');
-    img.className = 'event-img';
-    img.src = customImg;
-    img.alt = isFollow ? 'follow' : 'share';
-    img.onerror = () => { img.replaceWith(makeDefaultIcon(isFollow)); };
-    card.appendChild(img);
-  } else {
-    card.appendChild(makeDefaultIcon(isFollow));
-  }
+  card.appendChild(makeDefaultIcon(isFollow));
 
   const info = document.createElement('div');
   info.className = 'info';
@@ -67,7 +58,7 @@ function showAlert(event, alTerminar) {
   card.appendChild(badge);
 
   document.body.appendChild(card);
-  programarRetiro(card, event.duration || alertDur, alTerminar);
+  if (!vistaPrevia) programarRetiro(card, event.duration || alertDur, alTerminar); // la vista previa deja la tarjeta fija
 }
 
 const cola = crearColaAlertas(showAlert);
@@ -81,5 +72,6 @@ const aplicarA11y = iniciarAccesibilidadOverlay();
 
 cargarLocaleOverlay().then(() => {
   aplicarI18nOverlay();
+  if (vistaPrevia) cola.encolar(MUESTRA_ALERTA_SOCIAL);
   conectarWSOverlay(alManejarMensaje);
 });

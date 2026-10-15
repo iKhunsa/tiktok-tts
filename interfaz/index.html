@@ -11,7 +11,13 @@
   <link rel="stylesheet" href="plugin-store/grid.css" />
   <link rel="stylesheet" href="plugin-store/detail.css" />
   <link rel="stylesheet" href="./src/estilos/index-legacy.css">
+  <link rel="stylesheet" href="./src/estilos/campos-overlay.css">
+  <link rel="stylesheet" href="./src/estilos/moderacion-contenido.css">
+  <link rel="stylesheet" href="./src/estilos/moderacion-popup.css">
   <link rel="stylesheet" href="./src/estilos/portal-view.css">
+  <link rel="stylesheet" href="./src/estilos/barra-titulo.css">
+  <link rel="stylesheet" href="./src/estilos/programa-creadores.css">
+  <link rel="stylesheet" href="./src/estilos/ajustes-ventana.css">
 </head>
 <body>
 
@@ -27,6 +33,21 @@
   <button id="update-btn-install" style="display:none" onclick="doInstallUpdate()" data-i18n="update.installNow">Instalar ahora</button>
   <button id="update-btn-later"   style="display:none" onclick="document.getElementById('update-banner').classList.remove('visible')" data-i18n="update.later">Después</button>
 </div>
+
+<!-- ── Barra de título propia ────────────────────────────────── -->
+<header class="titlebar" id="titlebar">
+  <div class="titlebar-nav">
+    <button id="titlebarBack" class="titlebar-btn" disabled data-i18n-title="titlebar.back" data-i18n-aria-label="titlebar.back"><img class="icon-inline" src="icons/arrow_back.svg" alt=""></button>
+    <button id="titlebarForward" class="titlebar-btn" disabled data-i18n-title="titlebar.forward" data-i18n-aria-label="titlebar.forward"><img class="icon-inline" src="icons/arrow_forward.svg" alt=""></button>
+  </div>
+  <div class="titlebar-actions">
+    <button id="titlebarNews" class="titlebar-btn titlebar-news" data-i18n-title="titlebar.news" data-i18n-aria-label="titlebar.news">
+      <img class="icon-inline" src="icons/newspaper.svg" alt="">
+      <span class="titlebar-news-label" data-i18n="titlebar.news">Novedades</span>
+    </button>
+    <button id="titlebarDiscord" class="titlebar-btn" data-i18n-title="titlebar.discord" data-i18n-aria-label="titlebar.discord"><img class="icon-inline" src="icons/discord.svg" alt=""></button>
+  </div>
+</header>
 
 <div id="app-shell">
 <div class="app-layout">
@@ -82,14 +103,9 @@
       </button>
     </nav>
 
-    <div class="ad-slot ad-slot--lateral" id="sidebarAdSlot"
-         data-ads='["asset/ads/lateral-verde.png","asset/ads/lateral-azul.png","asset/ads/lateral-naranja.png"]'>
-      <a href="https://discord.gg/F2hYcpvJ46" target="_blank" rel="noopener" class="ad-link">
-        <img class="ad-layer is-active" src="asset/ads/lateral-verde.png" alt="Publicidad">
-        <img class="ad-layer" src="" alt="Publicidad" aria-hidden="true">
-      </a>
-    </div>
-    
+    <a href="https://www.tiktok.com/@ikhunsa_tiklivetts" target="_blank" rel="noopener" class="tiktok-banner">
+      <img src="asset/ads/fantasma-gatito.png" width="193" height="461" loading="lazy" decoding="async" alt="Síguenos en TikTok">
+    </a>
 
     <a href="https://discord.com/invite/mwY859tcQK" target="_blank" rel="noopener" class="community-banner">
       <img src="community-banner.webp" width="420" height="199" loading="lazy" decoding="async" alt="Comunidad TikLiveTTS — Discord oficial">
@@ -97,6 +113,7 @@
 
     <div class="sidebar-footer">
       <button id="sidebarPortalViewBtn" class="sidebar-footer-btn" onclick="togglePortalView()"><img class="icon-inline" src="icons/public.svg" alt=""> <span data-i18n="footer.portalView">Navegador</span></button>
+      <button id="sidebarDiscordBtn" class="sidebar-footer-btn" onclick="openDiscordModal('sidebar')"><img class="icon-inline" src="icons/discord.svg" alt=""> <span data-i18n="nav.discord">Unirse a Discord</span></button>
       <button id="sidebarBugReportBtn" class="sidebar-footer-btn" onclick="openBugReportModal()"><img class="icon-inline" src="icons/warning.svg" alt=""> <span data-i18n="footer.bugReport">Reportar Bug</span></button>
       <button id="sidebarIdeaBtn" class="sidebar-footer-btn" onclick="openIdeaModal()"><img class="icon-inline" src="icons/lightbulb.svg" alt=""> <span data-i18n="ideas.sidebarEntry">Sugerir una idea</span></button>
       <button class="sidebar-footer-btn sidebar-item sidebar-account" data-view="cuenta" hidden>
@@ -151,7 +168,8 @@
         <button class="cfg-btn" onclick="skipCurrentTTS()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> <span data-i18n="btn.skipCurrent">Saltar actual</span></button>
         <button class="cfg-btn danger" onclick="clearChatAndQueue()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="btn.clearChatAndQueue">Limpiar chat y cola</span></button>
         <button class="cfg-btn icon-only warn" onclick="enableEmergencyTTSMode()" data-i18n-title="btn.emergency" title="Modo emergencia"><img class="icon-inline" src="icons/warning-amber.svg" alt=""></button>
-        <button class="cfg-btn icon-only" id="btnBlockedWordsShortcut" onclick="openBlockWordModal()" data-i18n-title="btn.blockedWordsShortcut" title="Palabras bloqueadas"><img class="icon-inline" src="icons/filter_none.svg" alt=""></button>
+        <button class="cfg-btn icon-only" id="btnBlockedWordsShortcut" onclick="openChatGuardWords()" data-i18n-title="btn.blockedWordsShortcut" title="Palabras bloqueadas"><img class="icon-inline" src="icons/filter_none.svg" alt=""></button>
+        <button class="cfg-btn" id="btnEventEffects" hidden aria-pressed="true" data-i18n-title="eventFx.on" title="Animaciones y sonidos de temporada: activados. Clic para desactivar"><img class="icon-inline" src="icons/flare.svg" alt=""> <span data-i18n="eventFx.label">Efectos de evento</span><span class="fx-switch" aria-hidden="true"></span></button>
       </div>
 
       <!-- TOGGLES — colapsados por defecto (appSettings.chatTogglesCollapsed).
@@ -213,6 +231,18 @@
       </div>
       </div>
 
+      <!-- Banner de upgrade a Pro: solo con plan Free y cuentas activas (banner-pro.js) -->
+      <div class="pro-banner" id="proBanner" hidden>
+        <button type="button" class="pro-banner-main" id="proBannerOpen">
+          <img class="icon-inline pro-banner-icon" src="icons/workspace_premium-gold.svg" alt="">
+          <span class="pro-banner-title" data-i18n="pro.bannerTitle">Mejora tu plan a Pro</span>
+          <span class="pro-banner-badge" data-i18n="pro.bannerBadge">Desde US$3/mes</span>
+          <span class="pro-banner-sub" data-i18n="pro.bannerSub">para desbloquear bot musical, soundpad, clips y más.</span>
+          <img class="icon-inline pro-banner-chevron" src="icons/chevron_right.svg" alt="">
+        </button>
+        <button type="button" class="pro-banner-close" id="proBannerClose" data-i18n-aria-label="pro.bannerClose" aria-label="Cerrar"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+      </div>
+
       <!-- CHAT LOG -->
       <div class="chat-section">
         <div class="chat-header">
@@ -226,6 +256,13 @@
           <div class="empty-state" id="emptyState">
             <div class="empty-icon"><img class="icon-inline" src="icons/mic.svg" alt=""></div>
             <div class="empty-text" data-i18n-html="chat.empty">Conectá o transmití tu Live<br>para ver tu chat acá</div>
+            <!-- Programa de creadores: reemplaza al texto de arriba solo sin canales conectados (.chat-section.sin-live) -->
+            <div class="creator-promo">
+              <img class="creator-promo-icon" src="img/regalo-creadores.webp" width="192" height="192" alt="">
+              <div class="creator-promo-title" data-i18n="creatorProgram.title">¿Creas contenido? Gana 2 meses Pro</div>
+              <div class="creator-promo-text" data-i18n="creatorProgram.text">Haz un video sobre TikLiveTTS a tu manera y recibe 2 meses Pro gratis.</div>
+              <button type="button" class="btn creator-promo-cta" data-creator-program><span data-i18n="creatorProgram.cta">Quiero mis 2 meses gratis</span><span class="creator-promo-arrow" aria-hidden="true">→</span></button>
+            </div>
           </div>
         </div>
         <div class="speaking-now" id="speakingNow">
@@ -235,15 +272,17 @@
           <span id="speakingText">Leyendo...</span>
           <button type="button" class="speaking-goto" id="speakingGoto" data-i18n-title="chat.gotoSpeaking" data-i18n-aria-label="chat.gotoSpeaking" title="Ir al mensaje" aria-label="Ir al mensaje"><img class="icon-inline" src="icons/my_location-white.svg" alt=""></button>
         </div>
-        <div class="queue-badge" id="queueBadge">Cola: 0 mensajes</div>
+        <div class="queue-badge" id="queueBadge" aria-live="polite">Cola de voz vacía · sin bloqueados</div>
       </div>
 
       <!-- Fuera de .chat-section a propósito: es un espacio de publicidad,
            no parte del chat, y necesita su propio margen para no leerse
            como si fuera una fila más de esa tarjeta. -->
-      <div class="ad-slot ad-slot--banner" id="chatAdSlot">
+      <div class="ad-slot ad-slot--banner" id="chatAdSlot"
+           data-ads='["asset/ads/banner-sale-octubre.png","asset/ads/banner-edicion.png","asset/ads/banner-rebranding.png","asset/ads/banner-clips.png"]'>
         <a href="https://discord.gg/F2hYcpvJ46" target="_blank" rel="noopener" class="ad-link">
-          <img src="asset/ads/banner.png" alt="Publicidad">
+          <img class="ad-layer is-active" src="asset/ads/banner-sale-octubre.png" alt="Publicidad">
+          <img class="ad-layer" src="" alt="Publicidad" aria-hidden="true">
         </a>
       </div>
     </div>
@@ -254,7 +293,6 @@
         <h2><img class="icon-inline" src="icons/tv.svg" alt=""> <span data-i18n="view.overlays.title">Overlays para OBS</span></h2>
         <p data-i18n="view.overlays.desc">Personaliza cada overlay y copia la URL → OBS → Add Source → Browser → Enable transparent background.</p>
         <button class="cfg-btn" id="btnOverlaysTour" onclick="startOverlaysTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
-        <button class="cfg-btn" onclick="showKnownIssuesNotice()" data-i18n-title="overlayStr.knownBugsMsg" title="Algunas secciones tienen errores conocidos. Se arreglarán próximamente."><img class="icon-inline" src="icons/warning-yellow.svg" alt=""> <span data-i18n="overlayStr.knownBugs">Fallos conocidos</span></button>
       </div>
 
       <!-- Chat Unificado -->
@@ -267,56 +305,15 @@
           </div>
           <span class="obs-hint">420 × 720 px</span>
         </div>
-        <div class="cfg-fields">
-          <div class="cfg-field">
-            <label data-i18n="label.accentColor">Color acento</label>
-            <input type="color" id="cfg-chat-color" value="#FFBB00"
-                   oninput="onCfgChange('chat','color', this.value)" />
-          </div>
-          <div class="cfg-field">
-            <label><span data-i18n="label.bgOpacity">Opacidad fondo</span> — <span id="cfg-chat-bg-val">82</span>%</label>
-            <input type="range" id="cfg-chat-bg" min="0.30" max="1.00" step="0.05" value="0.82"
-                   oninput="onCfgChange('chat','bg', parseFloat(this.value)); document.getElementById('cfg-chat-bg-val').textContent = Math.round(this.value*100)" />
-          </div>
-          <div class="cfg-field">
-            <label>Mensajes visibles</label>
-            <input type="number" id="cfg-chat-maxmsgs" min="5" max="80" value="30"
-                   oninput="onCfgChange('chat','maxmsgs', parseInt(this.value)||30)" />
-          </div>
-          <div class="cfg-field">
-            <label>Tamaño texto — <span id="cfg-chat-size-val">14</span>px</label>
-            <input type="range" id="cfg-chat-size" min="10" max="24" step="1" value="14"
-                   oninput="onCfgChange('chat','size', parseInt(this.value)||14); document.getElementById('cfg-chat-size-val').textContent = this.value" />
-          </div>
-          <div class="cfg-field">
-            <label>Mostrar nombres</label>
-            <label class="toggle-chip" style="width:max-content;margin-top:2px;">
-              <input type="checkbox" id="cfg-chat-usernames" checked onchange="onCfgChange('chat','usernames', this.checked)" />
-              Usuarios
-            </label>
-          </div>
-          <div class="cfg-field">
-            <label>Plataformas visibles</label>
-            <div style="display:flex;gap:6px;flex-wrap:wrap;">
-              <label class="toggle-chip" style="padding:6px 9px;"><input type="checkbox" id="cfg-chat-platform-tiktok" checked onchange="onChatPlatformChange('tiktok', this.checked)" /> TikTok</label>
-              <label class="toggle-chip" style="padding:6px 9px;"><input type="checkbox" id="cfg-chat-platform-twitch" checked onchange="onChatPlatformChange('twitch', this.checked)" /> Twitch</label>
-              <label class="toggle-chip" style="padding:6px 9px;"><input type="checkbox" id="cfg-chat-platform-youtube" checked onchange="onChatPlatformChange('youtube', this.checked)" /> YouTube</label>
-              <label class="toggle-chip" style="padding:6px 9px;"><input type="checkbox" id="cfg-chat-platform-kick" checked onchange="onChatPlatformChange('kick', this.checked)" /> Kick</label>
-            </div>
-          </div>
-          <div class="cfg-field full">
-            <label data-i18n="label.customBg">Fondo personalizado</label><span class="pro-inline-badge"><img class="icon-inline" src="icons/lock.svg" alt=""> <span data-i18n="pro.badgeInline"></span></span>
-            <div class="bg-upload-row">
-              <input type="file" id="cfg-chat-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
-                     onchange="uploadBg('chat', this.files[0])" />
-              <label class="cfg-btn" for="cfg-chat-bgimg"><span data-i18n="btn.uploadImage">Subir imagen</span></label>
-              <button type="button" class="cfg-btn danger small" id="cfg-chat-bgimg-remove" onclick="removeBg('chat')" style="display:none;" data-i18n="btn.remove">Quitar</button>
-              <img class="bg-preview" id="cfg-chat-bgimg-preview" alt="">
-            </div>
-          </div>
-        </div>
+        <div class="cfg-fields" data-campos-base="chat"></div>
+        <details class="cfg-personalizar" data-campos-panel="chat">
+          <summary data-i18n="overlayCfg.personalizar">Personalizar</summary>
+        </details>
+        <iframe class="cfg-preview" data-preview="chat" tabindex="-1" aria-hidden="true"></iframe>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-chat">http://localhost:3000/overlay-chat.html</span>
+          <button class="cfg-btn" onclick="testChatOverlay()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Test</button>
+          <button class="cfg-btn" onclick="restablecerOverlay('chat', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
           <button class="cfg-btn" onclick="copyCfgUrl('chat')" data-i18n="btn.copy">Copiar</button>
           <a class="cfg-btn" id="cfg-open-chat" href="http://localhost:3000/overlay-chat.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
@@ -354,21 +351,34 @@
             <input type="range" id="cfg-seg-bg" min="0.30" max="1.00" step="0.05" value="0.80"
                    oninput="onCfgChange('seguidores','bg', parseFloat(this.value)); document.getElementById('cfg-seg-bg-val').textContent = Math.round(this.value*100)" />
           </div>
-          <div class="cfg-field full">
-            <label data-i18n="label.customBg">Fondo personalizado</label><span class="pro-inline-badge"><img class="icon-inline" src="icons/lock.svg" alt=""> <span data-i18n="pro.badgeInline"></span></span>
-            <div class="bg-upload-row">
-              <input type="file" id="cfg-seguidores-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
-                     onchange="uploadBg('seguidores', this.files[0])" />
-              <label class="cfg-btn" for="cfg-seguidores-bgimg"><span data-i18n="btn.uploadImage">Subir imagen</span></label>
-              <button type="button" class="cfg-btn danger small" id="cfg-seguidores-bgimg-remove" onclick="removeBg('seguidores')" style="display:none;" data-i18n="btn.remove">Quitar</button>
-              <img class="bg-preview" id="cfg-seguidores-bgimg-preview" alt="">
-            </div>
-          </div>
         </div>
+        <iframe class="cfg-preview" data-preview="seguidores" tabindex="-1" aria-hidden="true"></iframe>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-seguidores">http://localhost:3000/overlay-seguidores.html</span>
+          <button class="cfg-btn" onclick="restablecerOverlay('seguidores', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
           <button class="cfg-btn" onclick="copyCfgUrl('seguidores')" data-i18n="btn.copy">Copiar</button>
           <a class="cfg-btn" id="cfg-open-seguidores" href="http://localhost:3000/overlay-seguidores.html" target="_blank" data-i18n="btn.open">Abrir</a>
+        </div>
+      </div>
+
+      <!-- Espectadores de TikTok -->
+      <div class="cfg-card">
+        <div class="cfg-header">
+          <div class="cfg-icon"><img class="icon-inline" src="icons/visibility.svg" alt=""></div>
+          <div class="cfg-meta">
+            <div class="cfg-title" data-i18n="overlayStr.viewers">Espectadores</div>
+            <div class="cfg-subtitle" data-i18n="overlayStr.liveViewerCount">Personas viendo tu TikTok en vivo</div>
+          </div>
+          <span class="obs-hint">460 × 112 px</span>
+        </div>
+        <div class="cfg-fields" data-campos-base="viewers"></div>
+        <iframe class="cfg-preview" data-preview="viewers" tabindex="-1" aria-hidden="true"></iframe>
+        <div class="cfg-url-row">
+          <span class="cfg-url-text" id="cfg-url-viewers">http://localhost:3000/overlay-viewers.html</span>
+          <button class="cfg-btn" onclick="testViewers()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Test</button>
+          <button class="cfg-btn" onclick="restablecerOverlay('viewers', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
+          <button class="cfg-btn" onclick="copyCfgUrl('viewers')" data-i18n="btn.copy">Copiar</button>
+          <a class="cfg-btn" id="cfg-open-viewers" href="http://localhost:3000/overlay-viewers.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
       </div>
 
@@ -380,40 +390,43 @@
             <div class="cfg-title" data-i18n="overlay.topLikers.title">Top Likers</div>
             <div class="cfg-subtitle" data-i18n="overlay.topLikers.subtitle">Ranking de usuarios con más likes del stream</div>
           </div>
-          <span class="obs-hint">260 × 380 px</span>
+          <span class="obs-hint">340 × 520 px</span>
         </div>
-        <div class="cfg-fields">
-          <div class="cfg-field">
-            <label>Máximo de filas</label>
-            <input type="number" id="cfg-likes-rows" placeholder="10" min="3" max="20"
-                   oninput="onCfgChange('likes','rows', parseInt(this.value)||10)" />
-          </div>
-          <div class="cfg-field">
-            <label data-i18n="label.accentColor">Color acento</label>
-            <input type="color" id="cfg-likes-color" value="#FFBB00"
-                   oninput="onCfgChange('likes','color', this.value)" />
-          </div>
-          <div class="cfg-field full">
-            <label><span data-i18n="label.bgOpacity">Opacidad fondo</span> — <span id="cfg-likes-bg-val">80</span>%</label>
-            <input type="range" id="cfg-likes-bg" min="0.30" max="1.00" step="0.05" value="0.80"
-                   oninput="onCfgChange('likes','bg', parseFloat(this.value)); document.getElementById('cfg-likes-bg-val').textContent = Math.round(this.value*100)" />
-          </div>
-          <div class="cfg-field full">
-            <label data-i18n="label.customBg">Fondo personalizado</label><span class="pro-inline-badge"><img class="icon-inline" src="icons/lock.svg" alt=""> <span data-i18n="pro.badgeInline"></span></span>
-            <div class="bg-upload-row">
-              <input type="file" id="cfg-likes-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
-                     onchange="uploadBg('likes', this.files[0])" />
-              <label class="cfg-btn" for="cfg-likes-bgimg"><span data-i18n="btn.uploadImage">Subir imagen</span></label>
-              <button type="button" class="cfg-btn danger small" id="cfg-likes-bgimg-remove" onclick="removeBg('likes')" style="display:none;" data-i18n="btn.remove">Quitar</button>
-              <img class="bg-preview" id="cfg-likes-bgimg-preview" alt="">
-            </div>
-          </div>
-        </div>
+        <div class="cfg-fields" data-campos-base="likes"></div>
+        <details class="cfg-personalizar" data-campos-panel="likes">
+          <summary data-i18n="overlayCfg.personalizar">Personalizar</summary>
+        </details>
+        <iframe class="cfg-preview" data-preview="likes" tabindex="-1" aria-hidden="true"></iframe>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-likes">http://localhost:3000/overlay-likes.html</span>
           <button class="cfg-btn" onclick="testTopLikers()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Test</button>
+          <button class="cfg-btn" onclick="restablecerOverlay('likes', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
           <button class="cfg-btn" onclick="copyCfgUrl('likes')" data-i18n="btn.copy">Copiar</button>
           <a class="cfg-btn" id="cfg-open-likes" href="http://localhost:3000/overlay-likes.html" target="_blank" data-i18n="btn.open">Abrir</a>
+        </div>
+      </div>
+
+      <!-- Top Donadores -->
+      <div class="cfg-card">
+        <div class="cfg-header">
+          <div class="cfg-icon"><img class="icon-inline" src="icons/redeem.svg" alt=""></div>
+          <div class="cfg-meta">
+            <div class="cfg-title" data-i18n="overlay.topDonors.title">Top Donadores</div>
+            <div class="cfg-subtitle" data-i18n="overlay.topDonors.subtitle">Ranking de usuarios que más regalos enviaron en el stream</div>
+          </div>
+          <span class="obs-hint">340 × 520 px</span>
+        </div>
+        <div class="cfg-fields" data-campos-base="donadores"></div>
+        <details class="cfg-personalizar" data-campos-panel="donadores">
+          <summary data-i18n="overlayCfg.personalizar">Personalizar</summary>
+        </details>
+        <iframe class="cfg-preview" data-preview="donadores" tabindex="-1" aria-hidden="true"></iframe>
+        <div class="cfg-url-row">
+          <span class="cfg-url-text" id="cfg-url-donadores">http://localhost:3000/overlay-donadores.html</span>
+          <button class="cfg-btn" onclick="testTopDonors()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Test</button>
+          <button class="cfg-btn" onclick="restablecerOverlay('donadores', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
+          <button class="cfg-btn" onclick="copyCfgUrl('donadores')" data-i18n="btn.copy">Copiar</button>
+          <a class="cfg-btn" id="cfg-open-donadores" href="http://localhost:3000/overlay-donadores.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
       </div>
 
@@ -443,20 +456,12 @@
             <input type="range" id="cfg-alertas-bg" min="0.30" max="1.00" step="0.05" value="0.90"
                    oninput="onCfgChange('alertas','bg', parseFloat(this.value)); document.getElementById('cfg-alertas-bg-val').textContent = Math.round(this.value*100)" />
           </div>
-          <div class="cfg-field full">
-            <label data-i18n="label.customBg">Fondo personalizado</label><span class="pro-inline-badge"><img class="icon-inline" src="icons/lock.svg" alt=""> <span data-i18n="pro.badgeInline"></span></span>
-            <div class="bg-upload-row">
-              <input type="file" id="cfg-alertas-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
-                     onchange="uploadBg('alertas', this.files[0])" />
-              <label class="cfg-btn" for="cfg-alertas-bgimg"><span data-i18n="btn.uploadImage">Subir imagen</span></label>
-              <button type="button" class="cfg-btn danger small" id="cfg-alertas-bgimg-remove" onclick="removeBg('alertas')" style="display:none;" data-i18n="btn.remove">Quitar</button>
-              <img class="bg-preview" id="cfg-alertas-bgimg-preview" alt="">
-            </div>
-          </div>
         </div>
+        <iframe class="cfg-preview" data-preview="alertas" tabindex="-1" aria-hidden="true"></iframe>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-alertas">http://localhost:3000/overlay-alertas.html</span>
           <button class="cfg-btn" onclick="testGiftAlert()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Test</button>
+          <button class="cfg-btn" onclick="restablecerOverlay('alertas', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
           <button class="cfg-btn" onclick="copyCfgUrl('alertas')" data-i18n="btn.copy">Copiar</button>
           <a class="cfg-btn" id="cfg-open-alertas" href="http://localhost:3000/overlay-alertas.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
@@ -465,7 +470,7 @@
       <!-- Alertas Seguidor / Compartir -->
       <div class="cfg-card">
         <div class="cfg-header">
-          <div class="cfg-icon">💜</div>
+          <div class="cfg-icon"><img class="icon-inline" src="icons/person_add.svg" alt=""></div>
           <div class="cfg-meta">
             <div class="cfg-title" data-i18n="overlay2.socialTitle">Alerta de Follow / Share</div>
             <div class="cfg-subtitle" data-i18n="overlay2.socialSubtitle">Aparece en OBS unos segundos cuando alguien te sigue o comparte</div>
@@ -473,43 +478,25 @@
           <span class="obs-hint">440 × 130 px</span>
         </div>
         <div class="cfg-fields">
-          <div class="cfg-field full">
-            <label>Imagen para Follow <span style="font-size:10px;color:var(--text-muted);">(URL)</span></label>
-            <input type="text" id="cfg-social-follow-img" placeholder="https://... o dejar vacío para emoji 💜"
-                   oninput="updateSocialOverlayUrl()" style="font-size:12px;" />
-          </div>
-          <div class="cfg-field full">
-            <label>Imagen para Share <span style="font-size:10px;color:var(--text-muted);">(URL)</span></label>
-            <input type="text" id="cfg-social-share-img" placeholder="https://... o dejar vacío para emoji 🔗"
-                   oninput="updateSocialOverlayUrl()" style="font-size:12px;" />
-          </div>
           <div class="cfg-field">
             <label data-i18n="label.accentColor">Color acento</label>
             <input type="color" id="cfg-alertas-social-color" value="#FFBB00"
-                   oninput="updateSocialOverlayUrl()" />
+                   oninput="onCfgChange('alertas-social','color', this.value)" />
           </div>
           <div class="cfg-field">
             <label><span data-i18n="label.bgOpacity">Opacidad fondo</span> — <span id="cfg-alertas-social-bg-val">90</span>%</label>
             <input type="range" id="cfg-alertas-social-bg" min="0.30" max="1.00" step="0.05" value="0.90"
-                   oninput="updateSocialOverlayUrl(); document.getElementById('cfg-alertas-social-bg-val').textContent = Math.round(this.value*100)" />
-          </div>
-          <div class="cfg-field full">
-            <label data-i18n="label.customBg">Fondo personalizado</label><span class="pro-inline-badge"><img class="icon-inline" src="icons/lock.svg" alt=""> <span data-i18n="pro.badgeInline"></span></span>
-            <div class="bg-upload-row">
-              <input type="file" id="cfg-alertas-social-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
-                     onchange="uploadBg('alertas-social', this.files[0])" />
-              <label class="cfg-btn" for="cfg-alertas-social-bgimg"><span data-i18n="btn.uploadImage">Subir imagen</span></label>
-              <button type="button" class="cfg-btn danger small" id="cfg-alertas-social-bgimg-remove" onclick="removeBg('alertas-social')" style="display:none;" data-i18n="btn.remove">Quitar</button>
-              <img class="bg-preview" id="cfg-alertas-social-bgimg-preview" alt="">
-            </div>
+                   oninput="onCfgChange('alertas-social','bg', parseFloat(this.value)); document.getElementById('cfg-alertas-social-bg-val').textContent = Math.round(this.value*100)" />
           </div>
         </div>
+        <iframe class="cfg-preview" data-preview="alertas-social" tabindex="-1" aria-hidden="true"></iframe>
         <div class="cfg-url-row">
-          <span class="cfg-url-text" id="cfg-url-social-alert">http://localhost:3000/overlay-alertas-social.html</span>
-          <button class="cfg-btn" onclick="testSocialAlert('follow')">💜 Test Follow</button>
-          <button class="cfg-btn" onclick="testSocialAlert('share')">🔗 Test Share</button>
-          <button class="cfg-btn" onclick="copySocialAlertUrl()" data-i18n="btn.copy">Copiar</button>
-          <a class="cfg-btn" id="cfg-open-social-alert" href="http://localhost:3000/overlay-alertas-social.html" target="_blank" data-i18n="btn.open">Abrir</a>
+          <span class="cfg-url-text" id="cfg-url-alertas-social">http://localhost:3000/overlay-alertas-social.html</span>
+          <button class="cfg-btn" onclick="testSocialAlert('follow')"><img class="icon-inline" src="icons/person_add.svg" alt=""> Test Follow</button>
+          <button class="cfg-btn" onclick="testSocialAlert('share')"><img class="icon-inline" src="icons/public.svg" alt=""> Test Share</button>
+          <button class="cfg-btn" onclick="restablecerOverlay('alertas-social', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
+          <button class="cfg-btn" onclick="copyCfgUrl('alertas-social')" data-i18n="btn.copy">Copiar</button>
+          <a class="cfg-btn" id="cfg-open-alertas-social" href="http://localhost:3000/overlay-alertas-social.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
       </div>
 
@@ -539,19 +526,11 @@
             <input type="range" id="cfg-creditos-bg" min="0.30" max="1.00" step="0.05" value="0.85"
                    oninput="onCfgChange('creditos','bg', parseFloat(this.value)); document.getElementById('cfg-creditos-bg-val').textContent = Math.round(this.value*100)" />
           </div>
-          <div class="cfg-field full">
-            <label data-i18n="label.customBg">Fondo personalizado</label><span class="pro-inline-badge"><img class="icon-inline" src="icons/lock.svg" alt=""> <span data-i18n="pro.badgeInline"></span></span>
-            <div class="bg-upload-row">
-              <input type="file" id="cfg-creditos-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
-                     onchange="uploadBg('creditos', this.files[0])" />
-              <label class="cfg-btn" for="cfg-creditos-bgimg"><span data-i18n="btn.uploadImage">Subir imagen</span></label>
-              <button type="button" class="cfg-btn danger small" id="cfg-creditos-bgimg-remove" onclick="removeBg('creditos')" style="display:none;" data-i18n="btn.remove">Quitar</button>
-              <img class="bg-preview" id="cfg-creditos-bgimg-preview" alt="">
-            </div>
-          </div>
         </div>
+        <iframe class="cfg-preview" data-preview="creditos" tabindex="-1" aria-hidden="true"></iframe>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-creditos">http://localhost:3000/overlay-creditos.html</span>
+          <button class="cfg-btn" onclick="restablecerOverlay('creditos', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
           <button class="cfg-btn" onclick="copyCfgUrl('creditos')" data-i18n="btn.copy">Copiar</button>
           <a class="cfg-btn" id="cfg-open-creditos" href="http://localhost:3000/overlay-creditos.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
@@ -585,19 +564,11 @@
             <input type="range" id="cfg-social-bg" min="0.30" max="1.00" step="0.05" value="0.80"
                    oninput="onCfgChange('social','bg', parseFloat(this.value)); document.getElementById('cfg-social-bg-val').textContent = Math.round(this.value*100)" />
           </div>
-          <div class="cfg-field full">
-            <label data-i18n="label.customBg">Fondo personalizado</label><span class="pro-inline-badge"><img class="icon-inline" src="icons/lock.svg" alt=""> <span data-i18n="pro.badgeInline"></span></span>
-            <div class="bg-upload-row">
-              <input type="file" id="cfg-social-bgimg" accept="image/png,image/jpeg,image/webp,image/gif"
-                     onchange="uploadBg('social', this.files[0])" />
-              <label class="cfg-btn" for="cfg-social-bgimg"><span data-i18n="btn.uploadImage">Subir imagen</span></label>
-              <button type="button" class="cfg-btn danger small" id="cfg-social-bgimg-remove" onclick="removeBg('social')" style="display:none;" data-i18n="btn.remove">Quitar</button>
-              <img class="bg-preview" id="cfg-social-bgimg-preview" alt="">
-            </div>
-          </div>
         </div>
+        <iframe class="cfg-preview" data-preview="social" tabindex="-1" aria-hidden="true"></iframe>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-social">http://localhost:3000/overlay-social.html</span>
+          <button class="cfg-btn" onclick="restablecerOverlay('social', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
           <button class="cfg-btn" onclick="copyCfgUrl('social')" data-i18n="btn.copy">Copiar</button>
           <a class="cfg-btn" id="cfg-open-social" href="http://localhost:3000/overlay-social.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
@@ -744,257 +715,327 @@
 
       <!-- CANALES VINCULADOS -->
       <div class="settings-section" id="settingsSectionChannels">
-        <div class="settings-section-title settings-row-flex" style="justify-content:space-between;">
+        <div class="settings-section-title settings-row-flex settings-title-split">
           <span data-i18n="settings.channels">Canales vinculados</span>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
+          <div class="canales-actions">
             <button class="btn-supabase-primary" id="btn-toggle-add-channel" onclick="toggleAddChannelForm()">
-              ＋ Agregar canal
+              <img class="icon-inline" src="icons/add.svg" alt=""> <span data-i18n="btn.addChannel">Agregar canal</span>
             </button>
             <button class="cfg-btn" id="btnChannelsTour" onclick="startChannelsTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
           </div>
         </div>
-        <div id="settings-channels-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:20px;margin-bottom:4px;"></div>
-        <div id="add-channel-form" style="display:none;flex-direction:column;gap:10px;margin-top:10px;">
-          <div class="seg-control" id="platform-seg">
-            <button class="seg-btn active" id="seg-tiktok" onclick="selectAddPlatform('tiktok')">
-              <img style="width:13px;height:13px;vertical-align:middle;" src="icons/tiktok.svg" alt=""> TikTok
-            </button>
-            <button class="seg-btn" id="seg-twitch" onclick="selectAddPlatform('twitch')">
-              <img style="width:13px;height:13px;vertical-align:middle;" src="icons/sports_esports.svg" alt=""> Twitch
-            </button>
-            <button class="seg-btn" id="seg-youtube" onclick="selectAddPlatform('youtube')">
-              <img style="width:13px;height:13px;vertical-align:middle;" src="icons/tv.svg" alt=""> YouTube
-            </button>
-            <button class="seg-btn" id="seg-kick" onclick="selectAddPlatform('kick')">
-              <img style="width:13px;height:13px;vertical-align:middle;" src="icons/kick.svg" alt=""> Kick
-            </button>
+        <div id="settings-channels-list" class="canales-list"></div>
+        <div id="add-channel-form" class="canales-form" style="display:none;">
+          <div class="settings-row-flex canales-platform-row">
+            <div class="seg-control" id="platform-seg">
+              <button class="seg-btn active" id="seg-tiktok" onclick="selectAddPlatform('tiktok')">
+                <img class="canales-platform-icon" src="icons/tiktok.svg" alt=""> TikTok
+              </button>
+              <button class="seg-btn" id="seg-twitch" onclick="selectAddPlatform('twitch')">
+                <img class="canales-platform-icon" src="icons/sports_esports.svg" alt=""> Twitch
+              </button>
+              <button class="seg-btn" id="seg-youtube" onclick="selectAddPlatform('youtube')">
+                <img class="canales-platform-icon" src="icons/tv.svg" alt=""> YouTube
+              </button>
+              <button class="seg-btn" id="seg-kick" onclick="selectAddPlatform('kick')">
+                <img class="canales-platform-icon" src="icons/kick.svg" alt=""> Kick
+              </button>
+            </div>
+            <!-- Solo visible con sesion de TikTok activa (cerrar sesion) — minimalista,
+                 al lado del selector de plataforma en vez de una fila propia arriba de
+                 todo. El login en si vive en tiktok-login-prompt, mas abajo. -->
+            <div id="tiktok-session-row" class="canales-session-row" style="display:none;">
+              <img class="icon-inline" src="icons/tiktok.svg" alt="">
+              <span id="tiktok-session-status" data-i18n="conn.tiktokSessionActive">Sesión de TikTok iniciada.</span>
+              <button type="button" class="cfg-btn small icon-only" id="btnTiktokLogout" onclick="tiktokLogout()" data-i18n-title="conn.tiktokLogout" title="Cerrar sesión de TikTok"><img class="icon-inline" src="icons/exit_to_app.svg" alt=""></button>
+            </div>
           </div>
-          <div class="settings-row-flex">
-            <div class="input-wrapper" style="flex:1;">
+          <!-- Reemplaza la fila de input cuando platform=tiktok y no hay sesion
+               (ver toggleTiktokAddPrompt en tiktok-sesion.js) — el login de
+               TikTok es un requisito para leer el chat, no una forma de elegir
+               canal, pero mostrarlo justo aca evita que se lea como "2 cosas
+               de TikTok" separadas. -->
+          <div id="tiktok-login-prompt" class="canales-login-prompt" style="display:none;">
+            <div class="tiktok-login-flow">
+              <div class="tiktok-login-step tiktok-login-step-one">
+                <span class="tiktok-login-badge">1</span>
+                <div>
+                  <strong data-i18n="conn.tiktokLogin">Iniciar sesión en TikTok</strong>
+                  <span data-i18n="conn.tiktokLoginStepOneDesc">Necesario para acceder al chat.</span>
+                </div>
+              </div>
+              <div class="tiktok-login-step tiktok-login-step-two">
+                <span class="tiktok-login-badge">2</span>
+                <div>
+                  <strong data-i18n="conn.tiktokLoginStepTwoTitle">Luego agrega el canal que quieras</strong>
+                  <span data-i18n-html="conn.tiktokLoginStepTwoDesc">Después podrás escribir el @usuario de <strong>cualquier canal</strong> que quieras escuchar.</span>
+                </div>
+              </div>
+            </div>
+            <div class="settings-row-flex">
+              <button type="button" class="btn-supabase-primary" id="btn-tiktok-login-prompt" onclick="tiktokLogin()"><img class="icon-inline" src="icons/login.svg" alt=""> <span data-i18n="conn.tiktokLogin">Iniciar sesión en TikTok</span></button>
+              <button class="btn btn-disconnect canales-cancel" onclick="toggleAddChannelForm()"
+                data-i18n="btn.cancel">Cancelar</button>
+            </div>
+          </div>
+          <div class="settings-row-flex" id="tiktok-add-channel-row">
+            <div class="input-wrapper canales-field">
               <input type="text" id="add-channel-input" placeholder="@usuario"
                 autocomplete="off" onkeydown="if(event.key==='Enter')addChannelFromSettings()" />
             </div>
             <button class="btn-supabase-primary" id="btn-add-channel" onclick="addChannelFromSettings()" data-i18n="btn.saveChannel">Guardar</button>
-            <button class="btn btn-disconnect" onclick="toggleAddChannelForm()"
-              style="font-size:12px;padding:9px 14px;border-radius:9999px;">Cancelar</button>
+            <button class="btn btn-disconnect canales-cancel" onclick="toggleAddChannelForm()"
+              data-i18n="btn.cancel">Cancelar</button>
           </div>
-          <div id="channel-live-hint" style="display:flex;gap:6px;font-size:11px;color:var(--text-muted);line-height:1.5;">
-            <img class="icon-inline" src="icons/info.svg" alt="" style="opacity:.6;flex-shrink:0;width:13px;height:13px;">
-            <span data-i18n="conn.liveRequiredHint">La conexión solo ocurre cuando el canal está EN VIVO. Si aún no empiezas el directo, guarda el canal y pulsa «Conectar todo» desde Chat cuando estés en vivo.</span>
+          <div id="channel-live-hint" class="canales-hint" style="display:flex;">
+            <img class="icon-inline" src="icons/info.svg" alt="">
+            <span data-i18n-html="conn.liveRequiredHint"><strong style="color:var(--danger);">La conexión solo ocurre cuando el canal está EN VIVO.</strong> Si aún no empiezas el directo, guarda el canal y pulsa «Conectar todo» desde Chat cuando estés en vivo.</span>
           </div>
-          <div id="youtube-channel-hint" style="display:none;font-size:11px;color:var(--text-muted);line-height:1.5;">
+          <div id="youtube-channel-hint" class="canales-hint" style="display:none;">
             Usa @canal o Channel ID para reconectar sin pegar link nuevo. Links watch/youtu.be se guardan como live temporal manual.
           </div>
         </div>
       </div>
 
       <div class="settings-section" id="settingsSectionVoice">
-        <div class="settings-section-title settings-row-flex" style="justify-content:space-between;">
-          <span data-i18n="settings.voice">Voz y audio</span>
+        <div class="settings-section-title settings-row-flex settings-title-split">
+          <span class="voz-audio-heading"><img class="icon-inline" src="icons/mic.svg" alt=""> <span data-i18n="settings.voice">Voz y audio</span></span>
           <button class="cfg-btn" id="btnVoiceTour" onclick="startVoiceTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
         </div>
-        <div class="settings-panel">
-          <div class="setting-group" id="voiceSelectGroup">
-            <label><img class="icon-inline" src="icons/mic.svg" alt=""> <span data-i18n="label.voice">Voz</span></label>
-            <div class="voice-dropdown" id="voiceDropdown">
-              <div class="voice-dropdown-trigger" id="voiceDropdownTrigger" onclick="toggleVoiceDropdown()">
-                <img class="flag-icon" id="voiceDropdownFlag" src="flags/ES.svg" alt="">
-                <span id="voiceDropdownText">Español (España)</span>
-                <span class="arrow">▼</span>
+        <div class="voz-audio-layout">
+          <div class="voz-audio-card">
+            <div class="voz-audio-eyebrow" data-i18n="label.voice">Voz</div>
+            <div class="setting-group" id="voiceSelectGroup">
+              <label data-i18n="settings.voiceSelector">Selector de voz</label>
+              <div class="voice-dropdown" id="voiceDropdown">
+                <div class="voice-dropdown-trigger" id="voiceDropdownTrigger" onclick="toggleVoiceDropdown()">
+                  <img class="flag-icon" id="voiceDropdownFlag" src="flags/ES.svg" alt="">
+                  <span id="voiceDropdownText">Español (España)</span>
+                  <span class="arrow"><img class="icon-inline" src="icons/expand_more.svg" alt=""></span>
+                </div>
+                <div class="voice-dropdown-menu" id="voiceDropdownMenu"></div>
               </div>
-              <div class="voice-dropdown-menu" id="voiceDropdownMenu"></div>
+              <input type="hidden" id="voiceSelect" />
             </div>
-            <input type="hidden" id="voiceSelect" />
-          </div>
-          <div class="setting-group" id="voiceTestGroup">
-            <label><img class="icon-inline" src="icons/science.svg" alt=""> <span data-i18n="label.testVoice">Probar voz</span></label>
-            <div class="settings-row-flex">
-              <input type="text" id="testVoiceInput" data-i18n-placeholder="label.testVoicePlaceholder" placeholder="Escribe algo para probar..." style="flex:1;" />
-              <button id="btnTestVoice" class="btn-test" onclick="testVoice()">▶ Probar</button>
+            <div class="setting-group" id="voiceTestGroup">
+              <label><img class="icon-inline" src="icons/science.svg" alt=""> <span data-i18n="label.testVoice">Probar voz</span></label>
+              <div class="settings-row-flex">
+                <input type="text" id="testVoiceInput" data-i18n-placeholder="label.testVoicePlaceholder" placeholder="Escribe algo para probar..." />
+                <button id="btnTestVoice" class="btn-test" onclick="testVoice()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Probar</button>
+              </div>
+            </div>
+            <div class="setting-group" id="voiceRateGroup">
+              <label><img class="icon-inline" src="icons/flash_on.svg" alt=""> Velocidad — <span id="rateVal">1.0</span>x</label>
+              <input type="range" id="rateRange" min="0.5" max="2" step="0.1" value="1" oninput="updateRate(this.value)" />
+              <div class="range-labels"><span data-i18n="label.slow">Lento</span><span data-i18n="label.fast">Rápido</span></div>
+            </div>
+            <div class="setting-group" id="voiceVolGroup">
+              <label><img class="icon-inline" src="icons/volume_up.svg" alt=""> Volumen — <span id="volVal">100</span>%</label>
+              <input type="range" id="volRange" min="0" max="1" step="0.05" value="1" oninput="updateVol(this.value)" />
+              <div class="range-labels"><span data-i18n="label.mute">Mute</span><span data-i18n="label.max">Máx</span></div>
             </div>
           </div>
-          <div class="setting-group" id="voiceRateGroup">
-            <label><img class="icon-inline" src="icons/flash_on.svg" alt=""> Velocidad — <span id="rateVal">1.0</span>x</label>
-            <input type="range" id="rateRange" min="0.5" max="2" step="0.1" value="1" oninput="updateRate(this.value)" />
-            <div class="range-labels"><span data-i18n="label.slow">Lento</span><span data-i18n="label.fast">Rápido</span></div>
-          </div>
-          <div class="setting-group" id="voiceVolGroup">
-            <label><img class="icon-inline" src="icons/volume_up.svg" alt=""> Volumen — <span id="volVal">100</span>%</label>
-            <input type="range" id="volRange" min="0" max="1" step="0.05" value="1" oninput="updateVol(this.value)" />
-            <div class="range-labels"><span data-i18n="label.mute">Mute</span><span data-i18n="label.max">Máx</span></div>
-          </div>
-          <div class="setting-group" id="voiceLangFilterGroup">
-            <label class="toggle-chip" style="width:max-content;">
-              <input type="checkbox" id="langFilterToggle" onchange="toggleLangFilter(this)" />
-              <span data-i18n="toggle.langFilter">Filtrar caracteres de otros idiomas</span>
-            </label>
-            <div style="font-size:11px;color:var(--text-muted);margin-top:4px;" data-i18n="toggle.langFilterHint">Ignora mensajes de chat con caracteres que no correspondan al idioma de la voz activa (ej: bloquea chino/japonés si tu voz está en Español, y viceversa).</div>
-          </div>
-          <div class="setting-group" id="voiceDictFilterGroup">
-            <label class="toggle-chip" style="width:max-content;">
-              <input type="checkbox" id="dictFilterToggle" onchange="toggleDictFilter(this)" />
-              <span data-i18n="toggle.dictFilter">Filtrar por idioma (palabras)</span>
-            </label>
-            <button onclick="openDictLangModal()" id="btnOpenDictLangModal" style="margin-top:6px;display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.14);background:transparent;color:var(--text-muted);font-size:12px;cursor:pointer;width:max-content;">
-              <img class="icon-inline" src="icons/settings.svg" alt=""> <span data-i18n="dictLang.title">Idiomas permitidos</span>
-            </button>
-            <div style="font-size:11px;color:var(--text-muted);margin-top:4px;" data-i18n="toggle.dictFilterHint">Solo lee mensajes escritos en el idioma de la voz activa o en los idiomas extra que permitas. Las palabras desconocidas (nombres, typos) no bloquean.</div>
-          </div>
-          <div class="setting-group" id="voiceAnnounceGroup">
-            <label><img class="icon-inline" src="icons/chat.svg" alt=""> <span data-i18n="settings.announceTplTitle">Personaliza el final de los anuncios</span></label>
-            <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;" data-i18n="settings.announceTplDesc">Opcional: escribe lo que va después del nombre. Los datos se añaden solos; si lo dejas vacío, se usa el texto estándar.</div>
-            <div id="announceTplFields"></div>
+          <div class="voz-audio-column">
+            <div class="voz-audio-card">
+              <div class="voz-audio-eyebrow" data-i18n="settings.languageFilters">Filtros de idioma</div>
+              <div class="setting-group" id="voiceLangFilterGroup">
+                <label class="toggle-chip">
+                  <input type="checkbox" id="langFilterToggle" onchange="toggleLangFilter(this)" />
+                  <span data-i18n="toggle.langFilter">Filtrar caracteres de otros idiomas</span>
+                </label>
+                <div class="voz-audio-hint" data-i18n="toggle.langFilterHint">Ignora mensajes de chat con caracteres que no correspondan al idioma de la voz activa (ej: bloquea chino/japonés si tu voz está en Español, y viceversa).</div>
+              </div>
+              <div class="setting-group" id="voiceDictFilterGroup">
+                <label class="toggle-chip">
+                  <input type="checkbox" id="dictFilterToggle" onchange="toggleDictFilter(this)" />
+                  <span data-i18n="toggle.dictFilter">Filtrar por idioma (palabras)</span>
+                </label>
+                <button class="cfg-btn voz-audio-language-button" onclick="openDictLangModal()" id="btnOpenDictLangModal">
+                  <img class="icon-inline" src="icons/settings.svg" alt=""> <span data-i18n="dictLang.title">Idiomas permitidos</span>
+                </button>
+                <div class="voz-audio-hint" data-i18n="toggle.dictFilterHint">Solo lee mensajes escritos en el idioma de la voz activa o en los idiomas extra que permitas. Las palabras desconocidas (nombres, typos) no bloquean.</div>
+              </div>
+            </div>
+            <div class="voz-audio-card">
+              <div class="voz-audio-eyebrow" data-i18n="settings.announcementEndings">Finales de anuncios</div>
+              <div class="setting-group" id="voiceAnnounceGroup">
+                <label><img class="icon-inline" src="icons/chat.svg" alt=""> <span data-i18n="settings.announceTplTitle">Personaliza el final de los anuncios</span></label>
+                <div class="voz-audio-hint" data-i18n="settings.announceTplDesc">Opcional: escribe lo que va después del nombre. Los datos se añaden solos; si lo dejas vacío, se usa el texto estándar.</div>
+                <div id="announceTplFields"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- KEYBOARD SHORTCUTS SECTION -->
       <div class="settings-section" id="settingsSectionShortcuts">
-        <div class="settings-section-title settings-row-flex" style="justify-content:space-between;">
-          <span data-i18n="settings.shortcuts">Atajos de teclado</span>
+        <div class="settings-section-title settings-row-flex settings-title-split">
+          <span class="atajos-section-heading"><img class="icon-inline" src="icons/keyboard.svg" alt=""> <span data-i18n="settings.shortcuts">Atajos de teclado (TTS)</span></span>
           <button class="cfg-btn" id="btnShortcutsTour" onclick="startShortcutsTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
         </div>
-        <div class="settings-panel">
-          <div class="setting-group" id="scGroupPauseBtn" style="gap:8px;">
-            <label style="margin-bottom:2px;display:flex;align-items:center;gap:6px;">
-              <img class="icon-inline" src="icons/volume_off.svg" alt="" onerror="this.style.display='none'">
-              <span data-i18n="label.playbackControl">Control de reproducción</span>
-            </label>
-            <button id="btnPauseTTS" onclick="togglePauseTts()"
-              style="width:100%;padding:10px 16px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:2px solid var(--accent);background:rgba(240,33,58,0.12);color:var(--accent);transition:all .2s;letter-spacing:.3px;">
-              <span data-i18n="btn.pauseTTS">⏸ Pausar TTS</span>
-            </button>
-          </div>
-          <div class="setting-group" id="scGroupPause">
-            <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
-              <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
-              <span data-i18n="label.pauseShortcut">Pausar / Reanudar TTS</span>
-            </label>
-            <div class="settings-row-flex">
-              <input id="pauseShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" placeholder="Clic aquí y presiona teclas..."
-  onclick="startCapturingShortcut('pause')"
-                style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
-              <button onclick="clearTtsShortcut('pause')"
-                style="padding:8px 12px;border-radius:8px;font-size:12px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--text-muted);cursor:pointer;" data-i18n="btn.clearShortcut">
-                ✕ Limpiar
-              </button>
+        <div class="seg-control atajos-tabs" role="tablist" aria-label="Atajos de teclado" data-i18n-aria-label="settings.shortcuts">
+          <button type="button" class="seg-btn active" id="atajosTabTts" role="tab" aria-selected="true" aria-controls="atajosPanelTts" tabindex="0">
+            <img class="icon-inline" src="icons/record_voice_over.svg" alt=""> <span data-i18n="settings.shortcutsTabTtsChat">TTS y chat</span>
+          </button>
+          <button type="button" class="seg-btn" id="atajosTabMusic" role="tab" aria-selected="false" aria-controls="atajosPanelMusic" tabindex="-1">
+            <img class="icon-inline" src="icons/music_note.svg" alt=""> <span data-i18n="settings.shortcutsTabMusic">Música del bot</span>
+          </button>
+          <button type="button" class="seg-btn" id="atajosTabGeneral" role="tab" aria-selected="false" aria-controls="atajosPanelGeneral" tabindex="-1">
+            <img class="icon-inline" src="icons/settings.svg" alt=""> <span data-i18n="settings.shortcutsTabGeneral">General</span>
+          </button>
+        </div>
+        <div class="settings-panel atajos-panel">
+          <div class="atajos-tab-panel" id="atajosPanelTts" role="tabpanel" aria-labelledby="atajosTabTts">
+            <div class="setting-group atajos-playback-row" id="scGroupPauseBtn">
+              <div class="atajos-action">
+                <img class="icon-inline atajos-action-icon" src="icons/volume_off.svg" alt="" onerror="this.style.display='none'">
+                <label data-i18n="label.playbackControl">Control de reproducción</label>
+              </div>
+              <button class="atajos-pause-button" id="btnPauseTTS" onclick="togglePauseTts()" data-i18n="btn.pauseTTS">Pausar TTS</button>
             </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
-              <button onclick="applyTtsShortcutPreset('pause', 'F8')"
-                style="padding:6px 10px;border-radius:8px;font-size:11px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--text-secondary);cursor:pointer;" data-i18n="btn.useF8">
-                Usar F8
-              </button>
-              <button onclick="applyTtsShortcutPreset('pause', 'MediaPlayPause')"
-                style="padding:6px 10px;border-radius:8px;font-size:11px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--text-secondary);cursor:pointer;" data-i18n="btn.usePlayPause">
-                Usar tecla Play/Pausa
-              </button>
+            <div class="setting-group atajos-row" id="scGroupPause">
+              <div class="atajos-action">
+                <img class="icon-inline atajos-action-icon" src="icons/pause.svg" alt="" onerror="this.style.display='none'">
+                <div class="atajos-action-copy">
+                  <label data-i18n="label.pauseShortcut">Pausar / Reanudar TTS</label>
+                  <div class="atajos-hint" id="pauseShortcutHint">
+                    <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span class="atajos-active-key">—</span>
+                  </div>
+                </div>
+              </div>
+              <div class="atajos-controls">
+                <input class="atajos-capture" id="pauseShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" data-i18n-aria-label="label.pauseShortcut" placeholder="Clic aquí y presiona teclas..." onclick="startCapturingShortcut('pause')" />
+                <button type="button" class="atajos-clear" onclick="clearTtsShortcut('pause')">
+                  <img class="icon-inline" src="icons/close.svg" alt=""><span class="atajos-visually-hidden" data-i18n="btn.clearShortcut">Limpiar</span>
+                </button>
+                <div class="atajos-presets">
+                  <button type="button" class="atajos-preset" onclick="applyTtsShortcutPreset('pause', 'F8')" data-i18n="btn.useF8">Usar F8</button>
+                  <button type="button" class="atajos-preset" onclick="applyTtsShortcutPreset('pause', 'MediaPlayPause')" data-i18n="btn.usePlayPause">Usar tecla Play/Pausa</button>
+                </div>
+              </div>
             </div>
-            <div id="pauseShortcutHint" style="font-size:11px;color:var(--text-muted);margin-top:4px;">
-              <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
+            <div class="setting-group atajos-row" id="scGroupSkip">
+              <div class="atajos-action">
+                <img class="icon-inline atajos-action-icon" src="icons/skip_next.svg" alt="" onerror="this.style.display='none'">
+                <div class="atajos-action-copy">
+                  <label data-i18n="label.skipShortcut">Saltar mensaje actual</label>
+                  <div class="atajos-hint" id="skipShortcutHint">
+                    <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span class="atajos-active-key">—</span>
+                  </div>
+                </div>
+              </div>
+              <div class="atajos-controls">
+                <input class="atajos-capture" id="skipShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" data-i18n-aria-label="label.skipShortcut" placeholder="Clic aquí y presiona teclas..." onclick="startCapturingShortcut('skip')" />
+                <button type="button" class="atajos-clear" onclick="clearTtsShortcut('skip')">
+                  <img class="icon-inline" src="icons/close.svg" alt=""><span class="atajos-visually-hidden" data-i18n="btn.clearShortcut">Limpiar</span>
+                </button>
+                <div class="atajos-presets">
+                  <button type="button" class="atajos-preset" onclick="applyTtsShortcutPreset('skip', 'F9')">F9</button>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="setting-group" id="scGroupSkip">
-            <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
-              <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
-              <span data-i18n="label.skipShortcut">Saltar mensaje actual</span>
-            </label>
-            <div class="settings-row-flex">
-              <input id="skipShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" placeholder="Clic aquí y presiona teclas..."
-  onclick="startCapturingShortcut('skip')"
-                style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
-              <button onclick="clearTtsShortcut('skip')"
-                style="padding:8px 12px;border-radius:8px;font-size:12px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--text-muted);cursor:pointer;" data-i18n="btn.clearShortcut">
-                ✕ Limpiar
-              </button>
-            </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
-              <button onclick="applyTtsShortcutPreset('skip', 'F9')"
-                style="padding:6px 10px;border-radius:8px;font-size:11px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--text-secondary);cursor:pointer;">
-                F9
-              </button>
-            </div>
-            <div id="skipShortcutHint" style="font-size:11px;color:var(--text-muted);margin-top:4px;">
-              <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
-            </div>
-          </div>
-          <div class="setting-group" id="scGroupClear">
-            <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
-              <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
-              <span data-i18n="label.clearChatAndQueueShortcut">Limpiar chat y cola</span>
-            </label>
-            <div class="settings-row-flex">
-              <input id="clearShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" placeholder="Clic aquí y presiona teclas..."
-  onclick="startCapturingShortcut('clear')"
-                style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
-              <button onclick="clearTtsShortcut('clear')"
-                style="padding:8px 12px;border-radius:8px;font-size:12px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--text-muted);cursor:pointer;" data-i18n="btn.clearShortcut">
-                ✕ Limpiar
-              </button>
-            </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
-              <button onclick="applyTtsShortcutPreset('clear', 'F10')"
-                style="padding:6px 10px;border-radius:8px;font-size:11px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--text-secondary);cursor:pointer;">
-                F10
-              </button>
-            </div>
-            <div id="clearShortcutHint" style="font-size:11px;color:var(--text-muted);margin-top:4px;">
-              <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
+            <div class="setting-group atajos-row" id="scGroupClear">
+              <div class="atajos-action">
+                <img class="icon-inline atajos-action-icon" src="icons/delete.svg" alt="" onerror="this.style.display='none'">
+                <div class="atajos-action-copy">
+                  <label data-i18n="label.clearChatAndQueueShortcut">Limpiar chat y cola</label>
+                  <div class="atajos-hint" id="clearShortcutHint">
+                    <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span class="atajos-active-key">—</span>
+                  </div>
+                </div>
+              </div>
+              <div class="atajos-controls">
+                <input class="atajos-capture" id="clearShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" data-i18n-aria-label="label.clearChatAndQueueShortcut" placeholder="Clic aquí y presiona teclas..." onclick="startCapturingShortcut('clear')" />
+                <button type="button" class="atajos-clear" onclick="clearTtsShortcut('clear')">
+                  <img class="icon-inline" src="icons/close.svg" alt=""><span class="atajos-visually-hidden" data-i18n="btn.clearShortcut">Limpiar</span>
+                </button>
+                <div class="atajos-presets">
+                  <button type="button" class="atajos-preset" onclick="applyTtsShortcutPreset('clear', 'F10')">F10</button>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="setting-group" id="scGroupMusicPause">
-            <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
-              <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
-              <span data-i18n="label.musicPauseShortcut">Pausar/Reanudar música del bot</span>
-            </label>
-            <div class="settings-row-flex">
-              <input id="musicPauseShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" placeholder="Clic aquí y presiona teclas..."
-  onclick="startCapturingShortcut('musicPause')"
-                style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
-              <button onclick="clearTtsShortcut('musicPause')"
-                style="padding:8px 12px;border-radius:8px;font-size:12px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--text-muted);cursor:pointer;" data-i18n="btn.clearShortcut">
-                ✕ Limpiar
-              </button>
+          <div class="atajos-tab-panel" id="atajosPanelMusic" role="tabpanel" aria-labelledby="atajosTabMusic" hidden>
+            <div class="setting-group atajos-row" id="scGroupMusicPause">
+              <div class="atajos-action">
+                <img class="icon-inline atajos-action-icon" src="icons/pause.svg" alt="" onerror="this.style.display='none'">
+                <div class="atajos-action-copy">
+                  <label data-i18n="label.musicPauseShortcut">Pausar/Reanudar música del bot</label>
+                  <div class="atajos-hint" id="musicPauseShortcutHint">
+                    <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span class="atajos-active-key">—</span>
+                  </div>
+                </div>
+              </div>
+              <div class="atajos-controls">
+                <input class="atajos-capture" id="musicPauseShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" data-i18n-aria-label="label.musicPauseShortcut" placeholder="Clic aquí y presiona teclas..." onclick="startCapturingShortcut('musicPause')" />
+                <button type="button" class="atajos-clear" onclick="clearTtsShortcut('musicPause')">
+                  <img class="icon-inline" src="icons/close.svg" alt=""><span class="atajos-visually-hidden" data-i18n="btn.clearShortcut">Limpiar</span>
+                </button>
+                <div class="atajos-presets">
+                  <button type="button" class="atajos-preset" onclick="applyTtsShortcutPreset('musicPause', 'F11')">F11</button>
+                </div>
+              </div>
             </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
-              <button onclick="applyTtsShortcutPreset('musicPause', 'F11')"
-                style="padding:6px 10px;border-radius:8px;font-size:11px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--text-secondary);cursor:pointer;">
-                F11
-              </button>
-            </div>
-            <div id="musicPauseShortcutHint" style="font-size:11px;color:var(--text-muted);margin-top:4px;">
-              <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
+            <div class="setting-group atajos-row" id="scGroupMusicSkip">
+              <div class="atajos-action">
+                <img class="icon-inline atajos-action-icon" src="icons/skip_next.svg" alt="" onerror="this.style.display='none'">
+                <div class="atajos-action-copy">
+                  <label data-i18n="label.musicSkipShortcut">Saltar canción del bot</label>
+                  <div class="atajos-hint" id="musicSkipShortcutHint">
+                    <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span class="atajos-active-key">—</span>
+                  </div>
+                </div>
+              </div>
+              <div class="atajos-controls">
+                <input class="atajos-capture" id="musicSkipShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" data-i18n-aria-label="label.musicSkipShortcut" placeholder="Clic aquí y presiona teclas..." onclick="startCapturingShortcut('musicSkip')" />
+                <button type="button" class="atajos-clear" onclick="clearTtsShortcut('musicSkip')">
+                  <img class="icon-inline" src="icons/close.svg" alt=""><span class="atajos-visually-hidden" data-i18n="btn.clearShortcut">Limpiar</span>
+                </button>
+                <div class="atajos-presets">
+                  <button type="button" class="atajos-preset" onclick="applyTtsShortcutPreset('musicSkip', 'F12')">F12</button>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="setting-group" id="scGroupMusicSkip">
-            <label style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
-              <img class="icon-inline" src="icons/keyboard.svg" alt="" onerror="this.style.display='none'">
-              <span data-i18n="label.musicSkipShortcut">Saltar canción del bot</span>
-            </label>
-            <div class="settings-row-flex">
-              <input id="musicSkipShortcutInput" readonly data-i18n-placeholder="conn.shortcutCapturing" placeholder="Clic aquí y presiona teclas..."
-  onclick="startCapturingShortcut('musicSkip')"
-                style="flex:1;cursor:pointer;font-family:monospace;font-weight:600;font-size:13px;text-align:center;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);" />
-              <button onclick="clearTtsShortcut('musicSkip')"
-                style="padding:8px 12px;border-radius:8px;font-size:12px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--text-muted);cursor:pointer;" data-i18n="btn.clearShortcut">
-                ✕ Limpiar
-              </button>
-            </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
-              <button onclick="applyTtsShortcutPreset('musicSkip', 'F12')"
-                style="padding:6px 10px;border-radius:8px;font-size:11px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--text-secondary);cursor:pointer;">
-                F12
-              </button>
-            </div>
-            <div id="musicSkipShortcutHint" style="font-size:11px;color:var(--text-muted);margin-top:4px;">
-              <span data-i18n="conn.shortcutHint">Atajo activo:</span> <span style="color:var(--accent);font-family:monospace;font-weight:600;">—</span>
-            </div>
+          <div class="atajos-tab-panel atajos-empty" id="atajosPanelGeneral" role="tabpanel" aria-labelledby="atajosTabGeneral" hidden>
+            <img class="icon-inline" src="icons/keyboard.svg" alt="">
+            <p data-i18n="settings.shortcutsGeneralEmpty">Próximamente, más atajos.</p>
           </div>
         </div>
       </div>
 
+      <div class="settings-section" id="chatGuardPanel"><!-- interfaz/src/vistas/principal/moderacion-contenido/ la llena --></div>
+
+      <!-- interfaz/src/vistas/principal/ajustes-ventana.js la cablea -->
+      <div class="settings-section ajustes-ventana" id="settingsSectionWindow">
+        <div class="settings-section-title" data-i18n="settings.window">Ventana e inicio</div>
+        <label class="ajustes-ventana-fila">
+          <img class="ajustes-ventana-icono" src="icons/inbox.svg" alt="">
+          <span class="ajustes-ventana-texto">
+            <span class="ajustes-ventana-titulo" data-i18n="toggle.closeToTray">Minimizar a la bandeja al cerrar</span>
+            <span class="ajustes-ventana-desc" data-i18n="toggle.closeToTrayHint">Con la X la app sigue funcionando en la bandeja del sistema. Para cerrarla del todo: clic derecho en el ícono de la bandeja y «Salir».</span>
+          </span>
+          <span class="switch">
+            <input type="checkbox" id="closeToTrayToggle" />
+            <span class="switch-track"></span>
+          </span>
+        </label>
+        <label class="ajustes-ventana-fila" id="openAtLoginGroup">
+          <img class="ajustes-ventana-icono" src="icons/windows-start.svg" alt="">
+          <span class="ajustes-ventana-texto">
+            <span class="ajustes-ventana-titulo" data-i18n="toggle.openAtLogin">Abrir al iniciar Windows</span>
+          </span>
+          <span class="switch">
+            <input type="checkbox" id="openAtLoginToggle" />
+            <span class="switch-track"></span>
+          </span>
+        </label>
+      </div>
+
       <div class="settings-section">
         <div class="settings-section-title" data-i18n="settings.advanced">Configuración avanzada</div>
-        <a href="/advanced.html?popup=1" target="_blank" rel="noopener" class="btn-nav" data-i18n="btn.openAdvanced"><img class="icon-inline" src="icons/build.svg" alt=""> Abrir panel avanzado (filtros, rate limit, logs) →</a>
+        <a href="/advanced.html?popup=1" target="_blank" rel="noopener" class="btn-nav"><img class="icon-inline" src="icons/build.svg" alt=""> <span data-i18n="btn.openAdvanced">Abrir panel avanzado (filtros, rate limit, logs)</span> <img class="icon-inline" src="icons/open_in_new.svg" alt=""></a>
       </div>
     </div>
 
@@ -1101,8 +1142,7 @@
           <div style="flex-shrink:0;">
             <img id="mobileQR" src="/api/mobile/qr" alt="QR Code" width="180" height="180"
               style="border-radius:12px;border:2px solid var(--border);background:#fff;display:block;"
-              onerror="this.style.display='none';document.getElementById('mobileQRError').style.display='flex'">
-            <div id="mobileQRError" style="display:none;width:180px;height:180px;border-radius:12px;border:2px dashed var(--border);align-items:center;justify-content:center;font-size:11px;color:var(--text-muted);text-align:center;padding:12px;">Error al generar QR</div>
+              onerror="window.showMobileQRPlaceholder?.()">
           </div>
           <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:12px;">
             <div>
@@ -1110,7 +1150,7 @@
               <div id="mobileURL" style="font-size:13px;color:var(--accent);word-break:break-all;font-family:monospace;padding:8px 10px;background:var(--surface);border-radius:8px;border:1px solid var(--border);" data-i18n="mobile2.loading">Cargando...</div>
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
-              <button class="cfg-btn" onclick="copyMobileURL()" data-i18n="btn.copyLink">Copiar enlace</button>
+              <button id="mobileCopyBtn" class="cfg-btn" onclick="copyMobileURL()" data-i18n="btn.copyLink">Copiar enlace</button>
             </div>
             <div style="font-size:11px;color:var(--text-muted);line-height:1.5;" data-i18n="mobile.appDesc">
               La app móvil incluye chat en vivo, controles TTS (pausa, skip, toggles) y marcadores de clip.
@@ -1230,34 +1270,95 @@
 
 <div class="app-glow" id="appGlow"></div>
 
+<!-- ══ MODAL: Invitación a Discord ═══════════════════════ -->
+<div id="discordModal" class="modal-overlay" onclick="closeDiscordModal(event)">
+  <div class="modal-content discord-modal-content" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeDiscordModal()" data-i18n-aria-label="news.close"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <img class="discord-cat" src="img/mascota/discord-banner.webp" width="1000" height="563" alt="">
+    <h2 data-i18n="discordInvite.title">Únete al Discord de TikLiveTTS</h2>
+    <p data-i18n="discordInvite.body"></p>
+    <a class="discord-cta" href="https://discord.com/invite/mwY859tcQK" target="_blank" rel="noopener"><img class="icon-inline" src="icons/discord.svg" alt=""> <span data-i18n="discordInvite.cta">Unirme al Discord</span></a>
+  </div>
+</div>
+
+<!-- ══ MODAL: Aviso de conexión fallida (invita al Discord) ═══ -->
+<div id="connectFailModal" class="modal-overlay">
+  <div class="modal-content discord-modal-content">
+    <button class="modal-close" type="button" data-i18n-aria-label="news.close"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <img class="discord-cat" src="img/mascota/gato-grito.webp" width="876" height="548" alt="">
+    <h2 data-i18n="connectFail.title">¡Ups! No se pudo conectar</h2>
+    <p data-i18n="connectFail.body"></p>
+    <a class="discord-cta" href="https://discord.com/invite/mwY859tcQK" target="_blank" rel="noopener"><img class="icon-inline" src="icons/discord.svg" alt=""> <span data-i18n="discordInvite.cta">Unirme al Discord</span></a>
+  </div>
+</div>
+
+<!-- ══ MODAL: Programa de creadores (CTA del empty state del chat) ═══ -->
+<div id="creatorProgramModal" class="modal-overlay">
+  <div class="modal-content cuenta-cancel-modal creator-program-modal" role="dialog" aria-modal="true" aria-labelledby="creatorProgramTitle">
+    <button class="modal-close" type="button" data-i18n-aria-label="news.close"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <div class="cuenta-cancel-copy">
+      <div class="notice-icon-badge creator-program-badge"><span class="creator-program-badge-icon" aria-hidden="true"></span></div>
+      <h2 id="creatorProgramTitle" data-i18n="creatorProgram.modalTitle">Crea un video y gana 2 meses Pro</h2>
+      <p class="cuenta-cancel-description" data-i18n="creatorProgram.modalBody1">Si eres creador de contenido, publica un video hablando, reseñando o recomendando TikLiveTTS.</p>
+      <button type="button" class="btn btn-connect cuenta-cancel-confirm creator-program-join" data-i18n="creatorProgram.join">Participar</button>
+      <p class="cuenta-cancel-notice"><img class="icon-inline" src="icons/gift.svg" alt=""><span data-i18n-html="creatorProgram.modalBody3">Una vez aprobado, podrás canjear <strong>2 meses de TikLiveTTS Pro completamente gratis.</strong></span></p>
+    </div>
+    <div class="cuenta-cancel-image"><img src="img/gato-regalo-creadores.png" width="1254" height="1254" alt=""></div>
+  </div>
+</div>
+
+<!-- ══ MODAL: Código de descuento (primer banner del chat) ═══ -->
+<div id="promoCodeModal" class="modal-overlay">
+  <div class="modal-content discord-modal-content" role="dialog" aria-modal="true" aria-labelledby="promoCodeTitle">
+    <button class="modal-close" type="button" data-i18n-aria-label="news.close"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <img class="discord-cat" src="asset/ads/banner-sale-octubre.png" width="2341" height="672" alt="">
+    <h2 id="promoCodeTitle" data-i18n="promoCode.title">Descuento de Halloween</h2>
+    <p data-i18n="promoCode.body"></p>
+    <button class="promo-code" type="button" data-i18n-aria-label="promoCode.copyAria">
+      <span class="promo-code-text"></span>
+      <img class="icon-inline promo-code-icon" src="icons/content_copy.svg" alt="">
+    </button>
+    <button class="cuenta-btn-primary promo-code-plans" type="button"><img class="icon-inline" src="icons/redeem.svg" alt=""> <span data-i18n="promoCode.viewPlans">Ver planes</span></button>
+  </div>
+</div>
+
 <!-- ══ MODAL: Donaciones ════════════════════════════════ -->
 <div id="donationsModal" class="modal-overlay" onclick="closeDonationsModal(event)">
   <div class="modal-content" onclick="event.stopPropagation()">
     <button class="modal-close" onclick="closeDonationsModal()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
     <h2><img class="icon-inline" src="icons/favorite-red.svg" alt=""> <span data-i18n="donations.title">Apoya mi contenido</span></h2>
+    <p class="donations-subtitle" data-i18n="donations.subtitle">Tu apoyo me ayuda a seguir creando contenido...</p>
 
-    <a href="https://ko-fi.com/ikhunsa" target="_blank" class="donation-link-card kofi">
-      <h3>☕ Ko-fi <span class="ext-arrow">↗</span></h3>
-      <p data-i18n="donations.kofiDesc">Apóyame con un cafecito</p>
-    </a>
+    <div class="donations-layout">
+      <div class="donations-methods">
+        <a href="https://ko-fi.com/ikhunsa" target="_blank" class="donation-link-card kofi">
+          <img class="donations-mascot" src="img/mascota/michi-ramen.png" alt="">
+          <span class="donation-card-badge"><img class="icon-inline donation-card-icon" src="icons/local_cafe.svg" alt=""></span>
+          <div class="donation-card-copy"><h3>Ko-fi</h3><p data-i18n="donations.kofiDesc">Apóyame con un cafecito</p></div>
+          <img class="icon-inline ext-arrow" src="icons/chevron_right.svg" alt="">
+        </a>
 
-    <a href="https://paypal.me/KhunsaUwU" target="_blank" class="donation-link-card paypal">
-      <h3>💙 PayPal <span class="ext-arrow">↗</span></h3>
-      <p data-i18n="donations.paypalDesc">Donación directa vía PayPal</p>
-    </a>
+        <a href="https://paypal.me/KhunsaUwU" target="_blank" class="donation-link-card paypal">
+          <span class="donation-card-badge"><img class="icon-inline donation-card-icon" src="icons/attach_money.svg" alt=""></span>
+          <div class="donation-card-copy"><h3>PayPal</h3><p data-i18n="donations.paypalDesc">Donación directa vía PayPal</p></div>
+          <img class="icon-inline ext-arrow" src="icons/chevron_right.svg" alt="">
+        </a>
 
-    <div class="qr-card">
-      <h3>Lightning Network (Instant)</h3>
-      <p>Khunsa@coinos.io</p>
-      <input type="text" value="Khunsa@coinos.io" readonly class="donation-input" onclick="this.select()">
-      <button class="btn-copy" onclick="copyToClipboard('Khunsa@coinos.io')"><img class="icon-inline" src="icons/content_copy.svg" alt=""> <span data-i18n="donations.copyAddress">Copiar dirección</span></button>
-    </div>
+        <div class="qr-card is-featured">
+          <div class="donation-card-heading" role="button" tabindex="0" aria-expanded="false"><span class="donation-card-badge"><img class="icon-inline donation-card-icon" src="icons/offline_bolt.svg" alt=""></span><div class="donation-card-copy"><h3>Lightning Network (Instant)</h3><p data-i18n="donations.lightningDesc">Pagos instantáneos, sin comisiones de red</p></div><img class="icon-inline ext-arrow donation-card-chevron" src="icons/chevron_right.svg" alt=""></div>
+          <div class="donation-card-action"><input type="text" value="Khunsa@coinos.io" readonly class="donation-input" onclick="event.stopPropagation(); this.select()"><button class="btn-copy" onclick="event.stopPropagation(); copyToClipboard('Khunsa@coinos.io')"><img class="icon-inline" src="icons/content_copy.svg" alt=""> <span data-i18n="donations.copyAddress">Copiar dirección</span></button></div>
+        </div>
 
-    <div class="qr-card">
-      <h3 data-i18n="donations.btcNative">Bitcoin Nativo</h3>
-      <p>bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk</p>
-      <input type="text" value="bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk" readonly class="donation-input" onclick="this.select()">
-      <button class="btn-copy" onclick="copyToClipboard('bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk')"><img class="icon-inline" src="icons/content_copy.svg" alt=""> <span data-i18n="donations.copyAddress">Copiar dirección</span></button>
+        <div class="qr-card">
+          <div class="donation-card-heading" role="button" tabindex="0" aria-expanded="false"><span class="donation-card-badge"><img class="icon-inline donation-card-icon" src="icons/monetization_on.svg" alt=""></span><div class="donation-card-copy"><h3 data-i18n="donations.btcNative">Bitcoin Nativo</h3><p data-i18n="donations.btcNativeDesc">Transferencia directa a una wallet Bitcoin</p></div><img class="icon-inline ext-arrow donation-card-chevron" src="icons/chevron_right.svg" alt=""></div>
+          <div class="donation-card-action"><input type="text" value="bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk" readonly class="donation-input" onclick="event.stopPropagation(); this.select()"><button class="btn-copy" onclick="event.stopPropagation(); copyToClipboard('bc1qtu4fnl7e2qxjssqtaynjnjkgq7r4kerv0r9ljk')"><img class="icon-inline" src="icons/content_copy.svg" alt=""> <span data-i18n="donations.copyAddress">Copiar dirección</span></button></div>
+        </div>
+      </div>
+      <div class="donations-thanks">
+        <img class="icon-inline" src="icons/favorite-red.svg" alt="">
+        <h3 data-i18n="donations.thanksTitle">Gracias por apoyar mi trabajo</h3>
+        <p data-i18n="donations.supportersNote">Gente increíble hace cosas increíbles</p>
+      </div>
     </div>
   </div>
 </div>
@@ -1327,7 +1428,7 @@
 
     <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px;">
       <span id="blockWordCount" style="font-size:11px;color:var(--text-muted);"></span>
-      <a class="cfg-btn" href="/advanced.html?popup=1#palabras-bloqueadas" target="_blank" rel="noopener" data-i18n="blockWord.manageAll">Ver y editar todas</a>
+      <button type="button" class="cfg-btn" onclick="openChatGuardWords()" data-i18n="blockWord.manageAll">Ver y editar todas</button>
     </div>
   </div>
 </div>
@@ -1377,6 +1478,15 @@
       <a href="https://github.com/iKhunsa/tiktok-tts" target="_blank" class="cfg-btn" style="flex:1;justify-content:center;" data-i18n="notice.bugReportDevCta">Sumate como developer</a>
       <button class="cfg-btn" style="flex:1;justify-content:center;" onclick="closeBugReportNotice();openDonationsModal();" data-i18n="notice.bugReportDonateCta">Apoyar con una donación</button>
     </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: Novedades ══════════════════════════════════ -->
+<div id="newsModal" class="modal-overlay">
+  <div class="modal-content news-modal-content">
+    <button id="newsModalClose" class="modal-close" data-i18n-aria-label="news.close"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <h2><img class="icon-inline" src="icons/newspaper.svg" alt=""> <span data-i18n="news.title">Novedades de TikLiveTTS</span></h2>
+    <div id="newsList" class="news-list"></div>
   </div>
 </div>
 

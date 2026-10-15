@@ -1,0 +1,21 @@
+/* Efectos de texto de usuario: sombra, contorno, neon, resplandor y ola. */
+.fx-sombra { text-shadow: 0 2px 4px rgba(0, 0, 0, 0.85); }
+.fx-contorno {
+  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.9);
+  paint-order: stroke fill;
+}
+.fx-neon { text-shadow: 0 0 4px currentColor, 0 0 12px currentColor, 0 0 24px currentColor; }
+.resplandor { filter: drop-shadow(0 0 6px currentColor); }
+
+.ola > span {
+  display: inline-block;
+  animation: ola-letra 1.4s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 70ms);
+}
+@keyframes ola-letra {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-0.25em); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ola > span { animation: none; }
+}

@@ -19,7 +19,6 @@ const { EventEmitter } = require('node:events');
 
 const { applyConfigPatch } = require('../features/configuracion/apply-patch');
 const { blockWord } = require('../features/moderacion/routes/block-word');
-const { createBlockedMatchersState, getBlockedMatchers } = require('../features/moderacion/filters/blocked-matchers');
 const { createStubLogger } = require('./helpers/stub-logger');
 
 test('applyConfigPatch: patch con __proto__/constructor no lanza y no contamina', () => {
@@ -31,9 +30,9 @@ test('applyConfigPatch: patch con __proto__/constructor no lanza y no contamina'
 });
 
 test('block-word: palabra solo-whitespace -> 400, no se agrega "" al Set', () => {
-  const state = createBlockedMatchersState();
+  const state = new Set();
   const logger = createStubLogger();
-  const handler = blockWord({ blockedMatchersState: state, logger });
+  const handler = blockWord({ blockedWords: state, logger });
 
   let code = 200; let body = null;
   const res = { status(c) { code = c; return this; }, json(b) { body = b; } };
@@ -41,15 +40,12 @@ test('block-word: palabra solo-whitespace -> 400, no se agrega "" al Set', () =>
 
   assert.equal(code, 400);
   assert.equal(body.errorKey, 'errors.textRequired');
-  assert.equal(state.blockedWords.size, 0, 'no se metio "" al Set');
-
-  // y una regex de matchers vacia (no una que matchee todo)
-  assert.deepEqual(getBlockedMatchers(state), { re1: null, re2: null });
+  assert.equal(state.size, 0, 'no se metio "" al Set');
 });
 
 test('block-word: palabra real se agrega trimmeada y en minuscula', () => {
-  const state = createBlockedMatchersState();
-  const handler = blockWord({ blockedMatchersState: state, logger: createStubLogger() });
+  const state = new Set();
+  const handler = blockWord({ blockedWords: state, logger: createStubLogger() });
   let body = null;
   handler({ body: { word: '  SpAm  ' } }, { status() { return this; }, json(b) { body = b; } });
   assert.deepEqual(body.words, ['spam']);

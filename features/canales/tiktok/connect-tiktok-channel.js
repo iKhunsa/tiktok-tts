@@ -1,7 +1,7 @@
 'use strict';
 
-const { TikTokLiveClient } = require('@tiklivetts/tiktok-live-client');
 const { cleanTiktokUsername } = require('./clean-username');
+const { tiktokSessionPartition } = require('./tiktok-session-partition');
 const { armWatchdog, clearWatchdog, WATCHDOG_TIMEOUT_MS } = require('../stale-watchdog');
 const { assertNoConexionEnCurso } = require('../connecting-lock');
 const { nextRetryDelayMs, nextWaitingLiveDelayMs, RECOVERY_VISIBLE_THRESHOLD_MS } = require('./tiktok-supervisor-schedule');
@@ -13,6 +13,13 @@ const CONNECT_TIMEOUT_MS = 30000;
 // tick en vez de una sola al final del combo — se debounce por combo
 // (giftId+uniqueId) y se publica solo el ultimo estado visto.
 const GIFT_COMBO_DEBOUNCE_MS = 1500;
+
+// Segunda senal de salud: la propia pagina de TikTok pollea check_alive cada
+// ~6s y el paquete emite 'checkAlive' en cada `alive:true`. Si el watchdog de
+// silencio general (WATCHDOG_TIMEOUT_MS) vence pero hubo un checkAlive en
+// esta ventana, el live esta sano sin actividad: no se reconecta y se vuelve
+// a mirar cada CHECK_ALIVE_FRESH_MS. 60s = ~10 polls, tolera varios perdidos.
+const CHECK_ALIVE_FRESH_MS = 60 * 1000;
 
 function watchdogKey(username) {
   return `tiktok:${username}`;
@@ -72,13 +79,17 @@ function readTikTokError(err) {
 /**
  * Clasifica el resultado de un intento tecnico para el supervisor. `live` y
  * `not_live` son los unicos casos "resueltos" del paquete (ver
- * classify-room-enter.js del paquete); todo lo demas (LIVE_STATUS_UNKNOWN,
- * SigningError/timeout, o cualquier excepcion no tipada) es `unknown` —
- * nunca se muestra como "offline confirmado" ni se descarta la intencion.
+ * classify-room-enter.js del paquete). `auth_required` = TikTok redirigio el
+ * live a /login (AuthRequiredError del paquete, detectado por la navegacion
+ * real, no por el ERR_ABORTED crudo): no es un fallo tecnico y reintentar no
+ * lo arregla. Todo lo demas (LIVE_STATUS_UNKNOWN, SigningError/timeout, o
+ * cualquier excepcion no tipada) es `unknown` — nunca se muestra como
+ * "offline confirmado" ni se descarta la intencion.
  */
 function classifyAttemptOutcome(err) {
   const { message, stack, code } = readTikTokError(err);
   if (code === 'NOT_LIVE') return { kind: 'not_live', code, message, stack };
+  if (code === 'AUTH_REQUIRED') return { kind: 'auth_required', code, message, stack };
   return { kind: 'unknown', code, reason: err && err.reason, tiktokStatusCode: err && err.tiktokStatusCode, message, stack };
 }
 
@@ -116,7 +127,10 @@ function setupTikTokConnection(deps, cleanUsername) {
   const existing = state.tiktokChannels.get(cleanUsername);
   if (existing && existing.conn) teardownConnResources(existing);
 
-  const conn = new TikTokLiveClient(cleanUsername);
+  // Require perezoso (mismo patron que tmi.js en connect-twitch.js): quien no
+  // conecta TikTok nunca carga el cliente (~5 MB RSS medidos bajo node).
+  const { TikTokLiveClient } = require('@tiklivetts/tiktok-live-client');
+  const conn = new TikTokLiveClient(cleanUsername, { partition: tiktokSessionPartition() });
   const entry = {
     conn,
     username: cleanUsername,
@@ -145,8 +159,21 @@ function setupTikTokConnection(deps, cleanUsername) {
   // Cualquier evento tecnico (chat, regalo, like, join, follow, share, o el
   // push periodico de viewerCount) cuenta como "conexion viva" — un live sin
   // comentarios NO debe verse como caido. `armStaleWatchdog` es el unico lugar
-  // que decide que cuenta como salud tecnica.
-  const armStaleWatchdog = () => armWatchdog(state, staleKey, WATCHDOG_TIMEOUT_MS, () => onStaleConnection(deps, cleanUsername, conn));
+  // que decide que cuenta como salud tecnica (checkAlive es aparte, ver
+  // CHECK_ALIVE_FRESH_MS y onStaleConnection).
+  entry.lastCheckAliveAt = null;
+  entry.quietSince = null;
+  const armStaleWatchdog = () => {
+    if (entry.quietSince !== null) {
+      logger.log(
+        'info', 'canales', 'canales/tiktok/connect-tiktok-channel.js#setupTikTokConnection', 'canales.tiktok.actividad_reanudada',
+        `TikTok ${cleanUsername} volvio a tener actividad tras un periodo sano sin eventos`,
+        { channel: cleanUsername, quietMs: Date.now() - entry.quietSince }
+      );
+      entry.quietSince = null;
+    }
+    armWatchdog(state, staleKey, WATCHDOG_TIMEOUT_MS, () => onStaleConnection(deps, cleanUsername, conn));
+  };
   entry.armStaleWatchdog = armStaleWatchdog;
 
   // Evita que una conexion vieja (reemplazada por un reintento mas nuevo)
@@ -191,7 +218,7 @@ function setupTikTokConnection(deps, cleanUsername) {
     armStaleWatchdog();
     bus.emit('canal:like', {
       platform: 'tiktok', channel: cleanUsername,
-      userId: data.uniqueId || null, nick: data.nickname || null, likeCount: Number(data.likeCount) || 1,
+      userId: data.uniqueId || null, nick: data.nickname || null, avatar: data.avatarUrl || '', likeCount: Number(data.likeCount) || 1,
     });
   });
 
@@ -225,9 +252,23 @@ function setupTikTokConnection(deps, cleanUsername) {
   // TikTok empuja viewerCount periodicamente aunque el chat este en silencio
   // total — es la senal tecnica mas confiable de "el WS sigue vivo" que
   // expone el paquete sin depender de que alguien escriba o regale algo.
-  conn.on('roomUserSeq', () => {
+  conn.on('roomUserSeq', (data) => {
     if (logIgnoredIfStale('roomUserSeq')) return;
     armStaleWatchdog();
+    bus.emit('canal:viewers', { platform: 'tiktok', channel: cleanUsername, viewerCount: data?.viewerCount });
+  });
+
+  // TikTok confirmo (check_alive, ~cada 6s) que el directo sigue. NO rearma
+  // el watchdog general: solo lo consulta onStaleConnection al vencer.
+  conn.on('checkAlive', () => {
+    if (logIgnoredIfStale('checkAlive')) return;
+    if (entry.lastCheckAliveAt === null) {
+      logger.log(
+        'info', 'canales', 'canales/tiktok/connect-tiktok-channel.js#setupTikTokConnection', 'canales.tiktok.check_alive_confirmado',
+        `TikTok ${cleanUsername}: check_alive confirma directo activo (senal de salud secundaria)`, { channel: cleanUsername }
+      );
+    }
+    entry.lastCheckAliveAt = Date.now();
   });
 
   conn.on('disconnected', () => {
@@ -263,18 +304,61 @@ function setupTikTokConnection(deps, cleanUsername) {
     triggerRecovery(deps, cleanUsername, 'stream_end');
   });
 
+  // La pagina de TikTok salto sola a OTRO directo dentro de la ventana
+  // invisible (autoplay al siguiente LIVE). El paquete ya dejo de reenviar esa
+  // sala y cerro la ventana; se reentra a /@canal/live desde cero.
+  conn.on('roomChanged', ({ roomId, newRoomId } = {}) => {
+    if (logIgnoredIfStale('roomChanged')) return;
+    clearWatchdog(state, staleKey);
+    logger.log(
+      'warn', 'canales', 'canales/tiktok/connect-tiktok-channel.js#setupTikTokConnection', 'canales.tiktok.sala_cambiada',
+      `La pagina de TikTok ${cleanUsername} cambio a otra sala; reconectando`, { channel: cleanUsername, roomId, newRoomId }
+    );
+    triggerRecovery(deps, cleanUsername, 'sala_cambiada');
+  });
+
   return conn;
 }
 
-/** Watchdog de silencio tecnico total (WATCHDOG_TIMEOUT_MS sin ninguna senal, ver armStaleWatchdog arriba). */
+/**
+ * Vence el watchdog de silencio general (WATCHDOG_TIMEOUT_MS sin ninguna
+ * senal, ver armStaleWatchdog arriba). Modelo de dos senales: solo recupera
+ * si TAMPOCO hubo un checkAlive en los ultimos CHECK_ALIVE_FRESH_MS. Si lo
+ * hubo, el live esta sano sin actividad y se re-chequea cada
+ * CHECK_ALIVE_FRESH_MS hasta que vuelva la actividad (rearma el general) o
+ * check_alive deje de confirmar (recupera).
+ */
 function onStaleConnection(deps, cleanUsername, conn) {
   const { state, logger } = deps;
   const current = state.tiktokChannels.get(cleanUsername);
   if (!current || current.conn !== conn) return;
+  const source = 'canales/tiktok/connect-tiktok-channel.js#onStaleConnection';
+  const now = Date.now();
+  const checkAliveAgeMs = current.lastCheckAliveAt !== null ? now - current.lastCheckAliveAt : null;
+
+  if (checkAliveAgeMs !== null && checkAliveAgeMs < CHECK_ALIVE_FRESH_MS) {
+    if (current.quietSince === null) {
+      current.quietSince = now - WATCHDOG_TIMEOUT_MS;
+      logger.log(
+        'info', 'canales', source, 'canales.tiktok.sano_sin_actividad',
+        `TikTok ${cleanUsername} sin eventos en ${WATCHDOG_TIMEOUT_MS}ms pero check_alive sigue confirmando el directo; no se reconecta`,
+        { channel: cleanUsername, timeoutMs: WATCHDOG_TIMEOUT_MS, checkAliveAgeMs, healthSignal: 'check_alive' }
+      );
+    }
+    armWatchdog(state, watchdogKey(cleanUsername), CHECK_ALIVE_FRESH_MS, () => onStaleConnection(deps, cleanUsername, conn));
+    return;
+  }
+
+  // healthSignal distingue "check_alive nunca llego en esta conexion" (mismo
+  // caso que antes de existir la senal) de "confirmaba y dejo de hacerlo".
+  const healthSignal = checkAliveAgeMs === null ? 'ninguna_en_ventana' : 'check_alive_dejo_de_confirmar';
   logger.log(
-    'warn', 'canales', 'canales/tiktok/connect-tiktok-channel.js#onStaleConnection', 'canales.tiktok.sin_eventos',
-    `TikTok ${cleanUsername} sin ninguna senal tecnica en ${WATCHDOG_TIMEOUT_MS}ms; recuperando`,
-    { channel: cleanUsername, timeoutMs: WATCHDOG_TIMEOUT_MS, healthSignal: 'ninguna_en_ventana' }
+    'warn', 'canales', source, 'canales.tiktok.sin_eventos',
+    `TikTok ${cleanUsername} sin ninguna senal tecnica (${healthSignal}); recuperando`,
+    {
+      channel: cleanUsername, timeoutMs: WATCHDOG_TIMEOUT_MS, healthSignal, checkAliveAgeMs,
+      quietMs: current.quietSince !== null ? now - current.quietSince : null,
+    }
   );
   triggerRecovery(deps, cleanUsername, 'watchdog_sin_senal_tecnica');
 }
@@ -341,6 +425,8 @@ async function runAttempt(deps, cleanUsername) {
     onAttemptSucceeded(deps, current, outcome, durationMs);
   } else if (outcome.kind === 'not_live') {
     onConfirmedNotLive(deps, current, outcome, durationMs);
+  } else if (outcome.kind === 'auth_required') {
+    onAuthRequired(deps, current, outcome, durationMs);
   } else {
     onAttemptFailed(deps, current, outcome, durationMs);
   }
@@ -418,7 +504,7 @@ function onAttemptFailed(deps, entry, outcome, durationMs) {
       motivoPaquete: outcome.reason,
     });
 
-  const delay = nextRetryDelayMs(entry.consecutiveFailures);
+  const delay = nextRetryDelayMs(entry.consecutiveFailures, { tiktokAnswered: outcome.tiktokStatusCode !== undefined });
 
   if (entry.connectedOnce) {
     // Ya habia una conexion sana: es una RECUPERACION, sujeta al umbral de
@@ -441,6 +527,57 @@ function onAttemptFailed(deps, entry, outcome, durationMs) {
   }
 
   scheduleNextAttempt(deps, entry, delay);
+}
+
+/**
+ * TikTok exige sesion para este live: el supervisor se PAUSA (no agenda
+ * proximo intento — reintentar contra /login no se resuelve solo y seria un
+ * loop infinito) pero la intencion del usuario queda guardada en
+ * state.tiktokChannels con techState 'auth_required'. Se reanuda sola con
+ * resumeAuthPausedChannels cuando el usuario inicia sesion.
+ */
+function onAuthRequired(deps, entry, outcome, durationMs) {
+  const { bus } = deps;
+  if (entry.visibilityTimer) { clearTimeout(entry.visibilityTimer); entry.visibilityTimer = null; }
+  const wasAlreadyPaused = entry.techState === 'auth_required';
+
+  logTransition(deps, entry, 'info', 'canales.tiktok.auth_requerida',
+    `TikTok ${entry.username}: TikTok pide iniciar sesion, supervisor pausado hasta que haya sesion`, {
+      techStateNuevo: 'auth_required', causa: 'redireccion_login', durationMs, tiktokErrorCode: outcome.code,
+    });
+
+  entry.techState = 'auth_required';
+  entry.consecutiveWaits = 0;
+  entry.recoveringSince = null;
+  entry.recoveryVisible = false;
+
+  if (!wasAlreadyPaused) {
+    bus.emit('canal:estado', { platform: 'tiktok', channel: entry.username, state: 'auth-requerida' });
+    broadcastTiktokStatus(bus, entry.username, 'auth-required');
+  }
+}
+
+/**
+ * Reanuda todo canal pausado por auth_required (llamado tras un login
+ * exitoso, ver routes/tiktok-login.js). Mismo ciclo (cycleId) — no es un clic
+ * nuevo de "Conectar", es la continuacion de la intencion que ya existia.
+ */
+function resumeAuthPausedChannels(deps, causa) {
+  const resumed = [];
+  for (const entry of deps.state.tiktokChannels.values()) {
+    if (entry.techState !== 'auth_required') continue;
+    logTransition(deps, entry, 'info', 'canales.tiktok.supervisor_reanudado',
+      `TikTok ${entry.username}: sesion disponible, reanudando conexion`, {
+        techStateNuevo: entry.connectedOnce ? 'recovering' : 'connecting', causa,
+      });
+    entry.techState = entry.connectedOnce ? 'recovering' : 'connecting';
+    entry.consecutiveFailures = 0;
+    deps.bus.emit('canal:estado', { platform: 'tiktok', channel: entry.username, state: 'sesion-restaurada' });
+    broadcastTiktokStatus(deps.bus, entry.username, 'connecting');
+    resumed.push(entry.username);
+    runAttempt(deps, entry.username);
+  }
+  return resumed;
 }
 
 async function connectTiktokChannel(deps, channel) {
@@ -511,4 +648,4 @@ async function connectTiktokChannel(deps, channel) {
   }
 }
 
-module.exports = { connectTiktokChannel, setupTikTokConnection, readTikTokError, teardownConn, runAttempt };
+module.exports = { connectTiktokChannel, setupTikTokConnection, readTikTokError, teardownConn, runAttempt, resumeAuthPausedChannels };

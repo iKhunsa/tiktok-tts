@@ -4,15 +4,21 @@
  * de sesion. Toda la logica de plan/entitlements vive en el server
  * (features/auth/); aca solo se refleja el estado y se disparan acciones.
  */
-import { t, aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
+import { t, aplicarTraducciones, idiomaActual } from '../../../nucleo/i18n/i18n.js';
 import { showToast } from '../../../componentes/toast.js';
 import { almacenSesion, aplicarSesion, pintarBadgeSidebar } from '../../../nucleo/estado/sesion.js';
+import { borrarDatosDeCuenta } from '../../../nucleo/estado/datos-por-cuenta.js';
 import { guardarAvatarPerfil, obtenerAvatarPerfil, quitarAvatarPerfil } from '../../../nucleo/estado/avatar-perfil.js';
 import { pedir, toastError } from './api.js';
-import { irACheckout } from './checkout.js';
+import { abrirModalEliminarCuenta } from './modal-eliminar-cuenta.js';
+import { abrirPopupPlanes } from '../../../componentes/popup-planes.js';
 import { escaparAtributo as esc } from '../../../../compartido/escapar-html.js';
+import { avisoRegistroHtml } from './aviso-registro-html.js';
+import { enlazarAvisoRegistro } from './enlazar-aviso-registro.js';
 
 const MIN_PASS = 8;
+// La sesion pasa a anonymous y la ventana se recarga: el aviso sobrevive al reload.
+const AVISO_CUENTA_ELIMINADA = 'tikliveTTS_cuentaEliminada';
 
 let modo = 'login'; // 'login' | 'register' — solo cuando esta deslogueado
 
@@ -40,6 +46,7 @@ function formAuth() {
             ${campo({ id: 'cuentaPass2', labelKey: 'cuenta.passwordConfirm', type: 'password', autocomplete: 'new-password', required: true })}
           </div>
           <p class="cuenta-hint" data-i18n="cuenta.passwordRule"></p>
+          ${avisoRegistroHtml(esReg)}
         ` : campo({ id: 'cuentaPass', labelKey: 'cuenta.password', type: 'password', autocomplete: 'current-password', required: true })}
 
         <button type="submit" class="cuenta-btn-primary" id="cuentaSubmit" data-i18n="${esReg ? 'cuenta.doRegister' : 'cuenta.doLogin'}"></button>
@@ -52,6 +59,21 @@ function formAuth() {
 
       ${esReg ? `<p class="cuenta-legal" data-i18n="cuenta.legal"></p>` : ''}
     </div>`;
+}
+
+// Intervalo de facturacion del plan de pago: el anual se puede pasar a mensual
+// en la proxima renovacion (sin reembolso, el periodo pagado se cumple completo).
+function intervaloBlock(sub, hasta) {
+  if (!sub.interval) return '';
+  const intervaloKey = sub.interval === 'month' ? 'cuenta.intervalMonthly' : 'cuenta.intervalYearly';
+  let detalle = '';
+  if (sub.nextInterval === 'month') {
+    detalle = `<p class="cuenta-hint">${esc(t('cuenta.changesAt', { fecha: hasta }))}</p>`;
+  } else if (sub.interval === 'year' && !sub.cancelAtPeriodEnd) {
+    detalle = `<button class="cuenta-btn-ghost" id="cuentaSwitchMonthly" data-i18n="cuenta.switchToMonthly"></button>
+      <p class="cuenta-hint" data-i18n="cuenta.switchNote"></p>`;
+  }
+  return `<div class="cuenta-plan-interval"><p class="cuenta-hint" data-i18n="${intervaloKey}"></p>${detalle}</div>`;
 }
 
 function planCard(s) {
@@ -76,6 +98,7 @@ function planCard(s) {
         </div>
       </div>
       ${s.degraded ? `<p class="cuenta-hint" data-i18n="cuenta.degraded"></p>` : ''}
+      ${esPro || esSinPromos ? intervaloBlock(sub, hasta) : ''}
       ${esPro
     ? (sub.cancelAtPeriodEnd
       ? `<button class="cuenta-btn-primary" id="cuentaResume" data-i18n="cuenta.resume"></button>`
@@ -115,7 +138,11 @@ function panelPerfil(s) {
         <button class="cuenta-btn-ghost cuenta-btn-danger" id="cuentaLogout" data-i18n="cuenta.logout"></button>
       </div>
     </div>
-    ${planCard(s)}`;
+    ${planCard(s)}
+    <div class="cuenta-danger-zone">
+      <p class="cuenta-hint" data-i18n="cuenta.deleteHint"></p>
+      <button class="cuenta-btn-ghost cuenta-btn-danger" id="cuentaEliminar" data-i18n="cuenta.deleteAccount"></button>
+    </div>`;
 }
 
 export function renderCuentaPanel() {
@@ -131,6 +158,7 @@ export function renderCuentaPanel() {
 
   el.innerHTML = s.signedIn ? panelPerfil(s) : formAuth();
   aplicarTraducciones(el);
+  enlazarAvisoRegistro({ raiz: el, idioma: idiomaActual() });
 
   if (!s.signedIn) {
     el.querySelector('#cuentaSwitch').addEventListener('click', () => {
@@ -191,9 +219,11 @@ export function renderCuentaPanel() {
     showToast(t('cuenta.saved'));
     renderCuentaPanel();
   });
-  el.querySelector('#cuentaUpgrade')?.addEventListener('click', (e) => irACheckout(e.currentTarget, 'pro'));
+  el.querySelector('#cuentaEliminar').addEventListener('click', () => abrirModalEliminarCuenta({ eliminar: eliminarCuenta }));
+  el.querySelector('#cuentaUpgrade')?.addEventListener('click', () => abrirPopupPlanes());
   el.querySelector('#cuentaManage')?.addEventListener('click', (e) => cancelarSuscripcion(e.currentTarget));
   el.querySelector('#cuentaResume')?.addEventListener('click', (e) => reanudarSuscripcion(e.currentTarget));
+  el.querySelector('#cuentaSwitchMonthly')?.addEventListener('click', (e) => pasarAMensual(e.currentTarget));
 }
 
 async function enviarAuth(el) {
@@ -229,13 +259,17 @@ function modalConfirmarCancelacion() {
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay show';
     overlay.innerHTML = `
-      <div class="modal-content" style="text-align:center;">
-        <button class="modal-close" type="button"><img class="icon-inline" src="icons/close.svg" alt=""></button>
-        <div class="notice-icon-badge"><img class="icon-inline" src="icons/warning.svg" alt=""></div>
-        <h2 style="justify-content:center;">${esc(t('cuenta.confirmCancelTitle'))}</h2>
-        <div class="bugreport-guide" style="background:rgba(239,68,68,0.06);border-color:rgba(239,68,68,0.3);color:var(--text-secondary);">${esc(t('cuenta.confirmCancel'))}</div>
-        <button class="btn btn-connect" type="button" id="cuentaCancelYes" style="width:100%;justify-content:center;margin-top:16px;color:#fff;">${esc(t('cuenta.confirmCancelYes'))}</button>
-        <button class="btn btn-disconnect" type="button" id="cuentaCancelNo" style="width:100%;justify-content:center;margin-top:10px;">${esc(t('cuenta.confirmCancelNo'))}</button>
+      <div class="modal-content cuenta-cancel-modal">
+        <button class="modal-close" type="button" id="modal-close"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+        <div class="cuenta-cancel-copy">
+          <div class="notice-icon-badge"><span class="icon-inline notice-icon-warn" aria-hidden="true"></span></div>
+          <h2>${esc(t('cuenta.confirmCancelTitle')).replace(' ', '<br>')}</h2>
+          <p class="cuenta-cancel-description">${esc(t('cuenta.confirmCancel'))}</p>
+          <button class="btn btn-connect cuenta-cancel-confirm" type="button" id="cuentaCancelYes">${esc(t('cuenta.confirmCancelYes'))}</button>
+          <button class="btn btn-disconnect cuenta-cancel-back" type="button" id="cuentaCancelNo">${esc(t('cuenta.confirmCancelNo'))}</button>
+          <p class="cuenta-cancel-notice"><img class="icon-inline" src="icons/lock.svg" alt="">${esc(t('cuenta.confirmCancelNotice'))}</p>
+        </div>
+        <div class="cuenta-cancel-image"><img src="img/mascota/michi-triste.png" alt=""></div>
       </div>`;
     document.body.appendChild(overlay);
     const cerrar = (resultado) => { overlay.remove(); resolve(resultado); };
@@ -277,6 +311,44 @@ async function reanudarSuscripcion(btn) {
   }
 }
 
+// Polar puede no soportar el cambio (501 errors.notImplemented): toastError lo
+// muestra y la vista queda como estaba.
+async function pasarAMensual(btn) {
+  btn.disabled = true;
+  try {
+    const r = await pedir('/api/auth/subscription/change-interval', { method: 'POST', body: { intervalo: 'month' } });
+    if (!r.ok) return toastError(r.body);
+    aplicarSesion(r.body);
+    showToast(t('cuenta.switchRequested'));
+    renderCuentaPanel();
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// El backend borra todo y la app cierra sesion y limpia sus datos locales; aca
+// solo se limpia lo del renderer (antes de pasar a anonymous) y se avisa.
+async function eliminarCuenta(password) {
+  const r = await pedir('/api/auth/account', { method: 'DELETE', body: { password } });
+  if (!r.ok) {
+    toastError(r.body);
+    return false;
+  }
+  try { sessionStorage.setItem(AVISO_CUENTA_ELIMINADA, '1'); } catch (_) { /* sin storage: no hay aviso */ }
+  borrarDatosDeCuenta();
+  aplicarSesion({ activo: true, signedIn: false });
+  renderCuentaPanel();
+  return true;
+}
+
+function mostrarAvisoCuentaEliminada() {
+  try {
+    if (!sessionStorage.getItem(AVISO_CUENTA_ELIMINADA)) return;
+    sessionStorage.removeItem(AVISO_CUENTA_ELIMINADA);
+    showToast(t('cuenta.deleteDone'));
+  } catch (_) { /* sin storage */ }
+}
+
 /** Muestra/oculta el item de sidebar y re-pinta si la vista esta abierta. */
 export function iniciarCuenta() {
   const sync = () => {
@@ -287,4 +359,6 @@ export function iniciarCuenta() {
   };
   almacenSesion.subscribe(sync);
   sync();
+  // Tras la recarga el diccionario carga async: esperar antes de traducir.
+  Promise.resolve(window.__langReady).then(mostrarAvisoCuentaEliminada);
 }

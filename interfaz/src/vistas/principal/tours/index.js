@@ -8,6 +8,7 @@ import { driverTourDefaults as sharedDriverTourDefaults } from '../../../nucleo/
 import { switchView } from '../vistas-router.js';
 import { expandChatToggles } from '../toggles-chat.js';
 import { closeDictLangModal, openDictLangModal } from '../modales-avisos.js';
+import { trackUi } from '../../../nucleo/telemetria-ui.js';
 export { startChannelsTour } from './channels-tour.js';
 
 export { startBotTour } from './music-bot-tour.js';
@@ -22,6 +23,7 @@ export function driverTourDefaults() {
 }
 
 export function startChatActionsTour() {
+  trackUi('ui:tour-started', 'chat_actions');
   if (!(window.driver && window.driver.js)) return;
   const inChatActions = () => { switchView('chat'); expandChatToggles(); };
 
@@ -42,6 +44,7 @@ export function startChatActionsTour() {
 
 
 export function startVoiceTour() {
+  trackUi('ui:tour-started', 'voice');
   if (!(window.driver && window.driver.js)) return;
   const inSettings = () => switchView('settings');
 
@@ -65,6 +68,7 @@ export function startVoiceTour() {
 }
 
 export function startShortcutsTour() {
+  trackUi('ui:tour-started', 'shortcuts');
   if (!(window.driver && window.driver.js)) return;
   const inSettings = () => switchView('settings');
 

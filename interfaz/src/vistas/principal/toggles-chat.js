@@ -70,12 +70,12 @@ export function toggleOption(key, checkbox) {
 }
 
 export function setSoloChatMode() {
-  const keys = ['readChat', 'readGifts', 'readJoins', 'readFollows', 'readLikes', 'readShares', 'sayUsername'];
+  const keys = ['readChat', 'readGifts', 'readGiftAmount', 'readJoins', 'readFollows', 'readLikes', 'readShares', 'sayUsername'];
   keys.forEach((k) => {
     options[k] = k === 'readChat';
     appSettings[k] = k === 'readChat';
     const chipId = {
-      readChat: 'chip-chat', readGifts: 'chip-gifts', readJoins: 'chip-joins',
+      readChat: 'chip-chat', readGifts: 'chip-gifts', readGiftAmount: 'chip-gift-amount', readJoins: 'chip-joins',
       readFollows: 'chip-follows', readLikes: 'chip-likes', readShares: 'chip-shares', sayUsername: 'chip-username',
     }[k];
     const chip = document.getElementById(chipId);
@@ -100,6 +100,9 @@ export function iniciarObservadorTogglesChat() {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(updateChatTogglesSummary);
     }).observe(row, { subtree: true, attributes: true, attributeFilter: ['class'] });
+    // La config remota puede aplicar el chip de no seguidores antes de que
+    // DOMContentLoaded instale el observador.
+    updateChatTogglesSummary();
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
   else start();

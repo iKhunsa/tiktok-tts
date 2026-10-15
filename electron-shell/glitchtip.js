@@ -130,6 +130,8 @@ const EVENTO_A_TIPO = {
   'moderacion.palabras.guardado_fallido': 'error_palabras_bloqueadas',
   'moderacion.palabras.export_fallido': 'error_palabras_bloqueadas',
   'moderacion.policy.fallo_evaluacion': 'error_evaluacion_moderacion',
+  'moderacion.rust.fallo_evaluacion': 'error_rust_chat_guard',
+  'moderacion.rust.no_disponible': 'error_rust_chat_guard',
   'moderacion.accion.fallida': 'error_moderacion_accion',
   'chat.policy_fallo_evaluacion': 'error_evaluacion_moderacion',
   'configuracion.store.guardado_fallido': 'error_config_guardado',
@@ -170,6 +172,7 @@ const EVENTO_A_TIPO = {
 // aparece un caso nuevo de "canal no en vivo", sumar el patrón a esta lista.
 const ERRORES_CONEXION_ESPERADOS = [
   "isn't online",           // TikTok — "The requested user isn't online :("
+  'tiktok requires login',  // TikTok — AuthRequiredError: el live redirige a /login (GlitchTip #77); la UI ya pide iniciar sesion
   'live stream was not found', // YouTube — canal sin directo activo
   'client version was not found', // YouTube — idem
   'live has ended',         // TikTok/YouTube — el directo terminó
@@ -215,6 +218,7 @@ const WARN_PROMOVIDOS = new Set([
   'electron_shell.shortcut.registro_fallido',
   'electron_shell.atajo_clip_fallido',
   'idioma.dict.carga_fallida',
+  'moderacion.rust.no_disponible', // solo se loguea con rustGuardEnabled=true
 ]);
 
 // Cola del log de sesión como texto (para meterla en el context del issue —
@@ -483,6 +487,9 @@ function attach(bus, logger) {
         if (p.state === 'conectado') {
           estado.plataformasConectadas.add(clave);
           Sentry.setTag(`canal_${p.platform}`, String(p.channel || ''));
+        } else if (p.state === 'auth-requerida') {
+          // Nunca llego a 'conectado': sin esto el issue/breadcrumb pierde el canal.
+          Sentry.setTag(`canal_${p.platform}`, String(p.channel || ''));
         } else if (p.state === 'desconectado') {
           estado.plataformasConectadas.delete(clave);
         }
@@ -551,6 +558,16 @@ function attach(bus, logger) {
   );
 }
 
+// Correlaciona cada issue con la sesion del panel de telemetria-tts (INT-024).
+// Ids generados localmente (hash / UUID), no PII de terceros.
+function setTelemetryIdentity(identity) {
+  if (!estado.enabled || !Sentry || !identity) return;
+  try {
+    Sentry.setTag('telemetry_session_id', identity.sessionId);
+    Sentry.setTag('telemetry_machine_id', identity.machineId);
+  } catch (_) { /* best-effort */ }
+}
+
 async function shutdown() {
   if (!estado.enabled || !Sentry) return;
   try { await Sentry.close(1500); } catch (_) { /* best-effort */ }
@@ -559,6 +576,7 @@ async function shutdown() {
 module.exports = {
   init,
   attach,
+  setTelemetryIdentity,
   shutdown,
   esErrorConexionEsperado, // export para tests (bug 07)
   recortarData,            // export para tests (scrub de PII en breadcrumbs/Logs)

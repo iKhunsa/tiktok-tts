@@ -71,7 +71,11 @@ module.exports = {
         },
       },
       handler: (a) => {
-        if (!entitlements.check('panel-movil')) return { ok: false, reason: 'requiere_plan_pro' };
+        if (!entitlements.check('panel-movil')) {
+          logger.log('info', 'auth', 'movil/index.js#mcp', 'auth.gating.bloqueado',
+            'Comando movil bloqueado (plan free)', { featureId: 'panel-movil' });
+          return { ok: false, reason: 'requiere_plan_pro' };
+        }
         if (!MOBILE_ALLOWED_ACTIONS.has(a.action)) return { ok: false, reason: 'accion_no_valida' };
         bus.emit('movil:comando', { action: a.action, value: a.value, soundId: a.soundId, clipId: a.clipId });
         if (a.action === 'markClip') return { ok: true };

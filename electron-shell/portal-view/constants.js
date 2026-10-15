@@ -1,5 +1,7 @@
 'use strict';
 
+const { TITLEBAR_HEIGHT_PX } = require('../titlebar');
+
 const MAX_TABS = 6;
 const PARTITION_NAME = 'persist:portal-view';
 
@@ -15,9 +17,9 @@ const COMBINED_MIN_WIDTH_PX = LEFT_MIN_PX + MIN_PANEL_WIDTH_PX;
 
 const TAB_BAR_HEIGHT_PX = 36;
 const TOOLBAR_HEIGHT_PX = 40;
-// Alto HTML real que el WebContentsView debe dejar libre arriba (tab-bar +
-// toolbar apiladas) — ver electron-shell/portal-view/bounds.js#computeBounds.
-const CONTENT_TOP_OFFSET_PX = TAB_BAR_HEIGHT_PX + TOOLBAR_HEIGHT_PX;
+// Alto HTML real que el WebContentsView debe dejar libre arriba (barra de
+// título + tab-bar + toolbar apiladas) — ver bounds.js#computeBounds.
+const CONTENT_TOP_OFFSET_PX = TITLEBAR_HEIGHT_PX + TAB_BAR_HEIGHT_PX + TOOLBAR_HEIGHT_PX;
 const DEFAULT_FAVORITE_ICON = 'public';
 
 module.exports = {

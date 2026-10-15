@@ -4,11 +4,14 @@ import { conectarWSOverlay } from './compartido/ws-cliente.js';
 import { iniciarAccesibilidadOverlay } from './compartido/accesibilidad.js';
 import { registrarErroresOverlay } from './compartido/registrar-errores.js';
 import { escaparHtml } from './compartido/escapar-html.js';
+import { esVistaPrevia } from './compartido/vista-previa.js';
+import { MUESTRA_SOCIAL } from './compartido/muestras-vista-previa.js';
 
 registrarErroresOverlay();
 
 const MAX_ENTRIES = 10;
 const params = leerParametros();
+const vistaPrevia = esVistaPrevia(params);
 aplicarParametrosVisuales(params);
 if (params.get('layout') === 'rows') document.body.classList.add('layout-rows');
 
@@ -37,6 +40,16 @@ function addEntry(listEl, user, prepend = true) {
   while (listEl.children.length > MAX_ENTRIES) listEl.removeChild(listEl.lastChild);
 }
 
+// Vista previa: sin datos reales se rellenan las dos listas con nombres de ejemplo.
+function pintarMuestra() {
+  if (!vistaPrevia || totals.follows || totals.shares) return;
+  MUESTRA_SOCIAL.seguidores.forEach((user) => addEntry(listFollows, user, false));
+  MUESTRA_SOCIAL.compartidos.forEach((user) => addEntry(listShares, user, false));
+  totals = { follows: MUESTRA_SOCIAL.seguidores.length, shares: MUESTRA_SOCIAL.compartidos.length };
+  countFollows.textContent = totals.follows;
+  countShares.textContent = totals.shares;
+}
+
 function reverseList(el) {
   const children = Array.from(el.children).filter((c) => !c.classList.contains('empty'));
   children.reverse().forEach((c) => el.appendChild(c));
@@ -56,8 +69,9 @@ fetch('/api/overlay-stats')
     reverseList(listShares);
     countFollows.textContent = totals.follows;
     countShares.textContent = totals.shares;
+    pintarMuestra();
   })
-  .catch(() => {});
+  .catch(pintarMuestra);
 
 function alManejarMensaje(d) {
   if (d.type === 'follow') {
@@ -74,6 +88,7 @@ function alManejarMensaje(d) {
     countShares.textContent = 0;
     listFollows.innerHTML = `<div class="empty">${t('overlayStr.noFollowers')}</div>`;
     listShares.innerHTML = `<div class="empty">${t('overlayStr.noShared')}</div>`;
+    pintarMuestra();
   } else if (d.type === 'config-updated') {
     aplicarA11y(d.config || {});
   }

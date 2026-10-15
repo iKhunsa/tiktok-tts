@@ -12,8 +12,13 @@
 // respuesta HTTP del clic de "Conectar", nunca implica que se dio de baja la
 // intencion del usuario. LIVE_STATUS_UNKNOWN (y cualquier otro codigo) = la
 // comprobacion fallo, no sabemos si esta en vivo — nunca se afirma que el
-// directo termino ni que hubo un error de la aplicacion.
+// directo termino ni que hubo un error de la aplicacion. AUTH_REQUIRED =
+// TikTok pide iniciar sesion: `authRequired` le dice al cliente que ofrezca
+// el boton de login (el ERR_ABORTED crudo queda solo en los logs).
 function tiktokConnectErrorMessage(err) {
+  if (err.code === 'AUTH_REQUIRED') {
+    return { error: 'TikTok pide iniciar sesión para ver este live.', errorKey: 'errors.tiktokAuthRequired', authRequired: true };
+  }
   if (err.code === 'NOT_LIVE') {
     return { error: 'Este canal no está en vivo. Esperaremos su próximo live.', errorKey: 'errors.tiktokEsperandoProximoLive' };
   }

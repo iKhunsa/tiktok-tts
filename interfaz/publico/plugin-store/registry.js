@@ -12,9 +12,9 @@
 const SIDEBAR_TOOLS = [
   { id: 'chat',       icon: 'icons/chat.svg',       labelKey: 'nav.chat',       descKey: 'store.desc.chat',       pinned: true,  media: null, proFeature: null },
   { id: 'overlays',   icon: 'icons/tv.svg',         labelKey: 'nav.overlays',   descKey: 'store.desc.overlays',   pinned: false, media: 'plugin-store/media/overlays.jpg',   aboutKey: 'store.about.overlays', proFeature: null },
-  { id: 'clips',      icon: 'icons/play_arrow.svg', labelKey: 'nav.clips',      descKey: 'store.desc.clips',      pinned: false, media: 'plugin-store/media/clips.jpg',      aboutKey: 'store.about.clips', proFeature: null },
+  { id: 'clips',      icon: 'icons/play_arrow.svg', labelKey: 'nav.clips',      descKey: 'store.desc.clips',      pinned: false, media: 'plugin-store/media/clips.jpg',      aboutKey: 'store.about.clips', proFeature: 'clips' },
   { id: 'soundpad',   icon: 'icons/volume_up.svg',  labelKey: 'nav.soundpad',   descKey: 'store.desc.soundpad',   pinned: false, media: 'plugin-store/media/soundpad.jpg',   aboutKey: 'store.about.soundpad', proFeature: 'soundpad' },
-  { id: 'mobile',     icon: 'icons/smartphone.svg', labelKey: 'nav.mobile',     descKey: 'store.desc.mobile',     pinned: false, media: 'plugin-store/media/mobile.jpg',     aboutKey: 'store.about.mobile', proFeature: null },
+  { id: 'mobile',     icon: 'icons/smartphone.svg', labelKey: 'nav.mobile',     descKey: 'store.desc.mobile',     pinned: false, media: 'plugin-store/media/mobile.jpg',     aboutKey: 'store.about.mobile', proFeature: 'panel-movil' },
   { id: 'bot',        icon: 'icons/music_note.svg', labelKey: 'nav.bot',        descKey: 'store.desc.bot',        pinned: false, media: 'plugin-store/media/bot.jpg',        aboutKey: 'store.about.bot', proFeature: 'bot-musical' },
   { id: 'moderacion', icon: 'icons/people.svg',     labelKey: 'nav.moderation', descKey: 'store.desc.moderacion', pinned: false, media: 'plugin-store/media/moderacion.jpg', aboutKey: 'store.about.moderacion', proFeature: null },
   { id: 'mcp',        icon: 'icons/extension.svg',  labelKey: 'nav.mcp',        descKey: 'store.desc.mcp',        pinned: false, media: 'plugin-store/media/mcp.jpg',        aboutKey: 'store.about.mcp', proFeature: 'mcp-agente' },
@@ -22,9 +22,12 @@ const SIDEBAR_TOOLS = [
 ];
 // Tools visibles por defecto la primera vez que arranca la app (sin prefs
 // guardadas aún) o para usuarios que venían de antes de que existiera la
-// tienda. 'clips' y 'mobile' quedan ocultas de base — el usuario las activa
-// desde la tienda de plugins si las quiere.
-const SIDEBAR_TOOLS_LEGACY_VISIBLE = ['chat', 'overlays', 'soundpad', 'bot', 'moderacion', 'settings'];
+// tienda. 'soundpad', 'mobile', 'bot' y 'mcp' quedan ocultas de base — el
+// usuario las activa desde la tienda de plugins si las quiere. El orden acá
+// no importa (lo define el orden del array SIDEBAR_TOOLS de arriba), solo la
+// membresia: chat / overlays / clips / moderacion / settings quedan visibles
+// (el boton "Tienda de plugins" esta siempre fijo, no es parte de esta lista).
+const SIDEBAR_TOOLS_LEGACY_VISIBLE = ['chat', 'overlays', 'clips', 'moderacion', 'settings'];
 
 function toolById(id) {
   return SIDEBAR_TOOLS.find((tool) => tool.id === id) || null;

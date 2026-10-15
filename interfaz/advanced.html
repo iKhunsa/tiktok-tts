@@ -30,6 +30,17 @@
     <p data-i18n="adv.desc">Controla el rate limiting, filtros de mensajes y monitorea el estado del sistema en tiempo real. Estos cambios aplican inmediatamente al backend.</p>
   </div>
 
+  <!-- ═══ LOGS DE DIAGNÓSTICO ═══ -->
+  <div class="panel panel-status">
+    <div class="status-header">
+      <div>
+        <div class="panel-title"><img class="icon-inline" src="icons/description.svg" alt=""> <span data-i18n="adv.logsDownloadTitle">Logs de diagnóstico</span></div>
+        <div class="panel-desc" data-i18n="adv.logsDownloadDesc">Descarga el historial completo de logs guardados (últimos 14 días) a tu carpeta de Descargas.</div>
+      </div>
+      <button class="btn-refresh" onclick="downloadAllLogs()" data-i18n="adv.logsDownloadBtn">↓ Descargar todos</button>
+    </div>
+  </div>
+
   <!-- ═══ PANEL 1: RATE LIMITING ═══ -->
   <div class="panel panel-rate">
     <div class="panel-title"><img class="icon-inline" src="icons/flash_on.svg" alt=""> <span data-i18n="adv.rlTitle">Rate Limiting de TTS</span></div>
@@ -102,10 +113,10 @@
 
     <div class="grid-2">
       <div class="control-group">
-        <label><span data-i18n="adv.maxChars">Máx. caracteres TTS</span> — <span class="val-display" id="cfgCharsVal">500</span></label>
-        <input type="range" id="cfgChars" min="20" max="1000" step="10" value="500"
+        <label><span data-i18n="adv.maxChars">Máx. caracteres TTS</span> — <span class="val-display" id="cfgCharsVal">200</span></label>
+        <input type="range" id="cfgChars" min="20" max="200" step="10" value="200"
           oninput="document.getElementById('cfgCharsVal').textContent = this.value" />
-        <div class="range-labels"><span>20</span><span>1000</span></div>
+        <div class="range-labels"><span>20</span><span>200</span></div>
       </div>
 
       <div class="control-group">
@@ -176,55 +187,7 @@
     </div>
   </div>
 
-  <!-- ═══ PANEL 3: FILTROS DE MENSAJES ═══ -->
-  <div class="panel panel-filter" id="palabras-bloqueadas">
-    <div class="panel-title"><img class="icon-inline" src="icons/search.svg" alt=""> <span data-i18n="adv.filtersTitle">Filtros de Mensajes</span></div>
-    <div class="panel-desc" data-i18n="adv.filtersDesc">Palabras prohibidas en el servidor</div>
-
-    <div class="explainer">
-      <div class="explainer-title" data-i18n="adv.filtersExplainerTitle">Reglas automáticas del servidor</div>
-      <p data-i18n-html="adv.filtersExplainerP1">El servidor ya filtra automáticamente: <strong>mensajes repetitivos</strong> (aaaaaa), <strong>URLs</strong> (se reemplazan por "link"), <strong>menciones</strong> (@usuario se eliminan), <strong>emojis</strong> (se convierten a espacio) y <strong>mensajes mayores a 300 caracteres</strong>.</p>
-      <p data-i18n-html="adv.filtersExplainerP2">Aquí puedes añadir <strong>palabras adicionales</strong> para bloquear mensajes que las contengan.</p>
-    </div>
-
-    <div class="section-label" data-i18n="adv.blockedLabel">Palabras bloqueadas</div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;" data-i18n="adv.blockedDesc">
-      Los mensajes que contengan estas palabras serán ignorados completamente por el TTS. El filtro no distingue mayúsculas/minúsculas.
-    </p>
-
-    <div class="tag-input-row">
-      <input type="text" id="blockedWordInput" data-i18n-placeholder="adv.blockedPlaceholder" placeholder="Escribe una palabra y presiona Agregar..."
-        onkeydown="if(event.key==='Enter') addBlockedWord()" />
-      <button class="btn-add" onclick="addBlockedWord()" data-i18n="adv.blockedAdd">+ Agregar</button>
-    </div>
-
-    <div class="tags-container" id="blockedWordsTags">
-      <span class="tags-empty" id="blockedEmpty" data-i18n="adv.blockedEmpty">Sin palabras bloqueadas</span>
-    </div>
-
-    <div class="save-row" style="margin-top:10px;">
-      <button class="btn-save" id="btnSaveFilters" onclick="saveBlockedWords()" data-i18n="adv.blockedSync">Sincronizar con servidor</button>
-    </div>
-
-    <div class="section-label" data-i18n="adv.mdLabel">Editar lista completa</div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;" data-i18n-html="adv.mdDesc">
-      Puedes editar el archivo <code>blocked-words.md</code> directamente aquí o subir uno nuevo. El formato es una palabra por línea empezando con <code>- </code>.
-    </p>
-
-    <textarea id="mdEditor" style="width:100%;min-height:160px;resize:vertical;" placeholder="- palabra1
-- palabra2"></textarea>
-
-    <div class="save-row" style="margin-top:12px;gap:10px;display:flex;justify-content:flex-end;flex-wrap:wrap;">
-      <button class="btn-refresh" onclick="loadMdContent()"><img class="icon-inline" src="icons/refresh.svg" alt=""> <span data-i18n="adv.mdReload">Recargar desde archivo</span></button>
-      <button class="btn-add" onclick="downloadMd()"><img class="icon-inline" src="icons/download.svg" alt=""> <span data-i18n="adv.mdDownload">Descargar .md</span></button>
-      <button class="btn-save" onclick="saveMdContent()"><img class="icon-inline" src="icons/save.svg" alt=""> <span data-i18n="adv.mdSave">Guardar cambios al archivo</span></button>
-    </div>
-
-    <div class="section-label" data-i18n="adv.mdUploadLabel">Subir archivo .md</div>
-    <div class="tag-input-row">
-      <input type="file" id="mdFileInput" accept=".md" style="flex:1;cursor:pointer;" />
-      <button class="btn-add" onclick="uploadMdFile()"><img class="icon-inline" src="icons/upload.svg" alt=""> <span data-i18n="adv.mdUploadBtn">Subir y reemplazar</span></button>
-    </div>
+  <div class="panel panel-filter">
   </div>
 
   <!-- ═══ PANEL 4: ESTADO DEL SISTEMA ═══ -->
@@ -286,17 +249,6 @@
         <span class="conn-key" data-i18n="adv.cfgDebounce">Debounce likes</span>
         <span class="conn-val" id="statusDebounce">—</span>
       </div>
-    </div>
-  </div>
-
-  <!-- ═══ PANEL: DESCARGA DE LOGS ═══ -->
-  <div class="panel panel-status">
-    <div class="status-header">
-      <div>
-        <div class="panel-title"><img class="icon-inline" src="icons/description.svg" alt=""> <span data-i18n="adv.logsDownloadTitle">Logs de diagnóstico</span></div>
-        <div class="panel-desc" data-i18n="adv.logsDownloadDesc">Descarga el historial completo de logs guardados (últimos 14 días) a tu carpeta de Descargas.</div>
-      </div>
-      <button class="btn-refresh" onclick="downloadAllLogs()" data-i18n="adv.logsDownloadBtn">↓ Descargar todos</button>
     </div>
   </div>
 

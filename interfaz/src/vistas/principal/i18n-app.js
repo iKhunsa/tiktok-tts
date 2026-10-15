@@ -1,16 +1,19 @@
 import { cargarPlantillas } from './plantillas-anuncio.js';
 import { cargarIdioma, setIdioma, idiomaGuardado, aplicarTraducciones, detectarIdiomaNavegador, t } from '../../nucleo/i18n/i18n.js';
 import { updateChatTogglesSummary, renderChatTogglesState } from './toggles-chat.js';
-import { ttsPaused } from '../../nucleo/tts/cola-tts.js';
+import { ttsPaused, updateQueueBadge } from '../../nucleo/tts/cola-tts.js';
 import { modReload } from './moderacion.js';
 import { spRender } from './soundpad.js';
 import { renderClipsHistory } from './clips.js';
 import { renderSettingsChannels } from './plataformas.js';
+import { renderTiktokSession } from './tiktok-sesion.js';
 import { renderGlobalTTSButton } from '../../nucleo/tts/cola-tts.js';
 import { renderShortcutDisplay } from './atajos-teclado.js';
 import { renderBlockWordSession } from './moderacion.js';
 import { updatePlaylistInfo, musicRenderQueue } from './bot-musica.js';
 import { renderCuentaPanel } from './cuenta/index.js';
+import { retranslateModeracionContenido } from './moderacion-contenido/index.js';
+import { renderizarTodosLosCamposOverlay } from './campos-overlay/index.js';
 
 const LANG_PICKER_COPY = {
   es: { title: 'Elegí tu idioma', sub: 'Así todo lo que te mostremos va a estar en el idioma que prefieras.' },
@@ -42,6 +45,7 @@ function retranslateDynamic() {
   safe(spRender);
   safe(renderClipsHistory);
   safe(renderSettingsChannels);
+  safe(renderTiktokSession);
   safe(renderGlobalTTSButton);
   safe(renderChatTogglesState);
   safe(renderShortcutDisplay);
@@ -49,6 +53,9 @@ function retranslateDynamic() {
   safe(updatePlaylistInfo);
   safe(musicRenderQueue);
   safe(renderCuentaPanel);
+  safe(updateQueueBadge); // sin mensajes nada lo repinta: quedaba con las claves si dibujaba antes del idioma
+  safe(retranslateModeracionContenido);
+  safe(renderizarTodosLosCamposOverlay);
   // Boton pausa TTS: su label se setea sin data-i18n; refrescar segun estado.
   const pb = document.getElementById('btnPauseTTS');
   if (pb) pb.textContent = ttsPaused ? t('btn.resumeTTS') : t('btn.pauseTTS');

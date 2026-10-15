@@ -1,6 +1,6 @@
 {
   "name": "tiktok-live-tts",
-  "version": "1.10.0",
+  "version": "1.11.2",
   "description": "TikLiveTTS Live Chat Text-to-Speech Reader",
   "author": "iKhunsa",
   "main": "main.js",
@@ -9,6 +9,7 @@
     "dev": "node --watch server.js",
     "lint": "eslint .",
     "test": "node --test test/*.test.js",
+    "preelectron": "npm run build:front",
     "electron": "electron .",
     "make-icon": "electron scripts/make-app-icon.js && python scripts/make-app-icon.py",
     "dev:front": "vite --config interfaz/vite.config.js",
@@ -18,7 +19,7 @@
     "postbuild:front": "node scripts/verify-front-build.js",
     "serve": "npm run build:front && node server.js",
     "serve:watch": "npm run build:front && node --watch server.js",
-    "prebuild:electron": "node scripts/ensure-configs.js && npm run build:front",
+    "prebuild:electron": "node scripts/ensure-configs.js && node scripts/build-license-texts.js && npm run build:front",
     "build:electron": "electron-builder --win"
   },
   "build": {
@@ -33,6 +34,9 @@
     "directories": {
       "output": "release-output"
     },
+    "asarUnpack": [
+      "node_modules/@tiklivetts/rust-chat-guard*/**/*.node"
+    ],
     "win": {
       "target": "nsis",
       "icon": "tray-icon.ico",
@@ -115,11 +119,15 @@
       "!node_modules/utf-8-validate/build/Release/*.pdb"
     ]
   },
+  "optionalDependencies": {
+    "@tiklivetts/rust-chat-guard": "0.2.0"
+  },
   "dependencies": {
     "@aptabase/electron": "^0.3.1",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@sentry/electron": "^7.17.0",
-    "@tiklivetts/tiktok-live-client": "^0.1.7",
+    "@tiklivetts/chat-guard": "^0.2.0",
+    "@tiklivetts/tiktok-live-client": "^0.1.10",
     "electron-updater": "^6.8.9",
     "express": "^4.22.2",
     "google-tts-api": "^2.0.2",

@@ -4,6 +4,7 @@ import {
 } from './panel.js';
 import { showToast } from '../../../componentes/toast.js';
 import { t } from '../../../nucleo/i18n/i18n.js';
+import { trackUi } from '../../../nucleo/telemetria-ui.js';
 
 // 'started' no se avisa (seria ruido por cada descarga) — solo el resultado.
 function handleDownloadEvent({ phase, filename }) {
@@ -23,6 +24,7 @@ function renderPortalView(state) {
 export function togglePortalView() {
   if (!window.electronAPI?.portalView) return;
   const { open } = almacenPortalView.getState();
+  if (!open) trackUi('ui:portalview-opened');
   const call = open ? window.electronAPI.portalView.hide() : window.electronAPI.portalView.show();
   call.then((res) => { if (res?.state) aplicarEstadoPortal(res.state); });
 }

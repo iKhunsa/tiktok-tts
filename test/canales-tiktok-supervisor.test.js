@@ -26,6 +26,10 @@ class FakeUnknownError extends Error {
   constructor(reason = 'unexpected_shape') { super(`unknown (${reason})`); this.name = 'LiveStatusUnknownError'; this.code = 'LIVE_STATUS_UNKNOWN'; this.reason = reason; }
 }
 
+class FakeAuthRequiredError extends Error {
+  constructor() { super('TikTok requires login to open @ana/live'); this.name = 'AuthRequiredError'; this.code = 'AUTH_REQUIRED'; }
+}
+
 /** connectImpl(instance, attemptIndex0Based) -> valor de resolucion, o lanza/rechaza para simular un fallo. */
 async function withFakeTiktok(connectImpl, run) {
   const prev = require.cache[TTLC_PATH];
@@ -154,6 +158,70 @@ test('live silencioso (sin chat) sigue sano: cualquier senal tecnica rearma el w
   );
 });
 
+test('roomUserSeq publica el conteo de viewers de TikTok', async () => {
+  await withFakeTiktok(
+    () => ({ roomInfo: { status: 2 } }),
+    async ({ connectTiktokChannel }, instances) => {
+      const { deps } = makeDeps();
+      const viewers = [];
+      deps.bus.on('canal:viewers', (payload) => viewers.push(payload));
+
+      await connectTiktokChannel(deps, 'ana');
+      instances[0].emit('roomUserSeq', { viewerCount: '42' });
+
+      assert.deepEqual(viewers, [{ platform: 'tiktok', channel: 'ana', viewerCount: '42' }]);
+    }
+  );
+});
+
+test('dos senales: check_alive vigente evita reconectar un live sin eventos; si deja de confirmar, recupera', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout', 'Date'], now: 1_000_000 });
+  await withFakeTiktok(
+    () => ({ roomInfo: { status: 2 } }),
+    async ({ connectTiktokChannel }, instances) => {
+      const { deps } = makeDeps();
+      await connectTiktokChannel(deps, 'ana');
+      const events = () => deps.logger.entries.map((e) => e.event);
+
+      // 5 min sin NINGUN evento tecnico, pero check_alive confirmando cada 6s.
+      for (let i = 0; i < 50; i++) { t.mock.timers.tick(6000); instances[0].emit('checkAlive'); }
+      await flush();
+      assert.equal(deps.state.tiktokChannels.get('ana').techState, 'connected', 'check_alive vigente: no reconecta');
+      assert.ok(events().includes('canales.tiktok.sano_sin_actividad'));
+      assert.equal(instances.length, 1, 'no se abrio un intento nuevo');
+
+      // Sigue sano mientras check_alive confirme (re-chequeo periodico).
+      for (let i = 0; i < 30; i++) { t.mock.timers.tick(6000); instances[0].emit('checkAlive'); }
+      await flush();
+      assert.equal(deps.state.tiktokChannels.get('ana').techState, 'connected');
+
+      // check_alive deja de llegar: al vencer la ventana de frescura, recupera.
+      t.mock.timers.tick(2 * 60 * 1000);
+      await flush();
+      const stale = deps.logger.entries.find((e) => e.event === 'canales.tiktok.sin_eventos');
+      assert.ok(stale, 'se logueo la muerte real');
+      assert.equal(stale.data.healthSignal, 'check_alive_dejo_de_confirmar');
+      assert.equal(instances.length, 2, 'se disparo la recuperacion');
+    }
+  );
+});
+
+test('sin check_alive el watchdog general sigue reconectando a los 5 min (comportamiento previo intacto)', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout', 'Date'], now: 1_000_000 });
+  await withFakeTiktok(
+    () => ({ roomInfo: { status: 2 } }),
+    async ({ connectTiktokChannel }, instances) => {
+      const { deps } = makeDeps();
+      await connectTiktokChannel(deps, 'ana');
+      t.mock.timers.tick(5 * 60 * 1000);
+      await flush();
+      const stale = deps.logger.entries.find((e) => e.event === 'canales.tiktok.sin_eventos');
+      assert.equal(stale.data.healthSignal, 'ninguna_en_ventana');
+      assert.equal(instances.length, 2);
+    }
+  );
+});
+
 test('Desconectar durante recuperacion cancela el reintento agendado de inmediato', async (t) => {
   t.mock.timers.enable({ apis: ['setTimeout'] });
   await withFakeTiktok(
@@ -260,6 +328,82 @@ test('offline confirmado entra en espera sin borrar la intencion, y reintenta ma
       await flush();
       assert.equal(instances.length, 2, 'siguio esperando el proximo live, sin que el usuario haga nada');
       assert.equal(deps.state.tiktokChannels.get('ana').techState, 'waiting_live');
+    }
+  );
+});
+
+test('TikTok pide login: auth_required, sin retry infinito, y reanuda solo tras resumeAuthPausedChannels', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  await withFakeTiktok(
+    (_i, idx) => (idx === 0 ? Promise.reject(new FakeAuthRequiredError()) : { roomInfo: { status: 2 } }),
+    async ({ connectTiktokChannel, resumeAuthPausedChannels }, instances) => {
+      const { deps, estados, broadcasts } = makeDeps();
+
+      await assert.rejects(connectTiktokChannel(deps, 'ana'), (err) => {
+        assert.equal(err.code, 'AUTH_REQUIRED', 'nunca cae al bucket unknown');
+        return true;
+      });
+
+      const entry = deps.state.tiktokChannels.get('ana');
+      assert.ok(entry, 'la intencion se conserva');
+      assert.equal(entry.techState, 'auth_required');
+      assert.equal(entry.timer, null, 'supervisor pausado: no hay proximo intento agendado');
+      assert.ok(estados.some((p) => p.state === 'auth-requerida' && p.channel === 'ana'));
+      assert.ok(broadcasts.some((b) => b.type === 'tiktok-connection-status' && b.status === 'auth-required' && b.channel === 'ana'));
+
+      t.mock.timers.tick(10 * 60 * 1000);
+      await flush();
+      assert.equal(instances.length, 1, 'ni un reintento mientras no haya sesion');
+
+      assert.deepEqual(resumeAuthPausedChannels(deps, 'login'), ['ana']);
+      await flush();
+      assert.equal(instances.length, 2, 'reanudo sola tras el login');
+      assert.equal(deps.state.tiktokChannels.get('ana').techState, 'connected');
+      assert.ok(estados.some((p) => p.state === 'sesion-restaurada' && p.channel === 'ana'));
+    }
+  );
+});
+
+test('error real (unknown) sigue reintentando con backoff aunque exista el bucket auth_required', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  await withFakeTiktok(
+    () => Promise.reject(new Error("ERR_ABORTED (-3) loading 'https://www.tiktok.com/@ana/live'")),
+    async ({ connectTiktokChannel, resumeAuthPausedChannels }, instances) => {
+      const { deps } = makeDeps();
+      await assert.rejects(connectTiktokChannel(deps, 'ana'));
+      assert.equal(deps.state.tiktokChannels.get('ana').techState, 'connecting');
+      assert.deepEqual(resumeAuthPausedChannels(deps, 'login'), [], 'un unknown no es un canal pausado por auth');
+      t.mock.timers.tick(nextRetryDelayMs(1));
+      await flush();
+      assert.equal(instances.length, 2, 'el backoff existente sigue intacto');
+    }
+  );
+});
+
+test('fallo con tiktokStatusCode persistente (ej. 30003) converge al ritmo lento de espera, no al cap de 60s', () => {
+  const burst = 4;
+  for (let n = 1; n <= burst; n++) {
+    assert.equal(nextRetryDelayMs(n, { tiktokAnswered: true }), nextRetryDelayMs(n), 'la rafaga rapida inicial no cambia');
+  }
+  assert.equal(nextRetryDelayMs(burst + 1, { tiktokAnswered: true }), nextWaitingLiveDelayMs(0));
+  assert.equal(nextRetryDelayMs(100, { tiktokAnswered: true }), nextWaitingLiveDelayMs(100));
+  assert.ok(nextRetryDelayMs(100, { tiktokAnswered: true }) > nextRetryDelayMs(100), 'mas lento que el backoff de fallo tecnico');
+});
+
+test('roomChanged (la pagina salto a otro directo) dispara una recuperacion y reentra al canal', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  await withFakeTiktok(
+    () => ({ roomInfo: { status: 2 } }),
+    async ({ connectTiktokChannel }, instances) => {
+      const { deps } = makeDeps();
+      await connectTiktokChannel(deps, 'ana');
+
+      instances[0].emit('roomChanged', { roomId: '1', newRoomId: '2' });
+      await flush();
+
+      assert.equal(instances.length, 2, 'se abrio una conexion nueva al canal pedido');
+      assert.equal(instances[0].disconnectedManually, true, 'la conexion de la sala equivocada se cerro');
+      assert.equal(deps.state.tiktokChannels.get('ana').techState, 'connected');
     }
   );
 });

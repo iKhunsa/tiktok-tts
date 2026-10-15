@@ -15,7 +15,9 @@ const MIN = 60 * 1000;
 
 function freshPromo() {
   delete require.cache[require.resolve('../features/promo/index.js')];
-  delete require.cache[require.resolve('../features/promo/session-scheduler')];
+  for (const m of ['session-scheduler', 'activity-window', 'viewers-snapshot', 'audience-check']) {
+    delete require.cache[require.resolve(`../features/promo/${m}`)];
+  }
   return require('../features/promo/index.js');
 }
 
@@ -80,7 +82,7 @@ test('caida total > 5 min SI reinicia el schedule (sesion nueva)', (t) => {
   promo.shutdown();
 });
 
-test('sin actividad, el primer aviso es a 15 min y los siguientes a 90 min', (t) => {
+test('sin audiencia: 15 min fijo, a los 25 no suena y vigila cada 5 min', (t) => {
   t.mock.timers.enable({ apis: ['setTimeout', 'Date'] });
   const promo = freshPromo();
   const { bus, logger, fired } = makeHarness();
@@ -89,11 +91,35 @@ test('sin actividad, el primer aviso es a 15 min y los siguientes a 90 min', (t)
   bus.emit('canal:estado', lista(2));        // conecta, nunca se cae
 
   t.mock.timers.tick(15 * MIN + 1000);
-  assert.equal(fired.length, 1, '15 min');
-  t.mock.timers.tick(90 * MIN);
-  assert.equal(fired.length, 2, '+90 min sin actividad');
-  t.mock.timers.tick(90 * MIN);
-  assert.equal(fired.length, 3, '+90 min sin actividad');
+  assert.equal(fired.length, 1, '15 min fijo, sin condicion');
+  t.mock.timers.tick(25 * MIN);              // +25: evalua, sin gente
+  t.mock.timers.tick(30 * MIN);              // vigilancia sin gente
+  assert.equal(fired.length, 1, 'sin audiencia no suena nunca');
+
+  promo.shutdown();
+});
+
+test('la audiencia aparece tarde: suena en la siguiente vigilancia y reinicia el ciclo', (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout', 'Date'] });
+  const promo = freshPromo();
+  const { bus, logger, fired } = makeHarness();
+  promo.register({ bus, logger });
+
+  bus.emit('canal:estado', lista(1));
+  t.mock.timers.tick(15 * MIN + 1000);       // aviso fijo
+  t.mock.timers.tick(25 * MIN);              // evalua, nadie
+  assert.equal(fired.length, 1);
+
+  t.mock.timers.tick(4 * MIN);
+  bus.emit('canal:viewers', { platform: 'tiktok', channel: 'c0', viewerCount: 20 });  // TikTok lo repite
+  t.mock.timers.tick(1 * MIN);               // vigilancia: hay gente
+  assert.equal(fired.length, 2, 'suena en la primera vigilancia con audiencia');
+
+  t.mock.timers.tick(24 * MIN);
+  assert.equal(fired.length, 2, 'el ciclo de 25 min arranca de nuevo');
+  bus.emit('canal:viewers', { platform: 'tiktok', channel: 'c0', viewerCount: 20 });
+  t.mock.timers.tick(1 * MIN + 1000);
+  assert.equal(fired.length, 3, 'a los 25 con audiencia suena sin vigilancia');
 
   promo.shutdown();
 });

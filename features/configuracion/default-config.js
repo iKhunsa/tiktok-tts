@@ -1,8 +1,10 @@
 'use strict';
 
+const { CHAT_GUARD_LOCALES } = require('../../core/chat-guard-options');
+
 const DEFAULT_CONFIG = {
   LIKE_DEBOUNCE_MS: 1500,
-  TTS_MAX_CHARS: 500,
+  TTS_MAX_CHARS: 200,
   rateLimitEnabled: false,
   TTS_RATE_LIMIT_MAX: 10,
   TTS_RATE_WINDOW_MS: 5000,
@@ -28,6 +30,21 @@ const DEFAULT_CONFIG = {
   // true = el TTS lee a todo el mundo (comportamiento historico).
   // false = solo lee a seguidores y a la whitelist manual.
   ttsReadNonFollowers: true,
+  // Rust Chat Guard (features/moderacion/rust-guard/): segunda capa de moderacion
+  // de contenido, por cuenta. shadow = solo registra discrepancias; enforce = aplica.
+  rustGuardEnabled: true,
+  rustGuardMode: 'shadow',
+  // Nivel (SOFT/BALANCED/STRICT/CUSTOM del motor), idiomas del filtro (todos por defecto)
+  // y detectores del nivel 'custom'. Ver core/chat-guard-options.js.
+  chatGuardLevel: 'balanced',
+  chatGuardLangs: [...CHAT_GUARD_LOCALES],
+  // true: los idiomas del filtro siguen a la voz del TTS (core/chat-guard-voice-languages.js)
+  // y chatGuardLangs solo se usa con el modo manual.
+  chatGuardLangsAuto: true,
+  chatGuardCustom: { tricks: true, similar: false },
+  // Texto sin sentido (@tiklivetts/chat-guard): off | shadow (solo avisa) | enforce (no se lee).
+  // Nunca silencia al usuario: eso lo decide el streamer.
+  gibberishMode: 'enforce',
   // Servidor MCP (agentes). Endpoint solo-localhost; las tools destructivas
   // van detras de su propio toggle + prompt del host del agente.
   mcpEnabled: true,
@@ -40,6 +57,12 @@ const DEFAULT_CONFIG = {
   // features Pro quedan detras del plan y aparece la UI de cuenta.
   // Interruptor de panico: apagar revierte al estado conocido sin re-deploy.
   subscriptionsEnabled: false,
+  // X de la ventana: false = cierra la app, true = la esconde en la bandeja.
+  closeToTray: false,
+  // Llave técnica de apagado (true = cero envíos). Por defecto se envía la lista saneada,
+  // sin nombres ni chat. Renombrada desde blockedWordsTelemetryEnabled para que el `false`
+  // que guardó el antiguo interruptor opt-in no deje cuentas apagadas sin querer.
+  blockedWordsTelemetryDisabled: false,
   adminIdentities: {
     tiktok: ['ikhunsa_tiklivetts', 'soykurorai'],
     twitch: ['soykurorai'],

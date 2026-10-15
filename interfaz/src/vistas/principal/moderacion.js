@@ -318,6 +318,11 @@ export function openBlockWordModal(prefill) {
   setTimeout(() => { input.focus(); input.select(); }, 50);
 }
 
+export function openChatGuardWords() {
+  switchView('settings');
+  requestAnimationFrame(() => document.getElementById('cgWords')?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+}
+
 export function closeBlockWordModal(e) {
   if (e && e.target.id !== 'blockWordModal') return;
   document.getElementById('blockWordModal').classList.remove('show');

@@ -1,20 +1,27 @@
 'use strict';
 
 const estado = require('./estado-sesion');
+const { removeAccountData } = require('../../core/account-data-path');
 
-// Las 6 rutas /api/auth/* de la app. Son proxies finos a servicio-cuentas
+// Las rutas /api/auth/* de la app. Son proxies finos a servicio-cuentas
 // (via cliente): la app agrega/gestiona el token, servicio-cuentas habla con
 // Supabase/Polar. Todas detras de subscriptionsEnabled (si off -> 404).
 
 function propagarError(res, r, logger) {
   if (r.status === 0 || !r.body) {
     logger.log('warn', 'auth', 'auth/routes.js#propagarError', 'auth.servicio.error',
-      'servicio-cuentas no disponible', { status: r.status });
+      'servicio-cuentas no disponible', {
+        status: r.status,
+        causa: r.error && ((r.error.cause && r.error.cause.code) || r.error.message),
+      });
     return res.status(502).json({ error: 'Servicio de cuentas no disponible', errorKey: 'errors.serviceUnavailable' });
   }
   const b = r.body;
   return res.status(r.status).json({ error: b.error || 'Error', errorKey: b.errorKey || 'errors.generic' });
 }
+
+// Cualquier valor distinto de 'month' cae al default del contrato: anual.
+const intervaloValido = (v) => (v === 'month' ? 'month' : 'year');
 
 function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
   const guard = (req, res, next) => (subscriptionsEnabled() ? next() : res.status(404).end());
@@ -65,12 +72,34 @@ function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
     res.json(estado.getSesion());
   });
 
+  // Eliminacion de cuenta: irreversible. Solo cierra sesion y borra datos locales
+  // si el backend confirmo el borrado. NO se expone como tool MCP a proposito:
+  // es destructiva y exige la contrasena del usuario (un agente no la tiene).
+  app.delete('/api/auth/account', guard, async (req, res) => {
+    const token = estado.getToken();
+    if (!token) return res.status(401).json({ error: 'No autenticado', errorKey: 'errors.unauthorized' });
+    const { password } = req.body || {};
+    if (typeof password !== 'string' || !password) {
+      return res.status(400).json({ error: 'Falta la contrasena', errorKey: 'errors.invalidBody' });
+    }
+    const antes = estado.getSesion();
+    const r = await cliente.eliminarCuenta(token, { password });
+    if (!r.ok) return propagarError(res, r, logger);
+    estado.cerrar(logger);
+    logger.log('info', 'auth', 'auth/routes.js#eliminarCuenta', 'auth.cuenta.eliminada', 'Cuenta eliminada', {});
+    refresh.emitirCambio(antes, estado.getSesion());
+    removeAccountData(antes.user.id);
+    res.json(estado.getSesion());
+  });
+
   app.post('/api/auth/checkout', guard, async (req, res) => {
     const token = estado.getToken();
     if (!token) return res.status(401).json({ error: 'No autenticado', errorKey: 'errors.unauthorized' });
-    const r = await cliente.checkout(token, { plan: (req.body || {}).plan || 'pro' });
+    const body = req.body || {};
+    const pedido = { plan: body.plan || 'pro', intervalo: intervaloValido(body.intervalo) };
+    const r = await cliente.checkout(token, pedido);
     if (!r.ok) return propagarError(res, r, logger);
-    logger.log('info', 'auth', 'auth/routes.js#checkout', 'auth.checkout.solicitado', 'Checkout iniciado', {});
+    logger.log('info', 'auth', 'auth/routes.js#checkout', 'auth.checkout.solicitado', 'Checkout iniciado', pedido);
     res.json({ url: r.body.url });
   });
 
@@ -100,7 +129,20 @@ function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
     res.json(estado.getSesion());
   });
 
-  return 8;
+  app.post('/api/auth/subscription/change-interval', guard, async (req, res) => {
+    const token = estado.getToken();
+    if (!token) return res.status(401).json({ error: 'No autenticado', errorKey: 'errors.unauthorized' });
+    const { intervalo } = req.body || {};
+    if (!['month', 'year'].includes(intervalo)) return res.status(400).json({ error: 'Intervalo invalido', errorKey: 'errors.generic' });
+    const r = await cliente.cambiarIntervalo(token, { intervalo });
+    if (!r.ok) return propagarError(res, r, logger);
+    logger.log('info', 'auth', 'auth/routes.js#cambiarIntervalo', 'auth.suscripcion.intervalo_cambiado', 'Cambio de intervalo solicitado', {});
+    const s = await cliente.session(token); // re-hidrata: subscription.nextInterval ya actualizado
+    if (s.ok) estado.aplicar({ session: s.body }, logger);
+    res.json(estado.getSesion());
+  });
+
+  return 9;
 }
 
 module.exports = { montar };

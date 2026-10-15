@@ -20,7 +20,11 @@ function attachSoundpadShortcuts(deps) {
   const { bus, logger } = deps;
   bus.on('sonido:soundpad-reproducir', (payload) => {
     if (!payload || !payload.soundId) return;
-    if (!entitlements.check('soundpad')) return; // feature Pro
+    if (!entitlements.check('soundpad')) { // feature Pro
+      if (logger) logger.log('info', 'auth', 'sonido/soundpad/shortcuts.js#attachSoundpadShortcuts', 'auth.gating.bloqueado',
+        'Soundpad por atajo bloqueado (plan free)', { featureId: 'soundpad' });
+      return;
+    }
     bus.emit('ws:broadcast', { type: 'play-soundpad', soundId: payload.soundId });
     // Analytics agregado — nunca el soundId (alta cardinalidad).
     if (logger) logger.log(

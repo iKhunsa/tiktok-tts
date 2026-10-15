@@ -19,6 +19,8 @@ import { getWs } from '../ws/cliente-ws.js';
 import { getClipsData, getLocalDateStr, obtenerStreamStartTime } from '../../vistas/principal/clips.js';
 import { chatFollowSpeaking } from '../../vistas/principal/chat-ui.js';
 import { MAX_QUEUE_SIZE } from '../estado/config-runtime.js';
+import { stopAudio } from './stop-audio.js';
+import { moderationSession } from '../estado/moderacion-sesion.js';
 
 export let ttsGlobalEnabled = true;
 export let ttsPaused = false;
@@ -130,13 +132,8 @@ export function stopCurrentTTS({ clearQueue = false } = {}) {
     ttsAbortController = null;
   }
   if (activeAudio) {
-    // Quitar los handlers ANTES de src='': si no, el src vacio dispara
-    // audio.onerror → finish(onError) → processQueue(), un pump fantasma
-    // por cada skip.
-    activeAudio.onended = null;
-    activeAudio.onerror = null;
     const audio = activeAudio;
-    try { audio.pause(); audio.src = ''; } catch (_) { /* noop */ }
+    stopAudio(audio);
     releaseAudioObjectUrl(audio);
     activeAudio = null;
   }
@@ -187,10 +184,8 @@ export function playAudioBlob(blob, { onEnd, onError } = {}) {
   // matarlo antes de reemplazarlo — si no, sigue sonando fuera del alcance de
   // skip/pause (voces superpuestas).
   if (activeAudio) {
-    activeAudio.onended = null;
-    activeAudio.onerror = null;
     const previousAudio = activeAudio;
-    try { previousAudio.pause(); previousAudio.src = ''; } catch (_) { /* noop */ }
+    stopAudio(previousAudio);
     releaseAudioObjectUrl(previousAudio);
   }
 
@@ -216,6 +211,7 @@ export function playAudioBlob(blob, { onEnd, onError } = {}) {
   audio.onended = () => finish(onEnd);
   audio.onerror = () => {
     logStorage.addLog('error', 'client', 'Error de reproducción', { blobSize: blob.size });
+    stopAudio(audio);
     finish(onError);
   };
 
@@ -227,6 +223,7 @@ export function playAudioBlob(blob, { onEnd, onError } = {}) {
     if (playTimer) { clearTimeout(playTimer); playTimer = null; }
   }).catch((err) => {
     if (err.message === 'timeout') logStorage.addLog('error', 'client', 'Timeout en audio.play()');
+    stopAudio(audio);
     finish(onError);
   });
 }
@@ -393,13 +390,34 @@ export function resetTtsCounters() {
   ttsErrorCount = 0;
 }
 
+export function getQueueStats() {
+  return { dropped: ttsDroppedCount, waiting: speechQueue.length, max: MAX_QUEUE_SIZE };
+}
+
+function badgeLink(text, hint, tab) {
+  const link = document.createElement('button');
+  link.type = 'button';
+  link.className = 'queue-badge-link';
+  link.dataset.popupTab = tab;
+  link.title = hint;
+  link.textContent = text;
+  return link;
+}
+
+// "descartados" = cola de voz llena; "bloqueados" = moderacion. Son cosas distintas.
 export function updateQueueBadge() {
   const el = document.getElementById('queueBadge');
   if (!el) return;
-  const parts = [`Cola: ${speechQueue.length} mensaje${speechQueue.length !== 1 ? 's' : ''}`];
-  if (ttsDroppedCount > 0) parts.push(`descartados: ${ttsDroppedCount}`);
-  if (ttsErrorCount > 0) parts.push(`errores TTS: ${ttsErrorCount}/${TTS_MAX_ERRORS}`);
-  el.textContent = parts.join(' · ');
+  const { blocked, shadow } = moderationSession.counts();
+  const claveCola = speechQueue.length === 0 ? 'queueBadge.queueEmpty' : speechQueue.length === 1 ? 'queueBadge.queueOne' : 'queueBadge.queueMany';
+  const parts = [document.createTextNode(t(claveCola, { n: speechQueue.length }))];
+  if (ttsDroppedCount > 0) parts.push(badgeLink(t('queueBadge.dropped', { n: ttsDroppedCount }), t('queueBadge.droppedHint'), 'queue'));
+  // Sin bloqueados no hay nada que abrir: texto plano en vez de un enlace a una lista vacia.
+  parts.push(blocked > 0 ? badgeLink(t('queueBadge.blocked', { n: blocked }), t('queueBadge.blockedHint'), 'blocked') : document.createTextNode(t('queueBadge.blockedNone')));
+  if (shadow > 0) parts.push(badgeLink(t('queueBadge.shadow', { n: shadow }), t('queueBadge.shadowHint'), 'blocked'));
+  if (ttsErrorCount > 0) parts.push(document.createTextNode(t('queueBadge.ttsErrors', { n: ttsErrorCount, max: TTS_MAX_ERRORS })));
+  const nodes = parts.flatMap((part, i) => (i ? [document.createTextNode(' · '), part] : [part]));
+  el.replaceChildren(...nodes);
 }
 
 export function sendStateSync() {

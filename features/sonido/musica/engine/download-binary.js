@@ -4,7 +4,9 @@ const fs = require('fs');
 const { emitStatus } = require('./get-status');
 const { ensureDirSync } = require('../../../../core/ensure-dir');
 
-const RELEASE_BASE = 'https://github.com/yt-dlp/yt-dlp/releases/latest/download/';
+// Canal nightly: los fixes contra cambios de YouTube llegan al dia siguiente,
+// no al proximo corte estable (que puede tardar meses).
+const RELEASE_BASE = 'https://github.com/yt-dlp/yt-dlp-nightly-builds/releases/latest/download/';
 const ASSET_BY_ARCH = { x64: 'yt-dlp.exe', arm64: 'yt-dlp_arm64.exe', ia32: 'yt-dlp_x86.exe' };
 
 async function downloadBinary(state) {

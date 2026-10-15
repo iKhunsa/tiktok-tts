@@ -2,13 +2,22 @@
 
 const { ipcMain } = require('electron');
 const { registerUiohookShortcut, unregisterUiohookShortcut, isUiohookActive } = require('./uiohook');
+const { TITLEBAR_OVERLAY, TITLEBAR_OVERLAY_DIMMED } = require('./titlebar');
 
 const FORBIDDEN_SHORTCUTS = new Set(['Alt+F4', 'Ctrl+C', 'Cmd+C', 'Ctrl+V', 'Cmd+V', 'Ctrl+Alt+Del', 'Ctrl+Shift+Esc', 'Cmd+Shift+Esc']);
 const SPECIAL_PAUSE_SHORTCUTS = new Set(['MediaPlayPause', 'F8', 'F9', 'F10', 'F11', 'F12']);
 const TTS_SHORTCUT_ACTIONS = new Set(['pause', 'skip', 'clear', 'musicPause', 'musicSkip']);
 // Lista blanca por seguridad: el renderer no puede mandar cualquier nombre
 // de evento al bus.
-const RENDERER_TELEMETRY_EVENTS = new Set(['tts:skipped', 'tts:queue-overflow', 'ui:language-set']);
+// Payload del renderer: un valor corto de lista cerrada (origen, vista...), que
+// electron-shell/aptabase.js valida; el tope corta cualquier texto libre.
+const MAX_PAYLOAD_RENDERER = 24;
+const RENDERER_TELEMETRY_EVENTS = new Set([
+  'tts:skipped', 'tts:queue-overflow', 'ui:language-set', 'ui:discord-opened', 'ui:discord-joined',
+  'ui:view-opened', 'ui:overlay-copied', 'ui:promo-code-opened', 'ui:promo-code-copied', 'ui:promo-plans-clicked',
+  'ui:tiktok-banner-clicked', 'ui:plans-opened', 'ui:news-opened', 'ui:donations-opened', 'ui:portalview-opened',
+  'ui:tour-started', 'ui:event-fx-toggled', 'ui:soundpad-played',
+]);
 
 function normalizeShortcut(shortcut) {
   if (!shortcut || typeof shortcut !== 'string') return '';
@@ -49,13 +58,35 @@ function isValidShortcut(shortcut) {
 function attachIpcBridge({ app, bus, logger, getMainWindow, globalShortcut }) {
   ipcMain.handle('get-app-version', () => app.getVersion());
 
+  ipcMain.on('titlebar:dim', (_event, dimmed) => {
+    const win = getMainWindow();
+    if (!win || win.isDestroyed()) return;
+    try { win.setTitleBarOverlay(dimmed === true ? TITLEBAR_OVERLAY_DIMMED : TITLEBAR_OVERLAY); } catch (_) { /* plataforma sin overlay: sin efecto */ }
+  });
+
+  // Arranque con Windows. Empaquetado: mismo nombre de valor (Run del registro)
+  // que escribe la casilla del instalador (build/installer.nsh). En dev hay que
+  // pasar la carpeta del proyecto como argumento (si no, arranca electron.exe
+  // vacio) y otro nombre, para no pisar la entrada de la app instalada.
+  const loginItem = () => (app.isPackaged
+    ? { name: 'TikLiveTTS' }
+    : { name: 'TikLiveTTS-dev', path: process.execPath, args: [app.getAppPath()] });
+  ipcMain.handle('login-item:get', () => {
+    const { path, args } = loginItem();
+    return { available: true, enabled: app.getLoginItemSettings({ path, args }).executableWillLaunchAtLogin };
+  });
+  ipcMain.handle('login-item:set', (_event, enabled) => {
+    app.setLoginItemSettings({ openAtLogin: enabled === true, ...loginItem() });
+    return { ok: true };
+  });
+
   ipcMain.on('install-update', () => {
     require('./updater').installUpdate();
   });
 
   ipcMain.on('telemetry:track', (_event, name, payload) => {
     if (!RENDERER_TELEMETRY_EVENTS.has(name)) return;
-    bus.emit(name, typeof payload === 'string' ? payload.slice(0, 12) : undefined);
+    bus.emit(name, typeof payload === 'string' ? payload.slice(0, MAX_PAYLOAD_RENDERER) : undefined);
   });
 
   // ── TTS shortcuts (pause / skip / clear) ────────────────────────────────

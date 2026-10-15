@@ -8,19 +8,22 @@
 import { t, tLike } from '../i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
 import { logStorage } from '../log-storage.js';
+import { moderationSession } from '../estado/moderacion-sesion.js';
 import { appSettings, saveSettings } from '../estado/ajustes-app.js';
 import { options } from '../estado/opciones-lectura.js';
 import { applyA11yConfig, applyReadNonFollowers, applyFiltroIdiomaConfig, applyAnnounceTemplates, announceTemplates } from '../estado/config-runtime.js';
 import { resolverAnuncio } from '../i18n/plantilla-anuncio.js';
+import { nombreHablado } from '../i18n/nombre-hablado.js';
 import { cargarSesion } from '../estado/sesion.js';
 import {
   ttsPaused, setTtsGlobalEnabled, togglePauseTts, skipCurrentTTS,
-  enableEmergencyTTSMode, sendStateSync, speak,
+  enableEmergencyTTSMode, sendStateSync, speak, updateQueueBadge,
 } from '../tts/cola-tts.js';
 import { incrementarMsgCount, handleChatData, addSystemMsg } from '../../vistas/principal/chat-ui.js';
-import { setStatus, getSayUsernameConnector } from '../../vistas/principal/modales-avisos.js';
+import { setStatus } from '../../vistas/principal/modales-avisos.js';
 import { updateFollowerDisplay } from '../../vistas/principal/configurador-overlays.js';
 import { renderSettingsChannels } from '../../vistas/principal/plataformas.js';
+import { renderTiktokSession, tiktokLogin } from '../../vistas/principal/tiktok-sesion.js';
 import { updateOBSStatus, getClipsData, getLocalDateStr, deleteClip, startStreamManual, markClip, obtenerStreamStartTime } from '../../vistas/principal/clips.js';
 import { setSoloChatMode } from '../../vistas/principal/toggles-chat.js';
 import { spPlaySound } from '../../vistas/principal/soundpad.js';
@@ -31,6 +34,7 @@ import {
   musicOnEngineStatus,
 } from '../../vistas/principal/bot-musica.js';
 import { modOnViewerUpdated } from '../../vistas/principal/moderacion.js';
+import { updateBlockedWords, refreshModeracionStatus } from '../../vistas/principal/moderacion-contenido/index.js';
 
 export const LIKE_COOLDOWN_MS = 15 * 60 * 1000;
 export const likeCooldownMap = new Map();
@@ -126,12 +130,13 @@ function handleMessage(data) {
     case 'gift':
       if (options.readGifts) {
         const giftId = nuevoMsgId();
-        const giftVars = { user: data.user, count: data.repeatCount, gift: data.giftName, amount: data.usdValue };
-        const tplVars = { usuario: data.user, cantidad: data.repeatCount, regalo: data.giftName, monto: data.usdValue };
-        const giftBase = resolverAnuncio(announceTemplates, 'gift', { ...tplVars, monto: undefined }, () => t('announce.gift', giftVars));
-        const giftText = (options.readGiftAmount && data.usdValue)
-          ? resolverAnuncio(announceTemplates, 'giftUsd', tplVars, () => t('announce.giftUsd', giftVars))
-          : giftBase;
+        const giftAnuncio = (evento, usuario) => {
+          const giftVars = { user: usuario, count: data.repeatCount, gift: data.giftName, amount: data.usdValue };
+          const tplVars = { usuario, cantidad: data.repeatCount, regalo: data.giftName, monto: evento === 'giftUsd' ? data.usdValue : undefined };
+          return resolverAnuncio(announceTemplates, evento, tplVars, () => t(`announce.${evento}`, giftVars));
+        };
+        const giftBase = giftAnuncio('gift', data.user);
+        const giftText = giftAnuncio(options.readGiftAmount && data.usdValue ? 'giftUsd' : 'gift', nombreHablado(data));
         addSystemMsg(giftBase, 'gift', giftId, {
           iconSrc: 'icons/card_giftcard.svg',
           accentText: data.usdValue ? `≈ $${data.usdValue} USD` : '',
@@ -143,18 +148,18 @@ function handleMessage(data) {
     case 'join':
       if (options.readJoins) {
         const joinId = nuevoMsgId();
-        const joinText = resolverAnuncio(announceTemplates, 'join', { usuario: data.user }, () => t('announce.join', { user: data.user }));
-        addSystemMsg(joinText, 'join', joinId, { iconSrc: 'icons/emoji_people.svg' });
-        speak(joinText, joinId, data.timestamp);
+        const joinText = (usuario) => resolverAnuncio(announceTemplates, 'join', { usuario }, () => t('announce.join', { user: usuario }));
+        addSystemMsg(joinText(data.user), 'join', joinId, { iconSrc: 'icons/emoji_people.svg' });
+        speak(joinText(nombreHablado(data)), joinId, data.timestamp);
       }
       break;
 
     case 'follow': {
       if (options.readFollows) {
         const followId = nuevoMsgId();
-        const followText = resolverAnuncio(announceTemplates, 'follow', { usuario: data.user }, () => t('announce.follow', { user: data.user }));
-        addSystemMsg(followText, 'join', followId, { iconSrc: 'icons/person_add.svg' });
-        speak(followText, followId, data.timestamp);
+        const followText = (usuario) => resolverAnuncio(announceTemplates, 'follow', { usuario }, () => t('announce.follow', { user: usuario }));
+        addSystemMsg(followText(data.user), 'join', followId, { iconSrc: 'icons/person_add.svg' });
+        speak(followText(nombreHablado(data)), followId, data.timestamp);
       }
       break;
     }
@@ -166,9 +171,9 @@ function handleMessage(data) {
         if (now - last >= LIKE_COOLDOWN_MS) {
           likeCooldownMap.set(data.user, now);
           const likeId = nuevoMsgId();
-          const likeText = resolverAnuncio(announceTemplates, 'like', { usuario: data.user, cantidad: data.likeCount }, () => tLike(data.user, data.likeCount));
-          addSystemMsg(likeText, 'join', likeId, { iconSrc: 'icons/thumb_up.svg' });
-          speak(likeText, likeId, data.timestamp);
+          const likeText = (usuario) => resolverAnuncio(announceTemplates, 'like', { usuario, cantidad: data.likeCount }, () => tLike(usuario, data.likeCount));
+          addSystemMsg(likeText(data.user), 'join', likeId, { iconSrc: 'icons/thumb_up.svg' });
+          speak(likeText(nombreHablado(data)), likeId, data.timestamp);
         }
       }
       break;
@@ -176,9 +181,9 @@ function handleMessage(data) {
     case 'share':
       if (options.readShares) {
         const shareId = nuevoMsgId();
-        const shareText = resolverAnuncio(announceTemplates, 'share', { usuario: data.user }, () => t('announce.share', { user: data.user }));
-        addSystemMsg(shareText, 'join', shareId, { iconSrc: 'icons/public.svg' });
-        speak(shareText, shareId, data.timestamp);
+        const shareText = (usuario) => resolverAnuncio(announceTemplates, 'share', { usuario }, () => t('announce.share', { user: usuario }));
+        addSystemMsg(shareText(data.user), 'join', shareId, { iconSrc: 'icons/public.svg' });
+        speak(shareText(nombreHablado(data)), shareId, data.timestamp);
       }
       break;
 
@@ -197,15 +202,29 @@ function handleMessage(data) {
       break;
 
     // Supervisor de continuidad de TikTok (features/canales/tiktok/connect-tiktok-channel.js):
-    // solo estas 4 transiciones llegan aca, nunca un toast por cada intento
+    // solo estas 5 transiciones llegan aca, nunca un toast por cada intento
     // tecnico fallido — ver CLAUDE.md / handoff de continuidad de conexion.
     case 'tiktok-connection-status': {
       if (data.status === 'connecting') showToast(t('conn.tiktokConnecting'));
       else if (data.status === 'restoring') showToast(t('conn.tiktokRestoring'));
       else if (data.status === 'connected' && data.recovered) showToast(t('conn.tiktokRestored'));
       else if (data.status === 'waiting-live') showToast(t('conn.tiktokWaitingLive'));
+      else if (data.status === 'auth-required') {
+        showToast(t('conn.tiktokAuthRequiredToast', { channel: data.channel }));
+        renderTiktokSession();
+        // Auto-abre (o enfoca, si ya hay una abierta) la ventana de login en
+        // vez de obligar al usuario a buscarla en Configuracion — ver
+        // openTikTokLoginWindow, es idempotente por particion.
+        tiktokLogin();
+      }
       break;
     }
+
+    // Resultado de la ventana de login / logout de TikTok (routes/tiktok-login.js).
+    case 'tiktok-session':
+      if (data.loggedIn) showToast(t('conn.tiktokLoggedIn'));
+      renderTiktokSession();
+      break;
 
     case 'platform-connected':
       renderSettingsChannels();
@@ -351,6 +370,8 @@ function handleMessage(data) {
       // El toggle de subscriptionsEnabled cambia si /api/auth/* existe (404
       // vs real) -> re-hidratar en vez de quedarse con el badge/vista viejos.
       if (data.config && 'subscriptionsEnabled' in data.config) cargarSesion();
+      // La voz del TTS decide los idiomas del filtro en modo automatico.
+      refreshModeracionStatus();
       break;
     case 'auth-updated':
       // El payload del WS viene recortado (sin email/user-id, ver
@@ -358,9 +379,16 @@ function handleMessage(data) {
       // estado completo por HTTP, que es solo-localhost.
       cargarSesion();
       break;
+    case 'moderation-blocked':
+      moderationSession.add(data);
+      updateQueueBadge();
+      break;
     case 'moderation-updated':
     case 'moderation-reset':
       modOnViewerUpdated();
+      break;
+    case 'moderation-words-changed':
+      updateBlockedWords(data.words);
       break;
     case 'play-soundpad':
       if (data.soundId) spPlaySound(data.soundId);

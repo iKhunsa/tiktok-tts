@@ -1,5 +1,6 @@
 'use strict';
 
+const { CHAT_GUARD_LEVELS, isChatGuardLangs, isChatGuardCustom } = require('../../core/chat-guard-options');
 const { GOOGLE_TTS_LANGS, DICT_FILTER_LANGS } = require('../../core/contracts/idioma-datos');
 
 function isStringArray(v) {
@@ -19,7 +20,7 @@ function isAnnounceTemplates(v) {
 // agregan ni quitan claves en esta fase.
 const CONFIG_VALIDATORS = {
   LIKE_DEBOUNCE_MS: (v) => Number.isInteger(v) && v >= 250 && v <= 10000,
-  TTS_MAX_CHARS: (v) => Number.isInteger(v) && v >= 20 && v <= 1000,
+  TTS_MAX_CHARS: (v) => Number.isInteger(v) && v >= 20 && v <= 200,
   rateLimitEnabled: (v) => typeof v === 'boolean',
   TTS_RATE_LIMIT_MAX: (v) => Number.isInteger(v) && v >= 1 && v <= 120,
   TTS_RATE_WINDOW_MS: (v) => Number.isInteger(v) && v >= 1000 && v <= 60000,
@@ -46,10 +47,20 @@ const CONFIG_VALIDATORS = {
   announceTemplates: isAnnounceTemplates,
   ttsSlowSpeech: (v) => typeof v === 'boolean',
   ttsReadNonFollowers: (v) => typeof v === 'boolean',
+  rustGuardEnabled: (v) => typeof v === 'boolean',
+  rustGuardMode: (v) => v === 'shadow' || v === 'enforce',
+  chatGuardLevel: (v) => CHAT_GUARD_LEVELS.includes(v),
+  chatGuardLangs: isChatGuardLangs,
+  chatGuardLangsAuto: (v) => typeof v === 'boolean',
+  chatGuardCustom: isChatGuardCustom,
+  gibberishMode: (v) => v === 'off' || v === 'shadow' || v === 'enforce',
   mcpEnabled: (v) => typeof v === 'boolean',
   mcpDestructiveToolsEnabled: (v) => typeof v === 'boolean',
   mcpDevToolsEnabled: (v) => typeof v === 'boolean',
   subscriptionsEnabled: (v) => typeof v === 'boolean',
+  closeToTray: (v) => typeof v === 'boolean',
+  // Llave técnica de apagado de la telemetría de palabras (true = apagada).
+  blockedWordsTelemetryDisabled: (v) => typeof v === 'boolean',
   adminIdentities: (v) => v && typeof v === 'object'
     && ['tiktok', 'twitch', 'youtube', 'kick'].every((p) => Array.isArray(v[p]) && v[p].every((x) => typeof x === 'string')),
 };
