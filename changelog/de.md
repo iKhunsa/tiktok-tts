@@ -62,6 +62,7 @@
 - Die Stimme liest lange Zahlen in Nicknames nicht mehr vor: `pablito434435433453` wird «pablito» gelesen, und Konten ohne echten Namen (`user14423423…`, `usuario14423423…`) werden in der Sprache der App als «Nutzer» gelesen. Das gilt für den Chat und für die Ansagen von Beitritten, Follows, Geschenken, Likes und Shares. Namen mit wenigen Ziffern (`lu15`, `pablo2024`) werden wie bisher gelesen, und auf dem Bildschirm, in OBS und in den Ranglisten wird der Nickname weiterhin vollständig angezeigt.
 - Musik-Bot: Ein Songwunsch mit YouTube-Link (`!p https://youtu.be/...`) spielt wieder genau diesen Song. Vorher ging der Link verloren und der Bot suchte nach dem Wort „link“, deshalb lief ein anderer Song. Im Chat und in der Sprachausgabe wird der Link weiterhin als „link“ angezeigt.
 - Musik-Bot: Die YouTube-Engine bekommt Korrekturen jetzt noch am selben Tag, statt wochenlang auf die nächste stabile Version zu warten. So funktionieren Wünsche viel schneller wieder, wenn YouTube etwas ändert. Blieb ein Engine-Update halb fertig, weil gerade Musik lief, wird es beim nächsten Start der App automatisch abgeschlossen.
+- Kick: Der Chat verbindet sich wieder. Kick hat das System für seinen Live-Chat geändert und die App konnte ihn nicht mehr lesen: Die Verbindung schlug fehl. Jetzt nutzt sie das neue System von Kick, weiterhin ohne Konto oder Login, und die Verbindung hält sich während des ganzen Streams von selbst.
 
 ### Videos de YouTube
-- [Neuigkeiten-Video ansehen](https://www.youtube.com/watch?v=JBLPEXGKRlM)
+- [Neuigkeiten-Video ansehen](https://www.youtube.com/watch?v=TNSqxGlOCyE)

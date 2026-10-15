@@ -90,7 +90,7 @@ export function abrirNovedades() {
   // El reproductor existe solo mientras el modal está abierto: al cerrarlo se
   // destruye y el video deja de sonar.
   if (idVideoNovedades && !lista.querySelector('.news-video')) {
-    lista.prepend(crearVideoNovedades(idVideoNovedades, t('news.videoTitle')));
+    lista.prepend(crearVideoNovedades(idVideoNovedades, t('news.videoTitle'), t('news.videoSubtitles')));
   }
   document.getElementById('newsModal').classList.add('show');
 }

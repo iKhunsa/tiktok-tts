@@ -1360,7 +1360,8 @@
     "news":  {
                  "title":  "TikLiveTTS の新着情報",
                  "close":  "閉じる",
-                 "videoTitle":  "新機能紹介ビデオ"
+                 "videoTitle":  "新機能紹介ビデオ",
+                 "videoSubtitles":  "動画には自動字幕があります。プレーヤーの CC ボタンでオン/オフや言語の切り替えができます。"
              },
     "discordInvite":  {
                           "title":  "TikLiveTTS の Discord に参加",
@@ -1589,14 +1590,13 @@
                                }
                  },
     "creatorProgram":  {
-                           "title":  "コンテンツを作っていますか？Pro 1か月分をプレゼント",
-                           "text":  "TikLiveTTS の動画を自由に作って、Pro 1か月分を無料でゲット。",
-                           "cta":  "無料の1か月を受け取る",
-                           "howItWorks":  "仕組みを見る",
-                           "modalTitle":  "動画を作って Pro 1か月分をゲット",
+                           "title":  "コンテンツを作っていますか？Pro 2か月分をプレゼント",
+                           "text":  "TikLiveTTS の動画を自由に作って、Pro 2か月分を無料でゲット。",
+                           "cta":  "無料の2か月を受け取る",
+                           "modalTitle":  "動画を作って Pro 2か月分をゲット",
                            "modalBody1":  "コンテンツクリエイターなら、TikLiveTTS について話す・レビューする・おすすめする動画を投稿してください。",
                            "modalBody2":  "内容や形式は自由。あなたらしいスタイルでどうぞ。",
-                           "modalBody3":  "承認されると、<strong>TikLiveTTS Pro 1か月分を完全無料</strong>で利用できます。",
+                           "modalBody3":  "承認されると、<strong>TikLiveTTS Pro 2か月分を完全無料</strong>で利用できます。",
                            "join":  "参加する"
                        }
 }

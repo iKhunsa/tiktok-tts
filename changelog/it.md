@@ -62,6 +62,7 @@
 - La voce non legge più i numeri lunghi nei nick: `pablito434435433453` si legge «pablito», e gli account senza un nome proprio (`user14423423…`, `usuario14423423…`) si leggono «utente», nella lingua dell'app. Vale per la chat e per gli avvisi di ingressi, follow, regali, like e condivisioni. I nomi con pochi numeri (`lu15`, `pablo2024`) si leggono come prima, e sullo schermo, in OBS e nelle classifiche il nick si vede ancora completo.
 - Bot musicale: chiedere una canzone con un link di YouTube (`!p https://youtu.be/...`) riproduce di nuovo quella canzone. Prima il link andava perso e il bot cercava la parola «link», quindi partiva un'altra canzone. Nella chat e nella voce il link continua a comparire come «link».
 - Bot musicale: il motore di YouTube ora riceve le correzioni lo stesso giorno in cui escono, invece di aspettare settimane la prossima versione stabile, così le richieste smettono di fallire molto prima quando YouTube cambia qualcosa. Se un aggiornamento del motore restava a metà perché c'era musica in riproduzione, si completa da solo alla successiva apertura dell'app.
+- Kick: la chat torna a connettersi. Kick ha cambiato il sistema che usa per la chat in diretta e l'app non riusciva più a leggerla: la connessione falliva. Ora usa il nuovo sistema di Kick, sempre senza account né login, e la connessione resta attiva da sola per tutta la diretta.
 
 ### Videos de YouTube
-- [Guarda il video delle novità](https://www.youtube.com/watch?v=JBLPEXGKRlM)
+- [Guarda il video delle novità](https://www.youtube.com/watch?v=TNSqxGlOCyE)

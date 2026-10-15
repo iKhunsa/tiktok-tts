@@ -62,6 +62,7 @@
 - La voix ne lit plus les longs nombres des pseudos : `pablito434435433453` est lu «pablito», et les comptes sans vrai nom (`user14423423…`, `usuario14423423…`) sont lus «utilisateur», dans la langue de l'app. Cela vaut pour le chat et pour les annonces d'arrivées, follows, cadeaux, likes et partages. Les noms avec peu de chiffres (`lu15`, `pablo2024`) sont lus comme avant, et à l'écran, dans OBS et dans les classements le pseudo reste affiché en entier.
 - Bot musical : demander une chanson avec un lien YouTube (`!p https://youtu.be/...`) joue de nouveau cette chanson. Avant, le lien se perdait et le bot cherchait le mot « link », donc une autre chanson se lançait. Dans le chat et dans la voix, le lien s'affiche toujours comme « link ».
 - Bot musical : le moteur YouTube reçoit désormais les correctifs le jour même de leur sortie, au lieu d'attendre des semaines la prochaine version stable, donc les demandes cessent d'échouer bien plus tôt quand YouTube change quelque chose. Si une mise à jour du moteur restait à moitié faite parce que de la musique jouait, elle s'applique toute seule à la prochaine ouverture de l'app.
+- Kick : le chat se reconnecte. Kick a changé le système qu'il utilise pour son chat en direct et l'app ne pouvait plus le lire : la connexion échouait. Elle utilise maintenant le nouveau système de Kick, toujours sans compte ni connexion, et la connexion se maintient seule pendant tout le live.
 
 ### Videos de YouTube
-- [Voir la vidéo des nouveautés](https://www.youtube.com/watch?v=JBLPEXGKRlM)
+- [Voir la vidéo des nouveautés](https://www.youtube.com/watch?v=TNSqxGlOCyE)

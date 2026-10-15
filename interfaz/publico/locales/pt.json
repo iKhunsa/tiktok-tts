@@ -1360,7 +1360,8 @@
     "news":  {
                  "title":  "Novidades do TikLiveTTS",
                  "close":  "Fechar",
-                 "videoTitle":  "Vídeo das novidades"
+                 "videoTitle":  "Vídeo das novidades",
+                 "videoSubtitles":  "O vídeo tem legendas automáticas: ative-as ou mude o idioma com o botão CC do player."
              },
     "discordInvite":  {
                           "title":  "Entre no Discord do TikLiveTTS",
@@ -1589,14 +1590,13 @@
                                }
                  },
     "creatorProgram":  {
-                           "title":  "Cria conteúdo? Ganhe 1 mês Pro",
-                           "text":  "Faça um vídeo sobre o TikLiveTTS do seu jeito e receba 1 mês Pro grátis.",
-                           "cta":  "Quero meu mês grátis",
-                           "howItWorks":  "Veja como funciona",
-                           "modalTitle":  "Crie um vídeo e ganhe 1 mês Pro",
+                           "title":  "Cria conteúdo? Ganhe 2 meses Pro",
+                           "text":  "Faça um vídeo sobre o TikLiveTTS do seu jeito e receba 2 meses Pro grátis.",
+                           "cta":  "Quero meus 2 meses grátis",
+                           "modalTitle":  "Crie um vídeo e ganhe 2 meses Pro",
                            "modalBody1":  "Se você é criador de conteúdo, publique um vídeo falando, avaliando ou recomendando o TikLiveTTS.",
                            "modalBody2":  "Faça como quiser, com o seu próprio estilo.",
-                           "modalBody3":  "Depois de aprovado, você poderá resgatar <strong>1 mês de TikLiveTTS Pro totalmente grátis.</strong>",
+                           "modalBody3":  "Depois de aprovado, você poderá resgatar <strong>2 meses de TikLiveTTS Pro totalmente grátis.</strong>",
                            "join":  "Participar"
                        }
 }

@@ -68,9 +68,10 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y e
 - La voz ya no lee los números largos de los nicks: `pablito434435433453` se lee «pablito», y las cuentas sin nombre propio (`user14423423…`, `usuario14423423…`) se leen como «usuario», en el idioma de la app. Vale para el chat y para los avisos de entradas, follows, regalos, likes y shares. Los nombres con pocos números (`lu15`, `pablo2024`) se leen igual que antes, y en pantalla, OBS y rankings el nick se sigue viendo completo.
 - Bot de música: pedir una canción con un link de YouTube (`!p https://youtu.be/...`) vuelve a poner esa canción. Antes el link se perdía y el bot buscaba la palabra «link», así que sonaba otra canción. En el chat y en la voz el link se sigue mostrando como «link».
 - Bot de música: el motor de YouTube ahora recibe los arreglos el mismo día que salen, en vez de esperar semanas a la siguiente versión estable. Así los pedidos dejan de fallar mucho antes cuando YouTube cambia algo. Si una actualización del motor quedaba a medias porque había música sonando, se termina de aplicar sola al volver a abrir la app.
+- Kick: el chat vuelve a conectar. Kick cambió el sistema que usa para su chat en vivo y la app ya no podía leerlo: fallaba al conectar. Ahora usa el sistema nuevo de Kick, sigue sin pedir cuenta ni login, y la conexión se mantiene sola durante todo el directo.
 
 ### Videos de YouTube
-- [Ver video de novedades](https://www.youtube.com/watch?v=JBLPEXGKRlM)
+- [Ver video de novedades](https://www.youtube.com/watch?v=TNSqxGlOCyE)
 
 ## [1.9.3] — 2026-09-14 (prerelease)
 

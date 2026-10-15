@@ -1360,7 +1360,8 @@
     "news":  {
                  "title":  "TikLiveTTS 새 소식",
                  "close":  "닫기",
-                 "videoTitle":  "새로운 기능 영상"
+                 "videoTitle":  "새로운 기능 영상",
+                 "videoSubtitles":  "영상에 자동 자막이 있습니다. 플레이어의 CC 버튼으로 켜거나 언어를 바꿀 수 있습니다."
              },
     "discordInvite":  {
                           "title":  "TikLiveTTS 디스코드에 참여하세요",
@@ -1589,14 +1590,13 @@
                                }
                  },
     "creatorProgram":  {
-                           "title":  "콘텐츠를 만드시나요? Pro 1개월 받기",
-                           "text":  "원하는 방식으로 TikLiveTTS 영상을 만들고 Pro 1개월을 무료로 받으세요.",
-                           "cta":  "무료 1개월 받기",
-                           "howItWorks":  "참여 방법 보기",
-                           "modalTitle":  "영상 만들고 Pro 1개월 받기",
+                           "title":  "콘텐츠를 만드시나요? Pro 2개월 받기",
+                           "text":  "원하는 방식으로 TikLiveTTS 영상을 만들고 Pro 2개월을 무료로 받으세요.",
+                           "cta":  "무료 2개월 받기",
+                           "modalTitle":  "영상 만들고 Pro 2개월 받기",
                            "modalBody1":  "콘텐츠 크리에이터라면 TikLiveTTS를 소개하거나 리뷰하거나 추천하는 영상을 올려 주세요.",
                            "modalBody2":  "형식은 자유, 나만의 스타일로 만들면 됩니다.",
-                           "modalBody3":  "승인되면 <strong>TikLiveTTS Pro 1개월을 완전히 무료로</strong> 사용할 수 있습니다.",
+                           "modalBody3":  "승인되면 <strong>TikLiveTTS Pro 2개월을 완전히 무료로</strong> 사용할 수 있습니다.",
                            "join":  "참여하기"
                        }
 }

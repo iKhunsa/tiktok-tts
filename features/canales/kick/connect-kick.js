@@ -4,18 +4,21 @@ const WebSocket = require('ws');
 const { cleanKickSlug } = require('./clean-slug');
 const { fetchKickChatroom } = require('./fetch-chatroom');
 const { parseKickChatMessage } = require('./handle-event');
-const { PUSHER_URL, CHAT_MESSAGE_EVENT, subscribeFrame, PING_FRAME } = require('./pusher');
+const { fetchKickRealtimeSession, fetchKickGuestToken } = require('./fetch-realtime-session');
+const {
+  CONNECT_ID, SUBSCRIBE_ID, REFRESH_ID, CHAT_MESSAGE_EVENT, PONG_FRAME, connectFrame, subscribeFrame, refreshFrame, parseFrames,
+} = require('./centrifugo');
 const { armKickWatchdog, clearKickWatchdog, WATCHDOG_TIMEOUT_MS } = require('./stale-watchdog');
 const { assertNoConexionEnCurso } = require('../connecting-lock');
 const { reconnectDelayMs } = require('../reconnect-delay');
 
 // Conexion directa al chat de Kick desde Node: resuelve el chatroom.id via la
-// API publica de kick.com y se suscribe al canal Pusher `chatrooms.<id>.v2`
-// (sin auth, es publico). NO necesita Electron ni ventana oculta — funciona
-// igual en `node server.js` que empaquetado.
+// API publica de kick.com, pide un token de invitado y se suscribe por
+// Centrifugo al canal `chatrooms.<id>.v2` (sin login). NO necesita Electron
+// ni ventana oculta — funciona igual en `node server.js` que empaquetado.
 
-const PING_INTERVAL_MS = 100 * 1000; // Pusher corta a los 120s sin actividad.
-const SUBSCRIBE_TIMEOUT_MS = 20000; // evita que la Promise quede colgada si Pusher nunca confirma la suscripcion.
+const SUBSCRIBE_TIMEOUT_MS = 20000; // evita que la Promise quede colgada si Kick nunca confirma la suscripcion.
+const REFRESH_MARGIN_S = 120; // renueva el token 2 min antes de que caduque.
 
 function clearKickReconnect(map, slug) {
   const timer = map.get(slug);
@@ -26,7 +29,7 @@ function clearKickReconnect(map, slug) {
 function teardownEntry(entry) {
   if (!entry) return;
   entry.intentional = true;
-  if (entry.pingTimer) clearInterval(entry.pingTimer);
+  if (entry.refreshTimer) clearTimeout(entry.refreshTimer);
   try {
     entry.ws.removeAllListeners();
     entry.ws.close();
@@ -87,10 +90,11 @@ async function connectKickLocked(deps, slug, attempt) {
     bus.emit('canal:estado', { platform: 'kick', channel: slug, state: 'conectando' });
   }
 
-  const { chatroomId } = await fetchKickChatroom(slug);
+  const { chatroomId, channelId } = await fetchKickChatroom(slug);
+  const { url, clientId, token } = await fetchKickRealtimeSession(channelId);
 
-  const ws = new WebSocket(PUSHER_URL);
-  const entry = { ws, chatroomId, intentional: false, pingTimer: null, attempt };
+  const ws = new WebSocket(url, { headers: { Origin: 'https://kick.com' } });
+  const entry = { ws, chatroomId, intentional: false, refreshTimer: null, attempt };
 
   function onStale() {
     logger.log(
@@ -101,6 +105,21 @@ async function connectKickLocked(deps, slug, attempt) {
     teardownEntry(entry);
     state.kickChannels.delete(slug);
     scheduleReconnect(deps, slug, 0, 'stale');
+  }
+
+  // Si la renovacion falla, Kick cierra el socket al caducar el token y el
+  // 'close' de abajo reconecta con una sesion nueva — no hace falta mas.
+  function scheduleRefresh(reply) {
+    if (!reply || !reply.expires || !reply.ttl) return;
+    if (entry.refreshTimer) clearTimeout(entry.refreshTimer);
+    entry.refreshTimer = setTimeout(() => {
+      fetchKickGuestToken(clientId)
+        .then((nuevo) => { if (!entry.intentional) ws.send(refreshFrame(nuevo)); })
+        .catch((e) => logger.log(
+          'warn', 'canales', 'canales/kick/connect-kick.js#scheduleRefresh', 'canales.kick.token_no_renovado',
+          `Kick ${slug}: no se pudo renovar el token (${e.message})`, { slug, error: e.message }
+        ));
+    }, Math.max(reply.ttl - REFRESH_MARGIN_S, 30) * 1000);
   }
 
   await new Promise((resolve, reject) => {
@@ -117,48 +136,69 @@ async function connectKickLocked(deps, slug, attempt) {
       reject(new Error('Timeout esperando confirmacion de suscripcion de Kick'));
     }, SUBSCRIBE_TIMEOUT_MS);
 
-    ws.on('open', () => {
-      ws.send(subscribeFrame(chatroomId));
-      entry.pingTimer = setInterval(() => {
-        try { ws.send(PING_FRAME); } catch (_) { /* best-effort */ }
-      }, PING_INTERVAL_MS);
-    });
+    function fail(error) {
+      if (settled) return;
+      settled = true;
+      clearTimeout(subscribeTimeout);
+      teardownEntry(entry);
+      reject(error);
+    }
 
-    ws.on('message', (buf) => {
-      let msg;
-      try { msg = JSON.parse(buf.toString()); } catch (_) { return; }
-
-      // Cualquier frame de Pusher (subscription_succeeded, pusher:pong del ping
-      // cada 100s, chat) prueba que el socket sigue vivo. Kick tiene poco chat
-      // en canales tranquilos pero el ping mantiene el WS abierto — re-armar
-      // solo con CHAT_MESSAGE_EVENT daba un falso positivo cada 5 min.
-      armKickWatchdog(deps, slug, onStale);
-
-      if (msg.event === 'pusher_internal:subscription_succeeded') {
-        if (settled) return;
-        settled = true;
-        clearTimeout(subscribeTimeout);
-        if (attempt > 0 && !state.kickReconnectDesired.has(slug)) {
-          teardownEntry(entry);
-          resolve();
-          return;
-        }
-        state.kickChannels.set(slug, entry);
-        state.kickReconnectDesired.add(slug);
-        entry.attempt = 0;
-        logger.log(
-          'info', 'canales', 'canales/kick/connect-kick.js#connectKick', 'canales.kick.conectado',
-          `Kick ${slug} conectado`, { slug }
-        );
-        bus.emit('canal:estado', { platform: 'kick', channel: slug, state: 'conectado' });
+    function onSubscribed() {
+      if (settled) return;
+      settled = true;
+      clearTimeout(subscribeTimeout);
+      if (attempt > 0 && !state.kickReconnectDesired.has(slug)) {
+        teardownEntry(entry);
         resolve();
         return;
       }
+      state.kickChannels.set(slug, entry);
+      state.kickReconnectDesired.add(slug);
+      entry.attempt = 0;
+      logger.log(
+        'info', 'canales', 'canales/kick/connect-kick.js#connectKick', 'canales.kick.conectado',
+        `Kick ${slug} conectado`, { slug }
+      );
+      bus.emit('canal:estado', { platform: 'kick', channel: slug, state: 'conectado' });
+      resolve();
+    }
 
-      if (msg.event === CHAT_MESSAGE_EVENT) {
-        const raw = parseKickChatMessage(msg.data);
-        if (!raw) return;
-        bus.emit('canal:mensaje-crudo', { platform: 'kick', channel: slug, raw });
+    ws.on('open', () => ws.send(connectFrame(token)));
+
+    ws.on('message', (buf) => {
+      // Cualquier frame (respuestas, ping `{}` cada ~25s, chat) prueba que el
+      // socket sigue vivo. Re-armar solo con CHAT_MESSAGE_EVENT daria un falso
+      // positivo cada 5 min en canales tranquilos.
+      armKickWatchdog(deps, slug, onStale);
+
+      for (const msg of parseFrames(buf)) {
+        if (!Object.keys(msg).length) {
+          try { ws.send(PONG_FRAME); } catch (_) { /* best-effort */ }
+          continue;
+        }
+        if (msg.error && (msg.id === CONNECT_ID || msg.id === SUBSCRIBE_ID)) {
+          fail(new Error(`Kick: el chat rechazo la conexion (${msg.error.code} ${msg.error.message || ''})`.trim()));
+          return;
+        }
+        if (msg.id === CONNECT_ID && msg.connect) {
+          scheduleRefresh(msg.connect);
+          ws.send(subscribeFrame(chatroomId));
+          continue;
+        }
+        if (msg.id === REFRESH_ID && msg.refresh) {
+          scheduleRefresh(msg.refresh);
+          continue;
+        }
+        if (msg.id === SUBSCRIBE_ID && msg.subscribe) {
+          onSubscribed();
+          continue;
+        }
+        const pub = msg.push && msg.push.pub && msg.push.pub.data;
+        if (pub && pub.event === CHAT_MESSAGE_EVENT) {
+          const raw = parseKickChatMessage(pub.data);
+          if (raw) bus.emit('canal:mensaje-crudo', { platform: 'kick', channel: slug, raw });
+        }
       }
     });
 
@@ -168,11 +208,11 @@ async function connectKickLocked(deps, slug, attempt) {
         'warn', 'canales', 'canales/kick/connect-kick.js#connectKick', 'canales.kick.socket_error',
         `Error de socket de Kick ${slug}: ${error.message}`, { slug, error: error.message }
       );
-      if (!settled) { settled = true; clearTimeout(subscribeTimeout); reject(error); }
+      fail(error);
     });
 
     ws.on('close', () => {
-      if (entry.pingTimer) clearInterval(entry.pingTimer);
+      if (entry.refreshTimer) clearTimeout(entry.refreshTimer);
       if (entry.intentional) return;
       if (!settled) { settled = true; clearTimeout(subscribeTimeout); reject(new Error('Kick: el socket se cerro antes de suscribirse')); return; }
       if (state.kickChannels.get(slug) !== entry) return;

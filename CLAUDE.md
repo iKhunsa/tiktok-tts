@@ -13,7 +13,7 @@ App de escritorio Electron que lee en voz alta el chat de TikTok Live, Twitch y 
 | TikTok connection | tiktok-live-connector (WebSocket scraping) |
 | Twitch connection | tmi.js (IRC anónimo o autenticado) |
 | YouTube connection | youtube-chat (scraping, requiere stream activo) |
-| Kick connection | API pública kick.com + Pusher WS (`ws`, sin auth) |
+| Kick connection | API pública kick.com + Centrifugo WS (`ws`, token de invitado, sin login) |
 | TTS | Google Translate TTS API (google-tts-api, online) |
 | Auto-update | electron-updater → GitHub Releases |
 | Build/CI | electron-builder + GitHub Actions (windows-latest) |
@@ -529,7 +529,7 @@ todo lo de las secciones **i18n** e **Íconos** de arriba.
 ## Funcionalidades actuales
 
 - TTS en 13 idiomas via Google Translate (es, es-MX, es-AR, en, en-GB, pt, pt-PT, fr, de, it, ja, zh-CN, ru, ko)
-- Chat multi-plataforma: TikTok Live + Twitch (tmi.js) + YouTube (youtube-chat, requiere stream activo) + Kick (API + Pusher WS)
+- Chat multi-plataforma: TikTok Live + Twitch (tmi.js) + YouTube (youtube-chat, requiere stream activo) + Kick (API + Centrifugo WS)
 - Badge de plataforma en cada mensaje del chat (tiktok / twitch / youtube)
 - Cola TTS ordenada por timestamp: mensajes de 3 plataformas simultáneas se leen en orden cronológico real
 - Un solo narrador (1 Audio activo a la vez, cola serializada con `isSpeaking` flag)
@@ -597,10 +597,15 @@ telemetría vía `TELEMETRY_URL`/su secret correspondiente.
 
 **Kick — conexión directa desde Node (2026-08):** el bloqueo de Cloudflare que
 antes forzaba descartar Kick ya no aplica a `https://kick.com/api/v2/channels/{slug}`
-(responde 200 a Node sin headers especiales). El chat va por Pusher público
-(`wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679`, cluster us2, canal
-`chatrooms.{chatroom_id}.v2`, sin auth). `features/canales/kick/`:
-`fetch-chatroom.js` (slug → chatroom.id) + `pusher.js` (URL/frames) +
+(responde 200 a Node sin headers especiales). El chat va por el Centrifugo
+propio de Kick (2026-10; antes era Pusher `32cbd69e…`, Kick dio de baja esa app
+y responde `4001 App key not in this cluster`). Handshake sin login:
+`POST web.kick.com/api/v1/realtime/channels/{channelId}/chat/connection` → URL
+del WS; `POST /v1/realtime/auth/connection {client_id}` → token de invitado
+(caduca ~45 min, se renueva con el MISMO client_id vía comando `refresh`).
+Canal `chatrooms.{chatroom_id}.v2`, mismo payload `ChatMessageEvent` que Pusher.
+`features/canales/kick/`: `fetch-chatroom.js` (slug → chatroom.id/channel_id) +
+`fetch-realtime-session.js` (URL + token) + `centrifugo.js` (frames) +
 `connect-kick.js` (WS + subscribe + dedup + watchdog + backoff, mismo patrón
 que YouTube) + `handle-event.js` (parse del `ChatMessageEvent`). **No usa
 Electron** — funciona igual en `node server.js` que empaquetado. Los emotes

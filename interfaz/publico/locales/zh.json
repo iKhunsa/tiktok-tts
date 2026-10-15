@@ -1360,7 +1360,8 @@
     "news":  {
                  "title":  "TikLiveTTS 最新动态",
                  "close":  "关闭",
-                 "videoTitle":  "更新内容视频"
+                 "videoTitle":  "更新内容视频",
+                 "videoSubtitles":  "视频提供自动字幕：可通过播放器的 CC 按钮开启或切换语言。"
              },
     "discordInvite":  {
                           "title":  "加入 TikLiveTTS 的 Discord",
@@ -1589,14 +1590,13 @@
                                }
                  },
     "creatorProgram":  {
-                           "title":  "你是内容创作者吗？免费获得 1 个月 Pro",
-                           "text":  "用你自己的方式制作一个关于 TikLiveTTS 的视频，即可免费获得 1 个月 Pro。",
-                           "cta":  "领取我的免费月份",
-                           "howItWorks":  "了解规则",
-                           "modalTitle":  "制作视频，赢取 1 个月 Pro",
+                           "title":  "你是内容创作者吗？免费获得 2 个月 Pro",
+                           "text":  "用你自己的方式制作一个关于 TikLiveTTS 的视频，即可免费获得 2 个月 Pro。",
+                           "cta":  "领取我的 2 个月免费",
+                           "modalTitle":  "制作视频，赢取 2 个月 Pro",
                            "modalBody1":  "如果你是内容创作者，发布一个介绍、评测或推荐 TikLiveTTS 的视频。",
                            "modalBody2":  "形式不限，展现你自己的风格。",
-                           "modalBody3":  "审核通过后，即可兑换 <strong>1 个月完全免费的 TikLiveTTS Pro。</strong>",
+                           "modalBody3":  "审核通过后，即可兑换 <strong>2 个月完全免费的 TikLiveTTS Pro。</strong>",
                            "join":  "参与"
                        }
 }
