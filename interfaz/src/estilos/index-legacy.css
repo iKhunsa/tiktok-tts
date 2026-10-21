@@ -2778,6 +2778,50 @@
     .cuenta-btn-danger { border-color: var(--danger-a30); color: var(--danger); }
     .cuenta-btn-danger:hover { border-color: var(--danger-soft); color: var(--danger-soft); background: var(--danger-a12); }
 
+    /* Icono + texto dentro de un boton ghost (vincular/confirmar con Google) */
+    .cuenta-btn-icon { display: inline-flex; align-items: center; gap: 6px; }
+    .cuenta-btn-icon .icon-inline { width: 14px; height: 14px; }
+
+    /* Boton "Continuar con Google" — mismo alto/radio que cuenta-btn-primary,
+       pero con el fondo neutro esperado para un boton de marca de terceros. */
+    .cuenta-btn-google {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      margin-top: 4px;
+      padding: 11px 16px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      background: var(--bg-button);
+      color: var(--text);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: border-color var(--dur-2), background var(--dur-2), transform var(--dur-press) var(--ease-out);
+    }
+    .cuenta-btn-google .icon-inline { width: 18px; height: 18px; }
+    .cuenta-btn-google:hover { border-color: var(--text-bright-a30); background: var(--surface-raised); }
+    .cuenta-btn-google:active { transform: scale(0.98); }
+    .cuenta-btn-google:disabled { opacity: 0.55; cursor: default; transform: none; }
+
+    .cuenta-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 4px 0;
+      color: var(--text-muted);
+      font-size: var(--text-2xs);
+    }
+    .cuenta-divider::before, .cuenta-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-strong);
+    }
+
     .cuenta-danger-zone { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); margin-top: var(--space-2); padding: var(--space-4) 0 0; border-top: 1px solid var(--border-strong); }
     .cuenta-danger-zone .cuenta-hint { margin: 0; }
     .cuenta-delete-modal { max-width: 460px; padding: var(--space-8); }
@@ -2785,7 +2829,7 @@
     .cuenta-delete-modal .notice-icon-badge .notice-icon-warn { display: inline-block; width: 20px; height: 20px; background: var(--danger); -webkit-mask: url('/icons/warning.svg') center / contain no-repeat; mask: url('/icons/warning.svg') center / contain no-repeat; }
     .cuenta-delete-modal h2 { margin-bottom: var(--space-4); }
     .cuenta-delete-list { margin: 0 0 var(--space-5); padding-left: var(--space-5); color: var(--text-muted); font-size: var(--text-base); line-height: 1.6; }
-    .cuenta-delete-actions { display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-5); }
+    .cuenta-delete-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-5); }
     .cuenta-delete-modal .modal-close:focus-visible { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
     @media (max-width: 520px) { .cuenta-danger-zone { flex-direction: column; align-items: flex-start; } .cuenta-delete-modal { width: calc(100% - 24px); padding: 24px 18px; } }
 
@@ -2809,6 +2853,10 @@
     .cuenta-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .cuenta-perfil-nombre { font-size: var(--text-md); font-weight: 600; color: var(--text-bright); }
     .cuenta-perfil-email { font-size: var(--text-xs); color: var(--text-muted); }
+    .cuenta-identidad-google { margin-top: 6px; min-height: 1px; }
+    .cuenta-identidad-google .cuenta-btn-ghost { padding: 6px 12px; }
+    .cuenta-identidad-badge { display: inline-flex; align-items: center; gap: 6px; font-size: var(--text-2xs); color: var(--text-muted); }
+    .cuenta-identidad-badge .icon-inline { width: 14px; height: 14px; }
     .cuenta-perfil-acciones { display: flex; gap: 10px; flex-wrap: wrap; }
 
     /* Plan */

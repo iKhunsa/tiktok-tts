@@ -1133,7 +1133,11 @@
                    "chatGuardAllowedSingleWord":  "这里只接受单个词，不接受短语。",
                    "chatGuardImportTooLarge":  "文件过大（最大 1 MB）。",
                    "chatGuardImportTooMany":  "词语过多（最多 5000 个）。",
-                   "chatGuardImportInvalid":  "格式无效：必须是用引号括起的词语组成的 JSON 列表。"
+                   "chatGuardImportInvalid":  "格式无效：必须是用引号括起的词语组成的 JSON 列表。",
+                   "googleEmailYaRegistrado":  "该邮箱已有带密码的账号，请使用密码登录。",
+                   "googleEmailNoVerificado":  "你的 Google 账号没有经过验证的邮箱。",
+                   "invalidGoogleToken":  "无法验证你的 Google 账号，请重试。",
+                   "identidadTomada":  "该 Google 账号已绑定到其他用户。"
                },
     "mcp":  {
                 "title":  "MCP 代理",
@@ -1262,7 +1266,14 @@
                    "deleteWord":  "删除",
                    "deleteConfirm":  "永久删除",
                    "deleteCancel":  "取消",
-                   "deleteDone":  "你的账号已删除。"
+                   "deleteDone":  "你的账号已删除。",
+                   "or":  "或",
+                   "loginWithGoogle":  "使用 Google 登录",
+                   "registerWithGoogle":  "使用 Google 注册",
+                   "linkGoogle":  "绑定 Google",
+                   "googleLinked":  "已绑定 Google（{email}）",
+                   "googleLinkedDone":  "你的 Google 账号已绑定成功。",
+                   "deleteConfirmGoogle":  "使用 Google 确认"
                },
     "sidebarAccount":  {
                            "badgeFree":  "免费",

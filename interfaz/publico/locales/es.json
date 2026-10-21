@@ -1153,7 +1153,11 @@
                    "chatGuardAllowedSingleWord":  "Aquí solo se aceptan palabras sueltas, no frases.",
                    "chatGuardImportTooLarge":  "El archivo es demasiado grande (máx. 1 MB).",
                    "chatGuardImportTooMany":  "Demasiadas palabras (máx. 5000).",
-                   "chatGuardImportInvalid":  "El formato no es válido: debe ser una lista JSON de palabras entre comillas."
+                   "chatGuardImportInvalid":  "El formato no es válido: debe ser una lista JSON de palabras entre comillas.",
+                   "googleEmailYaRegistrado":  "Ese email ya tiene una cuenta con contraseña. Iniciá sesión con tu contraseña.",
+                   "googleEmailNoVerificado":  "Tu cuenta de Google no tiene el email verificado.",
+                   "invalidGoogleToken":  "No se pudo verificar tu cuenta de Google. Probá de nuevo.",
+                   "identidadTomada":  "Esa cuenta de Google ya está vinculada a otro usuario."
                },
     "mcp":  {
                 "title":  "Agente MCP",
@@ -1282,7 +1286,14 @@
                    "deleteWord":  "borrar",
                    "deleteConfirm":  "Eliminar definitivamente",
                    "deleteCancel":  "Cancelar",
-                   "deleteDone":  "Tu cuenta fue eliminada."
+                   "deleteDone":  "Tu cuenta fue eliminada.",
+                   "or":  "o",
+                   "loginWithGoogle":  "Iniciar con Google",
+                   "registerWithGoogle":  "Registrarte con Google",
+                   "linkGoogle":  "Vincular Google",
+                   "googleLinked":  "Google vinculado ({email})",
+                   "googleLinkedDone":  "Tu cuenta de Google quedó vinculada.",
+                   "deleteConfirmGoogle":  "Confirmar con Google"
                },
     "pro":  {
                 "bannerTitle":  "Mejora tu plan a Pro",

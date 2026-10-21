@@ -1133,7 +1133,11 @@
                    "chatGuardAllowedSingleWord":  "Seuls les mots seuls sont acceptés ici, pas les phrases.",
                    "chatGuardImportTooLarge":  "Le fichier est trop volumineux (max. 1 Mo).",
                    "chatGuardImportTooMany":  "Trop de mots (max. 5000).",
-                   "chatGuardImportInvalid":  "Format non valide : il doit s'agir d'une liste JSON de mots entre guillemets."
+                   "chatGuardImportInvalid":  "Format non valide : il doit s'agir d'une liste JSON de mots entre guillemets.",
+                   "googleEmailYaRegistrado":  "Cet email a déjà un compte avec mot de passe. Connectez-vous avec votre mot de passe.",
+                   "googleEmailNoVerificado":  "Votre compte Google n’a pas d’email vérifié.",
+                   "invalidGoogleToken":  "Impossible de vérifier votre compte Google. Veuillez réessayer.",
+                   "identidadTomada":  "Ce compte Google est déjà associé à un autre utilisateur."
                },
     "mcp":  {
                 "title":  "Agent MCP",
@@ -1262,7 +1266,14 @@
                    "deleteWord":  "supprimer",
                    "deleteConfirm":  "Supprimer définitivement",
                    "deleteCancel":  "Annuler",
-                   "deleteDone":  "Votre compte a été supprimé."
+                   "deleteDone":  "Votre compte a été supprimé.",
+                   "or":  "ou",
+                   "loginWithGoogle":  "Se connecter avec Google",
+                   "registerWithGoogle":  "S’inscrire avec Google",
+                   "linkGoogle":  "Associer Google",
+                   "googleLinked":  "Google associé ({email})",
+                   "googleLinkedDone":  "Votre compte Google a été associé.",
+                   "deleteConfirmGoogle":  "Confirmer avec Google"
                },
     "sidebarAccount":  {
                            "badgeFree":  "FREE",

@@ -1133,7 +1133,11 @@
                    "chatGuardAllowedSingleWord":  "Здесь принимаются только отдельные слова, не фразы.",
                    "chatGuardImportTooLarge":  "Файл слишком большой (макс. 1 МБ).",
                    "chatGuardImportTooMany":  "Слишком много слов (макс. 5000).",
-                   "chatGuardImportInvalid":  "Неверный формат: нужен JSON-список слов в кавычках."
+                   "chatGuardImportInvalid":  "Неверный формат: нужен JSON-список слов в кавычках.",
+                   "googleEmailYaRegistrado":  "Для этого email уже есть аккаунт с паролем. Войдите с паролем.",
+                   "googleEmailNoVerificado":  "У вашего аккаунта Google нет подтверждённого email.",
+                   "invalidGoogleToken":  "Не удалось подтвердить аккаунт Google. Попробуйте снова.",
+                   "identidadTomada":  "Этот аккаунт Google уже привязан к другому пользователю."
                },
     "mcp":  {
                 "title":  "Агент MCP",
@@ -1262,7 +1266,14 @@
                    "deleteWord":  "удалить",
                    "deleteConfirm":  "Удалить навсегда",
                    "deleteCancel":  "Отмена",
-                   "deleteDone":  "Ваш аккаунт удалён."
+                   "deleteDone":  "Ваш аккаунт удалён.",
+                   "or":  "или",
+                   "loginWithGoogle":  "Войти через Google",
+                   "registerWithGoogle":  "Зарегистрироваться через Google",
+                   "linkGoogle":  "Привязать Google",
+                   "googleLinked":  "Google привязан ({email})",
+                   "googleLinkedDone":  "Ваш аккаунт Google привязан.",
+                   "deleteConfirmGoogle":  "Подтвердить через Google"
                },
     "sidebarAccount":  {
                            "badgeFree":  "БЕСПЛАТНО",

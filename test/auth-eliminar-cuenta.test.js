@@ -1,6 +1,6 @@
 'use strict';
 
-// DELETE /api/auth/account: el proxy solo cierra sesion y borra los datos
+// DELETE /api/account: el proxy solo cierra sesion y borra los datos
 // locales de la cuenta si servicio-cuentas confirma el borrado (mockeado).
 
 const { test, beforeEach, after } = require('node:test');
@@ -18,7 +18,7 @@ const rutas = require('../features/auth/routes');
 const { safeAccountId } = require('../core/account-data-path');
 
 const USUARIO = { id: 'u1', email: 'streamer@ejemplo.com' };
-const RUTA = '/api/auth/account';
+const RUTA = '/api/account';
 
 let eventos;
 let cambios;

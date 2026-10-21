@@ -809,7 +809,11 @@
                    "chatGuardAllowedSingleWord":  "Only single words are accepted here, not phrases.",
                    "chatGuardImportTooLarge":  "The file is too large (max 1 MB).",
                    "chatGuardImportTooMany":  "Too many words (max 5000).",
-                   "chatGuardImportInvalid":  "Invalid format: it must be a JSON list of quoted words."
+                   "chatGuardImportInvalid":  "Invalid format: it must be a JSON list of quoted words.",
+                   "googleEmailYaRegistrado":  "That email already has a password account. Sign in with your password.",
+                   "googleEmailNoVerificado":  "Your Google account doesn’t have a verified email.",
+                   "invalidGoogleToken":  "We couldn’t verify your Google account. Please try again.",
+                   "identidadTomada":  "That Google account is already linked to another user."
                },
     "dictLang":  {
                      "title":  "Allowed languages",
@@ -1262,7 +1266,14 @@
                    "deleteWord":  "delete",
                    "deleteConfirm":  "Delete permanently",
                    "deleteCancel":  "Cancel",
-                   "deleteDone":  "Your account was deleted."
+                   "deleteDone":  "Your account was deleted.",
+                   "or":  "or",
+                   "loginWithGoogle":  "Sign in with Google",
+                   "registerWithGoogle":  "Sign up with Google",
+                   "linkGoogle":  "Link Google",
+                   "googleLinked":  "Google linked ({email})",
+                   "googleLinkedDone":  "Your Google account is now linked.",
+                   "deleteConfirmGoogle":  "Confirm with Google"
                },
     "sidebarAccount":  {
                            "badgeFree":  "FREE",

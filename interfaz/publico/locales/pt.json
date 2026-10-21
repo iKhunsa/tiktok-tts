@@ -1133,7 +1133,11 @@
                    "chatGuardAllowedSingleWord":  "Aqui só são aceitas palavras soltas, não frases.",
                    "chatGuardImportTooLarge":  "O arquivo é grande demais (máx. 1 MB).",
                    "chatGuardImportTooMany":  "Palavras demais (máx. 5000).",
-                   "chatGuardImportInvalid":  "Formato inválido: deve ser uma lista JSON de palavras entre aspas."
+                   "chatGuardImportInvalid":  "Formato inválido: deve ser uma lista JSON de palavras entre aspas.",
+                   "googleEmailYaRegistrado":  "Esse email já tem uma conta com senha. Entre com sua senha.",
+                   "googleEmailNoVerificado":  "Sua conta do Google não tem um email verificado.",
+                   "invalidGoogleToken":  "Não foi possível verificar sua conta do Google. Tente novamente.",
+                   "identidadTomada":  "Essa conta do Google já está vinculada a outro usuário."
                },
     "mcp":  {
                 "title":  "Agente MCP",
@@ -1262,7 +1266,14 @@
                    "deleteWord":  "excluir",
                    "deleteConfirm":  "Excluir definitivamente",
                    "deleteCancel":  "Cancelar",
-                   "deleteDone":  "Sua conta foi excluída."
+                   "deleteDone":  "Sua conta foi excluída.",
+                   "or":  "ou",
+                   "loginWithGoogle":  "Entrar com Google",
+                   "registerWithGoogle":  "Cadastre-se com Google",
+                   "linkGoogle":  "Vincular Google",
+                   "googleLinked":  "Google vinculado ({email})",
+                   "googleLinkedDone":  "Sua conta do Google foi vinculada.",
+                   "deleteConfirmGoogle":  "Confirmar com Google"
                },
     "sidebarAccount":  {
                            "badgeFree":  "FREE",

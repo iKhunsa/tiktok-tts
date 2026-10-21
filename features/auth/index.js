@@ -6,6 +6,7 @@ const { crearSubsEnabledCache } = require('../../core/subs-enabled-cache');
 const { resolverUrl } = require('./config-servicio');
 const { crearCliente } = require('./cliente-servicio');
 const { crearRefresh } = require('./refresh');
+const { crearRealtime } = require('./plataformas-realtime');
 const rutas = require('./routes');
 const estado = require('./estado-sesion');
 
@@ -69,6 +70,11 @@ module.exports = {
 
     const cliente = crearCliente(urlServicio);
     estado.hidratarDesdeDisco();
+    // El listener de 'account:changed' tiene que estar puesto ANTES del
+    // emit de abajo, para que la rehidratacion inicial (si habia sesion en
+    // disco) dispare la conexion del canal en tiempo real sin esperar al
+    // primer refresh.
+    crearRealtime({ urlServicio, bus, logger });
     // Configuracion y los demas dominios ya montaron sobre anonymous: antes de
     // iniciar refresh, apuntalos a la cuenta persistida y rehidratarlos.
     bus.emit('account:changed', { previous: 'anonymous', current: estado.getSesion().user?.id || 'anonymous' });
@@ -102,6 +108,6 @@ module.exports = {
     logger.log('info', 'auth', 'auth/index.js#register', 'auth.servicio.configurado',
       `Dominio auth activo contra ${urlServicio}`, { subscriptionsEnabled: subscriptionsEnabled() });
 
-    return { rutas: nRutas, listeners: 4 };
+    return { rutas: nRutas, listeners: 5 };
   },
 };
