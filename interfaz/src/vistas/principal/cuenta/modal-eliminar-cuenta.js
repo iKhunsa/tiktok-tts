@@ -1,16 +1,19 @@
 /**
  * Modal de confirmacion para eliminar la cuenta. Pide escribir la palabra de
- * confirmacion (traducida: "borrar", "delete"...) y la contrasena actual; el
- * boton final queda deshabilitado hasta tener ambas. `eliminar(password)`
- * hace el pedido y devuelve true si la cuenta se borro (cierra el modal) o
- * false si fallo (el modal sigue abierto para reintentar).
+ * confirmacion (traducida: "borrar", "delete"...) siempre, mas uno de los dos
+ * metodos disponibles: contrasena (si `hasPassword`) o reconfirmar con Google
+ * (si `googleLinked`) — una cuenta 100% Google (sin password) no tiene la
+ * opcion de password porque hoy no hay forma de setear una despues.
+ * `eliminar(password)` / `eliminarGoogle(datos)` hacen el pedido y devuelven
+ * true si la cuenta se borro (cierra el modal) o false si fallo (sigue abierto).
  */
 import { t } from '../../../nucleo/i18n/i18n.js';
 import { escaparAtributo as esc } from '../../../../compartido/escapar-html.js';
+import { autenticarConGoogleUI } from './plataforma-auth-cliente.js';
 
 const normalizar = (texto) => texto.trim().toLocaleLowerCase();
 
-export function abrirModalEliminarCuenta({ eliminar }) {
+export function abrirModalEliminarCuenta({ hasPassword, googleLinked, eliminar, eliminarGoogle }) {
   const palabra = t('cuenta.deleteWord');
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay show';
@@ -28,52 +31,81 @@ export function abrirModalEliminarCuenta({ eliminar }) {
         <label for="cuentaDeleteWord">${esc(t('cuenta.deleteTypeWord', { word: palabra }))}</label>
         <input type="text" id="cuentaDeleteWord" autocomplete="off" autocapitalize="off" spellcheck="false">
       </div>
+      ${hasPassword ? `
       <div class="cuenta-field">
         <label for="cuentaDeletePass">${esc(t('cuenta.deletePassword'))}</label>
         <input type="password" id="cuentaDeletePass" autocomplete="current-password">
-      </div>
+      </div>` : ''}
+      ${hasPassword && googleLinked ? `<div class="cuenta-divider">${esc(t('cuenta.or'))}</div>` : ''}
       <div class="cuenta-delete-actions">
         <button class="cuenta-btn-ghost" type="button" id="cuentaDeleteCancel">${esc(t('cuenta.deleteCancel'))}</button>
-        <button class="cuenta-btn-ghost cuenta-btn-danger" type="button" id="cuentaDeleteConfirm" disabled>${esc(t('cuenta.deleteConfirm'))}</button>
+        ${googleLinked ? `<button class="cuenta-btn-ghost cuenta-btn-danger cuenta-btn-icon" type="button" id="cuentaDeleteGoogle" disabled><img class="icon-inline" src="icons/google.svg" alt="">${esc(t('cuenta.deleteConfirmGoogle'))}</button>` : ''}
+        ${hasPassword ? `<button class="cuenta-btn-ghost cuenta-btn-danger" type="button" id="cuentaDeleteConfirm" disabled>${esc(t('cuenta.deleteConfirm'))}</button>` : ''}
       </div>
     </div>`;
   document.body.appendChild(overlay);
 
   const palabraInput = overlay.querySelector('#cuentaDeleteWord');
-  const input = overlay.querySelector('#cuentaDeletePass');
+  const passInput = overlay.querySelector('#cuentaDeletePass');
   const confirmar = overlay.querySelector('#cuentaDeleteConfirm');
+  const confirmarGoogle = overlay.querySelector('#cuentaDeleteGoogle');
   const botones = overlay.querySelectorAll('button');
   let enCurso = false;
 
-  const listo = () => Boolean(input.value) && normalizar(palabraInput.value) === normalizar(palabra);
-  const actualizarConfirmar = () => { confirmar.disabled = !listo(); };
+  const palabraOk = () => normalizar(palabraInput.value) === normalizar(palabra);
+  const actualizarConfirmar = () => {
+    if (confirmar) confirmar.disabled = !(palabraOk() && Boolean(passInput.value));
+    if (confirmarGoogle) confirmarGoogle.disabled = !palabraOk();
+  };
   const cerrar = () => overlay.remove();
   const cerrarSiLibre = () => { if (!enCurso) cerrar(); };
+  const bloquear = (bloqueado) => {
+    botones.forEach((b) => { b.disabled = bloqueado; });
+    palabraInput.disabled = bloqueado;
+    if (passInput) passInput.disabled = bloqueado;
+  };
 
-  async function enviar() {
-    if (enCurso || !listo()) return;
+  async function enviar(accion) {
+    if (enCurso) return;
     enCurso = true;
-    botones.forEach((b) => { b.disabled = true; });
-    input.disabled = true;
-    palabraInput.disabled = true;
-    const borrada = await eliminar(input.value);
+    bloquear(true);
+    const borrada = await accion();
     if (borrada) return cerrar();
     enCurso = false;
-    botones.forEach((b) => { b.disabled = false; });
-    input.disabled = false;
-    palabraInput.disabled = false;
+    bloquear(false);
     actualizarConfirmar();
-    input.focus();
   }
 
-  [palabraInput, input].forEach((campo) => {
+  const enviarPassword = () => {
+    if (!palabraOk() || !passInput.value) return;
+    enviar(() => eliminar(passInput.value));
+  };
+
+  [palabraInput, passInput].filter(Boolean).forEach((campo) => {
     campo.addEventListener('input', actualizarConfirmar);
-    campo.addEventListener('keydown', (e) => { if (e.key === 'Enter') enviar(); });
+    campo.addEventListener('keydown', (e) => { if (e.key === 'Enter') enviarPassword(); });
   });
   overlay.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarSiLibre(); });
   overlay.addEventListener('click', (e) => { if (e.target === overlay) cerrarSiLibre(); });
   overlay.querySelector('#cuentaDeleteClose').addEventListener('click', cerrarSiLibre);
   overlay.querySelector('#cuentaDeleteCancel').addEventListener('click', cerrarSiLibre);
-  confirmar.addEventListener('click', enviar);
+  confirmar?.addEventListener('click', enviarPassword);
+  confirmarGoogle?.addEventListener('click', async () => {
+    if (enCurso || !palabraOk()) return;
+    enCurso = true;
+    bloquear(true);
+    const datos = await autenticarConGoogleUI();
+    if (!datos) {
+      enCurso = false;
+      bloquear(false);
+      actualizarConfirmar();
+      return;
+    }
+    const borrada = await eliminarGoogle(datos);
+    if (borrada) return cerrar();
+    enCurso = false;
+    bloquear(false);
+    actualizarConfirmar();
+  });
   palabraInput.focus();
 }

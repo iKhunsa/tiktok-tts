@@ -1133,7 +1133,11 @@
                    "chatGuardAllowedSingleWord":  "여기에는 단어만 입력할 수 있으며 문장은 안 됩니다.",
                    "chatGuardImportTooLarge":  "파일이 너무 큽니다(최대 1MB).",
                    "chatGuardImportTooMany":  "단어가 너무 많습니다(최대 5000개).",
-                   "chatGuardImportInvalid":  "형식이 올바르지 않습니다: 따옴표로 감싼 단어의 JSON 목록이어야 합니다."
+                   "chatGuardImportInvalid":  "형식이 올바르지 않습니다: 따옴표로 감싼 단어의 JSON 목록이어야 합니다.",
+                   "googleEmailYaRegistrado":  "해당 이메일은 이미 비밀번호 계정이 있습니다. 비밀번호로 로그인하세요.",
+                   "googleEmailNoVerificado":  "Google 계정의 이메일이 인증되지 않았습니다.",
+                   "invalidGoogleToken":  "Google 계정을 확인할 수 없습니다. 다시 시도해 주세요.",
+                   "identidadTomada":  "해당 Google 계정은 이미 다른 사용자와 연결되어 있습니다."
                },
     "mcp":  {
                 "title":  "MCP 에이전트",
@@ -1262,7 +1266,14 @@
                    "deleteWord":  "삭제",
                    "deleteConfirm":  "영구 삭제",
                    "deleteCancel":  "취소",
-                   "deleteDone":  "계정이 삭제되었습니다."
+                   "deleteDone":  "계정이 삭제되었습니다.",
+                   "or":  "또는",
+                   "loginWithGoogle":  "Google로 로그인",
+                   "registerWithGoogle":  "Google로 가입",
+                   "linkGoogle":  "Google 연결",
+                   "googleLinked":  "Google 연결됨 ({email})",
+                   "googleLinkedDone":  "Google 계정이 연결되었습니다.",
+                   "deleteConfirmGoogle":  "Google로 확인"
                },
     "sidebarAccount":  {
                            "badgeFree":  "무료",

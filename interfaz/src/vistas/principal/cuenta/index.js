@@ -15,8 +15,8 @@ import { abrirPopupPlanes } from '../../../componentes/popup-planes.js';
 import { escaparAtributo as esc } from '../../../../compartido/escapar-html.js';
 import { avisoRegistroHtml } from './aviso-registro-html.js';
 import { enlazarAvisoRegistro } from './enlazar-aviso-registro.js';
+import { autenticarConGoogleUI, autenticarConTwitchUI, autenticarConKickUI } from './plataforma-auth-cliente.js';
 
-const MIN_PASS = 8;
 // La sesion pasa a anonymous y la ventana se recarga: el aviso sobrevive al reload.
 const AVISO_CUENTA_ELIMINADA = 'tikliveTTS_cuentaEliminada';
 
@@ -30,6 +30,18 @@ function campo({ id, labelKey, type = 'text', autocomplete, required }) {
     </div>`;
 }
 
+function botonGoogle(labelKey) {
+  return `
+    <button type="button" class="cuenta-btn-google" id="cuentaGoogleBtn">
+      <img class="icon-inline" src="icons/google.svg" alt="">
+      <span data-i18n="${labelKey}"></span>
+    </button>`;
+}
+
+// Registro nuevo = solo Google (el endpoint de email+password sigue vivo en
+// el backend por compatibilidad, pero la UI ya no lo ofrece para cuentas
+// nuevas). Login mantiene el formulario existente intacto, sumando Google
+// como segundo camino.
 function formAuth() {
   const esReg = modo === 'register';
   return `
@@ -37,20 +49,16 @@ function formAuth() {
       <h3 class="cuenta-card-title" data-i18n="${esReg ? 'cuenta.registerTitle' : 'cuenta.loginTitle'}"></h3>
       <p class="cuenta-card-sub" data-i18n="${esReg ? 'cuenta.registerSub' : 'cuenta.loginSub'}"></p>
 
+      ${esReg ? '' : `
       <form id="cuentaForm" novalidate>
-        ${esReg ? campo({ id: 'cuentaNombre', labelKey: 'cuenta.name', autocomplete: 'name', required: true }) : ''}
         ${campo({ id: 'cuentaEmail', labelKey: 'cuenta.email', type: 'email', autocomplete: 'email', required: true })}
-        ${esReg ? `
-          <div class="cuenta-row">
-            ${campo({ id: 'cuentaPass', labelKey: 'cuenta.password', type: 'password', autocomplete: 'new-password', required: true })}
-            ${campo({ id: 'cuentaPass2', labelKey: 'cuenta.passwordConfirm', type: 'password', autocomplete: 'new-password', required: true })}
-          </div>
-          <p class="cuenta-hint" data-i18n="cuenta.passwordRule"></p>
-          ${avisoRegistroHtml(esReg)}
-        ` : campo({ id: 'cuentaPass', labelKey: 'cuenta.password', type: 'password', autocomplete: 'current-password', required: true })}
-
-        <button type="submit" class="cuenta-btn-primary" id="cuentaSubmit" data-i18n="${esReg ? 'cuenta.doRegister' : 'cuenta.doLogin'}"></button>
+        ${campo({ id: 'cuentaPass', labelKey: 'cuenta.password', type: 'password', autocomplete: 'current-password', required: true })}
+        <button type="submit" class="cuenta-btn-primary" id="cuentaSubmit" data-i18n="cuenta.doLogin"></button>
       </form>
+      <div class="cuenta-divider" data-i18n="cuenta.or"></div>`}
+
+      ${botonGoogle(esReg ? 'cuenta.registerWithGoogle' : 'cuenta.loginWithGoogle')}
+      ${esReg ? avisoRegistroHtml(true) : ''}
 
       <button type="button" class="cuenta-switch" id="cuentaSwitch">
         <span data-i18n="${esReg ? 'cuenta.haveAccountQ' : 'cuenta.noAccountQ'}"></span>
@@ -125,6 +133,7 @@ function panelPerfil(s) {
         <div class="cuenta-perfil-id">
           <div class="cuenta-perfil-nombre">${esc(u.nombre) || t('cuenta.noName')}</div>
           <div class="cuenta-perfil-email">${esc(u.email)}</div>
+          <div class="cuenta-identidad-google" id="cuentaIdentidadGoogle"></div>
         </div>
       </div>
       <div class="cuenta-field">
@@ -165,10 +174,14 @@ export function renderCuentaPanel() {
       modo = modo === 'login' ? 'register' : 'login';
       renderCuentaPanel();
     });
-    el.querySelector('#cuentaForm').addEventListener('submit', (e) => { e.preventDefault(); enviarAuth(el); });
+    el.querySelector('#cuentaForm')?.addEventListener('submit', (e) => { e.preventDefault(); enviarAuth(el); });
+    el.querySelector('#cuentaGoogleBtn').addEventListener('click', () => enviarGoogle(el));
     el.querySelector('input')?.focus();
     return;
   }
+
+  const u = s.user || {};
+  cargarIdentidadGoogle(el, u);
 
   const avatar = el.querySelector('.cuenta-avatar');
   const inputAvatar = el.querySelector('#cuentaAvatarInput');
@@ -213,42 +226,103 @@ export function renderCuentaPanel() {
   });
   el.querySelector('#cuentaGuardarNombre').addEventListener('click', async () => {
     const nombre = el.querySelector('#cuentaNombre').value.trim();
-    const r = await pedir('/api/auth/account', { method: 'PATCH', body: { nombre } });
+    const r = await pedir('/api/account', { method: 'PATCH', body: { nombre } });
     if (!r.ok) return toastError(r.body);
     aplicarSesion(r.body);
     showToast(t('cuenta.saved'));
     renderCuentaPanel();
   });
-  el.querySelector('#cuentaEliminar').addEventListener('click', () => abrirModalEliminarCuenta({ eliminar: eliminarCuenta }));
+  el.querySelector('#cuentaEliminar').addEventListener('click', async () => {
+    const lista = await listaIdentidades();
+    abrirModalEliminarCuenta({
+      hasPassword: u.hasPassword !== false,
+      googleLinked: lista.includes('google'),
+      eliminar: eliminarCuenta,
+      eliminarGoogle: eliminarCuentaGoogle,
+    });
+  });
   el.querySelector('#cuentaUpgrade')?.addEventListener('click', () => abrirPopupPlanes());
   el.querySelector('#cuentaManage')?.addEventListener('click', (e) => cancelarSuscripcion(e.currentTarget));
   el.querySelector('#cuentaResume')?.addEventListener('click', (e) => reanudarSuscripcion(e.currentTarget));
   el.querySelector('#cuentaSwitchMonthly')?.addEventListener('click', (e) => pasarAMensual(e.currentTarget));
 }
 
+// El registro nuevo es solo Google (ver formAuth); este formulario con
+// password solo sobrevive para el login.
 async function enviarAuth(el) {
-  const val = (id) => (el.querySelector('#' + id)?.value || '').trim();
-  const email = val('cuentaEmail');
+  const email = (el.querySelector('#cuentaEmail')?.value || '').trim();
   const password = el.querySelector('#cuentaPass').value;
   const btn = el.querySelector('#cuentaSubmit');
 
-  if (modo === 'register') {
-    if (password.length < MIN_PASS) return toastError({}, 'errors.weakPassword');
-    if (password !== el.querySelector('#cuentaPass2').value) return toastError({}, 'errors.passwordMismatch');
-  }
-
-  const body = { email, password };
-  if (modo === 'register') body.nombre = val('cuentaNombre');
-
   btn.disabled = true;
   try {
-    const r = await pedir(modo === 'register' ? '/api/auth/register' : '/api/auth/login', { method: 'POST', body });
+    const r = await pedir('/api/auth/login', { method: 'POST', body: { email, password } });
     if (!r.ok) return toastError(r.body, 'errors.invalidCredentials');
     aplicarSesion(r.body);
     renderCuentaPanel();
   } finally {
     btn.disabled = false;
   }
+}
+
+// Login y registro comparten el mismo endpoint y el mismo manejo de
+// respuesta: 409 (email ya registrado con password) manda a login; el resto
+// de los errores (400 token/email no verificado, 501 sin Google en el
+// backend) solo muestra el toast y deja reintentar en la misma pantalla.
+async function enviarGoogle(el) {
+  const btn = el.querySelector('#cuentaGoogleBtn');
+  btn.disabled = true;
+  try {
+    const datos = await autenticarConGoogleUI();
+    if (!datos) return;
+    const r = await pedir('/api/auth/google', { method: 'POST', body: datos });
+    if (!r.ok) {
+      toastError(r.body, 'errors.generic');
+      if (r.status === 409) { modo = 'login'; renderCuentaPanel(); }
+      return;
+    }
+    aplicarSesion(r.body);
+    renderCuentaPanel();
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function listaIdentidades() {
+  const r = await pedir('/api/account/identities');
+  if (!r.ok) return [];
+  return Array.isArray(r.body) ? r.body : (r.body.identities || []);
+}
+
+// Pinta "Google vinculado (email)" o el boton para vincularlo, segun el
+// estado real del backend (no basta con saber si hay password: la cuenta
+// pudo crearse por password y vincular Google despues, o al reves).
+async function cargarIdentidadGoogle(el, u) {
+  const cont = el.querySelector('#cuentaIdentidadGoogle');
+  if (!cont) return;
+  const lista = await listaIdentidades();
+  if (!cont.isConnected) return; // la vista cambio mientras pedia
+  if (lista.includes('google')) {
+    cont.innerHTML = `<span class="cuenta-identidad-badge"><img class="icon-inline" src="icons/google.svg" alt="">${esc(t('cuenta.googleLinked', { email: u.email || '' }))}</span>`;
+    return;
+  }
+  cont.innerHTML = `<button type="button" class="cuenta-btn-ghost cuenta-btn-icon" id="cuentaLinkGoogle"><img class="icon-inline" src="icons/google.svg" alt="">${esc(t('cuenta.linkGoogle'))}</button>`;
+  cont.querySelector('#cuentaLinkGoogle').addEventListener('click', () => vincularGoogle(el, u));
+}
+
+async function vincularGoogle(el, u) {
+  const btn = el.querySelector('#cuentaLinkGoogle');
+  if (btn) btn.disabled = true;
+  const datos = await autenticarConGoogleUI();
+  if (!datos) { if (btn) btn.disabled = false; return; }
+  const r = await pedir('/api/account/link/google', { method: 'POST', body: datos });
+  if (!r.ok) {
+    toastError(r.body, 'errors.generic');
+    if (btn) btn.disabled = false;
+    return;
+  }
+  showToast(t('cuenta.googleLinkedDone'));
+  cargarIdentidadGoogle(el, u);
 }
 
 // Modal propio (mismo patron visual que modWipeConfirmModal en index.html) en
@@ -328,16 +402,32 @@ async function pasarAMensual(btn) {
 
 // El backend borra todo y la app cierra sesion y limpia sus datos locales; aca
 // solo se limpia lo del renderer (antes de pasar a anonymous) y se avisa.
-async function eliminarCuenta(password) {
-  const r = await pedir('/api/auth/account', { method: 'DELETE', body: { password } });
-  if (!r.ok) {
-    toastError(r.body);
-    return false;
-  }
+function finalizarBorradoCuenta() {
   try { sessionStorage.setItem(AVISO_CUENTA_ELIMINADA, '1'); } catch (_) { /* sin storage: no hay aviso */ }
   borrarDatosDeCuenta();
   aplicarSesion({ activo: true, signedIn: false });
   renderCuentaPanel();
+}
+
+async function eliminarCuenta(password) {
+  const r = await pedir('/api/account', { method: 'DELETE', body: { password } });
+  if (!r.ok) {
+    toastError(r.body);
+    return false;
+  }
+  finalizarBorradoCuenta();
+  return true;
+}
+
+// Mismo endpoint que eliminarCuenta, distinto cuerpo: el backend acepta
+// {password} o {code, codeVerifier, redirectUri} para confirmar el borrado.
+async function eliminarCuentaGoogle(datos) {
+  const r = await pedir('/api/account', { method: 'DELETE', body: datos });
+  if (!r.ok) {
+    toastError(r.body);
+    return false;
+  }
+  finalizarBorradoCuenta();
   return true;
 }
 

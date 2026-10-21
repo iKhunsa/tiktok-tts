@@ -36,6 +36,9 @@ const TRACKABLE_EVENTS = new Set([
 contextBridge.exposeInMainWorld('electronAPI', {
   getAppVersion: () => ipcRenderer.invoke('get-app-version'),
   dimTitleBar: (dimmed) => ipcRenderer.send('titlebar:dim', dimmed === true),
+  authGoogle: () => ipcRenderer.invoke('auth:google'),
+  authTwitch: () => ipcRenderer.invoke('auth:twitch'),
+  authKick: () => ipcRenderer.invoke('auth:kick'),
   trackEvent: (name, payload) => {
     if (!TRACKABLE_EVENTS.has(name)) return;
     // Solo se reenvía payload cuando es un string corto (idioma, origen, vista...).

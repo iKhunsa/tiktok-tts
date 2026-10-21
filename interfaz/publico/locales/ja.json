@@ -1133,7 +1133,11 @@
                    "chatGuardAllowedSingleWord":  "ここでは単語のみ受け付けます。フレーズは使えません。",
                    "chatGuardImportTooLarge":  "ファイルが大きすぎます（最大 1 MB）。",
                    "chatGuardImportTooMany":  "単語が多すぎます（最大 5000）。",
-                   "chatGuardImportInvalid":  "形式が正しくありません：引用符で囲んだ単語の JSON リストである必要があります。"
+                   "chatGuardImportInvalid":  "形式が正しくありません：引用符で囲んだ単語の JSON リストである必要があります。",
+                   "googleEmailYaRegistrado":  "そのメールアドレスはすでにパスワード付きアカウントで登録されています。パスワードでログインしてください。",
+                   "googleEmailNoVerificado":  "Googleアカウントのメールアドレスが確認されていません。",
+                   "invalidGoogleToken":  "Googleアカウントを確認できませんでした。もう一度お試しください。",
+                   "identidadTomada":  "そのGoogleアカウントはすでに別のユーザーに連携されています。"
                },
     "mcp":  {
                 "title":  "MCP エージェント",
@@ -1262,7 +1266,14 @@
                    "deleteWord":  "削除",
                    "deleteConfirm":  "完全に削除",
                    "deleteCancel":  "キャンセル",
-                   "deleteDone":  "アカウントを削除しました。"
+                   "deleteDone":  "アカウントを削除しました。",
+                   "or":  "または",
+                   "loginWithGoogle":  "Googleでログイン",
+                   "registerWithGoogle":  "Googleで登録",
+                   "linkGoogle":  "Googleを連携",
+                   "googleLinked":  "Google連携済み（{email}）",
+                   "googleLinkedDone":  "Googleアカウントを連携しました。",
+                   "deleteConfirmGoogle":  "Googleで確認"
                },
     "sidebarAccount":  {
                            "badgeFree":  "無料",

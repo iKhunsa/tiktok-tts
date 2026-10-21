@@ -3,9 +3,13 @@
 const estado = require('./estado-sesion');
 const { removeAccountData } = require('../../core/account-data-path');
 
-// Las rutas /api/auth/* de la app. Son proxies finos a servicio-cuentas
-// (via cliente): la app agrega/gestiona el token, servicio-cuentas habla con
+// Las rutas de cuentas de la app. Son proxies finos a servicio-cuentas (via
+// cliente): la app agrega/gestiona el token, servicio-cuentas habla con
 // Supabase/Polar. Todas detras de subscriptionsEnabled (si off -> 404).
+// Prefijo segun el router de servicio-cuentas que atiende cada una: register/
+// login/google/logout van bajo /api/auth/*; todo lo de account.js (perfil,
+// identidades, vincular Google, borrar cuenta) cuelga de /api/account*, sin
+// /auth — asi estaba /api/account desde antes de esta feature.
 
 function propagarError(res, r, logger) {
   if (r.status === 0 || !r.body) {
@@ -62,7 +66,10 @@ function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
     res.json(estado.getSesion());
   });
 
-  app.patch('/api/auth/account', guard, async (req, res) => {
+  // account.js entero (perfil, identidades, vincular Google, borrar cuenta)
+  // cuelga de /api/account* en servicio-cuentas, sin el prefijo /auth — a
+  // diferencia de register/login/google/logout, que si van bajo /api/auth/*.
+  app.patch('/api/account', guard, async (req, res) => {
     const token = estado.getToken();
     if (!token) return res.status(401).json({ error: 'No autenticado', errorKey: 'errors.unauthorized' });
     const r = await cliente.account(token, { nombre: (req.body || {}).nombre });
@@ -72,18 +79,124 @@ function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
     res.json(estado.getSesion());
   });
 
-  // Eliminacion de cuenta: irreversible. Solo cierra sesion y borra datos locales
-  // si el backend confirmo el borrado. NO se expone como tool MCP a proposito:
-  // es destructiva y exige la contrasena del usuario (un agente no la tiene).
-  app.delete('/api/auth/account', guard, async (req, res) => {
+  app.get('/api/account/identities', guard, async (req, res) => {
     const token = estado.getToken();
     if (!token) return res.status(401).json({ error: 'No autenticado', errorKey: 'errors.unauthorized' });
-    const { password } = req.body || {};
-    if (typeof password !== 'string' || !password) {
-      return res.status(400).json({ error: 'Falta la contrasena', errorKey: 'errors.invalidBody' });
+    const r = await cliente.identities(token);
+    if (!r.ok) return propagarError(res, r, logger);
+    res.json(r.body);
+  });
+
+  app.post('/api/account/link/google', guard, async (req, res) => {
+    const token = estado.getToken();
+    if (!token) return res.status(401).json({ error: 'No autenticado', errorKey: 'errors.unauthorized' });
+    const { code, codeVerifier, redirectUri } = req.body || {};
+    if (!code || !codeVerifier || !redirectUri) {
+      return res.status(400).json({ error: 'Faltan datos de Google', errorKey: 'errors.invalidBody' });
+    }
+    const r = await cliente.linkGoogle(token, { code, codeVerifier, redirectUri });
+    if (!r.ok) return propagarError(res, r, logger);
+    res.json(r.body);
+  });
+
+  // Foto de perfil / banner (Cloudinary, ver docs/plan-avatar-banner.md):
+  // el backend solo firma, el archivo sube DIRECTO del cliente a Cloudinary,
+  // nunca pasa por aca. "firma" devuelve los parametros para esa subida;
+  // "confirmar" solo toca el timestamp de cache-busting y re-hidrata la
+  // sesion para que el proximo estadoCuenta() traiga la URL nueva.
+  function montarFirmaYConfirmar(tipo, firma, confirmar) {
+    app.post(`/api/account/${tipo}/firma`, guard, async (req, res) => {
+      const token = estado.getToken();
+      if (!token) return res.status(401).json({ error: 'No autenticado', errorKey: 'errors.unauthorized' });
+      const r = await firma(token);
+      if (!r.ok) return propagarError(res, r, logger);
+      res.json(r.body);
+    });
+
+    app.post(`/api/account/${tipo}/confirmar`, guard, async (req, res) => {
+      const token = estado.getToken();
+      if (!token) return res.status(401).json({ error: 'No autenticado', errorKey: 'errors.unauthorized' });
+      const r = await confirmar(token);
+      if (!r.ok) return propagarError(res, r, logger);
+      const s = await cliente.session(token); // re-hidrata: avatarUrl/bannerUrl nuevo
+      if (s.ok) estado.aplicar({ session: s.body }, logger);
+      res.json(estado.getSesion());
+    });
+  }
+
+  montarFirmaYConfirmar('avatar', cliente.avatarFirma, cliente.avatarConfirmar);
+  montarFirmaYConfirmar('banner', cliente.bannerFirma, cliente.bannerConfirmar);
+
+  // Twitch/Kick vinculados (ver docs/plan-twitch-kick.md, FASE 1). El canal en
+  // tiempo real (FASE 3) vive aparte, en plataformas-realtime.js — no hay
+  // ruta HTTP para eso, es un WS propio hacia servicio-cuentas.
+  app.get('/api/account/platforms', guard, async (req, res) => {
+    const token = estado.getToken();
+    if (!token) return res.status(401).json({ error: 'No autenticado', errorKey: 'errors.unauthorized' });
+    const r = await cliente.platforms(token);
+    if (!r.ok) return propagarError(res, r, logger);
+    res.json(r.body);
+  });
+
+  function montarLinkPlataforma(plataforma, camposRequeridos, linkFn) {
+    app.post(`/api/account/link/${plataforma}`, guard, async (req, res) => {
+      const token = estado.getToken();
+      if (!token) return res.status(401).json({ error: 'No autenticado', errorKey: 'errors.unauthorized' });
+      const body = req.body || {};
+      if (camposRequeridos.some((campo) => !body[campo])) {
+        return res.status(400).json({ error: 'Faltan datos', errorKey: 'errors.invalidBody' });
+      }
+      const r = await linkFn(token, body);
+      if (!r.ok) return propagarError(res, r, logger);
+      res.json(r.body);
+    });
+  }
+
+  montarLinkPlataforma('twitch', ['code', 'redirectUri'], cliente.linkTwitch);
+  montarLinkPlataforma('kick', ['code', 'codeVerifier', 'redirectUri'], cliente.linkKick);
+
+  app.delete('/api/account/link/:plataforma', guard, async (req, res) => {
+    const token = estado.getToken();
+    if (!token) return res.status(401).json({ error: 'No autenticado', errorKey: 'errors.unauthorized' });
+    const { plataforma } = req.params;
+    if (!['twitch', 'kick'].includes(plataforma)) return res.status(404).end();
+    const r = await cliente.unlinkPlatform(token, plataforma);
+    if (!r.ok) return propagarError(res, r, logger);
+    res.json(r.body);
+  });
+
+  // Mandar un mensaje al chat de la plataforma vinculada (FASE 4). Siempre
+  // como el usuario mismo (no hay "bot" aparte, cada uno vincula su cuenta).
+  app.post('/api/platforms/:plataforma/chat', guard, async (req, res) => {
+    const token = estado.getToken();
+    if (!token) return res.status(401).json({ error: 'No autenticado', errorKey: 'errors.unauthorized' });
+    const { plataforma } = req.params;
+    if (!['twitch', 'kick'].includes(plataforma)) return res.status(404).end();
+    const { mensaje } = req.body || {};
+    if (typeof mensaje !== 'string' || !mensaje) {
+      return res.status(400).json({ error: 'Falta el mensaje', errorKey: 'errors.invalidBody' });
+    }
+    const r = await cliente.chatPlatform(token, plataforma, { mensaje });
+    if (!r.ok) return propagarError(res, r, logger);
+    res.json(r.body);
+  });
+
+  // Eliminacion de cuenta: irreversible. Solo cierra sesion y borra datos locales
+  // si el backend confirmo el borrado. NO se expone como tool MCP a proposito:
+  // es destructiva y exige contrasena o reconfirmar con Google (un agente no
+  // tiene ninguna de las dos). El body trae {password} o {code, codeVerifier,
+  // redirectUri} segun que metodo eligio el usuario en la pantalla de borrado.
+  app.delete('/api/account', guard, async (req, res) => {
+    const token = estado.getToken();
+    if (!token) return res.status(401).json({ error: 'No autenticado', errorKey: 'errors.unauthorized' });
+    const { password, code, codeVerifier, redirectUri } = req.body || {};
+    const conPassword = typeof password === 'string' && password;
+    const conGoogle = code && codeVerifier && redirectUri;
+    if (!conPassword && !conGoogle) {
+      return res.status(400).json({ error: 'Falta la contrasena o la confirmacion de Google', errorKey: 'errors.invalidBody' });
     }
     const antes = estado.getSesion();
-    const r = await cliente.eliminarCuenta(token, { password });
+    const r = await cliente.eliminarCuenta(token, conPassword ? { password } : { code, codeVerifier, redirectUri });
     if (!r.ok) return propagarError(res, r, logger);
     estado.cerrar(logger);
     logger.log('info', 'auth', 'auth/routes.js#eliminarCuenta', 'auth.cuenta.eliminada', 'Cuenta eliminada', {});
@@ -142,7 +255,7 @@ function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
     res.json(estado.getSesion());
   });
 
-  return 9;
+  return 18;
 }
 
 module.exports = { montar };
