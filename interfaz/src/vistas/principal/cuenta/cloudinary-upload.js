@@ -1,9 +1,8 @@
 /**
  * Subida directa a Cloudinary para avatar/banner de cuenta (ver
  * docs/plan-avatar-banner.md). El backend solo firma; el archivo viaja
- * DIRECTO de esta app a Cloudinary, nunca pasa por nuestro server. Sin UI
- * todavia — son las funciones puras, listas para que la pantalla de perfil
- * las use cuando se arme esa parte.
+ * DIRECTO de esta app a Cloudinary, nunca pasa por nuestro server. La usa la
+ * seccion Perfil del modal "Mi cuenta".
  */
 import { pedir } from './api.js';
 
@@ -43,8 +42,8 @@ async function subirACloudinary(firma, file) {
 /**
  * Orquesta todo el flujo: pide la firma a nuestro backend, sube directo a
  * Cloudinary y avisa que termino. tipo: 'avatar' | 'banner'.
- * Devuelve {ok:true} (el user.avatarUrl/bannerUrl nuevo llega en el proximo
- * GET /api/auth/session, igual que cualquier otro cambio de sesion) o
+ * Devuelve {ok:true, sesion} (la sesion re-hidratada por "confirmar", con el
+ * user.avatarUrl/bannerUrl nuevo, lista para aplicarSesion) o
  * {ok:false, motivo: 'formato'|'tamano'|'firma'|'cloudinary'|'confirmar', body?}.
  */
 export async function subirImagenDeCuenta(tipo, file) {
@@ -60,5 +59,5 @@ export async function subirImagenDeCuenta(tipo, file) {
   const rConfirmar = await pedir(`/api/account/${tipo}/confirmar`, { method: 'POST' });
   if (!rConfirmar.ok) return { ok: false, motivo: 'confirmar', body: rConfirmar.body };
 
-  return { ok: true };
+  return { ok: true, sesion: rConfirmar.body };
 }

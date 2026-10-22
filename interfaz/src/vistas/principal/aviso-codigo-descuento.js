@@ -61,6 +61,4 @@ export function iniciarAvisoCodigoDescuento() {
     abrirPopupPlanes();
   });
   overlay.addEventListener('click', (e) => { if (e.target === overlay) cerrar(); });
-  overlay.querySelector('.modal-close').addEventListener('click', cerrar);
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrar(); });
-}
+  overlay.querySelector('.modal-close').addEventListener('click', cerrar);}

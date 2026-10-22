@@ -40,6 +40,14 @@ test('elegirEvento: un id forzado ignora la fecha y un id desconocido da null', 
   assert.equal(elegirEvento(lista, dia(10, 5), 'inexistente'), null);
 });
 
+test('elegirEvento: un evento apagado no sale por fecha pero si forzado', async () => {
+  const { elegirEvento } = await modulo('catalogo.js');
+  const lista = [{ ...evento('halloween', '10-01', '11-02'), apagado: true }];
+
+  assert.equal(elegirEvento(lista, dia(10, 21)), null);
+  assert.equal(elegirEvento(lista, dia(10, 21), 'halloween')?.id, 'halloween');
+});
+
 test('generarKeyframes: 8 frames sobre 3x3 recorren las celdas en orden con la posicion en %', async () => {
   const { generarKeyframes } = await modulo('hoja-sprite.js');
   const css = generarKeyframes('bat', { cols: 3, rows: 3, frames: 8 });

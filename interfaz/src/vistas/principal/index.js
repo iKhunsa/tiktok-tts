@@ -15,6 +15,7 @@
  */
 import { paintRangeFill, iniciarPintadoDeRangos } from '../../componentes/campos-formulario.js';
 import { showToast } from '../../componentes/toast.js';
+import { iniciarCerrarConEscape } from '../../componentes/cerrar-con-escape.js';
 import { iniciarCapturaErroresCliente, logStorage } from '../../nucleo/log-storage.js';
 import { loadSettings, applySettings, appSettings } from '../../nucleo/estado/ajustes-app.js';
 import { loadRuntimeConfig } from '../../nucleo/estado/config-runtime.js';
@@ -37,7 +38,6 @@ import { reproducirEventoActivo, reproducirEvento } from '../../componentes/even
 import { iniciarBotonEfectosEvento } from './efectos-evento.js';
 import { iniciarAvisoConexionFallida } from './aviso-conexion-fallida.js';
 import { iniciarAvisoCodigoDescuento } from './aviso-codigo-descuento.js';
-import { iniciarProgramaCreadores } from './programa-creadores.js';
 import { iniciarBannerPro } from './banner-pro.js';
 import { iniciarRotacionAnuncio } from './anuncio-rotativo.js';
 import { copyToClipboard } from './utils-app.js';
@@ -67,8 +67,8 @@ import { escapeHtml, initChatScrollFollow, initSpeakingGoto, clearChatAndQueue }
 import {
   openDonationsModal, closeDonationsModal, openDiscordModal, closeDiscordModal,
   openBugReportModal, closeBugReportModal, submitBugReport, openDictLangModal,
-  closeDictLangModal, closeDonationNotice, openDonationsFromNotice, closeBugReportNotice,
-  openBugReportFromNotice, closeOnboardingWelcome, closeOnboardingComplete, startOnboardingTour,
+  closeDictLangModal,
+  closeOnboardingWelcome, closeOnboardingComplete, startOnboardingTour,
   iniciarModalesYAvisos, arrancarAvisosOnboarding,
 } from './modales-avisos.js';
 import { closeIdeaModal, openIdeaModal, submitIdea } from './ideas/modal.js';
@@ -84,7 +84,7 @@ import {
 } from './soundpad.js';
 import {
   toggleAddChannelForm, selectAddPlatform, addChannelFromSettings, toggleConnectAllChat,
-  renderSettingsChannels, iniciarHoverConnectAllChat,
+  renderSettingsChannels, iniciarHoverConnectAllChat, abrirVincularCuentas,
 } from './plataformas.js';
 import { renderTiktokSession, tiktokLogin, tiktokLogout } from './tiktok-sesion.js';
 import { doInstallUpdate, iniciarEventosElectron } from './eventos-electron.js';
@@ -136,8 +136,8 @@ Object.assign(window, {
   openDonationsModal, closeDonationsModal, openDiscordModal, closeDiscordModal,
   openBugReportModal, closeBugReportModal, submitBugReport, openDictLangModal,
   openIdeaModal, closeIdeaModal, submitIdea,
-  closeDictLangModal, closeDonationNotice, openDonationsFromNotice, closeBugReportNotice,
-  openBugReportFromNotice, closeOnboardingWelcome, closeOnboardingComplete, startOnboardingTour,
+  closeDictLangModal,
+  closeOnboardingWelcome, closeOnboardingComplete, startOnboardingTour,
   // movil remoto
   copyMobileURL, refreshMobileQR, showMobileQRPlaceholder,
   // clips / obs
@@ -147,7 +147,7 @@ Object.assign(window, {
   spCloseSettings, spSetSaveName, spSetSaveColor, spSettingsCapture, spSettingsClearShortcut,
   spSettingsDelete, spFilterIcons, spChooseIcon,
   // plataformas
-  toggleAddChannelForm, selectAddPlatform, addChannelFromSettings, toggleConnectAllChat,
+  toggleAddChannelForm, selectAddPlatform, addChannelFromSettings, toggleConnectAllChat, abrirVincularCuentas,
   tiktokLogin, tiktokLogout,
   // auto-update
   doInstallUpdate,
@@ -201,6 +201,9 @@ function aplicarBloqueoApp() {
   aplicarBloqueoVista('mcpPanel', 'mcp-agente');
   aplicarBloqueoVista('view-mobile', 'panel-movil');
   aplicarBloqueoVista('view-clips', 'clips');
+  // plugin-store (script clasico) pinta la barra lateral antes de que existan
+  // la sesion y window.__datosPorCuenta: re-pintar con las prefs de la cuenta.
+  window.renderSidebar?.();
 }
 
 function mostrarVersionApp() {
@@ -211,6 +214,7 @@ function mostrarVersionApp() {
 
 function iniciarArranque() {
   iniciarRotacionAnuncio('chatAdSlot', 20000);
+  iniciarCerrarConEscape();
   iniciarBannerPro();
   iniciarCapturaErroresCliente();
   iniciarI18nApp();
@@ -242,7 +246,6 @@ function iniciarArranque() {
   iniciarBotonEfectosEvento();
   iniciarAvisoConexionFallida();
   iniciarAvisoCodigoDescuento();
-  iniciarProgramaCreadores();
   // Puente para interfaz/publico/plugin-store/ (scripts clasicos, sin import
   // ES) -- mismo patron que window.refreshPluginStoreTexts/__langReady.
   window.__sesionActual = () => almacenSesion.getState();

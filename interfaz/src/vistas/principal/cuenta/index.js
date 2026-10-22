@@ -7,7 +7,6 @@
 import { t, aplicarTraducciones, idiomaActual } from '../../../nucleo/i18n/i18n.js';
 import { showToast } from '../../../componentes/toast.js';
 import { almacenSesion, aplicarSesion, pintarBadgeSidebar } from '../../../nucleo/estado/sesion.js';
-import { borrarDatosDeCuenta } from '../../../nucleo/estado/datos-por-cuenta.js';
 import { guardarAvatarPerfil, obtenerAvatarPerfil, quitarAvatarPerfil } from '../../../nucleo/estado/avatar-perfil.js';
 import { pedir, toastError } from './api.js';
 import { abrirModalEliminarCuenta } from './modal-eliminar-cuenta.js';
@@ -16,11 +15,13 @@ import { escaparAtributo as esc } from '../../../../compartido/escapar-html.js';
 import { avisoRegistroHtml } from './aviso-registro-html.js';
 import { enlazarAvisoRegistro } from './enlazar-aviso-registro.js';
 import { autenticarConGoogleUI, autenticarConTwitchUI, autenticarConKickUI } from './plataforma-auth-cliente.js';
-
-// La sesion pasa a anonymous y la ventana se recarga: el aviso sobrevive al reload.
-const AVISO_CUENTA_ELIMINADA = 'tikliveTTS_cuentaEliminada';
+import {
+  AVISO_CUENTA_ELIMINADA, listaIdentidades, vincularGoogle, cerrarSesion, eliminarCuenta, eliminarCuentaGoogle,
+} from './acciones-cuenta.js';
+import { abrirModalCuenta } from './modal-cuenta/index.js';
 
 let modo = 'login'; // 'login' | 'register' — solo cuando esta deslogueado
+let conEmail = false; // login: el boton "Correo electronico" despliega el form en la misma tarjeta
 
 function campo({ id, labelKey, type = 'text', autocomplete, required }) {
   return `
@@ -38,27 +39,37 @@ function botonGoogle(labelKey) {
     </button>`;
 }
 
-// Registro nuevo = solo Google (el endpoint de email+password sigue vivo en
-// el backend por compatibilidad, pero la UI ya no lo ofrece para cuentas
-// nuevas). Login mantiene el formulario existente intacto, sumando Google
-// como segundo camino.
+// Registro nuevo = solo Google + nickname (el endpoint de email+password sigue
+// vivo en el backend por compatibilidad, pero la UI ya no lo ofrece para
+// cuentas nuevas). Login: Google primero; "Correo electronico" despliega el
+// formulario de siempre dentro de la misma tarjeta.
 function formAuth() {
   const esReg = modo === 'register';
-  return `
-    <div class="cuenta-card cuenta-auth">
-      <h3 class="cuenta-card-title" data-i18n="${esReg ? 'cuenta.registerTitle' : 'cuenta.loginTitle'}"></h3>
-      <p class="cuenta-card-sub" data-i18n="${esReg ? 'cuenta.registerSub' : 'cuenta.loginSub'}"></p>
-
-      ${esReg ? '' : `
+  let cuerpo;
+  if (esReg) {
+    cuerpo = `
+      ${campo({ id: 'cuentaNick', labelKey: 'cuenta.nickname', autocomplete: 'nickname' })}
+      ${avisoRegistroHtml(true)}
+      ${botonGoogle('cuenta.registerWithGoogle')}`;
+  } else if (conEmail) {
+    cuerpo = `
       <form id="cuentaForm" novalidate>
         ${campo({ id: 'cuentaEmail', labelKey: 'cuenta.email', type: 'email', autocomplete: 'email', required: true })}
         ${campo({ id: 'cuentaPass', labelKey: 'cuenta.password', type: 'password', autocomplete: 'current-password', required: true })}
         <button type="submit" class="cuenta-btn-primary" id="cuentaSubmit" data-i18n="cuenta.doLogin"></button>
       </form>
-      <div class="cuenta-divider" data-i18n="cuenta.or"></div>`}
-
-      ${botonGoogle(esReg ? 'cuenta.registerWithGoogle' : 'cuenta.loginWithGoogle')}
-      ${esReg ? avisoRegistroHtml(true) : ''}
+      <div class="cuenta-divider" data-i18n="cuenta.or"></div>
+      ${botonGoogle('cuenta.loginWithGoogle')}`;
+  } else {
+    cuerpo = `
+      ${botonGoogle('cuenta.loginWithGoogle')}
+      <button type="button" class="cuenta-btn-email" id="cuentaConEmail" data-i18n="cuenta.emailOption"></button>`;
+  }
+  return `
+    <div class="cuenta-card cuenta-auth">
+      <h3 class="cuenta-card-title" data-i18n="${esReg ? 'cuenta.registerTitle' : 'cuenta.loginTitle'}"></h3>
+      <p class="cuenta-card-sub" data-i18n="${esReg ? 'cuenta.registerSub' : 'cuenta.loginSub'}"></p>
+      ${cuerpo}
 
       <button type="button" class="cuenta-switch" id="cuentaSwitch">
         <span data-i18n="${esReg ? 'cuenta.haveAccountQ' : 'cuenta.noAccountQ'}"></span>
@@ -172,6 +183,11 @@ export function renderCuentaPanel() {
   if (!s.signedIn) {
     el.querySelector('#cuentaSwitch').addEventListener('click', () => {
       modo = modo === 'login' ? 'register' : 'login';
+      conEmail = false;
+      renderCuentaPanel();
+    });
+    el.querySelector('#cuentaConEmail')?.addEventListener('click', () => {
+      conEmail = true;
       renderCuentaPanel();
     });
     el.querySelector('#cuentaForm')?.addEventListener('submit', (e) => { e.preventDefault(); enviarAuth(el); });
@@ -219,11 +235,7 @@ export function renderCuentaPanel() {
     pintarBadgeSidebar();
   });
 
-  el.querySelector('#cuentaLogout').addEventListener('click', async () => {
-    await pedir('/api/auth/logout', { method: 'POST' });
-    aplicarSesion({ activo: true, signedIn: false });
-    renderCuentaPanel();
-  });
+  el.querySelector('#cuentaLogout').addEventListener('click', cerrarSesion);
   el.querySelector('#cuentaGuardarNombre').addEventListener('click', async () => {
     const nombre = el.querySelector('#cuentaNombre').value.trim();
     const r = await pedir('/api/account', { method: 'PATCH', body: { nombre } });
@@ -271,27 +283,27 @@ async function enviarAuth(el) {
 // backend) solo muestra el toast y deja reintentar en la misma pantalla.
 async function enviarGoogle(el) {
   const btn = el.querySelector('#cuentaGoogleBtn');
+  const nombre = (el.querySelector('#cuentaNick')?.value || '').trim();
   btn.disabled = true;
   try {
     const datos = await autenticarConGoogleUI();
     if (!datos) return;
-    const r = await pedir('/api/auth/google', { method: 'POST', body: datos });
+    const r = await pedir('/api/auth/google', { method: 'POST', body: nombre ? { ...datos, nombre } : datos });
     if (!r.ok) {
       toastError(r.body, 'errors.generic');
       if (r.status === 409) { modo = 'login'; renderCuentaPanel(); }
       return;
     }
     aplicarSesion(r.body);
+    // Registro: el nickname elegido manda sobre el nombre que trae Google.
+    if (nombre && r.body.user?.nombre !== nombre) {
+      const p = await pedir('/api/account', { method: 'PATCH', body: { nombre } });
+      if (p.ok) aplicarSesion(p.body);
+    }
     renderCuentaPanel();
   } finally {
     btn.disabled = false;
   }
-}
-
-async function listaIdentidades() {
-  const r = await pedir('/api/account/identities');
-  if (!r.ok) return [];
-  return Array.isArray(r.body) ? r.body : (r.body.identities || []);
 }
 
 // Pinta "Google vinculado (email)" o el boton para vincularlo, segun el
@@ -307,22 +319,12 @@ async function cargarIdentidadGoogle(el, u) {
     return;
   }
   cont.innerHTML = `<button type="button" class="cuenta-btn-ghost cuenta-btn-icon" id="cuentaLinkGoogle"><img class="icon-inline" src="icons/google.svg" alt="">${esc(t('cuenta.linkGoogle'))}</button>`;
-  cont.querySelector('#cuentaLinkGoogle').addEventListener('click', () => vincularGoogle(el, u));
-}
-
-async function vincularGoogle(el, u) {
-  const btn = el.querySelector('#cuentaLinkGoogle');
-  if (btn) btn.disabled = true;
-  const datos = await autenticarConGoogleUI();
-  if (!datos) { if (btn) btn.disabled = false; return; }
-  const r = await pedir('/api/account/link/google', { method: 'POST', body: datos });
-  if (!r.ok) {
-    toastError(r.body, 'errors.generic');
-    if (btn) btn.disabled = false;
-    return;
-  }
-  showToast(t('cuenta.googleLinkedDone'));
-  cargarIdentidadGoogle(el, u);
+  const btn = cont.querySelector('#cuentaLinkGoogle');
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    if (await vincularGoogle()) cargarIdentidadGoogle(el, u);
+    else btn.disabled = false;
+  });
 }
 
 // Modal propio (mismo patron visual que modWipeConfirmModal en index.html) en
@@ -400,37 +402,6 @@ async function pasarAMensual(btn) {
   }
 }
 
-// El backend borra todo y la app cierra sesion y limpia sus datos locales; aca
-// solo se limpia lo del renderer (antes de pasar a anonymous) y se avisa.
-function finalizarBorradoCuenta() {
-  try { sessionStorage.setItem(AVISO_CUENTA_ELIMINADA, '1'); } catch (_) { /* sin storage: no hay aviso */ }
-  borrarDatosDeCuenta();
-  aplicarSesion({ activo: true, signedIn: false });
-  renderCuentaPanel();
-}
-
-async function eliminarCuenta(password) {
-  const r = await pedir('/api/account', { method: 'DELETE', body: { password } });
-  if (!r.ok) {
-    toastError(r.body);
-    return false;
-  }
-  finalizarBorradoCuenta();
-  return true;
-}
-
-// Mismo endpoint que eliminarCuenta, distinto cuerpo: el backend acepta
-// {password} o {code, codeVerifier, redirectUri} para confirmar el borrado.
-async function eliminarCuentaGoogle(datos) {
-  const r = await pedir('/api/account', { method: 'DELETE', body: datos });
-  if (!r.ok) {
-    toastError(r.body);
-    return false;
-  }
-  finalizarBorradoCuenta();
-  return true;
-}
-
 function mostrarAvisoCuentaEliminada() {
   try {
     if (!sessionStorage.getItem(AVISO_CUENTA_ELIMINADA)) return;
@@ -441,6 +412,8 @@ function mostrarAvisoCuentaEliminada() {
 
 /** Muestra/oculta el item de sidebar y re-pinta si la vista esta abierta. */
 export function iniciarCuenta() {
+  // Puente para popover-cuenta.js (componentes/ no importa vistas).
+  window.abrirModalCuenta = abrirModalCuenta;
   const sync = () => {
     const s = almacenSesion.getState();
     const btn = document.querySelector('.sidebar-item[data-view="cuenta"]');

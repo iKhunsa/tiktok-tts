@@ -8,7 +8,6 @@ import { cargarIdioma, idiomaGuardado, aplicarTraducciones, t, tErr } from '../.
 
 import { toggleRateLimit, saveRateLimit } from './rate-limit.js';
 import { saveGeneral } from './config-general.js';
-import { saveAccessibility } from './accesibilidad.js';
 import { downloadAllLogs } from './logs.js';
 import { refreshStatus, iniciarPollingEstado } from './estado-servidor.js';
 import { iniciarCargaInicial } from './carga-inicial.js';
@@ -18,7 +17,6 @@ Object.assign(window, {
   t, tErr,
   toggleRateLimit, saveRateLimit,
   saveGeneral,
-  saveAccessibility,
   downloadAllLogs,
   refreshStatus,
 });

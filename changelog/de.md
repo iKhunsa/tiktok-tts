@@ -1,3 +1,21 @@
+## [1.12.0] — 2026-10-21
+
+### Anmeldung und Registrierung
+- Neu gestalteter Anmeldebildschirm mit Hintergrundbild und neuen Texten.
+- **Anmelden**: mit einem Klick über Google oder über **„E-Mail“** mit E-Mail und Passwort auf derselben Karte.
+- **Konto erstellen**: Die Registrierung erfolgt nur über Google und verlangt einen **eindeutigen Nickname**, deinen Creator-Namen, den niemand sonst verwenden kann.
+
+### Fenster „Mein Konto“
+- Ein Klick auf deine E-Mail oder auf **Mein Konto** im Kontomenü öffnet jetzt ein eigenes Fenster mit Seitenmenü, statt den Bildschirm zu wechseln.
+- **Profil**: Foto und Banner ändern, Nickname mit einem Klick bearbeiten, Google verknüpfen, abmelden oder Konto löschen – alles an einem Ort.
+- **Abrechnung**: dein Plan mit Verlängerungsdatum, deine Zahlungsmethode, der Rechnungsverlauf mit PDF-Download und die Option, den Plan zu kündigen – alles auf einem Bildschirm.
+- **Barrierefreiheit**: Textgröße (Normal, Mittel, Groß, Sehr groß), weniger Bewegung in Overlays, langsame TTS-Stimme und hoher Kontrast. Änderungen gelten sofort.
+- **Hilfe** öffnet direkt unseren Discord.
+- Das Fenster passt sich der App-Größe an, wird beim Maximieren größer und verdeckt die Fensterschaltflächen nicht.
+
+### Änderungen
+- Die Barrierefreiheits-Einstellungen wandern aus den erweiterten Einstellungen nach **Mein Konto → Barrierefreiheit**.
+
 ## [1.11.2] — 2026-10-09
 
 ### Chat-Moderation

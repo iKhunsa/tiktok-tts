@@ -51,7 +51,11 @@ export function toggleAccountPopover(anchorEl) {
   popover.querySelector('.account-popover-advanced').addEventListener('click', () => { cerrar(); window.open('/advanced.html?popup=1', '_blank'); });
   popover.querySelector('.account-popover-donate').addEventListener('click', () => { cerrar(); window.openDonationsModal(); });
   popover.querySelector('.account-popover-discord').addEventListener('click', () => { cerrar(); window.openDiscordModal('account_menu'); });
-  const abrirCuenta = () => { cerrar(); window.switchView('cuenta'); };
+  const abrirCuenta = () => {
+    cerrar();
+    if (almacenSesion.getState().signedIn) window.abrirModalCuenta();
+    else window.switchView('cuenta');
+  };
   const header = popover.querySelector('.account-popover-header');
   header.addEventListener('click', abrirCuenta);
   header.addEventListener('keydown', (event) => {

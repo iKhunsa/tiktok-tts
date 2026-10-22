@@ -1,3 +1,21 @@
+## [1.12.0] — 2026-10-21
+
+### Login e cadastro
+- Tela de acesso redesenhada, com imagem de fundo e textos novos.
+- **Entrar**: entre com o Google em um clique ou escolha **«E-mail»** para usar e-mail e senha no mesmo cartão.
+- **Criar conta**: o cadastro é só com o Google e pede um **nickname único**, seu nome de criador, que ninguém mais pode usar.
+
+### Janela «Minha conta»
+- Ao clicar no seu e-mail ou em **Minha conta** no menu da conta, abre-se uma janela própria com menu lateral, em vez de trocar de tela.
+- **Perfil**: troque sua foto e seu banner, edite seu nickname com um clique, vincule o Google, saia ou exclua sua conta em um só lugar.
+- **Faturamento**: seu plano com a data de renovação, sua forma de pagamento, o histórico de faturas com download em PDF e a opção de cancelar o plano, tudo em uma só tela.
+- **Acessibilidade**: tamanho do texto (Normal, Médio, Grande, Muito grande), reduzir movimento nos overlays, TTS com voz lenta e alto contraste. As mudanças são aplicadas na hora.
+- **Ajuda** abre direto o nosso Discord.
+- A janela se adapta ao tamanho do app, cresce ao maximizar e não cobre os botões da janela.
+
+### Mudanças
+- Os ajustes de acessibilidade saem das Configurações avançadas e passam para **Minha conta → Acessibilidade**.
+
 ## [1.11.2] — 2026-10-09
 
 ### Moderação do chat

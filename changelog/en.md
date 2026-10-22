@@ -1,3 +1,21 @@
+## [1.12.0] — 2026-10-21
+
+### Sign-in and sign-up
+- Redesigned sign-in screen, with a background image and new copy.
+- **Sign in**: continue with Google in one click, or choose **“Email”** to use your email and password on the same card.
+- **Create account**: sign-up is Google-only and asks for a **unique nickname**, your creator name, that nobody else can use.
+
+### “My account” window
+- Clicking your email or **My account** in the account menu now opens its own window with a side menu, instead of switching screens.
+- **Profile**: change your photo and banner, edit your nickname with one click, link Google, sign out or delete your account, all in one place.
+- **Billing**: your plan and renewal date, your payment method, your invoice history with PDF download and the option to cancel your plan, all on one screen.
+- **Accessibility**: text size (Normal, Medium, Large, Extra large), reduce motion in overlays, slow TTS voice and high contrast. Changes apply instantly.
+- **Help** takes you straight to our Discord.
+- The window adapts to the app size, grows when maximized and doesn’t cover the window buttons.
+
+### Changes
+- Accessibility settings move from Advanced settings to **My account → Accessibility**.
+
 ## [1.11.2] — 2026-10-09
 
 ### Chat moderation
