@@ -1126,7 +1126,9 @@
                    "googleEmailYaRegistrado":  "Для этого email уже есть аккаунт с паролем. Войдите с паролем.",
                    "googleEmailNoVerificado":  "У вашего аккаунта Google нет подтверждённого email.",
                    "invalidGoogleToken":  "Не удалось подтвердить аккаунт Google. Попробуйте снова.",
-                   "identidadTomada":  "Этот аккаунт Google уже привязан к другому пользователю."
+                   "identidadTomada":  "Этот аккаунт Google уже привязан к другому пользователю.",
+                   "invalidResetCode":  "Неверный или просроченный код.",
+                   "emailNoConfigurado":  "Сейчас не удалось отправить письмо. Попробуйте позже."
                },
     "mcp":  {
                 "title":  "Агент MCP",
@@ -1269,7 +1271,22 @@
                    "linkGoogle":  "Привязать Google",
                    "googleLinked":  "Google привязан ({email})",
                    "googleLinkedDone":  "Ваш аккаунт Google привязан.",
-                   "deleteConfirmGoogle":  "Подтвердить через Google"
+                   "deleteConfirmGoogle":  "Подтвердить через Google",
+                   "forgotPassword":  "Забыли пароль?",
+                   "forgotModalTitle":  "Сброс пароля",
+                   "forgotConfirmText":  "Мы отправим код на {email}, чтобы вы могли задать новый пароль. Отправить?",
+                   "forgotSendBtn":  "Отправить код",
+                   "forgotCancelBtn":  "Отмена",
+                   "forgotSentHint":  "Проверьте почту: мы отправили 6-значный код на {email}.",
+                   "resetCodeLabel":  "Код подтверждения",
+                   "resetNewPasswordLabel":  "Новый пароль",
+                   "resetConfirmPasswordLabel":  "Повторите пароль",
+                   "resetSubmitBtn":  "Изменить пароль",
+                   "resetBackBtn":  "Назад",
+                   "resetMismatch":  "Пароли не совпадают.",
+                   "resetSuccess":  "Пароль обновлён. Войдите снова.",
+                   "showPassword":  "Показать пароль",
+                   "hidePassword":  "Скрыть пароль"
                },
     "sidebarAccount":  {
                            "badgeFree":  "БЕСПЛАТНО",
@@ -1605,6 +1622,7 @@
                         "close":  "Закрыть",
                         "changeBanner":  "Сменить баннер",
                         "fullName":  "Полное имя",
+                        "fullNameUnknown":  "Не указано",
                         "googleRow":  "Вход через Google",
                         "link":  "Привязать",
                         "linked":  "Привязан",
@@ -1640,6 +1658,7 @@
                         "changePlan":  "Сменить план",
                         "payment":  "Оплата",
                         "paymentHint":  "Можно добавить запасную карту на случай, если основной способ оплаты будет отклонён.",
+                        "paymentUnavailable":  "Управление способом оплаты и счетами пока недоступно здесь.",
                         "addPayment":  "Добавить способ оплаты",
                         "default":  "Основной",
                         "expires":  "Действует до {fecha}",

@@ -1126,7 +1126,9 @@
                    "googleEmailYaRegistrado":  "Esse email já tem uma conta com senha. Entre com sua senha.",
                    "googleEmailNoVerificado":  "Sua conta do Google não tem um email verificado.",
                    "invalidGoogleToken":  "Não foi possível verificar sua conta do Google. Tente novamente.",
-                   "identidadTomada":  "Essa conta do Google já está vinculada a outro usuário."
+                   "identidadTomada":  "Essa conta do Google já está vinculada a outro usuário.",
+                   "invalidResetCode":  "Código inválido ou expirado.",
+                   "emailNoConfigurado":  "Não foi possível enviar o email agora. Tente mais tarde."
                },
     "mcp":  {
                 "title":  "Agente MCP",
@@ -1269,7 +1271,22 @@
                    "linkGoogle":  "Vincular Google",
                    "googleLinked":  "Google vinculado ({email})",
                    "googleLinkedDone":  "Sua conta do Google foi vinculada.",
-                   "deleteConfirmGoogle":  "Confirmar com Google"
+                   "deleteConfirmGoogle":  "Confirmar com Google",
+                   "forgotPassword":  "Esqueceu sua senha?",
+                   "forgotModalTitle":  "Recuperar senha",
+                   "forgotConfirmText":  "Vamos enviar um código para {email} para você criar uma nova senha. Quer enviar?",
+                   "forgotSendBtn":  "Enviar código",
+                   "forgotCancelBtn":  "Cancelar",
+                   "forgotSentHint":  "Confira sua caixa de entrada: enviamos um código de 6 dígitos para {email}.",
+                   "resetCodeLabel":  "Código de verificação",
+                   "resetNewPasswordLabel":  "Nova senha",
+                   "resetConfirmPasswordLabel":  "Repetir senha",
+                   "resetSubmitBtn":  "Alterar senha",
+                   "resetBackBtn":  "Voltar",
+                   "resetMismatch":  "As senhas não coincidem.",
+                   "resetSuccess":  "Senha atualizada. Faça login novamente.",
+                   "showPassword":  "Mostrar senha",
+                   "hidePassword":  "Ocultar senha"
                },
     "sidebarAccount":  {
                            "badgeFree":  "FREE",
@@ -1605,6 +1622,7 @@
                         "close":  "Fechar",
                         "changeBanner":  "Alterar banner",
                         "fullName":  "Nome completo",
+                        "fullNameUnknown":  "Não definido",
                         "googleRow":  "Entrar com o Google",
                         "link":  "Vincular",
                         "linked":  "Vinculado",
@@ -1640,6 +1658,7 @@
                         "changePlan":  "Mudar plano",
                         "payment":  "Pagamento",
                         "paymentHint":  "Você pode adicionar um cartão reserva caso seu método de pagamento padrão seja recusado.",
+                        "paymentUnavailable":  "O gerenciamento do método de pagamento e das faturas ainda não está disponível por aqui.",
                         "addPayment":  "Adicionar forma de pagamento",
                         "default":  "Padrão",
                         "expires":  "Vence em {fecha}",

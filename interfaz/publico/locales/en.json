@@ -809,7 +809,9 @@
                    "googleEmailYaRegistrado":  "That email already has a password account. Sign in with your password.",
                    "googleEmailNoVerificado":  "Your Google account doesn’t have a verified email.",
                    "invalidGoogleToken":  "We couldn’t verify your Google account. Please try again.",
-                   "identidadTomada":  "That Google account is already linked to another user."
+                   "identidadTomada":  "That Google account is already linked to another user.",
+                   "invalidResetCode":  "Invalid or expired code.",
+                   "emailNoConfigurado":  "Couldn't send the email right now. Try again later."
                },
     "dictLang":  {
                      "title":  "Allowed languages",
@@ -1269,7 +1271,22 @@
                    "linkGoogle":  "Link Google",
                    "googleLinked":  "Google linked ({email})",
                    "googleLinkedDone":  "Your Google account is now linked.",
-                   "deleteConfirmGoogle":  "Confirm with Google"
+                   "deleteConfirmGoogle":  "Confirm with Google",
+                   "forgotPassword":  "Forgot your password?",
+                   "forgotModalTitle":  "Reset password",
+                   "forgotConfirmText":  "We'll send a code to {email} so you can set a new password. Want to send it?",
+                   "forgotSendBtn":  "Send code",
+                   "forgotCancelBtn":  "Cancel",
+                   "forgotSentHint":  "Check your inbox: we sent a 6-digit code to {email}.",
+                   "resetCodeLabel":  "Verification code",
+                   "resetNewPasswordLabel":  "New password",
+                   "resetConfirmPasswordLabel":  "Repeat password",
+                   "resetSubmitBtn":  "Change password",
+                   "resetBackBtn":  "Back",
+                   "resetMismatch":  "Passwords don't match.",
+                   "resetSuccess":  "Password updated. Please sign in again.",
+                   "showPassword":  "Show password",
+                   "hidePassword":  "Hide password"
                },
     "sidebarAccount":  {
                            "badgeFree":  "FREE",
@@ -1605,6 +1622,7 @@
                         "close":  "Close",
                         "changeBanner":  "Change banner",
                         "fullName":  "Full name",
+                        "fullNameUnknown":  "Not set",
                         "googleRow":  "Sign in with Google",
                         "link":  "Link",
                         "linked":  "Linked",
@@ -1640,6 +1658,7 @@
                         "changePlan":  "Change plan",
                         "payment":  "Payment",
                         "paymentHint":  "You can add a backup card in case your default payment method is declined.",
+                        "paymentUnavailable":  "Managing your payment method and invoices isn't available here yet.",
                         "addPayment":  "Add payment method",
                         "default":  "Default",
                         "expires":  "Expires {fecha}",

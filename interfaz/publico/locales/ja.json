@@ -1126,7 +1126,9 @@
                    "googleEmailYaRegistrado":  "そのメールアドレスはすでにパスワード付きアカウントで登録されています。パスワードでログインしてください。",
                    "googleEmailNoVerificado":  "Googleアカウントのメールアドレスが確認されていません。",
                    "invalidGoogleToken":  "Googleアカウントを確認できませんでした。もう一度お試しください。",
-                   "identidadTomada":  "そのGoogleアカウントはすでに別のユーザーに連携されています。"
+                   "identidadTomada":  "そのGoogleアカウントはすでに別のユーザーに連携されています。",
+                   "invalidResetCode":  "コードが無効または期限切れです。",
+                   "emailNoConfigurado":  "現在メールを送信できません。後でもう一度お試しください。"
                },
     "mcp":  {
                 "title":  "MCP エージェント",
@@ -1269,7 +1271,22 @@
                    "linkGoogle":  "Googleを連携",
                    "googleLinked":  "Google連携済み（{email}）",
                    "googleLinkedDone":  "Googleアカウントを連携しました。",
-                   "deleteConfirmGoogle":  "Googleで確認"
+                   "deleteConfirmGoogle":  "Googleで確認",
+                   "forgotPassword":  "パスワードをお忘れですか？",
+                   "forgotModalTitle":  "パスワードをリセット",
+                   "forgotConfirmText":  "{email} に確認コードを送信します。新しいパスワードを設定できます。送信しますか？",
+                   "forgotSendBtn":  "コードを送信",
+                   "forgotCancelBtn":  "キャンセル",
+                   "forgotSentHint":  "受信ボックスをご確認ください。{email} に6桁のコードを送信しました。",
+                   "resetCodeLabel":  "確認コード",
+                   "resetNewPasswordLabel":  "新しいパスワード",
+                   "resetConfirmPasswordLabel":  "パスワードの確認",
+                   "resetSubmitBtn":  "パスワードを変更",
+                   "resetBackBtn":  "戻る",
+                   "resetMismatch":  "パスワードが一致しません。",
+                   "resetSuccess":  "パスワードを更新しました。再度ログインしてください。",
+                   "showPassword":  "パスワードを表示",
+                   "hidePassword":  "パスワードを隠す"
                },
     "sidebarAccount":  {
                            "badgeFree":  "無料",
@@ -1605,6 +1622,7 @@
                         "close":  "閉じる",
                         "changeBanner":  "バナーを変更",
                         "fullName":  "氏名",
+                        "fullNameUnknown":  "未設定",
                         "googleRow":  "Google でログイン",
                         "link":  "連携",
                         "linked":  "連携済み",
@@ -1640,6 +1658,7 @@
                         "changePlan":  "プランを変更",
                         "payment":  "お支払い",
                         "paymentHint":  "デフォルトの支払い方法が拒否された場合に備えて、予備のカードを追加できます。",
+                        "paymentUnavailable":  "支払い方法と請求書の管理はまだここではご利用いただけません。",
                         "addPayment":  "支払い方法を追加",
                         "default":  "デフォルト",
                         "expires":  "有効期限 {fecha}",

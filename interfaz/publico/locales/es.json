@@ -1146,7 +1146,9 @@
                    "googleEmailYaRegistrado":  "Ese email ya tiene una cuenta con contraseña. Iniciá sesión con tu contraseña.",
                    "googleEmailNoVerificado":  "Tu cuenta de Google no tiene el email verificado.",
                    "invalidGoogleToken":  "No se pudo verificar tu cuenta de Google. Probá de nuevo.",
-                   "identidadTomada":  "Esa cuenta de Google ya está vinculada a otro usuario."
+                   "identidadTomada":  "Esa cuenta de Google ya está vinculada a otro usuario.",
+                   "invalidResetCode":  "Código inválido o vencido.",
+                   "emailNoConfigurado":  "No se pudo enviar el email ahora mismo. Probá más tarde."
                },
     "mcp":  {
                 "title":  "Agente MCP",
@@ -1289,7 +1291,22 @@
                    "linkGoogle":  "Vincular Google",
                    "googleLinked":  "Google vinculado ({email})",
                    "googleLinkedDone":  "Tu cuenta de Google quedó vinculada.",
-                   "deleteConfirmGoogle":  "Confirmar con Google"
+                   "deleteConfirmGoogle":  "Confirmar con Google",
+                   "forgotPassword":  "¿Olvidaste tu contraseña?",
+                   "forgotModalTitle":  "Recuperar contraseña",
+                   "forgotConfirmText":  "Te vamos a enviar un código a {email} para que puedas crear una contraseña nueva. ¿Querés enviarlo?",
+                   "forgotSendBtn":  "Enviar código",
+                   "forgotCancelBtn":  "Cancelar",
+                   "forgotSentHint":  "Revisá tu bandeja de entrada: te enviamos un código de 6 dígitos a {email}.",
+                   "resetCodeLabel":  "Código de verificación",
+                   "resetNewPasswordLabel":  "Nueva contraseña",
+                   "resetConfirmPasswordLabel":  "Repetir contraseña",
+                   "resetSubmitBtn":  "Cambiar contraseña",
+                   "resetBackBtn":  "Volver",
+                   "resetMismatch":  "Las contraseñas no coinciden.",
+                   "resetSuccess":  "Contraseña actualizada. Iniciá sesión de nuevo.",
+                   "showPassword":  "Mostrar contraseña",
+                   "hidePassword":  "Ocultar contraseña"
                },
     "pro":  {
                 "bannerTitle":  "Mejora tu plan a Pro",
@@ -1605,6 +1622,7 @@
                         "close":  "Cerrar",
                         "changeBanner":  "Cambiar banner",
                         "fullName":  "Nombre completo",
+                        "fullNameUnknown":  "Sin definir",
                         "googleRow":  "Iniciar sesión con Google",
                         "link":  "Vincular",
                         "linked":  "Vinculado",
@@ -1640,6 +1658,7 @@
                         "changePlan":  "Cambiar plan",
                         "payment":  "Pago",
                         "paymentHint":  "Puedes agregar una tarjeta de respaldo por si se rechaza tu método de pago predeterminado.",
+                        "paymentUnavailable":  "La gestión de método de pago y facturas todavía no está disponible desde acá.",
                         "addPayment":  "Agregar método de pago",
                         "default":  "Predeterminado",
                         "expires":  "Vence {fecha}",

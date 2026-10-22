@@ -1126,7 +1126,9 @@
                    "googleEmailYaRegistrado":  "该邮箱已有带密码的账号，请使用密码登录。",
                    "googleEmailNoVerificado":  "你的 Google 账号没有经过验证的邮箱。",
                    "invalidGoogleToken":  "无法验证你的 Google 账号，请重试。",
-                   "identidadTomada":  "该 Google 账号已绑定到其他用户。"
+                   "identidadTomada":  "该 Google 账号已绑定到其他用户。",
+                   "invalidResetCode":  "验证码无效或已过期。",
+                   "emailNoConfigurado":  "暂时无法发送邮件，请稍后再试。"
                },
     "mcp":  {
                 "title":  "MCP 代理",
@@ -1269,7 +1271,22 @@
                    "linkGoogle":  "绑定 Google",
                    "googleLinked":  "已绑定 Google（{email}）",
                    "googleLinkedDone":  "你的 Google 账号已绑定成功。",
-                   "deleteConfirmGoogle":  "使用 Google 确认"
+                   "deleteConfirmGoogle":  "使用 Google 确认",
+                   "forgotPassword":  "忘记密码了？",
+                   "forgotModalTitle":  "重置密码",
+                   "forgotConfirmText":  "我们将向 {email} 发送验证码，以便你设置新密码。要发送吗？",
+                   "forgotSendBtn":  "发送验证码",
+                   "forgotCancelBtn":  "取消",
+                   "forgotSentHint":  "请查收邮箱：我们已向 {email} 发送了 6 位验证码。",
+                   "resetCodeLabel":  "验证码",
+                   "resetNewPasswordLabel":  "新密码",
+                   "resetConfirmPasswordLabel":  "确认密码",
+                   "resetSubmitBtn":  "更改密码",
+                   "resetBackBtn":  "返回",
+                   "resetMismatch":  "两次输入的密码不一致。",
+                   "resetSuccess":  "密码已更新，请重新登录。",
+                   "showPassword":  "显示密码",
+                   "hidePassword":  "隐藏密码"
                },
     "sidebarAccount":  {
                            "badgeFree":  "免费",
@@ -1605,6 +1622,7 @@
                         "close":  "关闭",
                         "changeBanner":  "更换横幅",
                         "fullName":  "全名",
+                        "fullNameUnknown":  "未设置",
                         "googleRow":  "使用 Google 登录",
                         "link":  "关联",
                         "linked":  "已关联",
@@ -1640,6 +1658,7 @@
                         "changePlan":  "更改套餐",
                         "payment":  "付款",
                         "paymentHint":  "你可以添加一张备用卡，以防默认付款方式被拒。",
+                        "paymentUnavailable":  "暂时无法在这里管理付款方式和账单。",
                         "addPayment":  "添加付款方式",
                         "default":  "默认",
                         "expires":  "{fecha} 到期",

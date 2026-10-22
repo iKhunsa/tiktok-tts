@@ -17,8 +17,10 @@ import { enlazarAvisoRegistro } from './enlazar-aviso-registro.js';
 import { autenticarConGoogleUI, autenticarConTwitchUI, autenticarConKickUI } from './plataforma-auth-cliente.js';
 import {
   AVISO_CUENTA_ELIMINADA, listaIdentidades, vincularGoogle, cerrarSesion, eliminarCuenta, eliminarCuentaGoogle,
+  cancelarSuscripcion, reanudarSuscripcion, pasarAMensual,
 } from './acciones-cuenta.js';
 import { abrirModalCuenta } from './modal-cuenta/index.js';
+import { abrirModalRecuperar } from './modal-recuperar.js';
 
 let modo = 'login'; // 'login' | 'register' — solo cuando esta deslogueado
 let conEmail = false; // login: el boton "Correo electronico" despliega el form en la misma tarjeta
@@ -59,6 +61,7 @@ function formAuth() {
       <form id="cuentaForm" novalidate>
         ${campo({ id: 'cuentaEmail', labelKey: 'cuenta.email', type: 'email', autocomplete: 'email', required: true })}
         ${campo({ id: 'cuentaPass', labelKey: 'cuenta.password', type: 'password', autocomplete: 'current-password', required: true })}
+        <button type="button" class="cuenta-forgot-link" id="cuentaOlvideContrasena" data-i18n="cuenta.forgotPassword"></button>
         <button type="submit" class="cuenta-btn-primary" id="cuentaSubmit" data-i18n="cuenta.doLogin"></button>
       </form>
       <div class="cuenta-divider" data-i18n="cuenta.or"></div>
@@ -195,6 +198,9 @@ export function renderCuentaPanel() {
       renderCuentaPanel();
     });
     el.querySelector('#cuentaForm')?.addEventListener('submit', (e) => { e.preventDefault(); enviarAuth(el); });
+    el.querySelector('#cuentaOlvideContrasena')?.addEventListener('click', () => {
+      abrirModalRecuperar({ emailInicial: el.querySelector('#cuentaEmail')?.value || '' });
+    });
     el.querySelector('#cuentaGoogleBtn').addEventListener('click', () => enviarGoogle(el));
     el.querySelector('#cuentaNick')?.addEventListener('input', (e) => verificarNickname(el, e.target.value));
     el.querySelector('input')?.focus();
@@ -259,9 +265,21 @@ export function renderCuentaPanel() {
     });
   });
   el.querySelector('#cuentaUpgrade')?.addEventListener('click', () => abrirPopupPlanes());
-  el.querySelector('#cuentaManage')?.addEventListener('click', (e) => cancelarSuscripcion(e.currentTarget));
-  el.querySelector('#cuentaResume')?.addEventListener('click', (e) => reanudarSuscripcion(e.currentTarget));
-  el.querySelector('#cuentaSwitchMonthly')?.addEventListener('click', (e) => pasarAMensual(e.currentTarget));
+  el.querySelector('#cuentaManage')?.addEventListener('click', async (e) => {
+    e.currentTarget.disabled = true;
+    await cancelarSuscripcion();
+    renderCuentaPanel();
+  });
+  el.querySelector('#cuentaResume')?.addEventListener('click', async (e) => {
+    e.currentTarget.disabled = true;
+    await reanudarSuscripcion();
+    renderCuentaPanel();
+  });
+  el.querySelector('#cuentaSwitchMonthly')?.addEventListener('click', async (e) => {
+    e.currentTarget.disabled = true;
+    await pasarAMensual();
+    renderCuentaPanel();
+  });
 }
 
 // El registro nuevo es solo Google (ver formAuth); este formulario con
@@ -378,81 +396,6 @@ async function cargarIdentidadGoogle(el, u) {
     if (await vincularGoogle()) cargarIdentidadGoogle(el, u);
     else btn.disabled = false;
   });
-}
-
-// Modal propio (mismo patron visual que modWipeConfirmModal en index.html) en
-// vez de confirm() nativo — un dialogo de navegador desentona con el resto
-// de la app.
-function modalConfirmarCancelacion() {
-  return new Promise((resolve) => {
-    const overlay = document.createElement('div');
-    overlay.className = 'modal-overlay show';
-    overlay.innerHTML = `
-      <div class="modal-content cuenta-cancel-modal">
-        <button class="modal-close" type="button" id="modal-close"><img class="icon-inline" src="icons/close.svg" alt=""></button>
-        <div class="cuenta-cancel-copy">
-          <div class="notice-icon-badge"><span class="icon-inline notice-icon-warn" aria-hidden="true"></span></div>
-          <h2>${esc(t('cuenta.confirmCancelTitle')).replace(' ', '<br>')}</h2>
-          <p class="cuenta-cancel-description">${esc(t('cuenta.confirmCancel'))}</p>
-          <button class="btn btn-connect cuenta-cancel-confirm" type="button" id="cuentaCancelYes">${esc(t('cuenta.confirmCancelYes'))}</button>
-          <button class="btn btn-disconnect cuenta-cancel-back" type="button" id="cuentaCancelNo">${esc(t('cuenta.confirmCancelNo'))}</button>
-          <p class="cuenta-cancel-notice"><img class="icon-inline" src="icons/lock.svg" alt="">${esc(t('cuenta.confirmCancelNotice'))}</p>
-        </div>
-        <div class="cuenta-cancel-image"><img src="img/mascota/michi-triste.png" alt=""></div>
-      </div>`;
-    document.body.appendChild(overlay);
-    const cerrar = (resultado) => { overlay.remove(); resolve(resultado); };
-    overlay.addEventListener('click', (e) => { if (e.target === overlay) cerrar(false); });
-    overlay.querySelector('.modal-close').addEventListener('click', () => cerrar(false));
-    overlay.querySelector('#cuentaCancelNo').addEventListener('click', () => cerrar(false));
-    overlay.querySelector('#cuentaCancelYes').addEventListener('click', () => cerrar(true));
-  });
-}
-
-async function cancelarSuscripcion(btn) {
-  const confirmado = await modalConfirmarCancelacion();
-  if (!confirmado) return;
-  btn.disabled = true;
-  try {
-    const r = await pedir('/api/auth/subscription/cancel', { method: 'POST' });
-    if (!r.ok) return toastError(r.body);
-    aplicarSesion(r.body);
-    showToast(t('cuenta.canceled'));
-    renderCuentaPanel();
-  } finally {
-    btn.disabled = false;
-  }
-}
-
-// Reanudar es una accion positiva (deshace una cancelacion pendiente,
-// todavia dentro del periodo pagado) -> sin modal de confirmacion, solo
-// el toast de resultado.
-async function reanudarSuscripcion(btn) {
-  btn.disabled = true;
-  try {
-    const r = await pedir('/api/auth/subscription/resume', { method: 'POST' });
-    if (!r.ok) return toastError(r.body);
-    aplicarSesion(r.body);
-    showToast(t('cuenta.resumed'));
-    renderCuentaPanel();
-  } finally {
-    btn.disabled = false;
-  }
-}
-
-// Polar puede no soportar el cambio (501 errors.notImplemented): toastError lo
-// muestra y la vista queda como estaba.
-async function pasarAMensual(btn) {
-  btn.disabled = true;
-  try {
-    const r = await pedir('/api/auth/subscription/change-interval', { method: 'POST', body: { intervalo: 'month' } });
-    if (!r.ok) return toastError(r.body);
-    aplicarSesion(r.body);
-    showToast(t('cuenta.switchRequested'));
-    renderCuentaPanel();
-  } finally {
-    btn.disabled = false;
-  }
 }
 
 function mostrarAvisoCuentaEliminada() {

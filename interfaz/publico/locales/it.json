@@ -1126,7 +1126,9 @@
                    "googleEmailYaRegistrado":  "Quell’email ha già un account con password. Accedi con la tua password.",
                    "googleEmailNoVerificado":  "Il tuo account Google non ha un’email verificata.",
                    "invalidGoogleToken":  "Non siamo riusciti a verificare il tuo account Google. Riprova.",
-                   "identidadTomada":  "Quell’account Google è già collegato a un altro utente."
+                   "identidadTomada":  "Quell’account Google è già collegato a un altro utente.",
+                   "invalidResetCode":  "Codice non valido o scaduto.",
+                   "emailNoConfigurado":  "Impossibile inviare l'email ora. Riprova più tardi."
                },
     "mcp":  {
                 "title":  "Agente MCP",
@@ -1269,7 +1271,22 @@
                    "linkGoogle":  "Collega Google",
                    "googleLinked":  "Google collegato ({email})",
                    "googleLinkedDone":  "Il tuo account Google è stato collegato.",
-                   "deleteConfirmGoogle":  "Conferma con Google"
+                   "deleteConfirmGoogle":  "Conferma con Google",
+                   "forgotPassword":  "Hai dimenticato la password?",
+                   "forgotModalTitle":  "Recupera password",
+                   "forgotConfirmText":  "Invieremo un codice a {email} per creare una nuova password. Vuoi inviarlo?",
+                   "forgotSendBtn":  "Invia codice",
+                   "forgotCancelBtn":  "Annulla",
+                   "forgotSentHint":  "Controlla la tua casella: abbiamo inviato un codice di 6 cifre a {email}.",
+                   "resetCodeLabel":  "Codice di verifica",
+                   "resetNewPasswordLabel":  "Nuova password",
+                   "resetConfirmPasswordLabel":  "Ripeti password",
+                   "resetSubmitBtn":  "Cambia password",
+                   "resetBackBtn":  "Indietro",
+                   "resetMismatch":  "Le password non coincidono.",
+                   "resetSuccess":  "Password aggiornata. Accedi di nuovo.",
+                   "showPassword":  "Mostra password",
+                   "hidePassword":  "Nascondi password"
                },
     "sidebarAccount":  {
                            "badgeFree":  "FREE",
@@ -1605,6 +1622,7 @@
                         "close":  "Chiudi",
                         "changeBanner":  "Cambia banner",
                         "fullName":  "Nome completo",
+                        "fullNameUnknown":  "Non impostato",
                         "googleRow":  "Accedi con Google",
                         "link":  "Collega",
                         "linked":  "Collegato",
@@ -1640,6 +1658,7 @@
                         "changePlan":  "Cambia piano",
                         "payment":  "Pagamento",
                         "paymentHint":  "Puoi aggiungere una carta di riserva nel caso il metodo di pagamento predefinito venga rifiutato.",
+                        "paymentUnavailable":  "La gestione del metodo di pagamento e delle fatture non è ancora disponibile da qui.",
                         "addPayment":  "Aggiungi metodo di pagamento",
                         "default":  "Predefinito",
                         "expires":  "Scade {fecha}",

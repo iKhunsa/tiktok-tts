@@ -1126,7 +1126,9 @@
                    "googleEmailYaRegistrado":  "Cet email a déjà un compte avec mot de passe. Connectez-vous avec votre mot de passe.",
                    "googleEmailNoVerificado":  "Votre compte Google n’a pas d’email vérifié.",
                    "invalidGoogleToken":  "Impossible de vérifier votre compte Google. Veuillez réessayer.",
-                   "identidadTomada":  "Ce compte Google est déjà associé à un autre utilisateur."
+                   "identidadTomada":  "Ce compte Google est déjà associé à un autre utilisateur.",
+                   "invalidResetCode":  "Code invalide ou expiré.",
+                   "emailNoConfigurado":  "Impossible d'envoyer l'email pour le moment. Réessaie plus tard."
                },
     "mcp":  {
                 "title":  "Agent MCP",
@@ -1269,7 +1271,22 @@
                    "linkGoogle":  "Associer Google",
                    "googleLinked":  "Google associé ({email})",
                    "googleLinkedDone":  "Votre compte Google a été associé.",
-                   "deleteConfirmGoogle":  "Confirmer avec Google"
+                   "deleteConfirmGoogle":  "Confirmer avec Google",
+                   "forgotPassword":  "Mot de passe oublié ?",
+                   "forgotModalTitle":  "Réinitialiser le mot de passe",
+                   "forgotConfirmText":  "Nous allons envoyer un code à {email} pour que tu puisses créer un nouveau mot de passe. Veux-tu l'envoyer ?",
+                   "forgotSendBtn":  "Envoyer le code",
+                   "forgotCancelBtn":  "Annuler",
+                   "forgotSentHint":  "Vérifie ta boîte mail : on a envoyé un code à 6 chiffres à {email}.",
+                   "resetCodeLabel":  "Code de vérification",
+                   "resetNewPasswordLabel":  "Nouveau mot de passe",
+                   "resetConfirmPasswordLabel":  "Répéter le mot de passe",
+                   "resetSubmitBtn":  "Changer le mot de passe",
+                   "resetBackBtn":  "Retour",
+                   "resetMismatch":  "Les mots de passe ne correspondent pas.",
+                   "resetSuccess":  "Mot de passe mis à jour. Reconnecte-toi.",
+                   "showPassword":  "Afficher le mot de passe",
+                   "hidePassword":  "Masquer le mot de passe"
                },
     "sidebarAccount":  {
                            "badgeFree":  "FREE",
@@ -1605,6 +1622,7 @@
                         "close":  "Fermer",
                         "changeBanner":  "Changer la bannière",
                         "fullName":  "Nom complet",
+                        "fullNameUnknown":  "Non défini",
                         "googleRow":  "Se connecter avec Google",
                         "link":  "Lier",
                         "linked":  "Lié",
@@ -1640,6 +1658,7 @@
                         "changePlan":  "Changer de forfait",
                         "payment":  "Paiement",
                         "paymentHint":  "Tu peux ajouter une carte de secours au cas où ton moyen de paiement par défaut serait refusé.",
+                        "paymentUnavailable":  "La gestion du moyen de paiement et des factures n'est pas encore disponible ici.",
                         "addPayment":  "Ajouter un moyen de paiement",
                         "default":  "Par défaut",
                         "expires":  "Expire {fecha}",
