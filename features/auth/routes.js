@@ -71,6 +71,22 @@ function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
     res.json(r.body);
   });
 
+  // Sin sesion (se usa desde la pantalla de login, antes de loguearse): sin
+  // guard de token, solo el de subscriptionsEnabled. No toca estado.
+  app.post('/api/auth/forgot-password', guard, async (req, res) => {
+    const { email } = req.body || {};
+    const r = await cliente.forgotPassword({ email });
+    if (!r.ok) return propagarError(res, r, logger);
+    res.json(r.body);
+  });
+
+  app.post('/api/auth/reset-password', guard, async (req, res) => {
+    const { email, code, newPassword } = req.body || {};
+    const r = await cliente.resetPassword({ email, code, newPassword });
+    if (!r.ok) return propagarError(res, r, logger);
+    res.json(r.body);
+  });
+
   app.post('/api/auth/logout', guard, async (req, res) => {
     const token = estado.getToken();
     const antes = estado.getSesion();
@@ -274,7 +290,7 @@ function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
     res.json(estado.getSesion());
   });
 
-  return 18;
+  return 20;
 }
 
 module.exports = { montar };

@@ -7,6 +7,7 @@ import { t } from '../../../nucleo/i18n/i18n.js';
 import { showToast } from '../../../componentes/toast.js';
 import { aplicarSesion } from '../../../nucleo/estado/sesion.js';
 import { borrarDatosDeCuenta } from '../../../nucleo/estado/datos-por-cuenta.js';
+import { escaparAtributo as esc } from '../../../../compartido/escapar-html.js';
 import { pedir, toastError } from './api.js';
 import { autenticarConGoogleUI } from './plataforma-auth-cliente.js';
 
@@ -59,3 +60,60 @@ async function borrarCuenta(body) {
 
 export const eliminarCuenta = (password) => borrarCuenta({ password });
 export const eliminarCuentaGoogle = borrarCuenta;
+
+// Modal propio (mismo patron visual que modWipeConfirmModal en index.html) en
+// vez de confirm() nativo — un dialogo de navegador desentona con el resto
+// de la app. Compartido por la vista Cuenta y el modal "Mi cuenta".
+export function modalConfirmarCancelacion() {
+  return new Promise((resolve) => {
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay show';
+    overlay.innerHTML = `
+      <div class="modal-content cuenta-cancel-modal">
+        <button class="modal-close" type="button" id="modal-close"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+        <div class="cuenta-cancel-copy">
+          <div class="notice-icon-badge"><span class="icon-inline notice-icon-warn" aria-hidden="true"></span></div>
+          <h2>${esc(t('cuenta.confirmCancelTitle')).replace(' ', '<br>')}</h2>
+          <p class="cuenta-cancel-description">${esc(t('cuenta.confirmCancel'))}</p>
+          <button class="btn btn-connect cuenta-cancel-confirm" type="button" id="cuentaCancelYes">${esc(t('cuenta.confirmCancelYes'))}</button>
+          <button class="btn btn-disconnect cuenta-cancel-back" type="button" id="cuentaCancelNo">${esc(t('cuenta.confirmCancelNo'))}</button>
+          <p class="cuenta-cancel-notice"><img class="icon-inline" src="icons/lock.svg" alt="">${esc(t('cuenta.confirmCancelNotice'))}</p>
+        </div>
+        <div class="cuenta-cancel-image"><img src="img/mascota/michi-triste.png" alt=""></div>
+      </div>`;
+    document.body.appendChild(overlay);
+    const cerrar = (resultado) => { overlay.remove(); resolve(resultado); };
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) cerrar(false); });
+    overlay.querySelector('.modal-close').addEventListener('click', () => cerrar(false));
+    overlay.querySelector('#cuentaCancelNo').addEventListener('click', () => cerrar(false));
+    overlay.querySelector('#cuentaCancelYes').addEventListener('click', () => cerrar(true));
+  });
+}
+
+// Las tres hablan con el backend + aplicarSesion; quien llama decide como
+// pintar el resultado (toast + re-pintar su propia vista).
+export async function cancelarSuscripcion() {
+  const confirmado = await modalConfirmarCancelacion();
+  if (!confirmado) return null;
+  const r = await pedir('/api/auth/subscription/cancel', { method: 'POST' });
+  if (!r.ok) { toastError(r.body); return null; }
+  aplicarSesion(r.body);
+  showToast(t('cuenta.canceled'));
+  return r.body;
+}
+
+export async function reanudarSuscripcion() {
+  const r = await pedir('/api/auth/subscription/resume', { method: 'POST' });
+  if (!r.ok) { toastError(r.body); return null; }
+  aplicarSesion(r.body);
+  showToast(t('cuenta.resumed'));
+  return r.body;
+}
+
+export async function pasarAMensual() {
+  const r = await pedir('/api/auth/subscription/change-interval', { method: 'POST', body: { intervalo: 'month' } });
+  if (!r.ok) { toastError(r.body); return null; }
+  aplicarSesion(r.body);
+  showToast(t('cuenta.switchRequested'));
+  return r.body;
+}

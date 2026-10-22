@@ -17,8 +17,9 @@ import {
 
 const MB_MAX = { avatar: 5, banner: 10 };
 // Nombre real que trae Google: el back todavia no lo manda en la sesion
-// (user.nombreCompleto, lo conecta el back). Hasta entonces, valor de ejemplo.
-const NOMBRE_EJEMPLO = 'Luis Leon';
+// (user.nombreCompleto, lo conecta el back). Hasta entonces, placeholder
+// generico i18n -- nunca un nombre real hardcodeado (le aparecia a CUALQUIER
+// usuario sin Google vinculado, no solo a quien lo escribio).
 
 function fila(labelKey, derecha) {
   return `<div class="mc-fila"><span class="mc-fila-label" data-i18n="${labelKey}"></span>${derecha}</div>`;
@@ -43,7 +44,7 @@ export function pintarPerfil(cont, s) {
       <input type="file" class="mc-archivo" accept="image/png,image/jpeg,image/webp" hidden>
     </div>
     <div class="mc-filas">
-      ${fila('cuentaModal.fullName', `<span class="mc-valor">${esc(u.nombreCompleto || NOMBRE_EJEMPLO)}</span>`)}
+      ${fila('cuentaModal.fullName', `<span class="mc-valor">${esc(u.nombreCompleto || t('cuentaModal.fullNameUnknown'))}</span>`)}
       ${fila('cuenta.nickname', `<button class="mc-valor mc-valor-editable" type="button" id="mcNick">${u.nombre ? `@${esc(u.nombre)}` : ''}</button>`)}
       ${fila('cuentaModal.googleRow', '<span class="mc-google" id="mcGoogle"></span>')}
     </div>

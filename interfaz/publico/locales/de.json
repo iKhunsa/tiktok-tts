@@ -1126,7 +1126,9 @@
                    "googleEmailYaRegistrado":  "Diese E-Mail hat bereits ein Konto mit Passwort. Melde dich mit deinem Passwort an.",
                    "googleEmailNoVerificado":  "Dein Google-Konto hat keine verifizierte E-Mail-Adresse.",
                    "invalidGoogleToken":  "Dein Google-Konto konnte nicht verifiziert werden. Bitte versuche es erneut.",
-                   "identidadTomada":  "Dieses Google-Konto ist bereits mit einem anderen Benutzer verknüpft."
+                   "identidadTomada":  "Dieses Google-Konto ist bereits mit einem anderen Benutzer verknüpft.",
+                   "invalidResetCode":  "Ungültiger oder abgelaufener Code.",
+                   "emailNoConfigurado":  "E-Mail konnte gerade nicht gesendet werden. Versuch es später erneut."
                },
     "mcp":  {
                 "title":  "MCP-Agent",
@@ -1269,7 +1271,22 @@
                    "linkGoogle":  "Google verknüpfen",
                    "googleLinked":  "Google verknüpft ({email})",
                    "googleLinkedDone":  "Dein Google-Konto wurde verknüpft.",
-                   "deleteConfirmGoogle":  "Mit Google bestätigen"
+                   "deleteConfirmGoogle":  "Mit Google bestätigen",
+                   "forgotPassword":  "Passwort vergessen?",
+                   "forgotModalTitle":  "Passwort zurücksetzen",
+                   "forgotConfirmText":  "Wir senden einen Code an {email}, damit du ein neues Passwort erstellen kannst. Möchtest du ihn senden?",
+                   "forgotSendBtn":  "Code senden",
+                   "forgotCancelBtn":  "Abbrechen",
+                   "forgotSentHint":  "Schau in dein Postfach: wir haben einen 6-stelligen Code an {email} gesendet.",
+                   "resetCodeLabel":  "Bestätigungscode",
+                   "resetNewPasswordLabel":  "Neues Passwort",
+                   "resetConfirmPasswordLabel":  "Passwort wiederholen",
+                   "resetSubmitBtn":  "Passwort ändern",
+                   "resetBackBtn":  "Zurück",
+                   "resetMismatch":  "Die Passwörter stimmen nicht überein.",
+                   "resetSuccess":  "Passwort aktualisiert. Bitte erneut anmelden.",
+                   "showPassword":  "Passwort anzeigen",
+                   "hidePassword":  "Passwort verbergen"
                },
     "sidebarAccount":  {
                            "badgeFree":  "FREE",
@@ -1605,6 +1622,7 @@
                         "close":  "Schließen",
                         "changeBanner":  "Banner ändern",
                         "fullName":  "Vollständiger Name",
+                        "fullNameUnknown":  "Nicht festgelegt",
                         "googleRow":  "Mit Google anmelden",
                         "link":  "Verknüpfen",
                         "linked":  "Verknüpft",
@@ -1640,6 +1658,7 @@
                         "changePlan":  "Plan ändern",
                         "payment":  "Zahlung",
                         "paymentHint":  "Du kannst eine Ersatzkarte hinzufügen, falls deine Standard-Zahlungsmethode abgelehnt wird.",
+                        "paymentUnavailable":  "Die Verwaltung von Zahlungsmethode und Rechnungen ist hier noch nicht verfügbar.",
                         "addPayment":  "Zahlungsmethode hinzufügen",
                         "default":  "Standard",
                         "expires":  "Läuft ab {fecha}",

@@ -49,6 +49,8 @@ function crearCliente(baseUrl) {
     logout: (token) => pedir('/api/auth/logout', { method: 'POST', token }),
     session: (token) => pedir('/api/session', { token, reintentos: 2 }),
     nicknameDisponible: (nombre) => pedir(`/api/auth/nickname-disponible?nombre=${encodeURIComponent(nombre)}`),
+    forgotPassword: (b) => pedir('/api/auth/forgot-password', { method: 'POST', body: b }),
+    resetPassword: (b) => pedir('/api/auth/reset-password', { method: 'POST', body: b }),
     account: (token, b) => pedir('/api/account', { method: 'PATCH', token, body: b }),
     eliminarCuenta: (token, b) => pedir('/api/account', { method: 'DELETE', token, body: b }),
     identities: (token) => pedir('/api/account/identities', { token }),

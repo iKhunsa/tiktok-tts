@@ -1126,7 +1126,9 @@
                    "googleEmailYaRegistrado":  "해당 이메일은 이미 비밀번호 계정이 있습니다. 비밀번호로 로그인하세요.",
                    "googleEmailNoVerificado":  "Google 계정의 이메일이 인증되지 않았습니다.",
                    "invalidGoogleToken":  "Google 계정을 확인할 수 없습니다. 다시 시도해 주세요.",
-                   "identidadTomada":  "해당 Google 계정은 이미 다른 사용자와 연결되어 있습니다."
+                   "identidadTomada":  "해당 Google 계정은 이미 다른 사용자와 연결되어 있습니다.",
+                   "invalidResetCode":  "코드가 유효하지 않거나 만료되었습니다.",
+                   "emailNoConfigurado":  "지금은 이메일을 보낼 수 없습니다. 나중에 다시 시도해 주세요."
                },
     "mcp":  {
                 "title":  "MCP 에이전트",
@@ -1269,7 +1271,22 @@
                    "linkGoogle":  "Google 연결",
                    "googleLinked":  "Google 연결됨 ({email})",
                    "googleLinkedDone":  "Google 계정이 연결되었습니다.",
-                   "deleteConfirmGoogle":  "Google로 확인"
+                   "deleteConfirmGoogle":  "Google로 확인",
+                   "forgotPassword":  "비밀번호를 잊으셨나요?",
+                   "forgotModalTitle":  "비밀번호 재설정",
+                   "forgotConfirmText":  "{email}로 코드를 보내드립니다. 새 비밀번호를 설정할 수 있어요. 보낼까요?",
+                   "forgotSendBtn":  "코드 보내기",
+                   "forgotCancelBtn":  "취소",
+                   "forgotSentHint":  "받은편지함을 확인하세요: {email}로 6자리 코드를 보냈습니다.",
+                   "resetCodeLabel":  "인증 코드",
+                   "resetNewPasswordLabel":  "새 비밀번호",
+                   "resetConfirmPasswordLabel":  "비밀번호 확인",
+                   "resetSubmitBtn":  "비밀번호 변경",
+                   "resetBackBtn":  "뒤로",
+                   "resetMismatch":  "비밀번호가 일치하지 않습니다.",
+                   "resetSuccess":  "비밀번호가 변경되었습니다. 다시 로그인해 주세요.",
+                   "showPassword":  "비밀번호 표시",
+                   "hidePassword":  "비밀번호 숨기기"
                },
     "sidebarAccount":  {
                            "badgeFree":  "무료",
@@ -1605,6 +1622,7 @@
                         "close":  "닫기",
                         "changeBanner":  "배너 변경",
                         "fullName":  "이름",
+                        "fullNameUnknown":  "설정 안 됨",
                         "googleRow":  "Google로 로그인",
                         "link":  "연결",
                         "linked":  "연결됨",
@@ -1640,6 +1658,7 @@
                         "changePlan":  "플랜 변경",
                         "payment":  "결제",
                         "paymentHint":  "기본 결제 수단이 거절될 경우를 대비해 예비 카드를 추가할 수 있습니다.",
+                        "paymentUnavailable":  "결제 수단과 청구서 관리는 아직 여기서 지원되지 않습니다.",
                         "addPayment":  "결제 수단 추가",
                         "default":  "기본",
                         "expires":  "만료 {fecha}",
