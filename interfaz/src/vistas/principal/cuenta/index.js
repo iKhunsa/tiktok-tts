@@ -22,6 +22,8 @@ import { abrirModalCuenta } from './modal-cuenta/index.js';
 
 let modo = 'login'; // 'login' | 'register' — solo cuando esta deslogueado
 let conEmail = false; // login: el boton "Correo electronico" despliega el form en la misma tarjeta
+let nickValidado = false; // registro: nickname unico confirmado contra el server -> habilita Google
+let nickCheckId = 0; // descarta respuestas de un chequeo viejo si el usuario siguio tipeando
 
 function campo({ id, labelKey, type = 'text', autocomplete, required }) {
   return `
@@ -31,9 +33,9 @@ function campo({ id, labelKey, type = 'text', autocomplete, required }) {
     </div>`;
 }
 
-function botonGoogle(labelKey) {
+function botonGoogle(labelKey, disabled) {
   return `
-    <button type="button" class="cuenta-btn-google" id="cuentaGoogleBtn">
+    <button type="button" class="cuenta-btn-google" id="cuentaGoogleBtn"${disabled ? ' disabled' : ''}>
       <img class="icon-inline" src="icons/google.svg" alt="">
       <span data-i18n="${labelKey}"></span>
     </button>`;
@@ -49,8 +51,9 @@ function formAuth() {
   if (esReg) {
     cuerpo = `
       ${campo({ id: 'cuentaNick', labelKey: 'cuenta.nickname', autocomplete: 'nickname' })}
+      <p class="cuenta-hint" id="cuentaNickHint" data-i18n="cuenta.nicknameHintEmpty"></p>
       ${avisoRegistroHtml(true)}
-      ${botonGoogle('cuenta.registerWithGoogle')}`;
+      ${botonGoogle('cuenta.registerWithGoogle', !nickValidado)}`;
   } else if (conEmail) {
     cuerpo = `
       <form id="cuentaForm" novalidate>
@@ -184,6 +187,7 @@ export function renderCuentaPanel() {
     el.querySelector('#cuentaSwitch').addEventListener('click', () => {
       modo = modo === 'login' ? 'register' : 'login';
       conEmail = false;
+      nickValidado = false;
       renderCuentaPanel();
     });
     el.querySelector('#cuentaConEmail')?.addEventListener('click', () => {
@@ -192,6 +196,7 @@ export function renderCuentaPanel() {
     });
     el.querySelector('#cuentaForm')?.addEventListener('submit', (e) => { e.preventDefault(); enviarAuth(el); });
     el.querySelector('#cuentaGoogleBtn').addEventListener('click', () => enviarGoogle(el));
+    el.querySelector('#cuentaNick')?.addEventListener('input', (e) => verificarNickname(el, e.target.value));
     el.querySelector('input')?.focus();
     return;
   }
@@ -278,9 +283,16 @@ async function enviarAuth(el) {
 }
 
 // Login y registro comparten el mismo endpoint y el mismo manejo de
-// respuesta: 409 (email ya registrado con password) manda a login; el resto
-// de los errores (400 token/email no verificado, 501 sin Google en el
-// backend) solo muestra el toast y deja reintentar en la misma pantalla.
+// respuesta. En registro el nickname viaja junto con el code de Google en el
+// mismo pedido (el server lo persiste al crear la cuenta, ver auth-google.js);
+// el boton ya viene deshabilitado hasta que verificarNickname() lo confirma
+// disponible, asi que llegar aca con un nickname invalido/tomado es carrera
+// rara (alguien mas lo tomo justo entre el chequeo y el click), no el camino
+// esperado. 409 con errorKey nicknameTaken: se quedo sin ese nickname, vuelve
+// a pedirlo sin salir de "registro". 409 por email (ya registrado con
+// password): manda a login. El resto de los errores (400 token/email no
+// verificado, 501 sin Google en el backend) solo muestra el toast y deja
+// reintentar en la misma pantalla.
 async function enviarGoogle(el) {
   const btn = el.querySelector('#cuentaGoogleBtn');
   const nombre = (el.querySelector('#cuentaNick')?.value || '').trim();
@@ -291,19 +303,60 @@ async function enviarGoogle(el) {
     const r = await pedir('/api/auth/google', { method: 'POST', body: nombre ? { ...datos, nombre } : datos });
     if (!r.ok) {
       toastError(r.body, 'errors.generic');
-      if (r.status === 409) { modo = 'login'; renderCuentaPanel(); }
+      if (r.body?.errorKey === 'errors.nicknameTaken') {
+        nickValidado = false;
+        renderCuentaPanel();
+      } else if (r.status === 409) {
+        modo = 'login';
+        renderCuentaPanel();
+      }
       return;
     }
     aplicarSesion(r.body);
-    // Registro: el nickname elegido manda sobre el nombre que trae Google.
-    if (nombre && r.body.user?.nombre !== nombre) {
-      const p = await pedir('/api/account', { method: 'PATCH', body: { nombre } });
-      if (p.ok) aplicarSesion(p.body);
-    }
     renderCuentaPanel();
   } finally {
     btn.disabled = false;
   }
+}
+
+// Debounce 400ms + descarta respuestas fuera de orden (nickCheckId). Mismo
+// regex que el server (middleware/validate.js#isNickname) para feedback
+// instantaneo de formato sin pegarle a la red; la disponibilidad real
+// siempre la decide el server.
+let nickDebounceTimer = null;
+function verificarNickname(el, valorCrudo) {
+  clearTimeout(nickDebounceTimer);
+  const btn = el.querySelector('#cuentaGoogleBtn');
+  const hint = el.querySelector('#cuentaNickHint');
+  const valor = valorCrudo.trim();
+
+  nickValidado = false;
+  if (btn) btn.disabled = true;
+
+  const pintarHint = (key, estado) => {
+    if (!hint) return;
+    hint.dataset.i18n = key;
+    hint.textContent = t(key);
+    hint.classList.toggle('cuenta-nick-ok', estado === 'ok');
+    hint.classList.toggle('cuenta-nick-error', estado === 'error');
+  };
+
+  if (!valor) return pintarHint('cuenta.nicknameHintEmpty');
+  if (!/^[a-zA-Z0-9_.]{2,32}$/.test(valor)) return pintarHint('cuenta.nicknameHintInvalido', 'error');
+  pintarHint('cuenta.nicknameHintVerificando');
+
+  const idDeEsteChequeo = ++nickCheckId;
+  nickDebounceTimer = setTimeout(async () => {
+    const r = await pedir(`/api/auth/nickname-disponible?nombre=${encodeURIComponent(valor)}`);
+    if (idDeEsteChequeo !== nickCheckId || !hint?.isConnected) return; // el usuario siguio tipeando o cambio de vista
+    if (r.ok && r.body.disponible) {
+      nickValidado = true;
+      if (btn) btn.disabled = false;
+      pintarHint('cuenta.nicknameHintDisponible', 'ok');
+    } else {
+      pintarHint(r.ok ? 'cuenta.nicknameHintTomado' : 'cuenta.nicknameHintInvalido', 'error');
+    }
+  }, 400);
 }
 
 // Pinta "Google vinculado (email)" o el boton para vincularlo, segun el

@@ -2839,23 +2839,28 @@
     .cuenta-auth .cuenta-btn-google:hover { background: var(--brand-hover); border-color: transparent; }
 
     .cuenta-btn-email {
-      width: 100%;
-      margin-top: 10px;
-      padding: 11px 16px;
+      display: block;
+      width: auto;
+      margin: 10px auto 0;
+      padding: 11px 48px;
       border: 1px solid transparent;
       border-radius: var(--radius-sm);
       background: var(--surface-raised);
-      color: var(--text);
-      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      font-size: var(--text-xs);
       font-weight: 600;
       font-family: 'Inter', sans-serif;
       cursor: pointer;
-      transition: background var(--dur-2), transform var(--dur-press) var(--ease-out);
+      transition: background var(--dur-2), color var(--dur-2), transform var(--dur-press) var(--ease-out);
     }
-    .cuenta-btn-email:hover { background: var(--bg-button); }
+    .cuenta-btn-email:hover { background: var(--bg-button); color: var(--text); }
     .cuenta-btn-email:active { transform: scale(0.98); }
     .cuenta-btn-email:focus-visible,
     .cuenta-auth .cuenta-btn-google:focus-visible { outline: 2px solid var(--text-bright); outline-offset: 2px; }
+
+    #cuentaNickHint { margin: 8px 0 2px; transition: color var(--dur-2); }
+    #cuentaNickHint.cuenta-nick-ok { color: var(--ok); }
+    #cuentaNickHint.cuenta-nick-error { color: var(--danger-soft); }
 
     .cuenta-divider {
       display: flex;
