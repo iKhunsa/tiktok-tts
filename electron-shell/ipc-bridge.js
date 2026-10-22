@@ -95,6 +95,25 @@ function attachIpcBridge({ app, bus, logger, getMainWindow, globalShortcut }) {
     require('./updater').installUpdate();
   });
 
+  ipcMain.on('check-for-updates', () => {
+    require('./updater').checkForUpdates();
+  });
+
+  ipcMain.handle('rollback:list-versions', () => require('./rollback').listarVersionesAnteriores(app));
+
+  ipcMain.handle('rollback:to-version', (_event, version) => {
+    const win = getMainWindow();
+    const onProgress = (p) => {
+      if (win && !win.isDestroyed()) win.webContents.send('update-event', { type: 'rollback-downloading', version, ...p });
+    };
+    return require('./rollback').rollbackAVersion(app, version, onProgress)
+      .then(() => ({ ok: true }))
+      .catch((err) => {
+        if (win && !win.isDestroyed()) win.webContents.send('update-event', { type: 'rollback-error', message: err.message });
+        return { ok: false, error: err.message };
+      });
+  });
+
   ipcMain.on('telemetry:track', (_event, name, payload) => {
     if (!RENDERER_TELEMETRY_EVENTS.has(name)) return;
     bus.emit(name, typeof payload === 'string' ? payload.slice(0, MAX_PAYLOAD_RENDERER) : undefined);

@@ -236,6 +236,19 @@
 
     .sidebar-app-version { position: absolute; right: 10px; bottom: 4px; color: var(--text-muted); font-size: var(--text-3xs); line-height: 1; }
 
+    .sidebar-brand-wrap { position: relative; }
+
+    .sidebar-update-actions { position: absolute; left: 10px; bottom: 4px; display: flex; gap: 4px; }
+    .sidebar-update-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 20px; height: 20px; padding: 0;
+      background: transparent; border: none; border-radius: var(--radius-sm);
+      color: var(--text-muted); cursor: pointer;
+      transition: background-color 0.15s ease-out, color 0.15s ease-out;
+    }
+    .sidebar-update-btn:hover { background: var(--surface); color: var(--text-secondary); }
+    .sidebar-update-btn .icon-inline { width: 14px; height: 14px; }
+
     .sidebar-nav {
       flex: 0 0 auto;
       display: flex;

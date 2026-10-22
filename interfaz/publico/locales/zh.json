@@ -338,7 +338,20 @@
                    "installing":  "安装中...",
                    "available":  "新版本可用: v{version}",
                    "downloading":  "正在下载 v{version}...",
-                   "readyToInstall":  "v{version} 已准备好安装。"
+                   "readyToInstall":  "v{version} 已准备好安装。",
+                   "checkNow":  "检查更新",
+                   "experimentalAvailable":  "有可用的实验版本：v{version}",
+                   "experimentalReadyToInstall":  "v{version}（实验版）已准备好安装。",
+                   "rollback":  {
+                                    "title":  "历史版本",
+                                    "desc":  "选择一个以前的版本重新安装。你的数据和设置不会丢失。",
+                                    "downloading":  "正在下载 v{version}...",
+                                    "error":  "操作未能完成，请重试。",
+                                    "empty":  "没有可用的历史版本。",
+                                    "experimentalTag":  "实验版",
+                                    "action":  "回退到此版本",
+                                    "confirm":  "回退到版本 {version}？应用将重新启动。"
+                                }
                },
     "bot":  {
                 "title":  "音乐机器人",
