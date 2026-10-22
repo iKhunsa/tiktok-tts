@@ -16,6 +16,7 @@ function crearCliente(baseUrl) {
     if (body !== undefined) opts.body = JSON.stringify(body);
 
     let ultimoError;
+    let ultimaRespuesta; // {status, body} de la ultima respuesta HTTP real (aunque sea 5xx)
     for (let intento = 0; intento <= reintentos; intento++) {
       try {
         const res = await fetch(url, { ...opts, signal: AbortSignal.timeout(TIMEOUT_MS) });
@@ -26,20 +27,28 @@ function crearCliente(baseUrl) {
         if (res.ok || (res.status >= 400 && res.status < 500)) {
           return { ok: res.ok, status: res.status, body: parsed };
         }
+        // 5xx: puede valer la pena reintentar (session() lo hace), pero si se
+        // acaban los intentos esto SI es una respuesta real del servicio (ej.
+        // 501 "no configurado") -- no inventar un 502 generico que tape el
+        // errorKey real.
+        ultimaRespuesta = { status: res.status, body: parsed };
         ultimoError = new Error(`servicio-cuentas ${res.status}`);
       } catch (err) {
         ultimoError = err;
       }
       if (intento < reintentos) await new Promise((r) => setTimeout(r, [500, 2000][intento]));
     }
+    if (ultimaRespuesta) return { ok: false, status: ultimaRespuesta.status, body: ultimaRespuesta.body };
     return { ok: false, status: 0, body: null, error: ultimoError };
   }
 
   return {
     register: (b) => pedir('/api/auth/register', { method: 'POST', body: b }),
     login: (b) => pedir('/api/auth/login', { method: 'POST', body: b }),
+    google: (b) => pedir('/api/auth/google', { method: 'POST', body: b }),
     logout: (token) => pedir('/api/auth/logout', { method: 'POST', token }),
     session: (token) => pedir('/api/session', { token, reintentos: 2 }),
+    nicknameDisponible: (nombre) => pedir(`/api/auth/nickname-disponible?nombre=${encodeURIComponent(nombre)}`),
     account: (token, b) => pedir('/api/account', { method: 'PATCH', token, body: b }),
     eliminarCuenta: (token, b) => pedir('/api/account', { method: 'DELETE', token, body: b }),
     identities: (token) => pedir('/api/account/identities', { token }),

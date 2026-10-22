@@ -273,6 +273,7 @@ body.reduce-motion .mc-banner.is-loading, body.reduce-motion .mc-avatar.is-loadi
 .mc-conector-icono { display: grid; place-items: center; width: 1.846em; height: 1.846em; border-radius: 0.462em; background: var(--surface-3); }
 .mc-conector-icono img { width: 1.231em; height: 1.231em; }
 .mc-conector-nombre { font-size: 1.077em; font-weight: 500; color: var(--text); }
+.mc-conector-username { font-size: 0.846em; font-weight: 400; color: var(--text-muted); }
 .mc-conector-estado { justify-self: center; }
 .mc-vacio { margin: 1.231em 0 0; color: var(--text-muted); }
 
