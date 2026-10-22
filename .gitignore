@@ -1,5 +1,6 @@
 node_modules/
 .env
+.env.local
 bin/
 *.log
 /uploads/
@@ -22,6 +23,8 @@ telemetry-config.json
 telemetry-config.generated.json
 aptabase-config.json
 aptabase-config.generated.json
+oauth-config.json
+oauth-config.generated.json
 logs/
 moderation.json
 portal-view.json

@@ -95,6 +95,10 @@
         "to": "aptabase-config.json"
       },
       {
+        "from": "oauth-config.generated.json",
+        "to": "oauth-config.json"
+      },
+      {
         "from": "cuentas-config.json",
         "to": "cuentas-config.json"
       },
