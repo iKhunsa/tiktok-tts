@@ -4,6 +4,8 @@ import { reproducirSonidoUi } from '../../componentes/sonido-ui.js';
 import { mostrarAvisoConexionFallida } from './aviso-conexion-fallida.js';
 import * as datosPorCuenta from '../../nucleo/estado/datos-por-cuenta.js';
 import { toggleTiktokAddPrompt } from './tiktok-sesion.js';
+import { switchView } from './vistas-router.js';
+import { almacenSesion } from '../../nucleo/estado/sesion.js';
 
 // Suena cuando el servidor confirma la conexion (junto al aviso "N conectados").
 // El archivo original esta a -15 LUFS: 0.35 lo deja ~-24 LUFS, bajo el TTS.
@@ -287,8 +289,7 @@ async function updateChatConnectAllState(preloadedChannels) {
     } catch (e) { /* noop */ }
   }
   const activeCount = PLATFORMS.reduce((sum, platform) => sum + (channels[platform] || []).length, 0);
-  // Recien tras confirmar 0 canales: asi el empty state no muestra la promo de creadores un instante durante el autoconnect.
-  chatBtn.closest('.chat-section')?.classList.toggle('sin-live', activeCount === 0);
+  pintarCuentasVinculadas(chatBtn.closest('.chat-section'));
   if (activeCount > 0) {
     chatBtn.classList.add('channels-connected');
     chatBtn.title = `${activeCount} canal(es) conectado(s) — clic para desconectar`;
@@ -298,6 +299,30 @@ async function updateChatConnectAllState(preloadedChannels) {
     chatBtn.title = 'Sin canales conectados — clic para conectar todo';
     chatBtn.textContent = t('btn.connectAll');
   }
+}
+
+// Canales guardados (no los conectados): 0 => tarjeta grande en el chat,
+// >=1 => boton chico + un logo por plataforma en el encabezado.
+function pintarCuentasVinculadas(section) {
+  if (!section) return;
+  const saved = loadPlatformChannels();
+  const vinculadas = PLATFORMS.filter((platform) => saved[platform].length > 0);
+  section.classList.toggle('sin-cuentas', vinculadas.length === 0);
+  const logos = document.getElementById('linkedPlatforms');
+  if (!logos) return;
+  logos.replaceChildren(...vinculadas.map((platform) => {
+    const img = document.createElement('img');
+    img.src = `icons/${platform}-logo.svg`;
+    img.alt = PLATFORM_LABELS[platform];
+    img.title = PLATFORM_LABELS[platform];
+    return img;
+  }));
+}
+
+// Modal "Mi cuenta" > Vincular; sin sesion, a la vista de cuenta (igual que el popover).
+export function abrirVincularCuentas() {
+  if (almacenSesion.getState().signedIn) window.abrirModalCuenta('vincular');
+  else switchView('cuenta');
 }
 
 export function iniciarHoverConnectAllChat() {

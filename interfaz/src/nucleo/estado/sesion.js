@@ -109,7 +109,7 @@ export function pintarBadgeSidebar() {
     copy('.sidebar-account-badge', `sidebarAccount.badge${planKey}`);
     copy('.sidebar-account-subtitle', `sidebarAccount.subtitle${planKey}`);
     copy('.sidebar-account-cta span', s.plan === 'free' ? 'sidebarAccount.upgrade' : 'sidebarAccount.managePlan');
-    const avatar = obtenerAvatarPerfil();
+    const avatar = s.user?.avatarUrl || obtenerAvatarPerfil();
     const icono = cuenta.querySelector('.sidebar-account-title > img.icon-inline');
     if (icono) {
       icono.src = avatar || 'icons/account_circle.svg';

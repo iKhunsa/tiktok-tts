@@ -1,3 +1,21 @@
+## [1.12.0] — 2026-10-21
+
+### Connexion et inscription
+- Écran de connexion repensé, avec image de fond et nouveaux textes.
+- **Se connecter** : connecte-toi avec Google en un clic ou choisis **« E-mail »** pour utiliser ton e-mail et ton mot de passe sur la même carte.
+- **Créer un compte** : l’inscription se fait uniquement avec Google et demande un **pseudo unique**, ton nom de créateur, que personne d’autre ne peut utiliser.
+
+### Fenêtre « Mon compte »
+- Un clic sur ton e-mail ou sur **Mon compte** dans le menu du compte ouvre une fenêtre dédiée avec un menu latéral, au lieu de changer d’écran.
+- **Profil** : change ta photo et ta bannière, modifie ton pseudo en un clic, associe Google, déconnecte-toi ou supprime ton compte au même endroit.
+- **Facturation** : ton forfait et sa date de renouvellement, ton moyen de paiement, l’historique des factures avec téléchargement en PDF et l’option pour annuler ton forfait, sur un seul écran.
+- **Accessibilité** : taille du texte (Normal, Moyen, Grand, Très grand), réduire les animations des overlays, voix TTS lente et contraste élevé. Les changements s’appliquent immédiatement.
+- **Aide** ouvre directement notre Discord.
+- La fenêtre s’adapte à la taille de l’app, s’agrandit quand tu la maximises et ne couvre pas les boutons de la fenêtre.
+
+### Changements
+- Les réglages d’accessibilité quittent les Réglages avancés et passent dans **Mon compte → Accessibilité**.
+
 ## [1.11.2] — 2026-10-09
 
 ### Modération du chat

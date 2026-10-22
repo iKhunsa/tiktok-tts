@@ -22,6 +22,9 @@ function normalizeSidebarPrefs(data) {
     else hidden.push(id);
   });
 
+  // Por encima del tope se ocultan las ultimas en orden (prefs viejas sin limite).
+  order.filter((id) => !hidden.includes(id)).slice(SIDEBAR_MAX_VISIBLE).forEach((id) => hidden.push(id));
+
   return { order, hidden };
 }
 

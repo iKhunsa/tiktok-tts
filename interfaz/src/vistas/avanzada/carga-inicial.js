@@ -3,7 +3,7 @@ import { t } from '../../nucleo/i18n/i18n.js';
 import { updateRlBadge, toggleRateLimit } from './rate-limit.js';
 import { applyA11ySelf } from './accesibilidad.js';
 
-/** Hidrata los 3 paneles (rate limit, general, a11y) desde el unico GET
+/** Hidrata los 2 paneles (rate limit, general) y aplica a11y desde el unico GET
  * /api/config del arranque original. */
 export async function loadConfig() {
   try {
@@ -23,10 +23,6 @@ export async function loadConfig() {
     document.getElementById('cfgDebounce').value = cfg.LIKE_DEBOUNCE_MS;
     document.getElementById('cfgDebounceVal').textContent = cfg.LIKE_DEBOUNCE_MS;
 
-    document.getElementById('a11yReduceMotion').checked = !!cfg.a11yReduceMotion;
-    document.getElementById('a11ySlowSpeech').checked = !!cfg.ttsSlowSpeech;
-    document.getElementById('a11yHighContrast').checked = !!cfg.a11yHighContrast;
-    document.getElementById('a11yUiFontScale').value = String(cfg.a11yUiFontScale ?? 1);
     applyA11ySelf(cfg);
 
     updateRlBadge(cfg.rateLimitEnabled);

@@ -34,6 +34,4 @@ export function iniciarAvisoConexionFallida() {
   const overlay = modal();
   overlay.addEventListener('click', (e) => { if (e.target === overlay) cerrarAviso(); });
   overlay.querySelector('.modal-close').addEventListener('click', cerrarAviso);
-  overlay.querySelector('.discord-cta').addEventListener('click', () => track('ui:discord-joined'));
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarAviso(); });
-}
+  overlay.querySelector('.discord-cta').addEventListener('click', () => track('ui:discord-joined'));}

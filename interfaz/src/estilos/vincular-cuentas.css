@@ -1,0 +1,88 @@
+/* ── Vincular cuentas (chat en vivo) ──────────────────────────────
+   .chat-section.sin-cuentas (plataformas.js, 0 canales guardados): tarjeta
+   grande dentro de #emptyState. Con >=1 canal: boton chico + logos
+   vinculados en .chat-header. */
+
+.chat-header-actions { display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
+
+.linked-platforms { display: inline-flex; align-items: center; gap: 4px; }
+.linked-platforms img { width: 16px; height: 16px; }
+
+.link-accounts-small { display: inline-flex; align-items: center; white-space: nowrap; }
+.link-accounts-small .icon-inline { width: 14px; height: 14px; opacity: 0.7; }
+.link-accounts-small span { margin-left: 4px; }
+
+/* En reposo solo el "+"; el texto se despliega con hover o foco de teclado.
+   Solo con puntero fino: en tactil queda siempre desplegado. */
+@media (hover: hover) and (pointer: fine) {
+  .link-accounts-small {
+    padding-inline: 7px;
+    transition: padding var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out);
+  }
+  .link-accounts-small span {
+    display: inline-block;
+    max-width: 0;
+    margin-left: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-width var(--dur-2) var(--ease-out), margin-left var(--dur-2) var(--ease-out), opacity var(--dur-2) var(--ease-out);
+  }
+  .link-accounts-small:hover,
+  .link-accounts-small:focus-visible { padding-inline: 14px; }
+  .link-accounts-small:hover span,
+  .link-accounts-small:focus-visible span { max-width: 140px; margin-left: 4px; opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .link-accounts-small, .link-accounts-small span { transition: none; }
+}
+
+.chat-section.sin-cuentas .link-accounts-small,
+.chat-section.sin-cuentas .linked-platforms { display: none; }
+
+.link-accounts-card { display: none; }
+.chat-section.sin-cuentas .link-accounts-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 360px;
+  text-align: center;
+}
+.chat-section.sin-cuentas #emptyState > .empty-icon,
+.chat-section.sin-cuentas #emptyState > .empty-text { display: none; }
+
+.link-accounts-logos { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4); }
+.link-accounts-logos img { width: 32px; height: 32px; }
+.link-accounts-more {
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  white-space: nowrap;
+}
+
+.link-accounts-title { color: var(--text); font-size: var(--text-md); font-weight: 600; line-height: 1.35; text-wrap: balance; }
+.link-accounts-text { margin-top: var(--space-1); font-size: var(--text-sm); line-height: 1.5; text-wrap: balance; }
+
+/* Rojo de marca fijo: en #view-chat --accent se pisa a verde. */
+.link-accounts-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: var(--space-4);
+  padding: 11px 24px;
+  background: var(--brand);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--dur-2) var(--ease-out), transform var(--dur-press) var(--ease-out);
+}
+.link-accounts-cta img { width: 18px; height: 18px; }
+.link-accounts-cta:active { transform: scale(0.97); }
+.link-accounts-cta:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) {
+  .link-accounts-cta:hover { background: var(--brand-hover); }
+}

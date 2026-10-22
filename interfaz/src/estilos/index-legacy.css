@@ -690,8 +690,8 @@
     .btn-connect:hover { opacity: 0.85; }
     .btn-connect:active:not(:disabled), .btn-disconnect:active { transform: scale(0.97); }
     .btn-connect:disabled { opacity: 0.45; cursor: not-allowed; }
-    /* texto blanco sobre el rojo en los envios de los modales de idea y de reporte (el resto de .btn-connect sigue en negro) */
-    #ideaSubmitBtn, #bugReportSubmitBtn { color: #fff; }
+    /* texto blanco sobre el rojo en los envios de idea/reporte y en los CTA del onboarding (el resto de .btn-connect sigue en negro) */
+    #ideaSubmitBtn, #bugReportSubmitBtn, #onboardingWelcomeModal .btn-connect, #onboardingCompleteModal .btn-connect { color: #fff; }
     .btn-disconnect { background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border); transition: border-color var(--dur-2) var(--ease-out), transform var(--dur-press) var(--ease-out); }
     .btn-disconnect:hover { border-color: var(--border-strong); }
 
@@ -1725,6 +1725,8 @@
     .cfg-btn.icon-only { padding: 6px 9px; }
     /* Efectos de evento: etiqueta + mini switch; verde = activos, gris = apagados. */
     #btnEventEffects { gap: 7px; }
+    /* Sin evento vigente efectos-evento.js lo marca hidden; .cfg-btn (display:flex) le ganaba. */
+    #btnEventEffects[hidden] { display: none; }
     #btnEventEffects .fx-switch {
       position: relative; width: 26px; height: 14px; flex-shrink: 0; margin-left: 2px;
       background: var(--border); border-radius: var(--radius-pill);
@@ -1912,7 +1914,7 @@
     .driver-popover-close-btn:hover, .driver-popover-close-btn:focus { color: var(--text); }
     .driver-popover-footer-btn {
       background-color: var(--accent);
-      color: #000;
+      color: #fff;
       border: none;
       border-radius: var(--radius-pill);
       font-weight: 600;
@@ -2060,6 +2062,7 @@
       width: min(100%, 512px);
       padding: 12px 16px;
     }
+    .cuenta-cancel-modal > .modal-close,
     .vista-bloqueada-contenido > .modal-close,
     .planes-popup-content > .modal-close { z-index: 2; }
     .vista-bloqueada-msg {
@@ -2242,7 +2245,6 @@
       .donation-card-action .btn-copy { width: 100%; }
     }
 
-    #donationNoticeModal p { margin: 0 0 24px; font-size: var(--text-base); color: var(--text-secondary); line-height: 1.6; }
 
     .badge-new {
       display: inline-block;
@@ -2806,6 +2808,54 @@
     .cuenta-btn-google:hover { border-color: var(--text-bright-a30); background: var(--surface-raised); }
     .cuenta-btn-google:active { transform: scale(0.98); }
     .cuenta-btn-google:disabled { opacity: 0.55; cursor: default; transform: none; }
+
+    /* ── Pantalla de login ───────────────────────────────────
+       Sin sesión la vista "cuenta" tapa sidebar y layout: queda solo la barra
+       de título sobre el fondo ilustrado, con la tarjeta flotando a la izquierda. */
+    body.app-bloqueada #view-cuenta.active {
+      position: fixed;
+      inset: var(--titlebar-h) 0 0 0;
+      z-index: 50;
+      display: flex;
+      align-items: safe center;
+      padding: 24px clamp(16px, 9vw, 160px);
+      overflow-y: auto;
+      background: #1a0503 url('/img/login-fondo.png') center / cover no-repeat;
+    }
+    body.app-bloqueada #view-cuenta .view-header { display: none; }
+    body.app-bloqueada #cuentaPanel { align-items: flex-start; width: 100%; }
+
+    .cuenta-auth {
+      max-width: 420px;
+      background: rgba(24, 24, 26, 0.94);
+      border-color: rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+    }
+    body.app-bloqueada .cuenta-auth { margin-top: 0; }
+    .cuenta-auth .cuenta-card-title { font-size: 26px; font-weight: 700; }
+    .cuenta-auth .cuenta-register-terms { margin: 14px 0 16px; }
+    .cuenta-auth .cuenta-btn-google { background: var(--brand); border-color: transparent; color: #fff; }
+    .cuenta-auth .cuenta-btn-google:hover { background: var(--brand-hover); border-color: transparent; }
+
+    .cuenta-btn-email {
+      width: 100%;
+      margin-top: 10px;
+      padding: 11px 16px;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      background: var(--surface-raised);
+      color: var(--text);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: background var(--dur-2), transform var(--dur-press) var(--ease-out);
+    }
+    .cuenta-btn-email:hover { background: var(--bg-button); }
+    .cuenta-btn-email:active { transform: scale(0.98); }
+    .cuenta-btn-email:focus-visible,
+    .cuenta-auth .cuenta-btn-google:focus-visible { outline: 2px solid var(--text-bright); outline-offset: 2px; }
 
     .cuenta-divider {
       display: flex;

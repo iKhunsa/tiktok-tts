@@ -38,6 +38,7 @@ function renderPluginDetail(id) {
   const idx = visibleOrdered.indexOf(id);
   const isFirst = idx === 0;
   const isLast = idx === visibleOrdered.length - 1;
+  const menuLleno = isHidden && visibleOrdered.length >= SIDEBAR_MAX_VISIBLE;
 
   body.innerHTML = `
     ${renderPluginMedia(tool)}
@@ -51,8 +52,8 @@ function renderPluginDetail(id) {
         <button class="store-detail-open" onclick="switchView('${id}')">
           ${t('store.open')}
         </button>
-        <button class="btn-supabase-primary store-detail-cta" onclick="toggleSidebarTool('${id}', ${isHidden})">
-          ${isHidden ? t('store.addToMenu') : t('store.removeFromMenu')}
+        <button class="btn-supabase-primary store-detail-cta" onclick="toggleSidebarTool('${id}', ${isHidden})"${menuLleno ? ' disabled' : ''}>
+          ${menuLleno ? t('store.menuFull', { max: SIDEBAR_MAX_VISIBLE }) : (isHidden ? t('store.addToMenu') : t('store.removeFromMenu'))}
         </button>
       </div>
     </div>
@@ -99,6 +100,7 @@ function renderPluginMedia(tool) {
 
 function toggleSidebarTool(id, visible) {
   const prefs = loadSidebarPrefs();
+  if (visible && prefs.order.filter((x) => !prefs.hidden.includes(x)).length >= SIDEBAR_MAX_VISIBLE) return;
   prefs.hidden = visible ? prefs.hidden.filter((x) => x !== id) : [...new Set([...prefs.hidden, id])];
   saveSidebarPrefs(prefs);
   renderSidebar();
