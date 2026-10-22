@@ -52,6 +52,25 @@ function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
     res.json(estado.getSesion());
   });
 
+  app.post('/api/auth/google', guard, async (req, res) => {
+    const { code, codeVerifier, redirectUri, nombre } = req.body || {};
+    const antes = estado.getSesion();
+    const r = await cliente.google({ code, codeVerifier, redirectUri, nombre });
+    if (!r.ok) return propagarError(res, r, logger);
+    estado.aplicar({ token: r.body.token, session: r.body }, logger);
+    logger.log('info', 'auth', 'auth/routes.js#google', 'auth.sesion.iniciada', 'Login/registro con Google OK', { via: 'google' });
+    refresh.emitirCambio(antes, estado.getSesion());
+    res.json(estado.getSesion());
+  });
+
+  // Sin sesion (se usa antes de registrarse): sin guard de token, solo el
+  // de subscriptionsEnabled. No toca estado.
+  app.get('/api/auth/nickname-disponible', guard, async (req, res) => {
+    const r = await cliente.nicknameDisponible(String(req.query.nombre || ''));
+    if (!r.ok) return propagarError(res, r, logger);
+    res.json(r.body);
+  });
+
   app.post('/api/auth/logout', guard, async (req, res) => {
     const token = estado.getToken();
     const antes = estado.getSesion();
