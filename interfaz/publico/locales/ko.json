@@ -338,7 +338,20 @@
                    "installing":  "설치 중...",
                    "available":  "새 버전 사용 가능: v{version}",
                    "downloading":  "v{version} 다운로드 중...",
-                   "readyToInstall":  "v{version} 설치 준비 완료."
+                   "readyToInstall":  "v{version} 설치 준비 완료.",
+                   "checkNow":  "업데이트 확인",
+                   "experimentalAvailable":  "실험적 버전 사용 가능: v{version}",
+                   "experimentalReadyToInstall":  "v{version}(실험판) 설치 준비 완료.",
+                   "rollback":  {
+                                    "title":  "이전 버전",
+                                    "desc":  "이전 버전을 선택하여 다시 설치하세요. 데이터와 설정은 유지됩니다.",
+                                    "downloading":  "v{version} 다운로드 중...",
+                                    "error":  "작업을 완료할 수 없습니다. 다시 시도하세요.",
+                                    "empty":  "사용 가능한 이전 버전이 없습니다.",
+                                    "experimentalTag":  "실험판",
+                                    "action":  "이 버전으로 되돌리기",
+                                    "confirm":  "{version} 버전으로 되돌릴까요? 앱이 다시 시작됩니다."
+                                }
                },
     "bot":  {
                 "title":  "뮤직 봇",

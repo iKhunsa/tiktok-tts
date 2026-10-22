@@ -374,7 +374,20 @@
                    "installing":  "Instalando...",
                    "available":  "Nueva versión disponible: v{version}",
                    "downloading":  "Descargando v{version}...",
-                   "readyToInstall":  "v{version} lista para instalar."
+                   "readyToInstall":  "v{version} lista para instalar.",
+                   "checkNow":  "Buscar actualizaciones",
+                   "experimentalAvailable":  "Versión EXPERIMENTAL disponible: v{version}",
+                   "experimentalReadyToInstall":  "v{version} (EXPERIMENTAL) lista para instalar.",
+                   "rollback":  {
+                                    "title":  "Versiones anteriores",
+                                    "desc":  "Elegí una versión anterior para volver a instalarla. Tus datos y configuración no se pierden.",
+                                    "downloading":  "Descargando v{version}...",
+                                    "error":  "No se pudo completar la operación. Intentá de nuevo.",
+                                    "empty":  "No hay versiones anteriores disponibles.",
+                                    "experimentalTag":  "experimental",
+                                    "action":  "Volver a esta versión",
+                                    "confirm":  "¿Volver a la versión {version}? La app se reiniciará."
+                                }
                },
     "bot":  {
                 "title":  "Bot de Música",

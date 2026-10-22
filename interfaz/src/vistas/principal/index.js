@@ -87,7 +87,7 @@ import {
   renderSettingsChannels, iniciarHoverConnectAllChat, abrirVincularCuentas,
 } from './plataformas.js';
 import { renderTiktokSession, tiktokLogin, tiktokLogout } from './tiktok-sesion.js';
-import { doInstallUpdate, iniciarEventosElectron } from './eventos-electron.js';
+import { doInstallUpdate, doCheckForUpdates, openRollbackModal, closeRollbackModal, rollbackToVersion, iniciarEventosElectron } from './eventos-electron.js';
 import { iniciarAjustesVentana } from './ajustes-ventana.js';
 import {
   musicRemoveFromQueue, musicSkip, musicTogglePause, musicSetEnabled, musicSetVolume,
@@ -150,7 +150,7 @@ Object.assign(window, {
   toggleAddChannelForm, selectAddPlatform, addChannelFromSettings, toggleConnectAllChat, abrirVincularCuentas,
   tiktokLogin, tiktokLogout,
   // auto-update
-  doInstallUpdate,
+  doInstallUpdate, doCheckForUpdates, openRollbackModal, closeRollbackModal, rollbackToVersion,
   // musica
   musicRemoveFromQueue, musicSkip, musicTogglePause, musicSetEnabled, musicSetVolume,
   musicSaveCooldown, musicSaveMaxQueue, musicClearQueue, musicBanUser, musicUnbanUser,

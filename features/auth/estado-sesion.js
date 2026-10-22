@@ -29,7 +29,7 @@ function normalizar(s) {
   if (!s || !s.user) return { ...VACIA };
   return {
     signedIn: true,
-    user: { id: s.user.id, email: s.user.email, nombre: s.user.nombre || '' },
+    user: { id: s.user.id, email: s.user.email, nombre: s.user.nombre || '', betaTester: s.user.betaTester === true },
     // Solo se preservan slugs conocidos: un valor inesperado nunca habilita un plan local.
     plan: ['pro', 'sin-promos'].includes(s.plan) ? s.plan : 'free',
     entitlements: Array.isArray(s.entitlements) ? s.entitlements.slice() : [],
