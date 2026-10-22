@@ -96,7 +96,7 @@ function attachIpcBridge({ app, bus, logger, getMainWindow, globalShortcut }) {
   });
 
   ipcMain.on('check-for-updates', () => {
-    require('./updater').checkForUpdates(bus);
+    require('./updater').checkForUpdates();
   });
 
   ipcMain.handle('rollback:list-versions', () => require('./rollback').listarVersionesAnteriores(app));
