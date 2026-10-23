@@ -1,0 +1,59 @@
+/* Ajustes > Gate por donacion (interfaz/src/vistas/principal/gift-gate/).
+   Reusa .cg-card/.cg-master/.cg-switch/.cg-hint de moderacion-contenido.css
+   (mismo lenguaje visual: ambos son "quien puede hablar en el chat"). */
+
+.gg-platform-icon { border-radius: var(--radius-xs); object-fit: contain; }
+
+.gg-threshold {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  transition: opacity var(--dur-1) var(--ease-out);
+}
+.gg-threshold label {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.gg-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gg-input {
+  width: 72px;
+  background: var(--bg-button);
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  padding: 7px 10px;
+  font-size: var(--text-sm);
+  font-family: 'Inter', sans-serif;
+  text-align: right;
+  outline: none;
+  transition: border-color var(--dur-1) var(--ease-out);
+}
+.gg-input:focus { border-color: var(--brand-a40); }
+.gg-input::-webkit-inner-spin-button,
+.gg-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.gg-input:disabled { opacity: 0.5; cursor: default; }
+
+.gg-unit {
+  font-size: var(--text-2xs);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.gg-platform-off .gg-threshold { opacity: 0.55; }
+
+@media (max-width: 480px) {
+  .gg-threshold { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .gg-input-wrap { width: 100%; justify-content: space-between; }
+  .gg-input { width: 88px; }
+}

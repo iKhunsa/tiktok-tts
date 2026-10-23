@@ -33,6 +33,7 @@ import { abrirCuentaDesdeSidebar, cargarSesion, almacenSesion, appBloqueada } fr
 import { aplicarBloqueoVista } from '../../nucleo/estado/vista-bloqueada.js';
 import { iniciarCuenta } from './cuenta/index.js';
 import { initModeracionContenido } from './moderacion-contenido/index.js';
+import { initGiftGate } from './gift-gate/index.js';
 import { initModerationPopup } from './moderacion-popup/index.js';
 import { reproducirEventoActivo, reproducirEvento } from '../../componentes/eventos/index.js';
 import { iniciarBotonEfectosEvento } from './efectos-evento.js';
@@ -57,7 +58,6 @@ import {
   applyTtsShortcutPreset, iniciarAtajosTeclado, TTS_SHORTCUT_ACTIONS_KEYS,
 } from './atajos-teclado.js';
 import { iniciarTabsAtajos } from './tabs-atajos.js';
-import { setReadNonFollowers } from '../../nucleo/estado/config-runtime.js';
 import {
   toggleVoiceDropdown, patchConfigSetting, syncTtsVoiceLang, toggleLangFilter,
   toggleDictFilter, toggleSayUsernameConnector, updateConnectorChipState, selectVoice,
@@ -124,8 +124,6 @@ Object.assign(window, {
   toggleChatToggles, toggleOption, setSoloChatMode,
   // atajos de teclado
   startCapturingShortcut, clearTtsShortcut, applyTtsShortcutPreset,
-  // config runtime
-  setReadNonFollowers,
   // voces
   toggleVoiceDropdown, toggleLangFilter, toggleDictFilter, toggleSayUsernameConnector,
   selectVoice, testVoice,
@@ -242,6 +240,7 @@ function iniciarArranque() {
   mostrarVersionApp();
   iniciarCuenta();
   initModeracionContenido();
+  initGiftGate();
   initModerationPopup();
   iniciarBotonEfectosEvento();
   iniciarAvisoConexionFallida();

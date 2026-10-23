@@ -11,6 +11,10 @@ const moderacionPolicyContract = require('../../core/contracts/moderacion-policy
 const mcpRegistry = require('../../core/contracts/mcp-registry');
 const { resolveModTarget, resolveUntil } = require('./apply-mod-action');
 const { accountDataDir } = require('../../core/account-data-path');
+const { coinsForGift } = require('../../core/tiktok-gift-coins');
+const { isAdminIdentity } = require('../../core/is-admin-identity');
+const { getConfigSnapshot } = require('../../core/config-snapshot');
+const giftGate = require('./gift-gate');
 const { createRustGuard } = require('./rust-guard/create-rust-guard'); // rust-guard
 const { loadEngine } = require('./rust-guard/load-engine'); // rust-guard
 const { buildRustConfig } = require('./rust-guard/build-rust-config'); // rust-guard
@@ -36,6 +40,24 @@ const { unblockWord } = require('./routes/unblock-word');
 const { chatGuardStatus, describeChatGuard } = require('./routes/chat-guard-status'); // rust-guard
 const { allowWord } = require('./routes/chat-guard-allow-word'); // rust-guard
 const { disallowWord } = require('./routes/chat-guard-disallow-word'); // rust-guard
+
+/**
+ * Ultima capa del veredicto (despues de rust-guard, ver gift-gate.js): si el
+ * gate de esta plataforma esta activo, el mensaje solo se lee si el viewer
+ * tiene un credito de donacion pendiente (se consume, UN mensaje por pago —
+ * no "el resto de la sesion"); si no, se mutea igual que cualquier otra
+ * regla de identidad — nunca lo "droppea" (sigue viendose en el chat, solo
+ * no se lee). Admin y whitelist siempre pasan, igual que en el resto de las
+ * reglas (y no gastan credito).
+ */
+function aplicarGiftGate({ bus, verdict, key, platform, handle, isWhitelisted }) {
+  if (verdict.action !== 'allow') return verdict; // ya mute/drop por otra regla, no pisar
+  const config = getConfigSnapshot(bus);
+  if (!giftGate.gateActivo(config, platform)) return verdict;
+  if (isWhitelisted || isAdminIdentity(bus, platform, handle)) return verdict;
+  if (giftGate.consumirCredito(key)) return verdict;
+  return { ...verdict, action: 'mute', reasons: [...(verdict.reasons || []), 'gift-gate'] };
+}
 
 let storeInstance = null;
 let rustGuardInstance = null;
@@ -98,13 +120,64 @@ module.exports = {
       if (!verdict.message) return verdict;
       const key = viewerKey({ platform, id: verdict.message.author.id, handle: verdict.message.author.handle });
       const status = store.registry.statusOf(key);
-      return { ...verdict, moderationKey: key, isFollower: status.isFollower || status.isWhitelisted };
+      const final = aplicarGiftGate({ bus, verdict, key, platform, handle: verdict.message.author.handle, isWhitelisted: status.isWhitelisted });
+      return { ...final, moderationKey: key, isFollower: status.isFollower || status.isWhitelisted };
     };
     bus.on('config:actualizado', configure, 'moderacion');
 
     bus.on('canal:follow', (payload) => {
       if (!payload) return;
       store.markFollower({ platform: payload.platform, userId: payload.userId, nick: payload.nick || payload.user });
+    }, 'moderacion');
+
+    bus.on('account:changed', () => giftGate.reset(), 'moderacion');
+
+    // Gift-gate (ver gift-gate.js) — cada listener de abajo otorga UN credito
+    // de un mensaje, nunca "el resto de la sesion". En Twitch el credito se
+    // otorga y se consume en el MISMO evento (bits y texto llegan juntos en
+    // canal:mensaje-crudo): depende de que 'moderacion' se registre antes que
+    // 'chat' en server.js, para que este listener corra antes que el de
+    // features/chat/index.js que dispara moderacionPolicyContract.review.
+    bus.on('canal:gift', (payload) => {
+      if (!payload || payload.platform !== 'tiktok') return;
+      const config = getConfigSnapshot(bus);
+      if (!giftGate.gateActivo(config, 'tiktok')) return;
+      const data = payload.raw || {};
+      const totalCoins = coinsForGift(logger, { giftName: data.giftName, repeatCount: data.groupCount || 1, diamondCount: data.diamondCount || 0 });
+      if (totalCoins < (config.ttsGiftGateTiktokMinCoins || 1)) return;
+      giftGate.otorgarCredito(viewerKey({ platform: 'tiktok', id: data.uniqueId, handle: data.uniqueId }));
+    }, 'moderacion');
+
+    bus.on('canal:mensaje-crudo', (payload) => {
+      if (!payload || payload.platform !== 'twitch') return;
+      const config = getConfigSnapshot(bus);
+      if (!giftGate.gateActivo(config, 'twitch')) return;
+      const tags = (payload.raw && payload.raw.tags) || {};
+      const bits = Number(tags.bits) || 0;
+      if (bits < (config.ttsGiftGateTwitchMinBits || 1)) return;
+      giftGate.otorgarCredito(viewerKey({ platform: 'twitch', id: tags['user-id'], handle: tags.username }));
+    }, 'moderacion');
+
+    // Kick: kicks.gifted llega por el WS de cuentas vinculadas (features/auth/
+    // plataformas-realtime.js), NO por el WS anonimo de chat de canales/kick —
+    // solo se detecta si el streamer vinculo su cuenta de Kick. Forma del
+    // payload sin confirmar con un evento real todavia (ver CLAUDE.md /
+    // docs/plan-twitch-kick.md): se loguea siempre para poder ajustar el
+    // parseo defensivo de abajo en cuanto llegue el primero real.
+    bus.on('plataforma:evento', (evento) => {
+      if (!evento || evento.plataforma !== 'kick' || evento.tipo !== 'kicks.gifted') return;
+      logger.log('info', 'moderacion', 'moderacion/index.js#kicks.gifted', 'moderacion.giftgate.kick_evento_crudo',
+        'Primer kicks.gifted recibido, payload crudo para confirmar su forma', { datos: evento.datos });
+      const config = getConfigSnapshot(bus);
+      if (!giftGate.gateActivo(config, 'kick')) return;
+      const datos = evento.datos || {};
+      const gifter = datos.gifter || datos.sender || datos;
+      const userId = gifter.user_id ?? gifter.userId ?? gifter.id ?? null;
+      const username = gifter.username ?? gifter.slug ?? null;
+      const cantidad = Number(datos.gifted_kicks ?? datos.quantity ?? datos.amount ?? datos.kicks) || 0;
+      if (!userId && !username) return;
+      if (cantidad < (config.ttsGiftGateKickMinKicks || 1)) return;
+      giftGate.otorgarCredito(viewerKey({ platform: 'kick', id: userId, handle: username }));
     }, 'moderacion');
 
     app.post('/api/moderation/preview', preview(deps));

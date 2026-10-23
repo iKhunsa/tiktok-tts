@@ -111,7 +111,6 @@
                    "langFilterHint":  "忽略与当前语音语言不匹配字符的聊天消息（例如：语音为西班牙语时会屏蔽中文/日文，反之亦然）。",
                    "dictFilter":  "按语言过滤（单词）",
                    "dictFilterHint":  "仅朗读使用当前语音语言或你允许的额外语言书写的消息。未知单词（名字、拼写错误）不会被屏蔽。",
-                   "readNonFollowers":  "朗读非关注者",
                    "closeToTray":  "关闭时最小化到托盘",
                    "closeToTrayHint":  "点击 X 后应用会继续在系统托盘中运行。要完全退出：右键单击托盘图标 → 退出。",
                    "openAtLogin":  "Windows 启动时打开"
@@ -753,8 +752,6 @@
                   "allChannelsDisconnected":  "所有频道已断开",
                   "youtubeAutoSaved":  "YouTube已保存；直播时将自动连接",
                   "youtubeTmpSaved":  "YouTube已保存为手动频道",
-                  "readNonFollowersOn":  "TTS 朗读所有人",
-                  "readNonFollowersOff":  "TTS 只朗读关注者",
                   "settingSaveFailed":  "无法保存设置（{keys}）。请检查网络连接。"
               },
     "dictLang":  {
@@ -1401,6 +1398,28 @@
                       "body":  "复制优惠码，在支付套餐时粘贴即可享受折扣。",
                       "copyAria":  "复制优惠码",
                       "viewPlans":  "查看套餐"
+                  },
+    "giftGate":  {
+                      "title":  "打赏门槛",
+                      "desc":  "开启后，TTS 不会朗读所有人，只朗读在该平台打赏达到最低金额的人。这不是永久解锁：每次打赏只解锁一条消息——与打赏一起发送的那条，或者如果该平台把两者分开发送，就是打赏后的下一条。",
+                      "minLabel":  "解锁一条消息所需的最低金额",
+                      "unit":  {
+                                   "coins":  "金币",
+                                   "bits":  "bits",
+                                   "kicks":  "Kicks"
+                               },
+                      "tiktok":  {
+                                     "title":  "TikTok",
+                                     "desc":  "通过 TikTok 礼物激活（以金币计）。"
+                                 },
+                      "twitch":  {
+                                     "title":  "Twitch",
+                                     "desc":  "通过聊天中的 bits 打赏激活。"
+                                 },
+                      "kick":  {
+                                   "title":  "Kick",
+                                   "desc":  "通过赠送 Kicks 激活。需要在“我的账户”中绑定你的 Kick 账户。"
+                               }
                   },
     "chatGuard":  {
                       "title":  "聊天审核",

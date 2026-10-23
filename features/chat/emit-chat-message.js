@@ -3,7 +3,7 @@
 const { adaptMessage } = require('@tiklivetts/chat-guard');
 const { getConfigSnapshot } = require('../../core/config-snapshot');
 const { resolveDisplayName, resolveSpokenName, cleanName } = require('../../core/display-name');
-const { isAdminIdentity } = require('./is-admin-identity');
+const { isAdminIdentity } = require('../../core/is-admin-identity');
 const { extractAuthorMeta } = require('./author-meta/extract-author-meta');
 const { describeModeration } = require('./describe-moderation');
 const { rawCommentText } = require('./raw-comment-text');

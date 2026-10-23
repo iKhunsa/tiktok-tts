@@ -22,7 +22,9 @@ function getState({ bus }) {
       rateLimitEnabled: !!config.rateLimitEnabled,
       musicEnabled: !!config.musicEnabled,
       playlistEnabled: !!config.playlistEnabled,
-      ttsReadNonFollowers: !!config.ttsReadNonFollowers,
+      ttsGiftGateTiktokEnabled: !!config.ttsGiftGateTiktokEnabled,
+      ttsGiftGateTwitchEnabled: !!config.ttsGiftGateTwitchEnabled,
+      ttsGiftGateKickEnabled: !!config.ttsGiftGateKickEnabled,
       mcpEnabled: config.mcpEnabled !== false,        // default true (ver default-config.js)
       mcpDestructiveToolsEnabled: !!config.mcpDestructiveToolsEnabled,
       // adminIdentities se omite a propósito

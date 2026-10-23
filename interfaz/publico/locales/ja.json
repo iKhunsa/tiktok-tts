@@ -111,7 +111,6 @@
                    "langFilterHint":  "現在の音声の言語に合わない文字を含むチャットメッセージを無視します（例：音声がスペイン語の場合、中国語・日本語はブロックされ、逆も同様です）。",
                    "dictFilter":  "言語で絞り込み（単語）",
                    "dictFilterHint":  "アクティブな音声の言語、または許可した追加言語で書かれたメッセージのみ読み上げます。未知の単語（名前、タイプミス）はブロックされません。",
-                   "readNonFollowers":  "非フォロワーも読む",
                    "closeToTray":  "閉じるときにトレイへ最小化",
                    "closeToTrayHint":  "X を押してもアプリはシステムトレイで動作し続けます。完全に終了するには、トレイアイコンを右クリック → 終了。",
                    "openAtLogin":  "Windows の起動時に開く"
@@ -753,8 +752,6 @@
                   "allChannelsDisconnected":  "すべてのチャンネルを切断しました",
                   "youtubeAutoSaved":  "YouTubeを保存しました；ライブ時に接続します",
                   "youtubeTmpSaved":  "YouTubeを手動チャンネルとして保存しました",
-                  "readNonFollowersOn":  "TTSは全員を読みます",
-                  "readNonFollowersOff":  "TTSはフォロワーのみ読みます",
                   "settingSaveFailed":  "設定（{keys}）を保存できませんでした。接続を確認してください。"
               },
     "dictLang":  {
@@ -1401,6 +1398,28 @@
                       "body":  "コードをコピーして、プラン購入時の支払い画面で貼り付けると割引が適用されます。",
                       "copyAria":  "コードをコピー",
                       "viewPlans":  "プランを見る"
+                  },
+    "giftGate":  {
+                      "title":  "投げ銭ゲート",
+                      "desc":  "全員を読み上げる代わりに、TTSはこのプラットフォームで最低額を投げ銭した人だけを読み上げます。ずっと解除されたままになるわけではありません：投げ銭のたびにメッセージが1件だけ解除されます——投げ銭と一緒に届いたメッセージ、またはそのプラットフォームが別々に送る場合は次のメッセージです。",
+                      "minLabel":  "メッセージ1件を解除するための最低額",
+                      "unit":  {
+                                   "coins":  "コイン",
+                                   "bits":  "ビッツ",
+                                   "kicks":  "Kicks"
+                               },
+                      "tiktok":  {
+                                     "title":  "TikTok",
+                                     "desc":  "TikTokのギフトで有効化されます（コイン換算）。"
+                                 },
+                      "twitch":  {
+                                     "title":  "Twitch",
+                                     "desc":  "チャットでのビッツチアで有効化されます。"
+                                 },
+                      "kick":  {
+                                   "title":  "Kick",
+                                   "desc":  "Kicksを贈ることで有効化されます。マイアカウントでKickアカウントの連携が必要です。"
+                               }
                   },
     "chatGuard":  {
                       "title":  "チャットのモデレーション",

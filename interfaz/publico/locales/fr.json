@@ -111,7 +111,6 @@
                    "langFilterHint":  "Ignore les messages du chat contenant des caractères ne correspondant pas à la langue de la voix active (ex : bloque le chinois/japonais si votre voix est en espagnol, et inversement).",
                    "dictFilter":  "Filtrer par langue (mots)",
                    "dictFilterHint":  "Ne lit que les messages écrits dans la langue de la voix active ou dans les langues supplémentaires autorisées. Les mots inconnus (noms, fautes de frappe) ne bloquent pas.",
-                   "readNonFollowers":  "Lire les non-abonnés",
                    "closeToTray":  "Réduire dans la zone de notification à la fermeture",
                    "closeToTrayHint":  "Avec le X, l'app continue de tourner dans la zone de notification. Pour la quitter : clic droit sur l'icône → Quitter.",
                    "openAtLogin":  "Ouvrir au démarrage de Windows"
@@ -753,8 +752,6 @@
                   "allChannelsDisconnected":  "Tous les canaux déconnectés",
                   "youtubeAutoSaved":  "YouTube enregistré; se connectera quand en direct",
                   "youtubeTmpSaved":  "YouTube enregistré comme canal manuel",
-                  "readNonFollowersOn":  "Le TTS lit tout le monde",
-                  "readNonFollowersOff":  "Le TTS ne lit que les abonnés",
                   "settingSaveFailed":  "Impossible d\u0027enregistrer le paramètre ({keys}). Vérifiez la connexion."
               },
     "dictLang":  {
@@ -1401,6 +1398,28 @@
                       "body":  "Copiez le code et collez-le au moment de payer votre offre pour appliquer la réduction.",
                       "copyAria":  "Copier le code",
                       "viewPlans":  "Voir les offres"
+                  },
+    "giftGate":  {
+                      "title":  "Filtre par don",
+                      "desc":  "Au lieu de lire tout le monde, le TTS ne lit que celui qui fait un don minimum sur cette plateforme. Ça ne reste pas débloqué pour toujours : chaque don débloque un seul message — celui qui vient avec le don, ou le suivant si cette plateforme les envoie séparément.",
+                      "minLabel":  "Minimum pour débloquer un message",
+                      "unit":  {
+                                   "coins":  "pièces",
+                                   "bits":  "bits",
+                                   "kicks":  "Kicks"
+                               },
+                      "tiktok":  {
+                                     "title":  "TikTok",
+                                     "desc":  "S'active avec les cadeaux TikTok (mesurés en pièces)."
+                                 },
+                      "twitch":  {
+                                     "title":  "Twitch",
+                                     "desc":  "S'active avec les cheers de bits dans le chat."
+                                 },
+                      "kick":  {
+                                   "title":  "Kick",
+                                   "desc":  "S'active en offrant des Kicks. Nécessite de lier votre compte Kick dans Mon compte."
+                               }
                   },
     "chatGuard":  {
                       "title":  "Modération du chat",

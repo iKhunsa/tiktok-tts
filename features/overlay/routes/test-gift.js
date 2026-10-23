@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const { RESOURCE_BASE } = require('../../../core/paths');
-const { TIKTOK_GIFT_COINS } = require('../gift-coins-table');
+const { TIKTOK_GIFT_COINS } = require('../../../core/gift-coins-table');
 const { computeGiftUsd } = require('../compute-gift-usd');
 
 const TEST_USERS = ['TestUser', 'FanRandom', 'ViewerPro', 'TikToker', 'StreamerFan'];

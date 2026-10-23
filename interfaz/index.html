@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="./src/estilos/index-legacy.css">
   <link rel="stylesheet" href="./src/estilos/campos-overlay.css">
   <link rel="stylesheet" href="./src/estilos/moderacion-contenido.css">
+  <link rel="stylesheet" href="./src/estilos/gift-gate.css">
   <link rel="stylesheet" href="./src/estilos/moderacion-popup.css">
   <link rel="stylesheet" href="./src/estilos/portal-view.css">
   <link rel="stylesheet" href="./src/estilos/barra-titulo.css">
@@ -195,12 +196,6 @@
         <label class="toggle-chip" id="chip-chat">
           <input type="checkbox" onchange="toggleOption('readChat', this)" />
           <img class="icon-inline" src="icons/chat.svg" alt=""> <span data-i18n="toggle.readChat">Leer comentarios</span>
-        </label>
-        <!-- Único chip cuyo estado vive en el servidor (config.json) y no en
-             appSettings: el filtro se aplica server-side antes del broadcast. -->
-        <label class="toggle-chip" id="chip-nonfollowers">
-          <input type="checkbox" id="ttsReadNonFollowersToggle" onchange="setReadNonFollowers(this.checked)" />
-          <img class="icon-inline" src="icons/person_add.svg" alt=""> <span data-i18n="toggle.readNonFollowers">Leer a no seguidores</span>
         </label>
         <label class="toggle-chip" id="chip-username">
           <input type="checkbox" onchange="toggleOption('sayUsername', this)" />
@@ -1020,6 +1015,8 @@
       </div>
 
       <div class="settings-section" id="chatGuardPanel"><!-- interfaz/src/vistas/principal/moderacion-contenido/ la llena --></div>
+
+      <div class="settings-section" id="giftGatePanel"><!-- interfaz/src/vistas/principal/gift-gate/ la llena --></div>
 
       <!-- interfaz/src/vistas/principal/ajustes-ventana.js la cablea -->
       <div class="settings-section ajustes-ventana" id="settingsSectionWindow">
