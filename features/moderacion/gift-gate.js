@@ -4,29 +4,34 @@
  * Gate por donacion: reemplazo del viejo "solo seguidores" (ver CLAUDE.md,
  * eliminado porque TikTok/Kick/YouTube nunca exponen el estado real de
  * "sigue o no" para alguien que ya seguia antes de esta sesion). Acá en
- * cambio SI hay señal real y en vivo en las 3 plataformas que la soportan:
- * regalo de TikTok, cheer de Twitch (bits van en el mismo mensaje de chat),
- * evento `kicks.gifted` de Kick (llega por el WS de cuentas vinculadas).
+ * cambio SI hay señal real y en vivo: regalo de TikTok, cheer de Twitch
+ * (bits van en el mismo mensaje de chat), evento `kicks.gifted` de Kick
+ * (llega por el WS de cuentas vinculadas).
  *
- * Una vez que un viewer paga el minimo configurado para su plataforma,
- * queda "calificado" el resto de la sesion actual (no hace falta pagar de
- * nuevo por cada mensaje) — mismo criterio que tenia el viejo seguidor:
- * una vez adentro, adentro. No persiste a disco: es puramente de la sesion
- * en curso, se resetea al cambiar de cuenta o reiniciar la app.
+ * Es un credito de UN SOLO mensaje, no un "queda habilitado el resto de la
+ * sesion": pagar el minimo solo destraba el proximo mensaje que se evalue de
+ * ese viewer (en Twitch, literalmente el mismo mensaje del cheer, porque
+ * bits y texto llegan juntos). Si despues quiere que lo sigan leyendo, tiene
+ * que volver a donar. Se consume al leerlo (otorgarCredito -> consumirCredito,
+ * nunca una segunda vez). No persiste a disco: se resetea al cambiar de
+ * cuenta o reiniciar la app.
  */
 
-const qualified = new Set(); // viewerKey
+const creditos = new Set(); // viewerKey con un mensaje pendiente de leer
 
 function reset() {
-  qualified.clear();
+  creditos.clear();
 }
 
-function marcarCalificado(viewerKey) {
-  qualified.add(viewerKey);
+function otorgarCredito(viewerKey) {
+  creditos.add(viewerKey);
 }
 
-function estaCalificado(viewerKey) {
-  return qualified.has(viewerKey);
+/** true una sola vez por credito: lo consume al preguntar. */
+function consumirCredito(viewerKey) {
+  if (!creditos.has(viewerKey)) return false;
+  creditos.delete(viewerKey);
+  return true;
 }
 
 /** true si el gate de esa plataforma esta prendido en la config actual. */
@@ -37,4 +42,4 @@ function gateActivo(config, platform) {
   return false; // youtube: sin gate, fuera de alcance por ahora
 }
 
-module.exports = { reset, marcarCalificado, estaCalificado, gateActivo };
+module.exports = { reset, otorgarCredito, consumirCredito, gateActivo };

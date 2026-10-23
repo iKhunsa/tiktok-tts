@@ -1401,8 +1401,8 @@
                   },
     "giftGate":  {
                       "title":  "Gate por donación",
-                      "desc":  "En vez de leer a todo el mundo, el TTS solo lee a quien ya donó el mínimo en esta plataforma durante la transmisión actual. Se activa una vez por persona: después de donar, sus mensajes se leen el resto de la sesión.",
-                      "minLabel":  "Mínimo para activarse",
+                      "desc":  "En vez de leer a todo el mundo, el TTS solo lee a quien done el mínimo en esta plataforma. No queda habilitado para siempre: cada donación destraba un único mensaje — el que viene junto con la donación, o el siguiente si en esa plataforma van por separado.",
+                      "minLabel":  "Mínimo para leer un mensaje",
                       "unit":  {
                                    "coins":  "monedas",
                                    "bits":  "bits",

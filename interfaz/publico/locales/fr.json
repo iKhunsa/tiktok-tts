@@ -1401,8 +1401,8 @@
                   },
     "giftGate":  {
                       "title":  "Filtre par don",
-                      "desc":  "Au lieu de lire tout le monde, le TTS ne lit que les personnes ayant déjà fait un don minimum sur cette plateforme pendant le stream actuel. S'active une fois par personne : après le don, ses messages sont lus pour le reste de la session.",
-                      "minLabel":  "Minimum pour activer",
+                      "desc":  "Au lieu de lire tout le monde, le TTS ne lit que celui qui fait un don minimum sur cette plateforme. Ça ne reste pas débloqué pour toujours : chaque don débloque un seul message — celui qui vient avec le don, ou le suivant si cette plateforme les envoie séparément.",
+                      "minLabel":  "Minimum pour débloquer un message",
                       "unit":  {
                                    "coins":  "pièces",
                                    "bits":  "bits",

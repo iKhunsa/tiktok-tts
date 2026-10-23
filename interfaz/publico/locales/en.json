@@ -1401,8 +1401,8 @@
                   },
     "giftGate":  {
                       "title":  "Gift gate",
-                      "desc":  "Instead of reading everyone, TTS only reads from people who already donated the minimum on this platform during the current stream. It activates once per person: after donating, their messages get read for the rest of the session.",
-                      "minLabel":  "Minimum to activate",
+                      "desc":  "Instead of reading everyone, TTS only reads from whoever donates the minimum on this platform. It doesn't stay unlocked forever: each donation unlocks a single message — the one that comes with the donation, or the next one if that platform sends them separately.",
+                      "minLabel":  "Minimum to unlock a message",
                       "unit":  {
                                    "coins":  "coins",
                                    "bits":  "bits",

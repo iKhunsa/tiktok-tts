@@ -1401,8 +1401,8 @@
                   },
     "giftGate":  {
                       "title":  "Portão de doação",
-                      "desc":  "Em vez de ler todo mundo, o TTS só lê quem já doou o mínimo nesta plataforma durante a transmissão atual. Ativa uma vez por pessoa: depois de doar, as mensagens dela são lidas pelo resto da sessão.",
-                      "minLabel":  "Mínimo para ativar",
+                      "desc":  "Em vez de ler todo mundo, o TTS só lê quem doa o mínimo nesta plataforma. Não fica liberado para sempre: cada doação libera uma única mensagem — a que vem junto com a doação, ou a próxima se essa plataforma enviar os dois separados.",
+                      "minLabel":  "Mínimo para liberar uma mensagem",
                       "unit":  {
                                    "coins":  "moedas",
                                    "bits":  "bits",

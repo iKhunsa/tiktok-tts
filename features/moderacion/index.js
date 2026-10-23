@@ -43,17 +43,19 @@ const { disallowWord } = require('./routes/chat-guard-disallow-word'); // rust-g
 
 /**
  * Ultima capa del veredicto (despues de rust-guard, ver gift-gate.js): si el
- * gate de esta plataforma esta activo y el viewer no calificó pagando el
- * minimo configurado, el mensaje se mutea igual que cualquier otra regla de
- * identidad — nunca lo "droppea" (sigue viendose en el chat, solo no se lee).
- * Admin y whitelist siempre pasan, igual que en el resto de las reglas.
+ * gate de esta plataforma esta activo, el mensaje solo se lee si el viewer
+ * tiene un credito de donacion pendiente (se consume, UN mensaje por pago —
+ * no "el resto de la sesion"); si no, se mutea igual que cualquier otra
+ * regla de identidad — nunca lo "droppea" (sigue viendose en el chat, solo
+ * no se lee). Admin y whitelist siempre pasan, igual que en el resto de las
+ * reglas (y no gastan credito).
  */
 function aplicarGiftGate({ bus, verdict, key, platform, handle, isWhitelisted }) {
   if (verdict.action !== 'allow') return verdict; // ya mute/drop por otra regla, no pisar
   const config = getConfigSnapshot(bus);
   if (!giftGate.gateActivo(config, platform)) return verdict;
   if (isWhitelisted || isAdminIdentity(bus, platform, handle)) return verdict;
-  if (giftGate.estaCalificado(key)) return verdict;
+  if (giftGate.consumirCredito(key)) return verdict;
   return { ...verdict, action: 'mute', reasons: [...(verdict.reasons || []), 'gift-gate'] };
 }
 
@@ -130,7 +132,12 @@ module.exports = {
 
     bus.on('account:changed', () => giftGate.reset(), 'moderacion');
 
-    // Gift-gate — senales que califican a un viewer (ver gift-gate.js).
+    // Gift-gate (ver gift-gate.js) — cada listener de abajo otorga UN credito
+    // de un mensaje, nunca "el resto de la sesion". En Twitch el credito se
+    // otorga y se consume en el MISMO evento (bits y texto llegan juntos en
+    // canal:mensaje-crudo): depende de que 'moderacion' se registre antes que
+    // 'chat' en server.js, para que este listener corra antes que el de
+    // features/chat/index.js que dispara moderacionPolicyContract.review.
     bus.on('canal:gift', (payload) => {
       if (!payload || payload.platform !== 'tiktok') return;
       const config = getConfigSnapshot(bus);
@@ -138,7 +145,7 @@ module.exports = {
       const data = payload.raw || {};
       const totalCoins = coinsForGift(logger, { giftName: data.giftName, repeatCount: data.groupCount || 1, diamondCount: data.diamondCount || 0 });
       if (totalCoins < (config.ttsGiftGateTiktokMinCoins || 1)) return;
-      giftGate.marcarCalificado(viewerKey({ platform: 'tiktok', id: data.uniqueId, handle: data.uniqueId }));
+      giftGate.otorgarCredito(viewerKey({ platform: 'tiktok', id: data.uniqueId, handle: data.uniqueId }));
     }, 'moderacion');
 
     bus.on('canal:mensaje-crudo', (payload) => {
@@ -148,7 +155,7 @@ module.exports = {
       const tags = (payload.raw && payload.raw.tags) || {};
       const bits = Number(tags.bits) || 0;
       if (bits < (config.ttsGiftGateTwitchMinBits || 1)) return;
-      giftGate.marcarCalificado(viewerKey({ platform: 'twitch', id: tags['user-id'], handle: tags.username }));
+      giftGate.otorgarCredito(viewerKey({ platform: 'twitch', id: tags['user-id'], handle: tags.username }));
     }, 'moderacion');
 
     // Kick: kicks.gifted llega por el WS de cuentas vinculadas (features/auth/
@@ -170,7 +177,7 @@ module.exports = {
       const cantidad = Number(datos.gifted_kicks ?? datos.quantity ?? datos.amount ?? datos.kicks) || 0;
       if (!userId && !username) return;
       if (cantidad < (config.ttsGiftGateKickMinKicks || 1)) return;
-      giftGate.marcarCalificado(viewerKey({ platform: 'kick', id: userId, handle: username }));
+      giftGate.otorgarCredito(viewerKey({ platform: 'kick', id: userId, handle: username }));
     }, 'moderacion');
 
     app.post('/api/moderation/preview', preview(deps));

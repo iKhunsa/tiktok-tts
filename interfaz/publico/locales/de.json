@@ -1401,8 +1401,8 @@
                   },
     "giftGate":  {
                       "title":  "Spenden-Gate",
-                      "desc":  "Statt alle vorzulesen, liest die TTS nur Personen vor, die auf dieser Plattform während des aktuellen Streams bereits das Minimum gespendet haben. Aktiviert sich einmal pro Person: nach der Spende werden ihre Nachrichten für den Rest der Sitzung vorgelesen.",
-                      "minLabel":  "Minimum zur Aktivierung",
+                      "desc":  "Statt alle vorzulesen, liest die TTS nur die Person vor, die das Minimum auf dieser Plattform spendet. Es bleibt nicht für immer freigeschaltet: jede Spende schaltet eine einzige Nachricht frei — die, die mit der Spende kommt, oder die nächste, falls die Plattform beides getrennt sendet.",
+                      "minLabel":  "Minimum zum Freischalten einer Nachricht",
                       "unit":  {
                                    "coins":  "Münzen",
                                    "bits":  "Bits",
