@@ -40,7 +40,7 @@ function crearDocumentoFalso() {
   };
 }
 
-async function abrirModal({ lang = 'es', eliminar }) {
+async function abrirModal({ lang = 'es', eliminar, hasPassword = true, googleLinked = false, eliminarGoogle }) {
   const originalFetch = global.fetch;
   const originalDocument = global.document;
   global.fetch = async () => ({ ok: true, json: async () => diccionario(lang) });
@@ -50,7 +50,7 @@ async function abrirModal({ lang = 'es', eliminar }) {
   global.document = documento;
   try {
     const { abrirModalEliminarCuenta } = await importar('interfaz/src/vistas/principal/cuenta/modal-eliminar-cuenta.js');
-    abrirModalEliminarCuenta({ eliminar });
+    abrirModalEliminarCuenta({ hasPassword, googleLinked, eliminar, eliminarGoogle });
   } finally {
     global.fetch = originalFetch;
     global.document = originalDocument;

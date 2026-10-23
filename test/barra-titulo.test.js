@@ -50,6 +50,12 @@ test('changelog: cada traducción de changelog/ trae la última versión del CHA
     const [version] = parsearChangelog(fs.readFileSync(path.join(dir, archivo), 'utf8'));
     assert.equal(version.version, ultima.version, archivo);
     assert.deepEqual(version.secciones.map((s) => s.items.length), ultima.secciones.map((s) => s.items.length), archivo);
-    assert.equal(version.secciones.at(-1).titulo, 'Videos de YouTube', archivo);
+    // "Videos de YouTube" es la unica seccion que queda sin traducir a
+    // proposito (son links, no texto); si ESTA version la trae, tiene que
+    // ser siempre la ultima y quedar identica en los 10 idiomas. Si esta
+    // version no la trae (como 1.12.0), no hay nada que comparar aca.
+    if (ultima.secciones.at(-1).titulo === 'Videos de YouTube') {
+      assert.equal(version.secciones.at(-1).titulo, 'Videos de YouTube', archivo);
+    }
   }
 });
