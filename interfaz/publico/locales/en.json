@@ -111,7 +111,6 @@
                    "langFilterHint":  "Ignores chat messages with characters that don\u0027t match the active voice\u0027s language (e.g. blocks Chinese/Japanese if your voice is Spanish, and vice versa).",
                    "dictFilter":  "Filter by language (words)",
                    "dictFilterHint":  "Only reads messages written in the active voice language or in the extra languages you allow. Unknown words (names, typos) never block.",
-                   "readNonFollowers":  "Read non-followers",
                    "closeToTray":  "Minimize to tray on close",
                    "closeToTrayHint":  "The X keeps the app running in the system tray. To quit completely: right-click the tray icon → Exit.",
                    "openAtLogin":  "Open when Windows starts"
@@ -753,8 +752,6 @@
                   "allChannelsDisconnected":  "All channels disconnected",
                   "youtubeAutoSaved":  "YouTube saved; will connect when live",
                   "youtubeTmpSaved":  "YouTube saved as manual channel",
-                  "readNonFollowersOn":  "TTS reads everyone",
-                  "readNonFollowersOff":  "TTS only reads followers",
                   "settingSaveFailed":  "Could not save the setting ({keys}). Check your connection."
               },
     "errors":  {
@@ -1401,6 +1398,28 @@
                       "body":  "Copy the code and paste it at checkout when you pay for your plan to get the discount.",
                       "copyAria":  "Copy code",
                       "viewPlans":  "View plans"
+                  },
+    "giftGate":  {
+                      "title":  "Gift gate",
+                      "desc":  "Instead of reading everyone, TTS only reads from people who already donated the minimum on this platform during the current stream. It activates once per person: after donating, their messages get read for the rest of the session.",
+                      "minLabel":  "Minimum to activate",
+                      "unit":  {
+                                   "coins":  "coins",
+                                   "bits":  "bits",
+                                   "kicks":  "Kicks"
+                               },
+                      "tiktok":  {
+                                     "title":  "TikTok",
+                                     "desc":  "Activates with TikTok gifts (measured in coins)."
+                                 },
+                      "twitch":  {
+                                     "title":  "Twitch",
+                                     "desc":  "Activates with bit cheers in chat."
+                                 },
+                      "kick":  {
+                                   "title":  "Kick",
+                                   "desc":  "Activates by gifting Kicks. Requires linking your Kick account in My Account."
+                               }
                   },
     "chatGuard":  {
                       "title":  "Chat moderation",

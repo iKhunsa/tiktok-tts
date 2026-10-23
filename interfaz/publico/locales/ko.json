@@ -111,7 +111,6 @@
                    "langFilterHint":  "활성 음성의 언어와 일치하지 않는 문자가 포함된 채팅 메시지를 무시합니다 (예: 음성이 스페인어면 중국어/일본어를 차단하며, 반대의 경우도 마찬가지입니다).",
                    "dictFilter":  "언어별 필터 (단어)",
                    "dictFilterHint":  "활성 음성 언어 또는 허용한 추가 언어로 작성된 메시지만 읽습니다. 알 수 없는 단어(이름, 오타)는 차단되지 않습니다.",
-                   "readNonFollowers":  "비팔로워도 읽기",
                    "closeToTray":  "닫을 때 트레이로 최소화",
                    "closeToTrayHint":  "X를 눌러도 앱이 시스템 트레이에서 계속 실행됩니다. 완전히 종료하려면 트레이 아이콘을 우클릭 → 종료.",
                    "openAtLogin":  "Windows 시작 시 열기"
@@ -753,8 +752,6 @@
                   "allChannelsDisconnected":  "모든 채널 연결 해제됨",
                   "youtubeAutoSaved":  "YouTube 저장됨; 라이브 시 연결됩니다",
                   "youtubeTmpSaved":  "YouTube를 수동 채널로 저장했습니다",
-                  "readNonFollowersOn":  "TTS가 모두를 읽습니다",
-                  "readNonFollowersOff":  "TTS가 팔로워만 읽습니다",
                   "settingSaveFailed":  "설정({keys})을 저장하지 못했습니다. 연결을 확인하세요."
               },
     "dictLang":  {
@@ -1401,6 +1398,28 @@
                       "body":  "코드를 복사해 요금제를 결제할 때 붙여넣으면 할인이 적용됩니다.",
                       "copyAria":  "코드 복사",
                       "viewPlans":  "요금제 보기"
+                  },
+    "giftGate":  {
+                      "title":  "후원 게이트",
+                      "desc":  "모든 사람을 읽는 대신, TTS는 현재 방송 중 이 플랫폼에서 이미 최소 금액을 후원한 사람만 읽습니다. 사람당 한 번만 활성화되며, 후원 후에는 세션이 끝날 때까지 그 사람의 메시지가 읽힙니다.",
+                      "minLabel":  "활성화 최소 금액",
+                      "unit":  {
+                                   "coins":  "코인",
+                                   "bits":  "비트",
+                                   "kicks":  "Kicks"
+                               },
+                      "tiktok":  {
+                                     "title":  "TikTok",
+                                     "desc":  "TikTok 선물로 활성화됩니다 (코인 기준)."
+                                 },
+                      "twitch":  {
+                                     "title":  "Twitch",
+                                     "desc":  "채팅의 비트 응원으로 활성화됩니다."
+                                 },
+                      "kick":  {
+                                   "title":  "Kick",
+                                   "desc":  "Kicks 선물로 활성화됩니다. 내 계정에서 Kick 계정 연동이 필요합니다."
+                               }
                   },
     "chatGuard":  {
                       "title":  "채팅 모더레이션",

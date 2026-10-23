@@ -47,7 +47,7 @@ test('describeModeration: origen y motivo por razon del guard', () => {
   assert.deepEqual(describeModeration(['too-long']), { origen: 'guard-js', motivo: 'too-long' });
   assert.deepEqual(describeModeration(['blocked-word', 'rust:hate']), { origen: 'lista-propia', motivo: 'blocked-word' });
   assert.deepEqual(describeModeration(['rust:hate']), { origen: 'motor-rust', motivo: 'hate' });
-  assert.equal(describeModeration(['non-follower']), null);
+  assert.equal(describeModeration(['gift-gate']), null);
   assert.equal(describeModeration(['policy-evaluation-failed']), null);
   assert.equal(describeModeration([]), null);
 });
@@ -71,14 +71,14 @@ test('mensaje bloqueado: WS con motivo, origen y texto; bus y log sin texto ni n
   assert.ok(!serialized.includes(TEXT_SECRETO) && !serialized.toLowerCase().includes('secreto'), 'los logs no llevan texto ni nick');
 });
 
-test('mensaje silenciado por contenido: se emite y se reporta; solo non-follower no cuenta', () => {
+test('mensaje silenciado por contenido: se emite y se reporta; solo gift-gate no cuenta', () => {
   const muted = setup((message) => ({ action: 'mute', reasons: ['muted'], message }));
   muted.send();
   assert.equal(moderationWs(muted.ws)[0].accion, 'mute');
   assert.equal(muted.ws.filter((m) => m.type === 'chat').length, 1, 'el chat igual se muestra');
   assert.ok(muted.logs.some((args) => args[3] === 'moderacion.filtro.mensaje_bloqueado'));
 
-  const policy = setup((message) => ({ action: 'mute', reasons: ['non-follower'], message }));
+  const policy = setup((message) => ({ action: 'mute', reasons: ['gift-gate'], message }));
   policy.send();
   assert.equal(moderationWs(policy.ws).length, 0);
   assert.ok(!policy.logs.some((args) => args[3] === 'moderacion.filtro.mensaje_bloqueado'));

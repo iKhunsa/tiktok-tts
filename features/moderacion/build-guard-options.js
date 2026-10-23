@@ -18,7 +18,9 @@ function buildGuardOptions({ bus, blockedWords }) {
     rules: {
       ...BASE_RULES,
       maxSpeechLength: config.TTS_MAX_CHARS || GOOGLE_TTS_MAX_CHARS,
-      nonFollowersSpeak: !!config.ttsReadNonFollowers,
+      // nonFollowersSpeak ya no se pasa: el gate "solo seguidores" se eliminó
+      // (nunca funcionó cross-plataforma, ver gift-gate.js por el reemplazo).
+      // Al omitirlo, @tiklivetts/chat-guard nunca activa su regla interna.
       gibberishMode: config.gibberishMode || 'enforce',
     },
     knownWord: (word) => idiomaFiltrar.isKnownWord(word),

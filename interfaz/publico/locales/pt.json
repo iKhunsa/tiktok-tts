@@ -111,7 +111,6 @@
                    "langFilterHint":  "Ignora mensagens de chat com caracteres que não correspondem ao idioma da voz ativa (ex: bloqueia chinês/japonês se a voz estiver em espanhol, e vice-versa).",
                    "dictFilter":  "Filtrar por idioma (palavras)",
                    "dictFilterHint":  "Só lê mensagens escritas no idioma da voz ativa ou nos idiomas extras que você permitir. Palavras desconhecidas (nomes, erros de digitação) não bloqueiam.",
-                   "readNonFollowers":  "Ler não seguidores",
                    "closeToTray":  "Minimizar para a bandeja ao fechar",
                    "closeToTrayHint":  "Com o X o app continua funcionando na bandeja do sistema. Para fechar de vez: clique direito no ícone da bandeja → Sair.",
                    "openAtLogin":  "Abrir ao iniciar o Windows"
@@ -753,8 +752,6 @@
                   "allChannelsDisconnected":  "Todos os canais desconectados",
                   "youtubeAutoSaved":  "YouTube salvo; vai conectar quando ao vivo",
                   "youtubeTmpSaved":  "YouTube salvo como canal manual",
-                  "readNonFollowersOn":  "O TTS lê todos",
-                  "readNonFollowersOff":  "O TTS só lê seguidores",
                   "settingSaveFailed":  "Não foi possível salvar a configuração ({keys}). Verifique a conexão."
               },
     "dictLang":  {
@@ -1401,6 +1398,28 @@
                       "body":  "Copie o código e cole na hora de pagar seu plano para aplicar o desconto.",
                       "copyAria":  "Copiar código",
                       "viewPlans":  "Ver planos"
+                  },
+    "giftGate":  {
+                      "title":  "Portão de doação",
+                      "desc":  "Em vez de ler todo mundo, o TTS só lê quem já doou o mínimo nesta plataforma durante a transmissão atual. Ativa uma vez por pessoa: depois de doar, as mensagens dela são lidas pelo resto da sessão.",
+                      "minLabel":  "Mínimo para ativar",
+                      "unit":  {
+                                   "coins":  "moedas",
+                                   "bits":  "bits",
+                                   "kicks":  "Kicks"
+                               },
+                      "tiktok":  {
+                                     "title":  "TikTok",
+                                     "desc":  "Ativa com presentes do TikTok (medidos em moedas)."
+                                 },
+                      "twitch":  {
+                                     "title":  "Twitch",
+                                     "desc":  "Ativa com cheers de bits no chat."
+                                 },
+                      "kick":  {
+                                   "title":  "Kick",
+                                   "desc":  "Ativa ao presentear Kicks. Requer vincular sua conta Kick em Minha conta."
+                               }
                   },
     "chatGuard":  {
                       "title":  "Moderação do chat",

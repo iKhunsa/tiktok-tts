@@ -111,7 +111,6 @@
                    "langFilterHint":  "Ignoriert Chat-Nachrichten mit Zeichen, die nicht zur Sprache der aktiven Stimme passen (z. B. Chinesisch/Japanisch blockieren, wenn die Stimme Spanisch ist, und umgekehrt).",
                    "dictFilter":  "Nach Sprache filtern (Wörter)",
                    "dictFilterHint":  "Liest nur Nachrichten in der Sprache der aktiven Stimme oder in den zusätzlich erlaubten Sprachen. Unbekannte Wörter (Namen, Tippfehler) blockieren nicht.",
-                   "readNonFollowers":  "Nicht-Follower vorlesen",
                    "closeToTray":  "Beim Schließen in den Infobereich minimieren",
                    "closeToTrayHint":  "Mit dem X läuft die App im Infobereich weiter. Zum vollständigen Beenden: Rechtsklick auf das Symbol → Beenden.",
                    "openAtLogin":  "Beim Windows-Start öffnen"
@@ -753,8 +752,6 @@
                   "allChannelsDisconnected":  "Alle Kanäle getrennt",
                   "youtubeAutoSaved":  "YouTube gespeichert; verbindet sich wenn live",
                   "youtubeTmpSaved":  "YouTube als manuellen Kanal gespeichert",
-                  "readNonFollowersOn":  "TTS liest alle vor",
-                  "readNonFollowersOff":  "TTS liest nur Follower vor",
                   "settingSaveFailed":  "Einstellung ({keys}) konnte nicht gespeichert werden. Verbindung prüfen."
               },
     "dictLang":  {
@@ -1401,6 +1398,28 @@
                       "body":  "Kopiere den Code und füge ihn beim Bezahlen deines Tarifs ein, um den Rabatt zu erhalten.",
                       "copyAria":  "Code kopieren",
                       "viewPlans":  "Tarife ansehen"
+                  },
+    "giftGate":  {
+                      "title":  "Spenden-Gate",
+                      "desc":  "Statt alle vorzulesen, liest die TTS nur Personen vor, die auf dieser Plattform während des aktuellen Streams bereits das Minimum gespendet haben. Aktiviert sich einmal pro Person: nach der Spende werden ihre Nachrichten für den Rest der Sitzung vorgelesen.",
+                      "minLabel":  "Minimum zur Aktivierung",
+                      "unit":  {
+                                   "coins":  "Münzen",
+                                   "bits":  "Bits",
+                                   "kicks":  "Kicks"
+                               },
+                      "tiktok":  {
+                                     "title":  "TikTok",
+                                     "desc":  "Aktiviert sich durch TikTok-Geschenke (gemessen in Münzen)."
+                                 },
+                      "twitch":  {
+                                     "title":  "Twitch",
+                                     "desc":  "Aktiviert sich durch Bit-Cheers im Chat."
+                                 },
+                      "kick":  {
+                                   "title":  "Kick",
+                                   "desc":  "Aktiviert sich durch das Verschenken von Kicks. Erfordert die Verknüpfung deines Kick-Kontos unter Mein Konto."
+                               }
                   },
     "chatGuard":  {
                       "title":  "Chat-Moderation",

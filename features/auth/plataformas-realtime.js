@@ -51,6 +51,7 @@ function crearRealtime({ urlServicio, bus, logger }) {
       let evento;
       try { evento = JSON.parse(raw.toString()); } catch (_) { return; }
       bus.emit('ws:broadcast', { type: 'plataforma-evento', ...evento });
+      bus.emit('plataforma:evento', evento); // version cruda para otros dominios (ver moderacion/index.js#gift-gate)
     });
 
     socket.on('close', () => {

@@ -18,6 +18,7 @@ import { appSettings, SETTINGS_KEY } from './ajustes-app.js';
 import { t } from '../i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
 import { syncTtsVoiceLang } from '../../vistas/principal/voces.js';
+import { applyGiftGate } from '../../vistas/principal/gift-gate/index.js';
 
 export let CHAT_TTS_MAX_LEN = 200;
 export let MAX_QUEUE_SIZE = 15;
@@ -73,9 +74,9 @@ export async function loadRuntimeConfig() {
       syncTtsVoiceLang(appSettings.voice);
     }
     applyA11yConfig(cfg);
-    applyReadNonFollowers(cfg);
     applyFiltroIdiomaConfig(cfg);
     applyAnnounceTemplates(cfg);
+    applyGiftGate(cfg);
   } catch (e) { /* config no disponible aun; se reintenta en el proximo ciclo */ }
 }
 
@@ -121,32 +122,6 @@ export function setAllowedExtraLang(lang, enabled) {
   if (enabled) langs.add(lang); else langs.delete(lang);
   allowedExtraLangs = [...langs];
   patchFiltroIdioma({ allowedExtraLangs });
-}
-
-/** El servidor decide que mensajes puede leer el TTS (ttsBlocked); aca solo se refleja el estado del interruptor. */
-export function applyReadNonFollowers(cfg) {
-  const el = document.getElementById('ttsReadNonFollowersToggle');
-  if (!el) return;
-  const on = cfg.ttsReadNonFollowers !== false;
-  el.checked = on;
-  document.getElementById('chip-nonfollowers')?.classList.toggle('active', on);
-}
-
-export function setReadNonFollowers(value) {
-  document.getElementById('chip-nonfollowers')?.classList.toggle('active', !!value);
-  fetch('/api/config', {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ttsReadNonFollowers: !!value }),
-  })
-    .then((res) => {
-      if (!res.ok) throw new Error('http');
-      showToast(t(value ? 'toast.readNonFollowersOn' : 'toast.readNonFollowersOff'));
-    })
-    .catch(() => {
-      showToast(t('mod.toast.error'));
-      loadRuntimeConfig();
-    });
 }
 
 export function applyA11yConfig(cfg) {
