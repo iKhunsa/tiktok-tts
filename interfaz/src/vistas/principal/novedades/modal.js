@@ -103,6 +103,4 @@ function cerrarNovedades() {
 export function iniciarModalNovedades() {
   const modal = document.getElementById('newsModal');
   document.getElementById('newsModalClose').addEventListener('click', cerrarNovedades);
-  modal.addEventListener('click', (e) => { if (e.target === modal) cerrarNovedades(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarNovedades(); });
-}
+  modal.addEventListener('click', (e) => { if (e.target === modal) cerrarNovedades(); });}

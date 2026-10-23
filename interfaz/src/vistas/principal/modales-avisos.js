@@ -5,7 +5,6 @@ import { showToast } from '../../componentes/toast.js';
 import { switchView } from './vistas-router.js';
 import { driverTourDefaults } from './tours/index.js';
 import { spCancelCapture, spResetDeleteBtn } from './soundpad.js';
-import { closeIdeaModal } from './ideas/modal.js';
 import { trackUi } from '../../nucleo/telemetria-ui.js';
 
 export function setStatus(type, text) {
@@ -147,43 +146,10 @@ function setAllowedExtraLang(lang, enabled) {
   setAllowedExtraLangRemoto(lang, enabled);
 }
 
-export function closeDonationNotice(e) {
-  if (e && e.target.id !== 'donationNoticeModal') return;
-  document.getElementById('donationNoticeModal').classList.remove('show');
-}
-export function openDonationsFromNotice() {
-  document.getElementById('donationNoticeModal').classList.remove('show');
-  openDonationsModal();
-}
-
-export function closeBugReportNotice(e) {
-  if (e && e.target.id !== 'bugReportNoticeModal') return;
-  document.getElementById('bugReportNoticeModal').classList.remove('show');
-  maybeShowDonationNotice();
-}
-
-export function openBugReportFromNotice() {
-  document.getElementById('bugReportNoticeModal').classList.remove('show');
-  maybeShowDonationNotice();
-  if (window.driver && window.driver.js) {
-    window.driver.js.driver({
-      ...driverTourDefaults(),
-      showProgress: false,
-      steps: [{
-        element: '#sidebarBugReportBtn',
-        popover: { title: t('bugReport.tourTitle'), description: t('bugReport.tourDesc'), side: 'right', align: 'start' },
-      }],
-    }).drive();
-  } else {
-    openBugReportModal();
-  }
-}
-
 // ─── Onboarding: tutorial guiado para usuarios que nunca usaron la app ──
 export function closeOnboardingWelcome(e) {
   if (e && e.target.id !== 'onboardingWelcomeModal') return;
   document.getElementById('onboardingWelcomeModal').classList.remove('show');
-  maybeShowBugReportNotice();
 }
 
 function fireConfetti() {
@@ -206,18 +172,16 @@ function showOnboardingComplete() {
 export function closeOnboardingComplete(e) {
   if (e && e.target.id !== 'onboardingCompleteModal') return;
   document.getElementById('onboardingCompleteModal').classList.remove('show');
-  maybeShowBugReportNotice();
 }
 
 export function startOnboardingTour() {
   document.getElementById('onboardingWelcomeModal').classList.remove('show');
-  if (!(window.driver && window.driver.js)) { maybeShowDonationNotice(); return; }
+  if (!(window.driver && window.driver.js)) return;
 
-  const openChannelForm = () => {
-    switchView('settings');
-    const form = document.getElementById('add-channel-form');
-    if (form) form.style.display = 'flex';
-  };
+  // Todo pasa en el chat: tarjeta grande sin cuentas, boton chico del encabezado con >=1.
+  switchView('chat');
+  const sinCuentas = document.querySelector('.chat-section')?.classList.contains('sin-cuentas');
+  const botonVincular = sinCuentas ? '.link-accounts-cta' : '.link-accounts-small';
 
   window.driver.js.driver({
     ...driverTourDefaults(),
@@ -226,12 +190,8 @@ export function startOnboardingTour() {
       showOnboardingComplete();
     },
     steps: [
-      { element: '#navSettingsBtn', popover: { title: t('onboarding.step1Title'), description: t('onboarding.step1Desc'), side: 'right', align: 'start' }, onHighlightStarted: () => switchView('settings') },
-      { element: '#btn-toggle-add-channel', popover: { title: t('onboarding.step2Title'), description: t('onboarding.step2Desc'), side: 'bottom', align: 'end' }, onHighlightStarted: () => switchView('settings') },
-      { element: '#platform-seg', popover: { title: t('onboarding.step3Title'), description: t('onboarding.step3Desc'), side: 'bottom', align: 'start' }, onHighlightStarted: openChannelForm },
-      { element: '#add-channel-input', popover: { title: t('onboarding.step4Title'), description: t('onboarding.step4Desc'), side: 'bottom', align: 'start' }, onHighlightStarted: openChannelForm },
-      { element: '#btn-add-channel', popover: { title: t('onboarding.step5Title'), description: t('onboarding.step5Desc'), side: 'bottom', align: 'start' }, onHighlightStarted: openChannelForm },
-      { element: '#btn-connect-all-chat', popover: { title: t('onboarding.step6Title'), description: t('onboarding.step6Desc'), side: 'top', align: 'end' }, onHighlightStarted: () => switchView('chat') },
+      { element: botonVincular, popover: { title: t('onboarding.step1Title'), description: t('onboarding.step1Desc'), side: sinCuentas ? 'top' : 'bottom', align: 'center' } },
+      { element: '#btn-connect-all-chat', popover: { title: t('onboarding.step2Title'), description: t('onboarding.step2Desc'), side: 'bottom', align: 'end' } },
     ],
   }).drive();
 }
@@ -239,30 +199,12 @@ export function startOnboardingTour() {
 // Aviso one-time: bienvenida y tutorial guiado (v1.6.0)
 const ONBOARDING_KEY = 'tikliveTTS_onboardingSeen_v1';
 function maybeShowOnboarding() {
-  if (localStorage.getItem(ONBOARDING_KEY)) { maybeShowDonationNotice(); return; }
+  if (localStorage.getItem(ONBOARDING_KEY)) return;
   localStorage.setItem(ONBOARDING_KEY, '1');
   setTimeout(() => document.getElementById('onboardingWelcomeModal').classList.add('show'), 900);
 }
 
-// Aviso one-time: nuevas opciones de donacion (v1.5.2). Va AL FINAL de toda
-// la cadena de popups (onboarding -> bug report -> donacion) para no
-// competir visualmente con los tutoriales/avisos anteriores.
-const DONATION_NOTICE_KEY = 'tikliveTTS_noticeDonations_v1';
-function maybeShowDonationNotice() {
-  if (localStorage.getItem(DONATION_NOTICE_KEY)) return;
-  localStorage.setItem(DONATION_NOTICE_KEY, '1');
-  setTimeout(() => document.getElementById('donationNoticeModal').classList.add('show'), 900);
-}
-
-// Aviso one-time: boton de Reportar Bug (v1.6.0)
-const BUG_REPORT_NOTICE_KEY = 'tikliveTTS_noticeBugReport_v1';
-function maybeShowBugReportNotice() {
-  if (localStorage.getItem(BUG_REPORT_NOTICE_KEY)) { maybeShowDonationNotice(); return; }
-  localStorage.setItem(BUG_REPORT_NOTICE_KEY, '1');
-  setTimeout(() => document.getElementById('bugReportNoticeModal').classList.add('show'), 600);
-}
-
-// Onboarding + cadena de avisos (donacion/bug). Lo dispara index.js recien
+// Onboarding (bienvenida + tour). Lo dispara index.js recien
 // cuando la app deja de estar bloqueada por el muro de login — no en la
 // pantalla de login. Idempotente: corre una sola vez.
 let _avisosArrancados = false;
@@ -296,20 +238,11 @@ export function iniciarModalesYAvisos() {
     }
   });
   document.addEventListener('keydown', (e) => {
+    // Cerrar popups con Esc lo hace componentes/cerrar-con-escape.js (solo el
+    // de arriba); aca queda la limpieza del soundpad.
     if (e.key === 'Escape') {
-      document.getElementById('donationsModal').classList.remove('show');
-      document.getElementById('discordModal').classList.remove('show');
-      document.getElementById('donationNoticeModal').classList.remove('show');
-      document.getElementById('dictLangModal').classList.remove('show');
-      document.getElementById('bugReportModal').classList.remove('show');
-      closeIdeaModal();
-      document.getElementById('bugReportNoticeModal').classList.remove('show');
-      document.getElementById('onboardingWelcomeModal').classList.remove('show');
-      document.getElementById('onboardingCompleteModal').classList.remove('show');
-      document.getElementById('modWipeConfirmModal').classList.remove('show');
       spCancelCapture();
       spResetDeleteBtn();
-      document.getElementById('spSettingsModal').classList.remove('show');
     }
   });
 }

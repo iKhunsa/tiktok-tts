@@ -16,6 +16,18 @@ const CONFIGS = [
       host: (process.env.APTABASE_HOST || '').trim() || 'https://aptabase.tiklivetts.es',
     }),
   },
+  {
+    // Client IDs de OAuth (Google/Twitch/Kick): publicos (viajan en la URL de
+    // autorizacion que abre el navegador), pero igual bakeados en vez de
+    // hardcodeados -- mismo mecanismo que aptabase-config, para no tener que
+    // tocar codigo si alguno cambia.
+    file: 'oauth-config.generated.json',
+    data: () => ({
+      googleClientId: (process.env.GOOGLE_CLIENT_ID || '').trim() || null,
+      twitchClientId: (process.env.TWITCH_CLIENT_ID || '').trim() || null,
+      kickClientId: (process.env.KICK_CLIENT_ID || '').trim() || null,
+    }),
+  },
 ];
 
 for (const { file, data } of CONFIGS) {

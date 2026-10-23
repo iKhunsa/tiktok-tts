@@ -13,11 +13,13 @@
   <link rel="stylesheet" href="./src/estilos/index-legacy.css">
   <link rel="stylesheet" href="./src/estilos/campos-overlay.css">
   <link rel="stylesheet" href="./src/estilos/moderacion-contenido.css">
+  <link rel="stylesheet" href="./src/estilos/gift-gate.css">
   <link rel="stylesheet" href="./src/estilos/moderacion-popup.css">
   <link rel="stylesheet" href="./src/estilos/portal-view.css">
   <link rel="stylesheet" href="./src/estilos/barra-titulo.css">
-  <link rel="stylesheet" href="./src/estilos/programa-creadores.css">
+  <link rel="stylesheet" href="./src/estilos/vincular-cuentas.css">
   <link rel="stylesheet" href="./src/estilos/ajustes-ventana.css">
+  <link rel="stylesheet" href="./src/estilos/modal-cuenta.css">
 </head>
 <body>
 
@@ -54,10 +56,16 @@
 
   <!-- ══ SIDEBAR ══════════════════════════════════════════ -->
   <aside class="sidebar" id="sidebar">
-    <a href="/" class="sidebar-brand" style="text-decoration:none;color:inherit;">
-      <img class="brand-logo" src="logo.svg" alt="TikLiveTTS">
-      <span class="sidebar-app-version" id="sidebarAppVersion" aria-hidden="true"></span>
-    </a>
+    <div class="sidebar-brand-wrap">
+      <a href="/" class="sidebar-brand" style="text-decoration:none;color:inherit;">
+        <img class="brand-logo" src="logo.svg" alt="TikLiveTTS">
+        <span class="sidebar-app-version" id="sidebarAppVersion" aria-hidden="true"></span>
+      </a>
+      <div class="sidebar-update-actions">
+        <button class="sidebar-update-btn" id="btnCheckUpdate" onclick="doCheckForUpdates()" data-i18n-title="update.checkNow" data-i18n-aria-label="update.checkNow"><img class="icon-inline" src="icons/update.svg" alt=""></button>
+        <button class="sidebar-update-btn" id="btnOpenRollback" onclick="openRollbackModal()" data-i18n-title="update.rollback.title" data-i18n-aria-label="update.rollback.title"><img class="icon-inline" src="icons/restore.svg" alt=""></button>
+      </div>
+    </div>
 
     <nav class="sidebar-nav">
       <button class="sidebar-item active" data-view="chat" onclick="switchView('chat')">
@@ -108,7 +116,7 @@
     </a>
 
     <a href="https://discord.com/invite/mwY859tcQK" target="_blank" rel="noopener" class="community-banner">
-      <img src="community-banner.webp" width="420" height="199" loading="lazy" decoding="async" alt="Comunidad TikLiveTTS — Discord oficial">
+      <img src="community-banner.png" width="1536" height="728" loading="lazy" decoding="async" alt="Comunidad TikLiveTTS — Discord oficial">
     </a>
 
     <div class="sidebar-footer">
@@ -189,12 +197,6 @@
           <input type="checkbox" onchange="toggleOption('readChat', this)" />
           <img class="icon-inline" src="icons/chat.svg" alt=""> <span data-i18n="toggle.readChat">Leer comentarios</span>
         </label>
-        <!-- Único chip cuyo estado vive en el servidor (config.json) y no en
-             appSettings: el filtro se aplica server-side antes del broadcast. -->
-        <label class="toggle-chip" id="chip-nonfollowers">
-          <input type="checkbox" id="ttsReadNonFollowersToggle" onchange="setReadNonFollowers(this.checked)" />
-          <img class="icon-inline" src="icons/person_add.svg" alt=""> <span data-i18n="toggle.readNonFollowers">Leer a no seguidores</span>
-        </label>
         <label class="toggle-chip" id="chip-username">
           <input type="checkbox" onchange="toggleOption('sayUsername', this)" />
           <img class="icon-inline" src="icons/label.svg" alt=""> <span data-i18n="toggle.sayUsername">Decir nombre</span>
@@ -250,18 +252,25 @@
             <img class="icon-inline" src="icons/mail_outline.svg" alt=""> <span data-i18n="chat.title">Chat en vivo</span>
             <span class="chat-count" id="msgCount">0</span>
           </div>
-          <button class="btn-clear" id="btn-connect-all-chat" onclick="toggleConnectAllChat()" data-i18n="btn.connectAll">Conectar todo</button>
+          <div class="chat-header-actions">
+            <span class="linked-platforms" id="linkedPlatforms"></span>
+            <button type="button" class="btn-clear link-accounts-small" onclick="abrirVincularCuentas()" data-i18n-title="linkAccounts.add" data-i18n-aria-label="linkAccounts.add" title="Vincular cuenta" aria-label="Vincular cuenta"><img class="icon-inline" src="icons/add-white.svg" alt=""> <span data-i18n="linkAccounts.add">Vincular cuenta</span></button>
+            <button class="btn-clear" id="btn-connect-all-chat" onclick="toggleConnectAllChat()" data-i18n="btn.connectAll">Conectar todo</button>
+          </div>
         </div>
         <div id="chatLog">
           <div class="empty-state" id="emptyState">
             <div class="empty-icon"><img class="icon-inline" src="icons/mic.svg" alt=""></div>
             <div class="empty-text" data-i18n-html="chat.empty">Conectá o transmití tu Live<br>para ver tu chat acá</div>
-            <!-- Programa de creadores: reemplaza al texto de arriba solo sin canales conectados (.chat-section.sin-live) -->
-            <div class="creator-promo">
-              <img class="creator-promo-icon" src="img/regalo-creadores.webp" width="192" height="192" alt="">
-              <div class="creator-promo-title" data-i18n="creatorProgram.title">¿Creas contenido? Gana 2 meses Pro</div>
-              <div class="creator-promo-text" data-i18n="creatorProgram.text">Haz un video sobre TikLiveTTS a tu manera y recibe 2 meses Pro gratis.</div>
-              <button type="button" class="btn creator-promo-cta" data-creator-program><span data-i18n="creatorProgram.cta">Quiero mis 2 meses gratis</span><span class="creator-promo-arrow" aria-hidden="true">→</span></button>
+            <!-- Solo sin canales guardados (.chat-section.sin-cuentas) -->
+            <div class="link-accounts-card">
+              <div class="link-accounts-logos" aria-hidden="true">
+                <img src="icons/tiktok-logo.svg" alt=""><img src="icons/twitch-logo.svg" alt=""><img src="icons/youtube-logo.svg" alt=""><img src="icons/kick-logo.svg" alt="">
+                <span class="link-accounts-more" data-i18n="linkAccounts.more">y más</span>
+              </div>
+              <div class="link-accounts-title" data-i18n="linkAccounts.title">Vincula tus cuentas para empezar</div>
+              <div class="link-accounts-text" data-i18n="linkAccounts.text">Conecta tus cuentas y comienza a leer el chat en vivo</div>
+              <button type="button" class="link-accounts-cta" onclick="abrirVincularCuentas()"><img src="icons/link-white.svg" alt=""><span data-i18n="linkAccounts.cta">Vincular cuentas</span></button>
             </div>
           </div>
         </div>
@@ -279,9 +288,9 @@
            no parte del chat, y necesita su propio margen para no leerse
            como si fuera una fila más de esa tarjeta. -->
       <div class="ad-slot ad-slot--banner" id="chatAdSlot"
-           data-ads='["asset/ads/banner-sale-octubre.png","asset/ads/banner-edicion.png","asset/ads/banner-rebranding.png","asset/ads/banner-clips.png"]'>
+           data-ads='["asset/ads/banner-edicion.png","asset/ads/banner-clips.png","asset/ads/banner-rebranding.png"]'>
         <a href="https://discord.gg/F2hYcpvJ46" target="_blank" rel="noopener" class="ad-link">
-          <img class="ad-layer is-active" src="asset/ads/banner-sale-octubre.png" alt="Publicidad">
+          <img class="ad-layer is-active" src="asset/ads/banner-edicion.png" alt="Publicidad">
           <img class="ad-layer" src="" alt="Publicidad" aria-hidden="true">
         </a>
       </div>
@@ -1007,6 +1016,8 @@
 
       <div class="settings-section" id="chatGuardPanel"><!-- interfaz/src/vistas/principal/moderacion-contenido/ la llena --></div>
 
+      <div class="settings-section" id="giftGatePanel"><!-- interfaz/src/vistas/principal/gift-gate/ la llena --></div>
+
       <!-- interfaz/src/vistas/principal/ajustes-ventana.js la cablea -->
       <div class="settings-section ajustes-ventana" id="settingsSectionWindow">
         <div class="settings-section-title" data-i18n="settings.window">Ventana e inicio</div>
@@ -1292,21 +1303,6 @@
   </div>
 </div>
 
-<!-- ══ MODAL: Programa de creadores (CTA del empty state del chat) ═══ -->
-<div id="creatorProgramModal" class="modal-overlay">
-  <div class="modal-content cuenta-cancel-modal creator-program-modal" role="dialog" aria-modal="true" aria-labelledby="creatorProgramTitle">
-    <button class="modal-close" type="button" data-i18n-aria-label="news.close"><img class="icon-inline" src="icons/close.svg" alt=""></button>
-    <div class="cuenta-cancel-copy">
-      <div class="notice-icon-badge creator-program-badge"><span class="creator-program-badge-icon" aria-hidden="true"></span></div>
-      <h2 id="creatorProgramTitle" data-i18n="creatorProgram.modalTitle">Crea un video y gana 2 meses Pro</h2>
-      <p class="cuenta-cancel-description" data-i18n="creatorProgram.modalBody1">Si eres creador de contenido, publica un video hablando, reseñando o recomendando TikLiveTTS.</p>
-      <button type="button" class="btn btn-connect cuenta-cancel-confirm creator-program-join" data-i18n="creatorProgram.join">Participar</button>
-      <p class="cuenta-cancel-notice"><img class="icon-inline" src="icons/gift.svg" alt=""><span data-i18n-html="creatorProgram.modalBody3">Una vez aprobado, podrás canjear <strong>2 meses de TikLiveTTS Pro completamente gratis.</strong></span></p>
-    </div>
-    <div class="cuenta-cancel-image"><img src="img/gato-regalo-creadores.png" width="1254" height="1254" alt=""></div>
-  </div>
-</div>
-
 <!-- ══ MODAL: Código de descuento (primer banner del chat) ═══ -->
 <div id="promoCodeModal" class="modal-overlay">
   <div class="modal-content discord-modal-content" role="dialog" aria-modal="true" aria-labelledby="promoCodeTitle">
@@ -1406,6 +1402,16 @@
   </div>
 </div>
 
+<!-- ══ MODAL: Volver a una versión anterior ══════ -->
+<div id="rollbackModal" class="modal-overlay" onclick="closeRollbackModal(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeRollbackModal()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <h2><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="update.rollback.title">Versiones anteriores</span></h2>
+    <p style="color:var(--text-secondary);margin-bottom:14px;" data-i18n="update.rollback.desc">Elegí una versión anterior para volver a instalarla. Tus datos y configuración no se pierden.</p>
+    <div id="rollbackList"></div>
+  </div>
+</div>
+
 <!-- ══ MODAL: Bloquear palabra al vuelo desde el chat ══════ -->
 <div id="blockWordModal" class="modal-overlay" onclick="closeBlockWordModal(event)">
   <div class="modal-content" onclick="event.stopPropagation()">
@@ -1453,31 +1459,6 @@
     <h2 style="justify-content:center;" data-i18n="notice.onboardingDoneTitle">¡Listo! Ya sabés cómo conectar</h2>
     <p style="margin:0 auto 14px;max-width:340px;color:var(--text-secondary);" data-i18n="notice.onboardingDoneBody">Mucho éxito con tu stream — que se te dé todo bien ahí arriba. Esta app la hago solo, así que si en algún momento la mencionás en tu canal, ayuda un montón a que más streamers la conozcan. ¡Gracias por usarla!</p>
     <button class="btn btn-connect" style="width:100%;" onclick="closeOnboardingComplete()"><span data-i18n="notice.onboardingDoneCta">¡Vamos!</span></button>
-  </div>
-</div>
-
-<!-- ══ MODAL: Aviso donaciones (one-time) ═══════════════ -->
-<div id="donationNoticeModal" class="modal-overlay" onclick="closeDonationNotice(event)">
-  <div class="modal-content" onclick="event.stopPropagation()">
-    <button class="modal-close" onclick="closeDonationNotice()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
-    <h2><img class="icon-inline" src="icons/favorite.svg" alt=""> <span data-i18n="notice.donationsTitle">Nuevas formas de apoyar el proyecto</span></h2>
-    <p data-i18n="notice.donationsBody">Agregamos Ko-fi y PayPal como opciones de donación. La app seguirá siendo 100% gratis — si te sirve y quieres aportar al proyecto, ahora es más fácil que nunca.</p>
-    <button class="btn-copy" onclick="openDonationsFromNotice()"><span data-i18n="notice.donationsCta">Ver opciones de donación</span></button>
-  </div>
-</div>
-
-<!-- ══ MODAL: Aviso reporte de bug (one-time) ════════════ -->
-<div id="bugReportNoticeModal" class="modal-overlay" onclick="closeBugReportNotice(event)">
-  <div class="modal-content" onclick="event.stopPropagation()">
-    <button class="modal-close" onclick="closeBugReportNotice()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
-    <h2><img class="icon-inline" src="icons/warning.svg" alt=""> <span data-i18n="notice.bugReportTitle">¿Tenés un problema? Avisame al toque</span></h2>
-    <p style="margin-bottom:14px;" data-i18n="notice.bugReportBody">Agregamos un botón de "Reportar Bug". Cada vez que algo falle, apretalo, contame en pocas palabras qué pasó y se me manda todo automáticamente — es como si viera tu computadora en el momento, así lo arreglo más rápido.</p>
-    <p style="font-size:12px;color:var(--text-muted);margin-bottom:20px;line-height:1.5;" data-i18n="notice.bugReportDevBody">Esta app está en desarrollo constante, así que es normal encontrarse de vez en cuando con algún error. Si querés ayudar a mejorarla, podés sumarte como developer o apoyar con una donación.</p>
-    <button class="btn-copy" onclick="openBugReportFromNotice()"><span data-i18n="notice.bugReportCta">Ver botón de Reportar Bug</span></button>
-    <div style="display:flex;gap:10px;margin-top:10px;">
-      <a href="https://github.com/iKhunsa/tiktok-tts" target="_blank" class="cfg-btn" style="flex:1;justify-content:center;" data-i18n="notice.bugReportDevCta">Sumate como developer</a>
-      <button class="cfg-btn" style="flex:1;justify-content:center;" onclick="closeBugReportNotice();openDonationsModal();" data-i18n="notice.bugReportDonateCta">Apoyar con una donación</button>
-    </div>
   </div>
 </div>
 

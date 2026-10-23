@@ -11,6 +11,7 @@ const SONIDOS = [
 
 export const halloween = {
   id: 'halloween',
+  apagado: true, // fuera de la UI por ahora; sigue disponible con ?evento=halloween
   ventana: { desde: '10-01', hasta: '11-02' }, // MM-DD inclusive
   recursos: RECURSOS,
   sonidos: SONIDOS,

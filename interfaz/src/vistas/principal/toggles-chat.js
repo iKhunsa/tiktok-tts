@@ -7,7 +7,7 @@ import { updateConnectorChipState } from './voces.js';
 
 const CHAT_TOGGLE_CHIP_IDS = [
   'chip-chat', 'chip-gifts', 'chip-gift-amount', 'chip-joins', 'chip-follows',
-  'chip-likes', 'chip-shares', 'chip-username', 'chip-nonfollowers', 'chip-username-connector',
+  'chip-likes', 'chip-shares', 'chip-username', 'chip-username-connector',
 ];
 
 /** Reconstruye el resumen de texto a partir del estado .active de cada chip. */
@@ -53,7 +53,7 @@ export function expandChatToggles() {
 
 /**
  * Un solo enganche: cualquier cambio de .active en los chips (toggleOption,
- * setReadNonFollowers, applySettings, setSoloChatMode, emergencia, remote-cmd)
+ * applySettings, setSoloChatMode, emergencia, remote-cmd)
  * refresca el resumen sin tocar esas funciones.
  */
 export function toggleOption(key, checkbox) {

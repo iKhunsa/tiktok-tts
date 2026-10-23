@@ -30,7 +30,8 @@ function iniciarBotonNovedades() {
 }
 
 // Los botones min/max/cerrar son nativos y el scrim del modal no los cubre:
-// el main les baja el contraste mientras haya algún modal abierto.
+// el main les baja el contraste mientras haya algún modal abierto. childList:
+// los popups que se crean al vuelo (Mi cuenta, planes, Pro) entran ya con .show.
 function iniciarAtenuadoDeControles() {
   if (!window.electronAPI?.dimTitleBar) return;
   let atenuado = false;
@@ -39,7 +40,7 @@ function iniciarAtenuadoDeControles() {
     if (hayModal === atenuado) return;
     atenuado = hayModal;
     window.electronAPI.dimTitleBar(hayModal);
-  }).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class'] });
+  }).observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['class'] });
 }
 
 export function iniciarBarraTitulo() {

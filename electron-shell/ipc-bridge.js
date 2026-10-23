@@ -3,6 +3,9 @@
 const { ipcMain } = require('electron');
 const { registerUiohookShortcut, unregisterUiohookShortcut, isUiohookActive } = require('./uiohook');
 const { TITLEBAR_OVERLAY, TITLEBAR_OVERLAY_DIMMED } = require('./titlebar');
+const { autenticarConGoogle } = require('./google-auth');
+const { autenticarConTwitch } = require('./twitch-auth');
+const { autenticarConKick } = require('./kick-auth');
 
 const FORBIDDEN_SHORTCUTS = new Set(['Alt+F4', 'Ctrl+C', 'Cmd+C', 'Ctrl+V', 'Cmd+V', 'Ctrl+Alt+Del', 'Ctrl+Shift+Esc', 'Cmd+Shift+Esc']);
 const SPECIAL_PAUSE_SHORTCUTS = new Set(['MediaPlayPause', 'F8', 'F9', 'F10', 'F11', 'F12']);
@@ -58,6 +61,14 @@ function isValidShortcut(shortcut) {
 function attachIpcBridge({ app, bus, logger, getMainWindow, globalShortcut }) {
   ipcMain.handle('get-app-version', () => app.getVersion());
 
+  // Pantallas de Cuenta (login/registro/vincular/borrar) y vincular
+  // Twitch/Kick: abren el navegador externo + server loopback y devuelven
+  // {code, codeVerifier?, redirectUri} para que el renderer lo mande al
+  // endpoint que corresponda.
+  ipcMain.handle('auth:google', () => autenticarConGoogle());
+  ipcMain.handle('auth:twitch', () => autenticarConTwitch());
+  ipcMain.handle('auth:kick', () => autenticarConKick());
+
   ipcMain.on('titlebar:dim', (_event, dimmed) => {
     const win = getMainWindow();
     if (!win || win.isDestroyed()) return;
@@ -82,6 +93,25 @@ function attachIpcBridge({ app, bus, logger, getMainWindow, globalShortcut }) {
 
   ipcMain.on('install-update', () => {
     require('./updater').installUpdate();
+  });
+
+  ipcMain.on('check-for-updates', () => {
+    require('./updater').checkForUpdates();
+  });
+
+  ipcMain.handle('rollback:list-versions', () => require('./rollback').listarVersionesAnteriores(app));
+
+  ipcMain.handle('rollback:to-version', (_event, version) => {
+    const win = getMainWindow();
+    const onProgress = (p) => {
+      if (win && !win.isDestroyed()) win.webContents.send('update-event', { type: 'rollback-downloading', version, ...p });
+    };
+    return require('./rollback').rollbackAVersion(app, version, onProgress)
+      .then(() => ({ ok: true }))
+      .catch((err) => {
+        if (win && !win.isDestroyed()) win.webContents.send('update-event', { type: 'rollback-error', message: err.message });
+        return { ok: false, error: err.message };
+      });
   });
 
   ipcMain.on('telemetry:track', (_event, name, payload) => {

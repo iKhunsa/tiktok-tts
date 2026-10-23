@@ -1,3 +1,21 @@
+## [1.12.0] — 2026-10-21
+
+### Accesso e registrazione
+- Schermata di accesso ridisegnata, con immagine di sfondo e testi nuovi.
+- **Accedi**: entra con Google in un clic oppure scegli **«Email»** per usare email e password nella stessa scheda.
+- **Crea account**: la registrazione è solo con Google e richiede un **nickname unico**, il tuo nome da creator, che nessun altro può usare.
+
+### Finestra «Il mio account»
+- Cliccando sulla tua email o su **Il mio account** nel menu dell’account si apre una finestra dedicata con menu laterale, invece di cambiare schermata.
+- **Profilo**: cambia foto e banner, modifica il nickname con un clic, collega Google, esci o elimina l’account da un unico posto.
+- **Fatturazione**: il tuo piano con la data di rinnovo, il metodo di pagamento, lo storico delle fatture con download in PDF e l’opzione per annullare il piano, tutto in un’unica schermata.
+- **Accessibilità**: dimensione del testo (Normale, Medio, Grande, Molto grande), riduci il movimento negli overlay, TTS con voce lenta e alto contrasto. Le modifiche si applicano subito.
+- **Aiuto** apre direttamente il nostro Discord.
+- La finestra si adatta alle dimensioni dell’app, si ingrandisce quando la massimizzi e non copre i pulsanti della finestra.
+
+### Modifiche
+- Le impostazioni di accessibilità passano dalle Impostazioni avanzate a **Il mio account → Accessibilità**.
+
 ## [1.11.2] — 2026-10-09
 
 ### Moderazione della chat

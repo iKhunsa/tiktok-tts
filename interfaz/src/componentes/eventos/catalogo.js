@@ -1,7 +1,8 @@
 /**
  * Catalogo de eventos. Agregar un evento = carpeta nueva + una linea aqui.
  * Contrato: { id, ventana: {desde:'MM-DD', hasta:'MM-DD'}, recursos: [urls],
- *             sonidos: [{src, volumen 0-1}] (opcional), duracionMs, montar(capa, anclas) -> (limpiar?) }  // anclas: ver anclas.js
+ *             sonidos: [{src, volumen 0-1}] (opcional), duracionMs, montar(capa, anclas) -> (limpiar?),
+ *             apagado (opcional: true lo saca de la fecha, solo se ve forzado) }  // anclas: ver anclas.js
  */
 import { halloween } from './halloween/index.js';
 
@@ -18,5 +19,5 @@ function enVentana({ desde, hasta }, fecha) {
 /** Evento forzado por id (pruebas) o el primero cuya ventana contiene `fecha`. */
 export function elegirEvento(eventos, fecha, forzadoId) {
   if (forzadoId) return eventos.find((e) => e.id === forzadoId) || null;
-  return eventos.find((e) => enVentana(e.ventana, fecha)) || null;
+  return eventos.find((e) => !e.apagado && enVentana(e.ventana, fecha)) || null;
 }

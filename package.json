@@ -1,6 +1,6 @@
 {
   "name": "tiktok-live-tts",
-  "version": "1.11.2",
+  "version": "1.12.0",
   "description": "TikLiveTTS Live Chat Text-to-Speech Reader",
   "author": "iKhunsa",
   "main": "main.js",
@@ -93,6 +93,10 @@
       {
         "from": "aptabase-config.generated.json",
         "to": "aptabase-config.json"
+      },
+      {
+        "from": "oauth-config.generated.json",
+        "to": "oauth-config.json"
       },
       {
         "from": "cuentas-config.json",

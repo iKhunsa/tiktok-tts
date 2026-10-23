@@ -1,8 +1,9 @@
 'use strict';
 
-// Motivos del guard que NO son contenido moderado: politica de seguidores
-// (config del streamer) o fallo interno. No cuentan como "bloqueado".
-const NOT_MODERATION = new Set(['non-follower', 'policy-evaluation-failed']);
+// Motivos del guard que NO son contenido moderado: politica de gift-gate
+// (config del streamer, ver features/moderacion/gift-gate.js) o fallo interno.
+// No cuentan como "bloqueado".
+const NOT_MODERATION = new Set(['gift-gate', 'policy-evaluation-failed']);
 
 const ORIGIN_BY_REASON = {
   banned: 'usuario',

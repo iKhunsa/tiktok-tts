@@ -236,6 +236,19 @@
 
     .sidebar-app-version { position: absolute; right: 10px; bottom: 4px; color: var(--text-muted); font-size: var(--text-3xs); line-height: 1; }
 
+    .sidebar-brand-wrap { position: relative; }
+
+    .sidebar-update-actions { position: absolute; left: 10px; bottom: 4px; display: flex; gap: 4px; }
+    .sidebar-update-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 20px; height: 20px; padding: 0;
+      background: transparent; border: none; border-radius: var(--radius-sm);
+      color: var(--text-muted); cursor: pointer;
+      transition: background-color 0.15s ease-out, color 0.15s ease-out;
+    }
+    .sidebar-update-btn:hover { background: var(--surface); color: var(--text-secondary); }
+    .sidebar-update-btn .icon-inline { width: 14px; height: 14px; }
+
     .sidebar-nav {
       flex: 0 0 auto;
       display: flex;
@@ -690,8 +703,8 @@
     .btn-connect:hover { opacity: 0.85; }
     .btn-connect:active:not(:disabled), .btn-disconnect:active { transform: scale(0.97); }
     .btn-connect:disabled { opacity: 0.45; cursor: not-allowed; }
-    /* texto blanco sobre el rojo en los envios de los modales de idea y de reporte (el resto de .btn-connect sigue en negro) */
-    #ideaSubmitBtn, #bugReportSubmitBtn { color: #fff; }
+    /* texto blanco sobre el rojo en los envios de idea/reporte y en los CTA del onboarding (el resto de .btn-connect sigue en negro) */
+    #ideaSubmitBtn, #bugReportSubmitBtn, #onboardingWelcomeModal .btn-connect, #onboardingCompleteModal .btn-connect { color: #fff; }
     .btn-disconnect { background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border); transition: border-color var(--dur-2) var(--ease-out), transform var(--dur-press) var(--ease-out); }
     .btn-disconnect:hover { border-color: var(--border-strong); }
 
@@ -1725,6 +1738,8 @@
     .cfg-btn.icon-only { padding: 6px 9px; }
     /* Efectos de evento: etiqueta + mini switch; verde = activos, gris = apagados. */
     #btnEventEffects { gap: 7px; }
+    /* Sin evento vigente efectos-evento.js lo marca hidden; .cfg-btn (display:flex) le ganaba. */
+    #btnEventEffects[hidden] { display: none; }
     #btnEventEffects .fx-switch {
       position: relative; width: 26px; height: 14px; flex-shrink: 0; margin-left: 2px;
       background: var(--border); border-radius: var(--radius-pill);
@@ -1912,7 +1927,7 @@
     .driver-popover-close-btn:hover, .driver-popover-close-btn:focus { color: var(--text); }
     .driver-popover-footer-btn {
       background-color: var(--accent);
-      color: #000;
+      color: #fff;
       border: none;
       border-radius: var(--radius-pill);
       font-weight: 600;
@@ -2060,6 +2075,7 @@
       width: min(100%, 512px);
       padding: 12px 16px;
     }
+    .cuenta-cancel-modal > .modal-close,
     .vista-bloqueada-contenido > .modal-close,
     .planes-popup-content > .modal-close { z-index: 2; }
     .vista-bloqueada-msg {
@@ -2242,7 +2258,6 @@
       .donation-card-action .btn-copy { width: 100%; }
     }
 
-    #donationNoticeModal p { margin: 0 0 24px; font-size: var(--text-base); color: var(--text-secondary); line-height: 1.6; }
 
     .badge-new {
       display: inline-block;
@@ -2710,6 +2725,28 @@
     }
     .cuenta-field input::placeholder { color: var(--text-muted); }
 
+    .cuenta-pass-wrap { position: relative; }
+    .cuenta-pass-wrap input { width: 100%; padding-right: 40px; box-sizing: border-box; }
+    .cuenta-pass-toggle {
+      position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+      display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; padding: 0;
+      background: transparent; border: none; border-radius: var(--radius-sm);
+      cursor: pointer; opacity: 0.6;
+      transition: opacity var(--dur-2) var(--ease-out);
+    }
+    .cuenta-pass-toggle:hover { opacity: 1; }
+    .cuenta-pass-toggle .icon-inline { width: 16px; height: 16px; }
+
+    .cuenta-forgot-link {
+      align-self: flex-start;
+      background: none; border: none; padding: 0; margin-top: -8px;
+      font-size: var(--text-2xs); color: var(--text-muted);
+      cursor: pointer; text-decoration: underline; text-underline-offset: 2px;
+      transition: color var(--dur-2) var(--ease-out);
+    }
+    .cuenta-forgot-link:hover { color: var(--text-secondary); }
+
     .cuenta-hint {
       margin: -4px 0 0;
       font-size: var(--text-2xs);
@@ -2778,6 +2815,103 @@
     .cuenta-btn-danger { border-color: var(--danger-a30); color: var(--danger); }
     .cuenta-btn-danger:hover { border-color: var(--danger-soft); color: var(--danger-soft); background: var(--danger-a12); }
 
+    /* Icono + texto dentro de un boton ghost (vincular/confirmar con Google) */
+    .cuenta-btn-icon { display: inline-flex; align-items: center; gap: 6px; }
+    .cuenta-btn-icon .icon-inline { width: 14px; height: 14px; }
+
+    /* Boton "Continuar con Google" — mismo alto/radio que cuenta-btn-primary,
+       pero con el fondo neutro esperado para un boton de marca de terceros. */
+    .cuenta-btn-google {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      margin-top: 4px;
+      padding: 11px 16px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      background: var(--bg-button);
+      color: var(--text);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: border-color var(--dur-2), background var(--dur-2), transform var(--dur-press) var(--ease-out);
+    }
+    .cuenta-btn-google .icon-inline { width: 18px; height: 18px; }
+    .cuenta-btn-google:hover { border-color: var(--text-bright-a30); background: var(--surface-raised); }
+    .cuenta-btn-google:active { transform: scale(0.98); }
+    .cuenta-btn-google:disabled { opacity: 0.55; cursor: default; transform: none; }
+
+    /* ── Pantalla de login ───────────────────────────────────
+       Sin sesión la vista "cuenta" tapa sidebar y layout: queda solo la barra
+       de título sobre el fondo ilustrado, con la tarjeta flotando a la izquierda. */
+    body.app-bloqueada #view-cuenta.active {
+      position: fixed;
+      inset: var(--titlebar-h) 0 0 0;
+      z-index: 50;
+      display: flex;
+      align-items: safe center;
+      padding: 24px clamp(16px, 9vw, 160px);
+      overflow-y: auto;
+      background: #1a0503 url('/img/login-fondo.png') center / cover no-repeat;
+    }
+    body.app-bloqueada #view-cuenta .view-header { display: none; }
+    body.app-bloqueada #cuentaPanel { align-items: flex-start; width: 100%; }
+
+    .cuenta-auth {
+      max-width: 420px;
+      background: rgba(24, 24, 26, 0.94);
+      border-color: rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+    }
+    body.app-bloqueada .cuenta-auth { margin-top: 0; }
+    .cuenta-auth .cuenta-card-title { font-size: 26px; font-weight: 700; }
+    .cuenta-auth .cuenta-register-terms { margin: 14px 0 16px; }
+    .cuenta-auth .cuenta-btn-google { background: var(--brand); border-color: transparent; color: #fff; }
+    .cuenta-auth .cuenta-btn-google:hover { background: var(--brand-hover); border-color: transparent; }
+
+    .cuenta-btn-email {
+      display: block;
+      width: auto;
+      margin: 10px auto 0;
+      padding: 11px 48px;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      background: var(--surface-raised);
+      color: var(--text-secondary);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: background var(--dur-2), color var(--dur-2), transform var(--dur-press) var(--ease-out);
+    }
+    .cuenta-btn-email:hover { background: var(--bg-button); color: var(--text); }
+    .cuenta-btn-email:active { transform: scale(0.98); }
+    .cuenta-btn-email:focus-visible,
+    .cuenta-auth .cuenta-btn-google:focus-visible { outline: 2px solid var(--text-bright); outline-offset: 2px; }
+
+    #cuentaNickHint { margin: 8px 0 2px; transition: color var(--dur-2); }
+    #cuentaNickHint.cuenta-nick-ok { color: var(--ok); }
+    #cuentaNickHint.cuenta-nick-error { color: var(--danger-soft); }
+
+    .cuenta-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 4px 0;
+      color: var(--text-muted);
+      font-size: var(--text-2xs);
+    }
+    .cuenta-divider::before, .cuenta-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-strong);
+    }
+
     .cuenta-danger-zone { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); margin-top: var(--space-2); padding: var(--space-4) 0 0; border-top: 1px solid var(--border-strong); }
     .cuenta-danger-zone .cuenta-hint { margin: 0; }
     .cuenta-delete-modal { max-width: 460px; padding: var(--space-8); }
@@ -2785,7 +2919,7 @@
     .cuenta-delete-modal .notice-icon-badge .notice-icon-warn { display: inline-block; width: 20px; height: 20px; background: var(--danger); -webkit-mask: url('/icons/warning.svg') center / contain no-repeat; mask: url('/icons/warning.svg') center / contain no-repeat; }
     .cuenta-delete-modal h2 { margin-bottom: var(--space-4); }
     .cuenta-delete-list { margin: 0 0 var(--space-5); padding-left: var(--space-5); color: var(--text-muted); font-size: var(--text-base); line-height: 1.6; }
-    .cuenta-delete-actions { display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-5); }
+    .cuenta-delete-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-5); }
     .cuenta-delete-modal .modal-close:focus-visible { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
     @media (max-width: 520px) { .cuenta-danger-zone { flex-direction: column; align-items: flex-start; } .cuenta-delete-modal { width: calc(100% - 24px); padding: 24px 18px; } }
 
@@ -2809,6 +2943,10 @@
     .cuenta-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .cuenta-perfil-nombre { font-size: var(--text-md); font-weight: 600; color: var(--text-bright); }
     .cuenta-perfil-email { font-size: var(--text-xs); color: var(--text-muted); }
+    .cuenta-identidad-google { margin-top: 6px; min-height: 1px; }
+    .cuenta-identidad-google .cuenta-btn-ghost { padding: 6px 12px; }
+    .cuenta-identidad-badge { display: inline-flex; align-items: center; gap: 6px; font-size: var(--text-2xs); color: var(--text-muted); }
+    .cuenta-identidad-badge .icon-inline { width: 14px; height: 14px; }
     .cuenta-perfil-acciones { display: flex; gap: 10px; flex-wrap: wrap; }
 
     /* Plan */

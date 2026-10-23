@@ -28,6 +28,8 @@ const SIDEBAR_TOOLS = [
 // membresia: chat / overlays / clips / moderacion / settings quedan visibles
 // (el boton "Tienda de plugins" esta siempre fijo, no es parte de esta lista).
 const SIDEBAR_TOOLS_LEGACY_VISIBLE = ['chat', 'overlays', 'clips', 'moderacion', 'settings'];
+// Tope de herramientas no-pinneadas visibles en la barra lateral.
+const SIDEBAR_MAX_VISIBLE = 4;
 
 function toolById(id) {
   return SIDEBAR_TOOLS.find((tool) => tool.id === id) || null;

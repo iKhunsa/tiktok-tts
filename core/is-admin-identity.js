@@ -1,6 +1,6 @@
 'use strict';
 
-const { getConfigSnapshot } = require('../../core/config-snapshot');
+const { getConfigSnapshot } = require('./config-snapshot');
 
 /** Lee adminIdentities via el contrato de /configuracion (Fase 2), nunca el store directo. */
 function isAdminIdentity(bus, platform, ...candidates) {

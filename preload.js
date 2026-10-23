@@ -36,6 +36,9 @@ const TRACKABLE_EVENTS = new Set([
 contextBridge.exposeInMainWorld('electronAPI', {
   getAppVersion: () => ipcRenderer.invoke('get-app-version'),
   dimTitleBar: (dimmed) => ipcRenderer.send('titlebar:dim', dimmed === true),
+  authGoogle: () => ipcRenderer.invoke('auth:google'),
+  authTwitch: () => ipcRenderer.invoke('auth:twitch'),
+  authKick: () => ipcRenderer.invoke('auth:kick'),
   trackEvent: (name, payload) => {
     if (!TRACKABLE_EVENTS.has(name)) return;
     // Solo se reenvía payload cuando es un string corto (idioma, origen, vista...).
@@ -47,6 +50,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onUpdateEvent: (cb) => on('update-event', (_e, data) => cb(data)),
   offUpdateEvent: (cb) => off('update-event', cb),
   installUpdate: () => ipcRenderer.send('install-update'),
+  checkForUpdates: () => ipcRenderer.send('check-for-updates'),
+  listRollbackVersions: () => ipcRenderer.invoke('rollback:list-versions'),
+  rollbackToVersion: (version) => ipcRenderer.invoke('rollback:to-version', version),
   getOpenAtLogin: () => ipcRenderer.invoke('login-item:get'),
   setOpenAtLogin: (enabled) => ipcRenderer.invoke('login-item:set', enabled === true),
   registerTtsShortcut: (action, shortcut) => ipcRenderer.invoke('register-tts-shortcut', { action, shortcut }),

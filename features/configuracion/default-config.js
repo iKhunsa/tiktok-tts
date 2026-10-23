@@ -27,9 +27,17 @@ const DEFAULT_CONFIG = {
   ttsSlowSpeech: false,
   // Plantillas propias de avisos ({usuario}, {regalo}, ...) por evento; vacio = texto estandar.
   announceTemplates: {},
-  // true = el TTS lee a todo el mundo (comportamiento historico).
-  // false = solo lee a seguidores y a la whitelist manual.
-  ttsReadNonFollowers: true,
+  // Gate por donacion (features/moderacion/gift-gate.js): si esta activado para
+  // una plataforma, el TTS solo lee a quien ya regalo/paga al menos el minimo
+  // configurado en ALGUN momento de la sesion actual (whitelist y admin siempre
+  // se leen). Por plataforma porque cada una usa una moneda distinta y el
+  // usuario puede no tener todas conectadas.
+  ttsGiftGateTiktokEnabled: false,
+  ttsGiftGateTiktokMinCoins: 1,
+  ttsGiftGateTwitchEnabled: false,
+  ttsGiftGateTwitchMinBits: 100,
+  ttsGiftGateKickEnabled: false,
+  ttsGiftGateKickMinKicks: 10,
   // Rust Chat Guard (features/moderacion/rust-guard/): segunda capa de moderacion
   // de contenido, por cuenta. shadow = solo registra discrepancias; enforce = aplica.
   rustGuardEnabled: true,
