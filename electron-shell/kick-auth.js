@@ -5,6 +5,7 @@
 // exige PKCE ademas del client_secret (que vive en el backend, nunca aca).
 
 const path = require('path');
+const crypto = require('crypto');
 const { generarPKCE } = require('./pkce');
 const { autenticarConLoopback } = require('./oauth-loopback');
 const { resolveConfigValue } = require('./resolve-config-value');
@@ -32,6 +33,11 @@ function autenticarConKick() {
         scope: SCOPE,
         code_challenge: codeChallenge,
         code_challenge_method: 'S256',
+        // Kick lo marca obligatorio ("Yes (at the moment)" en su doc) a
+        // diferencia de Google/Twitch; sin el, /oauth/authorize no tira un
+        // error claro, redirige a id.kick.com (404). No se valida al volver
+        // (PKCE ya cubre la integridad del code), solo necesita estar presente.
+        state: crypto.randomBytes(16).toString('hex'),
       });
       return `https://id.kick.com/oauth/authorize?${params}`;
     },
