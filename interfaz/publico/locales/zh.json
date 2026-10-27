@@ -610,7 +610,10 @@
                        "sharedList":  "分享",
                        "noShared":  "暂无分享",
                        "anonymous":  "匿名",
-                       "giftFrom":  "来自 @{user}"
+                       "giftFrom":  "来自 @{user}",
+                       "cheerBits":  "{bits} 比特",
+                       "newSub":  "新订阅",
+                       "kicksGifted":  "{amount} Kicks"
                    },
     "donations":  {
                       "title":  "支持我的内容",

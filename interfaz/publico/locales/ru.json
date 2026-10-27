@@ -610,7 +610,10 @@
                        "sharedList":  "Поделились",
                        "noShared":  "Пока нет репостов",
                        "anonymous":  "Аноним",
-                       "giftFrom":  "от @{user}"
+                       "giftFrom":  "от @{user}",
+                       "cheerBits":  "{bits} битов",
+                       "newSub":  "Новая подписка",
+                       "kicksGifted":  "{amount} Kicks"
                    },
     "donations":  {
                       "title":  "Поддержи мой контент",

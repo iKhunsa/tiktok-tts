@@ -610,7 +610,10 @@
                        "sharedList":  "Condivisi",
                        "noShared":  "Nessuna condivisione ancora",
                        "anonymous":  "Anonimo",
-                       "giftFrom":  "da @{user}"
+                       "giftFrom":  "da @{user}",
+                       "cheerBits":  "{bits} bit",
+                       "newSub":  "Nuovo abbonamento",
+                       "kicksGifted":  "{amount} Kicks"
                    },
     "donations":  {
                       "title":  "Supporta il mio contenuto",

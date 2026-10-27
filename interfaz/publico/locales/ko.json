@@ -610,7 +610,10 @@
                        "sharedList":  "공유",
                        "noShared":  "아직 공유 없음",
                        "anonymous":  "익명",
-                       "giftFrom":  "@{user}님으로부터"
+                       "giftFrom":  "@{user}님으로부터",
+                       "cheerBits":  "{bits} 비트",
+                       "newSub":  "새 구독",
+                       "kicksGifted":  "Kicks {amount}개"
                    },
     "donations":  {
                       "title":  "내 콘텐츠를 지원해주세요",

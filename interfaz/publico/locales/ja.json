@@ -610,7 +610,10 @@
                        "sharedList":  "シェア",
                        "noShared":  "まだシェアがありません",
                        "anonymous":  "匿名",
-                       "giftFrom":  "@{user} から"
+                       "giftFrom":  "@{user} から",
+                       "cheerBits":  "{bits} ビッツ",
+                       "newSub":  "新規サブスク",
+                       "kicksGifted":  "Kicks {amount}個"
                    },
     "donations":  {
                       "title":  "コンテンツを支援する",
