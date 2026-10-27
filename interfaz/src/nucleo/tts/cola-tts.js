@@ -10,7 +10,7 @@
  * circular a proposito y seguro: todas las llamadas cruzadas ocurren
  * dentro de cuerpos de funcion, nunca en el top-level de ningun modulo.
  */
-import { appSettings, saveSettings, ttsRate, ttsVol, setTtsRate, setTtsVol, applySettings } from '../estado/ajustes-app.js';
+import { appSettings, saveSettings, ttsRate, ttsVol, ttsPitch, setTtsRate, setTtsVol, setTtsPitch, applySettings } from '../estado/ajustes-app.js';
 import { options } from '../estado/opciones-lectura.js';
 import { t } from '../i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
@@ -21,6 +21,12 @@ import { chatFollowSpeaking } from '../../vistas/principal/chat-ui.js';
 import { MAX_QUEUE_SIZE } from '../estado/config-runtime.js';
 import { stopAudio } from './stop-audio.js';
 import { moderationSession } from '../estado/moderacion-sesion.js';
+import { crearFuentePitchShift } from './pitch-shift.js';
+
+// Umbral para considerar el tono "neutro": por debajo de esto se usa la
+// ruta simple de siempre (sin Web Audio API de por medio), igual que si la
+// feature de Tono no existiera.
+const PITCH_NEUTRAL_EPSILON = 0.01;
 
 export let ttsGlobalEnabled = true;
 export let ttsPaused = false;
@@ -33,12 +39,24 @@ let ttsErrorCount = 0;
 let ttsAbortController = null;
 const TTS_MAX_ERRORS = 5;
 const audioObjectUrls = new WeakMap();
+const pitchShiftSources = new WeakMap();
 
 function releaseAudioObjectUrl(audio) {
   const url = audioObjectUrls.get(audio);
   if (!url) return;
   audioObjectUrls.delete(audio);
   URL.revokeObjectURL(url);
+}
+
+// Corta la fuente de Web Audio API que alimenta el <audio> cuando el tono
+// esta modificado (ver pitch-shift.js) — sin esto, saltar/cancelar un
+// mensaje con tono distinto deja el nodo de audio sonando (mudo, pero vivo)
+// de fondo.
+function detenerFuentePitchShift(audio) {
+  const fuente = pitchShiftSources.get(audio);
+  if (!fuente) return;
+  pitchShiftSources.delete(audio);
+  fuente.stop();
 }
 
 // Serializacion de processQueue: es async y toca estado global compartido
@@ -135,6 +153,7 @@ export function stopCurrentTTS({ clearQueue = false } = {}) {
     const audio = activeAudio;
     stopAudio(audio);
     releaseAudioObjectUrl(audio);
+    detenerFuentePitchShift(audio);
     activeAudio = null;
   }
   if (clearQueue) speechQueue = [];
@@ -177,7 +196,34 @@ export function enableEmergencyTTSMode() {
   showToast(t('toast.emergencyActive'));
 }
 
-export function playAudioBlob(blob, { onEnd, onError } = {}) {
+// Arma la fuente del <audio> segun haya o no tono custom. Con tono neutro
+// es exactamente la ruta de siempre (object URL directo); con tono
+// modificado pasa por pitch-shift.js. Nunca lanza: si el pitch-shift falla
+// por lo que sea (decode, AudioContext no disponible), cae a la ruta
+// simple — el tono no sale como el usuario lo pidio, pero el TTS no se corta.
+async function prepararFuenteAudio(audio, blob) {
+  const pitchEsNeutro = Math.abs(ttsPitch - 1) < PITCH_NEUTRAL_EPSILON;
+  if (!pitchEsNeutro) {
+    try {
+      const fuente = await crearFuentePitchShift(blob, ttsPitch);
+      pitchShiftSources.set(audio, fuente);
+      audio.srcObject = fuente.stream;
+      audio.playbackRate = ttsRate / ttsPitch;
+      audio.preservesPitch = true;
+      fuente.start();
+      return;
+    } catch (err) {
+      logStorage.addLog('warn', 'client', 'Pitch-shift fallo, se usa la voz sin modificar', { error: err.message });
+    }
+  }
+  const url = URL.createObjectURL(blob);
+  audioObjectUrls.set(audio, url);
+  audio.src = url;
+  audio.playbackRate = ttsRate;
+  audio.preservesPitch = true;
+}
+
+export async function playAudioBlob(blob, { onEnd, onError } = {}) {
   if (!blob || blob.size === 0) { onError?.(); return; }
 
   // Si quedo un audio previo referenciado (dos blobs resolvieron casi juntos),
@@ -187,14 +233,11 @@ export function playAudioBlob(blob, { onEnd, onError } = {}) {
     const previousAudio = activeAudio;
     stopAudio(previousAudio);
     releaseAudioObjectUrl(previousAudio);
+    detenerFuentePitchShift(previousAudio);
   }
 
-  const url = URL.createObjectURL(blob);
-  const audio = new Audio(url);
-  audioObjectUrls.set(audio, url);
-  audio.playbackRate = ttsRate;
+  const audio = new Audio();
   audio.volume = ttsVol;
-  audio.preservesPitch = false;
   activeAudio = audio;
 
   let settled = false;
@@ -205,6 +248,7 @@ export function playAudioBlob(blob, { onEnd, onError } = {}) {
     // huerfano que termina no debe pisar el activeAudio de otra ejecucion.
     if (activeAudio === audio) activeAudio = null;
     releaseAudioObjectUrl(audio);
+    detenerFuentePitchShift(audio);
     cb?.();
   };
 
@@ -214,6 +258,18 @@ export function playAudioBlob(blob, { onEnd, onError } = {}) {
     stopAudio(audio);
     finish(onError);
   };
+
+  await prepararFuenteAudio(audio, blob);
+  // El decode de pitch-shift.js es la unica espera real de esta funcion —
+  // en ese ratito un stop/skip pudo haber corrido y dejar este audio
+  // huerfano (ya no es activeAudio, y stopAudio() ya le vacio los
+  // handlers). Reproducirlo igual sonaria superpuesto con lo que haya
+  // arrancado despues — no seguir.
+  if (activeAudio !== audio) {
+    detenerFuentePitchShift(audio);
+    releaseAudioObjectUrl(audio);
+    return;
+  }
 
   let playTimer = null;
   Promise.race([
@@ -231,7 +287,10 @@ export function playAudioBlob(blob, { onEnd, onError } = {}) {
 export function updateRate(v) {
   setTtsRate(parseFloat(v));
   document.getElementById('rateVal').textContent = ttsRate.toFixed(1);
-  if (activeAudio) activeAudio.playbackRate = ttsRate;
+  // Con el audio activo en pitch-shift, su playbackRate real es
+  // ttsRate/ttsPitch (ver prepararFuenteAudio) — no ttsRate pelado, si no
+  // se pierde la compensacion de duracion a mitad del mensaje.
+  if (activeAudio) activeAudio.playbackRate = pitchShiftSources.has(activeAudio) ? ttsRate / ttsPitch : ttsRate;
   appSettings.rate = ttsRate;
   saveSettings();
 }
@@ -241,6 +300,17 @@ export function updateVol(v) {
   document.getElementById('volVal').textContent = Math.round(ttsVol * 100);
   if (activeAudio) activeAudio.volume = ttsVol;
   appSettings.vol = ttsVol;
+  saveSettings();
+}
+
+// El tono NO se recalcula en caliente para el mensaje que ya esta sonando
+// (reconstruir la fuente de Web Audio API a mitad de reproduccion es
+// mucho mas delicado que un simple playbackRate) — aplica desde el
+// proximo mensaje de la cola. Mismo criterio que se aviso en la investigacion.
+export function updatePitch(v) {
+  setTtsPitch(parseFloat(v));
+  document.getElementById('pitchVal').textContent = ttsPitch.toFixed(2);
+  appSettings.pitch = ttsPitch;
   saveSettings();
 }
 

@@ -30,6 +30,7 @@ export const DEFAULT_SETTINGS = {
   voice: 'es-MX',
   rate: 1.0,
   vol: 1.0,
+  pitch: 1.0,
   readChat: true,
   readGifts: false,
   readGiftAmount: true,
@@ -57,13 +58,15 @@ export const DEFAULT_SETTINGS = {
 export let appSettings = {};
 export let ttsRate = 1.0;
 export let ttsVol = 1.0;
+export let ttsPitch = 1.0;
 
-// Este modulo es el unico dueño de los bindings ttsRate/ttsVol; otros
+// Este modulo es el unico dueño de los bindings ttsRate/ttsVol/ttsPitch; otros
 // modulos (nucleo/tts/cola-tts.js) piden el cambio via estas funciones en
 // vez de reasignar el import directamente (los imports de ES modules son
 // de solo lectura desde quien los consume).
 export function setTtsRate(v) { ttsRate = v; }
 export function setTtsVol(v) { ttsVol = v; }
+export function setTtsPitch(v) { ttsPitch = v; }
 
 export function deepMerge(defaults, saved) {
   const out = JSON.parse(JSON.stringify(defaults));
@@ -108,10 +111,13 @@ export function saveSettings() {
 export function applySettings() {
   ttsRate = appSettings.rate;
   ttsVol = appSettings.vol;
+  ttsPitch = appSettings.pitch ?? 1.0;
   const rr = document.getElementById('rateRange');
   const vr = document.getElementById('volRange');
+  const pr = document.getElementById('pitchRange');
   if (rr) { rr.value = ttsRate; document.getElementById('rateVal').textContent = ttsRate.toFixed(1); paintRangeFill(rr); }
   if (vr) { vr.value = ttsVol; document.getElementById('volVal').textContent = Math.round(ttsVol * 100); paintRangeFill(vr); }
+  if (pr) { pr.value = ttsPitch; document.getElementById('pitchVal').textContent = ttsPitch.toFixed(2); paintRangeFill(pr); }
 
   const chipMap = {
     readChat: 'chip-chat', readGifts: 'chip-gifts', readGiftAmount: 'chip-gift-amount', readJoins: 'chip-joins',

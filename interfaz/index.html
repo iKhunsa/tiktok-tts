@@ -838,6 +838,11 @@
               <input type="range" id="rateRange" min="0.5" max="2" step="0.1" value="1" oninput="updateRate(this.value)" />
               <div class="range-labels"><span data-i18n="label.slow">Lento</span><span data-i18n="label.fast">Rápido</span></div>
             </div>
+            <div class="setting-group" id="voicePitchGroup">
+              <label><img class="icon-inline" src="icons/graphic_eq.svg" alt=""> <span data-i18n="label.pitch">Tono</span> — <span id="pitchVal">1.00</span>x</label>
+              <input type="range" id="pitchRange" min="0.7" max="1.4" step="0.05" value="1" oninput="updatePitch(this.value)" />
+              <div class="range-labels"><span data-i18n="label.pitchLow">Grave</span><span data-i18n="label.pitchHigh">Agudo</span></div>
+            </div>
             <div class="setting-group" id="voiceVolGroup">
               <label><img class="icon-inline" src="icons/volume_up.svg" alt=""> Volumen — <span id="volVal">100</span>%</label>
               <input type="range" id="volRange" min="0" max="1" step="0.05" value="1" oninput="updateVol(this.value)" />

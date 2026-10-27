@@ -19,7 +19,7 @@ export function iniciarPintadoDeRangos() {
     if (
       e.target instanceof HTMLInputElement &&
       e.target.type === 'range' &&
-      (e.target.closest('.cfg-field') || e.target.id === 'rateRange' || e.target.id === 'volRange')
+      (e.target.closest('.cfg-field') || e.target.id === 'rateRange' || e.target.id === 'volRange' || e.target.id === 'pitchRange')
     ) {
       paintRangeFill(e.target);
     }
