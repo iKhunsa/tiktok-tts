@@ -1,7 +1,7 @@
 /**
  * Primer banner del chat (Halloween): en vez de ir al Discord, abre un modal con
  * el codigo de descuento para copiarlo y un boton a los planes, donde se pega al
- * pagar. Los demas banners siguen yendo al Discord (analitica: `chat_banner_<n>`).
+ * pagar. Los demas banners van a streamer.epik.click (analitica: `chat_banner_<n>`).
  */
 import { abrirPopupPlanes } from '../../componentes/popup-planes.js';
 import { copyToClipboard } from './utils-app.js';
