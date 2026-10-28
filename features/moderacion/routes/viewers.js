@@ -10,7 +10,7 @@ function viewers(store) {
       state: ['muted', 'banned', 'punished', 'clean', 'all'].includes(q.state) ? q.state : 'all',
       q: typeof q.q === 'string' ? q.q : '',
       sort: q.sort,
-      dir: q.dir === 'asc' ? 'asc' : 'desc',
+      dir: ['asc', 'desc'].includes(q.dir) ? q.dir : undefined,
       limit,
       offset: Math.max(0, parseInt(q.offset, 10) || 0),
     }));

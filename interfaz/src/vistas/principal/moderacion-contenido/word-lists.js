@@ -2,12 +2,12 @@ import { t, aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
 import { openModerationPopup } from '../moderacion-popup/index.js';
 import { showToast } from '../../../componentes/toast.js';
 import { openImportModal } from './import-modal.js';
+import { descargarPalabras } from './descargar-palabras.js';
 import { WORD_LISTS, MAX_WORD_LENGTH } from './chat-guard-options.js';
 
-const TAB_ICON = { blocked: 'icons/block.svg', allowed: 'icons/verified_user.svg' };
 const tabMarkup = (list) => `
   <button type="button" class="cg-tab" role="tab" id="cgTab-${list}" data-list="${list}" aria-controls="cgWordsPanel">
-    <img class="icon-inline" src="${TAB_ICON[list]}" alt=""><span class="cg-tab-label"></span>
+    <span class="cg-tab-label"></span>
   </button>`;
 
 export function mountWordLists(container, { store, actions }) {
@@ -25,10 +25,10 @@ export function mountWordLists(container, { store, actions }) {
         <label class="cg-sr-only" for="cgWordInput" data-i18n="chatGuard.words.inputLabel"></label>
         <input type="text" id="cgWordInput" class="cg-input" maxlength="${MAX_WORD_LENGTH}" autocomplete="off"
           aria-describedby="cgWordProblem" data-i18n-placeholder="chatGuard.words.inputPlaceholder">
-        <button type="submit" class="cfg-btn cg-add-btn"><img class="icon-inline" src="icons/add.svg" alt=""><span data-i18n="chatGuard.words.add"></span></button>
+        <button type="submit" class="btn-supabase-primary cg-add-btn"><img class="icon-inline" src="icons/add.svg" alt=""><span data-i18n="chatGuard.words.add"></span></button>
       </form>
       <div class="cg-problem" id="cgWordProblem" role="alert" hidden></div>
-      <button type="button" class="cfg-btn small" id="cgWordsViewAll" data-i18n="chatGuard.words.viewAll"></button>
+      <button type="button" class="cfg-btn cg-ver-todas" id="cgWordsViewAll"><span data-i18n="chatGuard.words.viewAll"></span> <img class="icon-inline" src="icons/arrow_forward.svg" alt=""></button>
     </div>`;
   aplicarTraducciones(container);
 
@@ -60,11 +60,7 @@ export function mountWordLists(container, { store, actions }) {
   });
   container.querySelector('#cgWordsExport').addEventListener('click', async () => {
     const words = await actions.exportWords(currentList());
-    if (!words) return;
-    const url = URL.createObjectURL(new Blob([JSON.stringify(words, null, 2)], { type: 'application/json' }));
-    const link = Object.assign(document.createElement('a'), { href: url, download: `${currentList()}-words.json` });
-    link.click();
-    URL.revokeObjectURL(url);
+    if (words) descargarPalabras(currentList(), words);
   });
   container.querySelector('#cgWordsImport').addEventListener('click', () => openImportModal({
     existing: store.getState().words.blocked,

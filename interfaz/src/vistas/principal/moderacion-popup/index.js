@@ -7,10 +7,10 @@ import { mountAllowedWordsTab, mountBlockedWordsTab } from './tab-words.js';
 import { mountQueueTab } from './tab-queue.js';
 
 const TABS = [
-  { id: 'blocked', icon: 'icons/block.svg', mount: mountBlockedTab },
-  { id: 'words', icon: 'icons/search.svg', mount: mountBlockedWordsTab },
-  { id: 'allowedWords', icon: 'icons/verified_user.svg', mount: mountAllowedWordsTab },
-  { id: 'queue', icon: 'icons/queue.svg', mount: mountQueueTab },
+  { id: 'blocked', mount: mountBlockedTab },
+  { id: 'words', mount: mountBlockedWordsTab },
+  { id: 'allowedWords', mount: mountAllowedWordsTab },
+  { id: 'queue', mount: mountQueueTab },
 ];
 
 const TAB_TITLE_KEY = {
@@ -30,9 +30,15 @@ function build() {
   overlay.innerHTML = `
     <div class="modal-content mp-dialog" role="dialog" aria-modal="true" aria-labelledby="mpTitle">
       <button type="button" class="modal-close" data-i18n-aria-label="modPopup.close"><img class="icon-inline" src="icons/close.svg" alt=""></button>
-      <h2 id="mpTitle" data-i18n="modPopup.title"></h2>
+      <div class="mp-header">
+        <span class="mp-header-icono" aria-hidden="true"><img src="icons/security.svg" alt=""></span>
+        <div>
+          <h2 id="mpTitle" data-i18n="modPopup.title"></h2>
+          <p class="mp-subtitulo" data-i18n="modPopup.subtitle"></p>
+        </div>
+      </div>
       <div class="mp-tabs" role="tablist" data-i18n-aria-label="modPopup.title">
-        ${TABS.map((tab) => `<button type="button" class="mp-tab" role="tab" id="mpTab-${tab.id}" data-tab="${tab.id}" aria-controls="mpPanel-${tab.id}"><img class="icon-inline" src="${tab.icon}" alt=""><span data-i18n="modPopup.tab.${tab.id}"></span></button>`).join('')}
+        ${TABS.map((tab) => `<button type="button" class="mp-tab" role="tab" id="mpTab-${tab.id}" data-tab="${tab.id}" aria-controls="mpPanel-${tab.id}"><span data-i18n="modPopup.tab.${tab.id}"></span></button>`).join('')}
       </div>
       ${TABS.map((tab) => `<div class="mp-panel" role="tabpanel" id="mpPanel-${tab.id}" aria-labelledby="mpTab-${tab.id}" hidden></div>`).join('')}
     </div>`;

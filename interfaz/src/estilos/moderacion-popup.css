@@ -11,23 +11,28 @@
 .queue-badge-link:focus-visible, .mp-tab:focus-visible, .mp-input:focus-visible, .mp-clear:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* Alto fijo: al cambiar de pestaña el modal no salta de posición. */
-.mp-dialog { max-width: 680px; height: min(640px, 86vh); padding: 28px 28px 20px; display: flex; flex-direction: column; gap: 12px; }
+.mp-dialog { max-width: 720px; height: min(680px, 88vh); padding: 28px 28px 20px; display: flex; flex-direction: column; gap: 16px; }
 .mp-dialog h2 { margin: 0; }
+.mp-header { display: flex; align-items: center; gap: 14px; padding-right: 32px; }
+.mp-header-icono { display: grid; place-items: center; flex-shrink: 0; width: 48px; height: 48px; border-radius: 12px; background: var(--surface-raised); }
+.mp-header-icono img { width: 24px; height: 24px; filter: brightness(0) invert(1); }
+.mp-subtitulo { margin: 2px 0 0; font-size: var(--text-sm); color: var(--text-muted); }
 .mp-overlay.show .mp-dialog { animation: mpIn 0.2s var(--ease-out); }
 @keyframes mpIn { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
 
-.mp-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+/* Control segmentado: la pestaña activa se "levanta" sobre la pista. */
+.mp-tabs { display: flex; gap: 4px; padding: 4px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); }
 .mp-tab {
-  display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; min-height: 32px;
-  border-radius: var(--radius-pill); border: 1px solid var(--border);
+  flex: 1; display: inline-flex; align-items: center; justify-content: center; padding: 6px 10px; min-height: 34px;
+  border-radius: 8px; border: 1px solid transparent; white-space: nowrap;
   background: transparent; color: var(--text-muted);
   font: 500 var(--text-sm) 'Inter', sans-serif; cursor: pointer;
   transition: background-color var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out), transform var(--dur-press) var(--ease-out);
 }
-.mp-tab[aria-selected="true"] { background: var(--surface-raised); border-color: var(--text-bright-a30); color: var(--text-bright); }
+.mp-tab[aria-selected="true"] { background: var(--surface-raised); border-color: var(--border-strong); color: var(--text-bright); font-weight: 600; }
 .mp-tab:active { transform: scale(0.97); }
 
-.mp-panel { display: flex; flex-direction: column; gap: 10px; min-height: 0; flex: 1; }
+.mp-panel { display: flex; flex-direction: column; gap: 12px; min-height: 0; flex: 1; }
 .mp-panel[hidden] { display: none; }
 .mp-hint { margin: 0; font-size: var(--text-2xs); color: var(--text-muted); line-height: 1.45; }
 .mp-summary { font-size: var(--text-xs); color: var(--text-bright); }
@@ -36,7 +41,11 @@
   overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
 }
 
-.mp-toolbar { display: flex; gap: 8px; align-items: center; }
+.mp-toolbar { display: flex; gap: 8px; align-items: center; margin: 0; }
+.mp-buscar { position: relative; flex: 1; min-width: 0; display: flex; }
+.mp-buscar img { position: absolute; left: 12px; top: 0; bottom: 0; margin: auto 0; width: 16px; height: 16px; filter: brightness(0) invert(1); opacity: 0.5; pointer-events: none; }
+.mp-buscar .mp-input { min-height: 40px; padding-left: 36px; border-radius: 10px; }
+.mp-add { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; white-space: nowrap; }
 .mp-input {
   flex: 1; min-width: 0; min-height: 32px; padding: 6px 12px;
   border-radius: 8px; border: 1px solid var(--border-strong);
@@ -49,9 +58,25 @@
 .mp-mute { min-height: 32px; gap: 6px; margin-top: 8px; transition: border-color 0.2s var(--ease-out), color 0.2s var(--ease-out), transform var(--dur-press) var(--ease-out); }
 .mp-mute:active:not(:disabled) { transform: scale(0.97); }
 
-.mp-list, .mp-chips { list-style: none; margin: 0; padding: 0; overflow-y: auto; max-height: 45vh; }
-.mp-list { display: flex; flex-direction: column; gap: 8px; }
-.mp-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.mp-list { list-style: none; margin: 0; padding: 0; overflow-y: auto; max-height: 45vh; display: flex; flex-direction: column; gap: 8px; }
+
+/* Palabras: tabla que ocupa el alto libre y scrollea por dentro; el pie queda abajo. */
+.mp-tabla { flex: 1; min-height: 0; display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); overflow: hidden; }
+.mp-tabla-head, .mp-fila { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 0 12px 0 16px; }
+.mp-tabla-head { min-height: 38px; font-size: var(--text-2xs); font-weight: 600; color: var(--text-muted); background: var(--surface-raised); border-bottom: 1px solid var(--border); }
+.mp-filas { list-style: none; margin: 0; padding: 0; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
+.mp-fila { min-height: 40px; font-size: var(--text-sm); color: var(--text-bright); overflow-wrap: anywhere; }
+.mp-fila + .mp-fila { border-top: 1px solid var(--border-subtle); }
+.mp-quitar { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 8px; background: transparent; cursor: pointer; transition: background-color var(--dur-1) var(--ease-out); }
+.mp-quitar .icon-inline { width: 16px; height: 16px; opacity: 0.55; transition: opacity var(--dur-1) var(--ease-out); }
+.mp-quitar:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.mp-quitar:disabled { opacity: 0.45; cursor: default; }
+.mp-pie { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 12px; border-top: 1px solid var(--border-subtle); }
+.mp-pie .mp-summary { color: var(--text-muted); }
+.mp-pie-acciones { display: flex; gap: 8px; margin-left: auto; }
+.mp-pie-acciones .cfg-btn { min-height: 32px; gap: 6px; padding: 6px 12px; border-radius: 8px; }
+.mp-orden { display: inline-flex; align-items: center; gap: 8px; font-size: var(--text-xs); color: var(--text-muted); }
+.mp-orden select { min-height: 32px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--surface-0); color: var(--text-bright); font: 500 var(--text-xs) "Inter", sans-serif; cursor: pointer; }
 .mp-row { padding: 10px 12px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--surface); }
 .mp-row--shadow { border-style: dashed; }
 .mp-row-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: var(--text-2xs); color: var(--text-muted); }
@@ -60,15 +85,6 @@
 .mp-action { margin-left: auto; }
 .mp-row-text { margin: 6px 0 4px; font-size: var(--text-sm); color: var(--text-bright); overflow-wrap: anywhere; }
 .mp-row-why { font-size: var(--text-2xs); color: var(--text-muted); }
-.mp-chip {
-  display: inline-flex; align-items: center; gap: 4px; padding: 3px 4px 3px 12px;
-  border-radius: var(--radius-pill); background: var(--surface-raised); border: 1px solid var(--border);
-  font-size: var(--text-xs); color: var(--text-bright); overflow-wrap: anywhere;
-}
-.mp-chip-remove { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; }
-.mp-chip-remove .icon-inline { width: 14px; height: 14px; opacity: 0.7; }
-.mp-chip-remove:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
-.mp-chip-remove:disabled { opacity: 0.45; cursor: default; }
 .mp-empty { padding: 18px 0; text-align: center; font-size: var(--text-sm); color: var(--text-muted); }
 
 .mp-stats { margin: 0; display: grid; gap: 8px; }
@@ -76,10 +92,34 @@
 .mp-stats dt { font-size: var(--text-sm); color: var(--text-muted); }
 .mp-stats dd { margin: 0; font-size: var(--text-sm); font-weight: 600; color: var(--text-bright); }
 
+/* Bloquear palabra al vuelo (#blockWordModal, moderacion.js#openBlockWordModal). Grilla de 8 pt. */
+.bw-dialog { max-width: 440px; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+.bw-header { display: flex; align-items: flex-start; gap: 16px; padding-right: 32px; }
+.bw-header-icono { display: grid; place-items: center; flex-shrink: 0; width: 40px; height: 40px; border-radius: 10px; background: var(--surface-raised); }
+.bw-header-icono img { width: 20px; height: 20px; filter: brightness(0) invert(1); }
+.bw-header h2 { margin: 0; font-size: 17px; font-weight: 600; letter-spacing: -0.2px; }
+.bw-desc { margin: 4px 0 0; font-size: var(--text-xs); line-height: 1.5; color: var(--text-muted); }
+.bw-campo { display: flex; gap: 8px; }
+.bw-campo input {
+  flex: 1; min-width: 0; height: 40px; padding: 0 12px; border-radius: 10px;
+  border: 1px solid var(--border-strong); background: var(--surface-0); color: var(--text-bright);
+  font: 400 var(--text-sm) "Inter", sans-serif; transition: border-color var(--dur-2) var(--ease-out);
+}
+.bw-campo input:focus { outline: none; border-color: var(--text-bright-a30); }
+.bw-agregar { height: 40px; padding: 0 16px; white-space: nowrap; }
+.bw-sesion { display: flex; flex-direction: column; gap: 8px; }
+.bw-sesion-titulo { font-size: var(--text-2xs); font-weight: 600; color: var(--text-muted); }
+.bw-sesion-tags { display: flex; flex-wrap: wrap; gap: 8px; max-height: 96px; overflow-y: auto; }
+.bw-chip { padding: 4px 10px; border-radius: 8px; background: var(--surface-raised); border: 1px solid var(--border); font-size: var(--text-xs); color: var(--text-bright); overflow-wrap: anywhere; }
+.bw-pie { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 16px; border-top: 1px solid var(--border-subtle); }
+.bw-contador { font-size: var(--text-2xs); color: var(--text-muted); }
+.bw-ver-todas { gap: 6px; padding: 6px 12px; border-radius: 8px; }
+
 @media (hover: hover) and (pointer: fine) {
   .queue-badge-link:hover { color: var(--text-bright); }
   .mp-tab:hover { border-color: var(--text-bright-a30); color: var(--text-bright); }
-  .mp-chip-remove:hover:not(:disabled) { background: var(--brand-a12); }
+  .mp-quitar:hover:not(:disabled) { background: var(--brand-a12); }
+  .mp-quitar:hover:not(:disabled) .icon-inline { opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {

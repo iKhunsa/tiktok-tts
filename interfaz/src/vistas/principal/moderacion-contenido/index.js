@@ -23,10 +23,6 @@ const TEMPLATE = `
   <div class="cg-card" id="cgLanguages"></div>
   <div class="cg-card" id="cgWords"></div>
   <div class="cg-card" id="cgStatus"></div>
-  <div class="cg-card cg-people">
-    <span class="cg-hint" data-i18n="chatGuard.people.note"></span>
-    <button type="button" class="cfg-btn" id="cgGoModeration"><img class="icon-inline" src="icons/security.svg" alt=""><span data-i18n="chatGuard.people.go"></span></button>
-  </div>
   <div class="cg-sr-only" id="cgLive"></div>`;
 
 let store = null;
@@ -56,12 +52,11 @@ export function initModeracionContenido() {
   mountWordLists(at('cgWords'), part);
   mountEngineStatus(at('cgStatus'), part);
   mountLiveRegion(at('cgLive'), part);
-  at('cgGoModeration').addEventListener('click', () => window.switchView('moderacion'));
 
   actions.load();
 }
 
-// Se llama al entrar a Ajustes: el estado del motor pudo cambiar desde la ultima vez.
+// Se llama al abrir el panel en Moderacion: el estado del motor pudo cambiar desde la ultima vez.
 export function reloadModeracionContenido() {
   if (actions) actions.load();
 }

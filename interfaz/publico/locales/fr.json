@@ -4,7 +4,7 @@
                 "overlays":  "Overlays",
                 "clips":  "Clips",
                 "mobile":  "Mobile",
-                "settings":  "Paramètres",
+                "settings":  "Réglages de la voix",
                 "soundpad":  "Sons",
                 "bot":  "Bot",
                 "moderation":  "Modération",
@@ -152,7 +152,6 @@
                 "connectOBS":  "Connecter OBS",
                 "disconnectOBS":  "Déconnecter OBS",
                 "clearAll":  "Tout effacer",
-                "openAdvanced":  "Ouvrir panneau avancé (filtres, rate limit, logs)",
                 "pauseTTS":  "Pause TTS",
                 "resumeTTS":  "Reprendre TTS",
                 "reset":  "Réinitialiser",
@@ -191,7 +190,7 @@
                                   "desc":  "Personnalisez chaque overlay et copiez l\u0027URL → OBS → Ajouter source → Navigateur → Activer fond transparent."
                               },
                  "settings":  {
-                                  "title":  "Paramètres TTS",
+                                  "title":  "Réglages de la voix",
                                   "desc":  "Ajustez la voix, la vitesse et les comportements. Tout se sauvegarde automatiquement."
                               },
                  "clips":  {
@@ -213,12 +212,13 @@
                      "languageFilters":  "Filtres de langue",
                      "announcementEndings":  "Fins des annonces",
                      "shortcuts":  "Raccourcis clavier (TTS)",
+                     "chatFilterDesc":  "Vous ne voulez pas que le TTS lise des insultes ou certains mots ? Le filtre des messages se trouve dans Modération.",
+                     "chatFilterGo":  "Aller à Modération du chat",
                      "shortcutsTabTtsChat":  "TTS et chat",
                      "shortcutsTabMusic":  "Musique du bot",
                      "shortcutsTabGeneral":  "Général",
                      "shortcutsGeneralEmpty":  "Bientôt, d’autres raccourcis.",
                      "channels":  "Chaînes liées",
-                     "advanced":  "Paramètres avancés",
                      "obs":  "Connexion OBS WebSocket",
                      "clipsHistory":  "Historique des marqueurs",
                      "announceTplTitle":  "Personnalisez la fin des annonces",
@@ -890,6 +890,14 @@
                     "filtersDesc":  "Cherchez par nom, filtrez par plateforme ou par état (muets, bannis, sans sanction) et triez par activité récente ou par nom.",
                     "tableTitle":  "Actions par spectateur",
                     "tableDesc":  "Sur chaque ligne : Rendre muet (toujours visible dans le chat, mais le TTS l\u0027ignore), Bannir (ses messages n\u0027apparaissent même pas), ★ pour le marquer abonné, Retirer les sanctions et ✕ pour le sortir du registre. Les sanctions temporaires expirent seules, même app fermée.",
+                    "settingsTitle":  "Paramètres de modération",
+                    "settingsDesc":  "« Modération du chat » remplace le tableau par les réglages du filtre du chat. Revenez au tableau avec le même bouton.",
+                    "cgFilterTitle":  "Filtre avancé",
+                    "cgFilterDesc":  "Activé, il détecte les insultes et les messages indésirables, même écrits avec des astuces. Votre liste de mots bloqués s’applique toujours, même s’il est désactivé.",
+                    "cgLevelTitle":  "Niveau de protection",
+                    "cgLevelDesc":  "Léger ne bloque que l’évident, Équilibré est recommandé et Strict arrête aussi les cas douteux. Avec Personnalisé, vous choisissez quoi détecter.",
+                    "cgWordsTitle":  "Mots bloqués et autorisés",
+                    "cgWordsDesc":  "Ajoutez les mots que vous ne voulez jamais entendre, ou autorisez ceux que le filtre bloque par erreur.",
                     "chatMenuTitle":  "Modérer depuis le chat",
                     "chatMenuDesc":  "Pas besoin de venir ici : cliquez sur le nom de n\u0027importe qui dans le chat en direct et le même menu s\u0027ouvre — rendre muet, bannir, marquer comme abonné ou bloquer un mot.",
                     "toggleTitle":  "Lire les non-abonnés",
@@ -985,7 +993,7 @@
                   },
     "pluginStoreTour":  {
                             "introTitle":  "Boutique de plugins",
-                            "introDesc":  "Choisissez ici quels outils afficher dans la barre latérale et dans quel ordre. Le chat et les paramètres sont toujours disponibles, le reste c\u0027est vous qui décidez.",
+                            "introDesc":  "Choisissez ici quels outils afficher dans la barre latérale et dans quel ordre. Le chat et les réglages de la voix sont toujours disponibles, le reste c\u0027est vous qui décidez.",
                             "gridTitle":  "Chaque carte est un outil",
                             "gridDesc":  "Le badge indique s\u0027il est visible ou masqué dans la barre latérale. Cliquez sur une carte pour voir ses détails.",
                             "dragTitle":  "Glissez pour réordonner",
@@ -1031,7 +1039,7 @@
                         },
     "store":  {
                   "title":  "Boutique de plugins",
-                  "subtitle":  "Choisissez quels outils afficher dans la barre latérale et dans quel ordre. Le chat et les paramètres sont toujours disponibles.",
+                  "subtitle":  "Choisissez quels outils afficher dans la barre latérale et dans quel ordre. Le chat et les réglages de la voix sont toujours disponibles.",
                   "moveUp":  "Monter",
                   "moveDown":  "Descendre",
                   "alwaysVisible":  "Toujours visible",
@@ -1546,10 +1554,6 @@
                       "announce":  {
                                        "levelChanged":  "Niveau changé en {level}"
                                    },
-                      "people":  {
-                                     "note":  "Pour rendre muet ou bannir un spectateur précis, utilisez Modération.",
-                                     "go":  "Aller à Modération"
-                                 },
                       "toast":  {
                                     "saveError":  "Impossible d’enregistrer la modification. Réessayez."
                                 }
@@ -1568,6 +1572,7 @@
                        "ttsErrors":  "erreurs TTS : {n}/{max}"
                    },
     "modPopup":  {
+                     "subtitle":  "Évitez les messages indésirables dans votre chat.",
                      "title":  "Modération du chat",
                      "close":  "Fermer",
                      "tab":  {
@@ -1622,7 +1627,13 @@
                                    "empty":  "Vous n\u0027avez encore bloqué aucun mot.",
                                    "emptySearch":  "Aucun mot ne correspond à la recherche.",
                                    "error":  "Impossible de charger la liste. Réessayez dans un instant.",
-                                   "dictionaryNote":  "En plus de votre liste, le moteur de modération utilise un dictionnaire de milliers de mots qui ne sont pas affichés ici."
+                                   "dictionaryNote":  "En plus de votre liste, le moteur de modération utilise un dictionnaire de milliers de mots qui ne sont pas affichés ici.",
+                                   "colWord":  "Mot",
+                                   "colActions":  "Actions",
+                                   "sort":  "Trier",
+                                   "sortAz":  "A–Z",
+                                   "sortZa":  "Z–A",
+                                   "addHint":  "Appuyez sur Entrée ou « Ajouter » pour ajouter « {word} » à la liste."
                                },
                      "queue":  {
                                    "explain":  "Quand il arrive plus de messages que la voix ne peut en lire, la file se remplit et les nouveaux sont écartés. Cela n\u0027a rien à voir avec la modération : ces messages n\u0027ont simplement pas tenu dans la file vocale.",
@@ -1637,6 +1648,7 @@
                         "navVincular":  "Comptes liés",
                         "navFacturacion":  "Facturation",
                         "navAccesibilidad":  "Accessibilité",
+                        "navPreferencias":  "Préférences",
                         "navAyuda":  "Aide",
                         "close":  "Fermer",
                         "changeBanner":  "Changer la bannière",

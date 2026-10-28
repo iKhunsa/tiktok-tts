@@ -4,7 +4,7 @@
                 "overlays":  "Overlays",
                 "clips":  "Clips",
                 "mobile":  "Mobil",
-                "settings":  "Einstellungen",
+                "settings":  "Stimmeinstellungen",
                 "soundpad":  "Töne",
                 "bot":  "Bot",
                 "moderation":  "Moderation",
@@ -152,7 +152,6 @@
                 "connectOBS":  "OBS verbinden",
                 "disconnectOBS":  "OBS trennen",
                 "clearAll":  "Alles löschen",
-                "openAdvanced":  "Erweitertes Panel öffnen (Filter, Rate Limit, Logs)",
                 "pauseTTS":  "TTS pausieren",
                 "resumeTTS":  "TTS fortsetzen",
                 "reset":  "Zurücksetzen",
@@ -191,7 +190,7 @@
                                   "desc":  "Passe jeden Overlay an und kopiere die URL → OBS → Quelle hinzufügen → Browser → Transparenten Hintergrund aktivieren."
                               },
                  "settings":  {
-                                  "title":  "TTS Einstellungen",
+                                  "title":  "Stimmeinstellungen",
                                   "desc":  "Stimme, Geschwindigkeit und Verhalten anpassen. Alles wird automatisch gespeichert."
                               },
                  "clips":  {
@@ -213,12 +212,13 @@
                      "languageFilters":  "Sprachfilter",
                      "announcementEndings":  "Enden der Ansagen",
                      "shortcuts":  "Tastenkürzel (TTS)",
+                     "chatFilterDesc":  "Soll das TTS keine Beleidigungen oder bestimmte Wörter vorlesen? Der Nachrichtenfilter ist unter Moderation.",
+                     "chatFilterGo":  "Zur Chat-Moderation",
                      "shortcutsTabTtsChat":  "TTS und Chat",
                      "shortcutsTabMusic":  "Bot-Musik",
                      "shortcutsTabGeneral":  "Allgemein",
                      "shortcutsGeneralEmpty":  "Bald gibt es weitere Tastenkürzel.",
                      "channels":  "Verknüpfte Kanäle",
-                     "advanced":  "Erweiterte Einstellungen",
                      "obs":  "OBS WebSocket Verbindung",
                      "clipsHistory":  "Markierungsverlauf",
                      "announceTplTitle":  "Passe den Schluss der Ansagen an",
@@ -890,6 +890,14 @@
                     "filtersDesc":  "Nach Namen suchen, nach Plattform oder Zustand filtern (stumm, gebannt, ohne Strafe) und nach letzter Aktivität oder Namen sortieren.",
                     "tableTitle":  "Aktionen pro Zuschauer",
                     "tableDesc":  "In jeder Zeile: Stummschalten (bleibt im Chat sichtbar, der TTS überspringt ihn), Bannen (seine Nachrichten erscheinen gar nicht), ★ als Follower markieren, Strafen aufheben und ✕ aus dem Register entfernen. Befristete Strafen laufen von selbst ab, auch bei geschlossener App.",
+                    "settingsTitle":  "Moderationseinstellungen",
+                    "settingsDesc":  "„Chat-Moderation“ ersetzt die Tabelle durch die Einstellungen des Chatfilters. Mit demselben Button kehrst du zur Tabelle zurück.",
+                    "cgFilterTitle":  "Erweiterter Filter",
+                    "cgFilterDesc":  "Eingeschaltet erkennt er Beleidigungen und unerwünschte Nachrichten, auch wenn sie mit Tricks geschrieben sind. Deine Liste blockierter Wörter gilt immer, auch wenn du ihn ausschaltest.",
+                    "cgLevelTitle":  "Schutzstufe",
+                    "cgLevelDesc":  "Mild blockiert nur Offensichtliches, Ausgewogen ist die Empfehlung und Streng stoppt auch Grenzfälle. Mit Benutzerdefiniert wählst du selbst, was erkannt wird.",
+                    "cgWordsTitle":  "Blockierte und erlaubte Wörter",
+                    "cgWordsDesc":  "Füge Wörter hinzu, die du nie hören willst, oder erlaube solche, die der Filter fälschlich blockiert.",
                     "chatMenuTitle":  "Direkt im Chat moderieren",
                     "chatMenuDesc":  "Du musst nicht hierher: klick im Live-Chat auf einen Namen und dasselbe Menü öffnet sich — stummschalten, bannen, als Follower markieren oder ein Wort sperren.",
                     "toggleTitle":  "Nicht-Follower vorlesen",
@@ -985,7 +993,7 @@
                   },
     "pluginStoreTour":  {
                             "introTitle":  "Plugin-Store",
-                            "introDesc":  "Hier wählst du, welche Tools in der Seitenleiste angezeigt werden und in welcher Reihenfolge. Chat und Einstellungen sind immer verfügbar, den Rest bestimmst du.",
+                            "introDesc":  "Hier wählst du, welche Tools in der Seitenleiste angezeigt werden und in welcher Reihenfolge. Chat und Stimmeinstellungen sind immer verfügbar, den Rest bestimmst du.",
                             "gridTitle":  "Jede Karte ist ein Tool",
                             "gridDesc":  "Das Abzeichen zeigt, ob es in der Seitenleiste sichtbar oder ausgeblendet ist. Klicke auf eine Karte für die Details.",
                             "dragTitle":  "Zum Umordnen ziehen",
@@ -1031,7 +1039,7 @@
                         },
     "store":  {
                   "title":  "Plugin-Store",
-                  "subtitle":  "Wähle, welche Tools in der Seitenleiste angezeigt werden und in welcher Reihenfolge. Chat und Einstellungen sind immer verfügbar.",
+                  "subtitle":  "Wähle, welche Tools in der Seitenleiste angezeigt werden und in welcher Reihenfolge. Chat und Stimmeinstellungen sind immer verfügbar.",
                   "moveUp":  "Nach oben",
                   "moveDown":  "Nach unten",
                   "alwaysVisible":  "Immer sichtbar",
@@ -1546,10 +1554,6 @@
                       "announce":  {
                                        "levelChanged":  "Stufe geändert auf {level}"
                                    },
-                      "people":  {
-                                     "note":  "Um einen bestimmten Zuschauer stummzuschalten oder zu sperren, nutze Moderation.",
-                                     "go":  "Zu Moderation"
-                                 },
                       "toast":  {
                                     "saveError":  "Die Änderung konnte nicht gespeichert werden. Versuche es erneut."
                                 }
@@ -1568,6 +1572,7 @@
                        "ttsErrors":  "TTS-Fehler: {n}/{max}"
                    },
     "modPopup":  {
+                     "subtitle":  "Halte unerwünschte Nachrichten aus deinem Chat fern.",
                      "title":  "Chat-Moderation",
                      "close":  "Schließen",
                      "tab":  {
@@ -1622,7 +1627,13 @@
                                    "empty":  "Du hast noch kein Wort blockiert.",
                                    "emptySearch":  "Kein Wort passt zur Suche.",
                                    "error":  "Die Liste konnte nicht geladen werden. Versuche es gleich noch einmal.",
-                                   "dictionaryNote":  "Zusätzlich zu deiner Liste nutzt die Moderations-Engine ein Wörterbuch mit Tausenden Wörtern, die hier nicht aufgelistet sind."
+                                   "dictionaryNote":  "Zusätzlich zu deiner Liste nutzt die Moderations-Engine ein Wörterbuch mit Tausenden Wörtern, die hier nicht aufgelistet sind.",
+                                   "colWord":  "Wort",
+                                   "colActions":  "Aktionen",
+                                   "sort":  "Sortieren",
+                                   "sortAz":  "A–Z",
+                                   "sortZa":  "Z–A",
+                                   "addHint":  "Drücke Enter oder „Hinzufügen“, um „{word}“ zur Liste hinzuzufügen."
                                },
                      "queue":  {
                                    "explain":  "Wenn mehr Nachrichten eintreffen, als die Stimme vorlesen kann, füllt sich die Warteschlange und neue werden verworfen. Das hat nichts mit Moderation zu tun: Diese Nachrichten haben einfach nicht in die Sprachwarteschlange gepasst.",
@@ -1637,6 +1648,7 @@
                         "navVincular":  "Verknüpfte Konten",
                         "navFacturacion":  "Abrechnung",
                         "navAccesibilidad":  "Barrierefreiheit",
+                        "navPreferencias":  "Einstellungen",
                         "navAyuda":  "Hilfe",
                         "close":  "Schließen",
                         "changeBanner":  "Banner ändern",

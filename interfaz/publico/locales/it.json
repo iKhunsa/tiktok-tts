@@ -4,7 +4,7 @@
                 "overlays":  "Overlay",
                 "clips":  "Clip",
                 "mobile":  "Mobile",
-                "settings":  "Impostazioni",
+                "settings":  "Impostazioni voce",
                 "soundpad":  "Suoni",
                 "bot":  "Bot",
                 "moderation":  "Moderazione",
@@ -152,7 +152,6 @@
                 "connectOBS":  "Connetti OBS",
                 "disconnectOBS":  "Disconnetti OBS",
                 "clearAll":  "Elimina tutto",
-                "openAdvanced":  "Apri pannello avanzato (filtri, rate limit, log)",
                 "pauseTTS":  "Pausa TTS",
                 "resumeTTS":  "Riprendi TTS",
                 "reset":  "Ripristina",
@@ -191,7 +190,7 @@
                                   "desc":  "Personalizza ogni overlay e copia l\u0027URL → OBS → Aggiungi sorgente → Browser → Abilita sfondo trasparente."
                               },
                  "settings":  {
-                                  "title":  "Impostazioni TTS",
+                                  "title":  "Impostazioni voce",
                                   "desc":  "Regola voce, velocità e comportamenti. Tutto si salva automaticamente."
                               },
                  "clips":  {
@@ -213,12 +212,13 @@
                      "languageFilters":  "Filtri lingua",
                      "announcementEndings":  "Finali degli annunci",
                      "shortcuts":  "Scorciatoie da tastiera (TTS)",
+                     "chatFilterDesc":  "Non vuoi che il TTS legga insulti o certe parole? Il filtro dei messaggi è in Moderazione.",
+                     "chatFilterGo":  "Vai a Moderazione della chat",
                      "shortcutsTabTtsChat":  "TTS e chat",
                      "shortcutsTabMusic":  "Musica del bot",
                      "shortcutsTabGeneral":  "Generale",
                      "shortcutsGeneralEmpty":  "Presto altre scorciatoie.",
                      "channels":  "Canali collegati",
-                     "advanced":  "Impostazioni avanzate",
                      "obs":  "Connessione OBS WebSocket",
                      "clipsHistory":  "Cronologia marcatori",
                      "announceTplTitle":  "Personalizza la parte finale degli annunci",
@@ -890,6 +890,14 @@
                     "filtersDesc":  "Cerca per nome, filtra per piattaforma o per stato (silenziati, bannati, senza sanzione) e ordina per attività recente o per nome.",
                     "tableTitle":  "Azioni per spettatore",
                     "tableDesc":  "Su ogni riga: Silenzia (resta visibile in chat, ma il TTS lo salta), Banna (i messaggi non compaiono nemmeno), ★ per segnarlo come follower, Rimuovi sanzioni e ✕ per toglierlo dal registro. Le sanzioni temporanee scadono da sole, anche ad app chiusa.",
+                    "settingsTitle":  "Impostazioni di moderazione",
+                    "settingsDesc":  "«Moderazione della chat» sostituisce la tabella con le impostazioni del filtro della chat. Torni alla tabella con lo stesso pulsante.",
+                    "cgFilterTitle":  "Filtro avanzato",
+                    "cgFilterDesc":  "Se attivo, rileva insulti e messaggi indesiderati anche se scritti con trucchi. La tua lista di parole bloccate si applica sempre, anche se lo disattivi.",
+                    "cgLevelTitle":  "Livello di protezione",
+                    "cgLevelDesc":  "Leggero blocca solo l’evidente, Equilibrato è quello consigliato e Rigido ferma anche i casi dubbi. Con Personalizzato scegli tu cosa rilevare.",
+                    "cgWordsTitle":  "Parole bloccate e consentite",
+                    "cgWordsDesc":  "Aggiungi le parole che non vuoi mai sentire, o consenti quelle che il filtro blocca per errore.",
                     "chatMenuTitle":  "Moderare dalla chat",
                     "chatMenuDesc":  "Non serve venire qui: clicca il nome di chiunque nella chat live e si apre lo stesso menu — silenzia, banna, segna come follower o blocca una parola.",
                     "toggleTitle":  "Leggi i non follower",
@@ -985,7 +993,7 @@
                   },
     "pluginStoreTour":  {
                             "introTitle":  "Negozio di plugin",
-                            "introDesc":  "Qui scegli quali strumenti mostrare nella barra laterale e in quale ordine. Chat e Impostazioni sono sempre disponibili, il resto lo decidi tu.",
+                            "introDesc":  "Qui scegli quali strumenti mostrare nella barra laterale e in quale ordine. Chat e Impostazioni voce sono sempre disponibili, il resto lo decidi tu.",
                             "gridTitle":  "Ogni scheda è uno strumento",
                             "gridDesc":  "Il badge indica se è Visibile o Nascosto nella barra laterale. Clicca su una scheda per vederne i dettagli.",
                             "dragTitle":  "Trascina per riordinare",
@@ -1031,7 +1039,7 @@
                         },
     "store":  {
                   "title":  "Negozio di plugin",
-                  "subtitle":  "Scegli quali strumenti mostrare nella barra laterale e in quale ordine. Chat e Impostazioni sono sempre disponibili.",
+                  "subtitle":  "Scegli quali strumenti mostrare nella barra laterale e in quale ordine. Chat e Impostazioni voce sono sempre disponibili.",
                   "moveUp":  "Sposta su",
                   "moveDown":  "Sposta giù",
                   "alwaysVisible":  "Sempre visibile",
@@ -1546,10 +1554,6 @@
                       "announce":  {
                                        "levelChanged":  "Livello cambiato in {level}"
                                    },
-                      "people":  {
-                                     "note":  "Per silenziare o bannare uno spettatore specifico, usa Moderazione.",
-                                     "go":  "Vai a Moderazione"
-                                 },
                       "toast":  {
                                     "saveError":  "Non è stato possibile salvare la modifica. Riprova."
                                 }
@@ -1568,6 +1572,7 @@
                        "ttsErrors":  "errori TTS: {n}/{max}"
                    },
     "modPopup":  {
+                     "subtitle":  "Evita messaggi indesiderati nella tua chat.",
                      "title":  "Moderazione della chat",
                      "close":  "Chiudi",
                      "tab":  {
@@ -1622,7 +1627,13 @@
                                    "empty":  "Non hai ancora bloccato nessuna parola.",
                                    "emptySearch":  "Nessuna parola corrisponde alla ricerca.",
                                    "error":  "Impossibile caricare l\u0027elenco. Riprova tra poco.",
-                                   "dictionaryNote":  "Oltre alla tua lista, il motore di moderazione usa un dizionario di migliaia di parole che non sono elencate qui."
+                                   "dictionaryNote":  "Oltre alla tua lista, il motore di moderazione usa un dizionario di migliaia di parole che non sono elencate qui.",
+                                   "colWord":  "Parola",
+                                   "colActions":  "Azioni",
+                                   "sort":  "Ordina",
+                                   "sortAz":  "A–Z",
+                                   "sortZa":  "Z–A",
+                                   "addHint":  "Premi Invio o «Aggiungi» per aggiungere «{word}» alla lista."
                                },
                      "queue":  {
                                    "explain":  "Quando arrivano più messaggi di quanti la voce riesca a leggere, la coda si riempie e i nuovi vengono scartati. Non c\u0027entra con la moderazione: sono messaggi che semplicemente non sono entrati nella coda vocale.",
@@ -1637,6 +1648,7 @@
                         "navVincular":  "Collega account",
                         "navFacturacion":  "Fatturazione",
                         "navAccesibilidad":  "Accessibilità",
+                        "navPreferencias":  "Preferenze",
                         "navAyuda":  "Aiuto",
                         "close":  "Chiudi",
                         "changeBanner":  "Cambia banner",
