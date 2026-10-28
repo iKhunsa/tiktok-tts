@@ -428,3 +428,11 @@ label.mc-a11y-fila + label.mc-a11y-fila { margin-top: 2em; }
   .mc-a11y-fila:not(label) { grid-template-columns: 1fr; gap: 0.923em; }
   .mc-tamanos { flex-wrap: wrap; }
 }
+
+/* Modal "Conectar TikTok/YouTube" (modal-agregar-canal.js): .cuenta-btn-primary/
+   .cuenta-btn-ghost no traen separacion vertical propia porque en otros lados
+   (cuenta/index.js) van en filas horizontales — acá van apiladas, asi que el
+   espacio se agrega local a este modal en vez de tocar esas clases compartidas. */
+.modal-content:has(#acInput) .cuenta-field { margin-top: 20px; }
+.modal-content:has(#acInput) .cuenta-btn-primary { margin-top: 24px; }
+.modal-content:has(#acInput) .cuenta-btn-ghost { display: block; margin: 10px auto 0; }
