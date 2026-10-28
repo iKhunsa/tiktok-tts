@@ -6,7 +6,8 @@ const { pathToFileURL } = require('node:url');
 
 const html = readFileSync(resolve(__dirname, '../interfaz/index.html'), 'utf8');
 const sectionStart = html.indexOf('<div class="settings-section" id="settingsSectionShortcuts">');
-const sectionEnd = html.indexOf('<div class="settings-section" id="chatGuardPanel"', sectionStart);
+// El panel de moderacion del chat se mudo a Moderacion: lo que sigue a Atajos es el gate por donacion.
+const sectionEnd = html.indexOf('<div class="settings-section" id="giftGatePanel"', sectionStart);
 const shortcutsSection = html.slice(sectionStart, sectionEnd);
 
 test('la sección conserva sus contratos y no duplica ids', () => {
