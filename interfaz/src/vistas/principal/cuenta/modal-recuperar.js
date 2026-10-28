@@ -26,7 +26,7 @@ export function abrirModalRecuperar({ emailInicial }) {
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay show';
   overlay.innerHTML = `
-    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="rpTitle">
+    <div class="modal-content cuenta-recover-modal" role="dialog" aria-modal="true" aria-labelledby="rpTitle">
       <button class="modal-close" type="button" data-cancel><img class="icon-inline" src="icons/close.svg" alt=""></button>
       <h2 id="rpTitle" data-i18n="cuenta.forgotModalTitle"></h2>
 
@@ -37,7 +37,6 @@ export function abrirModalRecuperar({ emailInicial }) {
           <input type="email" id="rpEmail" autocomplete="email" value="${esc(emailInicial || '')}">
         </div>
         <button type="button" class="cuenta-btn-primary" data-send data-i18n="cuenta.forgotSendBtn"></button>
-        <button type="button" class="cuenta-btn-ghost" data-cancel-inline data-i18n="cuenta.forgotCancelBtn"></button>
       </section>
 
       <section data-panel="1" hidden>
@@ -61,11 +60,15 @@ export function abrirModalRecuperar({ emailInicial }) {
   let busy = false;
   const close = () => { if (!busy) overlay.remove(); };
 
+  // Sin email escrito, "a tu email" en vez de dejar el hueco "a  para...".
+  function actualizarTextoEnvio() {
+    const actual = ($('#rpEmail').value || '').trim();
+    $('[data-panel0-text]').textContent = t('cuenta.forgotConfirmText', { email: actual || t('cuenta.forgotYourEmail') });
+  }
+
   function mostrarPaso(n) {
     overlay.querySelectorAll('[data-panel]').forEach((el) => { el.hidden = Number(el.dataset.panel) !== n; });
-    if (n === 0) $('[data-panel0-text]').textContent = email
-      ? t('cuenta.forgotConfirmText', { email })
-      : t('cuenta.forgotConfirmText', { email: '' });
+    if (n === 0) actualizarTextoEnvio();
     if (n === 1) $('[data-panel1-text]').textContent = t('cuenta.forgotSentHint', { email });
   }
 
@@ -109,8 +112,8 @@ export function abrirModalRecuperar({ emailInicial }) {
   overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
   overlay.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
   $('[data-cancel]').addEventListener('click', close);
-  $('[data-cancel-inline]').addEventListener('click', close);
   $('[data-send]').addEventListener('click', enviarCodigo);
+  $('#rpEmail').addEventListener('input', actualizarTextoEnvio);
   $('[data-back]').addEventListener('click', () => mostrarPaso(0));
   $('[data-submit]').addEventListener('click', confirmarReset);
   overlay.querySelectorAll('[data-toggle]').forEach((btn) => {

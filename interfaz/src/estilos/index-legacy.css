@@ -1555,7 +1555,7 @@
        tramo vacío = puntos. El % de llenado lo pinta paintRangeFill()
        vía la custom prop --range-pct. Solo Chromium (la app es Electron). */
     .cfg-field input[type="range"],
-    #rateRange, #volRange {
+    #rateRange, #volRange, #pitchRange {
       -webkit-appearance: none;
       appearance: none;
       width: 100%;
@@ -1567,7 +1567,8 @@
     }
     .cfg-field input[type="range"]::-webkit-slider-runnable-track,
     #rateRange::-webkit-slider-runnable-track,
-    #volRange::-webkit-slider-runnable-track {
+    #volRange::-webkit-slider-runnable-track,
+    #pitchRange::-webkit-slider-runnable-track {
       height: 24px;
       border-radius: 3px;
       background-image:
@@ -1579,7 +1580,8 @@
     }
     .cfg-field input[type="range"]::-webkit-slider-thumb,
     #rateRange::-webkit-slider-thumb,
-    #volRange::-webkit-slider-thumb {
+    #volRange::-webkit-slider-thumb,
+    #pitchRange::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
       width: 4px;
@@ -1589,7 +1591,7 @@
       background: #ffffff;
     }
     .cfg-field input[type="range"]:focus,
-    #rateRange:focus, #volRange:focus { outline: none; }
+    #rateRange:focus, #volRange:focus, #pitchRange:focus { outline: none; }
 
     .cfg-field .range-hint {
       font-size: var(--text-3xs);
@@ -3006,6 +3008,14 @@
     .cuenta-delete-modal h2 { margin-bottom: var(--space-4); }
     .cuenta-delete-list { margin: 0 0 var(--space-5); padding-left: var(--space-5); color: var(--text-muted); font-size: var(--text-base); line-height: 1.6; }
     .cuenta-delete-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-5); }
+    .cuenta-recover-modal { width: 100%; max-width: 420px; padding: var(--space-8); }
+    .cuenta-recover-modal h2 { margin-bottom: var(--space-2); }
+    .cuenta-recover-modal section { display: flex; flex-direction: column; gap: 16px; }
+    .cuenta-recover-modal section[hidden] { display: none; }
+    .cuenta-recover-modal .cuenta-card-sub, .cuenta-recover-modal .cuenta-hint { margin: 0 0 4px; }
+    .cuenta-recover-modal .cuenta-btn-ghost { align-self: center; margin-top: -4px; }
+    .cuenta-recover-modal .modal-close:focus-visible { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
+    @media (max-width: 520px) { .cuenta-recover-modal { width: calc(100% - 24px); padding: 24px 18px; } }
     .cuenta-delete-modal .modal-close:focus-visible { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
     @media (max-width: 520px) { .cuenta-danger-zone { flex-direction: column; align-items: flex-start; } .cuenta-delete-modal { width: calc(100% - 24px); padding: 24px 18px; } }
 
