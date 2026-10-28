@@ -87,7 +87,6 @@ import {
 } from './plataformas.js';
 import { renderTiktokSession } from './tiktok-sesion.js';
 import { doInstallUpdate, doCheckForUpdates, openRollbackModal, closeRollbackModal, rollbackToVersion, iniciarEventosElectron } from './eventos-electron.js';
-import { iniciarAjustesVentana } from './ajustes-ventana.js';
 import {
   musicRemoveFromQueue, musicSkip, musicTogglePause, musicSetEnabled, musicSetVolume,
   musicSaveCooldown, musicSaveMaxQueue, musicClearQueue, musicBanUser, musicUnbanUser,
@@ -96,9 +95,10 @@ import {
 } from './bot-musica.js';
 import {
   modPage, modSetTab, modOnSearch, modWipe, checkModWipeConfirmInput, closeModWipeConfirm,
-  confirmModWipe, openBlockWordModal, closeBlockWordModal, submitBlockWord, openChatGuardWords,
+  confirmModWipe, openBlockWordModal, closeBlockWordModal, submitBlockWord, openChatGuardWords, openChatGuard,
   iniciarMenusModeracion, modReload,
 } from './moderacion.js';
+import { iniciarFiltrosConIconoMod } from './filtros-con-icono-mod.js';
 import {
   startModerationTour, startSoundpadTour, startBotTour, startPluginStoreTour,
   startChatActionsTour, startClipsTour, startOverlaysTour, startVoiceTour,
@@ -153,7 +153,7 @@ Object.assign(window, {
   playlistSave, playlistSetEnabled, playlistSetShuffle, playlistPlay, updatePlaylistInfo,
   // moderacion / bloqueo de palabras
   modPage, modSetTab, modOnSearch, modWipe, checkModWipeConfirmInput, closeModWipeConfirm,
-  confirmModWipe, openBlockWordModal, closeBlockWordModal, submitBlockWord, openChatGuardWords, modReload,
+  confirmModWipe, openBlockWordModal, closeBlockWordModal, submitBlockWord, openChatGuardWords, openChatGuard, modReload,
   // tours
   startModerationTour, startSoundpadTour, startBotTour, startPluginStoreTour,
   startChatActionsTour, startClipsTour, startOverlaysTour, startVoiceTour,
@@ -216,6 +216,7 @@ function iniciarArranque() {
   iniciarI18nApp();
   iniciarModalesYAvisos();
   iniciarMenusModeracion();
+  iniciarFiltrosConIconoMod();
   iniciarObservadorTogglesChat();
   iniciarAtajosTeclado();
   iniciarTabsAtajos();
@@ -273,7 +274,6 @@ function iniciarArranque() {
 
   iniciarBarraTitulo();
   iniciarEventosElectron();
-  iniciarAjustesVentana();
   musicInit();
   iniciarPortalView();
 }

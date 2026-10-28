@@ -4,7 +4,7 @@
                 "overlays":  "Overlays",
                 "clips":  "Clips",
                 "mobile":  "Mobile",
-                "settings":  "Settings",
+                "settings":  "Voice settings",
                 "soundpad":  "Sounds",
                 "bot":  "Bot",
                 "moderation":  "Moderation",
@@ -152,7 +152,6 @@
                 "connectOBS":  "Connect OBS",
                 "disconnectOBS":  "Disconnect OBS",
                 "clearAll":  "Clear all",
-                "openAdvanced":  "Open advanced panel (filters, rate limit, logs)",
                 "pauseTTS":  "Pause TTS",
                 "resumeTTS":  "Resume TTS",
                 "reset":  "Reset",
@@ -191,7 +190,7 @@
                                   "desc":  "Customize each overlay and copy the URL → OBS → Add Source → Browser → Enable transparent background."
                               },
                  "settings":  {
-                                  "title":  "TTS Settings",
+                                  "title":  "Voice settings",
                                   "desc":  "Adjust voice, speed and behaviors. Everything saves automatically."
                               },
                  "clips":  {
@@ -213,12 +212,13 @@
                      "languageFilters":  "Language filters",
                      "announcementEndings":  "Announcement endings",
                      "shortcuts":  "Keyboard shortcuts (TTS)",
+                     "chatFilterDesc":  "Don’t want the TTS to read insults or certain words? The message filter lives in Moderation.",
+                     "chatFilterGo":  "Go to Chat moderation",
                      "shortcutsTabTtsChat":  "TTS & chat",
                      "shortcutsTabMusic":  "Bot music",
                      "shortcutsTabGeneral":  "General",
                      "shortcutsGeneralEmpty":  "More shortcuts coming soon.",
                      "channels":  "Linked channels",
-                     "advanced":  "Advanced settings",
                      "obs":  "OBS WebSocket Connection",
                      "clipsHistory":  "Clip history",
                      "announceTplTitle":  "Customize announcement endings",
@@ -953,6 +953,14 @@
                     "filtersDesc":  "Search by name, filter by platform or state (muted, banned, no penalty), and sort by recent activity or name.",
                     "tableTitle":  "Per-viewer actions",
                     "tableDesc":  "On each row: Mute (still visible in chat, but TTS skips them), Ban (their messages don\u0027t even show up), ★ to mark as follower, Clear penalties, and ✕ to drop them from the registry. Temporary penalties expire on their own, even with the app closed.",
+                    "settingsTitle":  "Moderation settings",
+                    "settingsDesc":  "“Chat moderation” swaps the table for the chat filter settings. Go back to the table with the same button.",
+                    "cgFilterTitle":  "Advanced filter",
+                    "cgFilterDesc":  "When on, it catches insults and unwanted messages even when written with tricks. Your blocked words list always applies, even if you turn it off.",
+                    "cgLevelTitle":  "Protection level",
+                    "cgLevelDesc":  "Gentle blocks only the obvious, Balanced is the recommended one and Strict also stops borderline cases. With Custom you choose what to detect.",
+                    "cgWordsTitle":  "Blocked and allowed words",
+                    "cgWordsDesc":  "Add words you never want to hear, or allow the ones the filter blocks by mistake.",
                     "chatMenuTitle":  "Moderate from the chat",
                     "chatMenuDesc":  "You don\u0027t have to come here: click anyone\u0027s name in the live chat and the same menu opens — mute, ban, mark as follower or block a word.",
                     "toggleTitle":  "Read non-followers",
@@ -1048,7 +1056,7 @@
                   },
     "pluginStoreTour":  {
                             "introTitle":  "Plugin Store",
-                            "introDesc":  "Here you choose which tools to show in the sidebar and in what order. Chat and Settings are always available, everything else is up to you.",
+                            "introDesc":  "Here you choose which tools to show in the sidebar and in what order. Chat and Voice settings are always available, everything else is up to you.",
                             "gridTitle":  "Each card is a tool",
                             "gridDesc":  "The badge tells you if it\u0027s Visible or Hidden in the sidebar. Click a card to see its details.",
                             "dragTitle":  "Drag to reorder",
@@ -1094,7 +1102,7 @@
                         },
     "store":  {
                   "title":  "Plugin Store",
-                  "subtitle":  "Choose which tools to show in the sidebar and in what order. Chat and Settings are always available.",
+                  "subtitle":  "Choose which tools to show in the sidebar and in what order. Chat and Voice settings are always available.",
                   "moveUp":  "Move up",
                   "moveDown":  "Move down",
                   "alwaysVisible":  "Always visible",
@@ -1556,10 +1564,6 @@
                       "announce":  {
                                        "levelChanged":  "Level changed to {level}"
                                    },
-                      "people":  {
-                                     "note":  "To mute or ban a specific viewer, use Moderation.",
-                                     "go":  "Go to Moderation"
-                                 },
                       "toast":  {
                                     "saveError":  "The change could not be saved. Try again."
                                 }
@@ -1578,6 +1582,7 @@
                        "ttsErrors":  "TTS errors: {n}/{max}"
                    },
     "modPopup":  {
+                     "subtitle":  "Keep unwanted messages out of your chat.",
                      "title":  "Chat moderation",
                      "close":  "Close",
                      "tab":  {
@@ -1632,7 +1637,13 @@
                                    "empty":  "You have not blocked any words yet.",
                                    "emptySearch":  "No words match the search.",
                                    "error":  "Could not load the list. Try again in a moment.",
-                                   "dictionaryNote":  "Besides your list, the moderation engine uses a dictionary of thousands of words that are not listed here."
+                                   "dictionaryNote":  "Besides your list, the moderation engine uses a dictionary of thousands of words that are not listed here.",
+                                   "colWord":  "Word",
+                                   "colActions":  "Actions",
+                                   "sort":  "Sort",
+                                   "sortAz":  "A–Z",
+                                   "sortZa":  "Z–A",
+                                   "addHint":  "Press Enter or “Add” to add “{word}” to the list."
                                },
                      "queue":  {
                                    "explain":  "When more messages arrive than the voice can read, the queue fills up and new ones are discarded. This has nothing to do with moderation: these messages simply did not fit in the voice queue.",
@@ -1647,6 +1658,7 @@
                         "navVincular":  "Linked accounts",
                         "navFacturacion":  "Billing",
                         "navAccesibilidad":  "Accessibility",
+                        "navPreferencias":  "Preferences",
                         "navAyuda":  "Help",
                         "close":  "Close",
                         "changeBanner":  "Change banner",

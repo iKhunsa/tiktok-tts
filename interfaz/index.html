@@ -18,7 +18,6 @@
   <link rel="stylesheet" href="./src/estilos/portal-view.css">
   <link rel="stylesheet" href="./src/estilos/barra-titulo.css">
   <link rel="stylesheet" href="./src/estilos/vincular-cuentas.css">
-  <link rel="stylesheet" href="./src/estilos/ajustes-ventana.css">
   <link rel="stylesheet" href="./src/estilos/modal-cuenta.css">
 </head>
 <body>
@@ -108,7 +107,7 @@
       </button>
       <button id="navSettingsBtn" class="sidebar-item" data-view="settings" onclick="switchView('settings')">
         <img class="sidebar-icon icon-inline" src="icons/settings.svg" alt="">
-        <span data-i18n="nav.settings">Configuración</span>
+        <span data-i18n="nav.settings">Ajustes de voz</span>
       </button>
     </nav>
 
@@ -177,7 +176,7 @@
         <button class="cfg-btn" onclick="skipCurrentTTS()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> <span data-i18n="btn.skipCurrent">Saltar actual</span></button>
         <button class="cfg-btn danger" onclick="clearChatAndQueue()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="btn.clearChatAndQueue">Limpiar chat y cola</span></button>
         <button class="cfg-btn icon-only warn" onclick="enableEmergencyTTSMode()" data-i18n-title="btn.emergency" title="Modo emergencia"><img class="icon-inline" src="icons/warning-amber.svg" alt=""></button>
-        <button class="cfg-btn icon-only" id="btnBlockedWordsShortcut" onclick="openChatGuardWords()" data-i18n-title="btn.blockedWordsShortcut" title="Palabras bloqueadas"><img class="icon-inline" src="icons/filter_none.svg" alt=""></button>
+        <button class="cfg-btn icon-only" id="btnBlockedWordsShortcut" onclick="openBlockWordModal()" data-i18n-title="btn.blockedWordsShortcut" title="Palabras bloqueadas"><img class="icon-inline" src="icons/filter_none.svg" alt=""></button>
         <button class="cfg-btn" id="btnEventEffects" hidden aria-pressed="true" data-i18n-title="eventFx.on" title="Animaciones y sonidos de temporada: activados. Clic para desactivar"><img class="icon-inline" src="icons/flare.svg" alt=""> <span data-i18n="eventFx.label">Efectos de evento</span><span class="fx-switch" aria-hidden="true"></span></button>
       </div>
 
@@ -719,7 +718,7 @@
     <!-- ── VIEW: Settings ──────────────────────────────── -->
     <div class="view" id="view-settings">
       <div class="view-header">
-        <h2><img class="icon-inline" src="icons/settings.svg" alt=""> <span data-i18n="view.settings.title">Configuración TTS</span></h2>
+        <h2><img class="icon-inline" src="icons/settings.svg" alt=""> <span data-i18n="view.settings.title">Ajustes de voz</span></h2>
         <p data-i18n="view.settings.desc">Ajusta la voz, velocidad y comportamientos. Todo se guarda automáticamente.</p>
       </div>
 
@@ -797,6 +796,16 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- Redireccion: el filtro de mensajes vive en Moderacion (moderacion.js#openChatGuard) -->
+      <div class="settings-section ajustes-filtro">
+        <img class="ajustes-filtro-icono" src="icons/security.svg" alt="">
+        <div class="ajustes-filtro-texto">
+          <div class="ajustes-filtro-titulo" data-i18n="chatGuard.title">Moderación del chat</div>
+          <p class="ajustes-filtro-desc" data-i18n="settings.chatFilterDesc">¿Querés que el TTS no lea insultos o ciertas palabras? El filtro de mensajes está en Moderación.</p>
+        </div>
+        <button type="button" class="btn-supabase-primary ajustes-filtro-btn" onclick="openChatGuard()"><span data-i18n="settings.chatFilterGo">Ir a Moderación del chat</span> <img class="icon-inline" src="icons/arrow_forward.svg" alt=""></button>
       </div>
 
       <!-- KEYBOARD SHORTCUTS SECTION -->
@@ -936,40 +945,7 @@
         </div>
       </div>
 
-      <div class="settings-section" id="chatGuardPanel"><!-- interfaz/src/vistas/principal/moderacion-contenido/ la llena --></div>
-
       <div class="settings-section" id="giftGatePanel"><!-- interfaz/src/vistas/principal/gift-gate/ la llena --></div>
-
-      <!-- interfaz/src/vistas/principal/ajustes-ventana.js la cablea -->
-      <div class="settings-section ajustes-ventana" id="settingsSectionWindow">
-        <div class="settings-section-title" data-i18n="settings.window">Ventana e inicio</div>
-        <label class="ajustes-ventana-fila">
-          <img class="ajustes-ventana-icono" src="icons/inbox.svg" alt="">
-          <span class="ajustes-ventana-texto">
-            <span class="ajustes-ventana-titulo" data-i18n="toggle.closeToTray">Minimizar a la bandeja al cerrar</span>
-            <span class="ajustes-ventana-desc" data-i18n="toggle.closeToTrayHint">Con la X la app sigue funcionando en la bandeja del sistema. Para cerrarla del todo: clic derecho en el ícono de la bandeja y «Salir».</span>
-          </span>
-          <span class="switch">
-            <input type="checkbox" id="closeToTrayToggle" />
-            <span class="switch-track"></span>
-          </span>
-        </label>
-        <label class="ajustes-ventana-fila" id="openAtLoginGroup">
-          <img class="ajustes-ventana-icono" src="icons/windows-start.svg" alt="">
-          <span class="ajustes-ventana-texto">
-            <span class="ajustes-ventana-titulo" data-i18n="toggle.openAtLogin">Abrir al iniciar Windows</span>
-          </span>
-          <span class="switch">
-            <input type="checkbox" id="openAtLoginToggle" />
-            <span class="switch-track"></span>
-          </span>
-        </label>
-      </div>
-
-      <div class="settings-section">
-        <div class="settings-section-title" data-i18n="settings.advanced">Configuración avanzada</div>
-        <a href="/advanced.html?popup=1" target="_blank" rel="noopener" class="btn-nav"><img class="icon-inline" src="icons/build.svg" alt=""> <span data-i18n="btn.openAdvanced">Abrir panel avanzado (filtros, rate limit, logs)</span> <img class="icon-inline" src="icons/open_in_new.svg" alt=""></a>
-      </div>
     </div>
 
     <!-- ── VIEW: Clips ─────────────────────────────────── -->
@@ -1098,46 +1074,52 @@
       <div class="view-header">
         <h2><img class="icon-inline" src="icons/people.svg" alt=""> <span data-i18n="view.moderation.title">Moderación</span></h2>
         <p data-i18n="view.moderation.desc">Todos los espectadores que interactuaron, con sus permisos de chat y TTS.</p>
+        <button class="cfg-btn mod-btn-ajustes" type="button" id="modBtnAjustes" aria-expanded="false" aria-controls="modAjustes">
+          <img class="icon-inline" src="icons/settings.svg" alt=""> <span data-i18n="chatGuard.title">Moderación del chat</span>
+          <img class="icon-inline mod-btn-ajustes-chevron" src="icons/expand_more.svg" alt="">
+        </button>
       </div>
+      <div id="modPrincipal">
 
       <div class="mod-stats" id="modStats">
-        <div class="mod-stat"><span class="mod-stat-num" id="modStatTotal">0</span><span data-i18n="mod.stats.total">Registrados</span></div>
-        <div class="mod-stat"><span class="mod-stat-num" id="modStatFollowers">0</span><span data-i18n="mod.stats.followers">Seguidores</span></div>
-        <div class="mod-stat"><span class="mod-stat-num" id="modStatOthers">0</span><span data-i18n="mod.stats.others">No seguidores</span></div>
-        <div class="mod-stat"><span class="mod-stat-num" id="modStatMuted">0</span><span data-i18n="mod.stats.muted">Silenciados</span></div>
-        <div class="mod-stat"><span class="mod-stat-num" id="modStatBanned">0</span><span data-i18n="mod.stats.banned">Baneados</span></div>
+        <div class="mod-stat"><span class="mod-stat-icon" style="--icono:url(/icons/people.svg)"></span><span class="mod-stat-texto"><span class="mod-stat-num" id="modStatTotal">0</span><span data-i18n="mod.stats.total">Registrados</span></span></div>
+        <div class="mod-stat"><span class="mod-stat-icon" style="--icono:url(/icons/favorite_border.svg)"></span><span class="mod-stat-texto"><span class="mod-stat-num" id="modStatFollowers">0</span><span data-i18n="mod.stats.followers">Seguidores</span></span></div>
+        <div class="mod-stat"><span class="mod-stat-icon" style="--icono:url(/icons/person_remove.svg)"></span><span class="mod-stat-texto"><span class="mod-stat-num" id="modStatOthers">0</span><span data-i18n="mod.stats.others">No seguidores</span></span></div>
+        <div class="mod-stat"><span class="mod-stat-icon" style="--icono:url(/icons/volume_off.svg)"></span><span class="mod-stat-texto"><span class="mod-stat-num" id="modStatMuted">0</span><span data-i18n="mod.stats.muted">Silenciados</span></span></div>
+        <div class="mod-stat"><span class="mod-stat-icon" style="--icono:url(/icons/block.svg)"></span><span class="mod-stat-texto"><span class="mod-stat-num" id="modStatBanned">0</span><span data-i18n="mod.stats.banned">Baneados</span></span></div>
       </div>
 
       <div class="mod-tabs">
-        <button class="mod-tab active" data-tab="followers" onclick="modSetTab('followers')" data-i18n="mod.tab.followers">Seguidores</button>
-        <button class="mod-tab" data-tab="others" onclick="modSetTab('others')" data-i18n="mod.tab.others">No seguidores</button>
+        <button class="mod-tab active" data-tab="followers" onclick="modSetTab('followers')"><img class="icon-inline" src="icons/people.svg" alt=""> <span data-i18n="mod.tab.followers">Seguidores</span></button>
+        <button class="mod-tab" data-tab="others" onclick="modSetTab('others')"><img class="icon-inline" src="icons/person_remove.svg" alt=""> <span data-i18n="mod.tab.others">No seguidores</span></button>
       </div>
 
       <div class="mod-filters">
-        <input type="text" id="modSearch" oninput="modOnSearch()" data-i18n-placeholder="mod.filter.search" placeholder="Buscar por nombre..." />
-        <select id="modPlatform" onchange="modReload(true)">
+        <label class="mod-campo"><span class="mod-campo-icono" style="--icono:url(/icons/search.svg)"></span><input type="text" id="modSearch" oninput="modOnSearch()" data-i18n-placeholder="mod.filter.search" placeholder="Buscar por nombre..." /></label>
+        <label class="mod-campo"><span class="mod-campo-icono" style="--icono:url(/icons/apps.svg)"></span><select id="modPlatform" onchange="modReload(true)">
           <option value="all" data-i18n="mod.filter.allPlatforms">Todas las plataformas</option>
           <option value="tiktok">TikTok</option>
           <option value="twitch">Twitch</option>
           <option value="youtube">YouTube</option>
           <option value="kick">Kick</option>
-        </select>
-        <select id="modState" onchange="modReload(true)">
+        </select></label>
+        <label class="mod-campo"><span class="mod-campo-icono" style="--icono:url(/icons/radio_button_unchecked.svg)"></span><select id="modState" onchange="modReload(true)">
           <option value="all" data-i18n="mod.filter.stateAll">Todos los estados</option>
           <option value="clean" data-i18n="mod.filter.stateClean">Sin castigo</option>
           <option value="muted" data-i18n="mod.filter.stateMuted">Silenciados</option>
           <option value="banned" data-i18n="mod.filter.stateBanned">Baneados</option>
-        </select>
-        <select id="modSort" onchange="modReload(true)">
+        </select></label>
+        <label class="mod-campo"><span class="mod-campo-icono" style="--icono:url(/icons/event.svg)"></span><select id="modSort" onchange="modReload(true)">
           <option value="last" data-i18n="mod.sort.activity">Actividad reciente</option>
           <option value="nick" data-i18n="mod.sort.name">Nombre</option>
-        </select>
-        <button class="cfg-btn" onclick="modReload(true)"><img class="icon-inline" src="icons/refresh.svg" alt=""> <span data-i18n="mod.action.refresh">Actualizar</span></button>
-        <button class="cfg-btn" id="btnModTour" onclick="startModerationTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="mod.action.tour">Ver tutorial</span></button>
-        <button class="cfg-btn danger" onclick="modWipe()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="mod.action.wipe">Vaciar registro</span></button>
+        </select></label>
       </div>
 
-      <p class="mod-note" data-i18n="mod.note">YouTube no envía eventos de follow: a esos espectadores marcalos como seguidores a mano.</p>
+      <div class="mod-acciones-barra">
+        <button class="cfg-btn" onclick="modReload(true)"><img class="icon-inline" src="icons/refresh.svg" alt=""> <span data-i18n="mod.action.refresh">Actualizar</span></button>
+        <button class="cfg-btn danger" onclick="modWipe()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="mod.action.wipe">Vaciar registro</span></button>
+        <button class="cfg-btn" id="btnModTour" onclick="startModerationTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="mod.action.tour">Ver tutorial</span></button>
+      </div>
 
       <div class="mod-table-wrap">
         <table class="mod-table" id="modTable">
@@ -1151,13 +1133,22 @@
           </thead>
           <tbody id="modTableBody"></tbody>
         </table>
-        <div class="mod-empty" id="modEmpty" data-i18n="mod.empty">Todavía no hay espectadores registrados aquí.</div>
+        <div class="mod-empty" id="modEmpty">
+          <span class="mod-empty-icono" aria-hidden="true"><img src="icons/group_add.svg" alt=""></span>
+          <div class="mod-empty-titulo" data-i18n="mod.empty">Todavía no hay espectadores registrados aquí.</div>
+          <p class="mod-note" data-i18n="mod.note">YouTube no envía eventos de follow: a esos espectadores marcalos como seguidores a mano.</p>
+        </div>
+        <div class="mod-pager">
+          <button class="cfg-btn" id="modPrev" onclick="modPage(-1)" aria-label="←"><img class="icon-inline" src="icons/arrow_back.svg" alt=""></button>
+          <span id="modPagerLabel"></span>
+          <button class="cfg-btn" id="modNext" onclick="modPage(1)" aria-label="→"><img class="icon-inline" src="icons/arrow_forward.svg" alt=""></button>
+        </div>
+      </div>
       </div>
 
-      <div class="mod-pager">
-        <button class="cfg-btn" id="modPrev" onclick="modPage(-1)">←</button>
-        <span id="modPagerLabel"></span>
-        <button class="cfg-btn" id="modNext" onclick="modPage(1)">→</button>
+      <!-- Configuracion de moderacion (moderacion.js alterna con #modPrincipal) -->
+      <div id="modAjustes" hidden>
+        <div class="settings-section" id="chatGuardPanel"><!-- interfaz/src/vistas/principal/moderacion-contenido/ la llena --></div>
       </div>
     </div>
 
@@ -1336,27 +1327,32 @@
 
 <!-- ══ MODAL: Bloquear palabra al vuelo desde el chat ══════ -->
 <div id="blockWordModal" class="modal-overlay" onclick="closeBlockWordModal(event)">
-  <div class="modal-content" onclick="event.stopPropagation()">
-    <button class="modal-close" onclick="closeBlockWordModal()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
-    <h2><img class="icon-inline" src="icons/filter_none.svg" alt=""> <span data-i18n="blockWord.title">Bloquear palabra</span></h2>
-    <p style="color:var(--text-secondary);margin-bottom:14px;" data-i18n="blockWord.desc">Pegá o escribí la palabra y listo: el servidor la aplica al instante, sin reconectar. Podés seguir agregando sin cerrar la ventana.</p>
+  <div class="modal-content bw-dialog" role="dialog" aria-modal="true" aria-labelledby="bwTitle" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeBlockWordModal()" data-i18n-aria-label="modPopup.close" aria-label="Cerrar"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <div class="bw-header">
+      <span class="bw-header-icono" aria-hidden="true"><img src="icons/block.svg" alt=""></span>
+      <div>
+        <h2 id="bwTitle" data-i18n="blockWord.title">Bloquear palabra</h2>
+        <p class="bw-desc" data-i18n="blockWord.desc">Pegá o escribí la palabra y listo: el servidor la aplica al instante, sin reconectar. Podés seguir agregando sin cerrar la ventana.</p>
+      </div>
+    </div>
 
-    <div class="cfg-field">
+    <div class="bw-campo">
       <input type="text" id="blockWordInput" autocomplete="off" spellcheck="false"
         data-i18n-placeholder="blockWord.placeholder" placeholder="Escribí o pegá la palabra..."
+        data-i18n-aria-label="blockWord.placeholder" aria-label="Escribí o pegá la palabra..."
         onkeydown="if(event.key==='Enter') submitBlockWord()" />
+      <button type="button" class="btn-supabase-primary bw-agregar" onclick="submitBlockWord()"><span data-i18n="blockWord.add">Bloquear</span></button>
     </div>
 
-    <button class="btn-copy" style="width:100%;justify-content:center;margin-top:12px;" onclick="submitBlockWord()"><span data-i18n="blockWord.add">Bloquear</span></button>
-
-    <div id="blockWordSession" style="display:none;margin-top:14px;">
-      <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;" data-i18n="blockWord.sessionAdded">Bloqueadas ahora</div>
-      <div id="blockWordSessionTags" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+    <div id="blockWordSession" class="bw-sesion" style="display:none;">
+      <div class="bw-sesion-titulo" data-i18n="blockWord.sessionAdded">Bloqueadas ahora</div>
+      <div id="blockWordSessionTags" class="bw-sesion-tags"></div>
     </div>
 
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px;">
-      <span id="blockWordCount" style="font-size:11px;color:var(--text-muted);"></span>
-      <button type="button" class="cfg-btn" onclick="openChatGuardWords()" data-i18n="blockWord.manageAll">Ver y editar todas</button>
+    <div class="bw-pie">
+      <span id="blockWordCount" class="bw-contador"></span>
+      <button type="button" class="cfg-btn bw-ver-todas" onclick="closeBlockWordModal(); openChatGuardWords()"><span data-i18n="blockWord.manageAll">Ver y editar todas</span> <img class="icon-inline" src="icons/arrow_forward.svg" alt=""></button>
     </div>
   </div>
 </div>
