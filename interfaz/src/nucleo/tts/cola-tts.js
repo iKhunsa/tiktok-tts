@@ -21,7 +21,7 @@ import { chatFollowSpeaking } from '../../vistas/principal/chat-ui.js';
 import { MAX_QUEUE_SIZE } from '../estado/config-runtime.js';
 import { stopAudio } from './stop-audio.js';
 import { moderationSession } from '../estado/moderacion-sesion.js';
-import { crearFuentePitchShift } from './pitch-shift.js';
+import { crearBlobPitchShift } from './pitch-shift.js';
 
 // Umbral para considerar el tono "neutro": por debajo de esto se usa la
 // ruta simple de siempre (sin Web Audio API de por medio), igual que si la
@@ -39,24 +39,16 @@ let ttsErrorCount = 0;
 let ttsAbortController = null;
 const TTS_MAX_ERRORS = 5;
 const audioObjectUrls = new WeakMap();
-const pitchShiftSources = new WeakMap();
+// Solo para que updateRate() sepa si el audio activo ya viene con el tono
+// desplazado (buffer re-resampleado offline, ver pitch-shift.js) y por lo
+// tanto su playbackRate real es ttsRate/ttsPitch, no ttsRate pelado.
+const pitchShiftedAudios = new WeakSet();
 
 function releaseAudioObjectUrl(audio) {
   const url = audioObjectUrls.get(audio);
   if (!url) return;
   audioObjectUrls.delete(audio);
   URL.revokeObjectURL(url);
-}
-
-// Corta la fuente de Web Audio API que alimenta el <audio> cuando el tono
-// esta modificado (ver pitch-shift.js) — sin esto, saltar/cancelar un
-// mensaje con tono distinto deja el nodo de audio sonando (mudo, pero vivo)
-// de fondo.
-function detenerFuentePitchShift(audio) {
-  const fuente = pitchShiftSources.get(audio);
-  if (!fuente) return;
-  pitchShiftSources.delete(audio);
-  fuente.stop();
 }
 
 // Serializacion de processQueue: es async y toca estado global compartido
@@ -153,7 +145,6 @@ export function stopCurrentTTS({ clearQueue = false } = {}) {
     const audio = activeAudio;
     stopAudio(audio);
     releaseAudioObjectUrl(audio);
-    detenerFuentePitchShift(audio);
     activeAudio = null;
   }
   if (clearQueue) speechQueue = [];
@@ -203,23 +194,20 @@ export function enableEmergencyTTSMode() {
 // simple — el tono no sale como el usuario lo pidio, pero el TTS no se corta.
 async function prepararFuenteAudio(audio, blob) {
   const pitchEsNeutro = Math.abs(ttsPitch - 1) < PITCH_NEUTRAL_EPSILON;
+  let fuente = blob;
   if (!pitchEsNeutro) {
     try {
-      const fuente = await crearFuentePitchShift(blob, ttsPitch);
-      pitchShiftSources.set(audio, fuente);
-      audio.srcObject = fuente.stream;
-      audio.playbackRate = ttsRate / ttsPitch;
-      audio.preservesPitch = true;
-      fuente.start();
-      return;
+      fuente = await crearBlobPitchShift(blob, ttsPitch);
+      pitchShiftedAudios.add(audio);
     } catch (err) {
       logStorage.addLog('warn', 'client', 'Pitch-shift fallo, se usa la voz sin modificar', { error: err.message });
+      fuente = blob;
     }
   }
-  const url = URL.createObjectURL(blob);
+  const url = URL.createObjectURL(fuente);
   audioObjectUrls.set(audio, url);
   audio.src = url;
-  audio.playbackRate = ttsRate;
+  audio.playbackRate = fuente === blob ? ttsRate : ttsRate / ttsPitch;
   audio.preservesPitch = true;
 }
 
@@ -233,7 +221,6 @@ export async function playAudioBlob(blob, { onEnd, onError } = {}) {
     const previousAudio = activeAudio;
     stopAudio(previousAudio);
     releaseAudioObjectUrl(previousAudio);
-    detenerFuentePitchShift(previousAudio);
   }
 
   const audio = new Audio();
@@ -248,7 +235,6 @@ export async function playAudioBlob(blob, { onEnd, onError } = {}) {
     // huerfano que termina no debe pisar el activeAudio de otra ejecucion.
     if (activeAudio === audio) activeAudio = null;
     releaseAudioObjectUrl(audio);
-    detenerFuentePitchShift(audio);
     cb?.();
   };
 
@@ -266,7 +252,6 @@ export async function playAudioBlob(blob, { onEnd, onError } = {}) {
   // handlers). Reproducirlo igual sonaria superpuesto con lo que haya
   // arrancado despues — no seguir.
   if (activeAudio !== audio) {
-    detenerFuentePitchShift(audio);
     releaseAudioObjectUrl(audio);
     return;
   }
@@ -290,7 +275,7 @@ export function updateRate(v) {
   // Con el audio activo en pitch-shift, su playbackRate real es
   // ttsRate/ttsPitch (ver prepararFuenteAudio) — no ttsRate pelado, si no
   // se pierde la compensacion de duracion a mitad del mensaje.
-  if (activeAudio) activeAudio.playbackRate = pitchShiftSources.has(activeAudio) ? ttsRate / ttsPitch : ttsRate;
+  if (activeAudio) activeAudio.playbackRate = pitchShiftedAudios.has(activeAudio) ? ttsRate / ttsPitch : ttsRate;
   appSettings.rate = ttsRate;
   saveSettings();
 }

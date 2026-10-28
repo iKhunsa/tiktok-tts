@@ -1138,6 +1138,7 @@
                    "googleEmailNoVerificado":  "Googleアカウントのメールアドレスが確認されていません。",
                    "invalidGoogleToken":  "Googleアカウントを確認できませんでした。もう一度お試しください。",
                    "identidadTomada":  "そのGoogleアカウントはすでに別のユーザーに連携されています。",
+                   "googleUnlinkSinPassword":  "ログイン方法がなくなってしまいます。先にパスワードを設定してください。",
                    "invalidResetCode":  "コードが無効または期限切れです。",
                    "emailNoConfigurado":  "現在メールを送信できません。後でもう一度お試しください。"
                },
@@ -1282,6 +1283,7 @@
                    "linkGoogle":  "Googleを連携",
                    "googleLinked":  "Google連携済み（{email}）",
                    "googleLinkedDone":  "Googleアカウントを連携しました。",
+                   "googleUnlinkedDone":  "Google アカウントの連携を解除しました。",
                    "deleteConfirmGoogle":  "Googleで確認",
                    "forgotPassword":  "パスワードをお忘れですか？",
                    "forgotModalTitle":  "パスワードをリセット",
@@ -1390,7 +1392,9 @@
                      "back":  "戻る",
                      "forward":  "進む",
                      "news":  "新着情報",
-                     "discord":  "TikLiveTTS の Discord"
+                     "discord":  "TikLiveTTS の Discord",
+                     "refresh":  "すべて更新",
+                     "refreshed":  "すべて更新しました"
                  },
     "news":  {
                  "title":  "TikLiveTTS の新着情報",
@@ -1663,6 +1667,8 @@
                         "googleRow":  "Google でログイン",
                         "link":  "連携",
                         "linked":  "連携済み",
+                        "unlink":  "連携解除",
+                        "updatingStyle":  "スタイルを更新しています...",
                         "accountTitle":  "アカウント",
                         "changePassword":  "パスワードを変更",
                         "update":  "更新",

@@ -185,8 +185,7 @@ export function pintarVincular(cont) {
     btn.disabled = true;
     try {
       if (tipo === 'canal') {
-        const guardado = canalGuardado(id);
-        if (guardado) await removeChannel(id, guardado.channel);
+        await removeChannel(id);
       } else {
         const r = await desvincularPlataforma(id);
         if (!r.ok) return toastError(r.body, 'errors.generic');

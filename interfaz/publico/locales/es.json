@@ -1158,6 +1158,7 @@
                    "googleEmailNoVerificado":  "Tu cuenta de Google no tiene el email verificado.",
                    "invalidGoogleToken":  "No se pudo verificar tu cuenta de Google. Probá de nuevo.",
                    "identidadTomada":  "Esa cuenta de Google ya está vinculada a otro usuario.",
+                   "googleUnlinkSinPassword":  "Eso te dejaría sin forma de iniciar sesión; primero poné una contraseña.",
                    "invalidResetCode":  "Código inválido o vencido.",
                    "emailNoConfigurado":  "No se pudo enviar el email ahora mismo. Probá más tarde."
                },
@@ -1302,6 +1303,7 @@
                    "linkGoogle":  "Vincular Google",
                    "googleLinked":  "Google vinculado ({email})",
                    "googleLinkedDone":  "Tu cuenta de Google quedó vinculada.",
+                   "googleUnlinkedDone":  "Tu cuenta de Google quedó desvinculada.",
                    "deleteConfirmGoogle":  "Confirmar con Google",
                    "forgotPassword":  "¿Olvidaste tu contraseña?",
                    "forgotModalTitle":  "Recuperar contraseña",
@@ -1390,7 +1392,9 @@
                      "back":  "Atrás",
                      "forward":  "Adelante",
                      "news":  "Novedades",
-                     "discord":  "Discord de TikLiveTTS"
+                     "discord":  "Discord de TikLiveTTS",
+                     "refresh":  "Actualizar todo",
+                     "refreshed":  "Todo actualizado"
                  },
     "news":  {
                  "title":  "Novedades de TikLiveTTS",
@@ -1663,6 +1667,8 @@
                         "googleRow":  "Iniciar sesión con Google",
                         "link":  "Vincular",
                         "linked":  "Vinculado",
+                        "unlink":  "Desvincular",
+                        "updatingStyle":  "Actualizando tu estilo...",
                         "accountTitle":  "Cuenta",
                         "changePassword":  "Cambiar contraseña",
                         "update":  "Actualizar",

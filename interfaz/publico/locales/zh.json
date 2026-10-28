@@ -1138,6 +1138,7 @@
                    "googleEmailNoVerificado":  "你的 Google 账号没有经过验证的邮箱。",
                    "invalidGoogleToken":  "无法验证你的 Google 账号，请重试。",
                    "identidadTomada":  "该 Google 账号已绑定到其他用户。",
+                   "googleUnlinkSinPassword":  "这样你就无法登录了，请先设置密码。",
                    "invalidResetCode":  "验证码无效或已过期。",
                    "emailNoConfigurado":  "暂时无法发送邮件，请稍后再试。"
                },
@@ -1282,6 +1283,7 @@
                    "linkGoogle":  "绑定 Google",
                    "googleLinked":  "已绑定 Google（{email}）",
                    "googleLinkedDone":  "你的 Google 账号已绑定成功。",
+                   "googleUnlinkedDone":  "已取消 Google 账号关联。",
                    "deleteConfirmGoogle":  "使用 Google 确认",
                    "forgotPassword":  "忘记密码了？",
                    "forgotModalTitle":  "重置密码",
@@ -1390,7 +1392,9 @@
                      "back":  "后退",
                      "forward":  "前进",
                      "news":  "最新动态",
-                     "discord":  "TikLiveTTS Discord"
+                     "discord":  "TikLiveTTS Discord",
+                     "refresh":  "刷新全部",
+                     "refreshed":  "已全部刷新"
                  },
     "news":  {
                  "title":  "TikLiveTTS 最新动态",
@@ -1663,6 +1667,8 @@
                         "googleRow":  "使用 Google 登录",
                         "link":  "关联",
                         "linked":  "已关联",
+                        "unlink":  "取消关联",
+                        "updatingStyle":  "正在更新你的样式…",
                         "accountTitle":  "账号",
                         "changePassword":  "修改密码",
                         "update":  "更新",

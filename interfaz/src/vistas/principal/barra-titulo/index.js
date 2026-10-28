@@ -2,6 +2,9 @@ import { switchView, historialVistas } from '../vistas-router.js';
 import { novedadVigente } from '../novedades/vigencia.js';
 import { abrirNovedades, iniciarModalNovedades } from '../novedades/modal.js';
 import { openDiscordModal } from '../modales-avisos.js';
+import { cargarSesion } from '../../../nucleo/estado/sesion.js';
+import { showToast } from '../../../componentes/toast.js';
+import { t } from '../../../nucleo/i18n/i18n.js';
 
 function irA(vista) {
   if (vista) switchView(vista, { desdeHistorial: true });
@@ -43,10 +46,29 @@ function iniciarAtenuadoDeControles() {
   }).observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['class'] });
 }
 
+// Re-hidrata avatar/banner/roles/plan desde el servidor por si un cambio
+// (banner subido, rol de canal cambiado, etc.) tardo en reflejarse en la UI.
+function iniciarBotonRefrescar() {
+  const boton = document.getElementById('titlebarRefresh');
+  boton.addEventListener('click', async () => {
+    if (boton.classList.contains('is-loading')) return;
+    boton.classList.add('is-loading');
+    boton.disabled = true;
+    try {
+      await cargarSesion();
+      showToast(t('titlebar.refreshed'));
+    } finally {
+      boton.classList.remove('is-loading');
+      boton.disabled = false;
+    }
+  });
+}
+
 export function iniciarBarraTitulo() {
   iniciarAtenuadoDeControles();
   iniciarNavegacion();
   iniciarModalNovedades();
   iniciarBotonNovedades();
+  iniciarBotonRefrescar();
   document.getElementById('titlebarDiscord').addEventListener('click', () => openDiscordModal('titlebar'));
 }

@@ -37,6 +37,18 @@ export async function vincularGoogle() {
   return true;
 }
 
+/** true si Google quedo desvinculado; false si fallo (ya avisado, incluye el
+ * caso bloqueado por ser la unica forma de login). */
+export async function desvincularGoogle() {
+  const r = await pedir('/api/account/link/google', { method: 'DELETE' });
+  if (!r.ok) {
+    toastError(r.body, 'errors.generic');
+    return false;
+  }
+  showToast(t('cuenta.googleUnlinkedDone'));
+  return true;
+}
+
 export async function cerrarSesion() {
   await pedir('/api/auth/logout', { method: 'POST' });
   aplicarSesion({ activo: true, signedIn: false });
