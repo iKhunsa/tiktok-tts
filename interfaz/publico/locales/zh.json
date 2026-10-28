@@ -4,7 +4,7 @@
                 "overlays":  "叠加层",
                 "clips":  "剪辑",
                 "mobile":  "手机",
-                "settings":  "设置",
+                "settings":  "语音设置",
                 "soundpad":  "音效",
                 "bot":  "Bot",
                 "moderation":  "管理",
@@ -152,7 +152,6 @@
                 "connectOBS":  "连接 OBS",
                 "disconnectOBS":  "断开 OBS",
                 "clearAll":  "全部删除",
-                "openAdvanced":  "打开高级面板（过滤器、频率限制、日志）",
                 "pauseTTS":  "暂停 TTS",
                 "resumeTTS":  "恢复 TTS",
                 "reset":  "重置",
@@ -191,7 +190,7 @@
                                   "desc":  "自定义每个叠加层并复制 URL → OBS → 添加来源 → 浏览器 → 启用透明背景。"
                               },
                  "settings":  {
-                                  "title":  "TTS 设置",
+                                  "title":  "语音设置",
                                   "desc":  "调整语音、速度和行为。所有内容自动保存。"
                               },
                  "clips":  {
@@ -213,12 +212,13 @@
                      "languageFilters":  "语言筛选",
                      "announcementEndings":  "播报结尾",
                      "shortcuts":  "键盘快捷键 (TTS)",
+                     "chatFilterDesc":  "不想让 TTS 朗读辱骂或某些词？消息过滤在「审核」中。",
+                     "chatFilterGo":  "前往聊天审核",
                      "shortcutsTabTtsChat":  "TTS 与聊天",
                      "shortcutsTabMusic":  "机器人音乐",
                      "shortcutsTabGeneral":  "通用",
                      "shortcutsGeneralEmpty":  "更多快捷键即将推出。",
                      "channels":  "已关联频道",
-                     "advanced":  "高级设置",
                      "obs":  "OBS WebSocket 连接",
                      "clipsHistory":  "标记历史",
                      "announceTplTitle":  "自定义播报结尾",
@@ -896,6 +896,14 @@
                     "filtersDesc":  "按名称搜索，按平台或状态（静音、封禁、无处罚）筛选，并按最近活动或名称排序。",
                     "tableTitle":  "针对每位观众的操作",
                     "tableDesc":  "每一行都有：静音（聊天里仍可见，但 TTS 跳过）、封禁（消息根本不出现）、★ 标记为关注者、解除处罚，以及 ✕ 从记录中移除。限时处罚会自动到期，即使应用已关闭。",
+                    "settingsTitle":  "审核设置",
+                    "settingsDesc":  "点击「聊天审核」会把表格换成聊天过滤设置。再次点击同一按钮即可回到表格。",
+                    "cgFilterTitle":  "高级过滤",
+                    "cgFilterDesc":  "开启后，即使用技巧书写的辱骂和不良消息也能被识别。无论是否开启，你的屏蔽词列表始终生效。",
+                    "cgLevelTitle":  "保护级别",
+                    "cgLevelDesc":  "宽松只拦截明显的内容，均衡为推荐设置，严格还会拦截可疑内容。选择自定义可自行决定检测哪些内容。",
+                    "cgWordsTitle":  "屏蔽词和允许词",
+                    "cgWordsDesc":  "添加你永远不想听到的词，或允许被过滤器误拦的词。",
                     "chatMenuTitle":  "直接在聊天里管理",
                     "chatMenuDesc":  "不必特地过来：在直播聊天中点击任何人的名字，就会打开同一个菜单——静音、封禁、标记为关注者或屏蔽某个词。",
                     "toggleTitle":  "朗读非关注者",
@@ -991,7 +999,7 @@
                   },
     "pluginStoreTour":  {
                             "introTitle":  "插件商店",
-                            "introDesc":  "在这里选择要在侧边栏显示的工具及其顺序。聊天和设置始终可用，其余由你决定。",
+                            "introDesc":  "在这里选择要在侧边栏显示的工具及其顺序。聊天和语音设置始终可用，其余由你决定。",
                             "gridTitle":  "每张卡片代表一个工具",
                             "gridDesc":  "徽章显示它在侧边栏中是可见还是隐藏。点击卡片查看详情。",
                             "dragTitle":  "拖动即可重新排序",
@@ -1037,7 +1045,7 @@
                         },
     "store":  {
                   "title":  "插件商店",
-                  "subtitle":  "选择要在侧边栏显示的工具及其顺序。聊天和设置始终可用。",
+                  "subtitle":  "选择要在侧边栏显示的工具及其顺序。聊天和语音设置始终可用。",
                   "moveUp":  "上移",
                   "moveDown":  "下移",
                   "alwaysVisible":  "始终可见",
@@ -1280,8 +1288,8 @@
                    "forgotPassword":  "忘记密码了？",
                    "forgotModalTitle":  "重置密码",
                    "forgotConfirmText":  "我们将向 {email} 发送验证码，以便你设置新密码。要发送吗？",
+                   "forgotYourEmail":  "你的邮箱",
                    "forgotSendBtn":  "发送验证码",
-                   "forgotCancelBtn":  "取消",
                    "forgotSentHint":  "请查收邮箱：我们已向 {email} 发送了 6 位验证码。",
                    "resetCodeLabel":  "验证码",
                    "resetNewPasswordLabel":  "新密码",
@@ -1556,10 +1564,6 @@
                       "announce":  {
                                        "levelChanged":  "级别已更改为{level}"
                                    },
-                      "people":  {
-                                     "note":  "如需禁言或封禁某位观众，请使用“管理”。",
-                                     "go":  "前往“管理”"
-                                 },
                       "toast":  {
                                     "saveError":  "无法保存更改，请重试。"
                                 }
@@ -1578,6 +1582,7 @@
                        "ttsErrors":  "TTS 错误：{n}/{max}"
                    },
     "modPopup":  {
+                     "subtitle":  "避免聊天中出现不想要的消息。",
                      "title":  "聊天审核",
                      "close":  "关闭",
                      "tab":  {
@@ -1632,7 +1637,13 @@
                                    "empty":  "你还没有屏蔽任何词。",
                                    "emptySearch":  "没有符合搜索的词。",
                                    "error":  "无法加载列表，请稍后重试。",
-                                   "dictionaryNote":  "除了你的列表，审核引擎还使用包含数千个词的词典，此处不会列出。"
+                                   "dictionaryNote":  "除了你的列表，审核引擎还使用包含数千个词的词典，此处不会列出。",
+                                   "colWord":  "词语",
+                                   "colActions":  "操作",
+                                   "sort":  "排序",
+                                   "sortAz":  "A–Z",
+                                   "sortZa":  "Z–A",
+                                   "addHint":  "按 Enter 或「添加」将「{word}」加入列表。"
                                },
                      "queue":  {
                                    "explain":  "当收到的消息多于语音能朗读的数量时，队列会被填满，新消息将被丢弃。这与审核无关：这些消息只是没能进入语音队列。",
@@ -1647,6 +1658,7 @@
                         "navVincular":  "关联账号",
                         "navFacturacion":  "账单",
                         "navAccesibilidad":  "无障碍",
+                        "navPreferencias":  "偏好设置",
                         "navAyuda":  "帮助",
                         "close":  "关闭",
                         "changeBanner":  "更换横幅",

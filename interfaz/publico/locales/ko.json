@@ -4,7 +4,7 @@
                 "overlays":  "오버레이",
                 "clips":  "클립",
                 "mobile":  "모바일",
-                "settings":  "설정",
+                "settings":  "음성 설정",
                 "soundpad":  "사운드",
                 "bot":  "봇",
                 "moderation":  "모더레이션",
@@ -152,7 +152,6 @@
                 "connectOBS":  "OBS 연결",
                 "disconnectOBS":  "OBS 연결 해제",
                 "clearAll":  "모두 삭제",
-                "openAdvanced":  "고급 패널 열기（필터, 속도 제한, 로그）",
                 "pauseTTS":  "TTS 일시정지",
                 "resumeTTS":  "TTS 재개",
                 "reset":  "초기화",
@@ -191,7 +190,7 @@
                                   "desc":  "각 오버레이를 커스터마이즈하고 URL 복사 → OBS → 소스 추가 → 브라우저 → 투명 배경 활성화."
                               },
                  "settings":  {
-                                  "title":  "TTS 설정",
+                                  "title":  "음성 설정",
                                   "desc":  "음성, 속도, 동작을 조정합니다. 모든 것이 자동으로 저장됩니다."
                               },
                  "clips":  {
@@ -213,12 +212,13 @@
                      "languageFilters":  "언어 필터",
                      "announcementEndings":  "알림 문구 끝부분",
                      "shortcuts":  "키보드 단축키 (TTS)",
+                     "chatFilterDesc":  "TTS가 욕설이나 특정 단어를 읽지 않게 하고 싶나요? 메시지 필터는 모더레이션에 있습니다.",
+                     "chatFilterGo":  "채팅 모더레이션으로 이동",
                      "shortcutsTabTtsChat":  "TTS 및 채팅",
                      "shortcutsTabMusic":  "봇 음악",
                      "shortcutsTabGeneral":  "일반",
                      "shortcutsGeneralEmpty":  "더 많은 단축키가 곧 추가됩니다.",
                      "channels":  "연결된 채널",
-                     "advanced":  "고급 설정",
                      "obs":  "OBS WebSocket 연결",
                      "clipsHistory":  "마커 기록",
                      "announceTplTitle":  "알림 문구의 끝부분 맞춤 설정",
@@ -896,6 +896,14 @@
                     "filtersDesc":  "이름으로 검색하고, 플랫폼이나 상태(음소거·차단·제재 없음)로 거르고, 최근 활동이나 이름순으로 정렬하세요.",
                     "tableTitle":  "시청자별 작업",
                     "tableDesc":  "각 행에서: 음소거(채팅에는 보이지만 TTS가 건너뜀), 차단(메시지 자체가 안 뜸), ★로 팔로워 표시, 제재 해제, ✕로 기록에서 제거. 기간 제재는 앱을 닫아도 알아서 만료됩니다.",
+                    "settingsTitle":  "관리 설정",
+                    "settingsDesc":  "‘채팅 모더레이션’을 누르면 표 대신 채팅 필터 설정이 나타납니다. 같은 버튼으로 표에 돌아갈 수 있습니다.",
+                    "cgFilterTitle":  "고급 필터",
+                    "cgFilterDesc":  "켜면 꼼수로 쓴 욕설과 원치 않는 메시지도 감지합니다. 차단 단어 목록은 필터를 꺼도 항상 적용됩니다.",
+                    "cgLevelTitle":  "보호 수준",
+                    "cgLevelDesc":  "약하게는 명백한 것만 차단하고, 균형은 권장 설정이며, 엄격하게는 애매한 경우도 막습니다. 직접 설정에서는 무엇을 감지할지 직접 고릅니다.",
+                    "cgWordsTitle":  "차단·허용 단어",
+                    "cgWordsDesc":  "절대 듣고 싶지 않은 단어를 추가하거나, 필터가 실수로 차단하는 단어를 허용하세요.",
                     "chatMenuTitle":  "채팅에서 바로 관리",
                     "chatMenuDesc":  "여기까지 올 필요 없습니다. 라이브 채팅에서 이름을 클릭하면 같은 메뉴가 열립니다 — 음소거, 차단, 팔로워 표시, 단어 차단.",
                     "toggleTitle":  "비팔로워도 읽기",
@@ -991,7 +999,7 @@
                   },
     "pluginStoreTour":  {
                             "introTitle":  "플러그인 스토어",
-                            "introDesc":  "여기서 사이드바에 표시할 도구와 순서를 선택합니다. 채팅과 설정은 항상 사용 가능하고, 나머지는 직접 선택하세요.",
+                            "introDesc":  "여기서 사이드바에 표시할 도구와 순서를 선택합니다. 채팅과 음성 설정은 항상 사용 가능하고, 나머지는 직접 선택하세요.",
                             "gridTitle":  "각 카드는 하나의 도구입니다",
                             "gridDesc":  "배지는 사이드바에서 표시 중인지 숨김인지 알려줍니다. 카드를 클릭하면 자세한 정보를 볼 수 있습니다.",
                             "dragTitle":  "드래그로 순서 변경",
@@ -1037,7 +1045,7 @@
                         },
     "store":  {
                   "title":  "플러그인 스토어",
-                  "subtitle":  "사이드바에 표시할 도구와 순서를 선택하세요. 채팅과 설정은 항상 사용할 수 있습니다.",
+                  "subtitle":  "사이드바에 표시할 도구와 순서를 선택하세요. 채팅과 음성 설정은 항상 사용할 수 있습니다.",
                   "moveUp":  "위로 이동",
                   "moveDown":  "아래로 이동",
                   "alwaysVisible":  "항상 표시",
@@ -1280,8 +1288,8 @@
                    "forgotPassword":  "비밀번호를 잊으셨나요?",
                    "forgotModalTitle":  "비밀번호 재설정",
                    "forgotConfirmText":  "{email}로 코드를 보내드립니다. 새 비밀번호를 설정할 수 있어요. 보낼까요?",
+                   "forgotYourEmail":  "이메일",
                    "forgotSendBtn":  "코드 보내기",
-                   "forgotCancelBtn":  "취소",
                    "forgotSentHint":  "받은편지함을 확인하세요: {email}로 6자리 코드를 보냈습니다.",
                    "resetCodeLabel":  "인증 코드",
                    "resetNewPasswordLabel":  "새 비밀번호",
@@ -1556,10 +1564,6 @@
                       "announce":  {
                                        "levelChanged":  "수준이 {level}(으)로 변경되었습니다"
                                    },
-                      "people":  {
-                                     "note":  "특정 시청자를 음소거하거나 차단하려면 모더레이션을(를) 사용하세요.",
-                                     "go":  "모더레이션(으)로 이동"
-                                 },
                       "toast":  {
                                     "saveError":  "변경 사항을 저장할 수 없습니다. 다시 시도하세요."
                                 }
@@ -1578,6 +1582,7 @@
                        "ttsErrors":  "TTS 오류: {n}/{max}"
                    },
     "modPopup":  {
+                     "subtitle":  "채팅에서 원치 않는 메시지를 막아요.",
                      "title":  "채팅 모더레이션",
                      "close":  "닫기",
                      "tab":  {
@@ -1632,7 +1637,13 @@
                                    "empty":  "아직 차단한 단어가 없습니다.",
                                    "emptySearch":  "검색과 일치하는 단어가 없습니다.",
                                    "error":  "목록을 불러오지 못했습니다. 잠시 후 다시 시도하세요.",
-                                   "dictionaryNote":  "내 목록 외에도 모더레이션 엔진은 수천 개의 단어가 담긴 사전을 사용하며, 여기에는 표시되지 않습니다."
+                                   "dictionaryNote":  "내 목록 외에도 모더레이션 엔진은 수천 개의 단어가 담긴 사전을 사용하며, 여기에는 표시되지 않습니다.",
+                                   "colWord":  "단어",
+                                   "colActions":  "작업",
+                                   "sort":  "정렬",
+                                   "sortAz":  "A–Z",
+                                   "sortZa":  "Z–A",
+                                   "addHint":  "Enter 또는 ‘추가’를 눌러 ‘{word}’을(를) 목록에 추가하세요."
                                },
                      "queue":  {
                                    "explain":  "음성이 읽을 수 있는 양보다 메시지가 많이 오면 대기열이 가득 차 새 메시지는 버려집니다. 모더레이션과는 관계없이 음성 대기열에 들어가지 못한 메시지입니다.",
@@ -1647,6 +1658,7 @@
                         "navVincular":  "계정 연결",
                         "navFacturacion":  "결제",
                         "navAccesibilidad":  "접근성",
+                        "navPreferencias":  "환경설정",
                         "navAyuda":  "도움말",
                         "close":  "닫기",
                         "changeBanner":  "배너 변경",

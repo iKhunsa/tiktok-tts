@@ -2,6 +2,7 @@ import { t } from '../../nucleo/i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
 import { switchView } from './vistas-router.js';
 import { startModerationTour } from './tours/index.js';
+import { reloadModeracionContenido } from './moderacion-contenido/index.js';
 
 const MOD_PAGE_SIZE = 100;
 const MOD_REFRESH_MS = 15000;
@@ -116,10 +117,13 @@ function modRenderRows(items) {
     tr.appendChild(tdUser);
 
     const tdPlat = document.createElement('td');
-    const badge = document.createElement('span');
-    badge.className = `chat-platform-badge badge-${v.platform}`;
-    badge.textContent = v.platform;
-    tdPlat.appendChild(badge);
+    tdPlat.className = 'mod-plataforma';
+    const logo = document.createElement('img');
+    logo.src = `icons/${v.platform}-logo.svg`;
+    logo.alt = '';
+    const nombre = document.createElement('span');
+    nombre.textContent = v.platform;
+    tdPlat.append(logo, nombre);
     tr.appendChild(tdPlat);
 
     const tdState = document.createElement('td');
@@ -318,8 +322,24 @@ export function openBlockWordModal(prefill) {
   setTimeout(() => { input.focus(); input.select(); }, 50);
 }
 
+// Alterna la tabla con el panel de moderacion del chat (boton del header y tutorial).
+export function modMostrarAjustes(abrir) {
+  const btn = document.getElementById('modBtnAjustes');
+  document.getElementById('modPrincipal').hidden = abrir;
+  document.getElementById('modAjustes').hidden = !abrir;
+  btn.setAttribute('aria-expanded', String(abrir));
+  if (abrir) reloadModeracionContenido();
+}
+
+export function openChatGuard() {
+  switchView('moderacion');
+  modMostrarAjustes(true);
+  // Se llega desde Ajustes de voz scrolleado abajo: el panel se lee desde arriba.
+  document.getElementById('view-moderacion').scrollIntoView({ block: 'start' });
+}
+
 export function openChatGuardWords() {
-  switchView('settings');
+  openChatGuard();
   requestAnimationFrame(() => document.getElementById('cgWords')?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
 }
 
@@ -350,7 +370,7 @@ export function renderBlockWordSession() {
   wrap.style.display = blockWordSessionList.length ? '' : 'none';
   for (const w of blockWordSessionList) {
     const tag = document.createElement('span');
-    tag.className = 'mod-pill banned';
+    tag.className = 'bw-chip';
     tag.textContent = w;
     tags.appendChild(tag);
   }
@@ -479,6 +499,11 @@ export function modStopAutoRefresh() {
 export function iniciarMenusModeracion() {
   document.addEventListener('click', modCloseMenus);
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') modCloseMenus(); });
+  // Boton de configuracion del header: alterna la tabla con el panel de ajustes.
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('#modBtnAjustes');
+    if (btn) modMostrarAjustes(btn.getAttribute('aria-expanded') !== 'true');
+  });
   // El chat scrollea solo con cada mensaje: el menu quedaria flotando lejos
   // del nick que lo abrio.
   document.addEventListener('DOMContentLoaded', () => {

@@ -4,7 +4,7 @@
                 "overlays":  "Overlays",
                 "clips":  "Clipes",
                 "mobile":  "Mobile",
-                "settings":  "Configurações",
+                "settings":  "Ajustes de voz",
                 "soundpad":  "Sons",
                 "bot":  "Bot",
                 "moderation":  "Moderação",
@@ -152,7 +152,6 @@
                 "connectOBS":  "Conectar OBS",
                 "disconnectOBS":  "Desconectar OBS",
                 "clearAll":  "Apagar tudo",
-                "openAdvanced":  "Abrir painel avançado (filtros, rate limit, logs)",
                 "pauseTTS":  "Pausar TTS",
                 "resumeTTS":  "Retomar TTS",
                 "reset":  "Restaurar",
@@ -191,7 +190,7 @@
                                   "desc":  "Personalize cada overlay e copie a URL → OBS → Adicionar Fonte → Browser → Ativar fundo transparente."
                               },
                  "settings":  {
-                                  "title":  "Configurações TTS",
+                                  "title":  "Ajustes de voz",
                                   "desc":  "Ajuste a voz, velocidade e comportamentos. Tudo salva automaticamente."
                               },
                  "clips":  {
@@ -213,12 +212,13 @@
                      "languageFilters":  "Filtros de idioma",
                      "announcementEndings":  "Finais dos anúncios",
                      "shortcuts":  "Atalhos de teclado (TTS)",
+                     "chatFilterDesc":  "Não quer que o TTS leia insultos ou certas palavras? O filtro de mensagens fica em Moderação.",
+                     "chatFilterGo":  "Ir para Moderação do chat",
                      "shortcutsTabTtsChat":  "TTS e chat",
                      "shortcutsTabMusic":  "Música do bot",
                      "shortcutsTabGeneral":  "Geral",
                      "shortcutsGeneralEmpty":  "Em breve, mais atalhos.",
                      "channels":  "Canais vinculados",
-                     "advanced":  "Configurações avançadas",
                      "obs":  "Conexão OBS WebSocket",
                      "clipsHistory":  "Histórico de marcadores",
                      "announceTplTitle":  "Personalize o final dos anúncios",
@@ -896,6 +896,14 @@
                     "filtersDesc":  "Busque por nome, filtre por plataforma ou estado (silenciados, banidos, sem punição) e ordene por atividade recente ou por nome.",
                     "tableTitle":  "Ações por espectador",
                     "tableDesc":  "Em cada linha: Silenciar (continua visível no chat, mas o TTS não lê), Banir (as mensagens nem aparecem), ★ para marcar como seguidor, Remover punições e ✕ para tirar do registro. As punições temporárias expiram sozinhas, mesmo com o app fechado.",
+                    "settingsTitle":  "Configurações de moderação",
+                    "settingsDesc":  "«Moderação do chat» troca a tabela pelos ajustes do filtro do chat. Volte à tabela com o mesmo botão.",
+                    "cgFilterTitle":  "Filtro avançado",
+                    "cgFilterDesc":  "Ligado, detecta insultos e mensagens indesejadas mesmo escritas com truques. Sua lista de palavras bloqueadas sempre se aplica, mesmo que você o desligue.",
+                    "cgLevelTitle":  "Nível de proteção",
+                    "cgLevelDesc":  "Leve bloqueia só o evidente, Equilibrado é o recomendado e Rigoroso também barra casos duvidosos. Em Personalizado você escolhe o que detectar.",
+                    "cgWordsTitle":  "Palavras bloqueadas e permitidas",
+                    "cgWordsDesc":  "Adicione palavras que você nunca quer ouvir, ou permita as que o filtro bloqueia por engano.",
                     "chatMenuTitle":  "Moderar pelo chat",
                     "chatMenuDesc":  "Não precisa vir até aqui: clique no nome de qualquer pessoa no chat ao vivo e abre o mesmo menu — silenciar, banir, marcar como seguidor ou bloquear uma palavra.",
                     "toggleTitle":  "Ler não seguidores",
@@ -991,7 +999,7 @@
                   },
     "pluginStoreTour":  {
                             "introTitle":  "Loja de plugins",
-                            "introDesc":  "Aqui você escolhe quais ferramentas mostrar na barra lateral e em que ordem. Chat e Configurações estão sempre disponíveis, o resto é com você.",
+                            "introDesc":  "Aqui você escolhe quais ferramentas mostrar na barra lateral e em que ordem. Chat e Ajustes de voz estão sempre disponíveis, o resto é com você.",
                             "gridTitle":  "Cada cartão é uma ferramenta",
                             "gridDesc":  "O selo indica se está Visível ou Oculta na barra lateral. Clique em um cartão para ver os detalhes.",
                             "dragTitle":  "Arraste para reordenar",
@@ -1037,7 +1045,7 @@
                         },
     "store":  {
                   "title":  "Loja de plugins",
-                  "subtitle":  "Escolha quais ferramentas mostrar na barra lateral e em que ordem. Chat e Configurações estão sempre disponíveis.",
+                  "subtitle":  "Escolha quais ferramentas mostrar na barra lateral e em que ordem. Chat e Ajustes de voz estão sempre disponíveis.",
                   "moveUp":  "Mover para cima",
                   "moveDown":  "Mover para baixo",
                   "alwaysVisible":  "Sempre visível",
@@ -1280,8 +1288,8 @@
                    "forgotPassword":  "Esqueceu sua senha?",
                    "forgotModalTitle":  "Recuperar senha",
                    "forgotConfirmText":  "Vamos enviar um código para {email} para você criar uma nova senha. Quer enviar?",
+                   "forgotYourEmail":  "o seu email",
                    "forgotSendBtn":  "Enviar código",
-                   "forgotCancelBtn":  "Cancelar",
                    "forgotSentHint":  "Confira sua caixa de entrada: enviamos um código de 6 dígitos para {email}.",
                    "resetCodeLabel":  "Código de verificação",
                    "resetNewPasswordLabel":  "Nova senha",
@@ -1556,10 +1564,6 @@
                       "announce":  {
                                        "levelChanged":  "Nível alterado para {level}"
                                    },
-                      "people":  {
-                                     "note":  "Para silenciar ou banir um espectador específico, use Moderação.",
-                                     "go":  "Ir para Moderação"
-                                 },
                       "toast":  {
                                     "saveError":  "Não foi possível salvar a alteração. Tente de novo."
                                 }
@@ -1578,6 +1582,7 @@
                        "ttsErrors":  "erros de TTS: {n}/{max}"
                    },
     "modPopup":  {
+                     "subtitle":  "Evite mensagens indesejadas no seu chat.",
                      "title":  "Moderação do chat",
                      "close":  "Fechar",
                      "tab":  {
@@ -1632,7 +1637,13 @@
                                    "empty":  "Você ainda não bloqueou nenhuma palavra.",
                                    "emptySearch":  "Nenhuma palavra corresponde à busca.",
                                    "error":  "Não foi possível carregar a lista. Tente novamente em instantes.",
-                                   "dictionaryNote":  "Além da sua lista, o motor de moderação usa um dicionário com milhares de palavras que não aparecem aqui."
+                                   "dictionaryNote":  "Além da sua lista, o motor de moderação usa um dicionário com milhares de palavras que não aparecem aqui.",
+                                   "colWord":  "Palavra",
+                                   "colActions":  "Ações",
+                                   "sort":  "Ordenar",
+                                   "sortAz":  "A–Z",
+                                   "sortZa":  "Z–A",
+                                   "addHint":  "Pressione Enter ou «Adicionar» para incluir «{word}» na lista."
                                },
                      "queue":  {
                                    "explain":  "Quando chegam mais mensagens do que a voz consegue ler, a fila enche e as novas são descartadas. Isso não tem a ver com a moderação: são mensagens que simplesmente não couberam na fila de voz.",
@@ -1647,6 +1658,7 @@
                         "navVincular":  "Vincular contas",
                         "navFacturacion":  "Faturamento",
                         "navAccesibilidad":  "Acessibilidade",
+                        "navPreferencias":  "Preferências",
                         "navAyuda":  "Ajuda",
                         "close":  "Fechar",
                         "changeBanner":  "Alterar banner",

@@ -11,6 +11,7 @@ import { pintarPerfil } from './seccion-perfil.js';
 import { pintarVincular } from './seccion-vincular.js';
 import { pintarFacturacion } from './seccion-facturacion.js';
 import { pintarAccesibilidad } from './seccion-accesibilidad.js';
+import { pintarPreferencias } from './seccion-preferencias.js';
 import { iniciarBuscadorNav } from './buscador-nav.js';
 
 const SECCIONES = [
@@ -18,6 +19,7 @@ const SECCIONES = [
   { id: 'vincular', icono: 'link', key: 'cuentaModal.navVincular', pintar: pintarVincular },
   { id: 'facturacion', icono: 'desktop_windows', key: 'cuentaModal.navFacturacion', pintar: pintarFacturacion },
   { id: 'accesibilidad', icono: 'accessibility_new', key: 'cuentaModal.navAccesibilidad', pintar: pintarAccesibilidad },
+  { id: 'preferencias', icono: 'tune', key: 'cuentaModal.navPreferencias', pintar: pintarPreferencias },
 ];
 
 // Ayuda no es una seccion: abre el Discord de la comunidad.

@@ -5,7 +5,8 @@ const path = require('node:path');
 
 const html = fs.readFileSync(path.join(__dirname, '..', 'interfaz', 'index.html'), 'utf8');
 const sectionStart = html.indexOf('<div class="settings-section" id="settingsSectionVoice">');
-const sectionEnd = html.indexOf('<!-- KEYBOARD SHORTCUTS SECTION -->', sectionStart);
+// Despues de Voz y audio va el banner que redirige al filtro de Moderacion.
+const sectionEnd = html.indexOf('<div class="settings-section ajustes-filtro">', sectionStart);
 const voiceSection = html.slice(sectionStart, sectionEnd);
 
 const expectedIds = [
