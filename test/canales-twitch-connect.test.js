@@ -74,7 +74,7 @@ test('connect() que rechaza con un string se propaga como Error con message real
   );
 });
 
-test('Twitch conserva mensajes de chat y no registra listeners de alertas', async () => {
+test('Twitch conserva mensajes de chat; raids todavia sin listener', async () => {
   await withStubTmi(
     () => Promise.resolve(['irc-ws.chat.twitch.tv', 6667]),
     async (connectTwitch, { instances }) => {
@@ -83,12 +83,31 @@ test('Twitch conserva mensajes de chat y no registra listeners de alertas', asyn
       d.bus.on('canal:mensaje-crudo', (payload) => rawMessages.push(payload));
       await connectTwitch(d, 'kintsu99');
 
-      assert.equal(instances[0].listenerCount('subscription'), 0);
-      assert.equal(instances[0].listenerCount('cheer'), 0);
       assert.equal(instances[0].listenerCount('raided'), 0);
       instances[0].emit('message', '#kintsu99', {}, 'hola', false);
       assert.equal(rawMessages.length, 1);
       assert.equal(rawMessages[0].raw.message, 'hola');
+    }
+  );
+});
+
+test('Twitch: cheer y subscription publican canal:gift (cliente anonimo, sin cuenta vinculada)', async () => {
+  await withStubTmi(
+    () => Promise.resolve(['irc-ws.chat.twitch.tv', 6667]),
+    async (connectTwitch, { instances }) => {
+      const d = deps();
+      const gifts = [];
+      d.bus.on('canal:gift', (payload) => gifts.push(payload));
+      await connectTwitch(d, 'kintsu99');
+
+      const cheerTags = { bits: '250', 'display-name': 'Fulano' };
+      instances[0].emit('cheer', '#kintsu99', cheerTags);
+      const subUserstate = { 'display-name': 'Mengano' };
+      instances[0].emit('subscription', '#kintsu99', 'mengano', { prime: false, plan: '1000' }, '', subUserstate);
+
+      assert.equal(gifts.length, 2);
+      assert.deepEqual(gifts[0], { platform: 'twitch', channel: 'kintsu99', raw: { kind: 'cheer', tags: cheerTags } });
+      assert.deepEqual(gifts[1], { platform: 'twitch', channel: 'kintsu99', raw: { kind: 'sub', username: 'mengano', userstate: subUserstate } });
     }
   );
 });

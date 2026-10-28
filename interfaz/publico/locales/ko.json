@@ -242,6 +242,9 @@
                   "volume":  "볼륨",
                   "slow":  "느림",
                   "fast":  "빠름",
+                  "pitch":  "음높이",
+                  "pitchLow":  "낮음",
+                  "pitchHigh":  "높음",
                   "mute":  "음소거",
                   "max":  "최대",
                   "playbackControl":  "재생 제어",
@@ -610,7 +613,10 @@
                        "sharedList":  "공유",
                        "noShared":  "아직 공유 없음",
                        "anonymous":  "익명",
-                       "giftFrom":  "@{user}님으로부터"
+                       "giftFrom":  "@{user}님으로부터",
+                       "cheerBits":  "{bits} 비트",
+                       "newSub":  "새 구독",
+                       "kicksGifted":  "Kicks {amount}개"
                    },
     "donations":  {
                       "title":  "내 콘텐츠를 지원해주세요",
@@ -1683,6 +1689,9 @@
                         "desc_twitch":  "채널의 채팅, 비트, 레이드를 읽어 줍니다.",
                         "desc_youtube":  "방송의 채팅과 슈퍼챗을 읽어 줍니다.",
                         "desc_kick":  "채널 채팅을 실시간으로 읽어 줍니다.",
+                        "addChannelTitle_tiktok":  "TikTok 연결",
+                        "addChannelTitle_youtube":  "YouTube 연결",
+                        "addChannelLabel":  "사용자 이름 또는 채널",
                         "planName":  "{plan} 플랜",
                         "monthly":  "월간",
                         "renewsOn":  "구독이 {fecha}에 자동으로 갱신됩니다.",

@@ -35,9 +35,9 @@ function scheduleReconnect(deps, channel, attempt) {
 
 /**
  * Conecta IRC de Twitch (tmi.js) y engancha los handlers de evento. Cada
- * handler solo publica al bus con el dato crudo — subs/cheers/raids/join no
- * tienen un evento canonico de los 5 principales, se agrupan bajo
- * canal:evento-especial con `kind` para que /overlay (Fase 8) los consuma.
+ * handler solo publica al bus con el dato crudo — cheers/subs van por
+ * canal:gift (mismo evento que usa TikTok para regalos, ver
+ * features/overlay/index.js); raids/join no tienen handler todavia.
  *
  * Conexion SIEMPRE anonima: este cliente es solo-lectura (no hay .say() en
  * ningun lado). Un cliente anonimo (justinfan) lee todo el chat, incluidos los
@@ -97,6 +97,22 @@ async function connectTwitchLocked(deps, tmi, channel, attempt) {
     armWatchdog(state, staleKey, WATCHDOG_TIMEOUT_MS, onStale);
     if (self || !message.trim()) return;
     bus.emit('canal:mensaje-crudo', { platform: 'twitch', channel, raw: { tags, message: message.trim() } });
+  });
+
+  // Bits y subs llegan por IRC igual a un cliente anonimo (justinfan) — no
+  // hacen falta cuenta vinculada ni OAuth, a diferencia de Kick (ver
+  // features/overlay/index.js#extraerRegalo para como se consumen).
+  client.on('cheer', (_ch, tags) => {
+    armWatchdog(state, staleKey, WATCHDOG_TIMEOUT_MS, onStale);
+    bus.emit('canal:gift', { platform: 'twitch', channel, raw: { kind: 'cheer', tags } });
+  });
+  client.on('subscription', (_ch, username, methods, _message, userstate) => {
+    armWatchdog(state, staleKey, WATCHDOG_TIMEOUT_MS, onStale);
+    bus.emit('canal:gift', { platform: 'twitch', channel, raw: { kind: 'sub', username, userstate } });
+  });
+  client.on('resub', (_ch, username, _streakMonths, _message, userstate) => {
+    armWatchdog(state, staleKey, WATCHDOG_TIMEOUT_MS, onStale);
+    bus.emit('canal:gift', { platform: 'twitch', channel, raw: { kind: 'sub', username, userstate } });
   });
 
   client.on('disconnected', () => {

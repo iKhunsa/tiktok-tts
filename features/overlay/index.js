@@ -10,6 +10,7 @@ const { setFollowerBaseForChannel } = require('./state/set-follower-base');
 const { recomputeFollowerBase } = require('./state/recompute-follower-base');
 const { extractFollowerCount } = require('./state/extract-follower-count');
 const { computeGiftUsd } = require('./compute-gift-usd');
+const { extraerRegalo } = require('./extract-gift');
 const { purgeTopLikersIfNeeded } = require('./state/bounded-push');
 const { addTopEntry } = require('./state/add-top-entry');
 const { rankTop } = require('./state/rank-top');
@@ -45,23 +46,28 @@ module.exports = {
     app.use('/gifts', express.static(path.join(RESOURCE_BASE, 'gifts')));
 
     // ── Consumo puro de eventos de /canales y /chat ──────────────────────────
+    // Valorizacion en USD (Top Donadores) solo aplica a TikTok: Twitch/Kick no
+    // tienen una tasa de conversion propia definida (ver extract-gift.js).
     bus.on('canal:gift', (payload) => {
-      if (payload.platform !== 'tiktok') return; // valorizacion en USD solo aplica a TikTok
-      const data = payload.raw || {};
-      const user = cleanNick(data.nickname, data.uniqueId);
-      // tiktok-live-client manda groupCount (conteo acumulado del combo, ya
-      // deduplicado por connect-tiktok-channel.js#GIFT_COMBO_DEBOUNCE_MS) —
-      // reemplaza al repeatCount de tiktok-live-connector.
-      const repeatCount = data.groupCount || 1;
-      const { totalCoins, usdValue } = computeGiftUsd(logger, { giftName: data.giftName, repeatCount, diamondCount: data.diamondCount || 0 });
-      addDonor(state.credits, { platform: payload.platform, userId: data.uniqueId, user, giftName: data.giftName, count: repeatCount });
-      if (totalCoins > 0) {
-        addTopEntry(state.topDonors, 'totalCoins', { user, amount: totalCoins, avatar: data.avatarUrl });
-        broadcastTopDonors(bus, state.topDonors);
+      const info = extraerRegalo(payload.platform, payload.raw || {});
+      if (!info) return;
+      const user = cleanNick(info.nickname, info.userId);
+
+      let usdValue = null;
+      if (payload.platform === 'tiktok') {
+        const resultado = computeGiftUsd(logger, { giftName: info.giftName, repeatCount: info.repeatCount, diamondCount: info.diamondCount });
+        usdValue = resultado.usdValue;
+        if (resultado.totalCoins > 0) {
+          addTopEntry(state.topDonors, 'totalCoins', { user, amount: resultado.totalCoins, avatar: info.avatar });
+          broadcastTopDonors(bus, state.topDonors);
+        }
       }
+
+      addDonor(state.credits, { platform: payload.platform, userId: info.userId, user, giftName: info.giftName || info.kind, count: info.repeatCount });
       bus.emit('ws:broadcast', {
-        type: 'gift', user, ttsUser: resolveSpokenName(data.nickname, data.uniqueId), giftName: data.giftName, giftId: data.giftId,
-        giftPictureUrl: data.giftPictureUrl || null, repeatCount, usdValue, timestamp: Date.now(),
+        type: 'gift', platform: payload.platform, user, ttsUser: resolveSpokenName(info.nickname, info.userId),
+        giftName: info.giftName, giftId: info.giftId, giftPictureUrl: info.giftPictureUrl,
+        kind: info.kind, amount: info.amount, repeatCount: info.repeatCount, usdValue, timestamp: Date.now(),
       });
     }, 'overlay');
 
@@ -70,6 +76,21 @@ module.exports = {
       addFollower(state.credits, { platform: payload.platform, userId: payload.userId, user });
       bus.emit('ws:broadcast', { type: 'follow', platform: payload.platform, user, ttsUser: resolveSpokenName(payload.nick, payload.userId), userId: payload.userId || null, timestamp: Date.now() });
       if (payload.platform === 'tiktok') state.followCount += 1;
+    }, 'overlay');
+
+    // Kick: follows y regalos de Kicks llegan por el WS de cuentas vinculadas
+    // (features/auth/plataformas-realtime.js), no por el Centrifugo anonimo
+    // del chat (ese solo tiene mensajes) — requiere que el streamer tenga su
+    // cuenta de Kick vinculada. El payload crudo de kicks.gifted ya se loguea
+    // una vez en features/moderacion/index.js (gift-gate); no se repite aca.
+    bus.on('plataforma:evento', (evento) => {
+      if (!evento || evento.plataforma !== 'kick') return;
+      if (evento.tipo === 'channel.followed') {
+        const f = (evento.datos && evento.datos.follower) || {};
+        bus.emit('canal:follow', { platform: 'kick', userId: f.user_id != null ? String(f.user_id) : null, nick: f.username });
+      } else if (evento.tipo === 'kicks.gifted') {
+        bus.emit('canal:gift', { platform: 'kick', channel: null, raw: evento.datos || {} });
+      }
     }, 'overlay');
 
     bus.on('canal:like', (payload) => {
@@ -191,6 +212,6 @@ module.exports = {
       handler: () => slice().overlay,
     });
 
-    return { rutas: 9, listeners: 7 };
+    return { rutas: 9, listeners: 8 };
   },
 };

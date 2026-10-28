@@ -14,10 +14,14 @@ import { autenticarConGoogleUI } from './plataforma-auth-cliente.js';
 // La sesion pasa a anonymous y la ventana se recarga: el aviso sobrevive al reload.
 export const AVISO_CUENTA_ELIMINADA = 'tikliveTTS_cuentaEliminada';
 
+// El backend devuelve [{provider, email, linkedAt}]; quien llama solo
+// necesita saber que proveedores estan vinculados, así que se aplana acá
+// (unico lugar) en vez de que cada call site repita el .map(i => i.provider).
 export async function listaIdentidades() {
   const r = await pedir('/api/account/identities');
   if (!r.ok) return [];
-  return Array.isArray(r.body) ? r.body : (r.body.identities || []);
+  const identidades = Array.isArray(r.body) ? r.body : (r.body.identities || []);
+  return identidades.map((i) => (typeof i === 'string' ? i : i.provider));
 }
 
 /** true si Google quedo vinculado; false si se cancelo o fallo (ya avisado). */

@@ -30,7 +30,12 @@ function normalizar(s) {
   return {
     signedIn: true,
     // Solo se preservan slugs conocidos: un valor inesperado nunca habilita un canal local.
-    user: { id: s.user.id, email: s.user.email, nombre: s.user.nombre || '', rolCanal: ['beta', 'admin'].includes(s.user.rolCanal) ? s.user.rolCanal : 'user' },
+    user: {
+      id: s.user.id, email: s.user.email, nombre: s.user.nombre || '',
+      rolCanal: ['beta', 'admin'].includes(s.user.rolCanal) ? s.user.rolCanal : 'user',
+      avatarUrl: s.user.avatarUrl || null, bannerUrl: s.user.bannerUrl || null,
+      hasPassword: s.user.hasPassword !== false,
+    },
     // Solo se preservan slugs conocidos: un valor inesperado nunca habilita un plan local.
     plan: ['pro', 'sin-promos'].includes(s.plan) ? s.plan : 'free',
     entitlements: Array.isArray(s.entitlements) ? s.entitlements.slice() : [],

@@ -178,7 +178,9 @@ export function addChannelFromSettings() {
   renderSettingsChannels();
 }
 
-async function removeChannel(platform, channel) {
+// Exportada: la usa tambien "Mi cuenta" > Vincular (seccion-vincular.js) para
+// desconectar tiktok/youtube, ademas de los chips de "Canales vinculados".
+export async function removeChannel(platform, channel) {
   try {
     await fetch('/api/platforms/disconnect', {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ platform, channel }),
@@ -317,6 +319,34 @@ function pintarCuentasVinculadas(section) {
     img.title = PLATFORM_LABELS[platform];
     return img;
   }));
+}
+
+/** Modal "Mi cuenta" > Vincular: hay un canal guardado para esa plataforma? (no hay OAuth para tiktok/youtube, el estado "vinculado" ahi es "tiene un canal guardado"). */
+export function canalGuardado(platform) {
+  const saved = loadPlatformChannels();
+  return saved[platform]?.[0] || null;
+}
+
+/**
+ * Usado por "Mi cuenta" > Vincular para tiktok/youtube (sin OAuth: se
+ * conectan por nombre de canal, ver nota de arriba en normalizeChannelEntry).
+ * A diferencia de addChannelFromSettings() (que solo guarda y deja la
+ * conexion real para "Conectar todo" en Chat), esto ademas intenta conectar
+ * ya mismo -- en el modal de perfil no tiene sentido un segundo paso manual.
+ */
+export async function guardarYConectarCanal(platform, valorCrudo) {
+  const entry = normalizeChannelEntry(platform, valorCrudo);
+  if (!entry) return { ok: false };
+  upsertSavedChannel(platform, entry);
+  renderSettingsChannels();
+  let conectadoAhora = false;
+  try {
+    const res = await fetch('/api/platforms/connect', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ platform, channel: entry.channel }),
+    });
+    conectadoAhora = res.ok;
+  } catch (e) { /* el canal ya quedo guardado igual; "Conectar todo" lo reintenta despues */ }
+  return { ok: true, channel: entry.channel, conectadoAhora };
 }
 
 // Modal "Mi cuenta" > Vincular; sin sesion, a la vista de cuenta (igual que el popover).

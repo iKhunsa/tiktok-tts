@@ -242,6 +242,9 @@
                   "volume":  "Volume",
                   "slow":  "Lent",
                   "fast":  "Rapide",
+                  "pitch":  "Tonalité",
+                  "pitchLow":  "Grave",
+                  "pitchHigh":  "Aiguë",
                   "mute":  "Muet",
                   "max":  "Max",
                   "playbackControl":  "Contrôle de lecture",
@@ -610,7 +613,10 @@
                        "sharedList":  "Partagés",
                        "noShared":  "Pas encore de partages",
                        "anonymous":  "Anonyme",
-                       "giftFrom":  "de @{user}"
+                       "giftFrom":  "de @{user}",
+                       "cheerBits":  "{bits} bits",
+                       "newSub":  "Nouvel abonnement",
+                       "kicksGifted":  "{amount} Kicks"
                    },
     "donations":  {
                       "title":  "Soutenez mon contenu",
@@ -1683,6 +1689,9 @@
                         "desc_twitch":  "Lis le chat, les bits et les raids de ta chaîne.",
                         "desc_youtube":  "Lis le chat et les Super Chats de ton direct.",
                         "desc_kick":  "Lis le chat de ta chaîne en temps réel.",
+                        "addChannelTitle_tiktok":  "Connecter TikTok",
+                        "addChannelTitle_youtube":  "Connecter YouTube",
+                        "addChannelLabel":  "Nom d'utilisateur ou chaîne",
                         "planName":  "Forfait {plan}",
                         "monthly":  "Mensuel",
                         "renewsOn":  "Ton abonnement sera renouvelé automatiquement le {fecha}.",

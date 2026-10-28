@@ -242,6 +242,9 @@
                   "volume":  "音量",
                   "slow":  "遅い",
                   "fast":  "速い",
+                  "pitch":  "音程",
+                  "pitchLow":  "低い",
+                  "pitchHigh":  "高い",
                   "mute":  "ミュート",
                   "max":  "最大",
                   "playbackControl":  "再生コントロール",
@@ -610,7 +613,10 @@
                        "sharedList":  "シェア",
                        "noShared":  "まだシェアがありません",
                        "anonymous":  "匿名",
-                       "giftFrom":  "@{user} から"
+                       "giftFrom":  "@{user} から",
+                       "cheerBits":  "{bits} ビッツ",
+                       "newSub":  "新規サブスク",
+                       "kicksGifted":  "Kicks {amount}個"
                    },
     "donations":  {
                       "title":  "コンテンツを支援する",
@@ -1683,6 +1689,9 @@
                         "desc_twitch":  "チャンネルのチャット、Bits、レイドを読み上げます。",
                         "desc_youtube":  "配信のチャットとスーパーチャットを読み上げます。",
                         "desc_kick":  "チャンネルのチャットをリアルタイムで読み上げます。",
+                        "addChannelTitle_tiktok":  "TikTokを接続",
+                        "addChannelTitle_youtube":  "YouTubeを接続",
+                        "addChannelLabel":  "ユーザー名またはチャンネル",
                         "planName":  "{plan} プラン",
                         "monthly":  "月額",
                         "renewsOn":  "サブスクリプションは {fecha} に自動更新されます。",

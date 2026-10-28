@@ -3,28 +3,33 @@
  * conectores vinculados) y Descubrir (tarjetas de conectores recomendados),
  * con busqueda por nombre en las dos.
  *
- * Twitch/Kick son los unicos con OAuth real (servicio-cuentas, FASE 1 de
- * docs/plan-twitch-kick.md): "Descubrir" dispara el baile OAuth
- * (plataforma-auth-cliente.js, loopback local) y linkea contra el backend;
- * "Tuyos" refleja el estado real (GET /api/account/platforms) y desvincula.
- * TikTok/YouTube no tienen vinculacion de cuenta en este proyecto (se
- * conectan por nombre de canal, sin login, en features/canales/) -- quedan
- * fijos en 'sin-vincular', solo para completar el catalogo de "Descubrir".
+ * Dos mecanismos de conexion distintos, por eso `tipo` en el catalogo:
+ * - 'oauth' (Twitch/Kick): OAuth real (servicio-cuentas, FASE 1 de
+ *   docs/plan-twitch-kick.md) via plataforma-auth-cliente.js. "Tuyos" refleja
+ *   el estado real (GET /api/account/platforms).
+ * - 'canal' (TikTok/YouTube): sin login, se conectan por nombre de canal
+ *   (mismo mecanismo que "Canales vinculados" en Ajustes, features/canales/)
+ *   — pide el @usuario/canal en un modal chico (modal-agregar-canal.js) y
+ *   guarda/conecta con plataformas.js#guardarYConectarCanal. El estado
+ *   "vinculado" ahi es simplemente "hay un canal guardado".
  */
 import { t, aplicarTraducciones } from '../../../../nucleo/i18n/i18n.js';
 import { escaparAtributo as esc } from '../../../../../compartido/escapar-html.js';
 import { toastError } from '../api.js';
 import { listarPlataformasVinculadas, vincularPlataforma, desvincularPlataforma } from '../plataformas-vinculadas.js';
+import { canalGuardado, removeChannel } from '../../plataformas.js';
+import { abrirModalAgregarCanal } from './modal-agregar-canal.js';
 
-// Catalogo fijo (id/nombre); el estado de twitch/kick se pisa con el real
-// apenas resuelve cargarEstadoReal(). 'caducado'/'pendiente' quedan
-// declarados en ACCION_TARJETA para cuando el backend exponga expiracion de
-// token -- hoy el estado real es binario (conectado / sin-vincular).
+// Catalogo fijo (id/nombre); el estado se pisa con el real apenas resuelve
+// cargarEstadoReal(). 'caducado'/'pendiente' quedan declarados en
+// ACCION_TARJETA para cuando el backend exponga expiracion de token de
+// twitch/kick -- hoy esos dos son binarios (conectado / sin-vincular); los
+// de tipo 'canal' siempre son binarios (hay canal guardado o no).
 const CATALOGO = [
-  { id: 'tiktok', nombre: 'TikTok', estado: 'sin-vincular', vinculable: false },
-  { id: 'twitch', nombre: 'Twitch', estado: 'sin-vincular', vinculable: true },
-  { id: 'youtube', nombre: 'Youtube', estado: 'sin-vincular', vinculable: false },
-  { id: 'kick', nombre: 'Kick', estado: 'sin-vincular', vinculable: true },
+  { id: 'tiktok', nombre: 'TikTok', estado: 'sin-vincular', vinculable: true, tipo: 'canal' },
+  { id: 'twitch', nombre: 'Twitch', estado: 'sin-vincular', vinculable: true, tipo: 'oauth' },
+  { id: 'youtube', nombre: 'Youtube', estado: 'sin-vincular', vinculable: true, tipo: 'canal' },
+  { id: 'kick', nombre: 'Kick', estado: 'sin-vincular', vinculable: true, tipo: 'oauth' },
 ];
 
 // Icono y texto accesible de la accion de cada tarjeta de Descubrir.
@@ -138,15 +143,20 @@ export function pintarVincular(cont) {
     const vinculadas = await listarPlataformasVinculadas();
     if (!cont.isConnected) return; // se cerro/cambio de seccion mientras pedia
     for (const c of conectores) {
-      if (!c.vinculable) continue;
-      const v = vinculadas.find((p) => p.plataforma === c.id);
-      c.estado = v ? 'conectado' : 'sin-vincular';
-      c.username = v?.username || null;
+      if (c.tipo === 'oauth') {
+        const v = vinculadas.find((p) => p.plataforma === c.id);
+        c.estado = v ? 'conectado' : 'sin-vincular';
+        c.username = v?.username || null;
+      } else {
+        const guardado = canalGuardado(c.id);
+        c.estado = guardado ? 'conectado' : 'sin-vincular';
+        c.username = guardado?.channel || null;
+      }
     }
     pintarLista();
   }
 
-  async function conectar(id, btn) {
+  async function conectarOAuth(id, btn) {
     btn.disabled = true;
     try {
       const r = await vincularPlataforma(id);
@@ -162,11 +172,25 @@ export function pintarVincular(cont) {
     }
   }
 
+  async function conectarCanal(id) {
+    const guardo = await abrirModalAgregarCanal(id);
+    if (!guardo) return;
+    await cargarEstadoReal();
+    pestana = 'tuyos';
+    pintarLista();
+  }
+
   async function desconectar(id, btn) {
+    const tipo = conectores.find((c) => c.id === id)?.tipo;
     btn.disabled = true;
     try {
-      const r = await desvincularPlataforma(id);
-      if (!r.ok) return toastError(r.body, 'errors.generic');
+      if (tipo === 'canal') {
+        const guardado = canalGuardado(id);
+        if (guardado) await removeChannel(id, guardado.channel);
+      } else {
+        const r = await desvincularPlataforma(id);
+        if (!r.ok) return toastError(r.body, 'errors.generic');
+      }
       await cargarEstadoReal();
     } finally {
       btn.disabled = false;
@@ -190,7 +214,10 @@ export function pintarVincular(cont) {
     const btn = e.target.closest('.mc-tarjeta-accion');
     if (!btn || btn.disabled) return;
     const id = btn.closest('.mc-tarjeta').dataset.id;
-    if (conectores.find((c) => c.id === id)?.vinculable) conectar(id, btn);
+    const conector = conectores.find((c) => c.id === id);
+    if (!conector?.vinculable) return;
+    if (conector.tipo === 'oauth') conectarOAuth(id, btn);
+    else conectarCanal(id);
   });
   tabla.querySelector('.mc-tabla-filas').addEventListener('click', (e) => {
     const btn = e.target.closest('.mc-estado-conectado');
