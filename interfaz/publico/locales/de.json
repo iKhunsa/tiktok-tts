@@ -242,6 +242,9 @@
                   "volume":  "Lautstärke",
                   "slow":  "Langsam",
                   "fast":  "Schnell",
+                  "pitch":  "Tonhöhe",
+                  "pitchLow":  "Tief",
+                  "pitchHigh":  "Hoch",
                   "mute":  "Stumm",
                   "max":  "Max",
                   "playbackControl":  "Wiedergabesteuerung",
@@ -610,7 +613,10 @@
                        "sharedList":  "Geteilt",
                        "noShared":  "Noch keine Teilungen",
                        "anonymous":  "Anonym",
-                       "giftFrom":  "von @{user}"
+                       "giftFrom":  "von @{user}",
+                       "cheerBits":  "{bits} Bits",
+                       "newSub":  "Neues Abo",
+                       "kicksGifted":  "{amount} Kicks"
                    },
     "donations":  {
                       "title":  "Unterstütze meinen Content",
@@ -1671,6 +1677,9 @@
                         "desc_twitch":  "Lies Chat, Bits und Raids deines Kanals.",
                         "desc_youtube":  "Lies Chat und Super Chats deines Streams.",
                         "desc_kick":  "Lies den Chat deines Kanals in Echtzeit.",
+                        "addChannelTitle_tiktok":  "TikTok verbinden",
+                        "addChannelTitle_youtube":  "YouTube verbinden",
+                        "addChannelLabel":  "Benutzername oder Kanal",
                         "planName":  "{plan}-Plan",
                         "monthly":  "Monatlich",
                         "renewsOn":  "Dein Abo verlängert sich automatisch am {fecha}.",

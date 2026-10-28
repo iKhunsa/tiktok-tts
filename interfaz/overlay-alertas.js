@@ -59,21 +59,31 @@ function showGenericAlert(d, done) {
   programarRetiro(card, d.duration || alertDur, done);
 }
 
+// Twitch/Kick no mandan giftName real (no existe "nombre de regalo" ahi) —
+// el texto se arma con t() a partir de `kind`, nunca hardcodeado server-side
+// (ver features/overlay/extract-gift.js).
+const GIFT_KIND_LABEL = {
+  cheer: (gift) => t('overlayStr.cheerBits', { bits: gift.amount || 0 }),
+  sub: () => t('overlayStr.newSub'),
+  kicksgift: (gift) => t('overlayStr.kicksGifted', { amount: gift.amount || 0 }),
+};
+
 function showAlert(gift, done) {
   if (gift.type && gift.type !== 'gift') { showGenericAlert(gift, done); return; }
-  const imgSrc = resolveGiftImage(gift.giftName || '');
+  const nombreRegalo = gift.kind ? (GIFT_KIND_LABEL[gift.kind]?.(gift) || gift.kind) : gift.giftName;
+  const imgSrc = gift.kind ? null : resolveGiftImage(gift.giftName || '');
   const cdnSrc = gift.giftPictureUrl || '';
   const card = document.createElement('div');
   card.className = 'alert-card';
   const img = document.createElement('img');
   img.className = 'gift-img';
-  img.alt = gift.giftName;
+  img.alt = nombreRegalo;
   if (imgSrc) { img.src = imgSrc; img.onerror = () => { if (cdnSrc) { img.src = cdnSrc; img.onerror = () => useEmojiFor(img); } else useEmojiFor(img); }; }
   else if (cdnSrc) { img.src = cdnSrc; img.onerror = () => useEmojiFor(img); }
   card.appendChild(imgSrc || cdnSrc ? img : useEmojiFor(img));
   const info = document.createElement('div');
   info.className = 'info';
-  info.innerHTML = `<div class="action-label">${t('overlayStr.giftReceived')}</div><div class="gift-name">${escaparHtml(gift.giftName)}</div><div class="username">${t('overlayStr.giftFrom', { user: escaparHtml(gift.user) })}</div>${gift.usdValue ? `<div class="usd-value">≈ $${escaparHtml(String(gift.usdValue))} USD</div>` : ''}`;
+  info.innerHTML = `<div class="action-label">${t('overlayStr.giftReceived')}</div><div class="gift-name">${escaparHtml(nombreRegalo)}</div><div class="username">${t('overlayStr.giftFrom', { user: escaparHtml(gift.user) })}</div>${gift.usdValue ? `<div class="usd-value">≈ $${escaparHtml(String(gift.usdValue))} USD</div>` : ''}`;
   card.appendChild(info);
   if ((gift.repeatCount || 1) > 1) { const badge = document.createElement('div'); badge.className = 'qty-badge'; badge.textContent = 'x' + gift.repeatCount; card.appendChild(badge); }
   document.body.appendChild(card);

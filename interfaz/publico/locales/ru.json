@@ -242,6 +242,9 @@
                   "volume":  "Громкость",
                   "slow":  "Медленно",
                   "fast":  "Быстро",
+                  "pitch":  "Тон",
+                  "pitchLow":  "Низкий",
+                  "pitchHigh":  "Высокий",
                   "mute":  "Без звука",
                   "max":  "Макс",
                   "playbackControl":  "Управление воспроизведением",
@@ -610,7 +613,10 @@
                        "sharedList":  "Поделились",
                        "noShared":  "Пока нет репостов",
                        "anonymous":  "Аноним",
-                       "giftFrom":  "от @{user}"
+                       "giftFrom":  "от @{user}",
+                       "cheerBits":  "{bits} битов",
+                       "newSub":  "Новая подписка",
+                       "kicksGifted":  "{amount} Kicks"
                    },
     "donations":  {
                       "title":  "Поддержи мой контент",
@@ -1671,6 +1677,9 @@
                         "desc_twitch":  "Читайте чат, биты и рейды вашего канала.",
                         "desc_youtube":  "Читайте чат и Super Chat вашей трансляции.",
                         "desc_kick":  "Читайте чат вашего канала в реальном времени.",
+                        "addChannelTitle_tiktok":  "Подключить TikTok",
+                        "addChannelTitle_youtube":  "Подключить YouTube",
+                        "addChannelLabel":  "Имя пользователя или канал",
                         "planName":  "План {plan}",
                         "monthly":  "Ежемесячно",
                         "renewsOn":  "Подписка продлится автоматически {fecha}.",
