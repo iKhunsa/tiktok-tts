@@ -146,10 +146,12 @@ body.divisor-resizing {
   cursor: pointer;
 }
 .portal-view-tab-close {
+  flex-shrink: 0;
   width: 16px;
   height: 16px;
 }
 .portal-view-tab-new {
+  flex-shrink: 0;
   width: 24px;
   height: 24px;
 }
@@ -178,6 +180,7 @@ body.divisor-resizing {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   width: 24px;
   height: 24px;
   border: 0;
