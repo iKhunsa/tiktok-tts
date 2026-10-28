@@ -12,7 +12,7 @@ import { pedir, toastError } from '../api.js';
 import { subirImagenDeCuenta } from '../cloudinary-upload.js';
 import { abrirModalEliminarCuenta } from '../modal-eliminar-cuenta.js';
 import {
-  listaIdentidades, vincularGoogle, cerrarSesion, eliminarCuenta, eliminarCuentaGoogle,
+  listaIdentidades, vincularGoogle, desvincularGoogle, cerrarSesion, eliminarCuenta, eliminarCuentaGoogle,
 } from '../acciones-cuenta.js';
 
 const MB_MAX = { avatar: 5, banner: 10 };
@@ -87,6 +87,7 @@ function enlazarImagenes(cont) {
     const btn = cont.querySelector(`[data-tipo="${tipo}"]`);
     btn.classList.add('is-loading');
     btn.disabled = true;
+    showToast(t('cuentaModal.updatingStyle'));
     const r = await subirImagenDeCuenta(tipo, file);
     if (!btn.isConnected) return;
     btn.classList.remove('is-loading');
@@ -138,7 +139,15 @@ async function pintarGoogle(cont) {
   const lista = await listaIdentidades();
   if (!slot.isConnected) return;
   if (lista.includes('google')) {
-    slot.innerHTML = `<span class="mc-valor">${esc(t('cuentaModal.linked'))}</span>`;
+    slot.innerHTML = `
+      <span class="mc-valor">${esc(t('cuentaModal.linked'))}</span>
+      <button class="mc-accion" type="button" data-i18n="cuentaModal.unlink">${esc(t('cuentaModal.unlink'))}</button>`;
+    const btn = slot.querySelector('button');
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      if (await desvincularGoogle()) pintarGoogle(cont);
+      else btn.disabled = false;
+    });
     return;
   }
   slot.innerHTML = `<button class="mc-btn-google" type="button"><img src="icons/google.svg" alt="">${esc(t('cuentaModal.link'))}</button>`;

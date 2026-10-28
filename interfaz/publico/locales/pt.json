@@ -1130,6 +1130,7 @@
                    "googleEmailNoVerificado":  "Sua conta do Google não tem um email verificado.",
                    "invalidGoogleToken":  "Não foi possível verificar sua conta do Google. Tente novamente.",
                    "identidadTomada":  "Essa conta do Google já está vinculada a outro usuário.",
+                   "googleUnlinkSinPassword":  "Isso deixaria você sem forma de entrar; defina uma senha primeiro.",
                    "invalidResetCode":  "Código inválido ou expirado.",
                    "emailNoConfigurado":  "Não foi possível enviar o email agora. Tente mais tarde."
                },
@@ -1274,6 +1275,7 @@
                    "linkGoogle":  "Vincular Google",
                    "googleLinked":  "Google vinculado ({email})",
                    "googleLinkedDone":  "Sua conta do Google foi vinculada.",
+                   "googleUnlinkedDone":  "Sua conta do Google foi desvinculada.",
                    "deleteConfirmGoogle":  "Confirmar com Google",
                    "forgotPassword":  "Esqueceu sua senha?",
                    "forgotModalTitle":  "Recuperar senha",
@@ -1382,7 +1384,9 @@
                      "back":  "Voltar",
                      "forward":  "Avançar",
                      "news":  "Novidades",
-                     "discord":  "Discord do TikLiveTTS"
+                     "discord":  "Discord do TikLiveTTS",
+                     "refresh":  "Atualizar tudo",
+                     "refreshed":  "Tudo atualizado"
                  },
     "news":  {
                  "title":  "Novidades do TikLiveTTS",
@@ -1651,6 +1655,8 @@
                         "googleRow":  "Entrar com o Google",
                         "link":  "Vincular",
                         "linked":  "Vinculado",
+                        "unlink":  "Desvincular",
+                        "updatingStyle":  "Atualizando seu estilo...",
                         "accountTitle":  "Conta",
                         "changePassword":  "Alterar senha",
                         "update":  "Atualizar",

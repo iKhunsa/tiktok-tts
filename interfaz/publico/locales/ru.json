@@ -1130,6 +1130,7 @@
                    "googleEmailNoVerificado":  "У вашего аккаунта Google нет подтверждённого email.",
                    "invalidGoogleToken":  "Не удалось подтвердить аккаунт Google. Попробуйте снова.",
                    "identidadTomada":  "Этот аккаунт Google уже привязан к другому пользователю.",
+                   "googleUnlinkSinPassword":  "Так вы останетесь без способа входа; сначала задайте пароль.",
                    "invalidResetCode":  "Неверный или просроченный код.",
                    "emailNoConfigurado":  "Сейчас не удалось отправить письмо. Попробуйте позже."
                },
@@ -1274,6 +1275,7 @@
                    "linkGoogle":  "Привязать Google",
                    "googleLinked":  "Google привязан ({email})",
                    "googleLinkedDone":  "Ваш аккаунт Google привязан.",
+                   "googleUnlinkedDone":  "Ваш аккаунт Google отвязан.",
                    "deleteConfirmGoogle":  "Подтвердить через Google",
                    "forgotPassword":  "Забыли пароль?",
                    "forgotModalTitle":  "Сброс пароля",
@@ -1382,7 +1384,9 @@
                      "back":  "Назад",
                      "forward":  "Вперёд",
                      "news":  "Что нового",
-                     "discord":  "Discord TikLiveTTS"
+                     "discord":  "Discord TikLiveTTS",
+                     "refresh":  "Обновить всё",
+                     "refreshed":  "Всё обновлено"
                  },
     "news":  {
                  "title":  "Что нового в TikLiveTTS",
@@ -1651,6 +1655,8 @@
                         "googleRow":  "Вход через Google",
                         "link":  "Привязать",
                         "linked":  "Привязан",
+                        "unlink":  "Отвязать",
+                        "updatingStyle":  "Обновляем ваш стиль...",
                         "accountTitle":  "Аккаунт",
                         "changePassword":  "Сменить пароль",
                         "update":  "Обновить",

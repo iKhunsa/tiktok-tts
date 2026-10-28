@@ -1130,6 +1130,7 @@
                    "googleEmailNoVerificado":  "Il tuo account Google non ha un’email verificata.",
                    "invalidGoogleToken":  "Non siamo riusciti a verificare il tuo account Google. Riprova.",
                    "identidadTomada":  "Quell’account Google è già collegato a un altro utente.",
+                   "googleUnlinkSinPassword":  "Così resteresti senza un modo per accedere; imposta prima una password.",
                    "invalidResetCode":  "Codice non valido o scaduto.",
                    "emailNoConfigurado":  "Impossibile inviare l'email ora. Riprova più tardi."
                },
@@ -1274,6 +1275,7 @@
                    "linkGoogle":  "Collega Google",
                    "googleLinked":  "Google collegato ({email})",
                    "googleLinkedDone":  "Il tuo account Google è stato collegato.",
+                   "googleUnlinkedDone":  "Il tuo account Google è stato scollegato.",
                    "deleteConfirmGoogle":  "Conferma con Google",
                    "forgotPassword":  "Hai dimenticato la password?",
                    "forgotModalTitle":  "Recupera password",
@@ -1382,7 +1384,9 @@
                      "back":  "Indietro",
                      "forward":  "Avanti",
                      "news":  "Novità",
-                     "discord":  "Discord di TikLiveTTS"
+                     "discord":  "Discord di TikLiveTTS",
+                     "refresh":  "Aggiorna tutto",
+                     "refreshed":  "Tutto aggiornato"
                  },
     "news":  {
                  "title":  "Novità di TikLiveTTS",
@@ -1651,6 +1655,8 @@
                         "googleRow":  "Accedi con Google",
                         "link":  "Collega",
                         "linked":  "Collegato",
+                        "unlink":  "Scollega",
+                        "updatingStyle":  "Aggiornamento del tuo stile...",
                         "accountTitle":  "Account",
                         "changePassword":  "Cambia password",
                         "update":  "Aggiorna",

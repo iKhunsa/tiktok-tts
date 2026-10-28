@@ -3,7 +3,6 @@ import { showToast } from '../../componentes/toast.js';
 import { reproducirSonidoUi } from '../../componentes/sonido-ui.js';
 import { mostrarAvisoConexionFallida } from './aviso-conexion-fallida.js';
 import * as datosPorCuenta from '../../nucleo/estado/datos-por-cuenta.js';
-import { toggleTiktokAddPrompt } from './tiktok-sesion.js';
 import { switchView } from './vistas-router.js';
 import { almacenSesion } from '../../nucleo/estado/sesion.js';
 
@@ -14,7 +13,6 @@ const SONIDO_CONECTADO = { src: 'audio/ui/connect-wallet.mp3', volumen: 0.35 };
 const PLATFORM_CHANNELS_KEY = 'tikliveTTS_platforms_v1';
 export const PLATFORMS = ['tiktok', 'twitch', 'youtube', 'kick'];
 const PLATFORM_LABELS = { tiktok: 'TikTok', twitch: 'Twitch', youtube: 'YouTube', kick: 'Kick' };
-const PLATFORM_ICONS = { tiktok: 'icons/tiktok.svg', twitch: 'icons/sports_esports.svg', youtube: 'icons/tv.svg', kick: 'icons/kick.svg' };
 
 function loadPlatformChannels() {
   try {
@@ -104,88 +102,40 @@ function upsertSavedChannel(platform, entry) {
   savePlatformChannels(saved);
 }
 
-function removeSavedChannel(platform, channel) {
+// Mi perfil > Vincular (unica entrada que queda para tiktok/youtube, ya que
+// el formulario viejo de "Agregar canal" se elimino) modela un solo canal
+// por plataforma -- a diferencia de upsertSavedChannel, esto PISA cualquier
+// entrada anterior en vez de acumularla. Sin esto, corregir un canal mal
+// tipeado dejaba las dos entradas guardadas y canalGuardado() seguia
+// devolviendo la vieja (la primera del array).
+function replaceSavedChannel(platform, entry) {
+  if (!entry) return;
   const saved = loadPlatformChannels();
-  const normalized = normalizeChannelEntry(platform, channel);
-  const target = normalized?.channel || channel;
-  saved[platform] = saved[platform].filter((item) => item.channel !== target);
+  saved[platform] = [entry];
   savePlatformChannels(saved);
 }
 
-function formatChannelDisplay(platform, channel) {
-  if (platform === 'youtube' && /^[\w-]{11}$/.test(channel)) return channel;
-  return '@' + String(channel || '').replace(/^@+/, '');
+function clearSavedChannels(platform) {
+  const saved = loadPlatformChannels();
+  saved[platform] = [];
+  savePlatformChannels(saved);
 }
 
-function stateLabel(state) {
-  if (state === 'connected') return t('status.connected');
-  if (state === 'manual') return t('conn.stateManual');
-  if (state === 'error') return t('conn.stateError');
-  return t('conn.stateSaved');
-}
-
-let selectedAddPlatform = 'tiktok';
 let settingsChannelsRenderSeq = 0;
 
-export function toggleAddChannelForm() {
-  const form = document.getElementById('add-channel-form');
-  if (form) {
-    const showing = form.style.display === 'flex';
-    form.style.display = showing ? 'none' : 'flex';
-    if (!showing) {
-      const input = document.getElementById('add-channel-input');
-      if (input) setTimeout(() => input.focus(), 50);
-    }
-  }
-}
-
-export function selectAddPlatform(platform) {
-  selectedAddPlatform = platform;
-  PLATFORMS.forEach((p) => {
-    const btn = document.getElementById(`seg-${p}`);
-    if (btn) btn.classList.toggle('active', p === platform);
-  });
-  toggleTiktokAddPrompt(platform);
-  const placeholders = { tiktok: '@usuario', twitch: 'nombre_del_canal', youtube: '@canal, Channel ID o link live', kick: 'nombre_del_canal' };
-  const input = document.getElementById('add-channel-input');
-  const addChannelRow = document.getElementById('tiktok-add-channel-row');
-  if (input) {
-    input.placeholder = placeholders[platform] || '@usuario';
-    if (addChannelRow?.style.display !== 'none') input.focus();
-  }
-  const hint = document.getElementById('youtube-channel-hint');
-  if (hint) hint.style.display = platform === 'youtube' ? 'block' : 'none';
-}
-
-export function addChannelFromSettings() {
-  const input = document.getElementById('add-channel-input');
-  const channel = (input?.value || '').trim();
-  if (!channel) { showToast(t('toast.writeChannel')); return; }
-
-  const plannedEntry = normalizeChannelEntry(selectedAddPlatform, channel);
-  if (!plannedEntry) { showToast(t('toast.invalidChannel')); return; }
-
-  // Solo guarda/vincula el canal — la conexion real ocurre con "Conectar todo" en Chat.
-  upsertSavedChannel(selectedAddPlatform, plannedEntry);
-
-  if (selectedAddPlatform === 'youtube') {
-    showToast(plannedEntry.autoConnect ? t('toast.youtubeAutoSaved') : t('toast.youtubeTmpSaved'));
-  } else {
-    showToast(t('toast.channelSaved').replace('{platform}', PLATFORM_LABELS[selectedAddPlatform]));
-  }
-  input.value = '';
-  toggleAddChannelForm();
-  renderSettingsChannels();
-}
-
-// Exportada: la usa tambien "Mi cuenta" > Vincular (seccion-vincular.js) para
-// desconectar tiktok/youtube, ademas de los chips de "Canales vinculados".
-export async function removeChannel(platform, channel) {
+// Exportada: la usa "Mi cuenta" > Vincular (seccion-vincular.js) para
+// desconectar tiktok/youtube. Limpia TODAS las entradas guardadas de la
+// plataforma (no solo `channel`) -- Mi perfil modela un solo canal por
+// plataforma, asi que "desvincular" es "dejar esta plataforma en blanco",
+// incluso si quedo alguna entrada vieja de un canal mal tipeado.
+export async function removeChannel(platform) {
+  const saved = loadPlatformChannels();
+  const entradas = saved[platform] || [];
   try {
-    await fetch('/api/platforms/disconnect', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ platform, channel }),
-    });
-    removeSavedChannel(platform, channel);
+    await Promise.allSettled(entradas.map((entry) => fetch('/api/platforms/disconnect', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ platform, channel: entry.channel }),
+    })));
+    clearSavedChannels(platform);
     renderSettingsChannels();
     showToast(t('toast.platformDisconnected').replace('{platform}', PLATFORM_LABELS[platform]));
   } catch (e) {
@@ -330,14 +280,14 @@ export function canalGuardado(platform) {
 /**
  * Usado por "Mi cuenta" > Vincular para tiktok/youtube (sin OAuth: se
  * conectan por nombre de canal, ver nota de arriba en normalizeChannelEntry).
- * A diferencia de addChannelFromSettings() (que solo guarda y deja la
- * conexion real para "Conectar todo" en Chat), esto ademas intenta conectar
- * ya mismo -- en el modal de perfil no tiene sentido un segundo paso manual.
+ * A diferencia de solo guardar y dejar la conexion real para "Conectar
+ * todo" en Chat, esto ademas intenta conectar ya mismo -- en el modal de
+ * perfil no tiene sentido un segundo paso manual.
  */
 export async function guardarYConectarCanal(platform, valorCrudo) {
   const entry = normalizeChannelEntry(platform, valorCrudo);
   if (!entry) return { ok: false };
-  upsertSavedChannel(platform, entry);
+  replaceSavedChannel(platform, entry);
   renderSettingsChannels();
   let conectadoAhora = false;
   try {
@@ -368,11 +318,12 @@ export function iniciarHoverConnectAllChat() {
   });
 }
 
+// El nombre quedo del viejo panel "Canales vinculados" en Ajustes (ya
+// removido, ahora vive en "Mi cuenta" > Vincular); se conserva porque sigue
+// siendo el unico punto que refresca el estado de "Conectar todo" en Chat
+// (updateChatConnectAllState) tras guardar/conectar/desconectar un canal.
 export async function renderSettingsChannels() {
   const renderSeq = ++settingsChannelsRenderSeq;
-  const el = document.getElementById('settings-channels-list');
-  if (!el) return;
-
   let channels = { tiktok: [], twitch: [], youtube: [], kick: [] };
   try {
     const res = await fetch('/api/channels');
@@ -380,63 +331,4 @@ export async function renderSettingsChannels() {
   } catch (e) { /* noop */ }
   if (renderSeq !== settingsChannelsRenderSeq) return;
   updateChatConnectAllState(channels);
-
-  const saved = loadPlatformChannels();
-  const byKey = new Map();
-  const stateRank = { connected: 3, saved: 2, manual: 1, error: 0 };
-  const addChannelChip = (platform, ch, state) => {
-    const normalized = normalizeChannelEntry(platform, ch)?.channel;
-    if (!normalized) return;
-    const key = `${platform}:${normalized}`;
-    const existing = byKey.get(key);
-    if (!existing || stateRank[state] > stateRank[existing.state]) {
-      byKey.set(key, { platform, ch: normalized, state });
-    }
-  };
-
-  PLATFORMS.forEach((platform) => {
-    const active = new Set((channels[platform] || []).map((ch) => normalizeChannelEntry(platform, ch)?.channel).filter(Boolean));
-    active.forEach((ch) => addChannelChip(platform, ch, 'connected'));
-    (saved[platform] || []).forEach((entry) => {
-      const savedChannel = normalizeChannelEntry(platform, entry.channel)?.channel;
-      if (savedChannel && !active.has(savedChannel)) addChannelChip(platform, savedChannel, entry.autoConnect ? 'saved' : 'manual');
-    });
-  });
-
-  const all = Array.from(byKey.values());
-  el.innerHTML = '';
-  if (all.length === 0) {
-    el.innerHTML = `<div style="font-size:12px;color:var(--text-muted);">${t('conn.noSavedChannels')}</div>`;
-    return;
-  }
-  all.forEach(({ platform, ch, state }) => {
-    const tag = document.createElement('span');
-    tag.className = `channel-chip ${platform}${state === 'manual' ? ' needs-action' : ''}`;
-    const icon = document.createElement('img');
-    icon.src = PLATFORM_ICONS[platform];
-    icon.alt = '';
-    icon.style.cssText = 'width:12px;height:12px;opacity:0.7;';
-    const platformLabel = document.createElement('span');
-    platformLabel.className = 'channel-platform-label';
-    platformLabel.textContent = PLATFORM_LABELS[platform] + ' ·';
-    const label = document.createElement('span');
-    label.style.cssText = 'font-family:monospace;font-size:12px;';
-    label.textContent = formatChannelDisplay(platform, ch);
-    const status = document.createElement('span');
-    status.className = `channel-state ${state === 'connected' ? 'connected' : state === 'manual' ? 'manual' : ''}`;
-    status.textContent = stateLabel(state);
-    const removeBtn = document.createElement('button');
-    removeBtn.type = 'button';
-    const removeLabel = `${t('btn.delete')} ${PLATFORM_LABELS[platform]} ${formatChannelDisplay(platform, ch)}`;
-    removeBtn.title = removeLabel;
-    removeBtn.setAttribute('aria-label', removeLabel);
-    const removeIcon = document.createElement('img');
-    removeIcon.className = 'icon-inline';
-    removeIcon.src = 'icons/close.svg';
-    removeIcon.alt = '';
-    removeBtn.append(removeIcon);
-    removeBtn.onclick = () => removeChannel(platform, ch);
-    tag.append(icon, platformLabel, label, status, removeBtn);
-    el.appendChild(tag);
-  });
 }

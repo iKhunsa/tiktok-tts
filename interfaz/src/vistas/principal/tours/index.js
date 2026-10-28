@@ -9,7 +9,6 @@ import { switchView } from '../vistas-router.js';
 import { expandChatToggles } from '../toggles-chat.js';
 import { closeDictLangModal, openDictLangModal } from '../modales-avisos.js';
 import { trackUi } from '../../../nucleo/telemetria-ui.js';
-export { startChannelsTour } from './channels-tour.js';
 
 export { startBotTour } from './music-bot-tour.js';
 export { startSoundpadTour } from './soundpad-tour.js';

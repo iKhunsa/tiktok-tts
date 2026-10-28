@@ -813,6 +813,7 @@
                    "googleEmailNoVerificado":  "Your Google account doesn’t have a verified email.",
                    "invalidGoogleToken":  "We couldn’t verify your Google account. Please try again.",
                    "identidadTomada":  "That Google account is already linked to another user.",
+                   "googleUnlinkSinPassword":  "That would leave you without a way to sign in; set a password first.",
                    "invalidResetCode":  "Invalid or expired code.",
                    "emailNoConfigurado":  "Couldn't send the email right now. Try again later."
                },
@@ -1274,6 +1275,7 @@
                    "linkGoogle":  "Link Google",
                    "googleLinked":  "Google linked ({email})",
                    "googleLinkedDone":  "Your Google account is now linked.",
+                   "googleUnlinkedDone":  "Your Google account was disconnected.",
                    "deleteConfirmGoogle":  "Confirm with Google",
                    "forgotPassword":  "Forgot your password?",
                    "forgotModalTitle":  "Reset password",
@@ -1382,7 +1384,9 @@
                      "back":  "Back",
                      "forward":  "Forward",
                      "news":  "What\u0027s new",
-                     "discord":  "TikLiveTTS Discord"
+                     "discord":  "TikLiveTTS Discord",
+                     "refresh":  "Refresh everything",
+                     "refreshed":  "Everything refreshed"
                  },
     "news":  {
                  "title":  "What\u0027s new in TikLiveTTS",
@@ -1651,6 +1655,8 @@
                         "googleRow":  "Sign in with Google",
                         "link":  "Link",
                         "linked":  "Linked",
+                        "unlink":  "Disconnect",
+                        "updatingStyle":  "Updating your style...",
                         "accountTitle":  "Account",
                         "changePassword":  "Change password",
                         "update":  "Update",

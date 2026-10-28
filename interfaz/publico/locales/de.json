@@ -1130,6 +1130,7 @@
                    "googleEmailNoVerificado":  "Dein Google-Konto hat keine verifizierte E-Mail-Adresse.",
                    "invalidGoogleToken":  "Dein Google-Konto konnte nicht verifiziert werden. Bitte versuche es erneut.",
                    "identidadTomada":  "Dieses Google-Konto ist bereits mit einem anderen Benutzer verknüpft.",
+                   "googleUnlinkSinPassword":  "Dein letzter Login würde sonst verloren gehen; bitte zuerst ein Passwort festlegen.",
                    "invalidResetCode":  "Ungültiger oder abgelaufener Code.",
                    "emailNoConfigurado":  "E-Mail konnte gerade nicht gesendet werden. Versuch es später erneut."
                },
@@ -1274,6 +1275,7 @@
                    "linkGoogle":  "Google verknüpfen",
                    "googleLinked":  "Google verknüpft ({email})",
                    "googleLinkedDone":  "Dein Google-Konto wurde verknüpft.",
+                   "googleUnlinkedDone":  "Dein Google-Konto wurde getrennt.",
                    "deleteConfirmGoogle":  "Mit Google bestätigen",
                    "forgotPassword":  "Passwort vergessen?",
                    "forgotModalTitle":  "Passwort zurücksetzen",
@@ -1382,7 +1384,9 @@
                      "back":  "Zurück",
                      "forward":  "Vor",
                      "news":  "Neuigkeiten",
-                     "discord":  "TikLiveTTS-Discord"
+                     "discord":  "TikLiveTTS-Discord",
+                     "refresh":  "Alles aktualisieren",
+                     "refreshed":  "Alles aktualisiert"
                  },
     "news":  {
                  "title":  "Neuigkeiten in TikLiveTTS",
@@ -1651,6 +1655,8 @@
                         "googleRow":  "Mit Google anmelden",
                         "link":  "Verknüpfen",
                         "linked":  "Verknüpft",
+                        "unlink":  "Trennen",
+                        "updatingStyle":  "Dein Stil wird aktualisiert...",
                         "accountTitle":  "Konto",
                         "changePassword":  "Passwort ändern",
                         "update":  "Aktualisieren",

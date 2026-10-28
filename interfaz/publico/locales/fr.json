@@ -1130,6 +1130,7 @@
                    "googleEmailNoVerificado":  "Votre compte Google n’a pas d’email vérifié.",
                    "invalidGoogleToken":  "Impossible de vérifier votre compte Google. Veuillez réessayer.",
                    "identidadTomada":  "Ce compte Google est déjà associé à un autre utilisateur.",
+                   "googleUnlinkSinPassword":  "Cela te laisserait sans moyen de te connecter ; définis d'abord un mot de passe.",
                    "invalidResetCode":  "Code invalide ou expiré.",
                    "emailNoConfigurado":  "Impossible d'envoyer l'email pour le moment. Réessaie plus tard."
                },
@@ -1274,6 +1275,7 @@
                    "linkGoogle":  "Associer Google",
                    "googleLinked":  "Google associé ({email})",
                    "googleLinkedDone":  "Votre compte Google a été associé.",
+                   "googleUnlinkedDone":  "Ton compte Google a été dissocié.",
                    "deleteConfirmGoogle":  "Confirmer avec Google",
                    "forgotPassword":  "Mot de passe oublié ?",
                    "forgotModalTitle":  "Réinitialiser le mot de passe",
@@ -1382,7 +1384,9 @@
                      "back":  "Retour",
                      "forward":  "Avancer",
                      "news":  "Nouveautés",
-                     "discord":  "Discord TikLiveTTS"
+                     "discord":  "Discord TikLiveTTS",
+                     "refresh":  "Tout actualiser",
+                     "refreshed":  "Tout a été actualisé"
                  },
     "news":  {
                  "title":  "Nouveautés de TikLiveTTS",
@@ -1651,6 +1655,8 @@
                         "googleRow":  "Se connecter avec Google",
                         "link":  "Lier",
                         "linked":  "Lié",
+                        "unlink":  "Dissocier",
+                        "updatingStyle":  "Mise à jour de ton style...",
                         "accountTitle":  "Compte",
                         "changePassword":  "Changer le mot de passe",
                         "update":  "Mettre à jour",

@@ -83,10 +83,9 @@ import {
   spSettingsDelete, spFilterIcons, spChooseIcon, spLoad, spRestoreShortcuts,
 } from './soundpad.js';
 import {
-  toggleAddChannelForm, selectAddPlatform, addChannelFromSettings, toggleConnectAllChat,
-  renderSettingsChannels, iniciarHoverConnectAllChat, abrirVincularCuentas,
+  toggleConnectAllChat, renderSettingsChannels, iniciarHoverConnectAllChat, abrirVincularCuentas,
 } from './plataformas.js';
-import { renderTiktokSession, tiktokLogin, tiktokLogout } from './tiktok-sesion.js';
+import { renderTiktokSession } from './tiktok-sesion.js';
 import { doInstallUpdate, doCheckForUpdates, openRollbackModal, closeRollbackModal, rollbackToVersion, iniciarEventosElectron } from './eventos-electron.js';
 import { iniciarAjustesVentana } from './ajustes-ventana.js';
 import {
@@ -103,7 +102,7 @@ import {
 import {
   startModerationTour, startSoundpadTour, startBotTour, startPluginStoreTour,
   startChatActionsTour, startClipsTour, startOverlaysTour, startVoiceTour,
-  startShortcutsTour, startChannelsTour,
+  startShortcutsTour,
 } from './tours/index.js';
 import { iniciarPortalView, togglePortalView } from './portal-view/index.js';
 
@@ -145,8 +144,7 @@ Object.assign(window, {
   spCloseSettings, spSetSaveName, spSetSaveColor, spSettingsCapture, spSettingsClearShortcut,
   spSettingsDelete, spFilterIcons, spChooseIcon,
   // plataformas
-  toggleAddChannelForm, selectAddPlatform, addChannelFromSettings, toggleConnectAllChat, abrirVincularCuentas,
-  tiktokLogin, tiktokLogout,
+  toggleConnectAllChat, abrirVincularCuentas,
   // auto-update
   doInstallUpdate, doCheckForUpdates, openRollbackModal, closeRollbackModal, rollbackToVersion,
   // musica
@@ -159,7 +157,7 @@ Object.assign(window, {
   // tours
   startModerationTour, startSoundpadTour, startBotTour, startPluginStoreTour,
   startChatActionsTour, startClipsTour, startOverlaysTour, startVoiceTour,
-  startShortcutsTour, startChannelsTour,
+  startShortcutsTour,
   // usadas por markup construido en JS (template strings con onclick="...")
   escapeHtml,
   // portal view (navegador embebido)

@@ -46,6 +46,14 @@
 .titlebar-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .titlebar-btn:disabled { opacity: 0.3; cursor: default; }
 
+/* Refrescar todo: el icono gira mientras espera la respuesta de sesion. */
+#titlebarRefresh.is-loading .icon-inline { animation: titlebar-refresh-spin 0.7s linear infinite; }
+@keyframes titlebar-refresh-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  #titlebarRefresh.is-loading .icon-inline { animation: none; }
+}
+body.reduce-motion #titlebarRefresh.is-loading .icon-inline { animation: none; }
+
 /* Novedades: compacto (solo ícono); expandido los primeros días de una versión. */
 .titlebar-news-label {
   max-width: 0;

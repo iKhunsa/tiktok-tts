@@ -1130,6 +1130,7 @@
                    "googleEmailNoVerificado":  "Google 계정의 이메일이 인증되지 않았습니다.",
                    "invalidGoogleToken":  "Google 계정을 확인할 수 없습니다. 다시 시도해 주세요.",
                    "identidadTomada":  "해당 Google 계정은 이미 다른 사용자와 연결되어 있습니다.",
+                   "googleUnlinkSinPassword":  "그러면 로그인할 방법이 없어집니다. 먼저 비밀번호를 설정하세요.",
                    "invalidResetCode":  "코드가 유효하지 않거나 만료되었습니다.",
                    "emailNoConfigurado":  "지금은 이메일을 보낼 수 없습니다. 나중에 다시 시도해 주세요."
                },
@@ -1274,6 +1275,7 @@
                    "linkGoogle":  "Google 연결",
                    "googleLinked":  "Google 연결됨 ({email})",
                    "googleLinkedDone":  "Google 계정이 연결되었습니다.",
+                   "googleUnlinkedDone":  "Google 계정 연동이 해제되었습니다.",
                    "deleteConfirmGoogle":  "Google로 확인",
                    "forgotPassword":  "비밀번호를 잊으셨나요?",
                    "forgotModalTitle":  "비밀번호 재설정",
@@ -1382,7 +1384,9 @@
                      "back":  "뒤로",
                      "forward":  "앞으로",
                      "news":  "새 소식",
-                     "discord":  "TikLiveTTS 디스코드"
+                     "discord":  "TikLiveTTS 디스코드",
+                     "refresh":  "모두 새로고침",
+                     "refreshed":  "모두 새로고침되었습니다"
                  },
     "news":  {
                  "title":  "TikLiveTTS 새 소식",
@@ -1651,6 +1655,8 @@
                         "googleRow":  "Google로 로그인",
                         "link":  "연결",
                         "linked":  "연결됨",
+                        "unlink":  "연동 해제",
+                        "updatingStyle":  "스타일을 업데이트하는 중...",
                         "accountTitle":  "계정",
                         "changePassword":  "비밀번호 변경",
                         "update":  "업데이트",
