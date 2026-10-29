@@ -38,6 +38,7 @@
   height: calc(100vh - var(--titlebar-h));
   overflow: hidden;
 }
+body:has(#app-shell.portal-view-open) { overflow: hidden; }
 #app-shell.portal-view-open>.app-layout {
   max-width: none;
   margin: 0;

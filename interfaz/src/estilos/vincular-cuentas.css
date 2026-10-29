@@ -6,7 +6,42 @@
 .chat-header-actions { display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
 
 .linked-platforms { display: inline-flex; align-items: center; gap: 4px; }
-.linked-platforms img { width: 16px; height: 16px; }
+.linked-platforms img { width: 16px; height: 16px; display: block; }
+
+/* Estado de conexion por logo (plataformas.js#pintarCuentasVinculadas):
+   color = conectado, amarillo = conectando, gris = sin conectar,
+   gris + punto rojo = fallo (el motivo va en el tooltip). */
+.linked-platform { position: relative; display: inline-flex; cursor: help; }
+.linked-platform img { transition: filter 200ms ease, opacity 200ms ease; }
+.linked-platform[data-estado="idle"] img,
+.linked-platform[data-estado="failed"] img { filter: grayscale(1); opacity: 0.45; }
+.linked-platform[data-estado="connecting"] img {
+  filter: grayscale(1) sepia(1) saturate(8) hue-rotate(5deg) brightness(1.15);
+  animation: linked-platform-pulso 1.2s ease-in-out infinite alternate;
+}
+button.linked-platform {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transition: transform 160ms ease-out;
+}
+button.linked-platform:active { transform: scale(0.94); }
+button.linked-platform:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; border-radius: 4px; }
+.linked-platform[data-estado="failed"]::after {
+  content: '';
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ef4444;
+}
+@keyframes linked-platform-pulso { to { opacity: 0.55; } }
+@media (prefers-reduced-motion: reduce) {
+  .linked-platform[data-estado="connecting"] img { animation: none; }
+}
 
 .link-accounts-small { display: inline-flex; align-items: center; white-space: nowrap; }
 .link-accounts-small .icon-inline { width: 14px; height: 14px; opacity: 0.7; }
@@ -85,4 +120,48 @@
 .link-accounts-cta:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 @media (hover: hover) and (pointer: fine) {
   .link-accounts-cta:hover { background: var(--brand-hover); }
+}
+
+/* Conectando (logos en amarillo) y sin mensajes todavia (chat-espera.js):
+   barras en onda + frase rotativa en lugar del texto de "conecta tu Live". */
+.chat-espera { display: none; }
+.chat-section.conectando #emptyState > .empty-icon,
+.chat-section.conectando #emptyState > .empty-text { display: none; }
+/* Centrado vertical dentro del area del chat (el #emptyState ocupa todo el alto). */
+.chat-section.conectando #chatLog { display: flex; flex-direction: column; }
+.chat-section.conectando #emptyState { flex: 1; }
+.chat-section.conectando .chat-espera {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.chat-espera-ola {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 96px;
+  height: 48px;
+}
+.chat-espera-ola span {
+  width: 6px;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--text-secondary);
+  transform: scaleY(0.3);
+  animation: chat-espera-barra 1s ease-in-out infinite alternate;
+  animation-delay: calc(var(--i) * 120ms);
+}
+@keyframes chat-espera-barra { to { transform: scaleY(1); } }
+.chat-espera-texto {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+.chat-espera-texto.entra { animation: chat-espera-frase 280ms var(--ease-out); }
+@keyframes chat-espera-frase { from { opacity: 0; filter: blur(2px); } }
+@media (prefers-reduced-motion: reduce) {
+  .chat-espera-ola span { animation: none; transform: scaleY(0.6); }
 }

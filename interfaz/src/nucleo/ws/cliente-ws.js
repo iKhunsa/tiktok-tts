@@ -23,7 +23,7 @@ import {
 import { incrementarMsgCount, handleChatData, addSystemMsg } from '../../vistas/principal/chat-ui.js';
 import { setStatus } from '../../vistas/principal/modales-avisos.js';
 import { updateFollowerDisplay } from '../../vistas/principal/configurador-overlays.js';
-import { renderSettingsChannels } from '../../vistas/principal/plataformas.js';
+import { renderSettingsChannels, marcarEstadoPlataforma, conectandoTodasLasPlataformas } from '../../vistas/principal/plataformas.js';
 import { renderTiktokSession, tiktokLogin } from '../../vistas/principal/tiktok-sesion.js';
 import { updateOBSStatus, getClipsData, getLocalDateStr, deleteClip, startStreamManual, markClip, obtenerStreamStartTime } from '../../vistas/principal/clips.js';
 import { setSoloChatMode } from '../../vistas/principal/toggles-chat.js';
@@ -206,7 +206,11 @@ function handleMessage(data) {
     // solo estas 5 transiciones llegan aca, nunca un toast por cada intento
     // tecnico fallido — ver CLAUDE.md / handoff de continuidad de conexion.
     case 'tiktok-connection-status': {
-      if (data.status === 'connecting') showToast(t('conn.tiktokConnecting'));
+      if (data.status === 'connecting' || data.status === 'restoring') marcarEstadoPlataforma('tiktok', 'connecting');
+      else if (data.status === 'connected') marcarEstadoPlataforma('tiktok', null);
+      else if (data.status === 'waiting-live') marcarEstadoPlataforma('tiktok', 'failed', t('conn.tiktokWaitingLive'));
+      else if (data.status === 'auth-required') marcarEstadoPlataforma('tiktok', 'failed', t('linkAccounts.reasonTiktokLogin'));
+      if (data.status === 'connecting') { if (!conectandoTodasLasPlataformas()) showToast(t('conn.tiktokConnecting')); }
       else if (data.status === 'restoring') showToast(t('conn.tiktokRestoring'));
       else if (data.status === 'connected' && data.recovered) showToast(t('conn.tiktokRestored'));
       else if (data.status === 'waiting-live') showToast(t('conn.tiktokWaitingLive'));

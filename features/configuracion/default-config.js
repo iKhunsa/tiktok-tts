@@ -72,9 +72,9 @@ const DEFAULT_CONFIG = {
   // que guardó el antiguo interruptor opt-in no deje cuentas apagadas sin querer.
   blockedWordsTelemetryDisabled: false,
   adminIdentities: {
-    tiktok: ['ikhunsa_tiklivetts', 'soykurorai'],
+    tiktok: ['tiklivetts'],
     twitch: ['soykurorai'],
-    youtube: ['br0k3ny'],
+    youtube: ['TikLiveTTS'],
     kick: ['speedmucho'],
   },
 };

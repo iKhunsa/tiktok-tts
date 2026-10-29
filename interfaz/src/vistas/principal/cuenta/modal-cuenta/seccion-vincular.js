@@ -27,9 +27,10 @@
 import { t, aplicarTraducciones } from '../../../../nucleo/i18n/i18n.js';
 import { escaparAtributo as esc } from '../../../../../compartido/escapar-html.js';
 import { toastError } from '../api.js';
+import { showToast } from '../../../../componentes/toast.js';
 import { listarPlataformasVinculadas, vincularPlataforma, desvincularPlataforma } from '../plataformas-vinculadas.js';
 import {
-  canalGuardado, removeChannel, sincronizarCanalOAuth, obtenerCanalesEnVivo, canalEnColeccion,
+  canalGuardado, removeChannel, sincronizarCanalOAuth, sincronizarCanalesOAuth, obtenerCanalesEnVivo, canalEnColeccion,
 } from '../../plataformas.js';
 import { abrirModalAgregarCanal } from './modal-agregar-canal.js';
 import { fetchTiktokSession, alCambiarSesionTiktok, tiktokLogin } from '../../tiktok-sesion.js';
@@ -43,14 +44,18 @@ const CATALOGO = [
   { id: 'kick', nombre: 'Kick', estado: 'sin-vincular', vinculable: true, tipo: 'oauth' },
 ];
 
-// Icono y texto accesible de la accion de cada tarjeta de Descubrir.
+// Boton de cada tarjeta de Descubrir segun el estado: icono, texto
+// accesible y que hace al clic. Vinculado muestra el check y, con hover o
+// foco, el icono de desvincular (hover = lo que va a pasar al clic).
+const VINCULADO = { icono: 'check_circle_outline-ok', iconoHover: 'link_off-red', key: 'cuentaModal.unlink', accion: 'desvincular' };
+const RECONECTAR = { icono: 'refresh-warn', key: 'cuentaModal.reconnect', accion: 'reconectar' };
 const ACCION_TARJETA = {
-  'sin-vincular': { icono: 'add-white', key: 'cuentaModal.add' },
-  guardado: { icono: 'check_circle_outline-ok', key: 'cuentaModal.saved' },
-  conectado: { icono: 'check_circle_outline-ok', key: 'cuentaModal.connected' },
-  caducado: { icono: 'refresh-warn', key: 'cuentaModal.reconnect' },
-  desconectado: { icono: 'link_off-red', key: 'cuentaModal.disconnected' },
-  pendiente: { icono: 'refresh-warn', key: 'cuentaModal.pending' },
+  'sin-vincular': { icono: 'add-white', key: 'cuentaModal.add', accion: 'vincular' },
+  guardado: VINCULADO,
+  conectado: VINCULADO,
+  caducado: RECONECTAR,
+  desconectado: RECONECTAR,
+  pendiente: { icono: 'refresh-warn', key: 'cuentaModal.pending', accion: null },
 };
 
 let pestana = 'tuyos';
@@ -66,10 +71,10 @@ function estadoFilaHtml(c) {
     return '<button class="mc-btn-blanco" type="button" data-accion="reconectar" data-i18n="cuentaModal.reconnect"></button>';
   }
   if (c.estado === 'pendiente') return '<span class="mc-estado-pendiente" data-i18n="cuentaModal.pending"></span>';
-  // Conectado/guardado: al pasar el mouse (o con foco) se ofrece desconectar.
-  const labelKey = c.estado === 'guardado' ? 'cuentaModal.saved' : 'cuentaModal.connected';
+  // Guardado o conectado al LIVE se ven igual, "Vinculado" (el estado en vivo
+  // ya lo muestran los logos de Chat); al pasar el mouse o con foco, "Desvincular".
   return `<button class="mc-estado-conectado" type="button" data-accion="desconectar">
-    <span data-i18n="${labelKey}"></span><span data-i18n="cuentaModal.disconnect"></span>
+    <span data-i18n="cuentaModal.linked"></span><span data-i18n="cuentaModal.unlink"></span>
   </button>`;
 }
 
@@ -91,8 +96,8 @@ function tarjetaHtml(c) {
         <div class="mc-tarjeta-nombre">${esc(c.nombre)}</div>
         <p class="mc-tarjeta-desc" data-i18n="cuentaModal.desc_${esc(c.id)}"></p>
       </div>
-      <button class="mc-tarjeta-accion"${c.vinculable ? '' : ' disabled'} type="button" data-i18n-title="${accion.key}" aria-label="${esc(t(accion.key))}">
-        <img src="icons/${accion.icono}.svg" alt="">
+      <button class="mc-tarjeta-accion"${c.vinculable && accion.accion ? '' : ' disabled'} type="button" data-accion="${accion.accion || ''}" data-i18n-title="${accion.key}" aria-label="${esc(t(accion.key))}">
+        <img src="icons/${accion.icono}.svg" alt="">${accion.iconoHover ? `<img class="mc-tarjeta-accion-hover" src="icons/${accion.iconoHover}.svg" alt="">` : ''}
       </button>
     </div>`;
 }
@@ -110,7 +115,6 @@ export function pintarVincular(cont) {
         <img src="icons/search.svg" alt="">
         <input type="search" data-i18n-placeholder="cuentaModal.search">
       </label>
-      <button class="mc-eliminar mc-agregar" type="button" data-i18n="cuentaModal.add"></button>
     </div>
     <div class="mc-tabla">
       <div class="mc-tabla-cabecera"><span data-i18n="cuentaModal.colConnector"></span><span data-i18n="cuentaModal.colStatus"></span></div>
@@ -163,6 +167,7 @@ export function pintarVincular(cont) {
     const [vinculadas, canalesEnVivo, sesionTiktok] = await Promise.all([
       listarPlataformasVinculadas(), obtenerCanalesEnVivo(), fetchTiktokSession(),
     ]);
+    sincronizarCanalesOAuth(vinculadas);
     if (!cont.isConnected) return; // se cerro/cambio de seccion mientras pedia
     for (const c of conectores) {
       const guardado = c.tipo === 'oauth'
@@ -187,12 +192,10 @@ export function pintarVincular(cont) {
         if (r.body) toastError(r.body, 'errors.generic');
         return;
       }
-      await cargarEstadoReal(); // ya resuelve c.username para id === tipo oauth
+      await cargarEstadoReal(); // tambien guarda el canal local (sincronizarCanalesOAuth)
+      showToast(t('toast.platformLinked', { platform: conectores.find((c) => c.id === id).nombre }));
       pestana = 'tuyos';
       pintarLista();
-      // Fire-and-forget: solo alimenta los iconos de Chat, no bloquea el pintado de esta fila.
-      const username = conectores.find((c) => c.id === id)?.username;
-      sincronizarCanalOAuth(id, username);
     } finally {
       btn.disabled = false;
     }
@@ -242,11 +245,6 @@ export function pintarVincular(cont) {
     pintarLista();
   });
   input.addEventListener('input', pintarLista);
-  cont.querySelector('.mc-agregar').addEventListener('click', () => {
-    pestana = 'descubrir';
-    pintarLista();
-    input.focus();
-  });
 
   descubrir.querySelector('.mc-tarjetas').addEventListener('click', (e) => {
     const btn = e.target.closest('.mc-tarjeta-accion');
@@ -254,7 +252,9 @@ export function pintarVincular(cont) {
     const id = btn.closest('.mc-tarjeta').dataset.id;
     const conector = conectores.find((c) => c.id === id);
     if (!conector?.vinculable) return;
-    if (conector.tipo === 'oauth') conectarOAuth(id, btn);
+    if (btn.dataset.accion === 'desvincular') desconectar(id, btn);
+    else if (btn.dataset.accion === 'reconectar') reconectar(id, btn);
+    else if (conector.tipo === 'oauth') conectarOAuth(id, btn);
     else conectarCanal(id);
   });
   tabla.querySelector('.mc-tabla-filas').addEventListener('click', (e) => {

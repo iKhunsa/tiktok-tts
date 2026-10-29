@@ -1,10 +1,12 @@
-import { t } from '../../nucleo/i18n/i18n.js';
+import { t, tErr, idiomaActual } from '../../nucleo/i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
 import { reproducirSonidoUi } from '../../componentes/sonido-ui.js';
 import { mostrarAvisoConexionFallida } from './aviso-conexion-fallida.js';
 import * as datosPorCuenta from '../../nucleo/estado/datos-por-cuenta.js';
 import { switchView } from './vistas-router.js';
 import { almacenSesion } from '../../nucleo/estado/sesion.js';
+import { listarPlataformasVinculadas } from './cuenta/plataformas-vinculadas.js';
+import { actualizarChatEspera, anunciarStreamListo } from './chat-espera.js';
 
 // Suena cuando el servidor confirma la conexion (junto al aviso "N conectados").
 // El archivo original esta a -15 LUFS: 0.35 lo deja ~-24 LUFS, bajo el TTS.
@@ -163,8 +165,14 @@ async function connectSavedChannels() {
   const chatBtn = document.getElementById('btn-connect-all-chat');
   if (chatBtn) { chatBtn.disabled = true; chatBtn.textContent = t('conn.connecting'); }
 
-  let connected = 0;
-  let failed = 0;
+  const connected = new Set();
+  const failed = new Set();
+  const nombres = [...new Set(targets.map(({ platform }) => PLATFORM_LABELS[platform]))];
+  conectandoTodo = true;
+  showToast(nombres.length === 1
+    ? t('conn.connectingOne', { platform: nombres[0] })
+    : t('conn.connectingMany'));
+  targets.forEach(({ platform }) => marcarEstadoPlataforma(platform, 'connecting'));
   for (const { platform, entry } of targets) {
     try {
       const res = await fetch('/api/platforms/connect', {
@@ -176,24 +184,35 @@ async function connectSavedChannels() {
         connectedEntry.autoConnect = entry.autoConnect;
         connectedEntry.mode = entry.mode;
         upsertSavedChannel(platform, connectedEntry);
-        connected++;
+        marcarEstadoPlataforma(platform, null);
+        connected.add(PLATFORM_LABELS[platform]);
       } else {
-        failed++;
+        marcarEstadoPlataforma(platform, 'failed', tErr(d, 'errors.generic'));
+        failed.add(PLATFORM_LABELS[platform]);
       }
     } catch (e) {
-      failed++;
+      marcarEstadoPlataforma(platform, 'failed', t('errors.generic'));
+      failed.add(PLATFORM_LABELS[platform]);
     }
   }
 
+  conectandoTodo = false;
   if (chatBtn) { chatBtn.disabled = false; chatBtn.textContent = t('btn.connectAll'); }
   renderSettingsChannels();
-  if (connected > 0) reproducirSonidoUi(SONIDO_CONECTADO);
-  else if (failed > 0) mostrarAvisoConexionFallida();
-  const parts = [`${connected} conectados`];
-  if (failed) parts.push(`${failed} fallidos`);
-  if (manualCount) parts.push(`${manualCount} manual`);
-  showToast(t('conn.connectAllMsg', { parts: parts.join(', ') }));
+  if (connected.size > 0) { reproducirSonidoUi(SONIDO_CONECTADO); anunciarStreamListo(); }
+  else if (failed.size > 0) mostrarAvisoConexionFallida();
+  // Nombra las plataformas ("Conectado a Twitch y Kick"), no cuentas sueltas.
+  const lista = (set) => new Intl.ListFormat(idiomaActual(), { type: 'conjunction' }).format([...set]);
+  const partes = [];
+  if (connected.size) partes.push(t('conn.connectedList', { platforms: lista(connected) }));
+  if (failed.size) partes.push(t('conn.failedList', { platforms: lista(failed) }));
+  showToast(partes.join(' · '));
 }
+
+// Mientras "Conectar todo" corre, su toast ya nombra las plataformas: el
+// "Conectando con TikTok…" del supervisor (cliente-ws.js) lo pisaria.
+let conectandoTodo = false;
+export const conectandoTodasLasPlataformas = () => conectandoTodo;
 
 export async function toggleConnectAllChat() {
   const chatBtn = document.getElementById('btn-connect-all-chat');
@@ -222,6 +241,8 @@ export async function toggleConnectAllChat() {
     }
     chatBtn.disabled = false;
     chatBtn.textContent = prevText;
+    // Desconectar todo es empezar de cero: ningun logo queda con el fallo de un intento anterior.
+    PLATFORMS.forEach((platform) => marcarEstadoPlataforma(platform, null));
     renderSettingsChannels();
     showToast(t('toast.allChannelsDisconnected'));
   } else {
@@ -241,7 +262,8 @@ async function updateChatConnectAllState(preloadedChannels) {
     } catch (e) { /* noop */ }
   }
   const activeCount = PLATFORMS.reduce((sum, platform) => sum + (channels[platform] || []).length, 0);
-  pintarCuentasVinculadas(chatBtn.closest('.chat-section'));
+  ultimosCanales = channels;
+  pintarCuentasVinculadas();
   if (activeCount > 0) {
     chatBtn.classList.add('channels-connected');
     chatBtn.title = `${activeCount} canal(es) conectado(s) — clic para desconectar`;
@@ -253,21 +275,84 @@ async function updateChatConnectAllState(preloadedChannels) {
   }
 }
 
+// Estado de conexion que /api/channels no informa: "conectando" y el motivo
+// del ultimo fallo. El toast dura poco; el logo gris + tooltip queda a mano.
+// Los fallos van a sessionStorage: sobreviven a recargar la ventana (Ctrl+R,
+// cambio de idioma) pero no a cerrar la app, donde ya no dirian nada cierto.
+// 'connecting' nunca se guarda: tras recargar quedaria amarillo para siempre.
+const CLAVE_FALLOS = 'tikliveTTS_fallosConexion';
+const estadoCliente = leerFallos();
+let ultimosCanales = {};
+
+function leerFallos() {
+  try { return JSON.parse(sessionStorage.getItem(CLAVE_FALLOS)) || {}; } catch (e) { return {}; }
+}
+
+function guardarFallos() {
+  const fallos = Object.fromEntries(Object.entries(estadoCliente).filter(([, v]) => v.estado === 'failed'));
+  try { sessionStorage.setItem(CLAVE_FALLOS, JSON.stringify(fallos)); } catch (e) { /* noop */ }
+}
+
+/** estado: 'connecting' | 'failed' | null (null = manda /api/channels). */
+export function marcarEstadoPlataforma(platform, estado, motivo = '') {
+  if (estado) estadoCliente[platform] = { estado, motivo };
+  else delete estadoCliente[platform];
+  guardarFallos();
+  pintarCuentasVinculadas();
+}
+
+function estadoLogo(platform) {
+  const cliente = estadoCliente[platform];
+  if (cliente?.estado === 'connecting') return cliente;
+  if ((ultimosCanales[platform] || []).length) return { estado: 'connected' };
+  return cliente || { estado: 'idle' };
+}
+
+const CLAVE_ESTADO = {
+  connected: 'linkAccounts.statusConnected',
+  connecting: 'linkAccounts.statusConnecting',
+  failed: 'linkAccounts.statusFailed',
+  idle: 'linkAccounts.statusIdle',
+};
+
 // Canales guardados (no los conectados): 0 => tarjeta grande en el chat,
-// >=1 => boton chico + un logo por plataforma en el encabezado.
-function pintarCuentasVinculadas(section) {
+// >=1 => boton chico + un logo por plataforma en el encabezado, coloreado
+// segun su estado (ver vincular-cuentas.css).
+function pintarCuentasVinculadas() {
+  const section = document.querySelector('.chat-section');
   if (!section) return;
   const saved = loadPlatformChannels();
   const vinculadas = PLATFORMS.filter((platform) => saved[platform].length > 0);
   section.classList.toggle('sin-cuentas', vinculadas.length === 0);
+  // Solo mientras algun logo esta en amarillo; ya conectado vuelve el estado vacio normal.
+  const conectando = Object.values(estadoCliente).some((e) => e.estado === 'connecting');
+  if (conectando !== section.classList.contains('conectando')) {
+    section.classList.toggle('conectando', conectando);
+    actualizarChatEspera();
+  }
   const logos = document.getElementById('linkedPlatforms');
   if (!logos) return;
   logos.replaceChildren(...vinculadas.map((platform) => {
+    const { estado, motivo } = estadoLogo(platform);
+    const texto = t(CLAVE_ESTADO[estado], { platform: PLATFORM_LABELS[platform], reason: motivo });
+    // Con fallo es boton: abre el aviso de ayuda (en vivo? -> Discord).
+    const fallo = estado === 'failed';
+    const logo = document.createElement(fallo ? 'button' : 'span');
+    logo.className = 'linked-platform';
+    logo.dataset.estado = estado;
+    logo.title = texto;
+    logo.setAttribute('aria-label', texto);
+    if (fallo) {
+      logo.type = 'button';
+      logo.addEventListener('click', () => mostrarAvisoConexionFallida({ forzar: true }));
+    } else {
+      logo.setAttribute('role', 'img');
+    }
     const img = document.createElement('img');
     img.src = `icons/${platform}-logo.svg`;
-    img.alt = PLATFORM_LABELS[platform];
-    img.title = PLATFORM_LABELS[platform];
-    return img;
+    img.alt = '';
+    logo.append(img);
+    return logo;
   }));
 }
 
@@ -327,6 +412,33 @@ export async function sincronizarCanalOAuth(platform, username) {
   if (!entry) return;
   replaceSavedChannel(platform, entry);
   renderSettingsChannels();
+}
+
+/**
+ * sincronizarCanalOAuth solo corre en el momento de vincular: una cuenta
+ * vinculada antes de ese cambio, desde otro equipo o con el localStorage
+ * limpio queda "Guardado" en Mi cuenta pero invisible en Chat. Esto
+ * reconcilia contra el servidor. Solo agrega/corrige, nunca borra: si el
+ * pedido falla devuelve [] y no hay que vaciar canales por eso.
+ */
+export function sincronizarCanalesOAuth(vinculadas) {
+  const saved = loadPlatformChannels();
+  for (const { plataforma, username } of vinculadas) {
+    const entry = PLATFORMS.includes(plataforma) && normalizeChannelEntry(plataforma, username);
+    if (entry && saved[plataforma][0]?.channel !== entry.channel) sincronizarCanalOAuth(plataforma, username);
+  }
+}
+
+// Al arrancar, apenas hay sesion (cargarSesion es async). Una vez por carga:
+// un cambio de cuenta recarga la ventana (sesion.js#aplicarSesion).
+export function iniciarSyncCanalesOAuth() {
+  const intentar = async (s) => {
+    if (!s.signedIn) return;
+    desuscribir();
+    sincronizarCanalesOAuth(await listarPlataformasVinculadas());
+  };
+  const desuscribir = almacenSesion.subscribe(intentar);
+  intentar(almacenSesion.getState());
 }
 
 // Modal "Mi cuenta" > Vincular; sin sesion, a la vista de cuenta (igual que el popover).

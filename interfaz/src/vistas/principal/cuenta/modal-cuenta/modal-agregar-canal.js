@@ -19,23 +19,31 @@ import { showToast } from '../../../../componentes/toast.js';
 import { guardarCanal, PLATFORM_LABELS } from '../../plataformas.js';
 import { fetchTiktokSession, alCambiarSesionTiktok, tiktokLogin, tiktokLogout } from '../../tiktok-sesion.js';
 
-const PLACEHOLDER = { tiktok: '@usuario', youtube: '@canal, Channel ID o link live' };
+// TikTok lleva el "@" como prefijo fijo del campo; YouTube acepta tambien
+// Channel ID o link, asi que ahi no hay prefijo.
+const PLACEHOLDER = { tiktok: 'usuario', youtube: '@canal, Channel ID o link live' };
 
 export function abrirModalAgregarCanal(platform) {
   return new Promise((resolve) => {
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay show';
     overlay.innerHTML = `
-      <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="acTitle">
+      <div class="modal-content ac-modal" role="dialog" aria-modal="true" aria-labelledby="acTitle" aria-describedby="acSub">
         <button class="modal-close" type="button" data-cancel><img class="icon-inline" src="icons/close.svg" alt=""></button>
-        <h2 id="acTitle" data-i18n="cuentaModal.addChannelTitle_${platform}"></h2>
-        ${platform === 'tiktok' ? '<div class="cuenta-field" data-tiktok-session hidden></div>' : ''}
-        <div class="cuenta-field" data-channel-row>
-          <label for="acInput" data-i18n="cuentaModal.addChannelLabel"></label>
-          <input type="text" id="acInput" placeholder="${esc(PLACEHOLDER[platform] || '@usuario')}" autocomplete="off">
+        <div class="ac-cabecera">
+          <span class="ac-logo" aria-hidden="true"><img src="icons/${esc(platform)}-logo.svg" alt=""></span>
+          <h2 id="acTitle" data-i18n="cuentaModal.addChannelTitle_${platform}"></h2>
+          <p id="acSub" class="ac-sub" data-i18n="cuentaModal.addChannelSub_${platform}"></p>
         </div>
-        <button type="button" class="cuenta-btn-primary" data-save data-i18n="btn.saveChannel"></button>
-        <button type="button" class="cuenta-btn-ghost" data-cancel-inline data-i18n="btn.cancel"></button>
+        ${platform === 'tiktok' ? '<div data-tiktok-session hidden></div>' : ''}
+        <div class="ac-campo" data-channel-row>
+          <label for="acInput" data-i18n="cuentaModal.addChannelLabel"></label>
+          <div class="ac-input">
+            ${platform === 'tiktok' ? '<span class="ac-prefijo" aria-hidden="true">@</span>' : ''}
+            <input type="text" id="acInput" placeholder="${esc(PLACEHOLDER[platform] || '@usuario')}" autocomplete="off">
+          </div>
+        </div>
+        <button type="button" class="cuenta-btn-primary ac-guardar" data-save data-i18n="btn.saveChannel"></button>
       </div>`;
     document.body.appendChild(overlay);
     aplicarTraducciones(overlay);
@@ -59,7 +67,7 @@ export function abrirModalAgregarCanal(platform) {
       try {
         const r = await guardarCanal(platform, valor);
         if (!r.ok) { showToast(t('toast.invalidChannel')); return; }
-        showToast(platform === 'youtube' && !r.autoConnect ? t('toast.youtubeTmpSaved') : t('toast.channelSaved').replace('{platform}', PLATFORM_LABELS[platform]));
+        showToast(platform === 'youtube' && !r.autoConnect ? t('toast.youtubeTmpSaved') : t('toast.platformLinked', { platform: PLATFORM_LABELS[platform] }));
         cerrar(true);
       } finally {
         btn.disabled = false;
@@ -69,7 +77,6 @@ export function abrirModalAgregarCanal(platform) {
     overlay.addEventListener('click', (e) => { if (e.target === overlay) cerrar(false); });
     overlay.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrar(false); });
     $('[data-cancel]').addEventListener('click', () => cerrar(false));
-    $('[data-cancel-inline]').addEventListener('click', () => cerrar(false));
     $('[data-save]').addEventListener('click', guardar);
     input.addEventListener('keydown', (e) => { if (e.key === 'Enter') guardar(); });
 
@@ -102,38 +109,36 @@ async function pintarSesionTiktok(overlay) {
   const necesitaLogin = !session.loggedIn;
   channelRow.style.display = necesitaLogin ? 'none' : '';
   saveBtn.style.display = necesitaLogin ? 'none' : '';
+  const sub = overlay.querySelector('#acSub');
+  sub.dataset.i18n = necesitaLogin ? 'cuentaModal.addChannelSub_tiktokLogin' : 'cuentaModal.addChannelSub_tiktok';
+  aplicarTraducciones(sub.parentElement);
 
   if (necesitaLogin) {
     slot.innerHTML = `
-      <div class="tiktok-login-flow">
-        <div class="tiktok-login-step">
-          <span class="tiktok-login-badge">1</span>
-          <div>
-            <strong data-i18n="conn.tiktokLogin"></strong>
-            <span data-i18n="conn.tiktokLoginStepOneDesc"></span>
-          </div>
-        </div>
-        <div class="tiktok-login-step tiktok-login-step-two">
-          <span class="tiktok-login-badge">2</span>
-          <div>
-            <strong data-i18n="conn.tiktokLoginStepTwoTitle"></strong>
-            <span data-i18n-html="conn.tiktokLoginStepTwoDesc"></span>
-          </div>
-        </div>
-      </div>
-      <button type="button" class="btn-supabase-primary ac-tiktok-login-btn" data-tiktok-login>
-        <img class="icon-inline" src="icons/login.svg" alt=""> <span data-i18n="conn.tiktokLogin"></span>
+      <ol class="ac-pasos">
+        <li class="ac-paso">
+          <span class="ac-paso-num" aria-hidden="true">1</span>
+          <div><strong data-i18n="conn.tiktokLogin"></strong><span data-i18n="conn.tiktokLoginStepOneDesc"></span></div>
+        </li>
+        <li class="ac-paso">
+          <span class="ac-paso-num" aria-hidden="true">2</span>
+          <div><strong data-i18n="cuentaModal.stepAddTitle"></strong><span data-i18n="cuentaModal.stepAddDesc"></span></div>
+        </li>
+      </ol>
+      <button type="button" class="cuenta-btn-primary ac-guardar ac-login" data-tiktok-login>
+        <img src="icons/login.svg" alt=""> <span data-i18n="conn.tiktokLogin"></span>
       </button>`;
     aplicarTraducciones(slot);
     slot.querySelector('[data-tiktok-login]').addEventListener('click', tiktokLogin);
   } else {
     slot.innerHTML = `
-      <div class="canales-session-row" style="display:flex;">
-        <img class="icon-inline" src="icons/tiktok.svg" alt="">
-        <span data-i18n="conn.tiktokSessionActive"></span>
-        <button type="button" class="cfg-btn small icon-only" data-tiktok-logout data-i18n-title="conn.tiktokLogout" title="Cerrar sesión de TikTok"><img class="icon-inline" src="icons/exit_to_app.svg" alt=""></button>
+      <div class="ac-sesion">
+        <span class="ac-sesion-punto" aria-hidden="true"></span>
+        <span data-i18n="cuentaModal.sessionActive"></span>
+        <button type="button" class="ac-sesion-salir" data-tiktok-logout data-i18n-title="conn.tiktokLogout" data-i18n-aria-label="conn.tiktokLogout"><img src="icons/exit_to_app.svg" alt=""></button>
       </div>`;
     aplicarTraducciones(slot);
     slot.querySelector('[data-tiktok-logout]').addEventListener('click', tiktokLogout);
+    overlay.querySelector('#acInput').focus();
   }
 }

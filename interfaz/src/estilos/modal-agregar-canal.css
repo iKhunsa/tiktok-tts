@@ -1,0 +1,134 @@
+/* Modal "Conectar TikTok/YouTube" (modal-agregar-canal.js): logo en recuadro,
+   pildora de sesion, campo con prefijo "@" y boton de accion a todo el ancho. */
+
+.ac-modal {
+  width: min(400px, calc(100vw - 32px));
+  padding: 28px 24px 24px;
+}
+
+.ac-cabecera { display: flex; flex-direction: column; align-items: center; text-align: center; }
+
+.ac-logo {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  background: var(--surface-0);
+}
+.ac-logo img { width: 28px; height: 28px; }
+
+.ac-cabecera h2 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+.ac-sub { margin: 6px 0 0; font-size: var(--text-xs); color: var(--text-muted); }
+
+/* Pildora "Sesion activa" + salir. */
+.ac-sesion {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  margin: 16px auto 0;
+  padding: 4px 4px 4px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+.ac-sesion-punto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.18);
+}
+.ac-sesion-salir {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-left: 4px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface-3);
+  cursor: pointer;
+  transition: background var(--dur-2) ease, transform var(--dur-press) var(--ease-out);
+}
+.ac-sesion-salir img { width: 14px; height: 14px; opacity: 0.8; }
+.ac-sesion-salir:active { transform: scale(0.94); }
+@media (hover: hover) and (pointer: fine) {
+  .ac-sesion-salir:hover { background: var(--surface-raised); }
+}
+
+/* Campo con prefijo. */
+.ac-campo { margin-top: 20px; text-align: left; }
+.ac-campo label { display: block; margin-bottom: 6px; font-size: var(--text-xs); color: var(--text-secondary); }
+.ac-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-0);
+  transition: border-color var(--dur-2) ease;
+}
+.ac-input:focus-within { border-color: rgba(240, 33, 58, 0.6); }
+.ac-prefijo {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-xs);
+  background: var(--surface-3);
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+}
+.ac-input input {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 4px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text-bright);
+  font: inherit;
+  font-size: var(--text-sm);
+}
+
+.ac-guardar { margin-top: 16px; padding: 13px 16px; border-radius: var(--radius-sm); }
+
+/* Sin sesion de TikTok: pasos numerados en una tarjeta + boton de login. */
+.ac-pasos {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 20px 0 0;
+  padding: 14px;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  text-align: left;
+}
+.ac-paso { display: flex; align-items: center; gap: 12px; }
+.ac-paso-num {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--surface-raised);
+  color: var(--text-secondary);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+.ac-paso strong { display: block; font-size: var(--text-sm); font-weight: 600; color: var(--text-bright); }
+.ac-paso span { font-size: var(--text-xs); color: var(--text-muted); }
+.ac-login { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.ac-login img { width: 16px; height: 16px; }

@@ -121,6 +121,9 @@ export function mostrarPanelPortalView() {
     if (!appShell.contains(divisor.el)) appShell.appendChild(divisor.el);
     if (!appShell.contains(panelEl)) appShell.appendChild(panelEl);
     appShell.classList.add('portal-view-open');
+    // Con el panel abierto solo .main-area scrollea (ver portal-view.css); si
+    // el documento venia scrolleado, ese offset queda y corre todo hacia arriba.
+    window.scrollTo(0, 0);
   }
   actualizarPanelPortalView();
 }

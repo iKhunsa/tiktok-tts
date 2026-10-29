@@ -254,7 +254,6 @@ body.reduce-motion .mc-banner.is-loading, body.reduce-motion .mc-avatar.is-loadi
 .mc-buscar input::placeholder { color: var(--text-muted); }
 .mc-buscar input::-webkit-search-cancel-button { display: none; }
 .mc-buscar:focus-within { box-shadow: 0 0 0 2px var(--brand-a40); }
-.mc-agregar { flex: none; height: 2.462em; min-width: 8.923em; }
 
 .mc-tabla-cabecera {
   display: grid;
@@ -341,6 +340,16 @@ body.reduce-motion .mc-banner.is-loading, body.reduce-motion .mc-avatar.is-loadi
 .mc-tarjeta-accion:hover { background: var(--hover-15); }
 .mc-tarjeta-accion:active { transform: scale(0.95); }
 .mc-tarjeta-accion:focus-visible { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
+.mc-tarjeta-accion { position: relative; }
+/* Vinculado: el check cambia al icono de desvincular con hover o foco. */
+.mc-tarjeta-accion .mc-tarjeta-accion-hover { position: absolute; inset: 0; margin: auto; opacity: 0; }
+.mc-tarjeta-accion img { transition: opacity var(--dur-1) ease; }
+.mc-tarjeta-accion:focus-visible:has(.mc-tarjeta-accion-hover) img:not(.mc-tarjeta-accion-hover) { opacity: 0; }
+.mc-tarjeta-accion:focus-visible .mc-tarjeta-accion-hover { opacity: 1; }
+@media (hover: hover) and (pointer: fine) {
+  .mc-tarjeta-accion:hover:has(.mc-tarjeta-accion-hover) img:not(.mc-tarjeta-accion-hover) { opacity: 0; }
+  .mc-tarjeta-accion:hover .mc-tarjeta-accion-hover { opacity: 1; }
+}
 
 @media (max-width: 720px) {
   .mc-tarjetas { grid-template-columns: 1fr; }

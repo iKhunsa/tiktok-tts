@@ -84,7 +84,9 @@ import {
 } from './soundpad.js';
 import {
   toggleConnectAllChat, renderSettingsChannels, iniciarHoverConnectAllChat, abrirVincularCuentas,
+  iniciarSyncCanalesOAuth,
 } from './plataformas.js';
+import { iniciarChatEspera } from './chat-espera.js';
 import { renderTiktokSession } from './tiktok-sesion.js';
 import {
   doInstallUpdate, doCheckForUpdates, openRollbackModal, closeRollbackModal, rollbackToVersion, iniciarEventosElectron,
@@ -267,6 +269,8 @@ function iniciarArranque() {
   connectWS();
   updateQueueBadge();
   renderSettingsChannels();
+  iniciarSyncCanalesOAuth();
+  iniciarChatEspera();
   renderTiktokSession();
   loadMobileURL();
   spLoad().then(() => spRestoreShortcuts()).catch((err) => logStorage.addLog('warn', 'client', `spLoad/spRestoreShortcuts fallo: ${err.message}`));

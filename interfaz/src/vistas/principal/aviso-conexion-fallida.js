@@ -18,8 +18,10 @@ let yaMostrado = false;
 const modal = () => document.getElementById(ID_MODAL);
 const track = (evento) => trackUi(evento, ORIGEN_ANALITICA);
 
-export function mostrarAvisoConexionFallida() {
-  if (yaMostrado) return;
+// forzar: clic del usuario en un logo con fallo (plataformas.js) -- ahi lo
+// pidio el, asi que no aplica el "una vez por carga".
+export function mostrarAvisoConexionFallida({ forzar = false } = {}) {
+  if (yaMostrado && !forzar) return;
   yaMostrado = true;
   track('ui:discord-opened');
   modal().classList.add('show');

@@ -13,6 +13,7 @@ const { resolveModTarget, resolveUntil } = require('./apply-mod-action');
 const { accountDataDir } = require('../../core/account-data-path');
 const { coinsForGift } = require('../../core/tiktok-gift-coins');
 const { isAdminIdentity } = require('../../core/is-admin-identity');
+const { allowAdmin } = require('./allow-admin');
 const { getConfigSnapshot } = require('../../core/config-snapshot');
 const giftGate = require('./gift-gate');
 const { createRustGuard } = require('./rust-guard/create-rust-guard'); // rust-guard
@@ -116,8 +117,11 @@ module.exports = {
     // Inyeccion en tiempo de registro: /chat (Fase 7) consume la interfaz de
     // core/contracts/moderacion-policy.js sin importar moderacion/ directo.
     moderacionPolicyContract.review = ({ platform, raw }) => {
-      const verdict = reviewWithRust(moderation.guard.review({ platform, raw })); // rust-guard
-      if (!verdict.message) return verdict;
+      const base = moderation.guard.review({ platform, raw });
+      if (!base.message) return base;
+      const verdict = isAdminIdentity(bus, platform, base.message.author.handle)
+        ? allowAdmin(base, guardOptions().rules.maxSpeechLength)
+        : reviewWithRust(base); // rust-guard
       const key = viewerKey({ platform, id: verdict.message.author.id, handle: verdict.message.author.handle });
       const status = store.registry.statusOf(key);
       const final = aplicarGiftGate({ bus, verdict, key, platform, handle: verdict.message.author.handle, isWhitelisted: status.isWhitelisted });
