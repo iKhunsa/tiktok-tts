@@ -342,6 +342,13 @@
                    "downloading":  "Загрузка v{version}...",
                    "readyToInstall":  "v{version} готова к установке.",
                    "checkNow":  "Проверить обновления",
+                   "view":  "Открыть",
+                   "confirmDesc":  "Скачать сейчас?",
+                   "downloadNow":  "Скачать",
+                   "cancelled":  "Загрузка отменена.",
+                   "installingDesc":  "Одну минуту, приложение перезапустится само. Не закрывайте его.",
+                   "errorTitle":  "Не удалось обновить",
+                   "upToDate":  "У вас уже последняя версия.",
                    "experimentalAvailable":  "Доступна ЭКСПЕРИМЕНТАЛЬНАЯ версия: v{version}",
                    "experimentalReadyToInstall":  "v{version} (ЭКСПЕРИМЕНТАЛЬНАЯ) готова к установке.",
                    "rollback":  {

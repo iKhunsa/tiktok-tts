@@ -342,6 +342,13 @@
                    "downloading":  "v{version} をダウンロード中...",
                    "readyToInstall":  "v{version} のインストール準備ができました。",
                    "checkNow":  "アップデートを確認",
+                   "view":  "表示",
+                   "confirmDesc":  "今すぐダウンロードしますか？",
+                   "downloadNow":  "ダウンロード",
+                   "cancelled":  "ダウンロードをキャンセルしました。",
+                   "installingDesc":  "少々お待ちください。アプリが自動で再起動します。閉じないでください。",
+                   "errorTitle":  "更新に失敗しました",
+                   "upToDate":  "すでに最新バージョンです。",
                    "experimentalAvailable":  "実験的バージョンが利用可能です：v{version}",
                    "experimentalReadyToInstall":  "v{version}（実験版）のインストール準備ができました。",
                    "rollback":  {

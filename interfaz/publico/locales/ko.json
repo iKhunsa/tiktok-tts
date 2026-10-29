@@ -342,6 +342,13 @@
                    "downloading":  "v{version} 다운로드 중...",
                    "readyToInstall":  "v{version} 설치 준비 완료.",
                    "checkNow":  "업데이트 확인",
+                   "view":  "보기",
+                   "confirmDesc":  "지금 다운로드하시겠습니까?",
+                   "downloadNow":  "다운로드",
+                   "cancelled":  "다운로드가 취소되었습니다.",
+                   "installingDesc":  "잠시만요, 앱이 자동으로 재시작됩니다. 닫지 마세요.",
+                   "errorTitle":  "업데이트에 실패했습니다",
+                   "upToDate":  "이미 최신 버전입니다.",
                    "experimentalAvailable":  "실험적 버전 사용 가능: v{version}",
                    "experimentalReadyToInstall":  "v{version}(실험판) 설치 준비 완료.",
                    "rollback":  {

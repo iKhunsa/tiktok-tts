@@ -86,7 +86,10 @@ import {
   toggleConnectAllChat, renderSettingsChannels, iniciarHoverConnectAllChat, abrirVincularCuentas,
 } from './plataformas.js';
 import { renderTiktokSession } from './tiktok-sesion.js';
-import { doInstallUpdate, doCheckForUpdates, openRollbackModal, closeRollbackModal, rollbackToVersion, iniciarEventosElectron } from './eventos-electron.js';
+import {
+  doInstallUpdate, doCheckForUpdates, openRollbackModal, closeRollbackModal, rollbackToVersion, iniciarEventosElectron,
+  openUpdateFlowModal, closeUpdateFlowModal,
+} from './eventos-electron.js';
 import {
   musicRemoveFromQueue, musicSkip, musicTogglePause, musicSetEnabled, musicSetVolume,
   musicSaveCooldown, musicSaveMaxQueue, musicClearQueue, musicBanUser, musicUnbanUser,
@@ -147,6 +150,7 @@ Object.assign(window, {
   toggleConnectAllChat, abrirVincularCuentas,
   // auto-update
   doInstallUpdate, doCheckForUpdates, openRollbackModal, closeRollbackModal, rollbackToVersion,
+  openUpdateFlowModal, closeUpdateFlowModal,
   // musica
   musicRemoveFromQueue, musicSkip, musicTogglePause, musicSetEnabled, musicSetVolume,
   musicSaveCooldown, musicSaveMaxQueue, musicClearQueue, musicBanUser, musicUnbanUser,

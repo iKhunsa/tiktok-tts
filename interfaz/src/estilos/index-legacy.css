@@ -2572,7 +2572,7 @@
       margin-left: 5px;
       vertical-align: middle;
     }
-    /* ── Update banner ─────────────────────────── */
+    /* ── Update banner: solo avisa, nunca descarga/instala ───────── */
     #update-banner {
       position: fixed; top: var(--titlebar-h); left: 0; right: 0; z-index: 9999;
       background: #1a1a2e; border-bottom: 2px solid #7c3aed;
@@ -2583,27 +2583,35 @@
     #update-banner .upd-icon { font-size: 18px; flex-shrink: 0; }
     #update-banner .upd-text { flex: 1; line-height: 1.4; }
     #update-banner .upd-text strong { color: #a78bfa; }
-    #update-bar-wrap {
-      flex: 1; background: var(--divider); border-radius: 99px;
-      height: 6px; overflow: hidden; min-width: 120px; max-width: 220px;
-    }
-    #update-bar-fill {
-      height: 100%; background: linear-gradient(90deg, #7c3aed, #a78bfa);
-      border-radius: 99px; transition: width 0.4s ease; width: 0%;
-    }
-    #update-percent { font-weight: 700; color: #a78bfa; min-width: 38px; }
-    #update-speed   { color: #94a3b8; font-size: var(--text-2xs); min-width: 70px; }
-    #update-btn-install {
+    #update-btn-view {
       background: #7c3aed; color: #fff; border: none; border-radius: var(--radius-sm);
       padding: 6px 16px; cursor: pointer; font-size: var(--text-xs); font-weight: 600;
       flex-shrink: 0; transition: background .2s;
     }
-    #update-btn-install:hover { background: #6d28d9; }
+    #update-btn-view:hover { background: #6d28d9; }
     #update-btn-later {
       background: transparent; color: #94a3b8; border: none;
       cursor: pointer; font-size: var(--text-xs); padding: 6px 8px; flex-shrink: 0;
     }
     #update-btn-later:hover { color: #e2e8f0; }
+
+    /* ── Modal de descarga/instalación de actualizaciones ────────── */
+    .update-flow-content { max-width: 420px; text-align: center; }
+    .update-flow-icon { width: 40px; height: 40px; margin: 0 auto 14px; display: block; filter: invert(48%) sepia(85%) saturate(2000%) hue-rotate(238deg); }
+    .update-flow-content h2 { margin-bottom: 8px; }
+    .update-flow-desc { margin: 0 0 20px; color: var(--text-secondary); line-height: 1.5; }
+    #update-bar-wrap {
+      background: var(--divider); border-radius: 99px;
+      height: 8px; overflow: hidden; margin-bottom: 8px;
+    }
+    #update-bar-fill {
+      height: 100%; background: linear-gradient(90deg, #7c3aed, #a78bfa);
+      border-radius: 99px; transition: width 0.4s ease; width: 0%;
+    }
+    .update-flow-meta { display: flex; justify-content: space-between; font-size: var(--text-2xs); color: var(--text-muted); margin-bottom: 20px; }
+    .update-flow-meta #update-percent { font-weight: 700; color: #a78bfa; }
+    .update-flow-actions { display: flex; flex-direction: column; gap: 8px; }
+    .update-flow-actions button { width: 100%; }
 
     .badge-tiktok  { background: var(--hover-15); border: 1px solid var(--hover-15); color: var(--tiktok); }
     .badge-twitch  { background: rgba(145,70,255,0.15); color: var(--twitch); }

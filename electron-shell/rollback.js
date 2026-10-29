@@ -17,8 +17,9 @@ async function rollbackAVersion(app, version, onProgress) {
   if (!objetivo) throw new Error('version_no_encontrada');
 
   const destino = await descargarInstalador(app, objetivo.asset, onProgress);
-  ejecutarInstalador(destino);
-  app.quit();
+  await ejecutarInstalador(destino);
+  app.relaunch();
+  app.exit();
 }
 
 module.exports = { listarVersionesAnteriores, rollbackAVersion };

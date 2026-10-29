@@ -1,6 +1,5 @@
 'use strict';
 
-const { dialog } = require('electron');
 const { listarReleases, compararVersiones } = require('./github-releases');
 const { descargarInstalador, ejecutarInstalador } = require('./instalar-version');
 
@@ -47,6 +46,8 @@ let _getMainWindow = null;
 let _getTray = null;
 let _buildTrayMenu = null;
 let _onPendingVersion = null;
+let _disponible = null; // release encontrado, esperando confirmacion de descarga
+let _abortController = null; // descarga en curso, para poder cancelarla
 let _pendiente = null; // { destino, version } del instalador ya descargado
 
 function sendUpdate(data) {
@@ -54,6 +55,9 @@ function sendUpdate(data) {
   if (win && !win.isDestroyed()) win.webContents.send('update-event', data);
 }
 
+// Solo BUSCA y avisa si hay algo nuevo -- nunca descarga sola. Bajar el
+// instalador es una accion explicita del usuario (confirmarDescarga), tanto
+// desde el chequeo automatico al arrancar como desde "Buscar actualizaciones".
 async function chequear() {
   _bus.emit('update:check');
   sendUpdate({ type: 'checking' });
@@ -71,16 +75,27 @@ async function chequear() {
     return;
   }
 
-  if (!disponible) { sendUpdate({ type: 'not-available' }); return; }
+  if (!disponible) { _disponible = null; sendUpdate({ type: 'not-available' }); return; }
 
+  _disponible = disponible;
   const prerelease = disponible.tag !== null;
   _bus.emit('update:available', { from: _app.getVersion(), to: disponible.version });
   sendUpdate({ type: 'available', version: disponible.version, prerelease });
+}
 
+// El usuario confirmo "Descargar" en el modal -- recien ahi se baja el
+// instalador de verdad.
+async function confirmarDescarga() {
+  if (!_disponible) return;
+  const disponible = _disponible;
+  const prerelease = disponible.tag !== null;
+
+  _abortController = new AbortController();
   try {
     const destino = await descargarInstalador(_app, disponible.asset, (p) => {
       sendUpdate({ type: 'progress', version: disponible.version, percent: p.percent, transferred: p.transferido, total: p.total, bytesPerSecond: 0 });
-    });
+    }, _abortController.signal);
+    _abortController = null;
     _pendiente = { destino, version: disponible.version };
     _onPendingVersion(disponible.version);
     _bus.emit('update:downloaded', { from: _app.getVersion(), to: disponible.version });
@@ -91,29 +106,23 @@ async function chequear() {
     if (tray) tray.setContextMenu(_buildTrayMenu(disponible.version));
 
     sendUpdate({ type: 'ready', version: disponible.version, prerelease });
-
-    // Fallback de dialogo nativo — garantizado sin importar el estado del preload/banner.
-    dialog.showMessageBox({
-      type: 'info',
-      title: prerelease ? 'TikLiveTTS — Versión experimental lista' : 'TikLiveTTS — Actualización lista',
-      message: prerelease
-        ? `v${disponible.version} (EXPERIMENTAL) descargada y lista para instalar.`
-        : `v${disponible.version} descargada y lista para instalar.`,
-      detail: 'La app se reiniciará sola (no requiere reiniciar el PC).\n¿Instalar ahora?',
-      buttons: ['Instalar ahora', 'Después'],
-      defaultId: 0,
-      cancelId: 1,
-    }).then(({ response }) => {
-      if (response === 0) installUpdate();
-    });
   } catch (err) {
+    _abortController = null;
+    if (err.name === 'AbortError') {
+      sendUpdate({ type: 'cancelled' });
+      return;
+    }
     _bus.emit('update:error', { message: err.message });
     sendUpdate({ type: 'error', message: err.message });
     _logger.log(
-      'error', 'electron-shell', 'electron-shell/updater.js#chequear', 'electron_shell.updater.error',
+      'error', 'electron-shell', 'electron-shell/updater.js#confirmarDescarga', 'electron_shell.updater.error',
       `Error del auto-updater: ${err.message}`, { error: err.message, stack: err.stack }
     );
   }
+}
+
+function cancelarDescarga() {
+  if (_abortController) _abortController.abort();
 }
 
 function setupAutoUpdater({ app, bus, logger, getMainWindow, getTray, buildTrayMenu, onPendingVersion }) {
@@ -137,10 +146,25 @@ function checkForUpdates() {
   return chequear();
 }
 
-function installUpdate() {
+// Silencioso (`/S`, ver instalar-version.js) y espera a que el instalador
+// termine antes de reiniciar — antes se lanzaba el instalador (que abria su
+// propio wizard) y se cerraba la app al toque, sin esperar nada: quedaba
+// una ventana de instalador suelta mientras la app ya habia desaparecido.
+async function installUpdate() {
   if (!_pendiente) return;
-  ejecutarInstalador(_pendiente.destino);
-  _app.quit();
+  sendUpdate({ type: 'installing', version: _pendiente.version });
+  try {
+    await ejecutarInstalador(_pendiente.destino);
+  } catch (err) {
+    sendUpdate({ type: 'error', message: err.message });
+    _logger.log(
+      'error', 'electron-shell', 'electron-shell/updater.js#installUpdate', 'electron_shell.updater.instalacion_fallida',
+      `Fallo al instalar la actualizacion: ${err.message}`, { error: err.message, stack: err.stack }
+    );
+    return;
+  }
+  _app.relaunch();
+  _app.exit();
 }
 
-module.exports = { setupAutoUpdater, checkForUpdates, installUpdate };
+module.exports = { setupAutoUpdater, checkForUpdates, confirmarDescarga, cancelarDescarga, installUpdate };

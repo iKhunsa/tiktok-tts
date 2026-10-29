@@ -342,6 +342,13 @@
                    "downloading":  "正在下载 v{version}...",
                    "readyToInstall":  "v{version} 已准备好安装。",
                    "checkNow":  "检查更新",
+                   "view":  "查看",
+                   "confirmDesc":  "要现在下载吗？",
+                   "downloadNow":  "下载",
+                   "cancelled":  "下载已取消。",
+                   "installingDesc":  "稍等，应用会自动重启。请勿关闭。",
+                   "errorTitle":  "更新失败",
+                   "upToDate":  "你已经是最新版本了。",
                    "experimentalAvailable":  "有可用的实验版本：v{version}",
                    "experimentalReadyToInstall":  "v{version}（实验版）已准备好安装。",
                    "rollback":  {

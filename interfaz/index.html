@@ -22,17 +22,35 @@
 </head>
 <body>
 
-<!-- ── Update progress banner ────────────────────────────────── -->
+<!-- ── Update banner: solo avisa, no descarga ni instala nada ──── -->
 <div id="update-banner">
   <span class="upd-icon">⬆️</span>
   <span class="upd-text" id="update-text" data-i18n="update.checking">Buscando actualizaciones...</span>
-  <div id="update-bar-wrap" style="display:none">
-    <div id="update-bar-fill"></div>
+  <button id="update-btn-view" style="display:none" onclick="openUpdateFlowModal()" data-i18n="update.view">Ver</button>
+  <button id="update-btn-later" style="display:none" onclick="document.getElementById('update-banner').classList.remove('visible')" data-i18n="update.later">Después</button>
+</div>
+
+<!-- ══ MODAL: Descargar/instalar actualización — confirma antes de bajar
+     nada, se puede cancelar mientras descarga, y bloquea (sin X ni click
+     afuera) mientras descarga o instala para que no se interrumpa a mitad. ══ -->
+<div id="updateFlowModal" class="modal-overlay" onclick="closeUpdateFlowModal(event)">
+  <div class="modal-content update-flow-content" onclick="event.stopPropagation()">
+    <button class="modal-close" id="updateFlowClose" onclick="closeUpdateFlowModal()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
+    <img class="update-flow-icon icon-inline" src="icons/update.svg" alt="">
+    <h2 id="updateFlowTitle"></h2>
+    <p id="updateFlowDesc" class="update-flow-desc"></p>
+    <div id="update-bar-wrap" style="display:none">
+      <div id="update-bar-fill"></div>
+    </div>
+    <div class="update-flow-meta">
+      <span id="update-percent" style="display:none"></span>
+      <span id="update-speed" style="display:none"></span>
+    </div>
+    <div class="update-flow-actions">
+      <button id="updateFlowPrimary" class="btn-supabase-primary" type="button" hidden></button>
+      <button id="updateFlowSecondary" class="cuenta-btn-ghost" type="button" hidden></button>
+    </div>
   </div>
-  <span id="update-percent" style="display:none"></span>
-  <span id="update-speed"   style="display:none"></span>
-  <button id="update-btn-install" style="display:none" onclick="doInstallUpdate()" data-i18n="update.installNow">Instalar ahora</button>
-  <button id="update-btn-later"   style="display:none" onclick="document.getElementById('update-banner').classList.remove('visible')" data-i18n="update.later">Después</button>
 </div>
 
 <!-- ── Barra de título propia ────────────────────────────────── -->

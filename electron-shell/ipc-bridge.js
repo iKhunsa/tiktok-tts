@@ -99,6 +99,14 @@ function attachIpcBridge({ app, bus, logger, getMainWindow, globalShortcut }) {
     require('./updater').checkForUpdates();
   });
 
+  ipcMain.on('confirm-update-download', () => {
+    require('./updater').confirmarDescarga();
+  });
+
+  ipcMain.on('cancel-update-download', () => {
+    require('./updater').cancelarDescarga();
+  });
+
   ipcMain.handle('rollback:list-versions', () => require('./rollback').listarVersionesAnteriores(app));
 
   ipcMain.handle('rollback:to-version', (_event, version) => {

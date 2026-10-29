@@ -51,6 +51,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   offUpdateEvent: (cb) => off('update-event', cb),
   installUpdate: () => ipcRenderer.send('install-update'),
   checkForUpdates: () => ipcRenderer.send('check-for-updates'),
+  confirmUpdateDownload: () => ipcRenderer.send('confirm-update-download'),
+  cancelUpdateDownload: () => ipcRenderer.send('cancel-update-download'),
   listRollbackVersions: () => ipcRenderer.invoke('rollback:list-versions'),
   rollbackToVersion: (version) => ipcRenderer.invoke('rollback:to-version', version),
   getOpenAtLogin: () => ipcRenderer.invoke('login-item:get'),

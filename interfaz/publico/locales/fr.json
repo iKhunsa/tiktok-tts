@@ -342,6 +342,13 @@
                    "downloading":  "Téléchargement v{version}...",
                    "readyToInstall":  "v{version} prête à installer.",
                    "checkNow":  "Rechercher des mises à jour",
+                   "view":  "Voir",
+                   "confirmDesc":  "Veux-tu la télécharger maintenant ?",
+                   "downloadNow":  "Télécharger",
+                   "cancelled":  "Téléchargement annulé.",
+                   "installingDesc":  "Un instant, l’appli va redémarrer toute seule. Ne la ferme pas.",
+                   "errorTitle":  "Échec de la mise à jour",
+                   "upToDate":  "Tu as déjà la dernière version.",
                    "experimentalAvailable":  "Version EXPÉRIMENTALE disponible : v{version}",
                    "experimentalReadyToInstall":  "v{version} (EXPÉRIMENTALE) prête à installer.",
                    "rollback":  {
