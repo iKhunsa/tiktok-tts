@@ -63,7 +63,7 @@
       </a>
       <div class="sidebar-update-actions">
         <button class="sidebar-update-btn" id="btnCheckUpdate" onclick="doCheckForUpdates()" data-i18n-title="update.checkNow" data-i18n-aria-label="update.checkNow"><img class="icon-inline" src="icons/update.svg" alt=""></button>
-        <button class="sidebar-update-btn" id="btnOpenRollback" onclick="openRollbackModal()" data-i18n-title="update.rollback.title" data-i18n-aria-label="update.rollback.title"><img class="icon-inline" src="icons/restore.svg" alt=""></button>
+        <button class="sidebar-update-btn" id="btnOpenRollback" onclick="openRollbackModal()" data-i18n-title="update.rollback.title" data-i18n-aria-label="update.rollback.title"><img class="icon-inline" src="icons/restore-page.svg" alt=""></button>
       </div>
     </div>
 
@@ -1319,7 +1319,7 @@
 <div id="rollbackModal" class="modal-overlay" onclick="closeRollbackModal(event)">
   <div class="modal-content" onclick="event.stopPropagation()">
     <button class="modal-close" onclick="closeRollbackModal()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
-    <h2><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="update.rollback.title">Versiones anteriores</span></h2>
+    <h2><img class="icon-inline" src="icons/restore-page.svg" alt=""> <span data-i18n="update.rollback.title">Versiones anteriores</span></h2>
     <p style="color:var(--text-secondary);margin-bottom:14px;" data-i18n="update.rollback.desc">Elegí una versión anterior para volver a instalarla. Tus datos y configuración no se pierden.</p>
     <div id="rollbackList"></div>
   </div>
