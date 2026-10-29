@@ -5,26 +5,37 @@
  *
  * Dos mecanismos de conexion distintos, por eso `tipo` en el catalogo:
  * - 'oauth' (Twitch/Kick): OAuth real (servicio-cuentas, FASE 1 de
- *   docs/plan-twitch-kick.md) via plataforma-auth-cliente.js. "Tuyos" refleja
- *   el estado real (GET /api/account/platforms).
+ *   docs/plan-twitch-kick.md) via plataforma-auth-cliente.js. Al vincular,
+ *   se guarda ademas el username como canal local (plataformas.js#
+ *   sincronizarCanalOAuth) -- asi "Conectar"/los iconos de Chat lo ven igual
+ *   que tiktok/youtube, sin esto twitch/kick vinculados por OAuth nunca
+ *   aparecian ahi (nadie vincula por OAuth la cuenta de OTRO streamer, asi
+ *   que el username de la OAuth siempre es el canal correcto).
  * - 'canal' (TikTok/YouTube): sin login, se conectan por nombre de canal
  *   (mismo mecanismo que "Canales vinculados" en Ajustes, features/canales/)
  *   — pide el @usuario/canal en un modal chico (modal-agregar-canal.js) y
- *   guarda/conecta con plataformas.js#guardarYConectarCanal. El estado
- *   "vinculado" ahi es simplemente "hay un canal guardado".
+ *   solo GUARDA (plataformas.js#guardarCanal), nunca conecta de una.
+ *
+ * Estados (c.estado), independientes de `tipo`:
+ * - 'sin-vincular': nada guardado/vinculado.
+ * - 'guardado': hay canal (guardado o via OAuth) pero no esta conectado al
+ *   LIVE ahora mismo.
+ * - 'conectado': ese canal esta activo ahora mismo en Chat.
+ * - 'caducado' (solo TikTok): las cookies de sesion vencieron -- requiere
+ *   volver a iniciar sesion sin perder el canal guardado.
  */
 import { t, aplicarTraducciones } from '../../../../nucleo/i18n/i18n.js';
 import { escaparAtributo as esc } from '../../../../../compartido/escapar-html.js';
 import { toastError } from '../api.js';
 import { listarPlataformasVinculadas, vincularPlataforma, desvincularPlataforma } from '../plataformas-vinculadas.js';
-import { canalGuardado, removeChannel } from '../../plataformas.js';
+import {
+  canalGuardado, removeChannel, sincronizarCanalOAuth, obtenerCanalesEnVivo, canalEnColeccion,
+} from '../../plataformas.js';
 import { abrirModalAgregarCanal } from './modal-agregar-canal.js';
+import { fetchTiktokSession, alCambiarSesionTiktok, tiktokLogin } from '../../tiktok-sesion.js';
 
 // Catalogo fijo (id/nombre); el estado se pisa con el real apenas resuelve
-// cargarEstadoReal(). 'caducado'/'pendiente' quedan declarados en
-// ACCION_TARJETA para cuando el backend exponga expiracion de token de
-// twitch/kick -- hoy esos dos son binarios (conectado / sin-vincular); los
-// de tipo 'canal' siempre son binarios (hay canal guardado o no).
+// cargarEstadoReal().
 const CATALOGO = [
   { id: 'tiktok', nombre: 'TikTok', estado: 'sin-vincular', vinculable: true, tipo: 'canal' },
   { id: 'twitch', nombre: 'Twitch', estado: 'sin-vincular', vinculable: true, tipo: 'oauth' },
@@ -35,6 +46,7 @@ const CATALOGO = [
 // Icono y texto accesible de la accion de cada tarjeta de Descubrir.
 const ACCION_TARJETA = {
   'sin-vincular': { icono: 'add-white', key: 'cuentaModal.add' },
+  guardado: { icono: 'check_circle_outline-ok', key: 'cuentaModal.saved' },
   conectado: { icono: 'check_circle_outline-ok', key: 'cuentaModal.connected' },
   caducado: { icono: 'refresh-warn', key: 'cuentaModal.reconnect' },
   desconectado: { icono: 'link_off-red', key: 'cuentaModal.disconnected' },
@@ -44,13 +56,20 @@ const ACCION_TARJETA = {
 let pestana = 'tuyos';
 
 function estadoFilaHtml(c) {
-  if (c.estado === 'caducado' || c.estado === 'desconectado') {
-    return '<button class="mc-btn-blanco" type="button" data-i18n="cuentaModal.reconnect"></button>';
+  if (c.estado === 'caducado') {
+    return `<span class="mc-estado-caducado">
+      <span data-i18n="cuentaModal.actionRequired"></span>
+      <button class="mc-btn-blanco" type="button" data-accion="reconectar" data-i18n="cuentaModal.reconnect"></button>
+    </span>`;
+  }
+  if (c.estado === 'desconectado') {
+    return '<button class="mc-btn-blanco" type="button" data-accion="reconectar" data-i18n="cuentaModal.reconnect"></button>';
   }
   if (c.estado === 'pendiente') return '<span class="mc-estado-pendiente" data-i18n="cuentaModal.pending"></span>';
-  // Conectado: al pasar el mouse (o con foco) se ofrece desconectar.
-  return `<button class="mc-estado-conectado" type="button">
-    <span data-i18n="cuentaModal.connected"></span><span data-i18n="cuentaModal.disconnect"></span>
+  // Conectado/guardado: al pasar el mouse (o con foco) se ofrece desconectar.
+  const labelKey = c.estado === 'guardado' ? 'cuentaModal.saved' : 'cuentaModal.connected';
+  return `<button class="mc-estado-conectado" type="button" data-accion="desconectar">
+    <span data-i18n="${labelKey}"></span><span data-i18n="cuentaModal.disconnect"></span>
   </button>`;
 }
 
@@ -58,7 +77,7 @@ function filaHtml(c) {
   return `
     <div class="mc-conector" data-id="${esc(c.id)}">
       <span class="mc-conector-icono" aria-hidden="true"><img src="icons/${esc(c.id)}-logo.svg" alt=""></span>
-      <span class="mc-conector-nombre">${esc(c.nombre)}${c.username ? ` <span class="mc-conector-username">@${esc(c.username)}</span>` : ''}</span>
+      <span class="mc-conector-nombre">${esc(c.nombre)}${c.username ? ` <span class="mc-conector-username">@${esc(c.username.replace(/^@+/, ''))}</span>` : ''}</span>
       <span class="mc-conector-estado">${estadoFilaHtml(c)}</span>
     </div>`;
 }
@@ -112,8 +131,7 @@ export function pintarVincular(cont) {
   const vacio = cont.querySelector('.mc-vacio');
 
   // Copia mutable del catalogo: cargarEstadoReal() pisa estado/username de
-  // twitch/kick con lo que diga el backend. tiktok/youtube no cambian nunca
-  // (vinculable: false, ver nota de CATALOGO).
+  // las 4 plataformas con el estado real (OAuth o canal guardado).
   let conectores = CATALOGO.map((c) => ({ ...c }));
 
   const pintarLista = () => {
@@ -137,21 +155,26 @@ export function pintarVincular(cont) {
     vacio.hidden = lista.length > 0;
   };
 
-  // GET /api/account/platforms solo informa twitch/kick vinculados; el resto
-  // del catalogo se queda en 'sin-vincular' tal cual sale de CATALOGO.
+  // GET /api/account/platforms informa twitch/kick vinculados (OAuth);
+  // /api/channels dice cuales canales estan EN VIVO ahora mismo (para
+  // distinguir 'guardado' de 'conectado'); la sesion de TikTok dice si hace
+  // falta re-loguearse para el canal guardado ('caducado').
   async function cargarEstadoReal() {
-    const vinculadas = await listarPlataformasVinculadas();
+    const [vinculadas, canalesEnVivo, sesionTiktok] = await Promise.all([
+      listarPlataformasVinculadas(), obtenerCanalesEnVivo(), fetchTiktokSession(),
+    ]);
     if (!cont.isConnected) return; // se cerro/cambio de seccion mientras pedia
     for (const c of conectores) {
-      if (c.tipo === 'oauth') {
-        const v = vinculadas.find((p) => p.plataforma === c.id);
-        c.estado = v ? 'conectado' : 'sin-vincular';
-        c.username = v?.username || null;
-      } else {
-        const guardado = canalGuardado(c.id);
-        c.estado = guardado ? 'conectado' : 'sin-vincular';
-        c.username = guardado?.channel || null;
+      const guardado = c.tipo === 'oauth'
+        ? vinculadas.find((p) => p.plataforma === c.id)?.username
+        : canalGuardado(c.id)?.channel;
+      c.username = guardado || null;
+      if (!guardado) { c.estado = 'sin-vincular'; continue; }
+      if (c.id === 'tiktok' && sesionTiktok.available && !sesionTiktok.loggedIn && sesionTiktok.authRequired.includes(guardado)) {
+        c.estado = 'caducado';
+        continue;
       }
+      c.estado = canalEnColeccion(c.id, guardado, canalesEnVivo) ? 'conectado' : 'guardado';
     }
     pintarLista();
   }
@@ -164,9 +187,12 @@ export function pintarVincular(cont) {
         if (r.body) toastError(r.body, 'errors.generic');
         return;
       }
-      await cargarEstadoReal();
+      await cargarEstadoReal(); // ya resuelve c.username para id === tipo oauth
       pestana = 'tuyos';
       pintarLista();
+      // Fire-and-forget: solo alimenta los iconos de Chat, no bloquea el pintado de esta fila.
+      const username = conectores.find((c) => c.id === id)?.username;
+      sincronizarCanalOAuth(id, username);
     } finally {
       btn.disabled = false;
     }
@@ -189,8 +215,21 @@ export function pintarVincular(cont) {
       } else {
         const r = await desvincularPlataforma(id);
         if (!r.ok) return toastError(r.body, 'errors.generic');
+        await sincronizarCanalOAuth(id, null);
       }
       await cargarEstadoReal();
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  // Solo TikTok hoy: reabre el login sin tocar el canal ya guardado (ver
+  // criterio de aceptacion "conservar nombre de usuario y configuracion").
+  async function reconectar(id, btn) {
+    if (id !== 'tiktok') return;
+    btn.disabled = true;
+    try {
+      await tiktokLogin();
     } finally {
       btn.disabled = false;
     }
@@ -219,10 +258,21 @@ export function pintarVincular(cont) {
     else conectarCanal(id);
   });
   tabla.querySelector('.mc-tabla-filas').addEventListener('click', (e) => {
-    const btn = e.target.closest('.mc-estado-conectado');
+    const btn = e.target.closest('button[data-accion]');
     if (!btn) return;
     const id = btn.closest('.mc-conector').dataset.id;
-    desconectar(id, btn);
+    if (btn.dataset.accion === 'reconectar') reconectar(id, btn);
+    else desconectar(id, btn);
+  });
+
+  // Si la ventana de login/logout de TikTok termina mientras esta seccion
+  // esta pintada, refresca el estado sola (ver tiktok-sesion.js). `tabla` (no
+  // `cont`) es el chequeo correcto de "sigo pintado": el modal reusa el
+  // mismo `cont` entre secciones, asi que `cont.isConnected` seguiria dando
+  // true aunque el usuario ya se fue a otra pestaña del modal.
+  const desuscribirSesionTiktok = alCambiarSesionTiktok(() => {
+    if (!tabla.isConnected) { desuscribirSesionTiktok(); return; }
+    cargarEstadoReal();
   });
 
   pintarLista();

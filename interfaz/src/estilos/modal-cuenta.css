@@ -298,6 +298,9 @@ body.reduce-motion .mc-banner.is-loading, body.reduce-motion .mc-avatar.is-loadi
 .mc-estado-conectado:focus-visible span + span { display: inline; color: var(--brand); }
 .mc-btn-blanco:focus-visible, .mc-estado-conectado:focus-visible { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
 .mc-estado-pendiente { font-size: 1.077em; color: var(--text-muted); }
+.mc-estado-caducado { display: flex; flex-direction: column; align-items: center; gap: 0.308em; }
+.mc-estado-caducado > span:first-child { font-size: 0.769em; color: var(--danger); text-align: center; line-height: 1.3; }
+.mc-estado-caducado .mc-btn-blanco { font-size: 0.923em; padding: 0.308em 0.615em; }
 
 @media (max-width: 720px) {
   .mc-cabecera { flex-wrap: wrap; }

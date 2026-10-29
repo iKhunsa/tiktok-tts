@@ -12,7 +12,7 @@ const SONIDO_CONECTADO = { src: 'audio/ui/connect-wallet.mp3', volumen: 0.35 };
 
 const PLATFORM_CHANNELS_KEY = 'tikliveTTS_platforms_v1';
 export const PLATFORMS = ['tiktok', 'twitch', 'youtube', 'kick'];
-const PLATFORM_LABELS = { tiktok: 'TikTok', twitch: 'Twitch', youtube: 'YouTube', kick: 'Kick' };
+export const PLATFORM_LABELS = { tiktok: 'TikTok', twitch: 'Twitch', youtube: 'YouTube', kick: 'Kick' };
 
 function loadPlatformChannels() {
   try {
@@ -278,25 +278,55 @@ export function canalGuardado(platform) {
 }
 
 /**
+ * Usado por "Mi cuenta" > Vincular para distinguir "guardado" (hay canal
+ * guardado) de "conectado al LIVE" (ese canal esta activo ahora mismo en
+ * Chat) -- son dos estados distintos, ver criterio de aceptacion de
+ * diferenciar cuentas guardadas/conectadas. Un solo fetch para las 4
+ * plataformas en vez de uno por conector.
+ */
+export async function obtenerCanalesEnVivo() {
+  try {
+    const res = await fetch('/api/channels');
+    if (!res.ok) return {};
+    return await res.json();
+  } catch (e) {
+    return {};
+  }
+}
+
+export function canalEnColeccion(platform, channel, channels) {
+  return (channels?.[platform] || []).some((ch) => normalizeChannelEntry(platform, ch)?.channel === channel);
+}
+
+/**
  * Usado por "Mi cuenta" > Vincular para tiktok/youtube (sin OAuth: se
  * conectan por nombre de canal, ver nota de arriba en normalizeChannelEntry).
- * A diferencia de solo guardar y dejar la conexion real para "Conectar
- * todo" en Chat, esto ademas intenta conectar ya mismo -- en el modal de
- * perfil no tiene sentido un segundo paso manual.
+ * Solo GUARDA -- nunca conecta al LIVE de una. La conexion real queda para
+ * "Conectar"/"Conectar todo" en Chat (criterio explicito: guardar la cuenta
+ * no puede disparar una conexion en vivo por si sola).
  */
-export async function guardarYConectarCanal(platform, valorCrudo) {
+export async function guardarCanal(platform, valorCrudo) {
   const entry = normalizeChannelEntry(platform, valorCrudo);
   if (!entry) return { ok: false };
   replaceSavedChannel(platform, entry);
   renderSettingsChannels();
-  let conectadoAhora = false;
-  try {
-    const res = await fetch('/api/platforms/connect', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ platform, channel: entry.channel }),
-    });
-    conectadoAhora = res.ok;
-  } catch (e) { /* el canal ya quedo guardado igual; "Conectar todo" lo reintenta despues */ }
-  return { ok: true, channel: entry.channel, conectadoAhora };
+  return { ok: true, channel: entry.channel, autoConnect: entry.autoConnect };
+}
+
+/**
+ * Twitch/Kick se vinculan por OAuth (seccion-vincular.js#conectarOAuth), no
+ * por nombre de canal -- pero para que "Conectar"/los iconos de Chat los vean
+ * igual que tiktok/youtube, hace falta un canal guardado. Nadie vincularia
+ * por OAuth la cuenta de OTRO streamer, asi que el username que devuelve el
+ * OAuth es siempre el canal correcto a usar. Llamarlo tambien al desvincular
+ * (username=null) limpia el canal guardado y refresca Chat al toque.
+ */
+export async function sincronizarCanalOAuth(platform, username) {
+  if (!username) { await removeChannel(platform); return; }
+  const entry = normalizeChannelEntry(platform, username);
+  if (!entry) return;
+  replaceSavedChannel(platform, entry);
+  renderSettingsChannels();
 }
 
 // Modal "Mi cuenta" > Vincular; sin sesion, a la vista de cuenta (igual que el popover).

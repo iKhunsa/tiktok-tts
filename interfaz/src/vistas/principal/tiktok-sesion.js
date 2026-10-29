@@ -14,12 +14,25 @@ import { showToast } from '../../componentes/toast.js';
 
 let lastSession = { available: false, loggedIn: false, authRequired: [] };
 
-async function fetchTiktokSession() {
+export async function fetchTiktokSession() {
   try {
     const res = await fetch('/api/platforms/tiktok/session');
     if (res.ok) return await res.json();
   } catch { /* noop */ }
   return { available: false, loggedIn: false, authRequired: [] };
+}
+
+// Pub-sub chico para que UI efimera (el modal de "Mi perfil" > Vincular,
+// que no vive en el DOM permanente) pueda refrescarse sola cuando la
+// ventana de login/logout de TikTok termina (cliente-ws.js, case
+// 'tiktok-session') sin tener que recargar la app ni sondear.
+const listenersSesion = new Set();
+export function alCambiarSesionTiktok(fn) {
+  listenersSesion.add(fn);
+  return () => listenersSesion.delete(fn);
+}
+function avisarCambioSesion() {
+  for (const fn of listenersSesion) fn();
 }
 
 /** Fila minimalista al lado del selector de plataforma — solo importa para poder cerrar sesion. */
@@ -51,6 +64,7 @@ export async function renderTiktokSession() {
   renderSessionRow(lastSession);
   const platformSeg = document.getElementById('seg-tiktok');
   if (platformSeg?.classList.contains('active')) toggleTiktokAddPrompt('tiktok');
+  avisarCambioSesion();
 }
 
 export async function tiktokLogin() {
