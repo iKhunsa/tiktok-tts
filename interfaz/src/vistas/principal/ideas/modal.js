@@ -45,10 +45,10 @@ export async function submitIdea(event) {
   if (!form.reportValidity()) return;
   const fields = {
     problema: document.getElementById('ideaProblem').value.trim(), idea: document.getElementById('ideaDescription').value.trim(),
-    audiencia: document.querySelector('[name="ideaAudience"]:checked')?.value, casoUso: document.getElementById('ideaUseCase').value.trim(),
-    motivo: document.getElementById('ideaReason').value.trim(), appSimilar: document.getElementById('ideaSimilarApp').value.trim(),
+    casoUso: document.getElementById('ideaUseCase').value.trim(), appSimilar: document.getElementById('ideaSimilarApp').value.trim(),
+    discord: document.getElementById('ideaDiscord').value.trim(), email: document.getElementById('ideaEmail').value.trim(),
   };
-  if (!fields.problema || !fields.idea || !fields.audiencia || !fields.casoUso || !fields.motivo) {
+  if (!fields.problema || !fields.idea || !fields.casoUso) {
     showToast(t('ideas.errorRequired'));
     return;
   }

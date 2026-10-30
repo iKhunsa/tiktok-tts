@@ -46,7 +46,7 @@ const PLATAFORMAS = new Set(['tiktok', 'twitch', 'youtube', 'kick', 'obs']);
 // Valores permitidos por prop de los eventos de UI del renderer.
 const ORIGENES_DISCORD = new Set([
   'titlebar', 'sidebar', 'account_menu', 'sidebar_banner', 'connect_fail',
-  'chat_banner_1', 'chat_banner_2', 'chat_banner_3', 'chat_banner_4', 'bug_report', 'otro',
+  'chat_banner_1', 'chat_banner_2', 'chat_banner_3', 'chat_banner_4', 'bug_report', 'idea_modal', 'otro',
 ]);
 const VISTAS = new Set([
   'chat', 'overlays', 'clips', 'soundpad', 'mobile', 'bot', 'moderacion', 'mcp', 'tools', 'settings', 'cuenta',

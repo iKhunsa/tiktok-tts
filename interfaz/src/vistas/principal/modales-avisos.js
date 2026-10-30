@@ -46,11 +46,13 @@ let _bugReportSubmitting = false;
 export async function submitBugReport() {
   if (_bugReportSubmitting) return;
   const discordNick = document.getElementById('bugReportDiscordNick').value.trim();
+  const email = document.getElementById('bugReportEmail').value.trim();
   const channelLink = document.getElementById('bugReportChannelLink').value.trim();
   const description = document.getElementById('bugReportDescription').value.trim();
   const extra = document.getElementById('bugReportExtra').value.trim();
 
-  if (!discordNick || !channelLink || !description) {
+  if (!document.getElementById('bugReportEmail').reportValidity()) return;
+  if ((!discordNick && !email) || !channelLink || !description) {
     showToast(t('bugReport.errorRequired'));
     return;
   }
@@ -68,7 +70,7 @@ export async function submitBugReport() {
     const res = await fetch('/api/report-bug', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ discordNick, channelLink, description, extra: extra || undefined, appVersion: appVersion || undefined }),
+      body: JSON.stringify({ discordNick, email: email || undefined, channelLink, description, extra: extra || undefined, appVersion: appVersion || undefined }),
     });
     if (!res.ok) throw new Error('report-bug failed');
     showToast(t('bugReport.sent'));
@@ -220,6 +222,7 @@ export function iniciarModalesYAvisos() {
   document.querySelector('.community-banner').addEventListener('click', () => trackDiscord('ui:discord-joined', 'sidebar_banner'));
   document.querySelector('.tiktok-banner').addEventListener('click', () => trackUi('ui:tiktok-banner-clicked'));
   document.querySelector('#bugReportModal a[href*="discord"]')?.addEventListener('click', () => trackDiscord('ui:discord-joined', 'bug_report'));
+  document.querySelector('#ideaModal .discord-cta')?.addEventListener('click', () => trackDiscord('ui:discord-joined', 'idea_modal'));
   const toggleDonationCard = (heading) => {
     const card = heading.closest('.qr-card');
     const expanded = card.classList.toggle('is-expanded');

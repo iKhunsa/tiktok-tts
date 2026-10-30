@@ -4,9 +4,8 @@ const { getIdeasWebhookUrl } = require('../webhook-url');
 const { postIdeasWebhook } = require('../discord/post-webhook');
 
 const APP_VERSION = require('../../../package.json').version;
-const AUDIENCES = new Set(['casi-todos', 'muchos', 'algunos', 'como-yo', 'no-seguro']);
 const MAX_INPUT = 2000;
-// Se deja margen para nombres, título y pie: seis campos nunca superan 6000.
+// Se deja margen para nombres, título y pie: cuatro campos largos + discord/email nunca superan 6000.
 const MAX_EMBED_VALUE = 900;
 const MINUTE = 60_000;
 const HOUR = 60 * MINUTE;
@@ -19,16 +18,18 @@ function truncateEmbed(value, max = MAX_EMBED_VALUE) {
 }
 function validateIdea(body) {
   const idea = {
-    problema: trimText(body?.problema), idea: trimText(body?.idea), audiencia: trimText(body?.audiencia, 30),
-    casoUso: trimText(body?.casoUso), motivo: trimText(body?.motivo), appSimilar: trimText(body?.appSimilar),
+    problema: trimText(body?.problema), idea: trimText(body?.idea),
+    casoUso: trimText(body?.casoUso), appSimilar: trimText(body?.appSimilar),
+    discord: trimText(body?.discord, 40), email: trimText(body?.email, 254),
   };
-  if (!idea.problema || !idea.idea || !idea.audiencia || !idea.casoUso || !idea.motivo) return { errorKey: 'errors.ideasRequired' };
-  if (!AUDIENCES.has(idea.audiencia)) return { errorKey: 'errors.ideasInvalidAudience' };
+  if (!idea.problema || !idea.idea || !idea.casoUso) return { errorKey: 'errors.ideasRequired' };
   return { value: idea };
 }
 function buildEmbed(idea, { appVersion = 'unknown', language = 'es' } = {}) {
-  const fields = [['Problema', idea.problema], ['Idea', idea.idea], ['Audiencia', idea.audiencia], ['Caso de uso', idea.casoUso], ['Por qué vale la pena', idea.motivo]];
+  const fields = [['Problema', idea.problema], ['Idea', idea.idea], ['Caso de uso', idea.casoUso]];
   if (idea.appSimilar) fields.push(['App similar', idea.appSimilar]);
+  if (idea.discord) fields.push(['Discord', idea.discord]);
+  if (idea.email) fields.push(['Email', idea.email]);
   return {
     title: 'Nueva sugerencia para TikLiveTTS', color: 16766720,
     fields: fields.map(([name, value]) => ({ name: truncateEmbed(name, 256), value: truncateEmbed(value) })),
@@ -68,4 +69,4 @@ function reportIdea(logger, bus, deps = {}) {
 }
 function resetRateLimit() { sentAt = []; }
 
-module.exports = { AUDIENCES, buildEmbed, buildThreadName, reportIdea, resetRateLimit, truncateEmbed, validateIdea };
+module.exports = { buildEmbed, buildThreadName, reportIdea, resetRateLimit, truncateEmbed, validateIdea };

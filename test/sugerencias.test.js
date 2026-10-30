@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const { buildEmbed, buildThreadName, reportIdea, resetRateLimit, validateIdea } = require('../features/sugerencias/routes/report-idea');
 const { postIdeasWebhook } = require('../features/sugerencias/discord/post-webhook');
 
-const valid = { problema: '  problema  ', idea: 'idea', audiencia: 'muchos', casoUso: 'en vivo', motivo: 'ayuda', appSimilar: 'app' };
+const valid = { problema: '  problema  ', idea: 'idea', casoUso: 'en vivo', appSimilar: 'app', discord: 'nick', email: 'a@b.co' };
 const logger = { log() {} };
 
 function response() {
@@ -14,8 +14,7 @@ function response() {
 
 afterEach(resetRateLimit);
 
-test('valida los campos obligatorios, audiencia fija y recorta texto', () => {
-  assert.equal(validateIdea({ ...valid, audiencia: 'otro' }).errorKey, 'errors.ideasInvalidAudience');
+test('valida los campos obligatorios y recorta texto', () => {
   assert.equal(validateIdea({ ...valid, idea: ' ' }).errorKey, 'errors.ideasRequired');
   assert.equal(validateIdea({ ...valid, idea: 'x'.repeat(3000) }).value.idea.length, 2000);
 });

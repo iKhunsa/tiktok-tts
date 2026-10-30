@@ -170,9 +170,12 @@ export function pintarVincular(cont) {
     sincronizarCanalesOAuth(vinculadas);
     if (!cont.isConnected) return; // se cerro/cambio de seccion mientras pedia
     for (const c of conectores) {
-      const guardado = c.tipo === 'oauth'
+      c.vinculadaOAuth = c.tipo === 'oauth' && vinculadas.some((p) => p.plataforma === c.id);
+      // Sin cuenta/canal guardado pero conectado en Chat (cualquier
+      // plataforma): se muestra igual, para que se pueda ver y desvincular.
+      const guardado = (c.tipo === 'oauth'
         ? vinculadas.find((p) => p.plataforma === c.id)?.username
-        : canalGuardado(c.id)?.channel;
+        : canalGuardado(c.id)?.channel) || canalesEnVivo[c.id]?.[0];
       c.username = guardado || null;
       if (!guardado) { c.estado = 'sin-vincular'; continue; }
       if (c.id === 'tiktok' && sesionTiktok.available && !sesionTiktok.loggedIn && sesionTiktok.authRequired.includes(guardado)) {
@@ -210,15 +213,17 @@ export function pintarVincular(cont) {
   }
 
   async function desconectar(id, btn) {
-    const tipo = conectores.find((c) => c.id === id)?.tipo;
+    const conector = conectores.find((c) => c.id === id);
     btn.disabled = true;
     try {
-      if (tipo === 'canal') {
-        await removeChannel(id);
-      } else {
+      // OAuth sin cuenta vinculada (solo conectado en Chat): no hay nada que
+      // desvincular en el servidor, solo desconectar como un canal comun.
+      if (conector?.vinculadaOAuth) {
         const r = await desvincularPlataforma(id);
         if (!r.ok) return toastError(r.body, 'errors.generic');
         await sincronizarCanalOAuth(id, null);
+      } else {
+        await removeChannel(id);
       }
       await cargarEstadoReal();
     } finally {
