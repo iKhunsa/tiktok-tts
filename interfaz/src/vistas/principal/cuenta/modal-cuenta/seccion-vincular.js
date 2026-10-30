@@ -58,8 +58,6 @@ const ACCION_TARJETA = {
   pendiente: { icono: 'refresh-warn', key: 'cuentaModal.pending', accion: null },
 };
 
-let pestana = 'tuyos';
-
 function estadoFilaHtml(c) {
   if (c.estado === 'caducado') {
     return `<span class="mc-estado-caducado">
@@ -116,11 +114,11 @@ export function pintarVincular(cont) {
         <input type="search" data-i18n-placeholder="cuentaModal.search">
       </label>
     </div>
-    <div class="mc-tabla">
+    <div class="mc-tabla" hidden>
       <div class="mc-tabla-cabecera"><span data-i18n="cuentaModal.colConnector"></span><span data-i18n="cuentaModal.colStatus"></span></div>
       <div class="mc-tabla-filas"></div>
     </div>
-    <div class="mc-descubrir">
+    <div class="mc-descubrir" hidden>
       <h3 class="mc-descubrir-titulo"><span data-i18n="cuentaModal.recommended"></span><span class="mc-descubrir-total"></span></h3>
       <div class="mc-tarjetas"></div>
     </div>
@@ -137,8 +135,12 @@ export function pintarVincular(cont) {
   // Copia mutable del catalogo: cargarEstadoReal() pisa estado/username de
   // las 4 plataformas con el estado real (OAuth o canal guardado).
   let conectores = CATALOGO.map((c) => ({ ...c }));
+  // Null hasta la primera carga: sin nada vinculado se abre en Descubrir, con
+  // al menos un conector en Tuyos.
+  let pestana = null;
 
   const pintarLista = () => {
+    if (!pestana) return;
     for (const tab of cont.querySelectorAll('.mc-tab')) {
       const activa = tab.dataset.pestana === pestana;
       tab.classList.toggle('is-active', activa);
@@ -171,11 +173,12 @@ export function pintarVincular(cont) {
     if (!cont.isConnected) return; // se cerro/cambio de seccion mientras pedia
     for (const c of conectores) {
       c.vinculadaOAuth = c.tipo === 'oauth' && vinculadas.some((p) => p.plataforma === c.id);
-      // Sin cuenta/canal guardado pero conectado en Chat (cualquier
-      // plataforma): se muestra igual, para que se pueda ver y desvincular.
-      const guardado = (c.tipo === 'oauth'
-        ? vinculadas.find((p) => p.plataforma === c.id)?.username
-        : canalGuardado(c.id)?.channel) || canalesEnVivo[c.id]?.[0];
+      // Mismo criterio que la tarjeta de Chat (canal guardado), tambien en
+      // OAuth: desvincular desde otro navegador deja aca el canal local. Sin
+      // cuenta/canal guardado pero conectado en Chat (cualquier plataforma):
+      // se muestra igual, para que se pueda ver y desvincular.
+      const guardado = (c.tipo === 'oauth' && vinculadas.find((p) => p.plataforma === c.id)?.username)
+        || canalGuardado(c.id)?.channel || canalesEnVivo[c.id]?.[0];
       c.username = guardado || null;
       if (!guardado) { c.estado = 'sin-vincular'; continue; }
       if (c.id === 'tiktok' && sesionTiktok.available && !sesionTiktok.loggedIn && sesionTiktok.authRequired.includes(guardado)) {
@@ -184,6 +187,7 @@ export function pintarVincular(cont) {
       }
       c.estado = canalEnColeccion(c.id, guardado, canalesEnVivo) ? 'conectado' : 'guardado';
     }
+    pestana ??= conectores.some((c) => c.estado !== 'sin-vincular') ? 'tuyos' : 'descubrir';
     pintarLista();
   }
 
@@ -280,6 +284,5 @@ export function pintarVincular(cont) {
     cargarEstadoReal();
   });
 
-  pintarLista();
   cargarEstadoReal();
 }
