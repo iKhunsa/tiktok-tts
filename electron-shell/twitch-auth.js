@@ -15,7 +15,7 @@ const { autenticarConLoopback } = require('./oauth-loopback');
 const { resolveConfigValue } = require('./resolve-config-value');
 
 const PUERTO = 17623;
-const SCOPE = 'user:read:chat user:write:chat channel:read:subscriptions bits:read';
+const SCOPE = 'user:read:chat user:write:chat channel:read:subscriptions bits:read moderator:read:followers';
 
 // Publico, bakeado igual que oauth-config.json#googleClientId (ver
 // google-auth.js). Mismo client_id que TWITCH_CLIENT_ID en servicio-cuentas.

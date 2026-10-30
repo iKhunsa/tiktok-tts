@@ -78,18 +78,27 @@ module.exports = {
       if (payload.platform === 'tiktok') state.followCount += 1;
     }, 'overlay');
 
-    // Kick: follows y regalos de Kicks llegan por el WS de cuentas vinculadas
-    // (features/auth/plataformas-realtime.js), no por el Centrifugo anonimo
-    // del chat (ese solo tiene mensajes) — requiere que el streamer tenga su
-    // cuenta de Kick vinculada. El payload crudo de kicks.gifted ya se loguea
-    // una vez en features/moderacion/index.js (gift-gate); no se repite aca.
+    // Kick: follows y regalos de Kicks, Twitch: follows -- ninguno de los
+    // dos los manda el chat anonimo (tmi.js nunca tuvo esa señal; el
+    // Centrifugo de Kick solo tiene mensajes), llegan por el WS de cuentas
+    // vinculadas (features/auth/plataformas-realtime.js) -- requiere que el
+    // streamer tenga esa cuenta vinculada por OAuth. El payload crudo de
+    // kicks.gifted ya se loguea una vez en features/moderacion/index.js
+    // (gift-gate); no se repite aca.
     bus.on('plataforma:evento', (evento) => {
-      if (!evento || evento.plataforma !== 'kick') return;
-      if (evento.tipo === 'channel.followed') {
-        const f = (evento.datos && evento.datos.follower) || {};
-        bus.emit('canal:follow', { platform: 'kick', userId: f.user_id != null ? String(f.user_id) : null, nick: f.username });
-      } else if (evento.tipo === 'kicks.gifted') {
-        bus.emit('canal:gift', { platform: 'kick', channel: null, raw: evento.datos || {} });
+      if (!evento) return;
+      if (evento.plataforma === 'kick') {
+        if (evento.tipo === 'channel.followed') {
+          const f = (evento.datos && evento.datos.follower) || {};
+          bus.emit('canal:follow', { platform: 'kick', userId: f.user_id != null ? String(f.user_id) : null, nick: f.username });
+        } else if (evento.tipo === 'kicks.gifted') {
+          bus.emit('canal:gift', { platform: 'kick', channel: null, raw: evento.datos || {} });
+        }
+      } else if (evento.plataforma === 'twitch') {
+        if (evento.tipo === 'channel.follow') {
+          const f = evento.datos || {};
+          bus.emit('canal:follow', { platform: 'twitch', userId: f.user_id != null ? String(f.user_id) : null, nick: f.user_name || f.user_login });
+        }
       }
     }, 'overlay');
 
