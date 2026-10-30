@@ -13,9 +13,6 @@ export const CATEGORIAS = [
   { id: 'resumen', icono: 'emoji_events', color: '#4b5563', overlays: ['creditos', 'fin-directo'] },
 ];
 
-// Los logos de las tarjetas se pintan en blanco; el de YouTube necesita su version de un color o pierde el triangulo.
-export const logoMonocromo = (plataforma) => (plataforma === 'youtube' ? 'youtube-mono' : `${plataforma}-logo`);
-
 export const NOMBRES_PLATAFORMA = { tiktok: 'TikTok', twitch: 'Twitch', youtube: 'YouTube', kick: 'Kick' };
 
 export const PLATAFORMAS_OVERLAY = {
@@ -51,7 +48,7 @@ export const OVERLAYS_GENERADOS = [
   ...Object.entries(EVENTOS_ALERTA).map(([id, { icono, pendiente }]) => ({ id, icono, pendiente: !!pendiente, medida: '440 × 130 px' })),
   { id: 'contador-likes', icono: 'favorite', pendiente: false, medida: '200 × 150 px' },
   { id: 'musica', icono: 'music_note', pendiente: false, medida: '420 × 100 px' },
-  ...Object.keys(CHATS_POR_PLATAFORMA).map((id) => ({ id, icono: 'chat', pendiente: false, personalizable: true, medida: '420 × 720 px' })),
+  ...Object.keys(CHATS_POR_PLATAFORMA).map((id) => ({ id, icono: 'chat', pendiente: false, medida: '420 × 720 px' })),
 ];
 
 export const FONDOS_DESTACADOS = [

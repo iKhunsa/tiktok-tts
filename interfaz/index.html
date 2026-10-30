@@ -336,9 +336,25 @@
             <div class="ovl-detalle-titulo" id="ovlDetalleTitulo"></div>
             <div class="ovl-detalle-desc" id="ovlDetalleDesc"></div>
           </div>
+          <div class="ovl-busqueda" id="ovlBusqueda">
+            <img src="icons/search.svg" alt="">
+            <input id="ovlBuscar" type="search" data-i18n-placeholder="overlayCat.buscar" data-i18n-aria-label="overlayCat.buscar">
+            <select id="ovlPlataforma" data-i18n-aria-label="overlayCat.plataforma"></select>
+          </div>
+          <button class="cfg-btn ovl-reiniciar" id="ovlReiniciar" type="button" popovertarget="ovlReiniciarPopup" hidden>
+            <img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="overlayCat.reiniciar"></span>
+          </button>
+          <div class="ovl-reiniciar-popup" id="ovlReiniciarPopup" popover>
+            <p class="ovl-reiniciar-pregunta" data-i18n="overlayCat.reiniciarPregunta"></p>
+            <p class="ovl-reiniciar-detalle" data-i18n="overlayCat.reiniciarDetalle"></p>
+            <div class="ovl-reiniciar-acciones">
+              <button class="cfg-btn" type="button" popovertarget="ovlReiniciarPopup" popovertargetaction="hide" data-i18n="btn.cancel"></button>
+              <button class="cfg-btn ovl-reiniciar-si" id="ovlReiniciarSi" type="button" data-i18n="btn.reset"></button>
+            </div>
+          </div>
         </div>
-        <div class="ovl-filtro" id="ovlFiltro"></div>
         <div id="ovlTarjetas"></div>
+        <p class="ovl-sin-resultados" id="ovlSinResultados" data-i18n="overlayCat.sinResultados" hidden></p>
       </div>
 
       <!-- Chat Unificado -->
@@ -352,14 +368,10 @@
           <span class="obs-hint">420 × 720 px</span>
         </div>
         <div class="cfg-fields" data-campos-base="chat"></div>
-        <details class="cfg-personalizar" data-campos-panel="chat">
-          <summary data-i18n="overlayCfg.personalizar">Personalizar</summary>
-        </details>
+        <div class="cfg-personalizar" data-campos-panel="chat"></div>
         <iframe class="cfg-preview" data-preview="chat" tabindex="-1" aria-hidden="true"></iframe>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-chat">http://localhost:3000/overlay-chat.html</span>
-          <button class="cfg-btn" onclick="testChatOverlay()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Test</button>
-          <button class="cfg-btn" onclick="restablecerOverlay('chat', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
           <button class="cfg-btn" onclick="copyCfgUrl('chat')" data-i18n="btn.copy">Copiar</button>
           <a class="cfg-btn" id="cfg-open-chat" href="http://localhost:3000/overlay-chat.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
@@ -398,10 +410,10 @@
                    oninput="onCfgChange('seguidores','bg', parseFloat(this.value)); document.getElementById('cfg-seg-bg-val').textContent = Math.round(this.value*100)" />
           </div>
         </div>
+        <div class="cfg-personalizar" data-campos-panel="seguidores"></div>
         <iframe class="cfg-preview" data-preview="seguidores" tabindex="-1" aria-hidden="true"></iframe>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-seguidores">http://localhost:3000/overlay-seguidores.html</span>
-          <button class="cfg-btn" onclick="restablecerOverlay('seguidores', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
           <button class="cfg-btn" onclick="copyCfgUrl('seguidores')" data-i18n="btn.copy">Copiar</button>
           <a class="cfg-btn" id="cfg-open-seguidores" href="http://localhost:3000/overlay-seguidores.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
@@ -418,11 +430,11 @@
           <span class="obs-hint">460 × 112 px</span>
         </div>
         <div class="cfg-fields" data-campos-base="viewers"></div>
+        <div class="cfg-personalizar" data-campos-panel="viewers"></div>
         <iframe class="cfg-preview" data-preview="viewers" tabindex="-1" aria-hidden="true"></iframe>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-viewers">http://localhost:3000/overlay-viewers.html</span>
           <button class="cfg-btn" onclick="testViewers()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Test</button>
-          <button class="cfg-btn" onclick="restablecerOverlay('viewers', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
           <button class="cfg-btn" onclick="copyCfgUrl('viewers')" data-i18n="btn.copy">Copiar</button>
           <a class="cfg-btn" id="cfg-open-viewers" href="http://localhost:3000/overlay-viewers.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
@@ -439,14 +451,11 @@
           <span class="obs-hint">340 × 520 px</span>
         </div>
         <div class="cfg-fields" data-campos-base="likes"></div>
-        <details class="cfg-personalizar" data-campos-panel="likes">
-          <summary data-i18n="overlayCfg.personalizar">Personalizar</summary>
-        </details>
+        <div class="cfg-personalizar" data-campos-panel="likes"></div>
         <iframe class="cfg-preview" data-preview="likes" tabindex="-1" aria-hidden="true"></iframe>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-likes">http://localhost:3000/overlay-likes.html</span>
           <button class="cfg-btn" onclick="testTopLikers()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Test</button>
-          <button class="cfg-btn" onclick="restablecerOverlay('likes', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
           <button class="cfg-btn" onclick="copyCfgUrl('likes')" data-i18n="btn.copy">Copiar</button>
           <a class="cfg-btn" id="cfg-open-likes" href="http://localhost:3000/overlay-likes.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
@@ -463,14 +472,11 @@
           <span class="obs-hint">340 × 520 px</span>
         </div>
         <div class="cfg-fields" data-campos-base="donadores"></div>
-        <details class="cfg-personalizar" data-campos-panel="donadores">
-          <summary data-i18n="overlayCfg.personalizar">Personalizar</summary>
-        </details>
+        <div class="cfg-personalizar" data-campos-panel="donadores"></div>
         <iframe class="cfg-preview" data-preview="donadores" tabindex="-1" aria-hidden="true"></iframe>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-donadores">http://localhost:3000/overlay-donadores.html</span>
           <button class="cfg-btn" onclick="testTopDonors()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Test</button>
-          <button class="cfg-btn" onclick="restablecerOverlay('donadores', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
           <button class="cfg-btn" onclick="copyCfgUrl('donadores')" data-i18n="btn.copy">Copiar</button>
           <a class="cfg-btn" id="cfg-open-donadores" href="http://localhost:3000/overlay-donadores.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
@@ -503,11 +509,11 @@
                    oninput="onCfgChange('alertas','bg', parseFloat(this.value)); document.getElementById('cfg-alertas-bg-val').textContent = Math.round(this.value*100)" />
           </div>
         </div>
+        <div class="cfg-personalizar" data-campos-panel="alertas"></div>
         <iframe class="cfg-preview" data-preview="alertas" tabindex="-1" aria-hidden="true"></iframe>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-alertas">http://localhost:3000/overlay-alertas.html</span>
           <button class="cfg-btn" onclick="testGiftAlert()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Test</button>
-          <button class="cfg-btn" onclick="restablecerOverlay('alertas', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
           <button class="cfg-btn" onclick="copyCfgUrl('alertas')" data-i18n="btn.copy">Copiar</button>
           <a class="cfg-btn" id="cfg-open-alertas" href="http://localhost:3000/overlay-alertas.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
@@ -535,12 +541,12 @@
                    oninput="onCfgChange('alertas-social','bg', parseFloat(this.value)); document.getElementById('cfg-alertas-social-bg-val').textContent = Math.round(this.value*100)" />
           </div>
         </div>
+        <div class="cfg-personalizar" data-campos-panel="alertas-social"></div>
         <iframe class="cfg-preview" data-preview="alertas-social" tabindex="-1" aria-hidden="true"></iframe>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-alertas-social">http://localhost:3000/overlay-alertas-social.html</span>
           <button class="cfg-btn" onclick="testSocialAlert('follow')"><img class="icon-inline" src="icons/person_add.svg" alt=""> Test Follow</button>
           <button class="cfg-btn" onclick="testSocialAlert('share')"><img class="icon-inline" src="icons/public.svg" alt=""> Test Share</button>
-          <button class="cfg-btn" onclick="restablecerOverlay('alertas-social', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
           <button class="cfg-btn" onclick="copyCfgUrl('alertas-social')" data-i18n="btn.copy">Copiar</button>
           <a class="cfg-btn" id="cfg-open-alertas-social" href="http://localhost:3000/overlay-alertas-social.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
@@ -573,10 +579,10 @@
                    oninput="onCfgChange('creditos','bg', parseFloat(this.value)); document.getElementById('cfg-creditos-bg-val').textContent = Math.round(this.value*100)" />
           </div>
         </div>
+        <div class="cfg-personalizar" data-campos-panel="creditos"></div>
         <iframe class="cfg-preview" data-preview="creditos" tabindex="-1" aria-hidden="true"></iframe>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-creditos">http://localhost:3000/overlay-creditos.html</span>
-          <button class="cfg-btn" onclick="restablecerOverlay('creditos', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
           <button class="cfg-btn" onclick="copyCfgUrl('creditos')" data-i18n="btn.copy">Copiar</button>
           <a class="cfg-btn" id="cfg-open-creditos" href="http://localhost:3000/overlay-creditos.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
@@ -611,10 +617,10 @@
                    oninput="onCfgChange('social','bg', parseFloat(this.value)); document.getElementById('cfg-social-bg-val').textContent = Math.round(this.value*100)" />
           </div>
         </div>
+        <div class="cfg-personalizar" data-campos-panel="social"></div>
         <iframe class="cfg-preview" data-preview="social" tabindex="-1" aria-hidden="true"></iframe>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-social">http://localhost:3000/overlay-social.html</span>
-          <button class="cfg-btn" onclick="restablecerOverlay('social', this)"><img class="icon-inline" src="icons/restore.svg" alt=""> <span data-i18n="btn.reset">Restablecer</span></button>
           <button class="cfg-btn" onclick="copyCfgUrl('social')" data-i18n="btn.copy">Copiar</button>
           <a class="cfg-btn" id="cfg-open-social" href="http://localhost:3000/overlay-social.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>

@@ -4,6 +4,8 @@ export const etiquetaCampo = (campo) => t(`overlayCfg.campo.${campo.etiqueta || 
 
 export const tituloGrupo = (grupo) => t(`overlayCfg.grupo.${grupo}`);
 
+export const tituloSubgrupo = (subgrupo) => t(`overlayCfg.subgrupo.${subgrupo}`);
+
 // Solo se traducen las opciones declaradas en `opcionesTraducidas` (efectos,
 // animaciones, "sistema"); los nombres de fuente se muestran tal cual.
 export function etiquetaOpcion(campo, valor) {

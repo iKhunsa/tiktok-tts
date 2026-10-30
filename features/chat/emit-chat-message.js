@@ -89,7 +89,7 @@ function buildPayload({ bus, channel, platform, verdict, raw }) {
   const { message } = verdict;
   const user = displayName(platform, message.author);
   const isAdmin = isAdminIdentity(bus, platform, message.author.handle);
-  const { avatar, isModerator, isSubscriber } = extractAuthorMeta(platform, raw);
+  const { avatar, isModerator, isSubscriber, badge } = extractAuthorMeta(platform, raw);
 
   return {
     type: 'chat',
@@ -104,6 +104,7 @@ function buildPayload({ bus, channel, platform, verdict, raw }) {
     emotes: Object.keys(message.emotes).length ? message.emotes : undefined,
     ytMsgId: platform === 'youtube' ? message.messageId : undefined,
     avatar,
+    badge,
     isModerator,
     isSubscriber,
     isFollower: isAdmin || Boolean(verdict.isFollower),

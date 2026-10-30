@@ -4,6 +4,7 @@
  * Se re-pinta entera tras cada cambio de sesion (ver modal-cuenta/index.js).
  */
 import { t, aplicarTraducciones } from '../../../../nucleo/i18n/i18n.js';
+import { avatarGenerado } from '../../../../../compartido/avatar-generado.js';
 import { showToast } from '../../../../componentes/toast.js';
 import { aplicarSesion } from '../../../../nucleo/estado/sesion.js';
 import { obtenerAvatarPerfil } from '../../../../nucleo/estado/avatar-perfil.js';
@@ -29,8 +30,7 @@ function fila(labelKey, derecha) {
 export function pintarPerfil(cont, s) {
   const u = s.user || {};
   const sub = s.subscription || {};
-  const avatar = u.avatarUrl || obtenerAvatarPerfil();
-  const inicial = esc((u.nombre || u.email || '?').trim().charAt(0).toUpperCase());
+  const avatar = u.avatarUrl || obtenerAvatarPerfil() || avatarGenerado(u.nombre || u.email);
   // Con un plan de pago vivo el borrado pide cancelar antes (texto de la referencia).
   const conSuscripcion = s.plan !== 'free' && !sub.cancelAtPeriodEnd;
 
@@ -40,7 +40,7 @@ export function pintarPerfil(cont, s) {
         ${u.bannerUrl ? `<img src="${esc(u.bannerUrl)}" alt="">` : ''}
       </button>
       <button class="mc-avatar" type="button" data-tipo="avatar" data-i18n-title="cuenta.changePhoto">
-        ${avatar ? `<img src="${esc(avatar)}" alt="">` : `<span>${inicial}</span>`}
+        <img src="${esc(avatar)}" alt="">
       </button>
       <input type="file" class="mc-archivo" accept="image/png,image/jpeg,image/webp" hidden>
     </div>

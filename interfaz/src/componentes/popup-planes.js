@@ -68,7 +68,7 @@ export function abrirPopupPlanes() {
             <li data-i18n="planesPopup.proNoAds"></li><li data-i18n="planesPopup.proMusic"></li>
             <li data-i18n="planesPopup.proSoundpad"></li><li data-i18n="planesPopup.proMobile"></li>
             <li data-i18n="planesPopup.proClips"></li><li data-i18n="planesPopup.proMcp"></li>
-            <li data-i18n="planesPopup.proChannels"></li>
+            <li data-i18n="planesPopup.proOverlays"></li>
           </ul>
           ${accion(plan, 'pro', 'planesPopup.choosePro')}
         </section>

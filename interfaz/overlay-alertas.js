@@ -7,7 +7,10 @@ import { escaparHtml } from './compartido/escapar-html.js';
 import { crearColaAlertas, programarRetiro, PLATFORM_META } from './compartido/cola-alertas.js';
 import { esVistaPrevia } from './compartido/vista-previa.js';
 import { MUESTRA_REGALO } from './compartido/muestras-vista-previa.js';
+import { iniciarOverlayFijo } from './compartido/estilo/aplicar-overlay-fijo.js';
+import { cargarRecurso, etiquetaRegalo, recursoDeEvento } from './compartido/recurso-plataforma.js';
 
+iniciarOverlayFijo('alertas', 440, 130);
 registrarErroresOverlay();
 const params = leerParametros();
 const vistaPrevia = esVistaPrevia(params);
@@ -53,24 +56,23 @@ function showGenericAlert(d, done) {
   const meta = PLATFORM_META[d.platform] || PLATFORM_META.tiktok;
   const card = document.createElement('div');
   card.className = 'alert-card';
-  if (!userSetColor) card.style.setProperty('--accent', meta.color);
+  if (!userSetColor) card.style.setProperty('--accent', d.color || meta.color);
   card.innerHTML = `<span class="gift-fallback">💰</span><div class="info"><div class="action-label">${meta.label} · SUPERCHAT</div><div class="gift-name">${escaparHtml(d.user || t('overlayStr.anonymous'))}</div>${d.comment ? `<div class="username">${escaparHtml(d.comment)}</div>` : ''}</div>${d.amount ? `<div class="qty-badge">${escaparHtml(d.amount)}</div>` : ''}`;
+  const recurso = recursoDeEvento(d);
+  if (recurso) {
+    const img = document.createElement('img');
+    img.className = 'gift-img';
+    img.alt = '';
+    cargarRecurso(img, recurso, () => img.replaceWith(useEmojiFor(img)));
+    card.querySelector('.gift-fallback').replaceWith(img);
+  }
   document.body.appendChild(card);
   programarRetiro(card, d.duration || alertDur, done);
 }
 
-// Twitch/Kick no mandan giftName real (no existe "nombre de regalo" ahi) —
-// el texto se arma con t() a partir de `kind`, nunca hardcodeado server-side
-// (ver features/overlay/extract-gift.js).
-const GIFT_KIND_LABEL = {
-  cheer: (gift) => t('overlayStr.cheerBits', { bits: gift.amount || 0 }),
-  sub: () => t('overlayStr.newSub'),
-  kicksgift: (gift) => t('overlayStr.kicksGifted', { amount: gift.amount || 0 }),
-};
-
 function showAlert(gift, done) {
   if (gift.type && gift.type !== 'gift') { showGenericAlert(gift, done); return; }
-  const nombreRegalo = gift.kind ? (GIFT_KIND_LABEL[gift.kind]?.(gift) || gift.kind) : gift.giftName;
+  const nombreRegalo = etiquetaRegalo(t, gift);
   const imgSrc = gift.kind ? null : resolveGiftImage(gift.giftName || '');
   const cdnSrc = gift.giftPictureUrl || '';
   const card = document.createElement('div');
@@ -80,7 +82,9 @@ function showAlert(gift, done) {
   img.alt = nombreRegalo;
   if (imgSrc) { img.src = imgSrc; img.onerror = () => { if (cdnSrc) { img.src = cdnSrc; img.onerror = () => useEmojiFor(img); } else useEmojiFor(img); }; }
   else if (cdnSrc) { img.src = cdnSrc; img.onerror = () => useEmojiFor(img); }
-  card.appendChild(imgSrc || cdnSrc ? img : useEmojiFor(img));
+  const recurso = gift.kind ? recursoDeEvento(gift) : null;
+  if (recurso) cargarRecurso(img, recurso, () => useEmojiFor(img));
+  card.appendChild(imgSrc || cdnSrc || recurso ? img : useEmojiFor(img));
   const info = document.createElement('div');
   info.className = 'info';
   info.innerHTML = `<div class="action-label">${t('overlayStr.giftReceived')}</div><div class="gift-name">${escaparHtml(nombreRegalo)}</div><div class="username">${t('overlayStr.giftFrom', { user: escaparHtml(gift.user) })}</div>${gift.usdValue ? `<div class="usd-value">≈ $${escaparHtml(String(gift.usdValue))} USD</div>` : ''}`;

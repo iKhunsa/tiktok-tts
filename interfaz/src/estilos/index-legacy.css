@@ -906,8 +906,6 @@
     }
 
     .setting-group input::placeholder { color: var(--text-muted); }
-    .setting-group input[type="number"]::-webkit-inner-spin-button,
-    .setting-group input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
     .setting-group input[type="range"] {
       width: 100%;
@@ -3433,11 +3431,22 @@
     body.reduce-motion .atajos-preset:active,
     body.reduce-motion .atajos-pause-button:active { transform: none; }
 
-/* Acordeón de tarjetas de overlay (overlays-acordeon.js): contraídas muestran solo la cabecera. */
+/* Tarjetas de overlay (overlays-tarjetas.js): cerradas son una fila; abierta, la pagina del overlay. */
 #view-overlays .cfg-card > .cfg-header { cursor: pointer; user-select: none; }
 #view-overlays .cfg-card:not(.abierta) > .cfg-header { margin-bottom: 0; }
 #view-overlays .cfg-card:not(.abierta) > :not(.cfg-header) { display: none; }
 #view-overlays .cfg-header:focus-visible { outline: 2px solid var(--accent, currentColor); outline-offset: 4px; border-radius: 6px; }
-.cfg-acordeon-flecha { flex-shrink: 0; opacity: 0.7; transition: transform 200ms cubic-bezier(.23, 1, .32, 1); }
-#view-overlays .cfg-card.abierta .cfg-acordeon-flecha { transform: rotate(180deg); }
-@media (prefers-reduced-motion: reduce) { .cfg-acordeon-flecha { transition: none; } }
+
+/* Flechas de los campos numericos de toda la app. Sin appearance el boton nativo sigue funcionando: su mitad superior sube y la inferior baja. */
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 20px;
+  margin: 0 -2px 0 6px;
+  opacity: 0.7;
+  cursor: pointer;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 20' fill='none' stroke='%23b4b4b4' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8l3-3 3 3M3 12l3 3 3-3'/%3E%3C/svg%3E") center / 12px 20px no-repeat;
+  transition: opacity var(--dur-1) ease-out;
+}
+input[type="number"]:hover::-webkit-inner-spin-button, input[type="number"]:focus::-webkit-inner-spin-button { opacity: 1; }

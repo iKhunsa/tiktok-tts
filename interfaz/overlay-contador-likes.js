@@ -5,7 +5,9 @@ import { iniciarAccesibilidadOverlay } from './compartido/accesibilidad.js';
 import { registrarErroresOverlay } from './compartido/registrar-errores.js';
 import { esVistaPrevia } from './compartido/vista-previa.js';
 import { MUESTRA_LIKES } from './compartido/muestras-vista-previa.js';
+import { iniciarOverlayFijo } from './compartido/estilo/aplicar-overlay-fijo.js';
 
+iniciarOverlayFijo('contador-likes', 200, 150);
 registrarErroresOverlay();
 
 const params = leerParametros();

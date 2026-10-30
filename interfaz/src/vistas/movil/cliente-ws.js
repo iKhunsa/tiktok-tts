@@ -1,4 +1,5 @@
 import { t } from '../../nucleo/i18n/i18n.js';
+import { etiquetaRegalo } from '../../../compartido/recurso-plataforma.js';
 import { setStatus } from './status.js';
 import { fetchState, applyState } from './estado.js';
 import { addChat, addEvent } from './chat.js';
@@ -43,7 +44,7 @@ function dispatch(d) {
       addChat(d);
       break;
     case 'gift':
-      addEvent(d, '🎁', `${t('mobile3.sent')} ${d.giftName || t('mobile3.aGift')}${d.repeatCount > 1 ? ' ×' + d.repeatCount : ''}`);
+      addEvent(d, '🎁', `${t('mobile3.sent')} ${etiquetaRegalo(t, d) || t('mobile3.aGift')}${d.repeatCount > 1 ? ' ×' + d.repeatCount : ''}`);
       break;
     case 'follow':
       addEvent(d, '❤️', t('mobile3.followed'));

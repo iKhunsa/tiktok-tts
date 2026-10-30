@@ -45,10 +45,11 @@ import { copyToClipboard } from './utils-app.js';
 import {
   buildOverlayUrl, updateOverlayUrl, onCfgChange, copyCfgUrl,
   updateFollowerDisplay, testGiftAlert, testSocialAlert,
-  testTopLikers, testTopDonors, testViewers, testChatOverlay, restablecerOverlay,
+  testTopLikers, testTopDonors, testViewers,
 } from './configurador-overlays.js';
 import { iniciarCamposOverlay } from './campos-overlay/index.js';
-import { iniciarAcordeonOverlays } from './overlays-acordeon.js';
+import { iniciarSelectorColor } from '../../componentes/selector-color/index.js';
+import { iniciarTarjetasOverlays } from './overlays-tarjetas.js';
 import { iniciarCatalogoOverlays } from './overlays-catalogo/index.js';
 import {
   toggleChatToggles, toggleOption, setSoloChatMode,
@@ -124,7 +125,7 @@ Object.assign(window, {
   copyToClipboard,
   // configurador de overlays
   onCfgChange, copyCfgUrl, testGiftAlert, testSocialAlert,
-  testTopLikers, testTopDonors, testViewers, testChatOverlay, restablecerOverlay,
+  testTopLikers, testTopDonors, testViewers,
   // toggles de chat
   toggleChatToggles, toggleOption, setSoloChatMode,
   // atajos de teclado
@@ -230,8 +231,9 @@ function iniciarArranque() {
   iniciarCierreDropdownVoces();
   iniciarPintadoDeRangos();
   iniciarCamposOverlay();
+  iniciarSelectorColor();
   iniciarCatalogoOverlays();
-  iniciarAcordeonOverlays();
+  iniciarTarjetasOverlays();
   iniciarHoverConnectAllChat();
 
   document.addEventListener('DOMContentLoaded', () => {

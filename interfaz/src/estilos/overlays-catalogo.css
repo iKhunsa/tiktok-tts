@@ -1,5 +1,7 @@
 /* Vista Overlays: destacados, categorias y lista de tarjetas. */
 #view-overlays [hidden] { display: none !important; }
+/* Al abrir un overlay la vista sube hasta aqui: el margen deja el titulo por debajo de la barra superior. */
+#view-overlays { scroll-margin-top: 64px; }
 
 .ovl-titulo { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-1); }
 .ovl-titulo h2 { margin-bottom: 0; }
@@ -97,6 +99,8 @@
 .ovl-producto-precio, .ovl-producto-comprar { grid-row: 2; grid-column: 1; }
 .ovl-producto-precio { align-self: center; font-size: var(--text-sm); font-weight: 600; color: var(--text); transition: opacity var(--dur-1) ease-out; }
 .ovl-producto-comprar {
+  position: relative; /* el precio invisible comparte celda y, con opacity 0, se pintaria encima y robaria el clic */
+  z-index: 1;
   overflow: hidden;
   height: 32px;
   padding: 0 10px;
@@ -115,8 +119,11 @@
   pointer-events: none;
   transition: opacity var(--dur-1) ease-out, transform var(--dur-1) ease-out;
 }
+.ovl-producto.incluido { border-color: var(--text-muted); }
+.ovl-producto.incluido .ovl-producto-precio { color: var(--text-secondary); font-weight: 400; }
+.ovl-producto.incluido .ovl-producto-comprar { background: var(--surface-raised); }
 .ovl-producto:hover .ovl-producto-comprar, .ovl-producto:focus-within .ovl-producto-comprar { opacity: 1; transform: none; pointer-events: auto; }
-.ovl-producto:hover .ovl-producto-precio, .ovl-producto:focus-within .ovl-producto-precio { opacity: 0; }
+.ovl-producto:hover .ovl-producto-precio, .ovl-producto:focus-within .ovl-producto-precio { opacity: 0; pointer-events: none; }
 .ovl-producto-comprar:active { transform: scale(0.97); }
 .ovl-producto-comprar:focus-visible { outline: 2px solid #fff; outline-offset: -3px; opacity: 1; }
 @media (hover: none) {
@@ -126,35 +133,177 @@
 .ovl-plataforma { display: inline-flex; align-items: center; gap: 4px; }
 .ovl-plataforma img { width: 12px; height: 12px; }
 #ovlTarjetas .cfg-card img { filter: brightness(0) invert(1); }
+#ovlTarjetas .ovl-plataforma img { filter: none; }
 
-.ovl-filtro { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: var(--space-4); }
-.ovl-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 30px;
-  padding: 0 12px;
-  border: 1px solid var(--border-strong);
-  border-radius: 999px;
-  background: transparent;
-  color: var(--text-muted);
-  font: inherit;
-  font-size: var(--text-2xs);
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color var(--dur-1) ease-out, border-color var(--dur-1) ease-out, color var(--dur-1) ease-out;
+/* Lista de overlays: filas planas con separador, sin contorno de tarjeta */
+#ovlTarjetas .cfg-card { margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+#ovlTarjetas .cfg-card:not([hidden]) ~ .cfg-card:not([hidden]) { border-top: 1px solid var(--border-subtle); }
+#ovlTarjetas .cfg-header { padding: 12px; border-radius: 10px; transition: background-color var(--dur-1) ease-out; }
+#ovlTarjetas .cfg-header:active { background: var(--surface-raised); }
+#ovlTarjetas .cfg-icon { border: 0; }
+@media (hover: hover) and (pointer: fine) {
+  #ovlTarjetas .cfg-card:not(.abierta) > .cfg-header:hover { background: var(--surface); }
 }
-.ovl-chip img { width: 14px; height: 14px; }
-.ovl-chip:hover { color: var(--text); }
-.ovl-chip.activo { background: var(--surface-raised); border-color: var(--text-muted); color: var(--text); }
-.ovl-chip:focus-visible { outline: 2px solid var(--text-muted); outline-offset: 2px; }
+/* Pagina de un overlay: su cabecera deja de ser una fila pulsable */
+#ovlTarjetas .cfg-card.abierta > .cfg-header { cursor: default; user-select: text; background: transparent; }
+#ovlTarjetas .cfg-card.abierta .cfg-fila-flecha { display: none; }
+.cfg-fila-flecha { flex-shrink: 0; width: 16px; height: 16px; opacity: 0.45; }
+
+/* Pagina de un overlay: lienzo a la izquierda e inspector de ajustes a la derecha */
+.app-layout:has(#view-overlays.active .cfg-card.abierta) { max-width: none; }
+#ovlTarjetas .cfg-card.abierta { display: grid; grid-template-columns: minmax(0, 1fr) 339px; grid-template-rows: auto minmax(0, 1fr); height: calc(100vh - 195px); min-height: 600px; }
+/* El titulo ya esta en #ovlDetalle; en el tutorial no hay detalle y la cabecera sigue identificando cada tarjeta */
+#ovlDetalle:not([hidden]) ~ #ovlTarjetas .cfg-card.abierta { grid-template-rows: minmax(0, 1fr); }
+#ovlDetalle:not([hidden]) ~ #ovlTarjetas .cfg-card.abierta > .cfg-header { display: none; }
+#ovlTarjetas .cfg-card.abierta > .cfg-header { grid-column: 1 / -1; }
+.ovl-lienzo { display: flex; flex-direction: column; min-width: 0; min-height: 0; border-radius: 12px 0 0 12px; background: var(--bg-button); }
+.ovl-escenario { position: relative; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; margin: 12px 12px 0; }
+.ovl-marco { position: relative; flex-shrink: 0; overflow: hidden; border-radius: 6px; outline: 1px solid var(--border); }
+.ovl-lienzo .cfg-preview { position: absolute; top: 0; left: 0; max-width: none; margin: 0; border: 0; border-radius: 0; transform-origin: top left; }
+.ovl-arrastre { position: absolute; inset: 0; cursor: move; touch-action: none; }
+.ovl-escenario:fullscreen { margin: 0; background: #000; }
+.ovl-pantalla-completa { position: absolute; top: 8px; right: 8px; display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 8px; background: rgba(0, 0, 0, 0.6); cursor: pointer; transition: background-color var(--dur-1) ease-out, transform var(--dur-1) ease-out; }
+.ovl-pantalla-completa:hover { background: rgba(0, 0, 0, 0.85); }
+.ovl-pantalla-completa:active { transform: scale(0.95); }
+.ovl-pantalla-completa:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.ovl-pantalla-completa img { width: 18px; height: 18px; }
+
+/* Selector de skin flotante: la barra nace del boton, debajo de ella. */
+.ovl-skin { position: absolute; bottom: 12px; left: 12px; right: 12px; display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; } /* el hueco alrededor sigue dejando arrastrar el overlay */
+.ovl-skin > * { pointer-events: auto; }
+.ovl-skin-boton { display: flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px 0 10px; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 17px; background: rgba(28, 28, 30, 0.72); backdrop-filter: blur(20px) saturate(160%); color: #fff; font-size: 13px; font-weight: 500; white-space: nowrap; cursor: pointer; transition: background-color var(--dur-1) ease-out, transform var(--dur-1) ease-out; }
+.ovl-skin-boton:active { transform: scale(0.97); }
+.ovl-skin-boton:focus-visible, .ovl-skin-opcion:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.ovl-skin-boton img { width: 18px; height: 18px; }
+.ovl-skin-barra { display: flex; gap: 4px; max-width: 100%; padding: 6px; overflow-x: auto; scrollbar-width: none; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 16px; background: rgba(28, 28, 30, 0.72); backdrop-filter: blur(20px) saturate(160%); opacity: 0; visibility: hidden; transform: translateY(6px) scale(0.97); transform-origin: bottom center; transition: opacity 180ms cubic-bezier(0.23, 1, 0.32, 1), transform 180ms cubic-bezier(0.23, 1, 0.32, 1), visibility 180ms; }
+.ovl-skin:has(> [aria-expanded="true"]) .ovl-skin-barra { opacity: 1; visibility: visible; transform: none; }
+/* Dos paginas del mismo ancho (5 skins): cambiar de pagina no mueve la barra */
+.ovl-skin-pagina { display: flex; flex: 0 0 376px; gap: 4px; }
+.ovl-skin-flecha { flex-shrink: 0; align-self: stretch; display: grid; place-items: center; width: 28px; padding: 0; border: 0; border-radius: 10px; background: transparent; cursor: pointer; transition: background-color var(--dur-1) ease-out; }
+.ovl-skin-flecha:hover { background: rgba(255, 255, 255, 0.12); }
+.ovl-skin-flecha img { width: 18px; height: 18px; filter: brightness(0) invert(1); transition: transform var(--dur-2) var(--ease-out); }
+.ovl-skin-flecha[aria-pressed="true"] img { transform: rotate(180deg); }
+.ovl-skin-flecha:focus-visible, .ovl-skin-cta:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.ovl-skin-aviso { display: flex; flex: 1; align-items: center; justify-content: center; gap: 12px; padding: 0 10px; font-size: 12px; color: rgba(255, 255, 255, 0.82); }
+.ovl-skin-cta { flex-shrink: 0; height: 32px; padding: 0 12px; border: 0; border-radius: 8px; background: var(--brand); color: #fff; font: inherit; font-weight: 600; cursor: pointer; transition: transform var(--dur-1) ease-out; }
+.ovl-skin-cta:active { transform: scale(0.97); }
+.ovl-skin-opcion { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; width: 72px; padding: 4px; border: 0; border-radius: 11px; background: transparent; color: rgba(255, 255, 255, 0.72); font-size: 11px; cursor: pointer; transition: background-color var(--dur-1) ease-out, color var(--dur-1) ease-out, transform var(--dur-1) ease-out; }
+.ovl-skin-opcion:active { transform: scale(0.97); }
+.ovl-skin-opcion[aria-pressed="true"] { background: rgba(255, 255, 255, 0.16); color: #fff; }
+.ovl-skin-miniatura { display: flex; flex-direction: column; justify-content: center; gap: 4px; width: 100%; height: 40px; padding: 0 6px; border-radius: 7px; background: linear-gradient(135deg, #3a3a3f, #1c1c1f); }
+.ovl-skin-miniatura i { display: block; height: 10px; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 4px; background: #080808; }
+.ovl-skin-miniatura i:last-child { width: 72%; }
+.ovl-skin-miniatura[data-skin="cristal"] i { border-color: rgba(255, 255, 255, 0.35); border-radius: 5px; background: rgba(255, 255, 255, 0.16); }
+.ovl-skin-miniatura[data-skin="neon"] i { border-color: #6ee7a8; border-radius: 2px; box-shadow: 0 0 4px rgba(110, 231, 168, 0.7); }
+.ovl-skin-miniatura[data-skin="minimal"] i { height: 3px; border: 0; background: #fff; }
+.ovl-skin-miniatura[data-skin="burbuja"] i { border-radius: 8px 8px 8px 2px; }
+.ovl-skin-miniatura[data-skin="terminal"] i { border: 1px dashed #6ee7a8; border-radius: 0; }
+.ovl-skin-miniatura[data-skin="retro"] i { border: 1px solid #f5c451; border-radius: 0; box-shadow: 2px 2px 0 rgba(245, 196, 81, 0.6); }
+.ovl-skin-miniatura[data-skin="degradado"] i { border: 0; background: linear-gradient(120deg, #c271b4, #1c1c1e); }
+.ovl-producto-arte .ovl-skin-miniatura { width: 66%; height: 44%; margin-bottom: 24%; gap: 8%; }
+.ovl-producto-arte .ovl-skin-miniatura i { height: 34%; }
+.ovl-producto-estrella { position: absolute; top: 8px; right: 8px; display: grid; place-items: center; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 8px; background: rgba(0, 0, 0, 0.55); cursor: pointer; transition: background-color var(--dur-1) ease-out, transform var(--dur-1) ease-out; }
+.ovl-producto-estrella:hover { background: rgba(0, 0, 0, 0.85); }
+.ovl-producto-estrella:active { transform: scale(0.95); }
+.ovl-producto-estrella:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.ovl-producto-estrella img { width: 18px; height: 18px; filter: brightness(0) invert(1); }
+/* Con Pro no hay nada que comprar: el precio se queda y la accion es la estrella */
+.ovl-producto.con-estrella .ovl-producto-comprar { display: none; }
+.ovl-producto.con-estrella:is(:hover, :focus-within) .ovl-producto-precio { opacity: 1; }
+.ovl-skin-miniatura[data-skin="bloque"] i { border-width: 0 0 0 3px; border-color: #f5c451; border-radius: 1px; }
+@media (hover: hover) and (pointer: fine) {
+  .ovl-skin-boton:hover { background: rgba(44, 44, 46, 0.86); }
+  .ovl-skin-opcion:hover { color: #fff; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ovl-skin-barra { transform: none; }
+}
+.cfg-lienzo-nota { margin-top: 10px; font-size: var(--text-2xs); color: var(--text-muted); }
+.cfg-lienzo-nota strong { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ovl-lienzo .cfg-url-row { margin: 12px; }
+.ovl-inspector { min-height: 0; overflow-y: auto; border-radius: 0 12px 12px 0; background: var(--surface); }
+.ovl-inspector > * + *, .ovl-inspector .cfg-grupo + .cfg-grupo { border-top: 1px solid var(--border); }
+.ovl-inspector .cfg-grupo { padding: 20px; }
+.ovl-inspector .cfg-fields { grid-template-columns: minmax(0, 1fr); gap: 12px; margin: 0; }
+.ovl-inspector .cfg-field.full { grid-column: auto; }
+.ovl-inspector .cfg-field:has(> label + :is(input, select, .cfg-botones, .cfg-rejilla)) { display: grid; grid-template-columns: minmax(0, 1fr) 151px; align-items: center; gap: 10px; }
+/* Texto y posicion: botones con icono y rejilla que representa la fuente de OBS */
+.cfg-botones { display: flex; height: 36px; padding: 2px; border: 1px solid var(--border); border-radius: 8px; }
+.cfg-boton { flex: 1; min-width: 0; padding: 0 2px; border: 0; border-radius: 6px; background: transparent; color: var(--text-secondary); font: inherit; font-size: var(--text-3xs); cursor: pointer; transition: background-color var(--dur-1) ease-out, color var(--dur-1) ease-out; }
+.cfg-boton img { width: 16px; height: 16px; opacity: 0.6; transition: opacity var(--dur-1) ease-out; }
+.cfg-boton:hover { color: var(--text); }
+.cfg-boton[aria-pressed="true"] { background: var(--surface-raised); color: var(--text); }
+.cfg-boton[aria-pressed="true"] img { opacity: 1; }
+.cfg-rejilla { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; width: 151px; aspect-ratio: 16 / 9; padding: 2px; border: 1px solid var(--border); border-radius: 8px; }
+.cfg-celda { display: grid; place-items: center; padding: 0; border: 0; border-radius: 5px; background: transparent; cursor: pointer; transition: background-color var(--dur-1) ease-out; }
+.cfg-celda::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--border-strong); transition: background-color var(--dur-1) ease-out; }
+.cfg-celda:hover { background: var(--surface-raised); }
+.cfg-celda[aria-pressed="true"] { background: var(--brand-a20); }
+.cfg-celda[aria-pressed="true"]::before { background: var(--brand); }
+:is(.cfg-boton, .cfg-celda):focus-visible { outline: 2px solid var(--text-muted); outline-offset: 1px; }
+/* Opciones de si o no: fila con interruptor, deja claro el estado mejor que un chip */
+.ovl-inspector .cfg-field:not(.full) > .toggle-chip { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100% !important; padding: 0; border: 0; border-radius: 0; background: transparent; color: var(--text-secondary); font-size: var(--text-sm); font-weight: 400; }
+.ovl-inspector .cfg-field:not(.full) > .toggle-chip:active { transform: none; }
+.ovl-inspector .cfg-field:not(.full) > .toggle-chip input { order: 1; display: block; flex-shrink: 0; appearance: none; position: relative; width: 32px; height: 18px; margin: 0; border-radius: 999px; background: var(--border-strong); cursor: pointer; transition: background-color var(--dur-1) ease-out; }
+.ovl-inspector .cfg-field:not(.full) > .toggle-chip input::after { content: ''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: #fff; transition: transform var(--dur-1) ease-out; }
+.ovl-inspector .cfg-field:not(.full) > .toggle-chip input:checked { background: var(--brand); }
+.ovl-inspector .cfg-field:not(.full) > .toggle-chip input:checked::after { transform: translateX(14px); }
+.ovl-inspector .cfg-field:not(.full) > .toggle-chip input:focus-visible { outline: 2px solid var(--text-muted); outline-offset: 2px; }
+.ovl-inspector .cfg-field label { font-size: var(--text-sm); font-weight: 400; }
+.ovl-inspector .cfg-field :is(input[type="text"], input[type="number"], input[type="color"], select) { width: 100%; height: 36px; border-color: var(--border); border-radius: 8px; background: var(--surface); }
+.ovl-inspector .cfg-field input[type="range"] { margin: 0; }
+.ovl-inspector .cfg-field input[type="range"]::-webkit-slider-runnable-track { height: 5px; background: linear-gradient(var(--brand), var(--brand)) no-repeat 0 0 / var(--range-pct) 100%, var(--border-strong); }
+.ovl-inspector .cfg-field input[type="range"]::-webkit-slider-thumb { width: 12px; height: 12px; margin-top: -3.5px; border-radius: 50%; }
+.ovl-inspector .cfg-field input[type="range"]:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--text-muted); outline-offset: 2px; }
+
+/* Entrada escalonada, igual que la tienda de plugins: se dispara sola al pasar de oculto a visible.
+   backwards y no both: al terminar no debe pisar el transform de :active ni crear contexto de apilado. */
+.ovl-destacado, .ovl-detalle, .ovl-fila, .ovl-producto, #ovlTarjetas > .cfg-card {
+  animation: ovlAparecer .28s var(--ease-out) backwards;
+  animation-delay: calc(20ms + var(--ovl-i, 0) * 40ms);
+}
+.ovl-pie { animation: ovlAparecer .28s var(--ease-out) 260ms backwards; }
+/* --ovl-i de las tarjetas lo pone pintar(): el filtro oculta algunas y nth-child contaria tambien esas */
+:is(.ovl-fila, .ovl-producto):nth-child(2) { --ovl-i: 1; }
+:is(.ovl-fila, .ovl-producto):nth-child(3) { --ovl-i: 2; }
+:is(.ovl-fila, .ovl-producto):nth-child(4) { --ovl-i: 3; }
+:is(.ovl-fila, .ovl-producto):nth-child(5) { --ovl-i: 4; }
+:is(.ovl-fila, .ovl-producto):nth-child(6) { --ovl-i: 5; }
+:is(.ovl-fila, .ovl-producto):nth-child(n+7) { --ovl-i: 6; }
+@keyframes ovlAparecer {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Busqueda con filtro de plataforma integrado */
+/* Mismo aspecto que .mc-buscar (Vincular cuentas), sin el anillo de foco: al hacer clic basta el cursor de texto */
+.ovl-busqueda { flex: 0 1 340px; display: flex; align-items: center; gap: 8px; height: 32px; margin-left: auto; padding-left: 12px; border-radius: 6px; background: var(--surface-3); cursor: text; }
+.ovl-busqueda img { flex-shrink: 0; width: 18px; height: 18px; filter: brightness(0) invert(1); opacity: 0.5; }
+.ovl-busqueda input { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; outline: 0; background: transparent; color: var(--text); font: inherit; font-size: var(--text-sm); }
+.ovl-busqueda input::-webkit-search-cancel-button { display: none; }
+.ovl-busqueda select:focus-visible { outline: 2px solid var(--brand-a40); outline-offset: -2px; }
+.ovl-busqueda input::placeholder { color: var(--text-muted); }
+.ovl-busqueda select { flex-shrink: 0; height: 100%; padding: 0 8px; border: 0; border-left: 1px solid var(--border-strong); border-radius: 0 6px 6px 0; outline: 0; background: transparent; color: var(--text-secondary); font: inherit; font-size: var(--text-xs); cursor: pointer; }
+.ovl-busqueda { position: relative; }
+.ovl-busqueda .mod-menu { left: auto; right: 0; width: 150px; transform-origin: top right; }
+.ovl-sin-resultados { padding: var(--space-6) 0; text-align: center; font-size: var(--text-sm); color: var(--text-muted); }
 .ovl-proximamente { flex-shrink: 0; padding: 2px 8px; border-radius: 999px; background: var(--surface-raised); font-size: var(--text-3xs); font-weight: 600; color: var(--text); }
 
+@media (max-width: 1000px) {
+  #ovlTarjetas .cfg-card.abierta { display: block; height: auto; }
+  .ovl-lienzo { border-radius: 12px 12px 0 0; }
+  .ovl-escenario { flex: none; height: 280px; }
+  .ovl-inspector { border-radius: 0 0 12px 12px; }
+}
 @media (max-width: 640px) {
   .ovl-productos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .ovl-categorias { grid-template-columns: minmax(0, 1fr); }
+  .ovl-detalle { flex-wrap: wrap; }
+  .ovl-busqueda { flex-basis: 100%; }
   }
 @media (prefers-reduced-motion: reduce) {
   .ovl-diapositiva, .ovl-punto::before, .ovl-producto-comprar { transition: none; transform: none; }
+  .ovl-destacado, .ovl-detalle, .ovl-fila, .ovl-producto, .ovl-pie, #ovlTarjetas > .cfg-card { animation: none; }
 }
 body.reduce-motion .ovl-diapositiva, body.reduce-motion .ovl-punto::before, body.reduce-motion .ovl-producto-comprar { transition: none; transform: none; }
+body.reduce-motion :is(.ovl-destacado, .ovl-detalle, .ovl-fila, .ovl-producto, .ovl-pie), body.reduce-motion #ovlTarjetas > .cfg-card { animation: none; }

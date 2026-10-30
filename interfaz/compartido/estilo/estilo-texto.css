@@ -1,3 +1,36 @@
+/* --u: pixeles reales por cada pixel de la medida base. En vertical el overlay es del ancho de la fuente;
+   en horizontal es una parte de la escena (720 de alto = tamano base), para que no resulte gigante en 1920 x 1080. */
+:root { --u: calc(100vw / var(--ancho-base, 420) * var(--escala, 1)); }
+@media (orientation: landscape) { :root { --u: calc(100vh / 720 * var(--escala, 1)); } }
+/* Posicion de los elementos dentro de la fuente de OBS y alineacion del texto. */
+html { display: flex; min-height: 100vh; align-items: var(--pos-y, flex-start); }
+body {
+  flex-shrink: 0;
+  text-align: var(--txt-align, start);
+  font-weight: var(--fw, 400);
+  font-style: var(--fst, normal);
+  text-transform: var(--tt, none);
+  word-spacing: var(--ws, 0);
+  -webkit-text-stroke: var(--contorno-w, 0) var(--contorno-c, #000);
+  paint-order: stroke fill;
+  text-shadow: var(--sombra, none);
+}
+/* Overlays de diseno fijo: --zoom lo calcula aplicar-overlay-fijo.js. Dentro de un zoom las unidades
+   de viewport tambien se multiplican, por eso el desplazamiento se divide entre el. */
+html { justify-content: var(--pos-x, flex-start); }
+body.overlay-fijo {
+  zoom: var(--zoom, 1);
+  translate: calc(var(--dx, 0px) / var(--zoom, 1)) calc(var(--dy, 0px) / var(--zoom, 1));
+}
+body.fijar-fuente { font-family: var(--ff); }
+/* Cada texto de estas tarjetas declara su propio peso y formato: el ajuste del usuario manda sobre ellos. */
+body.fijar-peso * { font-weight: var(--fw) !important; }
+body.fijar-caso * { text-transform: var(--tt) !important; }
+body.fijar-ls * { letter-spacing: var(--ls) !important; }
+
+/* En cada elemento y no en body: el subrayado toma el color del elemento que lo declara. */
+body * { text-decoration: var(--td, none); }
+
 /* Efectos de texto de usuario: sombra, contorno, neon, resplandor y ola. */
 .fx-sombra { text-shadow: 0 2px 4px rgba(0, 0, 0, 0.85); }
 .fx-contorno {
@@ -5,6 +38,37 @@
   paint-order: stroke fill;
 }
 .fx-neon { text-shadow: 0 0 4px currentColor, 0 0 12px currentColor, 0 0 24px currentColor; }
+.fx-3d { text-shadow: 0.03em 0.03em 0 rgba(0, 0, 0, 0.6), 0.06em 0.06em 0 rgba(0, 0, 0, 0.5), 0.09em 0.09em 0 rgba(0, 0, 0, 0.4); }
+.fx-fuego { text-shadow: 0 0 0.1em #fff3b0, 0 -0.06em 0.2em #ffb703, 0 -0.12em 0.35em #fb5607, 0 -0.2em 0.55em #d00000; }
+.fx-hielo { text-shadow: 0 0 0.1em #fff, 0 0 0.25em #a5f3fc, 0 0 0.5em #22d3ee; }
+.fx-retro { text-shadow: 0.06em 0.06em 0 #ff2e97, 0.12em 0.12em 0 #00e5ff; }
+.fx-glitch { animation: glitch-texto 1.6s steps(1) infinite; text-shadow: 0.05em 0 0 #ff0050, -0.05em 0 0 #00f2ea; }
+@keyframes glitch-texto {
+  40% { text-shadow: -0.07em 0.02em 0 #ff0050, 0.07em -0.02em 0 #00f2ea; }
+  45% { text-shadow: 0.09em -0.03em 0 #ff0050, -0.09em 0.03em 0 #00f2ea; }
+  50% { text-shadow: 0.05em 0 0 #ff0050, -0.05em 0 0 #00f2ea; }
+}
+
+/* Texto relleno con degradado. text-fill-color y no color: el color del nombre lo fija cada overlay con mas especificidad. */
+.fx-arcoiris, .fx-dorado {
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+}
+.fx-arcoiris {
+  background-image: linear-gradient(90deg, #ff5f6d, #ffc371, #f9f871, #4ade80, #38bdf8, #a78bfa, #ff5f6d);
+  background-size: 200% 100%;
+  animation: arcoiris-texto 3s linear infinite;
+}
+.fx-dorado { background-image: linear-gradient(180deg, #fff6c2 10%, #f5c542 50%, #b8860b 90%); }
+/* Con ola cada letra tiene su propia capa y el recorte del padre no la alcanza. */
+.fx-arcoiris > span, .fx-dorado > span {
+  background: inherit;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+@keyframes arcoiris-texto { to { background-position: -200% 0; } }
 .resplandor { filter: drop-shadow(0 0 6px currentColor); }
 
 .ola > span {
@@ -17,5 +81,5 @@
   30% { transform: translateY(-0.25em); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ola > span { animation: none; }
+  .ola > span, .fx-arcoiris, .fx-glitch { animation: none; }
 }

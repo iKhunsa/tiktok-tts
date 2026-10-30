@@ -8,6 +8,7 @@
  * cuenta. Es el comportamiento por defecto.
  */
 import { crearAlmacen } from './crear-almacen.js';
+import { avatarGenerado } from '../../../compartido/avatar-generado.js';
 import { t } from '../i18n/i18n.js';
 import { abrirPopupPlanes } from '../../componentes/popup-planes.js';
 import { toggleAccountPopover } from '../../componentes/popover-cuenta.js';
@@ -109,7 +110,8 @@ export function pintarBadgeSidebar() {
     copy('.sidebar-account-badge', `sidebarAccount.badge${planKey}`);
     copy('.sidebar-account-subtitle', `sidebarAccount.subtitle${planKey}`);
     copy('.sidebar-account-cta span', s.plan === 'free' ? 'sidebarAccount.upgrade' : 'sidebarAccount.managePlan');
-    const avatar = s.user?.avatarUrl || obtenerAvatarPerfil();
+    const generado = s.user && avatarGenerado(s.user.nombre || s.user.email);
+    const avatar = s.user?.avatarUrl || obtenerAvatarPerfil() || generado;
     const icono = cuenta.querySelector('.sidebar-account-title > img.icon-inline');
     if (icono) {
       icono.src = avatar || 'icons/account_circle.svg';

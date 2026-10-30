@@ -1,7 +1,8 @@
 import { idiomaOverlay } from './i18n-overlay.js';
 import { estilizarTexto } from './estilo/estilizar-texto.js';
 import { animarNumero } from './animar-numero.js';
-import { AVATAR_PLACEHOLDER, CORONA_SVG } from './leaderboard-iconos.js';
+import { avatarGenerado } from './avatar-generado.js';
+import { CORONA_SVG } from './leaderboard-iconos.js';
 
 const PODIO = 3;
 const SPRING = 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1)';
@@ -62,9 +63,10 @@ export function crearLeaderboard(cfg, { campoValor, simboloHtml, textoVacio }) {
     const imagen = document.createElement('img');
     imagen.className = 'avatar-img';
     imagen.alt = '';
-    imagen.src = entrada.avatar || AVATAR_PLACEHOLDER;
-    // Las URLs firmadas de TikTok caducan: sin foto vigente se muestra la silueta.
-    imagen.addEventListener('error', () => { imagen.src = AVATAR_PLACEHOLDER; }, { once: true });
+    const generado = avatarGenerado(entrada.user);
+    imagen.src = entrada.avatar || generado;
+    // Las URLs firmadas de TikTok caducan: sin foto vigente se muestra el avatar generado.
+    imagen.addEventListener('error', () => { imagen.src = generado; }, { once: true });
     contenedor.appendChild(imagen);
 
     if (rango === 1 && cfg.mostrarCorona) contenedor.insertAdjacentHTML('beforeend', CORONA_SVG);

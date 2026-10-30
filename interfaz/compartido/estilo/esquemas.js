@@ -1,5 +1,6 @@
 import { camposChat } from './campos-chat.js';
 import { camposRanking } from './campos-ranking.js';
+import { camposOverlayFijo } from './campos-overlay-fijo.js';
 import { valoresPorDefecto } from './query.js';
 import { EVENTOS_ALERTA } from '../eventos-alerta.js';
 
@@ -9,6 +10,7 @@ const esquemaAlerta = ({ duracion = 4000 }) => [
   { clave: 'dur', param: 'dur', tipo: 'numero', def: duracion, min: 1000, max: 12000, step: 500, etiqueta: 'duracion', grupo: 'base' },
   colorAcento,
   opacidadFondo(0.9),
+  ...camposOverlayFijo({ texto: true }),
 ];
 
 /** Chats de una sola plataforma: misma pagina que el unificado, con la plataforma fija en la URL. */
@@ -33,29 +35,34 @@ export const ESQUEMAS = {
     { clave: 'goal', param: 'goal', tipo: 'texto', def: '', grupo: 'base' },
     colorAcento,
     opacidadFondo(0.8),
+    ...camposOverlayFijo({ texto: false }),
   ],
   viewers: [
     { ...colorAcento, def: '#F0213A' },
     opacidadFondo(0.8),
+    ...camposOverlayFijo({ texto: false }),
   ],
   alertas: [
     { clave: 'dur', param: 'dur', tipo: 'numero', def: 4000, grupo: 'base' },
     colorAcento,
     opacidadFondo(0.9),
+    ...camposOverlayFijo({ texto: true }),
   ],
   creditos: [
     { clave: 'speed', param: 'speed', tipo: 'numero', def: 40, grupo: 'base' },
     colorAcento,
     opacidadFondo(0.85),
+    ...camposOverlayFijo({ texto: true }),
   ],
   social: [
     { clave: 'layout', param: 'layout', tipo: 'texto', def: 'cols', grupo: 'base' },
     colorAcento,
     opacidadFondo(0.8),
+    ...camposOverlayFijo({ texto: true }),
   ],
-  'alertas-social': [colorAcento, opacidadFondo(0.9)],
-  'contador-likes': [colorAcento, opacidadFondo(0.8)],
-  musica: [colorAcento, opacidadFondo(0.9)],
+  'alertas-social': [colorAcento, opacidadFondo(0.9), ...camposOverlayFijo({ texto: true })],
+  'contador-likes': [colorAcento, opacidadFondo(0.8), ...camposOverlayFijo({ texto: false })],
+  musica: [colorAcento, opacidadFondo(0.9), ...camposOverlayFijo({ texto: true })],
   ...Object.fromEntries(Object.keys(CHATS_POR_PLATAFORMA).map((id) => [id, camposChatFijo()])),
   ...Object.fromEntries(Object.entries(EVENTOS_ALERTA).map(([id, alerta]) => [id, esquemaAlerta(alerta)])),
 };

@@ -4,12 +4,12 @@ import { t } from '../../../nucleo/i18n/i18n.js';
 import { showToast } from '../../../componentes/toast.js';
 import { updateOverlayUrl } from '../configurador-overlays.js';
 import { montarCamposOverlay } from './montar.js';
-import { sincronizarCamposOverlay } from './sincronizar.js';
+import { pintarDependientes, pintarRestablecer, sincronizarCamposOverlay } from './sincronizar.js';
+import { alPulsarRestablecerGrupo } from './restablecer-grupo.js';
 import { leerValorDeEntrada } from './leer-valor.js';
 import { textoValor } from './etiquetas.js';
-import { OVERLAYS_GENERADOS } from '../overlays-catalogo/catalogo.js';
 
-const OVERLAYS_CON_ESQUEMA = ['chat', 'likes', 'donadores', 'viewers', ...OVERLAYS_GENERADOS.map(({ id }) => id)];
+const OVERLAYS_CON_ESQUEMA = Object.keys(ESQUEMAS);
 
 const campoDe = (overlay, clave) => ESQUEMAS[overlay].find((campo) => campo.clave === clave);
 
@@ -40,7 +40,28 @@ function cambiarValor(entrada, campo) {
   const prender = campo.activa && !appSettings.overlays[overlay][campo.activa];
   if (prender) appSettings.overlays[overlay][campo.activa] = true;
   guardarCambio(overlay, campo.clave, valor);
-  if (prender) sincronizarCamposOverlay(overlay);
+  pintarDependientes(overlay);
+  pintarRestablecer(overlay);
+  if (campo.espeja) espejar(overlay, campo);
+  if (prender || campo.espeja) sincronizarCamposOverlay(overlay);
+}
+
+const OPUESTO = { izquierda: 'derecha', derecha: 'izquierda' };
+
+// Invertir el mensaje invierte tambien sus alineaciones laterales, para que la vista siga coincidiendo con lo marcado.
+function espejar(overlay, campo) {
+  for (const clave of campo.espeja) {
+    const valor = appSettings.overlays[overlay][clave];
+    if (OPUESTO[valor]) guardarCambio(overlay, clave, OPUESTO[valor]);
+  }
+}
+
+function alPulsarBoton(evento) {
+  const boton = evento.target.closest('[data-cfg-fija]');
+  if (!boton) return;
+  const overlay = boton.dataset.cfgOverlay;
+  Object.entries(JSON.parse(boton.dataset.cfgFija)).forEach(([clave, valor]) => guardarCambio(overlay, clave, valor));
+  sincronizarCamposOverlay(overlay);
 }
 
 function alEditarCampo(evento) {
@@ -66,4 +87,6 @@ export function renderizarTodosLosCamposOverlay() {
 export function iniciarCamposOverlay() {
   const vista = document.getElementById('view-overlays');
   vista.addEventListener('input', alEditarCampo);
+  vista.addEventListener('click', alPulsarBoton);
+  vista.addEventListener('click', alPulsarRestablecerGrupo);
 }

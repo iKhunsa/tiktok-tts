@@ -8,6 +8,7 @@ import { t, aplicarTraducciones, idiomaActual } from '../../../nucleo/i18n/i18n.
 import { showToast } from '../../../componentes/toast.js';
 import { almacenSesion, aplicarSesion, pintarBadgeSidebar } from '../../../nucleo/estado/sesion.js';
 import { guardarAvatarPerfil, obtenerAvatarPerfil, quitarAvatarPerfil } from '../../../nucleo/estado/avatar-perfil.js';
+import { avatarGenerado } from '../../../../compartido/avatar-generado.js';
 import { pedir, toastError } from './api.js';
 import { abrirModalEliminarCuenta } from './modal-eliminar-cuenta.js';
 import { abrirPopupPlanes } from '../../../componentes/popup-planes.js';
@@ -141,11 +142,10 @@ function planCard(s) {
 
 function panelPerfil(s) {
   const u = s.user || {};
-  const inicial = esc((u.nombre || u.email || '?').trim().charAt(0).toUpperCase());
   return `
     <div class="cuenta-card cuenta-perfil">
       <div class="cuenta-perfil-head">
-        <div class="cuenta-avatar" role="button" tabindex="0" data-inicial="${inicial}">${inicial}</div>
+        <div class="cuenta-avatar has-image" role="button" tabindex="0"></div>
         <input type="file" id="cuentaAvatarInput" accept="image/png,image/jpeg,image/webp" hidden>
         <div class="cuenta-perfil-id">
           <div class="cuenta-perfil-nombre">${esc(u.nombre) || t('cuenta.noName')}</div>
@@ -214,13 +214,10 @@ export function renderCuentaPanel() {
   const inputAvatar = el.querySelector('#cuentaAvatarInput');
   const pintarAvatar = (foto = obtenerAvatarPerfil()) => {
     avatar.replaceChildren();
-    if (foto) {
-      const img = document.createElement('img');
-      img.src = foto;
-      img.alt = '';
-      avatar.appendChild(img);
-    } else avatar.textContent = avatar.dataset.inicial;
-    avatar.classList.toggle('has-image', !!foto);
+    const img = document.createElement('img');
+    img.src = foto || avatarGenerado(u.nombre || u.email);
+    img.alt = '';
+    avatar.appendChild(img);
     el.querySelector('#cuentaQuitarAvatar').hidden = !foto;
   };
   avatar.setAttribute('aria-label', t('cuenta.changePhoto'));

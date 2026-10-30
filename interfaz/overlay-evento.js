@@ -6,6 +6,8 @@ import { registrarErroresOverlay } from './compartido/registrar-errores.js';
 import { crearColaAlertas, programarRetiro, PLATFORM_META } from './compartido/cola-alertas.js';
 import { esVistaPrevia } from './compartido/vista-previa.js';
 import { EVENTOS_ALERTA } from './compartido/eventos-alerta.js';
+import { iniciarOverlayFijo } from './compartido/estilo/aplicar-overlay-fijo.js';
+import { cargarRecurso, recursoDeEvento } from './compartido/recurso-plataforma.js';
 
 registrarErroresOverlay();
 
@@ -14,6 +16,7 @@ const vistaPrevia = esVistaPrevia(params);
 aplicarParametrosVisuales(params);
 const idAlerta = params.get('evento');
 const alerta = EVENTOS_ALERTA[idAlerta];
+if (alerta) iniciarOverlayFijo(idAlerta, 440, 130);
 const duracion = intParam(params, 'dur', alerta?.duracion || 4000);
 const colorPropio = !!params.get('color');
 
@@ -28,8 +31,11 @@ function crearIcono(evento) {
   const contenedor = crearElemento('icono');
   const imagen = document.createElement('img');
   imagen.alt = '';
-  imagen.src = evento.sticker || `icons/${alerta.icono}.svg`;
-  if (evento.sticker) imagen.className = 'sticker';
+  const iconoPropio = `icons/${alerta.icono}.svg`;
+  const recurso = recursoDeEvento(evento);
+  if (recurso) cargarRecurso(imagen, recurso, () => { imagen.onerror = null; imagen.classList.remove('sticker'); imagen.src = iconoPropio; });
+  else imagen.src = iconoPropio;
+  if (recurso) imagen.className = evento.kind === 'kicksgift' ? 'sticker regalo-kick' : 'sticker';
   contenedor.append(imagen);
   return contenedor;
 }
@@ -37,7 +43,7 @@ function crearIcono(evento) {
 function mostrarAlerta(evento, alTerminar) {
   const meta = PLATFORM_META[evento.platform];
   const tarjeta = crearElemento('alert-card');
-  if (meta && !colorPropio) tarjeta.style.setProperty('--accent', meta.color);
+  if (meta && !colorPropio) tarjeta.style.setProperty('--accent', evento.color || meta.color);
 
   const titulo = t(`overlayCat.ov.${idAlerta}.titulo`);
   const accion = t(`overlayCat.alerta.${idAlerta}`);
@@ -60,7 +66,8 @@ const aplicarA11y = iniciarAccesibilidadOverlay();
 cargarLocaleOverlay().then(() => {
   aplicarI18nOverlay();
   if (!alerta) return;
-  if (vistaPrevia) cola.encolar(alerta.muestra);
+  // ?muestra= solo existe en el configurador: prueba otro nivel sin afectar a la URL de OBS.
+  if (vistaPrevia) cola.encolar({ ...alerta.muestra, ...alerta.muestras?.[Number(params.get('muestra'))] });
   conectarWSOverlay((d) => {
     if (d.type === 'config-updated') aplicarA11y(d.config || {});
     else if (alerta.coincide(d)) cola.encolar(d);

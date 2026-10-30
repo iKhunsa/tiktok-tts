@@ -5,7 +5,9 @@ import { iniciarAccesibilidadOverlay } from './compartido/accesibilidad.js';
 import { registrarErroresOverlay } from './compartido/registrar-errores.js';
 import { esVistaPrevia } from './compartido/vista-previa.js';
 import { MUESTRA_MUSICA } from './compartido/muestras-vista-previa.js';
+import { iniciarOverlayFijo } from './compartido/estilo/aplicar-overlay-fijo.js';
 
+iniciarOverlayFijo('musica', 420, 100);
 registrarErroresOverlay();
 
 const params = leerParametros();

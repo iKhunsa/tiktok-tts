@@ -5,6 +5,7 @@ import { iniciarAccesibilidadOverlay } from './accesibilidad.js';
 import { registrarErroresOverlay } from './registrar-errores.js';
 import { leerConfig } from './estilo/query.js';
 import { aplicarTipografia } from './estilo/aplicar-tipografia.js';
+import { aplicarAlineacion } from './estilo/aplicar-alineacion.js';
 import { crearLeaderboard } from './leaderboard.js';
 import { esVistaPrevia, conMuestra } from './vista-previa.js';
 
@@ -32,7 +33,8 @@ export async function iniciarRanking(ranking) {
   const params = leerParametros();
   const vistaPrevia = esVistaPrevia(params);
   const cfg = leerConfig(ranking.esquema, params);
-  aplicarTipografia(cfg);
+  aplicarTipografia(cfg, 340);
+  aplicarAlineacion(cfg);
 
   const [entradasIniciales] = await Promise.all([pedirRankingInicial(ranking.claveLista), cargarLocaleOverlay()]);
   aplicarI18nOverlay();

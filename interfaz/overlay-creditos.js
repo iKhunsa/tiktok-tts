@@ -5,7 +5,10 @@ import { registrarErroresOverlay } from './compartido/registrar-errores.js';
 import { crearCreditos } from './compartido/creditos-agregados.js';
 import { esVistaPrevia } from './compartido/vista-previa.js';
 import { MUESTRA_CREDITOS } from './compartido/muestras-vista-previa.js';
+import { iniciarOverlayFijo } from './compartido/estilo/aplicar-overlay-fijo.js';
+import { etiquetaRegalo, logoPlataforma } from './compartido/recurso-plataforma.js';
 
+iniciarOverlayFijo('creditos', 380, 500);
 registrarErroresOverlay();
 
 const params = leerParametros();
@@ -25,6 +28,7 @@ let renderTimer = null;
 function cargarMuestra() {
   if (!esVistaPrevia(params) || credits.donors.length || credits.followers.length || credits.sharers.length) return;
   MUESTRA_CREDITOS.donantes.forEach(credits.agregarDonante);
+  MUESTRA_CREDITOS.donantesPlataformas.forEach(credits.agregarDonante);
   MUESTRA_CREDITOS.seguidores.forEach(credits.agregarSeguidor);
   MUESTRA_CREDITOS.compartidos.forEach(credits.agregarSharer);
 }
@@ -35,7 +39,13 @@ function buildRows(list) {
     row.className = 'credit-row';
     const icon = document.createElement('span');
     icon.className = 'credit-icon';
-    icon.textContent = String(item.icon || '');
+    const logo = logoPlataforma(item.platform);
+    if (logo) {
+      const imagen = document.createElement('img');
+      imagen.src = logo;
+      imagen.alt = '';
+      icon.append(imagen);
+    } else icon.textContent = String(item.icon || '');
     const name = document.createElement('span');
     name.className = 'credit-name';
     name.textContent = String(item.name || '');
@@ -50,6 +60,15 @@ function buildRows(list) {
   });
 }
 
+// Bits y Kicks ya dicen su cantidad; el resto se cuenta por repeticiones.
+function textoRegalos(donante) {
+  return [...donante.regalos].map(([giftName, veces]) => {
+    const tipo = donante.tipos.get(giftName);
+    const texto = etiquetaRegalo(t, { giftName, ...tipo });
+    return tipo && tipo.kind !== 'sub' ? texto : `x${veces} ${texto}`;
+  }).join(', ');
+}
+
 function renderTrack() {
   track.innerHTML = '';
   const sections = [];
@@ -57,19 +76,19 @@ function renderTrack() {
   if (credits.donors.length) {
     sections.push({
       label: t('overlayStr.donations'),
-      items: credits.donors.map((d) => ({ icon: '🎁', name: d.nombre, badge: [...d.regalos].map(([g, n]) => `x${n} ${g}`).join(', ') })),
+      items: credits.donors.map((d) => ({ icon: '🎁', platform: d.platform, name: d.nombre, badge: textoRegalos(d) })),
     });
   }
   if (credits.followers.length) {
     sections.push({
       label: t('overlayStr.newFollowersSect'),
-      items: credits.followers.map((f) => ({ icon: '💜', name: f.nombre, badge: '' })),
+      items: credits.followers.map((f) => ({ icon: '💜', platform: f.platform, name: f.nombre, badge: '' })),
     });
   }
   if (credits.sharers.length) {
     sections.push({
       label: t('overlayStr.sharedSect'),
-      items: credits.sharers.map((s) => ({ icon: '🔗', name: s.nombre, badge: '' })),
+      items: credits.sharers.map((s) => ({ icon: '🔗', platform: s.platform, name: s.nombre, badge: '' })),
     });
   }
 
@@ -121,13 +140,13 @@ function pedirRender() {
 
 function alManejarMensaje(d) {
   if (d.type === 'gift') {
-    credits.agregarDonante({ user: d.user, giftName: d.giftName, count: d.repeatCount || 1 });
+    credits.agregarDonante({ user: d.user, giftName: d.giftName || d.kind, count: d.repeatCount || 1, platform: d.platform, kind: d.kind, amount: d.amount });
     pedirRender();
   } else if (d.type === 'follow') {
-    credits.agregarSeguidor({ user: d.user });
+    credits.agregarSeguidor({ user: d.user, platform: d.platform });
     pedirRender();
   } else if (d.type === 'share') {
-    credits.agregarSharer({ user: d.user });
+    credits.agregarSharer({ user: d.user, platform: d.platform });
     pedirRender();
   } else if (d.type === 'connected' && d.isFirst) {
     credits.vaciar();
