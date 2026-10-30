@@ -16,6 +16,7 @@ import {
 } from '../acciones-cuenta.js';
 
 const MB_MAX = { avatar: 5, banner: 10 };
+const PRECARGA_MAX_MS = 5000;
 // Nombre real que trae Google: el back todavia no lo manda en la sesion
 // (user.nombreCompleto, lo conecta el back). Hasta entonces, placeholder
 // generico i18n -- nunca un nombre real hardcodeado (le aparecia a CUALQUIER
@@ -74,9 +75,31 @@ export function pintarPerfil(cont, s) {
   });
 }
 
+// Baja la imagen nueva antes de re-pintar: mientras tanto sigue visible la
+// anterior. El tope evita colgar el flujo con mala red (ahi entra el skeleton).
+function precargarImagen(url) {
+  const img = new Image();
+  img.src = url;
+  return Promise.race([
+    img.decode().catch(() => {}),
+    new Promise((resolver) => { setTimeout(resolver, PRECARGA_MAX_MS); }),
+  ]);
+}
+
+// Skeleton hasta que la imagen llega; si ya estaba en cache no se ve nada.
+function mostrarSkeletonSiCarga(img) {
+  if (img.complete) return;
+  const btn = img.parentElement;
+  const terminar = () => btn.classList.remove('is-img-cargando');
+  btn.classList.add('is-img-cargando');
+  img.addEventListener('load', terminar, { once: true });
+  img.addEventListener('error', terminar, { once: true });
+}
+
 function enlazarImagenes(cont) {
   const input = cont.querySelector('.mc-archivo');
   let tipo;
+  cont.querySelectorAll('.mc-banner img, .mc-avatar img').forEach(mostrarSkeletonSiCarga);
   for (const btn of cont.querySelectorAll('[data-tipo]')) {
     btn.addEventListener('click', () => { tipo = btn.dataset.tipo; input.click(); });
   }
@@ -89,6 +112,8 @@ function enlazarImagenes(cont) {
     btn.disabled = true;
     showToast(t('cuentaModal.updatingStyle'));
     const r = await subirImagenDeCuenta(tipo, file);
+    const urlNueva = r.ok && r.sesion.user?.[`${tipo}Url`];
+    if (urlNueva) await precargarImagen(urlNueva);
     if (!btn.isConnected) return;
     btn.classList.remove('is-loading');
     btn.disabled = false;

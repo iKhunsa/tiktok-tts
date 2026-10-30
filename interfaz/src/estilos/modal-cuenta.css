@@ -130,6 +130,18 @@
 }
 .mc-avatar span { font-size: 3.077em; }
 .mc-banner img, .mc-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* Con foto, el fondo morado de la inicial no debe asomar mientras carga. */
+.mc-avatar:has(img) { background: var(--surface-raised); }
+.mc-banner img, .mc-avatar img { transition: opacity var(--dur-2) ease-out; }
+.mc-banner.is-img-cargando img, .mc-avatar.is-img-cargando img { opacity: 0; }
+.mc-banner.is-img-cargando, .mc-avatar.is-img-cargando {
+  background-image: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.07) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: mcSkeleton 1.2s linear infinite;
+}
+@keyframes mcSkeleton { from { background-position: 150% 0; } to { background-position: -50% 0; } }
+@media (prefers-reduced-motion: reduce) { .mc-banner.is-img-cargando, .mc-avatar.is-img-cargando { animation: none; } }
+body.reduce-motion .mc-banner.is-img-cargando, body.reduce-motion .mc-avatar.is-img-cargando { animation: none; }
 .mc-banner:hover, .mc-avatar:hover { filter: brightness(0.85); }
 .mc-banner:focus-visible, .mc-avatar:focus-visible { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
 .mc-banner.is-loading, .mc-avatar.is-loading { cursor: progress; animation: mcCargando 1s ease-in-out infinite alternate; }
