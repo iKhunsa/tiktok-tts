@@ -21,8 +21,6 @@
                       "guide":  "Hast du ein Problem? 1) Versuch, es zu reproduzieren. 2) Beschreibe uns in diesem Formular, was passiert ist. 3) Beim Absenden erhält das Team es mit dem technischen Protokoll deiner Sitzung; es enthält keine Passwörter oder sensiblen Daten.",
                       "discordNickLabel":  "Dein Discord-Nickname",
                       "discordNickPlaceholder":  "benutzer#0000",
-                      "channelLinkLabel":  "Link zu deinem Kanal (TikTok/Twitch/YouTube)",
-                      "channelLinkPlaceholder":  "https://...",
                       "descriptionLabel":  "Erzähl uns, was passiert ist",
                       "descriptionPlaceholder":  "Was hast du gemacht? Was hast du erwartet? Was ist tatsächlich passiert?",
                       "extraLabel":  "Möchtest du noch etwas hinzufügen? (optional)",
@@ -30,7 +28,7 @@
                       "submit":  "Bericht senden",
                       "sending":  "Wird gesendet...",
                       "sent":  "Bericht gesendet, danke!",
-                      "errorRequired":  "Gib deinen Discord oder deine E-Mail und deinen Kanal an und erzähl uns, was passiert ist",
+                      "errorRequired":  "Gib deinen Discord oder deine E-Mail an und erzähl uns, was passiert ist",
                       "errorSend":  "Bericht konnte nicht gesendet werden, versuch es erneut",
                       "tourDone":  "Verstanden"
                   },
@@ -38,13 +36,10 @@
                   "sidebarEntry":  "Idee vorschlagen",
                   "title":  "Schlag eine Idee für TikLiveTTS vor",
                   "subtitle":  "Hast du eine Idee zur Verbesserung der App? Beschreibe das Problem und deine Lösung. Wir priorisieren Funktionen für viele Streamer.",
-                  "hint":  "Keine technischen Details nötig: Erkläre es einfach.",
                   "problemLabel":  "Welches Problem möchtest du lösen?",
                   "problemPlaceholder":  "Erzähl uns, was heute passiert.",
                   "ideaLabel":  "Was ist deine Idee?",
                   "ideaPlaceholder":  "Erkläre, was TikLiveTTS tun soll.",
-                  "useCaseLabel":  "Wann würdest du es nutzen?",
-                  "useCasePlaceholder":  "Gib ein Beispiel.",
                   "similarLabel":  "Kennst du eine ähnliche App?",
                   "optional":  "(optional)",
                   "similarPlaceholder":  "Name oder Link",
@@ -60,6 +55,14 @@
                   "errorSend":  "Idee konnte nicht gesendet werden. Versuche es erneut.",
                   "close":  "Schließen",
                   "charCount":  "{count}/{max}",
+                  "overlayTitle":  "Welches Overlay fehlt dir?",
+                  "overlaySubtitle":  "Sag uns, welches Overlay du dir wünschst. Ein Foto, eine Zeichnung oder ein Link hilft uns, die Idee zu verstehen.",
+                  "overlayIdeaPlaceholder":  "Was es zeigt, wann es erscheint und auf welcher Plattform.",
+                  "overlayImageLabel":  "Foto, Zeichnung oder Referenz",
+                  "overlayImagePick":  "Bild hochladen",
+                  "overlayImageHint":  "PNG, JPG, GIF oder WebP, bis zu 8 MB",
+                  "overlayImageRemove":  "Bild entfernen",
+                  "overlayLinkLabel":  "Link zur Referenz",
                   "thanksTitle":  "Danke für deine Idee!",
                   "thanksText":  "Wir prüfen sie, um TikLiveTTS weiter zu verbessern."
               },
@@ -1130,6 +1133,8 @@
                    "notImplemented":  "Diese Funktion ist noch nicht verfügbar",
                    "weakPassword":  "Das Passwort ist zu kurz.",
                    "passwordMismatch":  "Die Passwörter stimmen nicht überein.",
+                   "overlayIdeaRequired":  "Beschreibe deine Idee und gib deinen Discord oder deine E-Mail an.",
+                   "overlayIdeaImage":  "Das Bild muss PNG, JPG, GIF oder WebP sein und darf höchstens 8 MB groß sein.",
                    "ideasRequired":  "Fülle die Pflichtfelder der Idee aus.",
                    "ideasRateLimited":  "Warte eine Minute vor einer weiteren Idee.",
                    "ideasUnavailable":  "Vorschläge sind vorübergehend nicht verfügbar.",
@@ -1753,8 +1758,12 @@
                      },
     "overlayCat": {
         "explorar": "Entdecken",
+        "categorias": "Kategorien",
+        "comprar": "Kaufen",
+        "comprarPor": "Für {precio} kaufen",
+        "musicaSonando": "Läuft gerade",
+        "musicaPedida": "gewünscht von {user}",
         "todas": "Alle",
-        "todos": "Alle",
         "volver": "Zurück",
         "proximamente": "Demnächst",
         "repetir": "Wiederholen",
@@ -1786,16 +1795,14 @@
                 "titulo": "Publikum",
                 "desc": "Zuschauer und Beitritte zum Stream"
             },
-            "estado": {
-                "titulo": "Stream-Status",
-                "desc": "Hinweise zum Status deines Streams"
-            },
+            "musica": {"titulo":"Musik-Bot","desc":"Der aktuelle Song und wer ihn gewünscht hat"},
             "resumen": {
                 "titulo": "Stream-Rückblick",
                 "desc": "Abspann zum Ende des Streams"
             }
         },
         "ov": {
+            "musica": {"titulo":"Musik-Bot","desc":"Zeigt in OBS den aktuellen Song und wer ihn gewünscht hat"},
             "chat-tiktok": {"titulo":"TikTok-Chat","desc":"Nur Nachrichten von TikTok"},
             "chat-twitch": {"titulo":"Twitch-Chat","desc":"Nur Nachrichten von Twitch"},
             "chat-youtube": {"titulo":"YouTube-Chat","desc":"Nur Nachrichten von YouTube"},

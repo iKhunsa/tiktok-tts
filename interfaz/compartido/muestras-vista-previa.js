@@ -22,6 +22,8 @@ export const MUESTRA_VIEWERS = 1284;
 export const MUESTRA_REGALO = { type: 'gift', giftName: 'Corona de TikTok', user: 'luna_vibes', repeatCount: 3 };
 export const MUESTRA_ALERTA_SOCIAL = { type: 'follow', platform: 'tiktok', user: 'luna_vibes' };
 
+export const MUESTRA_MUSICA = { title: 'Bohemian Rhapsody', channelName: 'Queen', requestedBy: 'luna_vibes' };
+
 export const MUESTRA_SEGUIDORES = { sesion: 37, base: 12400 };
 
 export const MUESTRA_SOCIAL = {

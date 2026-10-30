@@ -21,8 +21,6 @@
                       "guide":  "遇到问题了吗？1）请尝试复现它。2）在这份表单中告诉我们发生了什么。3）提交后，团队会收到你的报告及本次会话的技术日志；其中不包含密码或敏感信息。",
                       "discordNickLabel":  "你的 Discord 昵称",
                       "discordNickPlaceholder":  "用户#0000",
-                      "channelLinkLabel":  "你的频道链接（TikTok/Twitch/YouTube）",
-                      "channelLinkPlaceholder":  "https://...",
                       "descriptionLabel":  "告诉我们发生了什么",
                       "descriptionPlaceholder":  "你当时在做什么？你期望发生什么？实际发生了什么？",
                       "extraLabel":  "还有什么要补充的吗？（可选）",
@@ -30,7 +28,7 @@
                       "submit":  "发送报告",
                       "sending":  "发送中...",
                       "sent":  "报告已发送，谢谢！",
-                      "errorRequired":  "请填写你的 Discord 或邮箱、频道，并说明发生了什么",
+                      "errorRequired":  "请填写你的 Discord 或邮箱，并说明发生了什么",
                       "errorSend":  "报告发送失败，请重试",
                       "tourDone":  "知道了"
                   },
@@ -38,13 +36,10 @@
                   "sidebarEntry":  "建议想法",
                   "title":  "为 TikLiveTTS 提出想法",
                   "subtitle":  "想改进应用吗？告诉我们问题和你的解决方式。我们优先考虑对许多主播有用的功能。",
-                  "hint":  "无需技术细节：请尽量简单说明。",
                   "problemLabel":  "你想解决什么问题？",
                   "problemPlaceholder":  "告诉我们目前发生了什么。",
                   "ideaLabel":  "你的想法是什么？",
                   "ideaPlaceholder":  "说明你希望 TikLiveTTS 做什么。",
-                  "useCaseLabel":  "你何时会使用它？",
-                  "useCasePlaceholder":  "举一个会有帮助的例子。",
                   "similarLabel":  "你知道有类似功能的应用吗？",
                   "optional":  "（可选）",
                   "similarPlaceholder":  "名称或链接",
@@ -60,6 +55,14 @@
                   "errorSend":  "无法发送想法，请重试。",
                   "close":  "关闭",
                   "charCount":  "{count}/{max}",
+                  "overlayTitle":  "你还缺少什么叠加层？",
+                  "overlaySubtitle":  "告诉我们你想要什么叠加层。照片、草图或链接能帮助我们理解你的想法。",
+                  "overlayIdeaPlaceholder":  "它显示什么、何时出现、用于哪个平台。",
+                  "overlayImageLabel":  "照片、草图或参考",
+                  "overlayImagePick":  "上传图片",
+                  "overlayImageHint":  "PNG、JPG、GIF 或 WebP，最大 8 MB",
+                  "overlayImageRemove":  "移除图片",
+                  "overlayLinkLabel":  "参考链接",
                   "thanksTitle":  "感谢你的想法！",
                   "thanksText":  "我们会审核它，持续改进 TikLiveTTS。"
               },
@@ -1130,6 +1133,8 @@
                    "notImplemented":  "此功能暂不可用",
                    "weakPassword":  "密码太短。",
                    "passwordMismatch":  "两次输入的密码不一致。",
+                   "overlayIdeaRequired":  "请告诉我们你的想法，并留下 Discord 或邮箱。",
+                   "overlayIdeaImage":  "图片必须是 PNG、JPG、GIF 或 WebP，且不超过 8 MB。",
                    "ideasRequired":  "请完成必填想法字段。",
                    "ideasRateLimited":  "请等待一分钟再发送想法。",
                    "ideasUnavailable":  "建议暂时不可用。",
@@ -1753,8 +1758,12 @@
                      },
     "overlayCat": {
         "explorar": "浏览",
+        "categorias": "分类",
+        "comprar": "购买",
+        "comprarPor": "以 {precio} 购买",
+        "musicaSonando": "正在播放",
+        "musicaPedida": "点歌人：{user}",
         "todas": "全部",
-        "todos": "全部",
         "volver": "返回",
         "proximamente": "即将推出",
         "repetir": "重播",
@@ -1786,16 +1795,14 @@
                 "titulo": "观众",
                 "desc": "观众人数和进入直播间"
             },
-            "estado": {
-                "titulo": "直播状态",
-                "desc": "有关直播状态的提示"
-            },
+            "musica": {"titulo":"音乐机器人","desc":"正在播放的歌曲和点歌人"},
             "resumen": {
                 "titulo": "直播回顾",
                 "desc": "直播结束时的鸣谢名单"
             }
         },
         "ov": {
+            "musica": {"titulo":"音乐机器人","desc":"在 OBS 中显示正在播放的歌曲和点歌人"},
             "chat-tiktok": {"titulo":"TikTok 聊天","desc":"仅显示 TikTok 的消息"},
             "chat-twitch": {"titulo":"Twitch 聊天","desc":"仅显示 Twitch 的消息"},
             "chat-youtube": {"titulo":"YouTube 聊天","desc":"仅显示 YouTube 的消息"},

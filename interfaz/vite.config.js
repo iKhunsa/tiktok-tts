@@ -29,6 +29,7 @@ export default defineConfig({
         'overlay-social': entry('overlay-social.html'),
         'overlay-evento': entry('overlay-evento.html'),
         'overlay-contador-likes': entry('overlay-contador-likes.html'),
+        'overlay-musica': entry('overlay-musica.html'),
       },
     },
   },

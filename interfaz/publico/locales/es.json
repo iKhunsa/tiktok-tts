@@ -68,13 +68,10 @@
                   "sidebarEntry":  "Sugerir una idea",
                   "title":  "Sugerí una idea para TikLiveTTS",
                   "subtitle":  "¿Tenés una idea para mejorar la app? Contanos el problema y cómo te gustaría resolverlo. Priorizamos funciones útiles para muchos streamers.",
-                  "hint":  "No hace falta explicar detalles técnicos: contalo de la forma más simple posible.",
                   "problemLabel":  "¿Qué problema querés resolver?",
                   "problemPlaceholder":  "Contanos qué te pasa hoy.",
                   "ideaLabel":  "¿Cuál es tu idea?",
                   "ideaPlaceholder":  "Explicanos qué te gustaría que hiciera TikLiveTTS.",
-                  "useCaseLabel":  "¿Cuándo la usarías?",
-                  "useCasePlaceholder":  "Danos un ejemplo de cuándo te serviría.",
                   "similarLabel":  "¿Conocés una app con algo parecido?",
                   "optional":  "(opcional)",
                   "similarPlaceholder":  "Nombre o enlace",
@@ -90,6 +87,14 @@
                   "errorSend":  "No se pudo enviar la idea. Probá de nuevo.",
                   "close":  "Cerrar",
                   "charCount":  "{count}/{max}",
+                  "overlayTitle":  "¿Qué overlay te falta?",
+                  "overlaySubtitle":  "Contanos qué overlay te gustaría tener. Una foto, un dibujo o un link nos ayuda a entender la idea.",
+                  "overlayIdeaPlaceholder":  "Qué muestra, cuándo aparece y en qué plataforma.",
+                  "overlayImageLabel":  "Foto, dibujo o referencia",
+                  "overlayImagePick":  "Subir imagen",
+                  "overlayImageHint":  "PNG, JPG, GIF o WebP, hasta 8 MB",
+                  "overlayImageRemove":  "Quitar imagen",
+                  "overlayLinkLabel":  "Link de la referencia",
                   "thanksTitle":  "¡Gracias por tu idea!",
                   "thanksText":  "La revisaremos para seguir mejorando TikLiveTTS."
               },
@@ -98,8 +103,6 @@
                       "guide":  "¿Tenés un problema? 1) Intentá reproducirlo. 2) Contanos qué pasó en este formulario. 3) Al enviarlo, le llega al equipo junto con el registro técnico de tu sesión; no incluye contraseñas ni datos sensibles.",
                       "discordNickLabel":  "Tu nick de Discord",
                       "discordNickPlaceholder":  "usuario#0000",
-                      "channelLinkLabel":  "Link de tu canal (TikTok/Twitch/YouTube)",
-                      "channelLinkPlaceholder":  "https://...",
                       "descriptionLabel":  "Contanos qué pasó",
                       "descriptionPlaceholder":  "¿Qué estabas haciendo? ¿Qué esperabas que pasara? ¿Qué pasó en realidad?",
                       "extraLabel":  "¿Algo más que quieras agregar? (opcional)",
@@ -107,7 +110,7 @@
                       "submit":  "Enviar reporte",
                       "sending":  "Enviando...",
                       "sent":  "Reporte enviado, ¡gracias!",
-                      "errorRequired":  "Completá tu Discord o tu email, tu canal y contanos qué pasó",
+                      "errorRequired":  "Completá tu Discord o tu email y contanos qué pasó",
                       "errorSend":  "No se pudo enviar el reporte, intentá de nuevo",
                       "tourDone":  "Entendido"
                   },
@@ -1150,6 +1153,8 @@
                    "notImplemented":  "Esta función todavía no está disponible",
                    "weakPassword":  "La contraseña es demasiado corta.",
                    "passwordMismatch":  "Las contraseñas no coinciden.",
+                   "overlayIdeaRequired":  "Contanos tu idea y dejanos tu Discord o tu email.",
+                   "overlayIdeaImage":  "La imagen debe ser PNG, JPG, GIF o WebP y pesar hasta 8 MB.",
                    "ideasRequired":  "Completá los campos obligatorios de la idea.",
                    "ideasRateLimited":  "Esperá un minuto antes de enviar otra idea.",
                    "ideasUnavailable":  "Las sugerencias no están disponibles temporalmente.",
@@ -1753,8 +1758,12 @@
                      },
     "overlayCat": {
         "explorar": "Explorar",
+        "categorias": "Categorías",
+        "comprar": "Comprar",
+        "comprarPor": "Comprar por {precio}",
+        "musicaSonando": "Sonando ahora",
+        "musicaPedida": "pedida por {user}",
         "todas": "Todas",
-        "todos": "Todos",
         "volver": "Volver",
         "proximamente": "Próximamente",
         "repetir": "Repetir",
@@ -1786,16 +1795,14 @@
                 "titulo": "Audiencia",
                 "desc": "Espectadores y entradas al directo"
             },
-            "estado": {
-                "titulo": "Estado del directo",
-                "desc": "Avisos sobre el estado de tu directo"
-            },
+            "musica": {"titulo":"Bot de Música","desc":"La canción que suena y quién la pidió"},
             "resumen": {
                 "titulo": "Resumen del stream",
                 "desc": "Créditos para cerrar el directo"
             }
         },
         "ov": {
+            "musica": {"titulo":"Bot de Música","desc":"Muestra en OBS la canción que suena y quién la pidió"},
             "chat-tiktok": {"titulo":"Chat de TikTok","desc":"Solo los mensajes de TikTok"},
             "chat-twitch": {"titulo":"Chat de Twitch","desc":"Solo los mensajes de Twitch"},
             "chat-youtube": {"titulo":"Chat de YouTube","desc":"Solo los mensajes de YouTube"},

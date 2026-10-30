@@ -8,12 +8,12 @@ const raiz = resolve(__dirname, '..');
 const importar = (ruta) => import(pathToFileURL(resolve(raiz, ruta)).href);
 const hojas = (objeto) => Object.values(objeto).flatMap((v) => (typeof v === 'object' ? hojas(v) : [v]));
 
-test('los 24 overlays estan en una sola categoria, con esquema y plataformas', async () => {
+test('los 25 overlays estan en una sola categoria, con esquema y plataformas', async () => {
   const { CATEGORIAS, PLATAFORMAS_OVERLAY } = await importar('interfaz/src/vistas/principal/overlays-catalogo/catalogo.js');
   const { ESQUEMAS } = await importar('interfaz/compartido/estilo/esquemas.js');
   const ids = CATEGORIAS.flatMap((categoria) => categoria.overlays);
-  assert.equal(ids.length, 24);
-  assert.equal(new Set(ids).size, 24, 'un overlay repetido en dos categorias');
+  assert.equal(ids.length, 25);
+  assert.equal(new Set(ids).size, 25, 'un overlay repetido en dos categorias');
   for (const id of ids) {
     assert.ok(ESQUEMAS[id], `${id} sin esquema`);
     assert.ok(PLATAFORMAS_OVERLAY[id].length, `${id} sin plataformas`);

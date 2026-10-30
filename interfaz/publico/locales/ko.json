@@ -21,8 +21,6 @@
                       "guide":  "문제가 있나요? 1) 재현해 보세요. 2) 이 양식에 무슨 일이 있었는지 알려주세요. 3) 제출하면 팀이 세션의 기술 로그와 함께 받습니다. 비밀번호나 민감한 정보는 포함되지 않습니다.",
                       "discordNickLabel":  "Discord 닉네임",
                       "discordNickPlaceholder":  "사용자#0000",
-                      "channelLinkLabel":  "채널 링크 (TikTok/Twitch/YouTube)",
-                      "channelLinkPlaceholder":  "https://...",
                       "descriptionLabel":  "무슨 일이 있었는지 알려주세요",
                       "descriptionPlaceholder":  "무엇을 하고 있었나요? 무엇을 기대했나요? 실제로 무슨 일이 일어났나요?",
                       "extraLabel":  "추가로 하고 싶은 말이 있나요? (선택)",
@@ -30,7 +28,7 @@
                       "submit":  "신고 보내기",
                       "sending":  "전송 중...",
                       "sent":  "신고가 전송되었습니다, 감사합니다!",
-                      "errorRequired":  "Discord 또는 이메일, 채널을 입력하고 무슨 일이 있었는지 알려주세요",
+                      "errorRequired":  "Discord 또는 이메일을 입력하고 무슨 일이 있었는지 알려주세요",
                       "errorSend":  "신고를 보낼 수 없습니다, 다시 시도해주세요",
                       "tourDone":  "확인했어요"
                   },
@@ -38,13 +36,10 @@
                   "sidebarEntry":  "아이디어 제안",
                   "title":  "TikLiveTTS에 아이디어 제안",
                   "subtitle":  "앱을 개선할 아이디어가 있나요? 문제와 해결 방법을 알려주세요. 많은 스트리머에게 유용한 기능을 우선합니다.",
-                  "hint":  "기술적인 세부 사항은 필요 없습니다. 간단히 설명해 주세요.",
                   "problemLabel":  "어떤 문제를 해결하고 싶나요?",
                   "problemPlaceholder":  "현재 어떤 일이 일어나는지 알려주세요.",
                   "ideaLabel":  "아이디어가 무엇인가요?",
                   "ideaPlaceholder":  "TikLiveTTS가 무엇을 하면 좋을지 설명해 주세요.",
-                  "useCaseLabel":  "언제 사용하시겠어요?",
-                  "useCasePlaceholder":  "도움이 될 상황의 예를 알려주세요.",
                   "similarLabel":  "비슷한 기능이 있는 앱을 아시나요?",
                   "optional":  "(선택 사항)",
                   "similarPlaceholder":  "이름 또는 링크",
@@ -60,6 +55,14 @@
                   "errorSend":  "아이디어를 보낼 수 없습니다. 다시 시도해 주세요.",
                   "close":  "닫기",
                   "charCount":  "{count}/{max}",
+                  "overlayTitle":  "어떤 오버레이가 필요하신가요?",
+                  "overlaySubtitle":  "원하는 오버레이를 알려주세요. 사진, 그림, 링크가 있으면 아이디어를 이해하는 데 도움이 됩니다.",
+                  "overlayIdeaPlaceholder":  "무엇을 보여주고, 언제 나타나며, 어떤 플랫폼용인지 알려주세요.",
+                  "overlayImageLabel":  "사진, 그림 또는 참고 자료",
+                  "overlayImagePick":  "이미지 업로드",
+                  "overlayImageHint":  "PNG, JPG, GIF 또는 WebP, 최대 8 MB",
+                  "overlayImageRemove":  "이미지 제거",
+                  "overlayLinkLabel":  "참고 링크",
                   "thanksTitle":  "아이디어를 보내 주셔서 감사합니다!",
                   "thanksText":  "TikLiveTTS를 계속 개선할 수 있도록 검토하겠습니다."
               },
@@ -1130,6 +1133,8 @@
                    "notImplemented":  "이 기능은 아직 사용할 수 없습니다",
                    "weakPassword":  "비밀번호가 너무 짧습니다.",
                    "passwordMismatch":  "비밀번호가 일치하지 않습니다.",
+                   "overlayIdeaRequired":  "아이디어를 알려주시고 Discord 또는 이메일을 남겨주세요.",
+                   "overlayIdeaImage":  "이미지는 PNG, JPG, GIF 또는 WebP이고 8 MB 이하여야 합니다.",
                    "ideasRequired":  "필수 아이디어 항목을 작성해 주세요.",
                    "ideasRateLimited":  "다른 아이디어를 보내기 전에 1분 기다려 주세요.",
                    "ideasUnavailable":  "제안 기능을 일시적으로 사용할 수 없습니다.",
@@ -1753,8 +1758,12 @@
                      },
     "overlayCat": {
         "explorar": "둘러보기",
+        "categorias": "카테고리",
+        "comprar": "구매",
+        "comprarPor": "{precio}에 구매",
+        "musicaSonando": "지금 재생 중",
+        "musicaPedida": "신청자: {user}",
         "todas": "전체",
-        "todos": "전체",
         "volver": "뒤로",
         "proximamente": "출시 예정",
         "repetir": "다시 재생",
@@ -1786,16 +1795,14 @@
                 "titulo": "시청자",
                 "desc": "시청자 수와 방송 입장"
             },
-            "estado": {
-                "titulo": "방송 상태",
-                "desc": "방송 상태 안내"
-            },
+            "musica": {"titulo":"음악 봇","desc":"재생 중인 곡과 신청자"},
             "resumen": {
                 "titulo": "방송 요약",
                 "desc": "방송을 마무리하는 크레딧"
             }
         },
         "ov": {
+            "musica": {"titulo":"음악 봇","desc":"재생 중인 곡과 신청자를 OBS에 표시"},
             "chat-tiktok": {"titulo":"TikTok 채팅","desc":"TikTok 메시지만 표시"},
             "chat-twitch": {"titulo":"Twitch 채팅","desc":"Twitch 메시지만 표시"},
             "chat-youtube": {"titulo":"YouTube 채팅","desc":"YouTube 메시지만 표시"},

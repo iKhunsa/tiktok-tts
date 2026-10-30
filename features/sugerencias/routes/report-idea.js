@@ -19,14 +19,14 @@ function truncateEmbed(value, max = MAX_EMBED_VALUE) {
 function validateIdea(body) {
   const idea = {
     problema: trimText(body?.problema), idea: trimText(body?.idea),
-    casoUso: trimText(body?.casoUso), appSimilar: trimText(body?.appSimilar),
+    appSimilar: trimText(body?.appSimilar),
     discord: trimText(body?.discord, 40), email: trimText(body?.email, 254),
   };
-  if (!idea.problema || !idea.idea || !idea.casoUso) return { errorKey: 'errors.ideasRequired' };
+  if (!idea.problema || !idea.idea) return { errorKey: 'errors.ideasRequired' };
   return { value: idea };
 }
 function buildEmbed(idea, { appVersion = 'unknown', language = 'es' } = {}) {
-  const fields = [['Problema', idea.problema], ['Idea', idea.idea], ['Caso de uso', idea.casoUso]];
+  const fields = [['Problema', idea.problema], ['Idea', idea.idea]];
   if (idea.appSimilar) fields.push(['App similar', idea.appSimilar]);
   if (idea.discord) fields.push(['Discord', idea.discord]);
   if (idea.email) fields.push(['Email', idea.email]);
@@ -67,6 +67,7 @@ function reportIdea(logger, bus, deps = {}) {
     }
   };
 }
+function markSent(time) { sentAt.push(time); }
 function resetRateLimit() { sentAt = []; }
 
-module.exports = { buildEmbed, buildThreadName, reportIdea, resetRateLimit, truncateEmbed, validateIdea };
+module.exports = { buildEmbed, buildThreadName, isRateLimited, markSent, reportIdea, resetRateLimit, trimText, truncateEmbed, validateIdea };

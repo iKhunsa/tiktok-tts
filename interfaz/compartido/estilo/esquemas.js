@@ -55,6 +55,7 @@ export const ESQUEMAS = {
   ],
   'alertas-social': [colorAcento, opacidadFondo(0.9)],
   'contador-likes': [colorAcento, opacidadFondo(0.8)],
+  musica: [colorAcento, opacidadFondo(0.9)],
   ...Object.fromEntries(Object.keys(CHATS_POR_PLATAFORMA).map((id) => [id, camposChatFijo()])),
   ...Object.fromEntries(Object.entries(EVENTOS_ALERTA).map(([id, alerta]) => [id, esquemaAlerta(alerta)])),
 };

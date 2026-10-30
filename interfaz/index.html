@@ -304,21 +304,29 @@
     <!-- ── VIEW: Overlays ──────────────────────────────── -->
     <div class="view" id="view-overlays">
       <div class="view-header">
-        <h2><img class="icon-inline" src="icons/tv.svg" alt=""> <span data-i18n="view.overlays.title">Overlays para OBS</span></h2>
+        <div class="ovl-titulo">
+          <h2><img class="icon-inline" src="icons/tv.svg" alt=""> <span data-i18n="view.overlays.title">Overlays para OBS</span></h2>
+          <button class="cfg-btn" id="btnOverlaysTour" onclick="startOverlaysTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
+        </div>
         <p data-i18n="view.overlays.desc">Elige un overlay, ajústalo a tu gusto y copia su URL. En OBS, pégala en una fuente de navegador con el fondo transparente activado.</p>
       </div>
       <div class="ovl-controles">
         <div class="ovl-pestanas">
-          <button class="ovl-pestana" type="button" data-ovl-modo="explorar" data-i18n="overlayCat.explorar"></button>
-          <button class="ovl-pestana" type="button" data-ovl-modo="todos" data-i18n="overlayCat.todos"></button>
+          <button class="ovl-pestana" type="button" data-ovl-modo="explorar" data-i18n="overlayCat.categorias"></button>
+          <button class="ovl-pestana" type="button" data-ovl-modo="tienda" data-i18n="overlayCat.explorar"></button>
         </div>
-        <button class="cfg-btn" id="btnOverlaysTour" onclick="startOverlaysTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
       </div>
 
       <div id="ovlExplorar">
         <div class="ovl-destacado" id="ovlDestacado"></div>
         <div class="ovl-categorias" id="ovlCategorias"></div>
-        <p class="ovl-pie"><span data-i18n="overlayCat.pregunta"></span> <button type="button" onclick="openIdeaModal()" data-i18n="overlayCat.preguntaCta"></button></p>
+        <p class="ovl-pie"><span data-i18n="overlayCat.pregunta"></span> <button type="button" onclick="openIdeaModal('overlay')" data-i18n="overlayCat.preguntaCta"></button></p>
+      </div>
+
+      <div id="ovlTienda" hidden>
+        <div class="ovl-destacado" id="ovlTiendaDestacado"></div>
+        <div class="ovl-productos" id="ovlTiendaProductos"></div>
+        <p class="ovl-pie"><span data-i18n="overlayCat.pregunta"></span> <button type="button" onclick="openIdeaModal('overlay')" data-i18n="overlayCat.preguntaCta"></button></p>
       </div>
 
       <div id="ovlLista" hidden>
@@ -1441,11 +1449,6 @@
       </div>
 
       <div class="cfg-field">
-        <label data-i18n="bugReport.channelLinkLabel">Link de tu canal (TikTok/Twitch/YouTube)</label>
-        <input type="text" id="bugReportChannelLink" data-i18n-placeholder="bugReport.channelLinkPlaceholder" placeholder="https://..." />
-      </div>
-
-      <div class="cfg-field">
         <label data-i18n="bugReport.descriptionLabel">Contanos qué pasó</label>
         <textarea id="bugReportDescription" rows="5" data-i18n-placeholder="bugReport.descriptionPlaceholder" placeholder="¿Qué estabas haciendo? ¿Qué esperabas que pasara? ¿Qué pasó en realidad?"></textarea>
       </div>
@@ -1466,13 +1469,11 @@
 <div id="ideaModal" class="modal-overlay" onclick="closeIdeaModal(event)" role="dialog" aria-modal="true" aria-labelledby="ideaModalTitle">
   <div class="modal-content idea-modal-content" onclick="event.stopPropagation()">
     <button class="modal-close" onclick="closeIdeaModal()" data-i18n-aria-label="ideas.close" aria-label="Cerrar"><img class="icon-inline" src="icons/close.svg" alt=""></button>
-    <h2 id="ideaModalTitle"><img class="icon-inline" src="icons/lightbulb.svg" alt=""> <span data-i18n="ideas.title">Sugerí una idea para TikLiveTTS</span></h2>
-    <p class="bugreport-guide" data-i18n="ideas.subtitle">¿Tenés una idea para mejorar la app? Contanos el problema y cómo te gustaría resolverlo. Priorizamos funciones útiles para muchos streamers.</p>
-    <p style="font-size:12px;color:var(--text-muted);margin:-10px 0 18px;" data-i18n="ideas.hint">No hace falta explicar detalles técnicos: contalo de la forma más simple posible.</p>
+    <h2 id="ideaModalTitle"><img class="icon-inline" src="icons/lightbulb.svg" alt=""> <span id="ideaModalTitleText" data-i18n="ideas.title">Sugerí una idea para TikLiveTTS</span></h2>
+    <p class="bugreport-guide" id="ideaModalSubtitle" data-i18n="ideas.subtitle">¿Tenés una idea para mejorar la app? Contanos el problema y cómo te gustaría resolverlo. Priorizamos funciones útiles para muchos streamers.</p>
     <form id="ideaForm" class="bugreport-fields" onsubmit="submitIdea(event)">
       <div class="cfg-field"><label for="ideaProblem"><span data-i18n="ideas.problemLabel">¿Qué problema querés resolver?</span><span class="idea-required" aria-hidden="true">*</span></label><textarea id="ideaProblem" rows="3" maxlength="2000" required data-i18n-placeholder="ideas.problemPlaceholder" placeholder="Contanos qué te pasa hoy."></textarea><span class="idea-char-count" data-counter-for="ideaProblem"></span></div>
       <div class="cfg-field"><label for="ideaDescription"><span data-i18n="ideas.ideaLabel">¿Cuál es tu idea?</span><span class="idea-required" aria-hidden="true">*</span></label><textarea id="ideaDescription" rows="3" maxlength="2000" required data-i18n-placeholder="ideas.ideaPlaceholder" placeholder="Explicanos qué te gustaría que hiciera TikLiveTTS."></textarea><span class="idea-char-count" data-counter-for="ideaDescription"></span></div>
-      <div class="cfg-field"><label for="ideaUseCase"><span data-i18n="ideas.useCaseLabel">¿Cuándo la usarías?</span><span class="idea-required" aria-hidden="true">*</span></label><textarea id="ideaUseCase" rows="2" maxlength="2000" required data-i18n-placeholder="ideas.useCasePlaceholder" placeholder="Danos un ejemplo de cuándo te serviría."></textarea></div>
       <div class="cfg-field"><label for="ideaSimilarApp" data-i18n="ideas.similarLabel">¿Conocés una app con algo parecido? <span data-i18n="ideas.optional">(opcional)</span></label><input id="ideaSimilarApp" type="text" maxlength="2000" data-i18n-placeholder="ideas.similarPlaceholder" placeholder="Nombre o enlace"></div>
       <div class="idea-contacto">
         <div class="cfg-field"><label for="ideaDiscord"><span data-i18n="ideas.discordLabel">Tu usuario de Discord</span></label><input id="ideaDiscord" type="text" maxlength="40" autocomplete="off" data-i18n-placeholder="ideas.discordPlaceholder" placeholder="usuario"></div>
@@ -1481,6 +1482,30 @@
       <p class="idea-respuesta" data-i18n="ideas.replyNote">Te responderemos por email, o por Discord si estás en nuestro servidor.</p>
       <a class="discord-cta idea-discord-cta" href="https://discord.com/invite/mwY859tcQK" target="_blank" rel="noopener"><img class="icon-inline" src="icons/discord.svg" alt=""> <span data-i18n="discordInvite.cta">Unirme al Discord</span></a>
       <div style="margin-top:4px;"><button class="btn btn-connect" id="ideaSubmitBtn" type="submit" data-i18n="ideas.submit">Enviar idea</button></div>
+    </form>
+    <form id="overlayIdeaForm" class="bugreport-fields" onsubmit="submitOverlayIdea(event)" hidden>
+      <div class="cfg-field"><label for="overlayIdeaText"><span data-i18n="ideas.ideaLabel">¿Cuál es tu idea?</span><span class="idea-required" aria-hidden="true">*</span></label><textarea id="overlayIdeaText" rows="3" maxlength="2000" required data-i18n-placeholder="ideas.overlayIdeaPlaceholder"></textarea><span class="idea-char-count" data-counter-for="overlayIdeaText"></span></div>
+      <div class="cfg-field">
+        <label for="overlayIdeaImage"><span data-i18n="ideas.overlayImageLabel"></span> <span data-i18n="ideas.optional">(opcional)</span></label>
+        <div class="idea-archivo" id="overlayIdeaDrop">
+          <input id="overlayIdeaImage" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
+          <img class="icon-inline" src="icons/add_photo_alternate.svg" alt="">
+          <span data-i18n="ideas.overlayImagePick"></span>
+          <small data-i18n="ideas.overlayImageHint"></small>
+        </div>
+        <div class="idea-archivo-vista" id="overlayIdeaPreview" hidden>
+          <img alt="">
+          <button type="button" onclick="quitarImagenOverlay()" data-i18n="ideas.overlayImageRemove"></button>
+        </div>
+      </div>
+      <div class="cfg-field"><label for="overlayIdeaLink"><span data-i18n="ideas.overlayLinkLabel"></span> <span data-i18n="ideas.optional">(opcional)</span></label><input id="overlayIdeaLink" type="text" maxlength="500" placeholder="https://..."></div>
+      <div class="idea-contacto">
+        <div class="cfg-field"><label for="overlayIdeaDiscord"><span data-i18n="ideas.discordLabel">Tu usuario de Discord</span></label><input id="overlayIdeaDiscord" type="text" maxlength="40" autocomplete="off" data-i18n-placeholder="ideas.discordPlaceholder"></div>
+        <div class="cfg-field"><label for="overlayIdeaEmail"><span data-i18n="ideas.emailLabel">Tu email</span></label><input id="overlayIdeaEmail" type="email" maxlength="254" autocomplete="email" data-i18n-placeholder="ideas.emailPlaceholder"></div>
+      </div>
+      <p class="idea-respuesta" data-i18n="ideas.replyNote">Te responderemos por email, o por Discord si estás en nuestro servidor.</p>
+      <a class="discord-cta idea-discord-cta" href="https://discord.com/invite/mwY859tcQK" target="_blank" rel="noopener"><img class="icon-inline" src="icons/discord.svg" alt=""> <span data-i18n="discordInvite.cta">Unirme al Discord</span></a>
+      <div style="margin-top:4px;"><button class="btn btn-connect" id="overlayIdeaSubmitBtn" type="submit" data-i18n="ideas.submit">Enviar idea</button></div>
     </form>
     <div id="ideaThanks" class="idea-thanks" hidden aria-live="polite"><img class="icon-inline" src="icons/check_circle.svg" alt=""><h3 data-i18n="ideas.thanksTitle">¡Gracias por tu idea!</h3><p data-i18n="ideas.thanksText">La revisaremos para seguir mejorando TikLiveTTS.</p></div>
   </div>

@@ -21,8 +21,6 @@
                       "guide":  "Есть проблема? 1) Попробуйте воспроизвести её. 2) Расскажите в этой форме, что произошло. 3) После отправки команда получит её вместе с техническим журналом вашей сессии; в нём нет паролей или конфиденциальных данных.",
                       "discordNickLabel":  "Ваш никнейм в Discord",
                       "discordNickPlaceholder":  "пользователь#0000",
-                      "channelLinkLabel":  "Ссылка на ваш канал (TikTok/Twitch/YouTube)",
-                      "channelLinkPlaceholder":  "https://...",
                       "descriptionLabel":  "Расскажите, что произошло",
                       "descriptionPlaceholder":  "Что вы делали? Что вы ожидали? Что произошло на самом деле?",
                       "extraLabel":  "Хотите добавить что-то ещё? (необязательно)",
@@ -30,7 +28,7 @@
                       "submit":  "Отправить отчёт",
                       "sending":  "Отправка...",
                       "sent":  "Отчёт отправлен, спасибо!",
-                      "errorRequired":  "Укажи Discord или email, свой канал и расскажи, что произошло",
+                      "errorRequired":  "Укажи Discord или email и расскажи, что произошло",
                       "errorSend":  "Не удалось отправить отчёт, попробуйте снова",
                       "tourDone":  "Понятно"
                   },
@@ -38,13 +36,10 @@
                   "sidebarEntry":  "Предложить идею",
                   "title":  "Предложите идею для TikLiveTTS",
                   "subtitle":  "Есть идея улучшить приложение? Расскажите о проблеме и вашем решении. Мы отдаем приоритет функциям, полезным многим стримерам.",
-                  "hint":  "Технические детали не нужны: объясните как можно проще.",
                   "problemLabel":  "Какую проблему вы хотите решить?",
                   "problemPlaceholder":  "Расскажите, что происходит сейчас.",
                   "ideaLabel":  "В чем ваша идея?",
                   "ideaPlaceholder":  "Объясните, что должен делать TikLiveTTS.",
-                  "useCaseLabel":  "Когда вы бы это использовали?",
-                  "useCasePlaceholder":  "Приведите пример полезной ситуации.",
                   "similarLabel":  "Знаете приложение с чем-то похожим?",
                   "optional":  "(необязательно)",
                   "similarPlaceholder":  "Название или ссылка",
@@ -60,6 +55,14 @@
                   "errorSend":  "Не удалось отправить идею. Повторите попытку.",
                   "close":  "Закрыть",
                   "charCount":  "{count}/{max}",
+                  "overlayTitle":  "Какого оверлея вам не хватает?",
+                  "overlaySubtitle":  "Расскажите, какой оверлей вы хотели бы. Фото, рисунок или ссылка помогут нам понять идею.",
+                  "overlayIdeaPlaceholder":  "Что он показывает, когда появляется и на какой платформе.",
+                  "overlayImageLabel":  "Фото, рисунок или референс",
+                  "overlayImagePick":  "Загрузить изображение",
+                  "overlayImageHint":  "PNG, JPG, GIF или WebP, до 8 МБ",
+                  "overlayImageRemove":  "Убрать изображение",
+                  "overlayLinkLabel":  "Ссылка на референс",
                   "thanksTitle":  "Спасибо за вашу идею!",
                   "thanksText":  "Мы рассмотрим её, чтобы продолжать улучшать TikLiveTTS。"
               },
@@ -1130,6 +1133,8 @@
                    "notImplemented":  "Эта функция пока недоступна",
                    "weakPassword":  "Пароль слишком короткий.",
                    "passwordMismatch":  "Пароли не совпадают.",
+                   "overlayIdeaRequired":  "Опишите идею и оставьте Discord или email.",
+                   "overlayIdeaImage":  "Изображение должно быть в формате PNG, JPG, GIF или WebP и весить до 8 МБ.",
                    "ideasRequired":  "Заполните обязательные поля идеи.",
                    "ideasRateLimited":  "Подождите минуту перед следующей идеей.",
                    "ideasUnavailable":  "Предложения временно недоступны.",
@@ -1753,8 +1758,12 @@
                      },
     "overlayCat": {
         "explorar": "Обзор",
+        "categorias": "Категории",
+        "comprar": "Купить",
+        "comprarPor": "Купить за {precio}",
+        "musicaSonando": "Сейчас играет",
+        "musicaPedida": "заказал(а) {user}",
         "todas": "Все",
-        "todos": "Все",
         "volver": "Назад",
         "proximamente": "Скоро",
         "repetir": "Повторить",
@@ -1786,16 +1795,14 @@
                 "titulo": "Аудитория",
                 "desc": "Зрители и входы в эфир"
             },
-            "estado": {
-                "titulo": "Статус эфира",
-                "desc": "Уведомления о статусе эфира"
-            },
+            "musica": {"titulo":"Музыкальный бот","desc":"Текущий трек и кто его заказал"},
             "resumen": {
                 "titulo": "Итоги стрима",
                 "desc": "Титры в конце эфира"
             }
         },
         "ov": {
+            "musica": {"titulo":"Музыкальный бот","desc":"Показывает в OBS текущий трек и кто его заказал"},
             "chat-tiktok": {"titulo":"Чат TikTok","desc":"Только сообщения из TikTok"},
             "chat-twitch": {"titulo":"Чат Twitch","desc":"Только сообщения из Twitch"},
             "chat-youtube": {"titulo":"Чат YouTube","desc":"Только сообщения из YouTube"},

@@ -231,19 +231,19 @@ body.reduce-motion .mc-banner.is-loading, body.reduce-motion .mc-avatar.is-loadi
 /* ── Vincular cuentas ─────────────────────────────────── */
 .mc-cabecera { display: flex; align-items: center; gap: 1.231em; margin-bottom: 3.077em; }
 .mc-titulo.mc-titulo-grande { margin: 0 1.846em 0 0; font-size: 1.692em; font-weight: 400; white-space: nowrap; }
-.mc-tabs { display: flex; gap: 0.308em; }
+.mc-tabs { display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; background: var(--surface); }
 .mc-tab {
-  padding: 0.462em 1em;
+  padding: 0.462em 1.077em;
   border: 0;
-  border-radius: 0.462em;
-  background: none;
+  border-radius: 999px;
+  background: transparent;
   color: var(--text-muted);
   font: inherit;
-  font-size: 1.077em;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color var(--dur-2) ease-out, color var(--dur-2) ease-out;
+  transition: background-color var(--dur-1) ease-out, color var(--dur-1) ease-out;
 }
-.mc-tab:hover { color: var(--text-secondary); }
+.mc-tab:hover { color: var(--text); }
 .mc-tab.is-active { background: var(--surface-raised); color: var(--text); }
 .mc-tab:focus-visible { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
 

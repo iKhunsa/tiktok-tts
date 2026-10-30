@@ -72,7 +72,7 @@ import {
   closeOnboardingWelcome, closeOnboardingComplete, startOnboardingTour,
   iniciarModalesYAvisos, arrancarAvisosOnboarding,
 } from './modales-avisos.js';
-import { closeIdeaModal, openIdeaModal, submitIdea } from './ideas/modal.js';
+import { closeIdeaModal, openIdeaModal, quitarImagenOverlay, submitIdea, submitOverlayIdea } from './ideas/modal.js';
 import { loadMobileURL, copyMobileURL, refreshMobileQR, showMobileQRPlaceholder } from './mobile-remote.js';
 import {
   markClip, clearAllClips, startStreamManual, stopStream, connectOBSFromUI,
@@ -138,7 +138,7 @@ Object.assign(window, {
   // modales y avisos
   openDonationsModal, closeDonationsModal, openDiscordModal, closeDiscordModal,
   openBugReportModal, closeBugReportModal, submitBugReport, openDictLangModal,
-  openIdeaModal, closeIdeaModal, submitIdea,
+  openIdeaModal, closeIdeaModal, submitIdea, submitOverlayIdea, quitarImagenOverlay,
   closeDictLangModal,
   closeOnboardingWelcome, closeOnboardingComplete, startOnboardingTour,
   // movil remoto

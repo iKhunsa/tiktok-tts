@@ -1,9 +1,10 @@
 import { aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
-import { CATEGORIAS, NOMBRES_PLATAFORMA, OVERLAYS_GENERADOS, PLATAFORMAS_OVERLAY, categoriaDe } from './catalogo.js';
+import { CATEGORIAS, NOMBRES_PLATAFORMA, OVERLAYS_GENERADOS, PLATAFORMAS_OVERLAY, categoriaDe, logoMonocromo } from './catalogo.js';
 import { crearTarjetaOverlay } from './crear-tarjeta.js';
 import { iniciarDestacados } from './destacado.js';
+import { iniciarTienda } from './tienda.js';
 
-const MODO = { EXPLORAR: 'explorar', TODOS: 'todos', CATEGORIA: 'categoria' };
+const MODO = { EXPLORAR: 'explorar', TODOS: 'todos', CATEGORIA: 'categoria', TIENDA: 'tienda' };
 const SIN_FILTRO = 'todas';
 const tarjetas = new Map(); // id de overlay -> .cfg-card
 let modo = MODO.EXPLORAR;
@@ -25,8 +26,10 @@ function pintarFiltro(disponibles) {
 
 function pintar() {
   const explorando = modo === MODO.EXPLORAR;
+  const enTienda = modo === MODO.TIENDA;
   $('ovlExplorar').hidden = !explorando;
-  $('ovlLista').hidden = explorando;
+  $('ovlTienda').hidden = !enTienda;
+  $('ovlLista').hidden = explorando || enTienda;
   $('ovlDetalle').hidden = modo !== MODO.CATEGORIA;
 
   const enVista = [...tarjetas.keys()].filter((id) => modo === MODO.TODOS || categoriaDe(id).id === categoriaActual);
@@ -38,7 +41,8 @@ function pintar() {
   }
 
   document.querySelectorAll('[data-ovl-modo]').forEach((pestana) => {
-    const activa = pestana.dataset.ovlModo === MODO.TODOS ? modo === MODO.TODOS : modo !== MODO.TODOS;
+    const modoPestana = modo === MODO.CATEGORIA ? MODO.EXPLORAR : modo;
+    const activa = pestana.dataset.ovlModo === modoPestana;
     pestana.classList.toggle('activa', activa);
     pestana.setAttribute('aria-pressed', String(activa));
   });
@@ -65,7 +69,6 @@ function crearFilaCategoria({ id, icono, color, overlays }) {
   const fila = document.createElement('button');
   fila.type = 'button';
   fila.className = 'ovl-fila';
-  fila.dataset.ovlCategoria = id;
   fila.innerHTML = `
     <span class="ovl-fila-icono" style="background:${color}"><img src="icons/${icono}.svg" alt=""></span>
     <span class="ovl-fila-texto">
@@ -96,7 +99,7 @@ function decorarTarjeta(id, tarjeta, pendiente) {
   const logos = document.createElement('span');
   logos.className = 'ovl-plataformas';
   logos.innerHTML = PLATAFORMAS_OVERLAY[id]
-    .map((plataforma) => `<span class="ovl-plataforma"><img src="icons/${plataforma}-logo.svg" alt=""> ${NOMBRES_PLATAFORMA[plataforma]}</span>`)
+    .map((plataforma) => `<span class="ovl-plataforma"><img src="icons/${logoMonocromo(plataforma)}.svg" alt=""> ${NOMBRES_PLATAFORMA[plataforma]}</span>`)
     .join('');
   tarjeta.querySelector('.cfg-subtitle').after(logos);
   if (!pendiente) return;
@@ -132,7 +135,9 @@ export function iniciarCatalogoOverlays() {
   montarTarjetas();
   $('ovlFiltro').append(...[SIN_FILTRO, ...Object.keys(NOMBRES_PLATAFORMA)].map(crearChipFiltro));
   $('ovlCategorias').append(...CATEGORIAS.map(crearFilaCategoria));
+  iniciarTienda($('ovlTiendaProductos'));
   iniciarDestacados($('ovlDestacado'));
+  iniciarDestacados($('ovlTiendaDestacado'));
   aplicarTraducciones($('view-overlays'));
 
   document.querySelectorAll('[data-ovl-modo]').forEach((pestana) => {

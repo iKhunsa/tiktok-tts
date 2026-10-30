@@ -542,7 +542,7 @@ function attach(bus, logger) {
       const cola = colaLog(logger, 24 * 1024);
       Sentry.captureMessage(`Reporte manual: ${(p && p.descripcion) || 'sin descripción'}`.slice(0, 400), {
         level: 'info',
-        tags: { tipo: 'reporte_manual', canal: (p && p.canal) || 'desconocido' },
+        tags: { tipo: 'reporte_manual' },
         contexts: {
           estado_app: estadoApp(),
           reporte: { extra: (p && p.extra) || null, version: (p && p.version) || null },

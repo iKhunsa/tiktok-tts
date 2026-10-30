@@ -21,8 +21,6 @@
                       "guide":  "問題がありますか？1）再現できるか試してください。2）このフォームで何が起きたか教えてください。3）送信すると、セッションの技術ログと一緒にチームへ届きます。パスワードや機密情報は含まれません。",
                       "discordNickLabel":  "あなたのDiscordニックネーム",
                       "discordNickPlaceholder":  "ユーザー#0000",
-                      "channelLinkLabel":  "あなたのチャンネルリンク（TikTok/Twitch/YouTube）",
-                      "channelLinkPlaceholder":  "https://...",
                       "descriptionLabel":  "何が起きたか教えてください",
                       "descriptionPlaceholder":  "何をしていましたか？何が起こると思っていましたか？実際に何が起こりましたか？",
                       "extraLabel":  "他に追加したいことはありますか？（任意）",
@@ -30,7 +28,7 @@
                       "submit":  "レポートを送信",
                       "sending":  "送信中...",
                       "sent":  "レポートを送信しました、ありがとうございます！",
-                      "errorRequired":  "Discord またはメール、チャンネル、何が起きたかを入力してください",
+                      "errorRequired":  "Discord またはメールと、何が起きたかを入力してください",
                       "errorSend":  "レポートを送信できませんでした。もう一度お試しください",
                       "tourDone":  "わかりました"
                   },
@@ -38,13 +36,10 @@
                   "sidebarEntry":  "アイデアを提案",
                   "title":  "TikLiveTTS にアイデアを提案",
                   "subtitle":  "アプリを改善するアイデアはありますか？問題と解決方法を教えてください。多くの配信者に役立つ機能を優先します。",
-                  "hint":  "技術的な詳細は不要です。簡単に説明してください。",
                   "problemLabel":  "どの問題を解決したいですか？",
                   "problemPlaceholder":  "今何が起きているか教えてください。",
                   "ideaLabel":  "あなたのアイデアは？",
                   "ideaPlaceholder":  "TikLiveTTS にしてほしいことを説明してください。",
-                  "useCaseLabel":  "いつ使いますか？",
-                  "useCasePlaceholder":  "役立つ場面の例を教えてください。",
                   "similarLabel":  "似た機能のアプリを知っていますか？",
                   "optional":  "（任意）",
                   "similarPlaceholder":  "名前またはリンク",
@@ -60,6 +55,14 @@
                   "errorSend":  "アイデアを送信できませんでした。もう一度お試しください。",
                   "close":  "閉じる",
                   "charCount":  "{count}/{max}",
+                  "overlayTitle":  "足りないオーバーレイは何ですか？",
+                  "overlaySubtitle":  "欲しいオーバーレイを教えてください。写真、スケッチ、リンクがあるとアイデアを理解しやすくなります。",
+                  "overlayIdeaPlaceholder":  "何を表示し、いつ出て、どのプラットフォーム向けか。",
+                  "overlayImageLabel":  "写真、スケッチ、参考資料",
+                  "overlayImagePick":  "画像をアップロード",
+                  "overlayImageHint":  "PNG、JPG、GIF、WebP（8 MB まで）",
+                  "overlayImageRemove":  "画像を削除",
+                  "overlayLinkLabel":  "参考リンク",
                   "thanksTitle":  "アイデアをありがとうございます！",
                   "thanksText":  "TikLiveTTS をさらに改善するために確認します。"
               },
@@ -1130,6 +1133,8 @@
                    "notImplemented":  "この機能はまだ利用できません",
                    "weakPassword":  "パスワードが短すぎます。",
                    "passwordMismatch":  "パスワードが一致しません。",
+                   "overlayIdeaRequired":  "アイデアを入力し、Discord またはメールを記入してください。",
+                   "overlayIdeaImage":  "画像は PNG、JPG、GIF、WebP で 8 MB までです。",
                    "ideasRequired":  "必須のアイデア項目を入力してください。",
                    "ideasRateLimited":  "次のアイデアを送る前に1分待ってください。",
                    "ideasUnavailable":  "提案は一時的に利用できません。",
@@ -1753,8 +1758,12 @@
                      },
     "overlayCat": {
         "explorar": "見つける",
+        "categorias": "カテゴリ",
+        "comprar": "購入",
+        "comprarPor": "{precio} で購入",
+        "musicaSonando": "再生中",
+        "musicaPedida": "リクエスト：{user}",
         "todas": "すべて",
-        "todos": "すべて",
         "volver": "戻る",
         "proximamente": "近日公開",
         "repetir": "もう一度再生",
@@ -1786,16 +1795,14 @@
                 "titulo": "視聴者",
                 "desc": "視聴者数と配信への入室"
             },
-            "estado": {
-                "titulo": "配信ステータス",
-                "desc": "配信の状態に関するお知らせ"
-            },
+            "musica": {"titulo":"音楽ボット","desc":"再生中の曲とリクエストした人"},
             "resumen": {
                 "titulo": "配信のまとめ",
                 "desc": "配信を締めくくるクレジット"
             }
         },
         "ov": {
+            "musica": {"titulo":"音楽ボット","desc":"再生中の曲とリクエストした人を OBS に表示"},
             "chat-tiktok": {"titulo":"TikTok チャット","desc":"TikTok のメッセージのみ"},
             "chat-twitch": {"titulo":"Twitch チャット","desc":"Twitch のメッセージのみ"},
             "chat-youtube": {"titulo":"YouTube チャット","desc":"YouTube のメッセージのみ"},

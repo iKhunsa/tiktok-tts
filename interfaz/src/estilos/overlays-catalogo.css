@@ -1,6 +1,10 @@
 /* Vista Overlays: destacados, categorias y lista de tarjetas. */
 #view-overlays [hidden] { display: none !important; }
 
+.ovl-titulo { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-1); }
+.ovl-titulo h2 { margin-bottom: 0; }
+.ovl-titulo .cfg-btn { flex-shrink: 0; }
+
 .ovl-controles { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-4); }
 .ovl-pestanas { display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; background: var(--surface); }
 .ovl-pestana {
@@ -69,8 +73,59 @@
 .ovl-detalle-titulo { font-size: var(--text-base); font-weight: 600; color: var(--text); }
 .ovl-detalle-desc { font-size: var(--text-2xs); color: var(--text-muted); }
 .ovl-plataformas { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 5px; font-size: var(--text-3xs); color: var(--text-muted); }
+/* Tienda: al pasar el cursor, el precio deja su sitio al boton de comprar */
+.ovl-productos { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.ovl-producto {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: #000;
+  transition: border-color var(--dur-1) ease-out;
+}
+.ovl-producto:hover, .ovl-producto:focus-within { border-color: var(--text-muted); }
+.ovl-producto-arte { position: absolute; inset: 0; display: grid; place-items: center; }
+.ovl-producto-arte img { width: 100%; height: 100%; object-fit: cover; }
+.ovl-producto-molde { display: flex; flex-direction: column; gap: 7px; width: 58%; margin-bottom: 26%; padding: 12px; border-radius: 8px; background: var(--surface-raised); }
+.ovl-producto-molde i { height: 7px; border-radius: 999px; background: rgba(255, 255, 255, 0.12); }
+.ovl-producto-molde i:first-child { width: 40%; height: 18px; }
+.ovl-producto-molde i:last-child { width: 70%; }
+.ovl-producto-pie { position: absolute; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: minmax(0, 1fr); padding: 28px 12px 10px; background: linear-gradient(to top, #000 45%, transparent); }
+.ovl-producto-nombre { overflow: hidden; margin-bottom: 2px; white-space: nowrap; text-overflow: ellipsis; font-size: var(--text-sm); color: var(--text); }
+/* Precio y boton comparten celda: asi el cambio no mueve el nombre */
+.ovl-producto-precio, .ovl-producto-comprar { grid-row: 2; grid-column: 1; }
+.ovl-producto-precio { align-self: center; font-size: var(--text-sm); font-weight: 600; color: var(--text); transition: opacity var(--dur-1) ease-out; }
+.ovl-producto-comprar {
+  overflow: hidden;
+  height: 32px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--brand);
+  color: #fff;
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(4px);
+  pointer-events: none;
+  transition: opacity var(--dur-1) ease-out, transform var(--dur-1) ease-out;
+}
+.ovl-producto:hover .ovl-producto-comprar, .ovl-producto:focus-within .ovl-producto-comprar { opacity: 1; transform: none; pointer-events: auto; }
+.ovl-producto:hover .ovl-producto-precio, .ovl-producto:focus-within .ovl-producto-precio { opacity: 0; }
+.ovl-producto-comprar:active { transform: scale(0.97); }
+.ovl-producto-comprar:focus-visible { outline: 2px solid #fff; outline-offset: -3px; opacity: 1; }
+@media (hover: none) {
+  .ovl-producto-comprar { opacity: 1; transform: none; pointer-events: auto; }
+  .ovl-producto-precio { opacity: 0; }
+}
 .ovl-plataforma { display: inline-flex; align-items: center; gap: 4px; }
 .ovl-plataforma img { width: 12px; height: 12px; }
+#ovlTarjetas .cfg-card img { filter: brightness(0) invert(1); }
 
 .ovl-filtro { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: var(--space-4); }
 .ovl-chip {
@@ -96,9 +151,10 @@
 .ovl-proximamente { flex-shrink: 0; padding: 2px 8px; border-radius: 999px; background: var(--surface-raised); font-size: var(--text-3xs); font-weight: 600; color: var(--text); }
 
 @media (max-width: 640px) {
+  .ovl-productos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .ovl-categorias { grid-template-columns: minmax(0, 1fr); }
   }
 @media (prefers-reduced-motion: reduce) {
-  .ovl-diapositiva, .ovl-punto::before { transition: none; }
+  .ovl-diapositiva, .ovl-punto::before, .ovl-producto-comprar { transition: none; transform: none; }
 }
-body.reduce-motion .ovl-diapositiva, body.reduce-motion .ovl-punto::before { transition: none; }
+body.reduce-motion .ovl-diapositiva, body.reduce-motion .ovl-punto::before, body.reduce-motion .ovl-producto-comprar { transition: none; transform: none; }

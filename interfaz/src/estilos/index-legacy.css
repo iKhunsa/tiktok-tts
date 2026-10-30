@@ -2089,7 +2089,17 @@
     .idea-respuesta { margin: 0; color: var(--text-muted); font-size: var(--text-2xs); line-height: 1.5; }
     .idea-discord-cta:active { transform: scale(.98); }
     /* Mismo formato que el CTA de Discord (.discord-cta), en rojo de acento. */
-    #ideaSubmitBtn, #bugReportSubmitBtn { width: 100%; height: 42px; padding: 0; border-radius: 10px; font-size: var(--text-base); font-weight: 600; }
+    /* El input cubre la zona entera: clic y soltar archivo los resuelve el navegador. */
+    .idea-archivo { position: relative; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 14px; border: 1px dashed var(--border); border-radius: 10px; color: var(--text-secondary); font-size: var(--text-sm); transition: border-color .15s ease-out, background-color .15s ease-out; }
+    .idea-archivo small { color: var(--text-muted); font-size: var(--text-3xs); }
+    .idea-archivo input { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; opacity: 0; cursor: pointer; }
+    .idea-archivo:focus-within { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
+    @media (hover: hover) and (pointer: fine) { .idea-archivo:hover { border-color: var(--text-muted); background: var(--surface-raised); } }
+    .idea-archivo-vista { display: flex; align-items: center; gap: 12px; }
+    .idea-archivo-vista img { width: 72px; height: 72px; object-fit: cover; border-radius: 8px; }
+    .idea-archivo-vista button { padding: 0; border: 0; background: none; color: var(--text-secondary); font: inherit; font-size: var(--text-sm); text-decoration: underline; cursor: pointer; }
+    .idea-archivo-vista button:focus-visible { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
+    #ideaSubmitBtn, #overlayIdeaSubmitBtn, #bugReportSubmitBtn { width: 100%; height: 42px; padding: 0; border-radius: 10px; font-size: var(--text-base); font-weight: 600; }
     .idea-char-count { align-self: flex-end; color: var(--text-muted); font-size: var(--text-3xs); }
     .idea-submit-spinner { display: inline-block; width: 12px; height: 12px; margin-right: 7px; vertical-align: -2px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: ideaSpin .7s linear infinite; }
     /* display:grid/flex de las reglas de abajo anula el atributo hidden: se fuerza */
