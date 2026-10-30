@@ -184,7 +184,7 @@
                           },
                  "overlays":  {
                                   "title":  "Оверлеи для OBS",
-                                  "desc":  "Настройте каждый оверлей и скопируйте URL → OBS → Добавить источник → Браузер → Включить прозрачный фон."
+                                  "desc":  "Выберите оверлей, настройте его под себя и скопируйте URL. В OBS вставьте его в источник «Браузер» с включённым прозрачным фоном."
                               },
                  "settings":  {
                                   "title":  "Настройки голоса",
@@ -548,6 +548,7 @@
                                      "suscriptor":  "Подписчики / Суперфаны"
                                  },
                        "campo":  {
+        "duracion": "Длительность оповещения (мс)",
                                      "maxFilas":  "Макс. строк",
                                      "colorAcento":  "Акцентный цвет",
                                      "opacidadPlaca":  "Прозрачность подложки",
@@ -1749,5 +1750,112 @@
                          "statusFailed":  "{platform}: не удалось подключиться. {reason}",
                          "statusIdle":  "{platform}: не подключено",
                          "reasonTiktokLogin":  "TikTok требует войти в аккаунт."
-                     }
+                     },
+    "overlayCat": {
+        "explorar": "Обзор",
+        "todas": "Все",
+        "todos": "Все",
+        "volver": "Назад",
+        "proximamente": "Скоро",
+        "repetir": "Повторить",
+        "pregunta": "Не хватает оверлея?",
+        "preguntaCta": "Расскажите об идее",
+        "verDestacado": "Смотреть рекомендуемое",
+        "cat": {
+            "chat": {
+                "titulo": "Чат",
+                "desc": "Сообщения со всех ваших платформ"
+            },
+            "seguidores": {
+                "titulo": "Подписчики",
+                "desc": "Счётчики, списки и оповещения о новых подписчиках"
+            },
+            "regalos": {
+                "titulo": "Подарки и донаты",
+                "desc": "Подарки, Bits, Kicks и Super Chat"
+            },
+            "suscripciones": {
+                "titulo": "Платные подписки",
+                "desc": "Новые подписки и продления"
+            },
+            "interacciones": {
+                "titulo": "Взаимодействия",
+                "desc": "Лайки и репосты вашего эфира"
+            },
+            "audiencia": {
+                "titulo": "Аудитория",
+                "desc": "Зрители и входы в эфир"
+            },
+            "estado": {
+                "titulo": "Статус эфира",
+                "desc": "Уведомления о статусе эфира"
+            },
+            "resumen": {
+                "titulo": "Итоги стрима",
+                "desc": "Титры в конце эфира"
+            }
+        },
+        "ov": {
+            "chat-tiktok": {"titulo":"Чат TikTok","desc":"Только сообщения из TikTok"},
+            "chat-twitch": {"titulo":"Чат Twitch","desc":"Только сообщения из Twitch"},
+            "chat-youtube": {"titulo":"Чат YouTube","desc":"Только сообщения из YouTube"},
+            "chat-kick": {"titulo":"Чат Kick","desc":"Только сообщения из Kick"},
+            "nuevo-seguidor": {
+                "titulo": "Оповещение о новом подписчике",
+                "desc": "Появляется при новой подписке на вас"
+            },
+            "bits": {
+                "titulo": "Оповещение о Bits",
+                "desc": "Появляется при отправке Bits на Twitch"
+            },
+            "kicks": {
+                "titulo": "Оповещение о Kicks",
+                "desc": "Появляется при подарке Kicks"
+            },
+            "superchat": {
+                "titulo": "Оповещение о Super Chat",
+                "desc": "Появляется при каждом Super Chat на YouTube"
+            },
+            "supersticker": {
+                "titulo": "Оповещение о Super Sticker",
+                "desc": "Появляется при каждом Super Sticker на YouTube"
+            },
+            "suscripcion": {
+                "titulo": "Оповещение о платной подписке",
+                "desc": "Появляется при оформлении подписки на Twitch"
+            },
+            "renovacion": {
+                "titulo": "Оповещение о продлении",
+                "desc": "Появляется при продлении подписки"
+            },
+            "contador-likes": {
+                "titulo": "Счётчик лайков",
+                "desc": "Всего лайков за эфир в реальном времени"
+            },
+            "compartido": {
+                "titulo": "Оповещение о репосте",
+                "desc": "Появляется, когда кто-то делится эфиром"
+            },
+            "entrada": {
+                "titulo": "Оповещение о входе в эфир",
+                "desc": "Приветствует зрителей, вошедших в эфир"
+            },
+            "fin-directo": {
+                "titulo": "Оповещение о конце эфира",
+                "desc": "Появляется, когда эфир заканчивается"
+            }
+        },
+        "alerta": {
+            "nuevo-seguidor": "подписался(-ась) на вас",
+            "bits": "отправил(а) Bits",
+            "kicks": "подарил(а) Kicks",
+            "superchat": "отправил(а) Super Chat",
+            "supersticker": "отправил(а) Super Sticker",
+            "suscripcion": "оформил(а) подписку",
+            "renovacion": "продлил(а) подписку",
+            "compartido": "поделился(-ась) эфиром",
+            "entrada": "вошёл(-ла) в эфир",
+            "fin-directo": "Эфир завершён"
+        }
+    }
 }

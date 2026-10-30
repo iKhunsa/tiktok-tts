@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="plugin-store/detail.css" />
   <link rel="stylesheet" href="./src/estilos/index-legacy.css">
   <link rel="stylesheet" href="./src/estilos/campos-overlay.css">
+  <link rel="stylesheet" href="./src/estilos/overlays-catalogo.css">
   <link rel="stylesheet" href="./src/estilos/moderacion-contenido.css">
   <link rel="stylesheet" href="./src/estilos/gift-gate.css">
   <link rel="stylesheet" href="./src/estilos/moderacion-popup.css">
@@ -304,8 +305,32 @@
     <div class="view" id="view-overlays">
       <div class="view-header">
         <h2><img class="icon-inline" src="icons/tv.svg" alt=""> <span data-i18n="view.overlays.title">Overlays para OBS</span></h2>
-        <p data-i18n="view.overlays.desc">Personaliza cada overlay y copia la URL → OBS → Add Source → Browser → Enable transparent background.</p>
+        <p data-i18n="view.overlays.desc">Elige un overlay, ajústalo a tu gusto y copia su URL. En OBS, pégala en una fuente de navegador con el fondo transparente activado.</p>
+      </div>
+      <div class="ovl-controles">
+        <div class="ovl-pestanas">
+          <button class="ovl-pestana" type="button" data-ovl-modo="explorar" data-i18n="overlayCat.explorar"></button>
+          <button class="ovl-pestana" type="button" data-ovl-modo="todos" data-i18n="overlayCat.todos"></button>
+        </div>
         <button class="cfg-btn" id="btnOverlaysTour" onclick="startOverlaysTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
+      </div>
+
+      <div id="ovlExplorar">
+        <div class="ovl-destacado" id="ovlDestacado"></div>
+        <div class="ovl-categorias" id="ovlCategorias"></div>
+        <p class="ovl-pie"><span data-i18n="overlayCat.pregunta"></span> <button type="button" onclick="openIdeaModal()" data-i18n="overlayCat.preguntaCta"></button></p>
+      </div>
+
+      <div id="ovlLista" hidden>
+        <div class="ovl-detalle" id="ovlDetalle" hidden>
+          <button class="ovl-volver" id="ovlVolver" type="button" data-i18n-aria-label="overlayCat.volver"><img src="icons/arrow_back.svg" alt=""></button>
+          <div>
+            <div class="ovl-detalle-titulo" id="ovlDetalleTitulo"></div>
+            <div class="ovl-detalle-desc" id="ovlDetalleDesc"></div>
+          </div>
+        </div>
+        <div class="ovl-filtro" id="ovlFiltro"></div>
+        <div id="ovlTarjetas"></div>
       </div>
 
       <!-- Chat Unificado -->

@@ -184,7 +184,7 @@
                           },
                  "overlays":  {
                                   "title":  "OBS 叠加层",
-                                  "desc":  "自定义每个叠加层并复制 URL → OBS → 添加来源 → 浏览器 → 启用透明背景。"
+                                  "desc":  "选择一个叠加层，按喜好调整后复制其 URL。在 OBS 中，将它粘贴到浏览器来源，并启用透明背景。"
                               },
                  "settings":  {
                                   "title":  "语音设置",
@@ -548,6 +548,7 @@
                                      "suscriptor":  "订阅者 / 超级粉丝"
                                  },
                        "campo":  {
+        "duracion": "每条提醒时长（毫秒）",
                                      "maxFilas":  "最大行数",
                                      "colorAcento":  "强调色",
                                      "opacidadPlaca":  "底板不透明度",
@@ -1749,5 +1750,112 @@
                          "statusFailed":  "{platform}：无法连接。{reason}",
                          "statusIdle":  "{platform}：未连接",
                          "reasonTiktokLogin":  "TikTok 要求登录。"
-                     }
+                     },
+    "overlayCat": {
+        "explorar": "浏览",
+        "todas": "全部",
+        "todos": "全部",
+        "volver": "返回",
+        "proximamente": "即将推出",
+        "repetir": "重播",
+        "pregunta": "缺少某个叠加层？",
+        "preguntaCta": "告诉我们你的想法",
+        "verDestacado": "查看推荐",
+        "cat": {
+            "chat": {
+                "titulo": "聊天",
+                "desc": "来自所有平台的消息"
+            },
+            "seguidores": {
+                "titulo": "粉丝",
+                "desc": "计数器、列表和新粉丝提醒"
+            },
+            "regalos": {
+                "titulo": "礼物与打赏",
+                "desc": "礼物、Bits、Kicks 和 Super Chat"
+            },
+            "suscripciones": {
+                "titulo": "订阅",
+                "desc": "新订阅和续订"
+            },
+            "interacciones": {
+                "titulo": "互动",
+                "desc": "直播的点赞和分享"
+            },
+            "audiencia": {
+                "titulo": "观众",
+                "desc": "观众人数和进入直播间"
+            },
+            "estado": {
+                "titulo": "直播状态",
+                "desc": "有关直播状态的提示"
+            },
+            "resumen": {
+                "titulo": "直播回顾",
+                "desc": "直播结束时的鸣谢名单"
+            }
+        },
+        "ov": {
+            "chat-tiktok": {"titulo":"TikTok 聊天","desc":"仅显示 TikTok 的消息"},
+            "chat-twitch": {"titulo":"Twitch 聊天","desc":"仅显示 Twitch 的消息"},
+            "chat-youtube": {"titulo":"YouTube 聊天","desc":"仅显示 YouTube 的消息"},
+            "chat-kick": {"titulo":"Kick 聊天","desc":"仅显示 Kick 的消息"},
+            "nuevo-seguidor": {
+                "titulo": "新粉丝提醒",
+                "desc": "有人关注你时显示"
+            },
+            "bits": {
+                "titulo": "Bits 提醒",
+                "desc": "有人在 Twitch 发送 Bits 时显示"
+            },
+            "kicks": {
+                "titulo": "Kicks 提醒",
+                "desc": "有人赠送 Kicks 时显示"
+            },
+            "superchat": {
+                "titulo": "Super Chat 提醒",
+                "desc": "每条 YouTube Super Chat 时显示"
+            },
+            "supersticker": {
+                "titulo": "Super Sticker 提醒",
+                "desc": "每个 YouTube Super Sticker 时显示"
+            },
+            "suscripcion": {
+                "titulo": "新订阅提醒",
+                "desc": "有人在 Twitch 订阅时显示"
+            },
+            "renovacion": {
+                "titulo": "续订提醒",
+                "desc": "有人续订时显示"
+            },
+            "contador-likes": {
+                "titulo": "点赞计数器",
+                "desc": "实时显示直播总点赞数"
+            },
+            "compartido": {
+                "titulo": "分享提醒",
+                "desc": "有人分享你的直播时显示"
+            },
+            "entrada": {
+                "titulo": "进入直播提醒",
+                "desc": "欢迎进入直播间的观众"
+            },
+            "fin-directo": {
+                "titulo": "直播结束提醒",
+                "desc": "直播结束时显示"
+            }
+        },
+        "alerta": {
+            "nuevo-seguidor": "开始关注你了",
+            "bits": "发送了 Bits",
+            "kicks": "赠送了 Kicks",
+            "superchat": "发送了 Super Chat",
+            "supersticker": "发送了 Super Sticker",
+            "suscripcion": "订阅了",
+            "renovacion": "续订了",
+            "compartido": "分享了直播",
+            "entrada": "进入了直播间",
+            "fin-directo": "直播已结束"
+        }
+    }
 }

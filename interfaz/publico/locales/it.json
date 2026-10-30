@@ -184,7 +184,7 @@
                           },
                  "overlays":  {
                                   "title":  "Overlay per OBS",
-                                  "desc":  "Personalizza ogni overlay e copia l\u0027URL → OBS → Aggiungi sorgente → Browser → Abilita sfondo trasparente."
+                                  "desc":  "Scegli un overlay, regolalo come preferisci e copia il suo URL. In OBS, incollalo in una sorgente browser con lo sfondo trasparente attivo."
                               },
                  "settings":  {
                                   "title":  "Impostazioni voce",
@@ -548,6 +548,7 @@
                                      "suscriptor":  "Iscritti / Super fan"
                                  },
                        "campo":  {
+        "duracion": "Durata per avviso (ms)",
                                      "maxFilas":  "Righe massime",
                                      "colorAcento":  "Colore accento",
                                      "opacidadPlaca":  "Opacità della placca",
@@ -1749,5 +1750,112 @@
                          "statusFailed":  "{platform}: impossibile connettersi. {reason}",
                          "statusIdle":  "{platform}: non connesso",
                          "reasonTiktokLogin":  "TikTok richiede l'accesso."
-                     }
+                     },
+    "overlayCat": {
+        "explorar": "Esplora",
+        "todas": "Tutte",
+        "todos": "Tutti",
+        "volver": "Indietro",
+        "proximamente": "Prossimamente",
+        "repetir": "Ripeti",
+        "pregunta": "Manca un overlay?",
+        "preguntaCta": "Raccontaci la tua idea",
+        "verDestacado": "Vedi in evidenza",
+        "cat": {
+            "chat": {
+                "titulo": "Chat",
+                "desc": "I messaggi di tutte le tue piattaforme"
+            },
+            "seguidores": {
+                "titulo": "Follower",
+                "desc": "Contatori, elenchi e avvisi di nuovi follower"
+            },
+            "regalos": {
+                "titulo": "Regali e donazioni",
+                "desc": "Regali, Bits, Kicks e Super Chat"
+            },
+            "suscripciones": {
+                "titulo": "Abbonamenti",
+                "desc": "Nuovi abbonamenti e rinnovi"
+            },
+            "interacciones": {
+                "titulo": "Interazioni",
+                "desc": "Like e condivisioni della tua diretta"
+            },
+            "audiencia": {
+                "titulo": "Pubblico",
+                "desc": "Spettatori e ingressi in diretta"
+            },
+            "estado": {
+                "titulo": "Stato della diretta",
+                "desc": "Avvisi sullo stato della diretta"
+            },
+            "resumen": {
+                "titulo": "Riepilogo dello stream",
+                "desc": "Titoli di coda per chiudere la diretta"
+            }
+        },
+        "ov": {
+            "chat-tiktok": {"titulo":"Chat di TikTok","desc":"Solo i messaggi di TikTok"},
+            "chat-twitch": {"titulo":"Chat di Twitch","desc":"Solo i messaggi di Twitch"},
+            "chat-youtube": {"titulo":"Chat di YouTube","desc":"Solo i messaggi di YouTube"},
+            "chat-kick": {"titulo":"Chat di Kick","desc":"Solo i messaggi di Kick"},
+            "nuevo-seguidor": {
+                "titulo": "Avviso nuovo follower",
+                "desc": "Appare quando qualcuno inizia a seguirti"
+            },
+            "bits": {
+                "titulo": "Avviso Bits",
+                "desc": "Appare quando qualcuno invia Bits su Twitch"
+            },
+            "kicks": {
+                "titulo": "Avviso Kicks",
+                "desc": "Appare quando qualcuno regala Kicks"
+            },
+            "superchat": {
+                "titulo": "Avviso Super Chat",
+                "desc": "Appare a ogni Super Chat di YouTube"
+            },
+            "supersticker": {
+                "titulo": "Avviso Super Sticker",
+                "desc": "Appare a ogni Super Sticker di YouTube"
+            },
+            "suscripcion": {
+                "titulo": "Avviso nuovo abbonamento",
+                "desc": "Appare quando qualcuno si abbona su Twitch"
+            },
+            "renovacion": {
+                "titulo": "Avviso rinnovo",
+                "desc": "Appare quando qualcuno rinnova l'abbonamento"
+            },
+            "contador-likes": {
+                "titulo": "Contatore di like",
+                "desc": "Like totali della diretta in tempo reale"
+            },
+            "compartido": {
+                "titulo": "Avviso condivisione",
+                "desc": "Appare quando qualcuno condivide la diretta"
+            },
+            "entrada": {
+                "titulo": "Avviso ingresso in diretta",
+                "desc": "Dà il benvenuto a chi entra in diretta"
+            },
+            "fin-directo": {
+                "titulo": "Avviso fine diretta",
+                "desc": "Appare quando la diretta termina"
+            }
+        },
+        "alerta": {
+            "nuevo-seguidor": "ha iniziato a seguirti",
+            "bits": "ha inviato Bits",
+            "kicks": "ha regalato Kicks",
+            "superchat": "ha inviato un Super Chat",
+            "supersticker": "ha inviato un Super Sticker",
+            "suscripcion": "si è abbonato",
+            "renovacion": "ha rinnovato l'abbonamento",
+            "compartido": "ha condiviso la diretta",
+            "entrada": "è entrato in diretta",
+            "fin-directo": "La diretta è terminata"
+        }
+    }
 }

@@ -184,7 +184,7 @@
                           },
                  "overlays":  {
                                   "title":  "Overlays para OBS",
-                                  "desc":  "Personalize cada overlay e copie a URL → OBS → Adicionar Fonte → Browser → Ativar fundo transparente."
+                                  "desc":  "Escolha um overlay, ajuste do seu jeito e copie a URL. No OBS, cole em uma fonte de navegador com o fundo transparente ativado."
                               },
                  "settings":  {
                                   "title":  "Ajustes de voz",
@@ -548,6 +548,7 @@
                                      "suscriptor":  "Inscritos / Super fãs"
                                  },
                        "campo":  {
+        "duracion": "Duração por alerta (ms)",
                                      "maxFilas":  "Máximo de linhas",
                                      "colorAcento":  "Cor de destaque",
                                      "opacidadPlaca":  "Opacidade da placa",
@@ -1749,5 +1750,112 @@
                          "statusFailed":  "{platform}: não foi possível conectar. {reason}",
                          "statusIdle":  "{platform}: não conectado",
                          "reasonTiktokLogin":  "O TikTok pede para iniciar sessão."
-                     }
+                     },
+    "overlayCat": {
+        "explorar": "Explorar",
+        "todas": "Todas",
+        "todos": "Todos",
+        "volver": "Voltar",
+        "proximamente": "Em breve",
+        "repetir": "Repetir",
+        "pregunta": "Falta algum overlay?",
+        "preguntaCta": "Conte sua ideia",
+        "verDestacado": "Ver destaque",
+        "cat": {
+            "chat": {
+                "titulo": "Chat",
+                "desc": "As mensagens de todas as suas plataformas"
+            },
+            "seguidores": {
+                "titulo": "Seguidores",
+                "desc": "Contadores, listas e alertas de novos seguidores"
+            },
+            "regalos": {
+                "titulo": "Presentes e doações",
+                "desc": "Presentes, Bits, Kicks e Super Chats"
+            },
+            "suscripciones": {
+                "titulo": "Assinaturas",
+                "desc": "Novas assinaturas e renovações"
+            },
+            "interacciones": {
+                "titulo": "Interações",
+                "desc": "Curtidas e compartilhamentos da sua live"
+            },
+            "audiencia": {
+                "titulo": "Audiência",
+                "desc": "Espectadores e entradas na live"
+            },
+            "estado": {
+                "titulo": "Status da live",
+                "desc": "Avisos sobre o status da sua live"
+            },
+            "resumen": {
+                "titulo": "Resumo da live",
+                "desc": "Créditos para encerrar a live"
+            }
+        },
+        "ov": {
+            "chat-tiktok": {"titulo":"Chat da TikTok","desc":"Apenas as mensagens da TikTok"},
+            "chat-twitch": {"titulo":"Chat da Twitch","desc":"Apenas as mensagens da Twitch"},
+            "chat-youtube": {"titulo":"Chat da YouTube","desc":"Apenas as mensagens da YouTube"},
+            "chat-kick": {"titulo":"Chat da Kick","desc":"Apenas as mensagens da Kick"},
+            "nuevo-seguidor": {
+                "titulo": "Alerta de novo seguidor",
+                "desc": "Aparece quando alguém começa a seguir você"
+            },
+            "bits": {
+                "titulo": "Alerta de Bits",
+                "desc": "Aparece quando alguém envia Bits na Twitch"
+            },
+            "kicks": {
+                "titulo": "Alerta de Kicks",
+                "desc": "Aparece quando alguém presenteia Kicks"
+            },
+            "superchat": {
+                "titulo": "Alerta de Super Chat",
+                "desc": "Aparece a cada Super Chat do YouTube"
+            },
+            "supersticker": {
+                "titulo": "Alerta de Super Sticker",
+                "desc": "Aparece a cada Super Sticker do YouTube"
+            },
+            "suscripcion": {
+                "titulo": "Alerta de nova assinatura",
+                "desc": "Aparece quando alguém assina na Twitch"
+            },
+            "renovacion": {
+                "titulo": "Alerta de renovação",
+                "desc": "Aparece quando alguém renova a assinatura"
+            },
+            "contador-likes": {
+                "titulo": "Contador de curtidas",
+                "desc": "Total de curtidas da live em tempo real"
+            },
+            "compartido": {
+                "titulo": "Alerta de compartilhamento",
+                "desc": "Aparece quando alguém compartilha sua live"
+            },
+            "entrada": {
+                "titulo": "Alerta de entrada na live",
+                "desc": "Dá as boas-vindas a quem entra na live"
+            },
+            "fin-directo": {
+                "titulo": "Alerta de fim da live",
+                "desc": "Aparece quando sua live termina"
+            }
+        },
+        "alerta": {
+            "nuevo-seguidor": "começou a seguir você",
+            "bits": "enviou Bits",
+            "kicks": "presenteou Kicks",
+            "superchat": "enviou um Super Chat",
+            "supersticker": "enviou um Super Sticker",
+            "suscripcion": "assinou",
+            "renovacion": "renovou a assinatura",
+            "compartido": "compartilhou a live",
+            "entrada": "entrou na live",
+            "fin-directo": "A live terminou"
+        }
+    }
 }

@@ -1,9 +1,24 @@
 import { camposChat } from './campos-chat.js';
 import { camposRanking } from './campos-ranking.js';
 import { valoresPorDefecto } from './query.js';
+import { EVENTOS_ALERTA } from '../eventos-alerta.js';
 
-const colorAcento = { clave: 'color', param: 'color', tipo: 'color', def: '#FFBB00', grupo: 'base' };
-const opacidadFondo = (def) => ({ clave: 'bg', param: 'bg', tipo: 'numero', def, min: 0.3, max: 1, step: 0.05, ui: 'rango', grupo: 'base' });
+const colorAcento = { clave: 'color', param: 'color', tipo: 'color', def: '#FFBB00', etiqueta: 'colorAcento', grupo: 'base' };
+const opacidadFondo = (def) => ({ clave: 'bg', param: 'bg', tipo: 'numero', def, min: 0.3, max: 1, step: 0.05, ui: 'rango', porcentaje: true, etiqueta: 'opacidadFondo', grupo: 'base' });
+const esquemaAlerta = ({ duracion = 4000 }) => [
+  { clave: 'dur', param: 'dur', tipo: 'numero', def: duracion, min: 1000, max: 12000, step: 500, etiqueta: 'duracion', grupo: 'base' },
+  colorAcento,
+  opacidadFondo(0.9),
+];
+
+/** Chats de una sola plataforma: misma pagina que el unificado, con la plataforma fija en la URL. */
+export const CHATS_POR_PLATAFORMA = {
+  'chat-tiktok': 'tiktok',
+  'chat-twitch': 'twitch',
+  'chat-youtube': 'youtube',
+  'chat-kick': 'kick',
+};
+const camposChatFijo = () => camposChat().filter((campo) => campo.tipo !== 'plataformas');
 
 /**
  * Esquema de cada overlay: unica fuente de sus campos, defaults y nombres de
@@ -39,6 +54,9 @@ export const ESQUEMAS = {
     opacidadFondo(0.8),
   ],
   'alertas-social': [colorAcento, opacidadFondo(0.9)],
+  'contador-likes': [colorAcento, opacidadFondo(0.8)],
+  ...Object.fromEntries(Object.keys(CHATS_POR_PLATAFORMA).map((id) => [id, camposChatFijo()])),
+  ...Object.fromEntries(Object.entries(EVENTOS_ALERTA).map(([id, alerta]) => [id, esquemaAlerta(alerta)])),
 };
 
 /** Defaults de cada overlay, derivados del esquema (nadie los repite a mano). */

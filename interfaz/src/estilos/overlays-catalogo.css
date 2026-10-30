@@ -1,0 +1,104 @@
+/* Vista Overlays: destacados, categorias y lista de tarjetas. */
+#view-overlays [hidden] { display: none !important; }
+
+.ovl-controles { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-4); }
+.ovl-pestanas { display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; background: var(--surface); }
+.ovl-pestana {
+  padding: 6px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--dur-1) ease-out, color var(--dur-1) ease-out;
+}
+.ovl-pestana:hover { color: var(--text); }
+.ovl-pestana.activa { background: var(--surface-raised); color: var(--text); }
+
+/* Destacados: las diapositivas se apilan y cruzan con opacidad */
+.ovl-destacado { position: relative; height: 170px; margin-bottom: var(--space-4); border-radius: 20px; overflow: hidden; background: var(--surface); }
+.ovl-diapositiva { position: absolute; inset: 0; opacity: 0; transition: opacity var(--dur-4) ease-out; }
+.ovl-diapositiva.activa { opacity: 1; }
+.ovl-puntos { position: absolute; left: 50%; bottom: 10px; z-index: 2; display: flex; gap: 2px; transform: translateX(-50%); }
+.ovl-punto { width: 18px; height: 16px; padding: 0; border: 0; background: transparent; cursor: pointer; display: grid; place-items: center; }
+.ovl-punto::before { content: ''; width: 5px; height: 5px; border-radius: 999px; background: rgba(255, 255, 255, 0.55); transition: width var(--dur-2) ease-out, background-color var(--dur-2) ease-out; }
+.ovl-punto.activo::before { width: 14px; background: #fff; }
+
+/* Categorias en dos columnas */
+.ovl-categorias { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 12px; }
+.ovl-fila {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  padding: 10px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--dur-1) ease-out;
+}
+.ovl-fila:hover { background: var(--surface); }
+.ovl-fila:active { background: var(--surface-raised); }
+.ovl-fila-icono { flex-shrink: 0; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; }
+.ovl-fila-icono img { width: 22px; height: 22px; filter: brightness(0) invert(1); }
+.ovl-fila-texto { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.ovl-fila-titulo { font-size: var(--text-sm); font-weight: 600; }
+.ovl-fila-desc { font-size: var(--text-2xs); color: var(--text-muted); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.ovl-fila-cuenta { flex-shrink: 0; font-size: var(--text-2xs); color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.ovl-fila-flecha { flex-shrink: 0; width: 16px; height: 16px; filter: brightness(0) invert(1); opacity: 0.45; }
+.ovl-fila:focus-visible, .ovl-pestana:focus-visible, .ovl-punto:focus-visible, .ovl-volver:focus-visible { outline: 2px solid var(--text-muted); outline-offset: 2px; }
+
+.ovl-pie { margin-top: var(--space-6); text-align: center; font-size: var(--text-sm); color: var(--text-muted); }
+.ovl-pie button { padding: 0; border: 0; background: transparent; color: var(--accent); font: inherit; cursor: pointer; }
+.ovl-pie button:hover { text-decoration: underline; }
+
+/* Detalle de categoria y lista */
+.ovl-detalle { display: flex; align-items: center; gap: 12px; margin-bottom: var(--space-4); }
+.ovl-volver { flex-shrink: 0; display: grid; place-items: center; width: 34px; height: 34px; border: 0; border-radius: 999px; background: var(--surface); cursor: pointer; transition: background-color var(--dur-1) ease-out, transform var(--dur-1) ease-out; }
+.ovl-volver:hover { background: var(--surface-raised); }
+.ovl-volver:active { transform: scale(0.95); }
+.ovl-volver img { width: 18px; height: 18px; filter: brightness(0) invert(1); }
+.ovl-detalle-titulo { font-size: var(--text-base); font-weight: 600; color: var(--text); }
+.ovl-detalle-desc { font-size: var(--text-2xs); color: var(--text-muted); }
+.ovl-plataformas { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 5px; font-size: var(--text-3xs); color: var(--text-muted); }
+.ovl-plataforma { display: inline-flex; align-items: center; gap: 4px; }
+.ovl-plataforma img { width: 12px; height: 12px; }
+
+.ovl-filtro { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: var(--space-4); }
+.ovl-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--dur-1) ease-out, border-color var(--dur-1) ease-out, color var(--dur-1) ease-out;
+}
+.ovl-chip img { width: 14px; height: 14px; }
+.ovl-chip:hover { color: var(--text); }
+.ovl-chip.activo { background: var(--surface-raised); border-color: var(--text-muted); color: var(--text); }
+.ovl-chip:focus-visible { outline: 2px solid var(--text-muted); outline-offset: 2px; }
+.ovl-proximamente { flex-shrink: 0; padding: 2px 8px; border-radius: 999px; background: var(--surface-raised); font-size: var(--text-3xs); font-weight: 600; color: var(--text); }
+
+@media (max-width: 640px) {
+  .ovl-categorias { grid-template-columns: minmax(0, 1fr); }
+  }
+@media (prefers-reduced-motion: reduce) {
+  .ovl-diapositiva, .ovl-punto::before { transition: none; }
+}
+body.reduce-motion .ovl-diapositiva, body.reduce-motion .ovl-punto::before { transition: none; }

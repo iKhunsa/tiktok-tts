@@ -1,8 +1,11 @@
+import { alAbrirTarjetaOverlay } from './configurador-overlays.js';
+
 const tarjetas = () => document.querySelectorAll('#view-overlays .cfg-card');
 
 function fijarAbierta(tarjeta, abierta) {
   tarjeta.classList.toggle('abierta', abierta);
   tarjeta.querySelector('.cfg-header').setAttribute('aria-expanded', String(abierta));
+  if (abierta) alAbrirTarjetaOverlay(tarjeta);
 }
 
 function alternar(evento) {
@@ -14,9 +17,9 @@ function alternar(evento) {
   fijarAbierta(tarjeta, !tarjeta.classList.contains('abierta'));
 }
 
-/** El tutorial apunta a campos dentro de las tarjetas: tienen que estar abiertas. */
-export function abrirTarjetasOverlays() {
-  tarjetas().forEach((tarjeta) => fijarAbierta(tarjeta, true));
+/** El tutorial apunta a campos dentro de estas tarjetas: tienen que estar abiertas. */
+export function abrirTarjetasOverlays(tipos) {
+  tipos.forEach((tipo) => fijarAbierta(document.querySelector(`[data-preview="${tipo}"]`).closest('.cfg-card'), true));
 }
 
 /** Cada tarjeta de overlay se pliega desde su cabecera; arrancan todas contraidas. */

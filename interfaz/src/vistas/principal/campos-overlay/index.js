@@ -7,8 +7,9 @@ import { montarCamposOverlay } from './montar.js';
 import { sincronizarCamposOverlay } from './sincronizar.js';
 import { leerValorDeEntrada } from './leer-valor.js';
 import { textoValor } from './etiquetas.js';
+import { OVERLAYS_GENERADOS } from '../overlays-catalogo/catalogo.js';
 
-const OVERLAYS_CON_ESQUEMA = ['chat', 'likes', 'donadores', 'viewers'];
+const OVERLAYS_CON_ESQUEMA = ['chat', 'likes', 'donadores', 'viewers', ...OVERLAYS_GENERADOS.map(({ id }) => id)];
 
 const campoDe = (overlay, clave) => ESQUEMAS[overlay].find((campo) => campo.clave === clave);
 

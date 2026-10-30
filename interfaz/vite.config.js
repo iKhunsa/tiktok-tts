@@ -27,6 +27,8 @@ export default defineConfig({
         'overlay-seguidores': entry('overlay-seguidores.html'),
         'overlay-viewers': entry('overlay-viewers.html'),
         'overlay-social': entry('overlay-social.html'),
+        'overlay-evento': entry('overlay-evento.html'),
+        'overlay-contador-likes': entry('overlay-contador-likes.html'),
       },
     },
   },

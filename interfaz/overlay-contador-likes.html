@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Overlay — Contador de Likes</title>
+  <link rel="stylesheet" href="./compartido/tema-overlay.css">
+  <style>
+    body {
+      background: transparent;
+      width: 200px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .card {
+      background: rgba(0, 0, 0, var(--bg-alpha));
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      border-radius: 18px;
+      padding: 22px 16px 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .icon { width: 22px; height: 22px; filter: brightness(0) invert(1); }
+    .label { font-size: 10px; letter-spacing: 1.6px; text-transform: uppercase; color: #fff; text-align: center; }
+    .count { font-size: 44px; font-weight: 800; color: #fff; line-height: 1; letter-spacing: -1.5px; font-variant-numeric: tabular-nums; }
+    .count.bump { animation: bump 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
+    @keyframes bump {
+      0%   { transform: scale(1); color: #fff; }
+      35%  { transform: scale(1.14); color: var(--accent); }
+      100% { transform: scale(1); color: #fff; }
+    }
+    body.reduce-motion .count.bump { animation: none; }
+    @media (prefers-reduced-motion: reduce) { .count.bump { animation: none; } }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img class="icon" src="icons/favorite.svg" alt="">
+    <div class="label" data-i18n="overlayCat.ov.contador-likes.titulo">Contador de Likes</div>
+    <div class="count" id="count">0</div>
+  </div>
+  <script type="module" src="./overlay-contador-likes.js"></script>
+</body>
+</html>

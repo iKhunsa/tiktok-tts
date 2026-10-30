@@ -49,6 +49,7 @@ import {
 } from './configurador-overlays.js';
 import { iniciarCamposOverlay } from './campos-overlay/index.js';
 import { iniciarAcordeonOverlays } from './overlays-acordeon.js';
+import { iniciarCatalogoOverlays } from './overlays-catalogo/index.js';
 import {
   toggleChatToggles, toggleOption, setSoloChatMode,
   iniciarObservadorTogglesChat,
@@ -229,6 +230,7 @@ function iniciarArranque() {
   iniciarCierreDropdownVoces();
   iniciarPintadoDeRangos();
   iniciarCamposOverlay();
+  iniciarCatalogoOverlays();
   iniciarAcordeonOverlays();
   iniciarHoverConnectAllChat();
 

@@ -184,7 +184,7 @@
                           },
                  "overlays":  {
                                   "title":  "OBS オーバーレイ",
-                                  "desc":  "各オーバーレイをカスタマイズしてURLをコピー → OBS → ソース追加 → ブラウザ → 透明背景を有効化。"
+                                  "desc":  "オーバーレイを選んで好みに調整し、URLをコピーします。OBSでブラウザソースに貼り付け、背景の透過を有効にしてください。"
                               },
                  "settings":  {
                                   "title":  "音声設定",
@@ -548,6 +548,7 @@
                                      "suscriptor":  "サブスクライバー / スーパーファン"
                                  },
                        "campo":  {
+        "duracion": "アラートごとの表示時間（ms）",
                                      "maxFilas":  "最大行数",
                                      "colorAcento":  "アクセントカラー",
                                      "opacidadPlaca":  "プレートの不透明度",
@@ -1749,5 +1750,112 @@
                          "statusFailed":  "{platform}：接続できませんでした。{reason}",
                          "statusIdle":  "{platform}：未接続",
                          "reasonTiktokLogin":  "TikTok へのログインが必要です。"
-                     }
+                     },
+    "overlayCat": {
+        "explorar": "見つける",
+        "todas": "すべて",
+        "todos": "すべて",
+        "volver": "戻る",
+        "proximamente": "近日公開",
+        "repetir": "もう一度再生",
+        "pregunta": "欲しいオーバーレイがありませんか？",
+        "preguntaCta": "アイデアを送る",
+        "verDestacado": "おすすめを見る",
+        "cat": {
+            "chat": {
+                "titulo": "チャット",
+                "desc": "すべてのプラットフォームのメッセージ"
+            },
+            "seguidores": {
+                "titulo": "フォロワー",
+                "desc": "カウンター、リスト、新規フォロワーのアラート"
+            },
+            "regalos": {
+                "titulo": "ギフトと投げ銭",
+                "desc": "ギフト、Bits、Kicks、Super Chat"
+            },
+            "suscripciones": {
+                "titulo": "サブスクリプション",
+                "desc": "新規サブスクと更新"
+            },
+            "interacciones": {
+                "titulo": "インタラクション",
+                "desc": "配信のいいねとシェア"
+            },
+            "audiencia": {
+                "titulo": "視聴者",
+                "desc": "視聴者数と配信への入室"
+            },
+            "estado": {
+                "titulo": "配信ステータス",
+                "desc": "配信の状態に関するお知らせ"
+            },
+            "resumen": {
+                "titulo": "配信のまとめ",
+                "desc": "配信を締めくくるクレジット"
+            }
+        },
+        "ov": {
+            "chat-tiktok": {"titulo":"TikTok チャット","desc":"TikTok のメッセージのみ"},
+            "chat-twitch": {"titulo":"Twitch チャット","desc":"Twitch のメッセージのみ"},
+            "chat-youtube": {"titulo":"YouTube チャット","desc":"YouTube のメッセージのみ"},
+            "chat-kick": {"titulo":"Kick チャット","desc":"Kick のメッセージのみ"},
+            "nuevo-seguidor": {
+                "titulo": "新規フォロワーアラート",
+                "desc": "誰かがフォローすると表示"
+            },
+            "bits": {
+                "titulo": "Bits アラート",
+                "desc": "Twitch で Bits が送られると表示"
+            },
+            "kicks": {
+                "titulo": "Kicks アラート",
+                "desc": "Kicks が贈られると表示"
+            },
+            "superchat": {
+                "titulo": "Super Chat アラート",
+                "desc": "YouTube の Super Chat ごとに表示"
+            },
+            "supersticker": {
+                "titulo": "Super Sticker アラート",
+                "desc": "YouTube の Super Sticker ごとに表示"
+            },
+            "suscripcion": {
+                "titulo": "新規サブスクアラート",
+                "desc": "Twitch でサブスクされると表示"
+            },
+            "renovacion": {
+                "titulo": "サブスク更新アラート",
+                "desc": "サブスクが更新されると表示"
+            },
+            "contador-likes": {
+                "titulo": "いいねカウンター",
+                "desc": "配信のいいね総数をリアルタイム表示"
+            },
+            "compartido": {
+                "titulo": "シェアアラート",
+                "desc": "配信がシェアされると表示"
+            },
+            "entrada": {
+                "titulo": "入室アラート",
+                "desc": "配信に入室した人を歓迎"
+            },
+            "fin-directo": {
+                "titulo": "配信終了アラート",
+                "desc": "配信が終了すると表示"
+            }
+        },
+        "alerta": {
+            "nuevo-seguidor": "がフォローしました",
+            "bits": "が Bits を送りました",
+            "kicks": "が Kicks を贈りました",
+            "superchat": "が Super Chat を送りました",
+            "supersticker": "が Super Sticker を送りました",
+            "suscripcion": "がサブスクしました",
+            "renovacion": "がサブスクを更新しました",
+            "compartido": "が配信をシェアしました",
+            "entrada": "が入室しました",
+            "fin-directo": "配信が終了しました"
+        }
+    }
 }

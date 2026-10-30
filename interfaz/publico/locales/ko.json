@@ -184,7 +184,7 @@
                           },
                  "overlays":  {
                                   "title":  "OBS 오버레이",
-                                  "desc":  "각 오버레이를 커스터마이즈하고 URL 복사 → OBS → 소스 추가 → 브라우저 → 투명 배경 활성화."
+                                  "desc":  "오버레이를 골라 원하는 대로 조정한 뒤 URL을 복사하세요. OBS에서 브라우저 소스에 붙여넣고 투명 배경을 켜세요."
                               },
                  "settings":  {
                                   "title":  "음성 설정",
@@ -548,6 +548,7 @@
                                      "suscriptor":  "구독자 / 슈퍼 팬"
                                  },
                        "campo":  {
+        "duracion": "알림당 지속 시간(ms)",
                                      "maxFilas":  "최대 행 수",
                                      "colorAcento":  "강조 색상",
                                      "opacidadPlaca":  "플레이트 투명도",
@@ -1749,5 +1750,112 @@
                          "statusFailed":  "{platform}: 연결할 수 없습니다. {reason}",
                          "statusIdle":  "{platform}: 연결 안 됨",
                          "reasonTiktokLogin":  "TikTok 로그인이 필요합니다."
-                     }
+                     },
+    "overlayCat": {
+        "explorar": "둘러보기",
+        "todas": "전체",
+        "todos": "전체",
+        "volver": "뒤로",
+        "proximamente": "출시 예정",
+        "repetir": "다시 재생",
+        "pregunta": "필요한 오버레이가 없나요?",
+        "preguntaCta": "아이디어 보내기",
+        "verDestacado": "추천 보기",
+        "cat": {
+            "chat": {
+                "titulo": "채팅",
+                "desc": "모든 플랫폼의 메시지"
+            },
+            "seguidores": {
+                "titulo": "팔로워",
+                "desc": "카운터, 목록, 새 팔로워 알림"
+            },
+            "regalos": {
+                "titulo": "선물 및 후원",
+                "desc": "선물, Bits, Kicks, Super Chat"
+            },
+            "suscripciones": {
+                "titulo": "구독",
+                "desc": "새 구독과 갱신"
+            },
+            "interacciones": {
+                "titulo": "상호작용",
+                "desc": "방송의 좋아요와 공유"
+            },
+            "audiencia": {
+                "titulo": "시청자",
+                "desc": "시청자 수와 방송 입장"
+            },
+            "estado": {
+                "titulo": "방송 상태",
+                "desc": "방송 상태 안내"
+            },
+            "resumen": {
+                "titulo": "방송 요약",
+                "desc": "방송을 마무리하는 크레딧"
+            }
+        },
+        "ov": {
+            "chat-tiktok": {"titulo":"TikTok 채팅","desc":"TikTok 메시지만 표시"},
+            "chat-twitch": {"titulo":"Twitch 채팅","desc":"Twitch 메시지만 표시"},
+            "chat-youtube": {"titulo":"YouTube 채팅","desc":"YouTube 메시지만 표시"},
+            "chat-kick": {"titulo":"Kick 채팅","desc":"Kick 메시지만 표시"},
+            "nuevo-seguidor": {
+                "titulo": "새 팔로워 알림",
+                "desc": "누군가 팔로우하면 표시"
+            },
+            "bits": {
+                "titulo": "Bits 알림",
+                "desc": "Twitch에서 Bits를 보내면 표시"
+            },
+            "kicks": {
+                "titulo": "Kicks 알림",
+                "desc": "Kicks를 선물하면 표시"
+            },
+            "superchat": {
+                "titulo": "Super Chat 알림",
+                "desc": "YouTube Super Chat마다 표시"
+            },
+            "supersticker": {
+                "titulo": "Super Sticker 알림",
+                "desc": "YouTube Super Sticker마다 표시"
+            },
+            "suscripcion": {
+                "titulo": "새 구독 알림",
+                "desc": "Twitch에서 구독하면 표시"
+            },
+            "renovacion": {
+                "titulo": "구독 갱신 알림",
+                "desc": "구독을 갱신하면 표시"
+            },
+            "contador-likes": {
+                "titulo": "좋아요 카운터",
+                "desc": "방송 좋아요 수를 실시간으로 표시"
+            },
+            "compartido": {
+                "titulo": "공유 알림",
+                "desc": "방송을 공유하면 표시"
+            },
+            "entrada": {
+                "titulo": "방송 입장 알림",
+                "desc": "방송에 입장한 시청자를 환영"
+            },
+            "fin-directo": {
+                "titulo": "방송 종료 알림",
+                "desc": "방송이 끝나면 표시"
+            }
+        },
+        "alerta": {
+            "nuevo-seguidor": "님이 팔로우했습니다",
+            "bits": "님이 Bits를 보냈습니다",
+            "kicks": "님이 Kicks를 선물했습니다",
+            "superchat": "님이 Super Chat을 보냈습니다",
+            "supersticker": "님이 Super Sticker를 보냈습니다",
+            "suscripcion": "님이 구독했습니다",
+            "renovacion": "님이 구독을 갱신했습니다",
+            "compartido": "님이 방송을 공유했습니다",
+            "entrada": "님이 입장했습니다",
+            "fin-directo": "방송이 종료되었습니다"
+        }
+    }
 }
