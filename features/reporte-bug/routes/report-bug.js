@@ -15,8 +15,8 @@ try { fallbackAppVersion = require('../../../package.json').version; } catch (_)
 /** Migracion de POST /api/report-bug (backend-viejo/server.js:2093). */
 function reportBug(logger, bus) {
   return async (req, res) => {
-    const { discordNick, channelLink, description, extra, appVersion: clientAppVersion } = req.body || {};
-    if (!discordNick || !channelLink || !description) {
+    const { discordNick, email, channelLink, description, extra, appVersion: clientAppVersion } = req.body || {};
+    if ((!discordNick && !email) || !channelLink || !description) {
       return res.status(400).json({ error: 'Faltan campos requeridos' });
     }
 
@@ -38,7 +38,8 @@ function reportBug(logger, bus) {
       title: '🐛 Nuevo reporte de bug',
       color: 15158332,
       fields: [
-        { name: 'Discord', value: String(discordNick).slice(0, 200), inline: true },
+        { name: 'Discord', value: String(discordNick || '-').slice(0, 200), inline: true },
+        { name: 'Email', value: String(email || '-').slice(0, 254), inline: true },
         { name: 'Canal', value: String(channelLink).slice(0, 300), inline: true },
         { name: 'Version app', value: appVersion, inline: true },
         { name: 'SO', value: `${os.platform()} ${os.release()}`, inline: true },

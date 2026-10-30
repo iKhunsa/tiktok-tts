@@ -284,7 +284,7 @@ bakeado) es un no-op total.
   `tour_started` (`tour`), `event_effects_toggled` (`state`), `news_opened`,
   `donations_opened`, `portalview_opened`), Discord y promos
   (`discord_modal_opened` y `discord_join_clicked` con `source` =
-  `titlebar|sidebar|account_menu|sidebar_banner|connect_fail|bug_report|chat_banner_1..4`
+  `titlebar|sidebar|account_menu|sidebar_banner|connect_fail|bug_report|idea_modal|chat_banner_1..4`
   — lo que no esté en la lista cae a `otro` —, `promo_code_opened`,
   `promo_code_copied`, `promo_plans_clicked`, `tiktok_banner_clicked`),
   cuentas y planes (`auth_signed_in`, `auth_signed_out`, `plans_opened`,

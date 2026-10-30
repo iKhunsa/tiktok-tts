@@ -115,6 +115,9 @@ export function pintarBadgeSidebar() {
       icono.src = avatar || 'icons/account_circle.svg';
       icono.classList.toggle('sidebar-account-avatar', !!avatar);
     }
+    const banner = s.user?.bannerUrl;
+    cuenta.classList.toggle('con-banner', !!banner);
+    cuenta.style.setProperty('--banner', banner ? `url("${CSS.escape(banner)}")` : '');
     cuenta.querySelector('.sidebar-account-cta img').hidden = s.plan !== 'free';
     const cta = cuenta.querySelector('.sidebar-account-cta');
     cuenta.onclick = () => toggleAccountPopover(cuenta);

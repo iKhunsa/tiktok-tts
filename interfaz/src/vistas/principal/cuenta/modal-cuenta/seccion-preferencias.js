@@ -4,8 +4,13 @@
  * arranque con Windows (registro, via IPC); este ultimo queda desactivado
  * fuera de Electron (navegador), donde no hay IPC para tocar el registro.
  */
-import { t, aplicarTraducciones } from '../../../../nucleo/i18n/i18n.js';
+import { t, aplicarTraducciones, idiomaGuardado } from '../../../../nucleo/i18n/i18n.js';
 import { showToast } from '../../../../componentes/toast.js';
+
+const IDIOMAS = [
+  ['es', 'Español'], ['en', 'English'], ['it', 'Italiano'], ['pt', 'Português'], ['fr', 'Français'],
+  ['de', 'Deutsch'], ['zh', '中文'], ['ja', '日本語'], ['ko', '한국어'], ['ru', 'Русский'],
+];
 
 export async function pintarPreferencias(cont) {
   cont.insertAdjacentHTML('beforeend', `
@@ -21,8 +26,20 @@ export async function pintarPreferencias(cont) {
         <div class="mc-a11y-nombre" data-i18n="toggle.openAtLogin"></div>
       </div>
       <span class="switch"><input type="checkbox" data-pref="openAtLogin" disabled><span class="switch-track"></span></span>
+    </label>
+    <label class="mc-a11y-fila">
+      <div class="mc-a11y-nombre" data-i18n="toggle.uiLanguage"></div>
+      <select class="mc-idioma" data-pref="uiLanguage">
+        ${IDIOMAS.map(([v, n]) => `<option value="${v}">${n}</option>`).join('')}
+      </select>
     </label>`);
   aplicarTraducciones(cont);
+
+  // Mismo setLanguage() global que usaba el selector del sidebar; el nombre de
+  // cada idioma va en su propio idioma, sin traducir.
+  const idioma = cont.querySelector('[data-pref="uiLanguage"]');
+  idioma.value = idiomaGuardado() || document.documentElement.lang || 'es';
+  idioma.addEventListener('change', () => window.setLanguage?.(idioma.value));
 
   const closeToTray = cont.querySelector('[data-pref="closeToTray"]');
   fetch('/api/config').then((r) => r.json()).then((cfg) => { closeToTray.checked = cfg.closeToTray === true; }).catch(() => {});

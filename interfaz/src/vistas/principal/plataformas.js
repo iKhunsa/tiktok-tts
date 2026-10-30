@@ -132,10 +132,14 @@ let settingsChannelsRenderSeq = 0;
 // incluso si quedo alguna entrada vieja de un canal mal tipeado.
 export async function removeChannel(platform) {
   const saved = loadPlatformChannels();
-  const entradas = saved[platform] || [];
+  // Ademas de los guardados, todo lo que el servidor tenga conectado de esa
+  // plataforma: un canal en vivo que no esta (o ya no esta) en localStorage
+  // quedaria conectado en Chat aunque Mi cuenta lo muestre desvinculado.
+  const enVivo = (await obtenerCanalesEnVivo())[platform] || [];
+  const canales = new Set([...(saved[platform] || []).map((e) => e.channel), ...enVivo]);
   try {
-    await Promise.allSettled(entradas.map((entry) => fetch('/api/platforms/disconnect', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ platform, channel: entry.channel }),
+    await Promise.allSettled([...canales].map((channel) => fetch('/api/platforms/disconnect', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ platform, channel }),
     })));
     clearSavedChannels(platform);
     renderSettingsChannels();
@@ -316,7 +320,7 @@ const CLAVE_ESTADO = {
 };
 
 // Canales guardados (no los conectados): 0 => tarjeta grande en el chat,
-// >=1 => boton chico + un logo por plataforma en el encabezado, coloreado
+// >=1 => boton chico + un logo por plataforma activa en el encabezado, coloreado
 // segun su estado (ver vincular-cuentas.css).
 function pintarCuentasVinculadas() {
   const section = document.querySelector('.chat-section');
@@ -332,7 +336,10 @@ function pintarCuentasVinculadas() {
   }
   const logos = document.getElementById('linkedPlatforms');
   if (!logos) return;
-  logos.replaceChildren(...vinculadas.map((platform) => {
+  // Solo lo que esta pasando (conectado / conectando / fallo): un canal
+  // guardado pero sin conectar no muestra logo.
+  const activas = vinculadas.filter((platform) => estadoLogo(platform).estado !== 'idle');
+  logos.replaceChildren(...activas.map((platform) => {
     const { estado, motivo } = estadoLogo(platform);
     const texto = t(CLAVE_ESTADO[estado], { platform: PLATFORM_LABELS[platform], reason: motivo });
     // Con fallo es boton: abre el aviso de ayuda (en vivo? -> Discord).

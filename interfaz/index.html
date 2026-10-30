@@ -130,8 +130,8 @@
       </button>
     </nav>
 
-    <a href="https://www.tiktok.com/@ikhunsa_tiklivetts" target="_blank" rel="noopener" class="tiktok-banner">
-      <img src="asset/ads/fantasma-gatito.png" width="193" height="461" loading="lazy" decoding="async" alt="Síguenos en TikTok">
+    <a href="https://www.tiktok.com/@tiklivetts" target="_blank" rel="noopener" class="tiktok-banner">
+      <img src="asset/ads/siguenos-tiktok-gato.webp" width="579" height="1383" loading="lazy" decoding="async" alt="Síguenos en TikTok">
     </a>
 
     <a href="https://discord.com/invite/mwY859tcQK" target="_blank" rel="noopener" class="community-banner">
@@ -153,21 +153,6 @@
           <span class="sidebar-account-cta"><img class="icon-inline" src="icons/flash_on-accent.svg" alt=""><span></span></span>
         </span>
       </button>
-      <div class="lang-selector-row">
-        <img class="icon-inline" src="icons/language.svg" alt="" style="opacity:0.6;flex-shrink:0;">
-        <select id="langSelect" onchange="setLanguage(this.value)" title="UI Language">
-          <option value="es">Español</option>
-          <option value="en">English</option>
-          <option value="it">Italiano</option>
-          <option value="pt">Português</option>
-          <option value="fr">Français</option>
-          <option value="de">Deutsch</option>
-          <option value="zh">中文</option>
-          <option value="ja">日本語</option>
-          <option value="ko">한국어</option>
-          <option value="ru">Русский</option>
-        </select>
-      </div>
     </div>
   </aside>
 
@@ -1419,9 +1404,15 @@
     </div>
 
     <div class="bugreport-fields">
-      <div class="cfg-field">
-        <label data-i18n="bugReport.discordNickLabel">Tu nick de Discord</label>
-        <input type="text" id="bugReportDiscordNick" data-i18n-placeholder="bugReport.discordNickPlaceholder" placeholder="usuario#0000" />
+      <div class="idea-contacto">
+        <div class="cfg-field">
+          <label for="bugReportDiscordNick" data-i18n="bugReport.discordNickLabel">Tu nick de Discord</label>
+          <input type="text" id="bugReportDiscordNick" maxlength="40" autocomplete="off" data-i18n-placeholder="ideas.discordPlaceholder" placeholder="usuario" />
+        </div>
+        <div class="cfg-field">
+          <label for="bugReportEmail" data-i18n="ideas.emailLabel">Tu email</label>
+          <input type="email" id="bugReportEmail" maxlength="254" autocomplete="email" data-i18n-placeholder="ideas.emailPlaceholder" placeholder="tu@email.com" />
+        </div>
       </div>
 
       <div class="cfg-field">
@@ -1438,16 +1429,11 @@
         <label data-i18n="bugReport.extraLabel">¿Algo más que quieras agregar? (opcional)</label>
         <textarea id="bugReportExtra" rows="3" data-i18n-placeholder="bugReport.extraPlaceholder" placeholder="Mensajes de error, cuándo pasó, etc."></textarea>
       </div>
-    </div>
 
-    <div style="display:flex;justify-content:center;margin-top:20px;">
-      <button class="btn btn-connect" id="bugReportSubmitBtn" onclick="submitBugReport()"><span data-i18n="bugReport.submit">Enviar reporte</span></button>
+      <p class="idea-respuesta" data-i18n="ideas.replyNote">Te responderemos por email, o por Discord si estás en nuestro servidor.</p>
+      <a class="discord-cta idea-discord-cta" href="https://discord.com/invite/mwY859tcQK" target="_blank" rel="noopener"><img class="icon-inline" src="icons/discord.svg" alt=""> <span data-i18n="discordInvite.cta">Unirme al Discord</span></a>
+      <div style="margin-top:4px;"><button class="btn btn-connect" id="bugReportSubmitBtn" onclick="submitBugReport()"><span data-i18n="bugReport.submit">Enviar reporte</span></button></div>
     </div>
-
-    <p style="font-size:12px;color:var(--text-muted);margin-top:16px;text-align:center;">
-      <span data-i18n="bugReport.discordHint">¿Es solo una duda rápida? </span>
-      <a href="https://discord.com/invite/mwY859tcQK" target="_blank" style="color:var(--accent);" data-i18n="bugReport.discordLink">Únete a nuestro Discord</a>
-    </p>
   </div>
 </div>
 
@@ -1461,11 +1447,15 @@
     <form id="ideaForm" class="bugreport-fields" onsubmit="submitIdea(event)">
       <div class="cfg-field"><label for="ideaProblem"><span data-i18n="ideas.problemLabel">¿Qué problema querés resolver?</span><span class="idea-required" aria-hidden="true">*</span></label><textarea id="ideaProblem" rows="3" maxlength="2000" required data-i18n-placeholder="ideas.problemPlaceholder" placeholder="Contanos qué te pasa hoy."></textarea><span class="idea-char-count" data-counter-for="ideaProblem"></span></div>
       <div class="cfg-field"><label for="ideaDescription"><span data-i18n="ideas.ideaLabel">¿Cuál es tu idea?</span><span class="idea-required" aria-hidden="true">*</span></label><textarea id="ideaDescription" rows="3" maxlength="2000" required data-i18n-placeholder="ideas.ideaPlaceholder" placeholder="Explicanos qué te gustaría que hiciera TikLiveTTS."></textarea><span class="idea-char-count" data-counter-for="ideaDescription"></span></div>
-      <fieldset class="cfg-field idea-audience" role="radiogroup" aria-labelledby="ideaAudienceLabel"><legend id="ideaAudienceLabel"><span data-i18n="ideas.audienceLabel">¿A quién le serviría?</span><span class="idea-required" aria-hidden="true">*</span></legend><div class="idea-audience-grid"><label class="idea-audience-option"><input type="radio" name="ideaAudience" value="casi-todos" required><span data-i18n="ideas.audienceAlmostAll">Casi cualquier streamer</span></label><label class="idea-audience-option"><input type="radio" name="ideaAudience" value="muchos"><span data-i18n="ideas.audienceMany">Muchos streamers</span></label><label class="idea-audience-option"><input type="radio" name="ideaAudience" value="algunos"><span data-i18n="ideas.audienceSome">Algunos tipos de streamers</span></label><label class="idea-audience-option"><input type="radio" name="ideaAudience" value="como-yo"><span data-i18n="ideas.audienceLikeMe">Principalmente streamers como yo</span></label><label class="idea-audience-option"><input type="radio" name="ideaAudience" value="no-seguro"><span data-i18n="ideas.audienceUnsure">No estoy seguro</span></label></div></fieldset>
       <div class="cfg-field"><label for="ideaUseCase"><span data-i18n="ideas.useCaseLabel">¿Cuándo la usarías?</span><span class="idea-required" aria-hidden="true">*</span></label><textarea id="ideaUseCase" rows="2" maxlength="2000" required data-i18n-placeholder="ideas.useCasePlaceholder" placeholder="Danos un ejemplo de cuándo te serviría."></textarea></div>
-      <div class="cfg-field"><label for="ideaReason"><span data-i18n="ideas.reasonLabel">¿Por qué valdría la pena agregarla?</span><span class="idea-required" aria-hidden="true">*</span></label><textarea id="ideaReason" rows="2" maxlength="2000" required data-i18n-placeholder="ideas.reasonPlaceholder" placeholder="Pensá también cómo podría ayudar a otros usuarios."></textarea></div>
       <div class="cfg-field"><label for="ideaSimilarApp" data-i18n="ideas.similarLabel">¿Conocés una app con algo parecido? <span data-i18n="ideas.optional">(opcional)</span></label><input id="ideaSimilarApp" type="text" maxlength="2000" data-i18n-placeholder="ideas.similarPlaceholder" placeholder="Nombre o enlace"></div>
-      <div style="display:flex;justify-content:center;margin-top:4px;"><button class="btn btn-connect" id="ideaSubmitBtn" type="submit" data-i18n="ideas.submit">Enviar idea</button></div>
+      <div class="idea-contacto">
+        <div class="cfg-field"><label for="ideaDiscord"><span data-i18n="ideas.discordLabel">Tu usuario de Discord</span></label><input id="ideaDiscord" type="text" maxlength="40" autocomplete="off" data-i18n-placeholder="ideas.discordPlaceholder" placeholder="usuario"></div>
+        <div class="cfg-field"><label for="ideaEmail"><span data-i18n="ideas.emailLabel">Tu email</span></label><input id="ideaEmail" type="email" maxlength="254" autocomplete="email" data-i18n-placeholder="ideas.emailPlaceholder" placeholder="tu@email.com"></div>
+      </div>
+      <p class="idea-respuesta" data-i18n="ideas.replyNote">Te responderemos por email, o por Discord si estás en nuestro servidor.</p>
+      <a class="discord-cta idea-discord-cta" href="https://discord.com/invite/mwY859tcQK" target="_blank" rel="noopener"><img class="icon-inline" src="icons/discord.svg" alt=""> <span data-i18n="discordInvite.cta">Unirme al Discord</span></a>
+      <div style="margin-top:4px;"><button class="btn btn-connect" id="ideaSubmitBtn" type="submit" data-i18n="ideas.submit">Enviar idea</button></div>
     </form>
     <div id="ideaThanks" class="idea-thanks" hidden aria-live="polite"><img class="icon-inline" src="icons/check_circle.svg" alt=""><h3 data-i18n="ideas.thanksTitle">¡Gracias por tu idea!</h3><p data-i18n="ideas.thanksText">La revisaremos para seguir mejorando TikLiveTTS.</p></div>
   </div>

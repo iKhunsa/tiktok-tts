@@ -448,3 +448,16 @@ label.mc-a11y-fila + label.mc-a11y-fila { margin-top: 2em; }
 .modal-content:has(#acInput) .cuenta-field { margin-top: 20px; }
 .modal-content:has(#acInput) .cuenta-btn-primary { margin-top: 24px; }
 .modal-content:has(#acInput) .cuenta-btn-ghost { display: block; margin: 10px auto 0; }
+
+/* Selector de idioma de la UI (seccion Preferencias). */
+.mc-idioma {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  color: var(--text);
+  font: inherit;
+  padding: 0.385em 0.615em;
+  cursor: pointer;
+  transition: border-color 150ms ease-out;
+}
+.mc-idioma:hover, .mc-idioma:focus-visible { border-color: var(--accent); outline: none; }
