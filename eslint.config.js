@@ -75,6 +75,7 @@ module.exports = [
         Audio: 'readonly',
         AudioContext: 'readonly',
         OfflineAudioContext: 'readonly',
+        CSS: 'readonly',
         Image: 'readonly',
         MutationObserver: 'readonly',
         AbortController: 'readonly',
