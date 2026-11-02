@@ -45,10 +45,12 @@ import { copyToClipboard } from './utils-app.js';
 import {
   buildOverlayUrl, updateOverlayUrl, onCfgChange, copyCfgUrl,
   updateFollowerDisplay, testGiftAlert, testSocialAlert,
-  testTopLikers, testTopDonors, testViewers, testChatOverlay, restablecerOverlay,
+  testTopLikers, testTopDonors, testViewers,
 } from './configurador-overlays.js';
 import { iniciarCamposOverlay } from './campos-overlay/index.js';
-import { iniciarAcordeonOverlays } from './overlays-acordeon.js';
+import { iniciarSelectorColor } from '../../componentes/selector-color/index.js';
+import { iniciarTarjetasOverlays } from './overlays-tarjetas.js';
+import { iniciarCatalogoOverlays } from './overlays-catalogo/index.js';
 import {
   toggleChatToggles, toggleOption, setSoloChatMode,
   iniciarObservadorTogglesChat,
@@ -71,7 +73,7 @@ import {
   closeOnboardingWelcome, closeOnboardingComplete, startOnboardingTour,
   iniciarModalesYAvisos, arrancarAvisosOnboarding,
 } from './modales-avisos.js';
-import { closeIdeaModal, openIdeaModal, submitIdea } from './ideas/modal.js';
+import { closeIdeaModal, openIdeaModal, quitarImagenOverlay, submitIdea, submitOverlayIdea } from './ideas/modal.js';
 import { loadMobileURL, copyMobileURL, refreshMobileQR, showMobileQRPlaceholder } from './mobile-remote.js';
 import {
   markClip, clearAllClips, startStreamManual, stopStream, connectOBSFromUI,
@@ -123,7 +125,7 @@ Object.assign(window, {
   copyToClipboard,
   // configurador de overlays
   onCfgChange, copyCfgUrl, testGiftAlert, testSocialAlert,
-  testTopLikers, testTopDonors, testViewers, testChatOverlay, restablecerOverlay,
+  testTopLikers, testTopDonors, testViewers,
   // toggles de chat
   toggleChatToggles, toggleOption, setSoloChatMode,
   // atajos de teclado
@@ -137,7 +139,7 @@ Object.assign(window, {
   // modales y avisos
   openDonationsModal, closeDonationsModal, openDiscordModal, closeDiscordModal,
   openBugReportModal, closeBugReportModal, submitBugReport, openDictLangModal,
-  openIdeaModal, closeIdeaModal, submitIdea,
+  openIdeaModal, closeIdeaModal, submitIdea, submitOverlayIdea, quitarImagenOverlay,
   closeDictLangModal,
   closeOnboardingWelcome, closeOnboardingComplete, startOnboardingTour,
   // movil remoto
@@ -229,7 +231,9 @@ function iniciarArranque() {
   iniciarCierreDropdownVoces();
   iniciarPintadoDeRangos();
   iniciarCamposOverlay();
-  iniciarAcordeonOverlays();
+  iniciarSelectorColor();
+  iniciarCatalogoOverlays();
+  iniciarTarjetasOverlays();
   iniciarHoverConnectAllChat();
 
   document.addEventListener('DOMContentLoaded', () => {

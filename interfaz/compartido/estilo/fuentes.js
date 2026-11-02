@@ -6,7 +6,7 @@ export const FUENTES_DISPONIBLES = [
   'Bebas Neue', 'Orbitron', 'Bangers', 'Luckiest Guy', 'Pacifico', 'Press Start 2P',
 ];
 
-export const EFECTOS_TEXTO = ['ninguno', 'sombra', 'contorno', 'neon'];
+export const EFECTOS_TEXTO = ['ninguno', 'sombra', 'contorno', 'neon', '3d', 'fuego', 'hielo', 'arcoiris', 'dorado', 'retro', 'glitch'];
 
 const PILA_SISTEMA = '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
 const URL_GOOGLE_FONTS = 'https://fonts.googleapis.com/css2';
@@ -23,8 +23,10 @@ export function familiaCss(fuente) {
  */
 export function cargarFuente(fuente) {
   if (fuente === FUENTE_SISTEMA) return;
+  const href = `${URL_GOOGLE_FONTS}?family=${encodeURIComponent(fuente)}:wght@300;400;500;600;700;800;900&display=swap`;
+  if (document.querySelector(`link[href="${href}"]`)) return;
   const enlace = document.createElement('link');
   enlace.rel = 'stylesheet';
-  enlace.href = `${URL_GOOGLE_FONTS}?family=${encodeURIComponent(fuente)}:wght@400;700&display=swap`;
+  enlace.href = href;
   document.head.appendChild(enlace);
 }

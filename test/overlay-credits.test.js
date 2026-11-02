@@ -33,3 +33,13 @@ test('creditos: resetOverlayState los vacia', () => {
   resetOverlayState(state);
   assert.deepStrictEqual(creditsToJSON(state.credits), { donors: [], followers: [], sharers: [] });
 });
+
+test('creditos: Bits y Kicks acumulan cantidad y conservan su plataforma', () => {
+  const { credits } = createOverlayState();
+  addDonor(credits, { platform: 'twitch', userId: 'b', user: 'Bob', giftName: 'cheer', count: 1, kind: 'cheer', amount: 100 });
+  addDonor(credits, { platform: 'twitch', userId: 'b', user: 'Bob', giftName: 'cheer', count: 1, kind: 'cheer', amount: 400 });
+  addFollower(credits, { platform: 'kick', userId: 'k', user: 'Kim' });
+  const j = creditsToJSON(credits);
+  assert.deepStrictEqual(j.donors, [{ user: 'Bob', giftName: 'cheer', count: 2, platform: 'twitch', kind: 'cheer', amount: 500 }]);
+  assert.strictEqual(j.followers[0].platform, 'kick');
+});

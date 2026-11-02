@@ -6,5 +6,3 @@ export const CORAZON_SVG = '<svg class="simbolo" viewBox="0 0 24 24" aria-hidden
 
 export const MONEDA_SVG = '<svg class="simbolo" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#ffe08a"/><circle cx="12" cy="12" r="8.5" fill="#f5b800"/><path d="M12 7v10M9.2 9.8h4.2a1.6 1.6 0 0 1 0 3.2H10a1.6 1.6 0 0 0 0 3.2h4.4" fill="none" stroke="#fff3c4" stroke-width="1.6" stroke-linecap="round"/></svg>';
 
-// Silueta neutra para quien no tiene foto (o cuya URL firmada de TikTok ya caduco).
-export const AVATAR_PLACEHOLDER = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="#3a3d45"/><circle cx="32" cy="25" r="11" fill="#8b909c"/><path d="M10 64c2-15 12-22 22-22s20 7 22 22Z" fill="#8b909c"/></svg>')}`;

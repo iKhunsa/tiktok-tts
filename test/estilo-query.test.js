@@ -89,7 +89,65 @@ test('ningun esquema repite un param ni una clave', async () => {
 test('DEFAULTS_OVERLAYS conserva los defaults historicos de los overlays simples', async () => {
   const { DEFAULTS_OVERLAYS } = await cargar('esquemas.js');
 
-  assert.deepEqual(DEFAULTS_OVERLAYS.seguidores, { goal: '', color: '#FFBB00', bg: 0.8 });
-  assert.deepEqual(DEFAULTS_OVERLAYS.alertas, { dur: 4000, color: '#FFBB00', bg: 0.9 });
-  assert.deepEqual(DEFAULTS_OVERLAYS['alertas-social'], { color: '#FFBB00', bg: 0.9 });
+  const { goal, color, bg } = DEFAULTS_OVERLAYS.seguidores;
+  assert.deepEqual({ goal, color, bg }, { goal: '', color: '#FFBB00', bg: 0.8 });
+  assert.equal(DEFAULTS_OVERLAYS.alertas.dur, 4000);
+  assert.equal(DEFAULTS_OVERLAYS.alertas.bg, 0.9);
+  assert.equal(DEFAULTS_OVERLAYS['alertas-social'].color, '#FFBB00');
+  assert.equal(DEFAULTS_OVERLAYS['alertas-social'].bg, 0.9);
+  // Lo nuevo no cambia las URLs ya pegadas en OBS: con los defaults no se escribe ningun parametro.
+  assert.equal(DEFAULTS_OVERLAYS.seguidores.escala, 1);
+});
+
+test('las opciones de tipografia solo viajan si difieren del default y vuelven igual', async () => {
+  const { camposTipografia } = await import('../interfaz/compartido/estilo/campos-tipografia.js');
+  const { construirQuery, leerConfig, valoresPorDefecto } = await import('../interfaz/compartido/estilo/query.js');
+  const esquema = camposTipografia(14);
+  const cfg = valoresPorDefecto(esquema);
+  assert.equal(construirQuery(esquema, cfg), '');
+  const cambiada = { ...cfg, peso: '800', mayusculas: 'uppercase', cursiva: true, contornoGrosor: 2, sombra: true, sombraColor: '#ff0000' };
+  assert.deepEqual(leerConfig(esquema, new URLSearchParams(construirQuery(esquema, cambiada))), cambiada);
+});
+
+test('la alineacion solo viaja en la URL si difiere del default y vuelve igual', async () => {
+  const { camposAlineacion } = await import('../interfaz/compartido/estilo/campos-alineacion.js');
+  const { construirQuery, leerConfig, valoresPorDefecto } = await import('../interfaz/compartido/estilo/query.js');
+  const esquema = camposAlineacion({ posicionV: 'abajo' });
+  const cfg = valoresPorDefecto(esquema);
+  assert.equal(construirQuery(esquema, cfg), '');
+  const query = construirQuery(esquema, { ...cfg, alineacionTexto: 'justificado', posicionV: 'arriba' });
+  assert.equal(query, 'ta=justificado&py=arriba');
+  assert.deepEqual(leerConfig(esquema, new URLSearchParams(query)), { ...cfg, alineacionTexto: 'justificado', posicionV: 'arriba' });
+});
+
+test('el avatar generado es estable por nombre y distinto entre nombres', async () => {
+  const { avatarGenerado } = await import('../interfaz/compartido/avatar-generado.js');
+  assert.equal(avatarGenerado('Ana'), avatarGenerado('Ana'));
+  assert.notEqual(avatarGenerado('Ana'), avatarGenerado('Beto'));
+  for (const nombre of ['Ana', '', undefined, 'ñandú_99', '日本語']) {
+    const svg = decodeURIComponent(avatarGenerado(nombre).split(',')[1]);
+    assert.match(svg, /^<svg /);
+    assert.doesNotMatch(svg, /NaN|undefined/);
+  }
+});
+
+test('el selector de color convierte hex y hsv sin perder el valor', async () => {
+  const { hexAHsv, hsvAHex, normalizarHex } = await import('../interfaz/src/componentes/selector-color/color.js');
+  for (const hex of ['#000000', '#ffffff', '#f0213a', '#53fc18', '#9146ff', '#808080']) {
+    assert.equal(hsvAHex(hexAHsv(hex)), hex);
+  }
+  assert.equal(normalizarHex('ABC'), '#aabbcc');
+  assert.equal(normalizarHex(' #F0213A '), '#f0213a');
+  assert.equal(normalizarHex('#12'), null);
+});
+
+test('las favoritas se ponen, se quitan y respetan el maximo', async () => {
+  const { MAX_FAVORITAS, SKINS_PREMIUM, alternarFavorita, camposChat } = await import('../interfaz/compartido/estilo/campos-chat.js');
+  assert.deepEqual(alternarFavorita([], 'retro'), ['retro']);
+  assert.deepEqual(alternarFavorita(['retro'], 'retro'), []);
+  const llena = Array.from({ length: MAX_FAVORITAS }, (_, i) => `s${i}`);
+  assert.equal(alternarFavorita(llena, 'retro'), null);
+  assert.deepEqual(alternarFavorita(llena, 's0').length, MAX_FAVORITAS - 1);
+  const opciones = camposChat().find(({ clave }) => clave === 'skin').opciones;
+  assert.ok(SKINS_PREMIUM.every((skin) => opciones.includes(skin)));
 });

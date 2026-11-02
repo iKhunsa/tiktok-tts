@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Overlay — Social</title>
   <link rel="stylesheet" href="./compartido/tema-overlay.css">
+  <link rel="stylesheet" href="./compartido/estilo/estilo-texto.css">
   <style>
     body {
       background: transparent;
@@ -12,7 +13,7 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       -webkit-font-smoothing: antialiased;
     }
-    body.layout-rows { width: 260px; }
+    
     .container { display: flex; gap: 10px; }
     body.layout-rows .container { flex-direction: column; }
     .panel {
@@ -53,6 +54,7 @@
       max-height: 240px;
       overflow: hidden;
     }
+    .entry-plataforma { flex-shrink: 0; width: 14px; height: 14px; margin-left: auto; }
     .entry {
       display: flex;
       align-items: center;

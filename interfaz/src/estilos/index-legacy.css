@@ -906,8 +906,6 @@
     }
 
     .setting-group input::placeholder { color: var(--text-muted); }
-    .setting-group input[type="number"]::-webkit-inner-spin-button,
-    .setting-group input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
     .setting-group input[type="range"] {
       width: 100%;
@@ -2089,7 +2087,17 @@
     .idea-respuesta { margin: 0; color: var(--text-muted); font-size: var(--text-2xs); line-height: 1.5; }
     .idea-discord-cta:active { transform: scale(.98); }
     /* Mismo formato que el CTA de Discord (.discord-cta), en rojo de acento. */
-    #ideaSubmitBtn, #bugReportSubmitBtn { width: 100%; height: 42px; padding: 0; border-radius: 10px; font-size: var(--text-base); font-weight: 600; }
+    /* El input cubre la zona entera: clic y soltar archivo los resuelve el navegador. */
+    .idea-archivo { position: relative; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 14px; border: 1px dashed var(--border); border-radius: 10px; color: var(--text-secondary); font-size: var(--text-sm); transition: border-color .15s ease-out, background-color .15s ease-out; }
+    .idea-archivo small { color: var(--text-muted); font-size: var(--text-3xs); }
+    .idea-archivo input { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; opacity: 0; cursor: pointer; }
+    .idea-archivo:focus-within { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
+    @media (hover: hover) and (pointer: fine) { .idea-archivo:hover { border-color: var(--text-muted); background: var(--surface-raised); } }
+    .idea-archivo-vista { display: flex; align-items: center; gap: 12px; }
+    .idea-archivo-vista img { width: 72px; height: 72px; object-fit: cover; border-radius: 8px; }
+    .idea-archivo-vista button { padding: 0; border: 0; background: none; color: var(--text-secondary); font: inherit; font-size: var(--text-sm); text-decoration: underline; cursor: pointer; }
+    .idea-archivo-vista button:focus-visible { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
+    #ideaSubmitBtn, #overlayIdeaSubmitBtn, #bugReportSubmitBtn { width: 100%; height: 42px; padding: 0; border-radius: 10px; font-size: var(--text-base); font-weight: 600; }
     .idea-char-count { align-self: flex-end; color: var(--text-muted); font-size: var(--text-3xs); }
     .idea-submit-spinner { display: inline-block; width: 12px; height: 12px; margin-right: 7px; vertical-align: -2px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: ideaSpin .7s linear infinite; }
     /* display:grid/flex de las reglas de abajo anula el atributo hidden: se fuerza */
@@ -3423,11 +3431,22 @@
     body.reduce-motion .atajos-preset:active,
     body.reduce-motion .atajos-pause-button:active { transform: none; }
 
-/* Acordeón de tarjetas de overlay (overlays-acordeon.js): contraídas muestran solo la cabecera. */
+/* Tarjetas de overlay (overlays-tarjetas.js): cerradas son una fila; abierta, la pagina del overlay. */
 #view-overlays .cfg-card > .cfg-header { cursor: pointer; user-select: none; }
 #view-overlays .cfg-card:not(.abierta) > .cfg-header { margin-bottom: 0; }
 #view-overlays .cfg-card:not(.abierta) > :not(.cfg-header) { display: none; }
 #view-overlays .cfg-header:focus-visible { outline: 2px solid var(--accent, currentColor); outline-offset: 4px; border-radius: 6px; }
-.cfg-acordeon-flecha { flex-shrink: 0; opacity: 0.7; transition: transform 200ms cubic-bezier(.23, 1, .32, 1); }
-#view-overlays .cfg-card.abierta .cfg-acordeon-flecha { transform: rotate(180deg); }
-@media (prefers-reduced-motion: reduce) { .cfg-acordeon-flecha { transition: none; } }
+
+/* Flechas de los campos numericos de toda la app. Sin appearance el boton nativo sigue funcionando: su mitad superior sube y la inferior baja. */
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 20px;
+  margin: 0 -2px 0 6px;
+  opacity: 0.7;
+  cursor: pointer;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 20' fill='none' stroke='%23b4b4b4' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8l3-3 3 3M3 12l3 3 3-3'/%3E%3C/svg%3E") center / 12px 20px no-repeat;
+  transition: opacity var(--dur-1) ease-out;
+}
+input[type="number"]:hover::-webkit-inner-spin-button, input[type="number"]:focus::-webkit-inner-spin-button { opacity: 1; }

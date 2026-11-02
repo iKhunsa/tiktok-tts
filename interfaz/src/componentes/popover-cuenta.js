@@ -1,4 +1,5 @@
 import { abrirPopupPlanes } from './popup-planes.js';
+import { avatarGenerado } from '../../compartido/avatar-generado.js';
 import { aplicarTraducciones } from '../nucleo/i18n/i18n.js';
 import { almacenSesion } from '../nucleo/estado/sesion.js';
 import { obtenerAvatarPerfil } from '../nucleo/estado/avatar-perfil.js';
@@ -58,7 +59,7 @@ export function toggleAccountPopover(anchorEl) {
   };
   const header = popover.querySelector('.account-popover-header');
   // Misma foto que la tarjeta de cuenta de la barra lateral (sesion.js).
-  const avatar = user?.avatarUrl || obtenerAvatarPerfil();
+  const avatar = user?.avatarUrl || obtenerAvatarPerfil() || (user && avatarGenerado(user.nombre || user.email));
   if (avatar) {
     const icono = header.querySelector('.icon-inline');
     icono.src = avatar;

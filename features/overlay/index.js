@@ -63,7 +63,7 @@ module.exports = {
         }
       }
 
-      addDonor(state.credits, { platform: payload.platform, userId: info.userId, user, giftName: info.giftName || info.kind, count: info.repeatCount });
+      addDonor(state.credits, { platform: payload.platform, userId: info.userId, user, giftName: info.giftName || info.kind, count: info.repeatCount, kind: info.kind, amount: info.amount });
       bus.emit('ws:broadcast', {
         type: 'gift', platform: payload.platform, user, ttsUser: resolveSpokenName(info.nickname, info.userId),
         giftName: info.giftName, giftId: info.giftId, giftPictureUrl: info.giftPictureUrl,

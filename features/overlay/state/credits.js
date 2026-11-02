@@ -13,18 +13,24 @@ function bump(map, key, base, inc) {
   map.set(key, entry);
 }
 
+// TikTok no se marca: es el caso por defecto y mantiene la forma historica de las entradas.
+const marcaPlataforma = (platform) => (platform && platform !== 'tiktok' ? { platform } : {});
+
 const idOf = (platform, userId, user) => `${platform || ''}:${userId || user}`;
 
-function addDonor(credits, { platform, userId, user, giftName, count }) {
-  bump(credits.donors, `${idOf(platform, userId, user)}|${giftName}`, { user, giftName, count: 0 }, count);
+function addDonor(credits, { platform, userId, user, giftName, count, kind, amount }) {
+  const clave = `${idOf(platform, userId, user)}|${giftName}`;
+  const extra = kind ? { kind, amount: 0 } : {};
+  bump(credits.donors, clave, { user, giftName, count: 0, ...marcaPlataforma(platform), ...extra }, count);
+  if (kind) credits.donors.get(clave).amount += amount || 0;
 }
 
 function addFollower(credits, { platform, userId, user }) {
-  bump(credits.followers, idOf(platform, userId, user), { user, count: 0 }, 1);
+  bump(credits.followers, idOf(platform, userId, user), { user, count: 0, ...marcaPlataforma(platform) }, 1);
 }
 
 function addSharer(credits, { platform, userId, user }) {
-  bump(credits.sharers, idOf(platform, userId, user), { user, count: 0 }, 1);
+  bump(credits.sharers, idOf(platform, userId, user), { user, count: 0, ...marcaPlataforma(platform) }, 1);
 }
 
 // Mismo shape que el viejo array por evento: donors {user,giftName,count};

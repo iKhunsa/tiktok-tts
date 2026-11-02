@@ -14,7 +14,7 @@
 }
 body {
   background: transparent;
-  width: 340px;
+  width: 100%;
   padding: 1.4em 8px 8px;
   font-family: var(--ff);
   font-size: var(--fs);
@@ -24,6 +24,8 @@ body {
   overflow: hidden;
 }
 #leaderboard {
+  translate: var(--dx, 0) var(--dy, 0);
+  width: min(100%, var(--ancho-base, 340) * var(--u));
   display: flex;
   flex-direction: column;
   gap: 0.3em;
@@ -123,11 +125,11 @@ body {
 }
 .username {
   color: var(--c-user);
-  font-weight: 700;
+  font-weight: var(--fw, 700);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  text-shadow: var(--sombra, 0 1px 3px rgba(0, 0, 0, 0.6));
 }
 .valor {
   display: flex;
@@ -136,7 +138,7 @@ body {
   font-size: 0.9em;
   color: var(--c-valor);
   font-variant-numeric: tabular-nums;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  text-shadow: var(--sombra, 0 1px 3px rgba(0, 0, 0, 0.6));
 }
 .simbolo {
   flex-shrink: 0;
@@ -148,7 +150,7 @@ body {
   font-size: 0.8em;
   color: #fff;
   padding: 1em 0 0.5em;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  text-shadow: var(--sombra, 0 1px 3px rgba(0, 0, 0, 0.6));
 }
 @media (prefers-reduced-motion: reduce) {
   .corona, .row-pulso::after { animation: none; }

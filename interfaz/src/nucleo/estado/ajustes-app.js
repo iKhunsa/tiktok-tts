@@ -53,6 +53,8 @@ export const DEFAULT_SETTINGS = {
   musicPauseShortcut: null,
   musicSkipShortcut: null,
   overlays: DEFAULTS_OVERLAYS,
+  overlayLienzo: '16:9',
+  skinsFavoritas: [],
 };
 
 export let appSettings = {};

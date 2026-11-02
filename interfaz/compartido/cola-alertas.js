@@ -4,8 +4,9 @@
  * Antes cada uno tenia su propia copia de enqueue/processQueue/dismiss.
  *
  * @param {(evento: any) => void} mostrar - crea y anima la tarjeta de un evento
+ * @param {{maxPendientes?: number}} [opciones] - pasado el tope, los eventos nuevos se descartan
  */
-export function crearColaAlertas(mostrar) {
+export function crearColaAlertas(mostrar, { maxPendientes = Infinity } = {}) {
   const cola = [];
   let mostrando = false;
 
@@ -16,6 +17,7 @@ export function crearColaAlertas(mostrar) {
   }
 
   function encolar(evento) {
+    if (cola.length >= maxPendientes) return;
     cola.push(evento);
     if (!mostrando) procesar();
   }

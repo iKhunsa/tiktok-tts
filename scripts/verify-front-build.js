@@ -24,6 +24,9 @@ const REQUIRED = [
   'overlay-seguidores.html',
   'overlay-viewers.html',
   'overlay-social.html',
+  'overlay-evento.html',
+  'overlay-contador-likes.html',
+  'overlay-musica.html',
   'assets',
   path.join('locales', 'es.json'),
 ];

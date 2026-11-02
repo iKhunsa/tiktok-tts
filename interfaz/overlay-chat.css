@@ -3,6 +3,7 @@
   --fs: 14px;
   --lh: 1.4;
   --ls: 0px;
+  --dir: 1; /* sentido horizontal de las animaciones: -1 en rtl */
   --tiktok: #fe2c55;
   --twitch: #9146ff;
   --youtube: #ff0000;
@@ -10,7 +11,7 @@
 }
 body {
   background: transparent;
-  width: 420px;
+  width: 100%;
   height: 100vh;
   font-family: var(--ff);
   font-size: var(--fs);
@@ -20,44 +21,189 @@ body {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  padding: 8px;
+  justify-content: var(--pos-y, flex-end);
+  padding: 0.57em;
 }
-body.rtl { direction: rtl; }
+body.rtl { direction: rtl; --dir: -1; }
 #chat-container {
+  translate: var(--dx, 0) var(--dy, 0);
+  /* 100% del ajuste = la medida base escalada con --u. Los textos largos pasan de linea. */
+  width: min(100%, var(--msg-w, 1) * var(--ancho-base, 420) * var(--u));
+  align-self: var(--pos-msg, flex-start);
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 0.36em;
   /* Si no entran todos, que se corten los viejos (arriba), nunca el ultimo. */
   justify-content: flex-end;
   overflow: hidden;
 }
-body.fit #chat-container { align-items: flex-start; }
-body.rtl.fit #chat-container { align-items: flex-end; }
+body.fit #chat-container { align-items: var(--pos-msg, flex-start); }
 
 .msg {
   display: flex;
   align-items: flex-start;
-  gap: 7px;
+  gap: 0.5em;
   max-width: 100%;
   background: color-mix(in srgb, var(--rol-fondo) calc(var(--bg-alpha) * 100%), transparent);
   border: 1px solid rgba(255, 255, 255, calc(var(--bg-alpha) * 0.1));
-  border-radius: 12px;
-  padding: 7px 11px;
+  border-radius: 0.86em;
+  padding: 0.5em 0.79em;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   word-break: break-word;
-  transition: opacity 0.3s ease-out;
 }
 body.fit .msg { width: fit-content; }
-.msg.saliendo { opacity: 0; }
 /* Solo vista previa: plataforma que el filtro del overlay no mostraria en OBS. */
 .msg-excluido { filter: grayscale(1) brightness(0.6); }
 
-/* Entrada: slide-up (por defecto), slide-left, fade o ninguna. */
-.anim-slide-up { animation: entra-abajo 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
-.anim-slide-left { animation: entra-izquierda 0.3s cubic-bezier(0.23, 1, 0.32, 1) both; }
-.anim-fade { animation: entra-fade 0.25s ease-out both; }
+/* Skins: una regla por opcion de SKINS_CHAT (`clasica` es la base). Respetan los colores de cada rol. */
+body[data-skin="cristal"] .msg {
+  background: color-mix(in srgb, var(--rol-fondo) calc(var(--bg-alpha) * 45%), transparent);
+  border-color: rgba(255, 255, 255, 0.22);
+  border-radius: 1.15em;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+}
+body[data-skin="neon"] .msg {
+  border-color: var(--c-user);
+  border-radius: 0.5em;
+  box-shadow: 0 0 0.7em color-mix(in srgb, var(--c-user) 55%, transparent), inset 0 0 0.5em color-mix(in srgb, var(--c-user) 20%, transparent);
+}
+body[data-skin="minimal"] .msg {
+  background: none;
+  border-color: transparent;
+  padding: 0.2em 0.3em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+body[data-skin="bloque"] .msg {
+  border-width: 0 0 0 0.25em;
+  border-color: var(--c-user);
+  border-radius: 0.2em;
+}
+body.rtl[data-skin="bloque"] .msg { border-width: 0 0.25em 0 0; }
+body[data-skin="burbuja"] .msg {
+  border-radius: 1.5em 1.5em 1.5em 0.25em;
+}
+body.rtl[data-skin="burbuja"] .msg { border-radius: 1.5em 1.5em 0.25em 1.5em; }
+body[data-skin="terminal"] .msg {
+  border-color: var(--c-user);
+  border-style: dashed;
+  border-radius: 0;
+  font-family: Consolas, "Courier New", monospace;
+}
+body[data-skin="retro"] .msg {
+  border: 0.14em solid var(--c-user);
+  border-radius: 0;
+  box-shadow: 0.3em 0.3em 0 color-mix(in srgb, var(--c-user) 60%, transparent);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+body[data-skin="degradado"] .msg {
+  background: linear-gradient(120deg, color-mix(in srgb, var(--c-user) calc(var(--bg-alpha) * 45%), transparent), color-mix(in srgb, var(--rol-fondo) calc(var(--bg-alpha) * 100%), transparent));
+  border-color: transparent;
+  border-radius: 0.8em;
+}
+
+/* Entrada: una clase por opcion de ANIMACIONES_ENTRADA (`ninguna` no tiene regla). */
+.anim-slide-up { animation: entra-abajo var(--entrada-ms) cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.anim-slide-down { animation: entra-arriba var(--entrada-ms) cubic-bezier(0.23, 1, 0.32, 1) both; }
+.anim-slide-left { animation: entra-izquierda var(--entrada-ms) cubic-bezier(0.23, 1, 0.32, 1) both; }
+.anim-slide-right { animation: entra-derecha var(--entrada-ms) cubic-bezier(0.23, 1, 0.32, 1) both; }
+.anim-fade { animation: entra-fade var(--entrada-ms) ease-out both; }
+.anim-pop { animation: entra-pop var(--entrada-ms) cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.anim-zoom { animation: entra-zoom var(--entrada-ms) cubic-bezier(0.23, 1, 0.32, 1) both; }
+/* Blur y reveal sin relleno final: el filtro y el recorte no deben quedar puestos al terminar. */
+.anim-blur { animation: entra-blur var(--entrada-ms) cubic-bezier(0.23, 1, 0.32, 1) backwards; }
+.anim-flip { animation: entra-flip var(--entrada-ms) cubic-bezier(0.23, 1, 0.32, 1) both; transform-origin: top; }
+.anim-reveal { animation: entra-reveal var(--entrada-ms) cubic-bezier(0.23, 1, 0.32, 1) backwards; }
+.anim-reveal-up { animation: entra-reveal-arriba var(--entrada-ms) cubic-bezier(0.23, 1, 0.32, 1) backwards; }
+.anim-reveal-center { animation: entra-reveal-centro var(--entrada-ms) cubic-bezier(0.23, 1, 0.32, 1) backwards; }
+.anim-bounce { animation: entra-rebote var(--entrada-ms) ease-out both; }
+.anim-drop { animation: entra-caida var(--entrada-ms) cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.anim-swing { animation: entra-balanceo var(--entrada-ms) ease-out both; transform-origin: top left; }
+.anim-skew { animation: entra-inclinado var(--entrada-ms) cubic-bezier(0.23, 1, 0.32, 1) both; }
+.anim-elastic { animation: entra-elastico var(--entrada-ms) ease-out both; }
+.anim-shake { animation: entra-sacudida var(--entrada-ms) ease-out both; }
+.anim-glitch { animation: entra-glitch var(--entrada-ms) steps(1) both; }
+@keyframes entra-reveal-arriba {
+  from { clip-path: inset(100% 0 0 0); }
+  to { clip-path: inset(0); }
+}
+@keyframes entra-reveal-centro {
+  from { clip-path: inset(0 50%); }
+  to { clip-path: inset(0); }
+}
+@keyframes entra-caida {
+  from { opacity: 0; transform: translateY(-28px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes entra-balanceo {
+  0% { opacity: 0; transform: rotate(calc(-7deg * var(--dir))); }
+  40% { opacity: 1; transform: rotate(calc(3deg * var(--dir))); }
+  70% { transform: rotate(calc(-1deg * var(--dir))); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes entra-inclinado {
+  from { opacity: 0; transform: translateX(calc(-24px * var(--dir))) skewX(calc(-14deg * var(--dir))); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes entra-elastico {
+  0% { opacity: 0; transform: scale(0.8, 1.15); }
+  40% { opacity: 1; transform: scale(1.05, 0.95); }
+  70% { transform: scale(0.98, 1.02); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes entra-sacudida {
+  0% { opacity: 0; transform: translateX(-8px); }
+  25% { opacity: 1; transform: translateX(6px); }
+  50% { transform: translateX(-4px); }
+  75% { transform: translateX(2px); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes entra-glitch {
+  0% { opacity: 0; transform: translateX(-8px); }
+  20% { opacity: 1; transform: translate(6px, -2px); }
+  40% { opacity: 0.4; transform: translate(-4px, 2px); }
+  60% { opacity: 1; transform: translateX(3px); }
+  80% { opacity: 0.7; transform: translateX(-2px); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes entra-arriba {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes entra-pop {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes entra-zoom {
+  from { opacity: 0; transform: scale(1.08); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes entra-blur {
+  from { opacity: 0; filter: blur(6px); }
+}
+@keyframes entra-flip {
+  from { opacity: 0; transform: perspective(600px) rotateX(-60deg); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes entra-reveal {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0); }
+}
+@keyframes entra-reveal-rtl {
+  from { clip-path: inset(0 0 0 100%); }
+  to { clip-path: inset(0); }
+}
+@keyframes entra-rebote {
+  0% { opacity: 0; transform: translateY(16px); }
+  50% { opacity: 1; transform: translateY(-5px); }
+  75% { transform: translateY(2px); }
+  100% { opacity: 1; transform: none; }
+}
 @keyframes entra-abajo {
   from { opacity: 0; transform: translateY(12px) scale(0.96); }
   to { opacity: 1; transform: none; }
@@ -71,13 +217,78 @@ body.fit .msg { width: fit-content; }
   to { opacity: 1; }
 }
 body.rtl .anim-slide-left { animation-name: entra-derecha; }
+body.rtl .anim-slide-right { animation-name: entra-izquierda; }
+body.rtl .anim-reveal { animation-name: entra-reveal-rtl; }
+body.rtl .anim-swing { transform-origin: top right; }
 @keyframes entra-derecha {
   from { opacity: 0; transform: translateX(24px); }
   to { opacity: 1; transform: none; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .msg { animation: none; }
+
+/* Salida: una clase por opcion de ANIMACIONES_SALIDA (`ninguna` no tiene regla). */
+.msg.sale-fade { animation: sale-fade var(--salida-ms) cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+.msg.sale-arriba { animation: sale-arriba var(--salida-ms) cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+.msg.sale-abajo { animation: sale-abajo var(--salida-ms) cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+.msg.sale-izquierda { animation: sale-izquierda var(--salida-ms) cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+.msg.sale-derecha { animation: sale-derecha var(--salida-ms) cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+.msg.sale-encoge { animation: sale-encoge var(--salida-ms) cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+.msg.sale-crece { animation: sale-crece var(--salida-ms) cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+.msg.sale-blur { animation: sale-blur var(--salida-ms) cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+.msg.sale-flip { animation: sale-flip var(--salida-ms) cubic-bezier(0.23, 1, 0.32, 1) forwards; transform-origin: top; }
+.msg.sale-recorte { animation: sale-recorte var(--salida-ms) cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+.msg.sale-recorte-arriba { animation: sale-recorte-arriba var(--salida-ms) cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+.msg.sale-recorte-centro { animation: sale-recorte-centro var(--salida-ms) cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+.msg.sale-rebote { animation: sale-rebote var(--salida-ms) ease-out forwards; }
+.msg.sale-caida { animation: sale-caida var(--salida-ms) cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+.msg.sale-balanceo { animation: sale-balanceo var(--salida-ms) ease-out forwards; transform-origin: top left; }
+.msg.sale-inclinado { animation: sale-inclinado var(--salida-ms) cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+.msg.sale-elastico { animation: sale-elastico var(--salida-ms) ease-out forwards; }
+.msg.sale-sacudida { animation: sale-sacudida var(--salida-ms) ease-out forwards; }
+.msg.sale-glitch { animation: sale-glitch var(--salida-ms) steps(1) forwards; }
+body.rtl .msg.sale-balanceo { transform-origin: top right; }
+@keyframes sale-recorte-arriba { to { clip-path: inset(0 0 100% 0); } }
+@keyframes sale-recorte-centro { to { clip-path: inset(0 50%); } }
+@keyframes sale-rebote {
+  40% { opacity: 1; transform: translateY(-6px); }
+  100% { opacity: 0; transform: translateY(16px); }
 }
+@keyframes sale-caida { to { opacity: 0; transform: translateY(28px); } }
+@keyframes sale-balanceo {
+  35% { opacity: 1; transform: rotate(calc(3deg * var(--dir))); }
+  100% { opacity: 0; transform: rotate(calc(-7deg * var(--dir))); }
+}
+@keyframes sale-inclinado { to { opacity: 0; transform: translateX(calc(24px * var(--dir))) skewX(calc(-14deg * var(--dir))); } }
+@keyframes sale-elastico {
+  35% { opacity: 1; transform: scale(1.05, 0.95); }
+  100% { opacity: 0; transform: scale(0.8, 1.15); }
+}
+@keyframes sale-sacudida {
+  25% { transform: translateX(-4px); }
+  50% { opacity: 1; transform: translateX(6px); }
+  75% { transform: translateX(-8px); }
+  100% { opacity: 0; transform: translateX(8px); }
+}
+@keyframes sale-glitch {
+  20% { opacity: 0.7; transform: translateX(-2px); }
+  40% { opacity: 1; transform: translateX(3px); }
+  60% { opacity: 0.4; transform: translate(-4px, 2px); }
+  80% { opacity: 1; transform: translate(6px, -2px); }
+  100% { opacity: 0; transform: translateX(-8px); }
+}
+@keyframes sale-fade { to { opacity: 0; } }
+@keyframes sale-arriba { to { opacity: 0; transform: translateY(-16px); } }
+@keyframes sale-abajo { to { opacity: 0; transform: translateY(16px); } }
+@keyframes sale-izquierda { to { opacity: 0; transform: translateX(calc(-32px * var(--dir))); } }
+@keyframes sale-derecha { to { opacity: 0; transform: translateX(calc(32px * var(--dir))); } }
+@keyframes sale-encoge { to { opacity: 0; transform: scale(0.9); } }
+@keyframes sale-crece { to { opacity: 0; transform: scale(1.08); } }
+@keyframes sale-blur { to { opacity: 0; filter: blur(6px); } }
+@keyframes sale-flip { to { opacity: 0; transform: perspective(600px) rotateX(-60deg); } }
+@keyframes sale-recorte { to { clip-path: inset(0 0 0 100%); } }
+@media (prefers-reduced-motion: reduce) {
+  .msg, .msg.saliendo { animation: none; }
+}
+body.reduce-motion .msg { animation: none; }
 
 /* Avatar: la foto, un anillo del color de la plataforma y la burbuja con su logo. */
 .avatar-plataforma {
@@ -133,17 +344,18 @@ body.rtl .anim-slide-left { animation-name: entra-derecha; }
 .platform-icon.icon-youtube { color: var(--youtube); }
 .platform-icon.icon-kick { color: var(--kick); }
 
-.msg-body { display: flex; align-items: baseline; gap: 5px; flex: 1; min-width: 0; }
+.msg-body { display: flex; align-items: baseline; gap: 0.36em; flex: 1; min-width: 0; }
 .msg-user {
-  font-weight: 700;
+  font-weight: var(--fw, 700);
   color: var(--c-user);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 120px;
+  max-width: 8.5em;
   flex-shrink: 0;
   font-size: calc(var(--fs) - 1px);
 }
+.msg-insignia { width: 1em; height: 1em; margin-inline-end: 0.25em; vertical-align: -0.12em; }
 .msg-sep { color: rgba(255, 255, 255, 0.35); flex-shrink: 0; font-size: calc(var(--fs) - 1px); }
 .msg-text { color: var(--c-texto); flex: 1; min-width: 0; }
 body.single .msg-body { white-space: nowrap; }

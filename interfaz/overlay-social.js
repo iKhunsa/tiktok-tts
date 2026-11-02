@@ -6,7 +6,10 @@ import { registrarErroresOverlay } from './compartido/registrar-errores.js';
 import { escaparHtml } from './compartido/escapar-html.js';
 import { esVistaPrevia } from './compartido/vista-previa.js';
 import { MUESTRA_SOCIAL } from './compartido/muestras-vista-previa.js';
+import { iniciarOverlayFijo } from './compartido/estilo/aplicar-overlay-fijo.js';
+import { logoPlataforma } from './compartido/recurso-plataforma.js';
 
+iniciarOverlayFijo('social', 480, 300);
 registrarErroresOverlay();
 
 const MAX_ENTRIES = 10;
@@ -22,7 +25,7 @@ const countShares = document.getElementById('count-shares');
 
 let totals = { follows: 0, shares: 0 };
 
-function addEntry(listEl, user, prepend = true) {
+function addEntry(listEl, user, prepend = true, platform = null) {
   const empty = listEl.querySelector('.empty');
   if (empty) empty.remove();
 
@@ -34,6 +37,15 @@ function addEntry(listEl, user, prepend = true) {
     <span class="entry-name">@${escaparHtml(user)}</span>
   `;
 
+  const logo = logoPlataforma(platform);
+  if (logo) {
+    const imagen = document.createElement('img');
+    imagen.className = 'entry-plataforma';
+    imagen.src = logo;
+    imagen.alt = '';
+    div.append(imagen);
+  }
+
   if (prepend) listEl.insertBefore(div, listEl.firstChild);
   else listEl.appendChild(div);
 
@@ -43,8 +55,8 @@ function addEntry(listEl, user, prepend = true) {
 // Vista previa: sin datos reales se rellenan las dos listas con nombres de ejemplo.
 function pintarMuestra() {
   if (!vistaPrevia || totals.follows || totals.shares) return;
-  MUESTRA_SOCIAL.seguidores.forEach((user) => addEntry(listFollows, user, false));
-  MUESTRA_SOCIAL.compartidos.forEach((user) => addEntry(listShares, user, false));
+  MUESTRA_SOCIAL.seguidores.forEach((user, i) => addEntry(listFollows, user, false, MUESTRA_SOCIAL.plataformas[i]));
+  MUESTRA_SOCIAL.compartidos.forEach((user, i) => addEntry(listShares, user, false, MUESTRA_SOCIAL.plataformas[i]));
   totals = { follows: MUESTRA_SOCIAL.seguidores.length, shares: MUESTRA_SOCIAL.compartidos.length };
   countFollows.textContent = totals.follows;
   countShares.textContent = totals.shares;
@@ -63,8 +75,8 @@ fetch('/api/overlay-stats')
     const shares = (c.sharers || []).slice(-MAX_ENTRIES);
     totals.follows = follows.length;
     totals.shares = shares.length;
-    follows.forEach((f) => addEntry(listFollows, f.user, false));
-    shares.forEach((s) => addEntry(listShares, s.user, false));
+    follows.forEach((f) => addEntry(listFollows, f.user, false, f.platform));
+    shares.forEach((s) => addEntry(listShares, s.user, false, s.platform));
     reverseList(listFollows);
     reverseList(listShares);
     countFollows.textContent = totals.follows;
@@ -77,11 +89,11 @@ function alManejarMensaje(d) {
   if (d.type === 'follow') {
     totals.follows++;
     countFollows.textContent = totals.follows;
-    addEntry(listFollows, d.user);
+    addEntry(listFollows, d.user, true, d.platform);
   } else if (d.type === 'share') {
     totals.shares++;
     countShares.textContent = totals.shares;
-    addEntry(listShares, d.user);
+    addEntry(listShares, d.user, true, d.platform);
   } else if (d.type === 'connected' && d.isFirst) {
     totals = { follows: 0, shares: 0 };
     countFollows.textContent = 0;

@@ -4,8 +4,10 @@ const { test, afterEach } = require('node:test');
 const assert = require('node:assert/strict');
 const { buildEmbed, buildThreadName, reportIdea, resetRateLimit, validateIdea } = require('../features/sugerencias/routes/report-idea');
 const { postIdeasWebhook } = require('../features/sugerencias/discord/post-webhook');
+const express = require('express');
+const { reportOverlayIdea, validateOverlayIdea } = require('../features/sugerencias/routes/report-overlay-idea');
 
-const valid = { problema: '  problema  ', idea: 'idea', casoUso: 'en vivo', appSimilar: 'app', discord: 'nick', email: 'a@b.co' };
+const valid = { problema: '  problema  ', idea: 'idea', appSimilar: 'app', discord: 'nick', email: 'a@b.co' };
 const logger = { log() {} };
 
 function response() {
@@ -81,4 +83,53 @@ test('controla URL ausente y rate limit sin llamar al webhook', async () => {
   assert.equal(first.code, 200);
   assert.equal(limited.code, 429);
   assert.equal(limited.body.errorKey, 'errors.ideasRateLimited');
+});
+
+test('idea de overlay: exige idea y un contacto', () => {
+  assert.equal(validateOverlayIdea({ idea: 'x' }).errorKey, 'errors.overlayIdeaRequired');
+  assert.equal(validateOverlayIdea({ discord: 'nick' }).errorKey, 'errors.overlayIdeaRequired');
+  assert.equal(validateOverlayIdea({ idea: 'x', email: 'a@b.co' }).value.email, 'a@b.co');
+});
+
+async function postOverlay(form, deps) {
+  const app = express();
+  app.post('/o', reportOverlayIdea(logger, null, { getWebhookUrl: () => 'mock-url', ...deps }));
+  const server = await new Promise((resolve) => { const s = app.listen(0, () => resolve(s)); });
+  try {
+    return await fetch(`http://127.0.0.1:${server.address().port}/o`, { method: 'POST', body: form });
+  } finally { server.close(); }
+}
+
+test('idea de overlay: adjunta la imagen con nombre fijo y la muestra en el embed', async () => {
+  let sent;
+  const form = new FormData();
+  form.append('idea', 'barra de metas');
+  form.append('discord', 'nick');
+  form.append('imagen', new Blob([Buffer.from('png')], { type: 'image/png' }), 'C:/Users/fran/foto.png');
+  const res = await postOverlay(form, { postWebhook: async (_url, embed, options) => { sent = { embed, options }; } });
+  assert.equal(res.status, 200);
+  assert.equal(sent.options.file.name, 'referencia.png');
+  assert.equal(sent.embed.image.url, 'attachment://referencia.png');
+});
+
+test('idea de overlay: rechaza archivos que no son imagen', async () => {
+  const form = new FormData();
+  form.append('idea', 'x');
+  form.append('discord', 'nick');
+  form.append('imagen', new Blob(['MZ'], { type: 'application/x-msdownload' }), 'a.exe');
+  const res = await postOverlay(form, { postWebhook: async () => assert.fail('no debe enviarse') });
+  assert.equal(res.status, 400);
+  assert.equal((await res.json()).errorKey, 'errors.overlayIdeaImage');
+});
+
+test('postIdeasWebhook con archivo envia multipart con payload_json', async () => {
+  const oldFetch = global.fetch;
+  let body;
+  global.fetch = async (_url, init) => { body = init.body; return { ok: true, status: 200 }; };
+  try {
+    await postIdeasWebhook('mock-url', { title: 't' }, { file: { name: 'referencia.png', type: 'image/png', buffer: Buffer.from('png') } });
+  } finally { global.fetch = oldFetch; }
+  assert.ok(body instanceof FormData);
+  assert.equal(JSON.parse(body.get('payload_json')).embeds[0].title, 't');
+  assert.equal(body.get('files[0]').name, 'referencia.png');
 });

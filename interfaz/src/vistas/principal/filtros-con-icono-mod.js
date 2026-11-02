@@ -5,6 +5,8 @@
  * propio, se dispara 'change' al elegir y el icono del campo muestra la
  * opcion elegida (logo de la plataforma / bolita del estado).
  */
+import { iniciarMenuSelect } from '../../componentes/menu-select.js';
+
 const FILTROS = {
   modPlatform: { tiktok: 'tiktok-logo.svg', twitch: 'twitch-logo.svg', youtube: 'youtube-logo.svg', kick: 'kick-logo.svg' },
   modState: { all: 'punto', clean: 'punto', muted: 'punto', banned: 'punto' },
@@ -33,52 +35,7 @@ function iniciarFiltro(select) {
   const pintarMarca = () => marca.replaceChildren(crearMarca(select.id, select.value));
   pintarMarca();
   select.addEventListener('change', pintarMarca);
-
-  const menu = document.createElement('div');
-  menu.className = 'mod-menu';
-  menu.setAttribute('role', 'listbox');
-  menu.hidden = true;
-  campo.appendChild(menu);
-
-  const cerrar = () => { menu.hidden = true; select.setAttribute('aria-expanded', 'false'); };
-  const abrir = () => {
-    menu.replaceChildren(...[...select.options].map((o) => {
-      const item = document.createElement('button');
-      item.type = 'button';
-      item.className = 'mod-menu-item';
-      item.setAttribute('role', 'option');
-      item.setAttribute('aria-selected', String(o.value === select.value));
-      const txt = document.createElement('span');
-      txt.textContent = o.textContent; // ya traducido por data-i18n
-      item.append(crearMarca(select.id, o.value), txt);
-      item.addEventListener('click', () => {
-        cerrar();
-        if (select.value === o.value) return;
-        select.value = o.value;
-        select.dispatchEvent(new window.Event('change'));
-      });
-      return item;
-    }));
-    menu.hidden = false;
-    select.setAttribute('aria-expanded', 'true');
-    menu.querySelector('[aria-selected="true"]')?.focus();
-  };
-
-  select.addEventListener('mousedown', (e) => {
-    e.preventDefault();
-    if (menu.hidden) { select.focus(); abrir(); } else cerrar();
-  });
-  select.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ' || (e.altKey && e.key === 'ArrowDown')) { e.preventDefault(); abrir(); }
-  });
-  menu.addEventListener('keydown', (e) => {
-    const items = [...menu.children];
-    const i = items.indexOf(document.activeElement);
-    if (e.key === 'ArrowDown') { e.preventDefault(); items[Math.min(i + 1, items.length - 1)]?.focus(); }
-    if (e.key === 'ArrowUp') { e.preventDefault(); items[Math.max(i - 1, 0)]?.focus(); }
-    if (e.key === 'Escape' || e.key === 'Tab') { cerrar(); select.focus(); }
-  });
-  document.addEventListener('mousedown', (e) => { if (!menu.hidden && !campo.contains(e.target)) cerrar(); });
+  iniciarMenuSelect(select, campo, (valor) => crearMarca(select.id, valor));
 }
 
 export function iniciarFiltrosConIconoMod() {

@@ -2,13 +2,15 @@ import { t } from '../../../nucleo/i18n/i18n.js';
 import { driverTourDefaults } from '../../../nucleo/tours/driver.js';
 import { switchView } from '../vistas-router.js';
 import { trackUi } from '../../../nucleo/telemetria-ui.js';
-import { abrirTarjetasOverlays } from '../overlays-acordeon.js';
+import { abrirTarjetasOverlays } from '../overlays-tarjetas.js';
+import { mostrarTodosLosOverlays } from '../overlays-catalogo/index.js';
 
 export function startOverlaysTour() {
   trackUi('ui:tour-started', 'overlays');
   if (!(window.driver && window.driver.js)) return;
   const inOverlays = () => switchView('overlays');
-  abrirTarjetasOverlays();
+  mostrarTodosLosOverlays();
+  abrirTarjetasOverlays(['chat', 'seguidores', 'likes', 'alertas']);
 
   window.driver.js.driver({
     ...driverTourDefaults(),

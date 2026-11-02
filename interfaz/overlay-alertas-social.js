@@ -7,7 +7,10 @@ import { escaparHtml } from './compartido/escapar-html.js';
 import { crearColaAlertas, programarRetiro } from './compartido/cola-alertas.js';
 import { esVistaPrevia } from './compartido/vista-previa.js';
 import { MUESTRA_ALERTA_SOCIAL } from './compartido/muestras-vista-previa.js';
+import { iniciarOverlayFijo } from './compartido/estilo/aplicar-overlay-fijo.js';
+import { logoPlataforma } from './compartido/recurso-plataforma.js';
 
+iniciarOverlayFijo('alertas-social', 440, 130);
 registrarErroresOverlay();
 
 const params = leerParametros();
@@ -26,10 +29,16 @@ const PLATFORM_META = {
   kick: { label: 'KICK', color: '#53FC18' },
 };
 
-function makeDefaultIcon(isFollow) {
+function makeDefaultIcon(isFollow, platform) {
   const d = document.createElement('div');
   d.className = 'event-emoji';
-  d.textContent = isFollow ? '💜' : '🔗';
+  const logo = logoPlataforma(platform);
+  if (logo) {
+    const img = document.createElement('img');
+    img.src = logo;
+    img.alt = '';
+    d.append(img);
+  } else d.textContent = isFollow ? '💜' : '🔗';
   return d;
 }
 
@@ -40,7 +49,7 @@ function showAlert(event, alTerminar) {
   card.className = 'alert-card';
   if (meta && !userSetColor) card.style.setProperty('--accent', meta.color);
 
-  card.appendChild(makeDefaultIcon(isFollow));
+  card.appendChild(makeDefaultIcon(isFollow, event.platform));
 
   const info = document.createElement('div');
   info.className = 'info';

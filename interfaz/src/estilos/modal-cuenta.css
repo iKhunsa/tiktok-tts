@@ -123,13 +123,20 @@
   width: 8.769em;
   height: 8.769em;
   border-radius: 50%;
-  background: var(--brand);
-  color: #fff;
+  background: var(--surface-raised);
   font-size: 1em;
-  font-weight: 600;
 }
-.mc-avatar span { font-size: 3.077em; }
 .mc-banner img, .mc-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.mc-banner img, .mc-avatar img { transition: opacity var(--dur-2) ease-out; }
+.mc-banner.is-img-cargando img, .mc-avatar.is-img-cargando img { opacity: 0; }
+.mc-banner.is-img-cargando, .mc-avatar.is-img-cargando {
+  background-image: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.07) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: mcSkeleton 1.2s linear infinite;
+}
+@keyframes mcSkeleton { from { background-position: 150% 0; } to { background-position: -50% 0; } }
+@media (prefers-reduced-motion: reduce) { .mc-banner.is-img-cargando, .mc-avatar.is-img-cargando { animation: none; } }
+body.reduce-motion .mc-banner.is-img-cargando, body.reduce-motion .mc-avatar.is-img-cargando { animation: none; }
 .mc-banner:hover, .mc-avatar:hover { filter: brightness(0.85); }
 .mc-banner:focus-visible, .mc-avatar:focus-visible { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
 .mc-banner.is-loading, .mc-avatar.is-loading { cursor: progress; animation: mcCargando 1s ease-in-out infinite alternate; }
@@ -219,19 +226,19 @@ body.reduce-motion .mc-banner.is-loading, body.reduce-motion .mc-avatar.is-loadi
 /* ── Vincular cuentas ─────────────────────────────────── */
 .mc-cabecera { display: flex; align-items: center; gap: 1.231em; margin-bottom: 3.077em; }
 .mc-titulo.mc-titulo-grande { margin: 0 1.846em 0 0; font-size: 1.692em; font-weight: 400; white-space: nowrap; }
-.mc-tabs { display: flex; gap: 0.308em; }
+.mc-tabs { display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; background: var(--surface); }
 .mc-tab {
-  padding: 0.462em 1em;
+  padding: 0.462em 1.077em;
   border: 0;
-  border-radius: 0.462em;
-  background: none;
+  border-radius: 999px;
+  background: transparent;
   color: var(--text-muted);
   font: inherit;
-  font-size: 1.077em;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color var(--dur-2) ease-out, color var(--dur-2) ease-out;
+  transition: background-color var(--dur-1) ease-out, color var(--dur-1) ease-out;
 }
-.mc-tab:hover { color: var(--text-secondary); }
+.mc-tab:hover { color: var(--text); }
 .mc-tab.is-active { background: var(--surface-raised); color: var(--text); }
 .mc-tab:focus-visible { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
 

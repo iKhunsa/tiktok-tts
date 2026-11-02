@@ -122,9 +122,10 @@ test('créditos se redibuja al cargar el idioma para no dejar claves a la vista'
   assert.match(fuente, /cargarLocaleOverlay\(\)\.then\(\(\) => \{\s*aplicarI18nOverlay\(\);\s*renderTrack\(\);/);
 });
 
-test('la vista previa del chat muestra las 4 plataformas y atenúa las excluidas por el filtro', () => {
+test('la vista previa del chat atenúa las plataformas excluidas y el chat de una sola no muestra otras', () => {
   const js = readFileSync(resolve(raiz, 'interfaz/overlay-chat.js'), 'utf8');
-  assert.match(js, /if \(!plataformaVisible && !vistaPrevia\) return;/, 'fuera de la vista previa (OBS) se sigue filtrando');
+  assert.match(js, /if \(!plataformaVisible && \(!vistaPrevia \|\| plataformaUnica\)\) return;/, 'fuera de la vista previa (OBS) se sigue filtrando');
+  assert.match(js, /platform: plataformaUnica/, 'la muestra de un chat de una sola plataforma sale toda de esa plataforma');
   assert.match(js, /if \(!plataformaVisible\) elemento\.classList\.add\('msg-excluido'\)/);
   assert.match(readFileSync(resolve(raiz, 'interfaz/overlay-chat.css'), 'utf8'), /\.msg-excluido \{ filter: /);
 });
@@ -134,5 +135,20 @@ test('las alertas de la vista previa quedan fijas; en vivo se retiran como siemp
     const fuente = readFileSync(resolve(raiz, `interfaz/${archivo}`), 'utf8');
     assert.match(fuente, /if \(!vistaPrevia\) programarRetiro\(card,/, `${archivo}: la vista previa debe saltarse el retiro`);
     assert.doesNotMatch(fuente, /repetirMuestra|setInterval/, `${archivo}: la vista previa no debe repetir alertas en bucle`);
+  }
+});
+
+test('cada skin del chat tiene estilo en el overlay, miniatura y traducción en los 10 idiomas', async () => {
+  const { SKINS_CHAT } = await importar('interfaz/compartido/estilo/campos-chat.js');
+  const css = leer('interfaz/overlay-chat.css');
+  const miniaturas = leer('interfaz/src/estilos/overlays-catalogo.css');
+  for (const skin of SKINS_CHAT.slice(1)) {
+    assert.ok(css.includes(`body[data-skin="${skin}"] .msg`), `${skin} sin estilo`);
+    assert.ok(miniaturas.includes(`.ovl-skin-miniatura[data-skin="${skin}"]`), `${skin} sin miniatura`);
+  }
+  for (const lang of ['es', 'en', 'it', 'pt', 'fr', 'de', 'zh', 'ja', 'ko', 'ru']) {
+    const { overlayCfg } = JSON.parse(leer(`interfaz/publico/locales/${lang}.json`));
+    assert.ok(overlayCfg.cambiarSkin, `${lang}: sin cambiarSkin`);
+    for (const skin of SKINS_CHAT) assert.ok(overlayCfg.skins[skin], `${lang}: sin ${skin}`);
   }
 });
