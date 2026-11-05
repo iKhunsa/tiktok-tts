@@ -11,6 +11,9 @@ module.exports = [
       '.claude/**',
       'release-output/**',
       'interfaz/dist/**',
+      'accounts/**',
+      'epik/plantilla-*/**',
+      '.mc-*',
     ],
   },
   {
