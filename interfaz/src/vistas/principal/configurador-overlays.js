@@ -6,9 +6,11 @@ import { ESQUEMAS, DEFAULTS_OVERLAYS, CHATS_POR_PLATAFORMA } from '../../../comp
 import { trackUi } from '../../nucleo/telemetria-ui.js';
 import { urlConVistaPrevia } from '../../../compartido/vista-previa.js';
 import { EVENTOS_ALERTA } from '../../../compartido/eventos-alerta.js';
+import { queryEpik } from './epik/estado.js';
 
 export function buildOverlayUrl(type) {
-  const query = construirQuery(ESQUEMAS[type], appSettings.overlays[type]);
+  // Con una skin .epik se suman sus ajustes propios (x.<clave>).
+  const query = [construirQuery(ESQUEMAS[type], appSettings.overlays[type]), queryEpik(type)].filter(Boolean).join('&');
   // Las alertas de evento comparten pagina: ?evento= elige cual es.
   if (EVENTOS_ALERTA[type]) return `${location.origin}/overlay-evento.html?evento=${type}${query ? `&${query}` : ''}`;
   if (CHATS_POR_PLATAFORMA[type]) return `${location.origin}/overlay-chat.html?platforms=${CHATS_POR_PLATAFORMA[type]}${query ? `&${query}` : ''}`;
@@ -120,6 +122,38 @@ async function testRanking(endpoint, sentKey) {
 export const testTopLikers = () => testRanking('/api/test/likes', 'toast.testLikesSent');
 export const testTopDonors = () => testRanking('/api/test/donors', 'toast.testDonorsSent');
 export const testViewers = () => testRanking('/api/test/viewers', 'toast.testViewersSent');
+
+async function enviarTest(endpoint, cuerpo, claveEnviado) {
+  try {
+    const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cuerpo) });
+    const data = await res.json();
+    showToast(t(data.success ? claveEnviado : 'toast.testError'));
+  } catch {
+    showToast(t('toast.testError'));
+  }
+}
+
+const testChat = (platform) => enviarTest('/api/test/chat', { platform, user: 'TestUser', comment: t('overlayCat.mensajePrueba') }, 'toast.testChatSent');
+const testEvento = (evento) => enviarTest('/api/test/evento', { evento }, 'toast.testOverlaySent');
+
+// Test de los overlays que no traen boton propio en index.html.
+const TESTS_OVERLAY = {
+  chat: () => testChat('tiktok'),
+  seguidores: () => testSocialAlert('follow'),
+  social: () => testSocialAlert('follow'),
+  'nuevo-seguidor': () => testSocialAlert('follow'),
+  compartido: () => testSocialAlert('share'),
+  creditos: testGiftAlert,
+  'contador-likes': testTopLikers,
+  musica: () => testEvento({ type: 'music-test' }),
+};
+
+/** Lanza un evento de prueba que ve el overlay (en OBS y en la vista previa). */
+export function probarOverlay(type) {
+  if (TESTS_OVERLAY[type]) return TESTS_OVERLAY[type]();
+  if (CHATS_POR_PLATAFORMA[type]) return testChat(CHATS_POR_PLATAFORMA[type]);
+  if (EVENTOS_ALERTA[type]) return testEvento(EVENTOS_ALERTA[type].muestra);
+}
 
 export function restablecerOverlayDeFabrica(type) {
   appSettings.overlays[type] = JSON.parse(JSON.stringify(DEFAULTS_OVERLAYS[type]));

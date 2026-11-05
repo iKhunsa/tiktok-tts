@@ -3,6 +3,7 @@ import { markClip } from './clips.js';
 import { ejecutarAccionAtajo } from './atajos-teclado.js';
 import { spPlaySound } from './soundpad.js';
 import { showToast } from '../../componentes/toast.js';
+import { alAbrirEpik } from './epik/seccion.js';
 import { escaparHtml as escapeHtml } from '../../../compartido/escapar-html.js';
 
 function fmtBytes(b) {
@@ -185,6 +186,7 @@ export function iniciarEventosElectron() {
   if (window.electronAPI.onMarkClip) electronCleanups.push(window.electronAPI.onMarkClip(() => markClip()));
   if (window.electronAPI.onTtsShortcut) electronCleanups.push(window.electronAPI.onTtsShortcut((action) => ejecutarAccionAtajo(action)));
   if (window.electronAPI.onPlaySoundpad) electronCleanups.push(window.electronAPI.onPlaySoundpad((d) => spPlaySound(d.soundId)));
+  if (window.electronAPI.onEpikAbierto) electronCleanups.push(window.electronAPI.onEpikAbierto(alAbrirEpik));
   if (window.electronAPI.onUpdateEvent) {
     electronCleanups.push(window.electronAPI.onUpdateEvent((ev) => {
       const banner = document.getElementById('update-banner');

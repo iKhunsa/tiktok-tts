@@ -110,7 +110,7 @@
       </button>
       <button class="sidebar-item" data-view="bot" onclick="switchView('bot')">
         <img class="sidebar-icon icon-inline" src="icons/music_note.svg" alt="">
-        <span data-i18n="nav.bot">Bot</span>
+        <span data-i18n="nav.bot">Bot de música</span>
       </button>
       <button class="sidebar-item" data-view="moderacion" onclick="switchView('moderacion')">
         <img class="sidebar-icon icon-inline" src="icons/people.svg" alt="">
@@ -325,7 +325,7 @@
 
       <div id="ovlTienda" hidden>
         <div class="ovl-destacado" id="ovlTiendaDestacado"></div>
-        <div class="ovl-productos" id="ovlTiendaProductos"></div>
+        <div class="ovl-tienda" id="ovlTiendaProductos"></div>
         <p class="ovl-pie"><span data-i18n="overlayCat.pregunta"></span> <button type="button" onclick="openIdeaModal('overlay')" data-i18n="overlayCat.preguntaCta"></button></p>
       </div>
 
@@ -387,28 +387,10 @@
           </div>
           <span class="obs-hint">200 × 180 px</span>
         </div>
-        <div class="cfg-fields">
-          <div class="cfg-field">
-            <label>Meta de nuevos seguidores</label>
-            <input type="number" id="cfg-seg-goal" placeholder="ej: 1000" min="0"
-                   oninput="onCfgChange('seguidores','goal', this.value)" />
-          </div>
-          <div class="cfg-field">
-            <label>Total seguidores actuales</label>
-            <div id="cfg-seg-auto" style="padding: 8px 11px; font-size: 13px; color: var(--text-muted); background: var(--bg-button); border: 1px solid var(--border-strong); border-radius: 8px; min-height: 36px; display: flex; align-items: center;" data-i18n="label.connectToGet">
+        <div class="cfg-fields" data-campos-base="seguidores">
+          <div class="cfg-field" data-campos-fijo><label data-i18n="overlayCfg.campo.seguidoresActuales"></label><div id="cfg-seg-auto" style="padding: 8px 11px; font-size: 13px; color: var(--text-muted); background: var(--bg-button); border: 1px solid var(--border-strong); border-radius: 8px; min-height: 36px; display: flex; align-items: center;" data-i18n="label.connectToGet">
               Conecta para obtener
-            </div>
-          </div>
-          <div class="cfg-field">
-            <label data-i18n="label.accentColor">Color acento</label>
-            <input type="color" id="cfg-seg-color" value="#FFBB00"
-                   oninput="onCfgChange('seguidores','color', this.value)" />
-          </div>
-          <div class="cfg-field">
-            <label><span data-i18n="label.bgOpacity">Opacidad fondo</span> — <span id="cfg-seg-bg-val">80</span>%</label>
-            <input type="range" id="cfg-seg-bg" min="0.30" max="1.00" step="0.05" value="0.80"
-                   oninput="onCfgChange('seguidores','bg', parseFloat(this.value)); document.getElementById('cfg-seg-bg-val').textContent = Math.round(this.value*100)" />
-          </div>
+            </div></div>
         </div>
         <div class="cfg-personalizar" data-campos-panel="seguidores"></div>
         <iframe class="cfg-preview" data-preview="seguidores" tabindex="-1" aria-hidden="true"></iframe>
@@ -492,23 +474,7 @@
           </div>
           <span class="obs-hint">440 × 130 px</span>
         </div>
-        <div class="cfg-fields">
-          <div class="cfg-field">
-            <label>Duración por alerta (ms)</label>
-            <input type="number" id="cfg-alertas-dur" placeholder="4000" min="1000" max="12000" step="500"
-                   oninput="onCfgChange('alertas','dur', parseInt(this.value)||4000)" />
-          </div>
-          <div class="cfg-field">
-            <label data-i18n="label.accentColor">Color acento</label>
-            <input type="color" id="cfg-alertas-color" value="#FFBB00"
-                   oninput="onCfgChange('alertas','color', this.value)" />
-          </div>
-          <div class="cfg-field">
-            <label><span data-i18n="label.bgOpacity">Opacidad fondo</span> — <span id="cfg-alertas-bg-val">90</span>%</label>
-            <input type="range" id="cfg-alertas-bg" min="0.30" max="1.00" step="0.05" value="0.90"
-                   oninput="onCfgChange('alertas','bg', parseFloat(this.value)); document.getElementById('cfg-alertas-bg-val').textContent = Math.round(this.value*100)" />
-          </div>
-        </div>
+        <div class="cfg-fields" data-campos-base="alertas"></div>
         <div class="cfg-personalizar" data-campos-panel="alertas"></div>
         <iframe class="cfg-preview" data-preview="alertas" tabindex="-1" aria-hidden="true"></iframe>
         <div class="cfg-url-row">
@@ -529,18 +495,7 @@
           </div>
           <span class="obs-hint">440 × 130 px</span>
         </div>
-        <div class="cfg-fields">
-          <div class="cfg-field">
-            <label data-i18n="label.accentColor">Color acento</label>
-            <input type="color" id="cfg-alertas-social-color" value="#FFBB00"
-                   oninput="onCfgChange('alertas-social','color', this.value)" />
-          </div>
-          <div class="cfg-field">
-            <label><span data-i18n="label.bgOpacity">Opacidad fondo</span> — <span id="cfg-alertas-social-bg-val">90</span>%</label>
-            <input type="range" id="cfg-alertas-social-bg" min="0.30" max="1.00" step="0.05" value="0.90"
-                   oninput="onCfgChange('alertas-social','bg', parseFloat(this.value)); document.getElementById('cfg-alertas-social-bg-val').textContent = Math.round(this.value*100)" />
-          </div>
-        </div>
+        <div class="cfg-fields" data-campos-base="alertas-social"></div>
         <div class="cfg-personalizar" data-campos-panel="alertas-social"></div>
         <iframe class="cfg-preview" data-preview="alertas-social" tabindex="-1" aria-hidden="true"></iframe>
         <div class="cfg-url-row">
@@ -562,23 +517,7 @@
           </div>
           <span class="obs-hint">380 × 500 px</span>
         </div>
-        <div class="cfg-fields">
-          <div class="cfg-field">
-            <label>Velocidad scroll (s/pantalla) — <span id="cfg-creditos-speed-val">40</span>s</label>
-            <input type="range" id="cfg-creditos-speed" min="15" max="90" step="5" value="40"
-                   oninput="onCfgChange('creditos','speed', parseInt(this.value)); document.getElementById('cfg-creditos-speed-val').textContent = this.value" />
-          </div>
-          <div class="cfg-field">
-            <label data-i18n="label.accentColor">Color acento</label>
-            <input type="color" id="cfg-creditos-color" value="#FFBB00"
-                   oninput="onCfgChange('creditos','color', this.value)" />
-          </div>
-          <div class="cfg-field">
-            <label><span data-i18n="label.bgOpacity">Opacidad fondo</span> — <span id="cfg-creditos-bg-val">85</span>%</label>
-            <input type="range" id="cfg-creditos-bg" min="0.30" max="1.00" step="0.05" value="0.85"
-                   oninput="onCfgChange('creditos','bg', parseFloat(this.value)); document.getElementById('cfg-creditos-bg-val').textContent = Math.round(this.value*100)" />
-          </div>
-        </div>
+        <div class="cfg-fields" data-campos-base="creditos"></div>
         <div class="cfg-personalizar" data-campos-panel="creditos"></div>
         <iframe class="cfg-preview" data-preview="creditos" tabindex="-1" aria-hidden="true"></iframe>
         <div class="cfg-url-row">
@@ -598,25 +537,7 @@
           </div>
           <span class="obs-hint">480 × 300 px</span>
         </div>
-        <div class="cfg-fields">
-          <div class="cfg-field">
-            <label>Layout</label>
-            <select id="cfg-social-layout" onchange="onCfgChange('social','layout', this.value)">
-              <option value="cols">Dos columnas</option>
-              <option value="rows">Apilado vertical</option>
-            </select>
-          </div>
-          <div class="cfg-field">
-            <label data-i18n="label.accentColor">Color acento</label>
-            <input type="color" id="cfg-social-color" value="#FFBB00"
-                   oninput="onCfgChange('social','color', this.value)" />
-          </div>
-          <div class="cfg-field">
-            <label><span data-i18n="label.bgOpacity">Opacidad fondo</span> — <span id="cfg-social-bg-val">80</span>%</label>
-            <input type="range" id="cfg-social-bg" min="0.30" max="1.00" step="0.05" value="0.80"
-                   oninput="onCfgChange('social','bg', parseFloat(this.value)); document.getElementById('cfg-social-bg-val').textContent = Math.round(this.value*100)" />
-          </div>
-        </div>
+        <div class="cfg-fields" data-campos-base="social"></div>
         <div class="cfg-personalizar" data-campos-panel="social"></div>
         <iframe class="cfg-preview" data-preview="social" tabindex="-1" aria-hidden="true"></iframe>
         <div class="cfg-url-row">
@@ -661,8 +582,8 @@
             <div id="music-channel" style="font-size:12px;color:var(--text-muted);margin-top:1px;"></div>
             <div id="music-req" style="font-size:12px;color:#FFBB00;margin-top:3px;font-weight:500;"></div>
             <div style="margin-top:8px;display:flex;align-items:center;gap:8px;">
-              <div style="flex:1;background:var(--surface);border-radius:4px;height:4px;overflow:hidden;">
-                <div id="music-progress-bar" style="height:100%;background:#4C4C4C;width:0%;transition:width 1s linear;"></div>
+              <div id="music-seek" class="music-seek" role="slider" tabindex="0" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0" data-i18n-aria-label="bot.adelantar" data-i18n-title="bot.adelantar">
+                <div class="music-seek-pista"><div id="music-progress-bar" style="height:100%;background:#4C4C4C;width:0%;"></div></div>
               </div>
               <span id="music-time" style="font-size:11px;color:var(--text-muted);white-space:nowrap;font-variant-numeric:tabular-nums;"></span>
             </div>

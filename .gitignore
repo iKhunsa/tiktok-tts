@@ -29,6 +29,7 @@ logs/
 moderation.json
 portal-view.json
 tts-cache/
+music-cache/
 graphify-out/
 .claude/
 mcp.json

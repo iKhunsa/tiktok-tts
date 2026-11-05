@@ -35,6 +35,7 @@ import {
   musicOnEngineStatus,
 } from '../../vistas/principal/bot-musica.js';
 import { modOnViewerUpdated } from '../../vistas/principal/moderacion.js';
+import { cargarEpiks } from '../../vistas/principal/epik/estado.js';
 import { updateBlockedWords, refreshModeracionStatus } from '../../vistas/principal/moderacion-contenido/index.js';
 
 export const LIKE_COOLDOWN_MS = 15 * 60 * 1000;
@@ -366,6 +367,9 @@ function handleMessage(data) {
       break;
     case 'music-engine':
       musicOnEngineStatus(data.status);
+      break;
+    case 'epik-changed': // se importo o quito un .epik (tambien desde el MCP)
+      cargarEpiks();
       break;
     case 'config-updated':
       applyA11yConfig(data.config || {});

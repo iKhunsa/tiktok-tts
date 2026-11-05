@@ -1,7 +1,7 @@
 import { aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
 import { iniciarMenuSelect } from '../../../componentes/menu-select.js';
 import { DEFAULTS_OVERLAYS } from '../../../../compartido/estilo/esquemas.js';
-import { restablecerOverlayDeFabrica } from '../configurador-overlays.js';
+import { probarOverlay, restablecerOverlayDeFabrica } from '../configurador-overlays.js';
 import { fijarAbierta } from '../overlays-tarjetas.js';
 import { CATEGORIAS, NOMBRES_PLATAFORMA, OVERLAYS_GENERADOS, PLATAFORMAS_OVERLAY, categoriaDe } from './catalogo.js';
 import { crearTarjetaOverlay } from './crear-tarjeta.js';
@@ -138,7 +138,20 @@ function crearOpcionPlataforma(plataforma) {
   return opcion;
 }
 
+// Las tarjetas estaticas que ya tienen Test (onclick="test...") lo conservan.
+function agregarBotonTest(id, tarjeta) {
+  const fila = tarjeta.querySelector('.cfg-url-row');
+  if (fila.querySelector('[onclick^="test"]')) return;
+  const boton = document.createElement('button');
+  boton.type = 'button';
+  boton.className = 'cfg-btn';
+  boton.innerHTML = '<img class="icon-inline" src="icons/play_arrow.svg" alt=""> <span data-i18n="btn.test"></span>';
+  boton.addEventListener('click', () => probarOverlay(id));
+  fila.querySelector('.cfg-url-text').after(boton);
+}
+
 function decorarTarjeta(id, tarjeta, pendiente) {
+  agregarBotonTest(id, tarjeta);
   const logos = document.createElement('span');
   logos.className = 'ovl-plataformas';
   logos.innerHTML = PLATAFORMAS_OVERLAY[id]
@@ -188,7 +201,7 @@ export function iniciarCatalogoOverlays() {
     pintar();
   });
   $('ovlCategorias').append(...CATEGORIAS.map(crearFilaCategoria));
-  iniciarTienda($('ovlTiendaProductos'));
+  iniciarTienda($('ovlTiendaProductos'), abrirOverlay);
   iniciarDestacados($('ovlDestacado'));
   iniciarDestacados($('ovlTiendaDestacado'));
   aplicarTraducciones($('view-overlays'));

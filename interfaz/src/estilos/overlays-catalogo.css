@@ -25,7 +25,7 @@
 .ovl-pestana.activa { background: var(--surface-raised); color: var(--text); }
 
 /* Destacados: las diapositivas se apilan y cruzan con opacidad */
-.ovl-destacado { position: relative; height: 170px; margin-bottom: var(--space-4); border-radius: 20px; overflow: hidden; background: var(--surface); }
+.ovl-destacado { position: relative; height: 204px; margin-bottom: var(--space-4); border-radius: 20px; overflow: hidden; background: var(--surface); }
 .ovl-diapositiva { position: absolute; inset: 0; opacity: 0; transition: opacity var(--dur-4) ease-out; }
 .ovl-diapositiva.activa { opacity: 1; }
 .ovl-puntos { position: absolute; left: 50%; bottom: 10px; z-index: 2; display: flex; gap: 2px; transform: translateX(-50%); }
@@ -76,6 +76,8 @@
 .ovl-detalle-desc { font-size: var(--text-2xs); color: var(--text-muted); }
 .ovl-plataformas { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 5px; font-size: var(--text-3xs); color: var(--text-muted); }
 /* Tienda: al pasar el cursor, el precio deja su sitio al boton de comprar */
+.ovl-tienda { display: grid; gap: var(--space-6); }
+.ovl-tienda-seccion h3 { margin: 0 0 var(--space-3); font-size: var(--text-base); font-weight: 600; color: var(--text); }
 .ovl-productos { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
 .ovl-producto {
   position: relative;
@@ -89,10 +91,6 @@
 .ovl-producto:hover, .ovl-producto:focus-within { border-color: var(--text-muted); }
 .ovl-producto-arte { position: absolute; inset: 0; display: grid; place-items: center; }
 .ovl-producto-arte img { width: 100%; height: 100%; object-fit: cover; }
-.ovl-producto-molde { display: flex; flex-direction: column; gap: 7px; width: 58%; margin-bottom: 26%; padding: 12px; border-radius: 8px; background: var(--surface-raised); }
-.ovl-producto-molde i { height: 7px; border-radius: 999px; background: rgba(255, 255, 255, 0.12); }
-.ovl-producto-molde i:first-child { width: 40%; height: 18px; }
-.ovl-producto-molde i:last-child { width: 70%; }
 .ovl-producto-pie { position: absolute; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: minmax(0, 1fr); padding: 28px 12px 10px; background: linear-gradient(to top, #000 45%, transparent); }
 .ovl-producto-nombre { overflow: hidden; margin-bottom: 2px; white-space: nowrap; text-overflow: ellipsis; font-size: var(--text-sm); color: var(--text); }
 /* Precio y boton comparten celda: asi el cambio no mueve el nombre */
@@ -117,11 +115,13 @@
   opacity: 0;
   transform: translateY(4px);
   pointer-events: none;
-  transition: opacity var(--dur-1) ease-out, transform var(--dur-1) ease-out;
+  transition: opacity var(--dur-1) ease-out, transform var(--dur-1) ease-out, background-color var(--dur-1) ease-out;
 }
 .ovl-producto.incluido { border-color: var(--text-muted); }
 .ovl-producto.incluido .ovl-producto-precio { color: var(--text-secondary); font-weight: 400; }
 .ovl-producto.incluido .ovl-producto-comprar { background: var(--surface-raised); }
+.ovl-producto-comprar:hover { background: var(--brand-hover); }
+.ovl-producto.incluido .ovl-producto-comprar:hover { background: var(--brand); }
 .ovl-producto:hover .ovl-producto-comprar, .ovl-producto:focus-within .ovl-producto-comprar { opacity: 1; transform: none; pointer-events: auto; }
 .ovl-producto:hover .ovl-producto-precio, .ovl-producto:focus-within .ovl-producto-precio { opacity: 0; pointer-events: none; }
 .ovl-producto-comprar:active { transform: scale(0.97); }
@@ -179,6 +179,7 @@
 .ovl-skin:has(> [aria-expanded="true"]) .ovl-skin-barra { opacity: 1; visibility: visible; transform: none; }
 /* Dos paginas del mismo ancho (5 skins): cambiar de pagina no mueve la barra */
 .ovl-skin-pagina { display: flex; flex: 0 0 376px; gap: 4px; }
+.ovl-skin-barra:not(:has(.ovl-skin-flecha)) .ovl-skin-pagina { flex-basis: auto; }
 .ovl-skin-flecha { flex-shrink: 0; align-self: stretch; display: grid; place-items: center; width: 28px; padding: 0; border: 0; border-radius: 10px; background: transparent; cursor: pointer; transition: background-color var(--dur-1) ease-out; }
 .ovl-skin-flecha:hover { background: rgba(255, 255, 255, 0.12); }
 .ovl-skin-flecha img { width: 18px; height: 18px; filter: brightness(0) invert(1); transition: transform var(--dur-2) var(--ease-out); }
@@ -202,14 +203,36 @@
 .ovl-skin-miniatura[data-skin="degradado"] i { border: 0; background: linear-gradient(120deg, #c271b4, #1c1c1e); }
 .ovl-producto-arte .ovl-skin-miniatura { width: 66%; height: 44%; margin-bottom: 24%; gap: 8%; }
 .ovl-producto-arte .ovl-skin-miniatura i { height: 34%; }
+.ovl-skin-miniatura[data-skin="podio"] i { border: 0; background: linear-gradient(90deg, rgba(255, 210, 63, 0.7), transparent); }
+.ovl-skin-miniatura[data-skin="pixel"] i { border: 1px solid #ffd23f; border-radius: 0; box-shadow: 2px 2px 0 rgba(255, 210, 63, 0.55); }
+.ovl-skin-miniatura[data-skin="cinta"] i { border: 0; border-left: 3px solid #ffd23f; border-radius: 1px; }
+/* Vinilo: el disco montado sobre el borde de la tarjeta blanca, igual que el overlay */
+.ovl-skin-miniatura[data-skin="vinilo"] { position: relative; display: block; padding: 0; background: none; }
+.ovl-skin-miniatura[data-skin="vinilo"]::before { content: ''; position: absolute; left: 0; top: 50%; z-index: 1; height: 100%; aspect-ratio: 1; translate: 0 -50%; border-radius: 50%; background: radial-gradient(circle, #e2e2e2 0 5%, #fff3c4 5.5% 8%, #ffc56b 8.5% 13%, #ff9a3c 20.5%, #0b0b0b 21% 23%, transparent 23.5%), repeating-radial-gradient(circle, #121212 0 1px, #1f1f1f 1px 2px); box-shadow: 0 0 0 1px #0a0a0a; }
+.ovl-skin-miniatura[data-skin="vinilo"] i { position: absolute; width: auto; border: 0; }
+.ovl-skin-miniatura[data-skin="vinilo"] i:first-child { inset: 12% 0 12% 25%; height: auto; border-radius: 0 999px 999px 0; background: #fff; }
+.ovl-skin-miniatura[data-skin="vinilo"] i:last-child { left: 58%; right: 12%; top: 58%; height: 6%; border-radius: 999px; background: linear-gradient(90deg, #7c5cff 55%, #d9d9d9 55%); }
+/* Widgets de musica: caratula naranja con sol; el mediano y el grande con su parte blanca */
+.ovl-skin-miniatura[data-skin^="widget"] { position: relative; display: block; padding: 0; overflow: hidden; background: radial-gradient(circle at 50% 42%, #fff1b8 0 20%, transparent 21%), linear-gradient(170deg, #ffd27a, #ff9a3c 60%, #7a3b12); }
+.ovl-skin-miniatura[data-skin^="widget"] i { position: absolute; width: auto; height: auto; border: 0; border-radius: 999px; }
+.ovl-skin-miniatura[data-skin="widgetPequeno"] { width: auto; aspect-ratio: 1; border-radius: 22%; }
+.ovl-skin-miniatura[data-skin="widgetPequeno"] i { left: 12%; height: 9%; background: #fff; }
+.ovl-skin-miniatura[data-skin="widgetPequeno"] i:first-child { right: 30%; bottom: 26%; }
+.ovl-skin-miniatura[data-skin="widgetPequeno"] i:last-child { right: 45%; bottom: 12%; opacity: 0.75; }
+.ovl-skin-miniatura[data-skin="widgetMediano"] { border-radius: 9px; background: radial-gradient(circle at 25% 42%, #fff1b8 0 13%, transparent 14%), linear-gradient(90deg, transparent 50%, #fff 50%), linear-gradient(170deg, #ffd27a, #ff9a3c 60%, #7a3b12); }
+.ovl-skin-miniatura[data-skin="widgetMediano"] i { left: 58%; height: 10%; background: #1c1c1e; }
+.ovl-skin-miniatura[data-skin="widgetMediano"] i:first-child { right: 12%; top: 30%; }
+.ovl-skin-miniatura[data-skin="widgetMediano"] i:last-child { right: 10%; top: 62%; height: 6%; background: linear-gradient(90deg, #e0242f 35%, #ddd 35%); }
+.ovl-skin-miniatura[data-skin="widgetGrande"] { width: auto; aspect-ratio: 0.9; border-radius: 12%; background: radial-gradient(circle at 50% 18%, #fff1b8 0 14%, transparent 15%), linear-gradient(transparent 46%, #fff 46%), linear-gradient(170deg, #ffd27a, #ff9a3c 60%, #7a3b12); }
+.ovl-skin-miniatura[data-skin="widgetGrande"] i { left: 10%; height: 7%; background: #1c1c1e; }
+.ovl-skin-miniatura[data-skin="widgetGrande"] i:first-child { right: 10%; top: 54%; height: 3%; background: linear-gradient(90deg, #e0242f 40%, #ddd 40%); }
+.ovl-skin-miniatura[data-skin="widgetGrande"] i:last-child { right: 30%; top: 66%; }
+.ovl-skin-miniatura[data-skin="widgetGrande"]::after { content: ''; position: absolute; left: 10%; right: 40%; top: 80%; height: 7%; border-radius: 999px; background: #1c1c1e; opacity: 0.5; }
 .ovl-producto-estrella { position: absolute; top: 8px; right: 8px; display: grid; place-items: center; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 8px; background: rgba(0, 0, 0, 0.55); cursor: pointer; transition: background-color var(--dur-1) ease-out, transform var(--dur-1) ease-out; }
 .ovl-producto-estrella:hover { background: rgba(0, 0, 0, 0.85); }
 .ovl-producto-estrella:active { transform: scale(0.95); }
 .ovl-producto-estrella:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 .ovl-producto-estrella img { width: 18px; height: 18px; filter: brightness(0) invert(1); }
-/* Con Pro no hay nada que comprar: el precio se queda y la accion es la estrella */
-.ovl-producto.con-estrella .ovl-producto-comprar { display: none; }
-.ovl-producto.con-estrella:is(:hover, :focus-within) .ovl-producto-precio { opacity: 1; }
 .ovl-skin-miniatura[data-skin="bloque"] i { border-width: 0 0 0 3px; border-color: #f5c451; border-radius: 1px; }
 @media (hover: hover) and (pointer: fine) {
   .ovl-skin-boton:hover { background: rgba(44, 44, 46, 0.86); }
@@ -307,3 +330,72 @@
 }
 body.reduce-motion .ovl-diapositiva, body.reduce-motion .ovl-punto::before, body.reduce-motion .ovl-producto-comprar { transition: none; transform: none; }
 body.reduce-motion :is(.ovl-destacado, .ovl-detalle, .ovl-fila, .ovl-producto, .ovl-pie), body.reduce-motion #ovlTarjetas > .cfg-card { animation: none; }
+
+/* Vista previa de un producto de la tienda (vista-previa-producto.js): ficha + overlay en vivo, como la tienda de Discord */
+.ovl-producto { cursor: pointer; }
+button.ovl-producto-arte { padding: 0; border: 0; background: none; font: inherit; cursor: pointer; }
+button.ovl-producto-arte:focus-visible { outline: 2px solid #fff; outline-offset: -3px; border-radius: 10px; }
+.ovl-vista {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  width: min(760px, calc(100vw - 32px));
+  height: min(480px, calc(100vh - 32px));
+  margin: auto; /* el reset global quita el centrado nativo del dialog */
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  overflow: hidden;
+  background: #0e0e10;
+  color: var(--text);
+  animation: ovl-vista-entra var(--dur-2) var(--ease-out);
+}
+.ovl-vista:not([open]) { display: none; }
+.ovl-vista::backdrop { background: rgba(0, 0, 0, 0.7); animation: ovl-vista-fondo var(--dur-2) ease-out; }
+.ovl-vista-ficha { display: flex; flex-direction: column; padding: 24px; }
+.ovl-vista-arte { flex: 1; display: grid; place-items: center; }
+.ovl-vista-arte img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; }
+.ovl-vista-arte .ovl-skin-miniatura { width: 80%; height: 96px; gap: 10px; padding: 0 14px; }
+.ovl-vista-arte .ovl-skin-miniatura i { height: 26px; }
+.ovl-vista h2 { margin: 0; font-size: var(--text-xl, 20px); font-weight: 700; }
+.ovl-vista-tipo { margin: 2px 0 0; font-size: var(--text-sm); color: var(--text-muted); }
+.ovl-vista-precio { margin: 16px 0 10px; font-size: var(--text-sm); font-weight: 600; }
+.ovl-vista-botones { display: flex; gap: 8px; }
+.ovl-vista-accion {
+  flex: 1;
+  height: 40px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--brand);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--dur-1) ease-out, transform var(--dur-1) ease-out;
+}
+.ovl-vista-accion:hover { background: var(--brand-hover); }
+.ovl-vista-accion:active { transform: scale(0.97); }
+.ovl-vista-accion:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.ovl-vista-atajo { flex-shrink: 0; display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 8px; background: var(--surface-raised); cursor: pointer; transition: background-color var(--dur-1) ease-out, transform var(--dur-1) ease-out; }
+.ovl-vista-atajo img { width: 20px; height: 20px; filter: brightness(0) invert(1); }
+.ovl-vista-atajo:hover { background: var(--border-strong); }
+.ovl-vista-atajo:active { transform: scale(0.97); }
+.ovl-vista-atajo:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.ovl-vista-escena { position: relative; background: radial-gradient(circle at 30% 20%, #3a2a35, #141416 70%); }
+.ovl-vista-escena iframe { width: 100%; height: 100%; border: 0; background: transparent; }
+.ovl-vista-cerrar { position: absolute; top: 12px; right: 12px; display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 8px; background: rgba(0, 0, 0, 0.55); cursor: pointer; transition: background-color var(--dur-1) ease-out, transform var(--dur-1) ease-out; }
+.ovl-vista-cerrar:hover { background: rgba(0, 0, 0, 0.85); }
+.ovl-vista-cerrar:active { transform: scale(0.95); }
+.ovl-vista-cerrar:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.ovl-vista-cerrar img { width: 18px; height: 18px; filter: brightness(0) invert(1); }
+.ovl-vista-play { position: absolute; left: 50%; bottom: 20px; display: grid; place-items: center; width: 48px; height: 48px; padding: 0; border: 0; border-radius: 50%; background: var(--brand); cursor: pointer; translate: -50% 0; transition: background-color var(--dur-1) ease-out, transform var(--dur-1) ease-out; }
+.ovl-vista-play:hover { background: var(--brand-hover); }
+.ovl-vista-play:active { transform: scale(0.95); }
+.ovl-vista-play:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.ovl-vista-play img { width: 24px; height: 24px; filter: brightness(0) invert(1); }
+@keyframes ovl-vista-entra { from { opacity: 0; transform: scale(0.96); } }
+@keyframes ovl-vista-fondo { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .ovl-vista, .ovl-vista::backdrop { animation: none; } }
+body.reduce-motion .ovl-vista, body.reduce-motion .ovl-vista::backdrop { animation: none; }
+@media (max-width: 640px) { .ovl-vista { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; } .ovl-vista-arte { display: none; } }
+/* Skin .epik importada: miniatura que trae el archivo, en el hueco de la dibujada */
+.ovl-skin-epik { display: block; width: 100%; height: 40px; border-radius: 7px; object-fit: cover; }

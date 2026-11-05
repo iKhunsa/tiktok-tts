@@ -24,7 +24,15 @@ export const MUESTRA_VIEWERS = 1284;
 export const MUESTRA_REGALO = { type: 'gift', giftName: 'Corona de TikTok', user: 'luna_vibes', repeatCount: 3 };
 export const MUESTRA_ALERTA_SOCIAL = { type: 'follow', platform: 'tiktok', user: 'luna_vibes' };
 
-export const MUESTRA_MUSICA = { title: 'Bohemian Rhapsody', channelName: 'Queen', requestedBy: 'luna_vibes' };
+// La vista previa las alterna para ver la animacion de cambio de cancion.
+export const MUESTRAS_MUSICA = [
+  // La primera es la que suena de verdad en el popup de la tienda (Escuchar).
+  // audio/video viajan en el build (publico/musica-muestra/) para que la vista previa no espere a yt-dlp.
+  { videoId: 'TRUet8bstRw', title: 'High Forever (Marlon Hoffstadt Remix)', channelName: 'Cyberpunk Edgerunners 2', requestedBy: 'luna_vibes', duration: '4:24', thumbnail: 'https://i.ytimg.com/vi/TRUet8bstRw/mqdefault.jpg',
+    audio: 'musica-muestra/audio.webm', video: 'musica-muestra/video.webm' },
+  { title: 'Blinding Lights', channelName: 'The Weeknd', requestedBy: 'pixel_fox', duration: '3:20' },
+  { title: 'Midnight City', channelName: 'M83', requestedBy: 'nova_star', duration: '4:03' },
+];
 
 export const MUESTRA_SEGUIDORES = { sesion: 37, base: 12400 };
 

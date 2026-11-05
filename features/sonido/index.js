@@ -25,6 +25,9 @@ const { engineStatus } = require('./musica/routes/engine-status');
 const { queue } = require('./musica/routes/queue');
 const { removeQueueItem, clearQueue } = require('./musica/routes/queue-delete');
 const { skip } = require('./musica/routes/skip');
+const { progress } = require('./musica/routes/progress');
+const { createPrefetcher } = require('./musica/prefetch');
+const { video } = require('./musica/routes/video');
 const { next } = require('./musica/routes/next');
 const { configGet } = require('./musica/routes/config-get');
 const { configPatch } = require('./musica/routes/config-patch');
@@ -106,10 +109,13 @@ module.exports = {
     // ── Bot musical: consume bot:comando de /bot (Fase 10) — la deteccion
     // de !p ya no vive aca, solo la ejecucion.
     const runMusicRequest = handleMusicRequest(deps);
+    // Cada cambio de cola emite el estado: con eso se descargan las siguientes por adelantado.
+    const precargar = createPrefetcher(deps);
+    bus.on('sonido:musica-estado', () => { precargar(); }, 'sonido');
     bus.on('bot:comando', (cmd) => {
       if (!cmd || cmd.cmd !== 'play') return;
       if (!entitlements.check('bot-musical')) return; // feature Pro (ya gateado en /bot, defensa extra)
-      Promise.resolve(runMusicRequest({ query: cmd.args, user: cmd.user, userId: cmd.userId, platform: cmd.platform })).catch((error) => {
+      Promise.resolve(runMusicRequest({ query: cmd.args, user: cmd.user, userId: cmd.userId, platform: cmd.platform, avatar: cmd.avatar })).catch((error) => {
         logger.log(
           'error', 'sonido', 'sonido/index.js#register', 'sonido.musica.solicitud_fallida',
           `No se pudo procesar la solicitud de musica de ${cmd.user}: ${error.message}`, { error: error.message }
@@ -132,12 +138,14 @@ module.exports = {
     }, 'sonido');
 
     app.get('/api/music/stream', gateMusica, stream(deps));
+    app.get('/api/music/video', gateMusica, video(deps, precargar));
     app.get('/api/music/engine', engineStatus(engine));
-    app.get('/api/music/queue', queue(musicState));
+    app.get('/api/music/queue', queue(deps));
     app.delete('/api/music/queue/:index', gateMusica, removeQueueItem(deps));
     app.delete('/api/music/queue', gateMusica, clearQueue(deps));
     app.post('/api/music/skip', gateMusica, skip(deps));
     app.post('/api/music/next', gateMusica, next(deps));
+    app.post('/api/music/progress', gateMusica, progress(deps));
     app.get('/api/music/config', configGet(bus));
     app.patch('/api/music/config', gateMusica, configPatch(deps));
     app.post('/api/music/ban', gateMusica, ban(bus));

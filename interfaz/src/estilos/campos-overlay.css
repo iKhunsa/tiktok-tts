@@ -180,3 +180,58 @@ input[type="color"]::-webkit-color-swatch { border: 0; border-radius: 5px; }
 .sc-area:focus-visible, .sc-tono:focus-visible, .sc-muestra:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { .selector-color { animation: none; } }
 body.reduce-motion .selector-color { animation: none; }
+
+/* Archivos .epik: ultimo acordeon de los overlays que los aceptan (vistas/principal/epik/). */
+.epik-cuerpo { display: grid; gap: 12px; }
+.epik-zona {
+  display: grid; justify-items: center; gap: 4px; padding: 18px 14px;
+  border: 1px dashed var(--border-strong); border-radius: 10px;
+  text-align: center; color: var(--text-secondary); cursor: pointer;
+  transition: border-color var(--dur-1) ease-out, background-color var(--dur-1) ease-out, transform var(--dur-press) ease-out;
+}
+.epik-zona img { width: 22px; height: 22px; opacity: 0.7; }
+.epik-zona strong { font-size: var(--text-sm); font-weight: 600; color: var(--text); }
+.epik-zona small { font-size: var(--text-3xs); color: var(--text-muted); }
+.epik-zona.encima { border-color: var(--text-muted); background: var(--surface-raised); }
+.epik-zona:active { transform: scale(0.99); }
+.epik-zona:focus-within { outline: 2px solid var(--text-muted); outline-offset: 2px; }
+.epik-zona.importando { pointer-events: none; opacity: 0.6; }
+@media (hover: hover) and (pointer: fine) { .epik-zona:hover { border-color: var(--text-muted); } }
+
+.epik-lista { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.epik-item { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto auto auto; align-items: center; gap: 10px; padding: 6px; border-radius: 10px; background: var(--surface-raised); }
+.epik-mini { width: 44px; height: 44px; border-radius: 7px; object-fit: cover; background: linear-gradient(135deg, #3a3a3f, #1c1c1f); }
+.epik-info { display: grid; min-width: 0; }
+.epik-info b, .epik-info small { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.epik-info b { font-size: var(--text-sm); font-weight: 600; color: var(--text); }
+.epik-info small { font-size: var(--text-3xs); color: var(--text-muted); }
+.epik-usar, .epik-icono {
+  height: 30px; border: 1px solid var(--border-strong); border-radius: 7px;
+  font: inherit; font-size: var(--text-xs); color: var(--text); background: transparent; cursor: pointer;
+  transition: background-color var(--dur-1) ease-out, border-color var(--dur-1) ease-out, transform var(--dur-press) ease-out;
+}
+.epik-usar { padding: 0 12px; }
+.epik-usar[aria-pressed="true"] { border-color: var(--text); background: var(--text); color: var(--bg); }
+.epik-icono { display: grid; place-items: center; width: 30px; padding: 0; }
+.epik-icono img { width: 16px; height: 16px; margin: 0; opacity: 0.7; filter: brightness(0) invert(1); } /* los svg vienen oscuros o blancos: siempre blancos */
+.epik-usar:active, .epik-icono:active { transform: scale(0.97); }
+.epik-usar:focus-visible, .epik-icono:focus-visible { outline: 2px solid var(--text-muted); outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) {
+  .epik-usar:not([aria-pressed="true"]):hover, .epik-icono:hover { border-color: var(--text-muted); }
+}
+.epik-ajustes { display: grid; gap: 10px; }
+.epik-restablecer { justify-self: start; }
+
+.epik-popup-botones { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+.epik-icono[aria-pressed="true"] img { opacity: 1; }
+
+/* Eliminar un .epik importado: el primer clic pide confirmación en rojo, el segundo lo borra. */
+.epik-eliminar.confirmando {
+  width: auto;
+  padding: 0 10px;
+  border-color: var(--danger-a30);
+  background: var(--danger-a12);
+  color: var(--danger-soft);
+  white-space: nowrap;
+}
+.epik-eliminar:disabled { opacity: 0.5; cursor: progress; }

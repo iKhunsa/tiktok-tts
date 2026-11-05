@@ -58,3 +58,16 @@ test('cada nivel de prueba de las alertas es valido y su inicial coincide con la
     if (id !== 'bits') assert.equal(muestras[inicial].amount, muestra.amount, id);
   }
 });
+
+test('catalogo de regalos de YouTube: ids unicos, joyas validas y la vista previa usa sus imagenes', async () => {
+  const { REGALOS_YOUTUBE, imagenRegaloYoutube } = await import('../interfaz/compartido/regalos-youtube.js');
+  const { EVENTOS_ALERTA } = await import('../interfaz/compartido/eventos-alerta.js');
+  assert.equal(new Set(REGALOS_YOUTUBE.map(([id]) => id)).size, REGALOS_YOUTUBE.length);
+  assert.ok(REGALOS_YOUTUBE.every(([, joyas]) => Number.isInteger(joyas) && joyas > 0));
+  const ids = new Set(REGALOS_YOUTUBE.map(([id]) => id));
+  for (const { sticker } of EVENTOS_ALERTA.supersticker.muestras) {
+    const id = sticker.match(/assets\/(.+)\.png/)[1];
+    assert.ok(ids.has(id), id);
+    assert.equal(sticker, imagenRegaloYoutube(id));
+  }
+});

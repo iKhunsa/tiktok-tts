@@ -2,6 +2,7 @@
 
 const { extractYoutubeVideoId } = require('./extract-youtube-video-id');
 const { isYoutubePlaylistUrl } = require('./is-youtube-playlist-url');
+const { youtubeThumbnail } = require('./youtube-thumbnail');
 const { patchConfig, getConfigSnapshot } = require('../config-bridge');
 const { musicBroadcastState } = require('./broadcast-state');
 const { advanceMusicQueue } = require('./advance-queue');
@@ -43,7 +44,7 @@ async function resolveAndSavePlaylist(deps, lines) {
 
     const ytId = extractYoutubeVideoId(trimmed);
     resolved.push(ytId
-      ? { raw, videoId: ytId, title: raw, channelName: '', thumbnail: '', duration: '' }
+      ? { raw, videoId: ytId, title: raw, channelName: '', thumbnail: youtubeThumbnail(ytId), duration: '' }
       : { raw, videoId: null });
   }
 

@@ -1,8 +1,10 @@
 import { t, aplicarTraducciones } from '../../nucleo/i18n/i18n.js';
 import { appSettings } from '../../nucleo/estado/ajustes-app.js';
-import { SKINS_CHAT } from '../../../compartido/estilo/campos-chat.js';
+import { ESQUEMAS } from '../../../compartido/estilo/esquemas.js';
 import { sincronizarCamposOverlay } from './campos-overlay/sincronizar.js';
 import { comprarPro, tieneAcceso } from './overlays-catalogo/tienda.js';
+import { alCambiarEpiks, favoritosDe } from './epik/estado.js';
+import { skinDeEpik } from '../../../compartido/epik/skin-epik.js';
 
 // Las opciones usan data-cfg-fija: campos-overlay guarda el cambio, recarga la vista previa y marca la activa.
 const crearOpcion = (overlay, skin) => `
@@ -11,26 +13,43 @@ const crearOpcion = (overlay, skin) => `
     <span data-i18n="overlayCfg.skins.${skin}"></span>
   </button>`;
 
+// Los .epik importados van con las gratis (no son Pro) y con su propia miniatura; el nombre viene del archivo.
+function crearOpcionEpik(overlay, epik) {
+  const boton = document.createElement('button');
+  boton.className = 'ovl-skin-opcion';
+  boton.type = 'button';
+  boton.dataset.cfgOverlay = overlay;
+  boton.dataset.cfgFija = JSON.stringify({ skin: skinDeEpik(epik.id) });
+  boton.dataset.epik = epik.id;
+  const miniatura = document.createElement(epik.preview ? 'img' : 'span');
+  if (epik.preview) { miniatura.src = epik.preview; miniatura.alt = ''; miniatura.className = 'ovl-skin-epik'; } else miniatura.className = 'ovl-skin-miniatura';
+  const nombre = document.createElement('span');
+  nombre.textContent = epik.nombre;
+  boton.append(miniatura, nombre);
+  return boton;
+}
+
 const crearAviso = (claveTexto, claveBoton, accion) => `
   <div class="ovl-skin-aviso">
     <span data-i18n="${claveTexto}"></span>
     <button class="ovl-skin-cta" type="button" data-accion="${accion}" data-i18n="${claveBoton}"></button>
   </div>`;
 
-function contenidoFavoritas(overlay) {
+function contenidoFavoritas(overlay, premium) {
   if (!tieneAcceso()) return crearAviso('overlayCfg.favoritasPro', 'overlayCfg.favoritasComprar', 'comprar');
-  const favoritas = appSettings.skinsFavoritas;
+  const favoritas = appSettings.skinsFavoritas.filter((skin) => premium.includes(skin));
   if (!favoritas.length) return crearAviso('overlayCfg.favoritasVacio', 'overlayCfg.favoritasExplorar', 'explorar');
   return favoritas.map((skin) => crearOpcion(overlay, skin)).join('');
 }
 
-/** Boton flotante de la vista previa que despliega las skins disponibles y, a la derecha, las favoritas. */
+/** Boton flotante de la vista previa: skins gratis y, a la derecha, las favoritas de la tienda (Pro). */
 export function crearSelectorSkin(overlay) {
+  const { libres: skins, premium } = ESQUEMAS[overlay].find(({ clave }) => clave === 'skin');
   const selector = document.createElement('div');
   selector.className = 'ovl-skin';
   selector.innerHTML = `
     <div class="ovl-skin-barra" role="group" data-i18n-aria-label="overlayCfg.cambiarSkin">
-      <div class="ovl-skin-pagina">${SKINS_CHAT.map((skin) => crearOpcion(overlay, skin)).join('')}</div>
+      <div class="ovl-skin-pagina">${skins.map((skin) => crearOpcion(overlay, skin)).join('')}</div>
       <div class="ovl-skin-pagina ovl-skin-favoritas" hidden></div>
       <button class="ovl-skin-flecha" type="button" aria-pressed="false" data-i18n-aria-label="overlayCfg.verFavoritas" data-i18n-title="overlayCfg.verFavoritas"><img src="icons/chevron_right.svg" alt=""></button>
     </div>
@@ -42,11 +61,12 @@ export function crearSelectorSkin(overlay) {
   const [pagina, favoritas] = selector.querySelectorAll('.ovl-skin-pagina');
 
   const mostrarFavoritas = (visibles) => {
+    if (!flecha) return;
     pagina.hidden = visibles;
     favoritas.hidden = !visibles;
     flecha.setAttribute('aria-pressed', String(visibles));
     if (!visibles) return;
-    favoritas.innerHTML = contenidoFavoritas(overlay);
+    favoritas.innerHTML = contenidoFavoritas(overlay, premium);
     aplicarTraducciones(favoritas);
     sincronizarCamposOverlay(overlay);
   };
@@ -63,8 +83,15 @@ export function crearSelectorSkin(overlay) {
     boton.focus();
   };
 
-  flecha.addEventListener('click', () => mostrarFavoritas(flecha.getAttribute('aria-pressed') !== 'true'));
-  favoritas.addEventListener('click', (evento) => {
+  const pintarEpik = () => {
+    pagina.querySelectorAll('[data-epik]').forEach((boton) => boton.remove());
+    pagina.append(...favoritosDe(overlay).map((epik) => crearOpcionEpik(overlay, epik)));
+  }; // la activa la marca sincronizarCamposOverlay al abrir el selector
+  alCambiarEpiks(pintarEpik);
+  pintarEpik();
+
+  flecha?.addEventListener('click', () => mostrarFavoritas(flecha.getAttribute('aria-pressed') !== 'true'));
+  favoritas?.addEventListener('click', (evento) => {
     const cta = evento.target.closest('[data-accion]');
     if (!cta) return;
     cerrar();
@@ -75,7 +102,7 @@ export function crearSelectorSkin(overlay) {
   boton.addEventListener('click', () => {
     if (boton.getAttribute('aria-expanded') === 'true') return cerrar();
     boton.setAttribute('aria-expanded', 'true');
-    mostrarFavoritas(flecha.getAttribute('aria-pressed') === 'true'); // el plan o las favoritas pueden haber cambiado
+    mostrarFavoritas(flecha?.getAttribute('aria-pressed') === 'true'); // el plan o las favoritas pueden haber cambiado
     sincronizarCamposOverlay(overlay);
     document.addEventListener('pointerdown', alPulsarFuera);
     document.addEventListener('keydown', alPulsarTecla);

@@ -28,14 +28,9 @@ App de escritorio Electron que lee en voz alta el chat de TikTok Live, Twitch, Y
 
 | Área | Doc |
 |------|-----|
-| Backend + dominios | [`/docs/ARQUITECTURA.md`](/docs/ARQUITECTURA.md) |
-| Reglas de ubicación de código | [`/docs/MODULARIDAD.md`](/docs/MODULARIDAD.md) |
-| Moderación + Rust Chat Guard | [`/docs/MODERACION.md`](/docs/MODERACION.md) |
-| Telemetría, errors, analytics | [`/docs/TELEMETRIA.md`](/docs/TELEMETRIA.md) |
-| MCP — tools para agentes | [`/docs/MCP.md`](/docs/MCP.md) |
-| Overlays (.epik + esquema OBS) | [`/docs/OVERLAYS.md`](/docs/OVERLAYS.md) |
-| Frontend, i18n, iconografía, UX | [`/docs/FRONTEND.md`](/docs/FRONTEND.md) |
-| Build, release, decisiones técnicas | [`/docs/BUILD.md`](/docs/BUILD.md) |
+| Backend, dominios, modularidad | [`/docs/ARQUITECTURA-MODULARIDAD.md`](/docs/ARQUITECTURA-MODULARIDAD.md) |
+| Moderación, Telemetría, MCP, Overlays | [`/docs/FEATURES-ESPECIALES.md`](/docs/FEATURES-ESPECIALES.md) |
+| Frontend, i18n, UX, Build, Release | [`/docs/FRONTEND-BUILD.md`](/docs/FRONTEND-BUILD.md) |
 
 ## Funcionalidades actuales
 

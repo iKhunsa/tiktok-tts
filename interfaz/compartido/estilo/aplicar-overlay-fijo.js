@@ -9,6 +9,7 @@ const EJE_H = { izquierda: 'flex-start', centro: 'center', derecha: 'flex-end' }
 /**
  * Arranque de los overlays de diseno fijo: dibujados a su medida base, se escalan
  * enteros segun la fuente de OBS, sin deformarse. A la medida base se ven a tamano real.
+ * Devuelve la config leida de la URL, para lo que cada overlay pinta por su cuenta.
  */
 export function iniciarOverlayFijo(tipo, anchoBase, altoBase) {
   const cfg = leerConfig(ESQUEMAS[tipo], new URLSearchParams(location.search));
@@ -19,7 +20,10 @@ export function iniciarOverlayFijo(tipo, anchoBase, altoBase) {
   aplicarAlineacion(cfg);
   raiz.setProperty('--pos-x', EJE_H[cfg.posicionH]);
   raiz.setProperty('--u', '1px'); // el zoom ya escala todo: --u lo escalaria dos veces
+  if (cfg.duracionEntrada) raiz.setProperty('--entrada-ms', `${cfg.duracionEntrada}ms`);
+  if (cfg.duracionSalida) raiz.setProperty('--salida-ms', `${cfg.duracionSalida}ms`);
   classList.add('overlay-fijo');
+  document.body.dataset.skin = cfg.skin;
   classList.toggle('fijar-fuente', cfg.fuente !== FUENTE_SISTEMA);
   classList.toggle('fijar-peso', cfg.peso !== 'auto');
   classList.toggle('fijar-caso', cfg.mayusculas !== 'none');
@@ -34,4 +38,5 @@ export function iniciarOverlayFijo(tipo, anchoBase, altoBase) {
   };
   window.addEventListener('resize', ajustar);
   ajustar();
+  return cfg;
 }

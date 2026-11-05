@@ -3,6 +3,10 @@ import { t } from '../../../nucleo/i18n/i18n.js';
 import { crearCampo } from './crear-campo.js';
 import { tituloGrupo, tituloSubgrupo } from './etiquetas.js';
 
+// Lo propio de cada overlay primero (lo que mas se toca), despues el aspecto del texto y al final posicion y movimiento.
+const ORDEN_GRUPOS = ['cancion', 'ranking', 'comportamiento', 'tipografia', 'usuario', 'viewer', 'moderador', 'suscriptor', 'alineacion', 'animacion'];
+const posicionGrupo = (grupo) => (ORDEN_GRUPOS.includes(grupo) ? ORDEN_GRUPOS.indexOf(grupo) : ORDEN_GRUPOS.length);
+
 function agruparPorGrupo(esquema) {
   const grupos = new Map();
   for (const campo of esquema) {
@@ -19,7 +23,7 @@ function crearSubtitulo(subtitulo) {
   return elemento;
 }
 
-function crearBotonRestablecer(overlay, grupo) {
+export function crearBotonRestablecer(overlay, grupo) {
   const boton = document.createElement('button');
   boton.type = 'button';
   boton.className = 'cfg-grupo-reset';
@@ -51,13 +55,6 @@ function crearGrupo(overlay, grupo, campos) {
   return seccion;
 }
 
-// Las tarjetas estaticas de index.html escriben a mano su grupo General: solo se les suma el zoom.
-function montarEscalaEnEstatica(overlay, campos, panel) {
-  const general = panel.closest('.cfg-card').querySelector('.cfg-fields');
-  general.querySelector('[data-cfg-clave="escala"]')?.closest('.cfg-field').remove();
-  general.prepend(crearCampo(overlay, campos.find(({ clave }) => clave === 'escala')));
-}
-
 /**
  * Dibuja los campos de un overlay a partir de su esquema: el grupo `base`
  * va siempre visible; el resto, en secciones plegables que empiezan cerradas (los
@@ -69,13 +66,14 @@ export function montarCamposOverlay(overlay) {
   const base = document.querySelector(`[data-campos-base="${overlay}"]`);
   const panel = document.querySelector(`[data-campos-panel="${overlay}"]`);
 
-  if (base) base.replaceChildren(...grupos.get('base').map((campo) => crearCampo(overlay, campo)));
-  else montarEscalaEnEstatica(overlay, grupos.get('base'), panel);
+  // [data-campos-fijo]: datos que no son ajustes (ej. seguidores actuales); se conservan al redibujar.
+  base.replaceChildren(...grupos.get('base').map((campo) => crearCampo(overlay, campo)), ...base.querySelectorAll(':scope > [data-campos-fijo]'));
   grupos.delete('base');
 
   if (!panel) return;
   panel.querySelectorAll('.cfg-grupo').forEach((grupo) => grupo.remove());
-  for (const [grupo, campos] of grupos) {
+  const ordenados = [...grupos].sort(([a], [b]) => posicionGrupo(a) - posicionGrupo(b));
+  for (const [grupo, campos] of ordenados) {
     if (campos.some(({ ui }) => ui !== 'oculto')) panel.appendChild(crearGrupo(overlay, grupo, campos));
   }
 }

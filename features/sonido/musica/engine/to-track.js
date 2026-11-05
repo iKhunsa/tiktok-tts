@@ -1,13 +1,12 @@
 'use strict';
 
 const { formatDuration } = require('../format-duration');
+const { youtubeThumbnail } = require('../youtube-thumbnail');
 
 function toTrack(j) {
   if (!j || !j.id) return null;
   const secs = Math.round(Number(j.duration) || 0);
-  const thumb = j.thumbnail
-    || (Array.isArray(j.thumbnails) && j.thumbnails.length ? j.thumbnails[j.thumbnails.length - 1].url : '')
-    || `https://i.ytimg.com/vi/${j.id}/mqdefault.jpg`;
+  const thumb = j.thumbnail || youtubeThumbnail(j.id);
   return {
     videoId: j.id,
     title: j.title || '',

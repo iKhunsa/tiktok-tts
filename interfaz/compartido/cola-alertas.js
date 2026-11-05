@@ -26,10 +26,11 @@ export function crearColaAlertas(mostrar, { maxPendientes = Infinity } = {}) {
 }
 
 /** Programa el retiro de una tarjeta tras `dur` ms, con red de seguridad
- * si animationend nunca dispara. Comun a ambos overlays de alertas. */
-export function programarRetiro(card, dur, alTerminar) {
+ * si animationend nunca dispara. `salida` es la clase de animaciones.css. */
+export function programarRetiro(card, dur, alTerminar, salida = 'sale-fade') {
   setTimeout(() => {
-    card.classList.add('leaving');
+    if (salida === 'ninguna') { card.remove(); alTerminar(); return; }
+    card.classList.add('leaving', salida);
     card.addEventListener('animationend', () => { card.remove(); alTerminar(); }, { once: true });
   }, dur);
   setTimeout(() => { if (card.parentNode) { card.remove(); alTerminar(); } }, dur + 1500);

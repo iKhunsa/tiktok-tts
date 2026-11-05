@@ -13,15 +13,11 @@ import { pedir, toastError } from '../api.js';
 import { subirImagenDeCuenta } from '../cloudinary-upload.js';
 import { abrirModalEliminarCuenta } from '../modal-eliminar-cuenta.js';
 import {
-  listaIdentidades, vincularGoogle, desvincularGoogle, cerrarSesion, eliminarCuenta, eliminarCuentaGoogle,
+  listaIdentidades, vincularGoogle,cerrarSesion, eliminarCuenta, eliminarCuentaGoogle,
 } from '../acciones-cuenta.js';
 
 const MB_MAX = { avatar: 5, banner: 10 };
 const PRECARGA_MAX_MS = 5000;
-// Nombre real que trae Google: el back todavia no lo manda en la sesion
-// (user.nombreCompleto, lo conecta el back). Hasta entonces, placeholder
-// generico i18n -- nunca un nombre real hardcodeado (le aparecia a CUALQUIER
-// usuario sin Google vinculado, no solo a quien lo escribio).
 
 function fila(labelKey, derecha) {
   return `<div class="mc-fila"><span class="mc-fila-label" data-i18n="${labelKey}"></span>${derecha}</div>`;
@@ -45,7 +41,6 @@ export function pintarPerfil(cont, s) {
       <input type="file" class="mc-archivo" accept="image/png,image/jpeg,image/webp" hidden>
     </div>
     <div class="mc-filas">
-      ${fila('cuentaModal.fullName', `<span class="mc-valor">${esc(u.nombreCompleto || t('cuentaModal.fullNameUnknown'))}</span>`)}
       ${fila('cuenta.nickname', `<button class="mc-valor mc-valor-editable" type="button" id="mcNick">${u.nombre ? `@${esc(u.nombre)}` : ''}</button>`)}
       ${fila('cuentaModal.googleRow', '<span class="mc-google" id="mcGoogle"></span>')}
     </div>
@@ -163,18 +158,8 @@ async function pintarGoogle(cont) {
   const slot = cont.querySelector('#mcGoogle');
   const lista = await listaIdentidades();
   if (!slot.isConnected) return;
-  if (lista.includes('google')) {
-    slot.innerHTML = `
-      <span class="mc-valor">${esc(t('cuentaModal.linked'))}</span>
-      <button class="mc-accion" type="button" data-i18n="cuentaModal.unlink">${esc(t('cuentaModal.unlink'))}</button>`;
-    const btn = slot.querySelector('button');
-    btn.addEventListener('click', async () => {
-      btn.disabled = true;
-      if (await desvincularGoogle()) pintarGoogle(cont);
-      else btn.disabled = false;
-    });
-    return;
-  }
+  // Ya vinculado: la fila sobra (no se ofrece desvincular).
+  if (lista.includes('google')) { slot.closest('.mc-fila').remove(); return; }
   slot.innerHTML = `<button class="mc-btn-google" type="button"><img src="icons/google.svg" alt="">${esc(t('cuentaModal.link'))}</button>`;
   const btn = slot.querySelector('button');
   btn.addEventListener('click', async () => {

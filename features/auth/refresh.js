@@ -45,6 +45,11 @@ function crearRefresh({ cliente, bus, logger }) {
     emitirCambio(antes, estado.getSesion());
   }
 
+  // Nombre, foto y banner tambien se ven en la UI: si cambian hay que avisar aunque el plan sea el mismo.
+  function mismoPerfil(a, b) {
+    return a?.nombre === b?.nombre && a?.avatarUrl === b?.avatarUrl && a?.bannerUrl === b?.bannerUrl;
+  }
+
   function mismosEntitlements(a, b) {
     return a.length === b.length && a.every((id) => b.includes(id));
   }
@@ -57,7 +62,8 @@ function crearRefresh({ cliente, bus, logger }) {
       bus.emit('account:changed', { previous: cuentaAntes, current: cuentaAhora });
     }
     if (antes.signedIn === ahora.signedIn && antes.plan === ahora.plan && antes.degraded === ahora.degraded
-      && mismosEntitlements(antes.entitlements, ahora.entitlements) && cuentaAntes === cuentaAhora) return;
+      && mismosEntitlements(antes.entitlements, ahora.entitlements) && cuentaAntes === cuentaAhora
+      && mismoPerfil(antes.user, ahora.user)) return;
     bus.emit('auth:actualizado', { signedIn: ahora.signedIn, plan: ahora.plan });
     bus.emit('ws:broadcast', { type: 'auth-updated', session: estado.getSesionPublica() });
   }

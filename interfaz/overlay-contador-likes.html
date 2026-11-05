@@ -6,41 +6,98 @@
   <title>Overlay — Contador de Likes</title>
   <link rel="stylesheet" href="./compartido/tema-overlay.css">
   <link rel="stylesheet" href="./compartido/estilo/estilo-texto.css">
+  <link rel="stylesheet" href="./compartido/estilo/skins-tarjeta.css">
   <style>
+    /* html:root y no :root: Vite enlaza tema-overlay.css despues de este bloque y su :root ganaria. */
+    html:root { --accent: #FE2C55; --ease-out: cubic-bezier(0.23, 1, 0.32, 1); }
     body {
       background: transparent;
-      width: 200px;
+      width: 360px;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       -webkit-font-smoothing: antialiased;
     }
     .card {
-      background: rgba(0, 0, 0, var(--bg-alpha));
-      border: 1px solid rgba(255, 255, 255, 0.10);
-      border-radius: 18px;
-      padding: 22px 16px 18px;
+      position: relative;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 16px;
+      padding: 16px 22px 16px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 22px;
+      background: rgba(10, 10, 12, var(--bg-alpha));
+      color: #fff;
     }
-    .icon { width: 22px; height: 22px; filter: brightness(0) invert(1); }
-    .label { font-size: 10px; letter-spacing: 1.6px; text-transform: uppercase; color: #fff; text-align: center; }
-    .count { font-size: 44px; font-weight: 800; color: #fff; line-height: 1; letter-spacing: -1.5px; font-variant-numeric: tabular-nums; }
-    .count.bump { animation: bump 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
-    @keyframes bump {
-      0%   { transform: scale(1); color: #fff; }
-      35%  { transform: scale(1.14); color: var(--accent); }
-      100% { transform: scale(1); color: #fff; }
+    /* Corazon: insignia con degradado del color principal y un halo que late con cada like */
+    .corazon {
+      position: relative;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 25%, color-mix(in srgb, var(--accent) 55%, #fff), var(--accent) 60%, color-mix(in srgb, var(--accent) 70%, #000));
+      box-shadow: 0 6px 22px color-mix(in srgb, var(--accent) 45%, transparent);
     }
-    body.reduce-motion .count.bump { animation: none; }
-    @media (prefers-reduced-motion: reduce) { .count.bump { animation: none; } }
+    .corazon svg { width: 38px; height: 38px; fill: #fff; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.25)); }
+    .corazon.late { animation: latido 0.45s var(--ease-out); }
+    @keyframes latido {
+      30% { transform: scale(1.14); }
+      100% { transform: scale(1); }
+    }
+    .corazon::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      opacity: 0;
+    }
+    .corazon.late::after { animation: halo 0.7s var(--ease-out); }
+    @keyframes halo {
+      from { opacity: 0.8; transform: scale(1); }
+      to { opacity: 0; transform: scale(1.6); }
+    }
+    .datos { display: flex; flex-direction: column; min-width: 0; }
+    .label { font-size: 11px; font-weight: 600; letter-spacing: 1.6px; text-transform: uppercase; color: rgba(255, 255, 255, 0.7); }
+    .fila { display: flex; align-items: baseline; gap: 10px; }
+    .count { font-size: 44px; font-weight: 800; line-height: 1.05; letter-spacing: -1.5px; font-variant-numeric: tabular-nums; }
+    /* +N de la ultima tanda: sube y se desvanece */
+    .suma { font-size: 15px; font-weight: 700; color: var(--accent); opacity: 0; font-variant-numeric: tabular-nums; }
+    .suma.visible { animation: suma 1.2s var(--ease-out); }
+    @keyframes suma {
+      0% { opacity: 0; transform: translateY(6px); }
+      15% { opacity: 1; transform: none; }
+      70% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-8px); }
+    }
+    /* Corazones que flotan desde la insignia */
+    .flotante { position: absolute; left: 52px; top: 30px; width: 18px; height: 18px; fill: var(--accent); pointer-events: none; animation: flotar 1.3s var(--ease-out) forwards; }
+    @keyframes flotar {
+      0% { opacity: 0; transform: translate(0, 0) scale(0.6) rotate(0); }
+      15% { opacity: 1; }
+      100% { opacity: 0; transform: translate(var(--x), -70px) scale(1.15) rotate(var(--giro)); }
+    }
+    body.reduce-motion .corazon.late, body.reduce-motion .corazon.late::after, body.reduce-motion .flotante { animation: none; display: none; }
+    body.reduce-motion .corazon.late { display: grid; }
+    @media (prefers-reduced-motion: reduce) {
+      .corazon.late, .corazon.late::after { animation: none; }
+      .flotante { display: none; }
+    }
   </style>
 </head>
 <body>
-  <div class="card">
-    <img class="icon" src="icons/favorite.svg" alt="">
-    <div class="label" data-i18n="overlayCat.ov.contador-likes.titulo">Contador de Likes</div>
-    <div class="count" id="count">0</div>
+  <div class="card" id="tarjeta">
+    <div class="corazon" id="corazon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+    </div>
+    <div class="datos">
+      <div class="label" data-i18n="overlayCat.ov.contador-likes.titulo">Contador de Likes</div>
+      <div class="fila">
+        <div class="count" id="count">0</div>
+        <div class="suma" id="suma"></div>
+      </div>
+    </div>
   </div>
   <script type="module" src="./overlay-contador-likes.js"></script>
 </body>

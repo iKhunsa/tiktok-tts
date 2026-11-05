@@ -11,6 +11,10 @@ function stream(deps) {
     }
 
     res.setHeader('Cache-Control', 'no-store');
+    // Precargada (prefetch.js): sale del disco al instante y admite saltos (Range).
+    const enCache = engine.cachedAudio(videoId);
+    if (enCache) return res.sendFile(enCache.ruta, { headers: { 'Content-Type': enCache.tipo } });
+
     try {
       await engine.ensureReady();
     } catch (_error) {

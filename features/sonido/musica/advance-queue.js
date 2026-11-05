@@ -19,9 +19,6 @@ function advanceMusicQueue(deps) {
     bus.emit('ws:broadcast', { type: 'music-now-playing', track: musicState.currentTrack, queue: [...musicState.queue] });
   } else if (config.playlistEnabled && musicState.playlistResolved.length > 0) {
     musicState.playlistActive = true;
-    if (config.playlistShuffle) {
-      musicState.playlistIndex = Math.floor(Math.random() * musicState.playlistResolved.length);
-    }
     const entry = musicState.playlistResolved[musicState.playlistIndex];
     if (!entry) {
       musicState.currentTrack = null;
@@ -29,7 +26,10 @@ function advanceMusicQueue(deps) {
       musicBroadcastState(deps);
       return;
     }
-    musicState.playlistIndex = (musicState.playlistIndex + 1) % musicState.playlistResolved.length;
+    // En aleatorio la siguiente se sortea ya (no al tocarle): asi se sabe cual es y se puede precargar.
+    musicState.playlistIndex = config.playlistShuffle
+      ? Math.floor(Math.random() * musicState.playlistResolved.length)
+      : (musicState.playlistIndex + 1) % musicState.playlistResolved.length;
     if (entry.videoId) {
       musicState.playlistResolveFails = 0;
       musicState.currentTrack = { ...entry, requestedBy: null, platform: 'playlist' };

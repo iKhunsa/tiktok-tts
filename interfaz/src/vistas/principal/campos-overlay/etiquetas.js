@@ -14,4 +14,10 @@ export function etiquetaOpcion(campo, valor) {
 }
 
 /** Texto del valor actual junto a la etiqueta de un slider (porcentaje o numero crudo). */
-export const textoValor = (campo, valor) => (campo.porcentaje ? `${Math.round(valor * 100)}%` : String(valor));
+/** Las duraciones se guardan en milisegundos pero se muestran en segundos: casi nadie piensa en ms. */
+export const enInterfaz = (campo, valor) => (campo.segundos ? valor / 1000 : valor);
+
+export function textoValor(campo, valor) {
+  if (campo.porcentaje) return `${Math.round(valor * 100)}%`;
+  return campo.segundos ? `${enInterfaz(campo, valor)} s` : String(valor);
+}

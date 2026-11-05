@@ -4,7 +4,9 @@
  * (nunca null: query.js solo llama cuando el param existe) y el campo, y
  * devuelve el valor tipado o el default si el string no es valido.
  */
-const HEX_COLOR = /^[0-9a-f]{3,8}$/i;
+import { esSkinEpik } from '../epik/skin-epik.js';
+
+const HEX_COLOR =/^[0-9a-f]{3,8}$/i;
 
 export const TIPOS_CAMPO = {
   numero: {
@@ -20,7 +22,8 @@ export const TIPOS_CAMPO = {
   },
   opcion: {
     aParam: (valor) => valor,
-    deParam: (texto, campo) => (campo.opciones.includes(texto) ? texto : campo.def),
+    // `aceptaEpik`: la skin puede ser un archivo .epik importado, que no esta en la lista fija.
+    deParam: (texto, campo) => (campo.opciones.includes(texto) || (campo.aceptaEpik && esSkinEpik(texto)) ? texto : campo.def),
   },
   color: {
     aParam: (valor) => valor.replace('#', ''),

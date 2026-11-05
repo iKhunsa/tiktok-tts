@@ -5,11 +5,21 @@ import { abrirPopupPro } from '../../../componentes/popup-pro.js';
 import { irACheckout } from '../cuenta/checkout.js';
 import { appSettings, saveSettings } from '../../../nucleo/estado/ajustes-app.js';
 import { MAX_FAVORITAS, SKINS_PREMIUM, alternarFavorita } from '../../../../compartido/estilo/campos-chat.js';
+import { SKINS_RANKING_PREMIUM } from '../../../../compartido/estilo/campos-ranking.js';
+import { SKINS_MUSICA_PREMIUM } from '../../../../compartido/estilo/campos-musica.js';
+import { aplicarSkin } from '../campos-overlay/index.js';
+import { abrirVistaPrevia } from './vista-previa-producto.js';
+import { arteSkin } from './arte-skin.js';
 
-const HUECOS_VACIOS = 8;
+// overlay = donde se ve la skin en la vista previa.
+const productos = (delTipo, overlay, seccion) => delTipo.map((skin) => ({ skin, delTipo, overlay, seccion }));
 
-/** Por ahora la tienda ofrece estilos de chat; el resto de huecos dibuja "Proximamente". */
-const PRODUCTOS = SKINS_PREMIUM.map((skin) => ({ skin }));
+/** Secciones de la tienda. */
+const SECCIONES = [
+  { titulo: 'overlayCat.cat.musica.titulo', productos: productos(SKINS_MUSICA_PREMIUM, 'musica', 'overlayCat.cat.musica.titulo') },
+  { titulo: 'overlayCat.cat.chat.titulo', productos: productos(SKINS_PREMIUM, 'chat', 'overlayCat.cat.chat.titulo') },
+  { titulo: 'overlayCfg.tipoSkin.ranking', productos: productos(SKINS_RANKING_PREMIUM, 'likes', 'overlayCfg.tipoSkin.ranking') },
+];
 
 // Con el sistema de cuentas apagado, la app funciona toda desbloqueada.
 export function tieneAcceso() {
@@ -24,7 +34,7 @@ export function comprarPro(boton) {
 }
 
 // Sin Pro la estrella lleva a comprar; con Pro guarda la skin en la pagina de favoritas del selector.
-function crearEstrella(skin) {
+function crearEstrella({ skin, delTipo }) {
   const estrella = document.createElement('button');
   estrella.type = 'button';
   estrella.className = 'ovl-producto-estrella';
@@ -40,7 +50,7 @@ function crearEstrella(skin) {
   };
   estrella.addEventListener('click', () => {
     if (!tieneAcceso()) return abrirPopupPro();
-    const lista = alternarFavorita(appSettings.skinsFavoritas, skin);
+    const lista = alternarFavorita(appSettings.skinsFavoritas, skin, delTipo);
     if (!lista) return showToast(t('overlayCfg.favoritasMaximo', { max: MAX_FAVORITAS }));
     appSettings.skinsFavoritas = lista;
     saveSettings();
@@ -49,21 +59,19 @@ function crearEstrella(skin) {
   return estrella;
 }
 
-function crearTarjeta(producto) {
+function crearTarjeta(producto, alIrAOverlay) {
   const tarjeta = document.createElement('article');
   tarjeta.className = 'ovl-producto';
 
-  const arte = document.createElement('div');
+  const arte = document.createElement('button');
+  arte.type = 'button';
   arte.className = 'ovl-producto-arte';
-  if (producto) {
-    arte.innerHTML = `<span class="ovl-skin-miniatura" data-skin="${producto.skin}"><i></i><i></i></span>`;
-  } else {
-    arte.innerHTML = '<span class="ovl-producto-molde"><i></i><i></i><i></i></span>';
-  }
+  arte.dataset.i18nAriaLabel = 'overlayCat.verVistaPrevia';
+  arte.innerHTML = arteSkin(producto.skin);
 
   const nombre = document.createElement('div');
   nombre.className = 'ovl-producto-nombre';
-  nombre.dataset.i18n = producto ? `overlayCfg.skins.${producto.skin}` : 'overlayCat.proximamente';
+  nombre.dataset.i18n = `overlayCfg.skins.${producto.skin}`;
 
   const precio = document.createElement('div');
   precio.className = 'ovl-producto-precio';
@@ -71,38 +79,66 @@ function crearTarjeta(producto) {
   const accion = document.createElement('button');
   accion.type = 'button';
   accion.className = 'ovl-producto-comprar';
-  accion.addEventListener('click', () => {
-    if (!tieneAcceso()) comprarPro(accion);
-    else if (!producto) showToast(t('overlayCat.proximamente'));
-  });
+  const accionar = (boton) => {
+    if (!tieneAcceso()) comprarPro(boton);
+    else usar(producto, estrella);
+  };
+  accion.addEventListener('click', () => accionar(accion));
 
   const pie = document.createElement('div');
   pie.className = 'ovl-producto-pie';
   pie.append(nombre, precio, accion);
 
   tarjeta.append(arte, pie);
-  const estrella = producto && crearEstrella(producto.skin);
-  if (estrella) tarjeta.append(estrella);
+  const estrella = crearEstrella(producto);
+  tarjeta.append(estrella);
+  // Clic en la tarjeta (no en sus botones) abre la vista previa; el arte es el boton para el teclado.
+  tarjeta.addEventListener('click', (evento) => {
+    const boton = evento.target.closest('button');
+    if (boton && boton !== arte) return;
+    abrirVistaPrevia(producto, { claveAccion: accion.dataset.i18n, alAccionar: accionar, alIrAOverlay });
+  });
   tarjeta.pintarAcceso = () => {
     const acceso = tieneAcceso();
     tarjeta.classList.toggle('incluido', acceso);
     accion.dataset.i18n = acceso ? 'overlayCat.usar' : 'overlayCat.comprar';
-    tarjeta.classList.toggle('con-estrella', acceso && !!producto);
-    if (acceso || producto) precio.dataset.i18n = 'overlayCat.incluidoPro';
-    else {
-      delete precio.dataset.i18n;
-      precio.textContent = '—';
-    }
-    estrella?.pintar();
+    precio.dataset.i18n = 'overlayCat.incluidoPro';
+    estrella.pintar();
   };
   return tarjeta;
 }
 
-/** Rejilla de productos de la pestaña Explorar. Comprar lleva al plan Pro, que los incluye todos. */
-export function iniciarTienda(contenedor) {
-  const productos = [...PRODUCTOS, ...Array(Math.max(0, HUECOS_VACIOS - PRODUCTOS.length)).fill(null)];
-  const tarjetas = productos.map(crearTarjeta);
-  contenedor.append(...tarjetas);
+// Usar = la skin queda en favoritas y puesta en todos los overlays que la admiten.
+function usar({ skin, delTipo }, estrella) {
+  const favoritas = appSettings.skinsFavoritas || [];
+  if (!favoritas.includes(skin)) {
+    const lista = alternarFavorita(favoritas, skin, delTipo);
+    if (lista) appSettings.skinsFavoritas = lista;
+    else showToast(t('overlayCfg.favoritasMaximo', { max: MAX_FAVORITAS }));
+  }
+  aplicarSkin(skin); // guarda los ajustes, favoritas incluidas
+  estrella.pintar();
+  showToast(t('overlayCat.skinAplicada', { skin: t(`overlayCfg.skins.${skin}`) }));
+}
+
+function crearSeccion({ titulo, productos }, alIrAOverlay) {
+  const seccion = document.createElement('section');
+  seccion.className = 'ovl-tienda-seccion';
+  const encabezado = document.createElement('h3');
+  encabezado.dataset.i18n = titulo;
+  const rejilla = document.createElement('div');
+  rejilla.className = 'ovl-productos';
+  const tarjetas = productos.map((producto) => crearTarjeta(producto, alIrAOverlay));
+  rejilla.append(...tarjetas);
+  seccion.append(encabezado, rejilla);
+  return { seccion, tarjetas };
+}
+
+/** Rejillas por categoria de la pestaña Explorar. Comprar lleva al plan Pro, que los incluye todos. */
+export function iniciarTienda(contenedor, alIrAOverlay) {
+  const secciones = SECCIONES.map((seccion) => crearSeccion(seccion, alIrAOverlay));
+  contenedor.append(...secciones.map(({ seccion }) => seccion));
+  const tarjetas = secciones.flatMap((s) => s.tarjetas);
   const pintar = () => {
     tarjetas.forEach((tarjeta) => tarjeta.pintarAcceso());
     aplicarTraducciones(contenedor);
