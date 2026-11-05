@@ -8,6 +8,7 @@ import { pintarDependientes, pintarRestablecer, sincronizarCamposOverlay } from 
 import { alPulsarRestablecerGrupo } from './restablecer-grupo.js';
 import { leerValorDeEntrada } from './leer-valor.js';
 import { textoValor } from './etiquetas.js';
+import { montarSeccionEpik } from '../epik/seccion.js';
 
 const OVERLAYS_CON_ESQUEMA = Object.keys(ESQUEMAS);
 
@@ -15,6 +16,9 @@ const campoDe = (overlay, clave) => ESQUEMAS[overlay].find((campo) => campo.clav
 
 function guardarCambio(overlay, clave, valor) {
   appSettings.overlays[overlay][clave] = valor;
+  // Elegir una skin con presets pone lo que esa skin muestra por defecto; luego el usuario lo cambia a mano.
+  const presets = clave === 'skin' && campoDe(overlay, 'skin')?.presets;
+  if (presets) Object.assign(appSettings.overlays[overlay], presets[valor] ?? presets.base);
   updateOverlayUrl(overlay);
   saveSettings();
 }
@@ -60,8 +64,17 @@ function alPulsarBoton(evento) {
   const boton = evento.target.closest('[data-cfg-fija]');
   if (!boton) return;
   const overlay = boton.dataset.cfgOverlay;
-  Object.entries(JSON.parse(boton.dataset.cfgFija)).forEach(([clave, valor]) => guardarCambio(overlay, clave, valor));
+  const valores = JSON.parse(boton.dataset.cfgFija);
+  Object.entries(valores).forEach(([clave, valor]) => guardarCambio(overlay, clave, valor));
   sincronizarCamposOverlay(overlay);
+  if ('skin' in valores) montarSeccionEpik(overlay); // los ajustes propios de un .epik siguen a la skin
+}
+
+/** Pone una skin en un overlay (ej. al quitar el .epik que estaba en uso vuelve a la de fabrica). */
+export function ponerSkin(overlay, skin) {
+  guardarCambio(overlay, 'skin', skin);
+  sincronizarCamposOverlay(overlay);
+  montarSeccionEpik(overlay);
 }
 
 function alEditarCampo(evento) {
@@ -72,8 +85,17 @@ function alEditarCampo(evento) {
   else cambiarValor(entrada, campo);
 }
 
+/** Pone la skin en todos los overlays que la ofrecen (boton Usar de la tienda). */
+export function aplicarSkin(skin) {
+  OVERLAYS_CON_ESQUEMA.filter((overlay) => campoDe(overlay, 'skin')?.premium.includes(skin)).forEach((overlay) => {
+    guardarCambio(overlay, 'skin', skin);
+    sincronizarCamposOverlay(overlay);
+  });
+}
+
 function renderizarCamposOverlay(overlay) {
   montarCamposOverlay(overlay);
+  montarSeccionEpik(overlay);
   sincronizarCamposOverlay(overlay);
   updateOverlayUrl(overlay);
 }

@@ -6,7 +6,7 @@
                 "mobile":  "Мобильный",
                 "settings":  "Настройки голоса",
                 "soundpad":  "Звуки",
-                "bot":  "Бот",
+                "bot":  "Музыкальный бот",
                 "moderation":  "Модерация",
                 "moreTools":  "Магазин плагинов",
                 "mcp":  "Агент MCP",
@@ -161,7 +161,8 @@
                 "useF8":  "Использовать F8",
                 "usePlayPause":  "Использовать Play/Pause",
                 "clearShortcut":  "Очистить",
-                "delete":  "Удалить"
+                "delete":  "Удалить",
+                "test":  "Тест"
             },
     "chat":  {
                  "title":  "Прямой чат",
@@ -397,7 +398,9 @@
                 "songPlural":  "песни",
                 "playlistSavedHint":  "сохраняется в папке приложения",
                 "playlistUnsaved":  "не сохранено",
-                "playlistPlayNow":  "Воспроизвести"
+                "playlistPlayNow":  "Воспроизвести",
+                "adelantar":  "Перемотать песню",
+                "fromPlaylist":  "Из вашего плейлиста"
             },
     "overlay2":  {
                      "giftsTitle":  "Уведомление о подарке",
@@ -557,7 +560,14 @@
            "terminal":  "Терминал",
            "retro":  "Ретро",
            "degradado":  "Градиент",
-           "bloque":  "Блок"
+           "bloque":  "Блок",
+           "vinilo":  "Винил",
+           "widgetPequeno":  "Маленький виджет",
+           "widgetMediano":  "Средний виджет",
+           "widgetGrande":  "Большой виджет",
+           "podio":  "Пьедестал",
+           "pixel":  "Пиксель",
+           "cinta":  "Лента"
        },
        "probarNivelesNota":  "Меняется только предпросмотр, а не оповещение в OBS.",
        "verFavoritas":  "Показать избранное",
@@ -580,7 +590,8 @@
                                      "comportamiento":  "Поведение",
                                      "viewer":  "Зрители",
                                      "moderador":  "Модераторы",
-                                     "suscriptor":  "Подписчики и суперфанаты"
+                                     "suscriptor":  "Подписчики и суперфанаты",
+                                     "cancion":  "Трек"
                                  },
                        "subgrupo":  {
                            "espaciado":  "Интервалы",
@@ -595,7 +606,7 @@
                           "alineacionTexto":  "Выравнивание текста",
                           "posicion":  "Положение",
                           "posicionV":  "Положение по вертикали",
-        "duracion": "Время каждого оповещения (миллисекунды)",
+        "duracion": "Длительность каждого оповещения (секунды)",
                                      "maxFilas":  "Макс. строк",
                                      "colorAcento":  "Основной цвет",
                                      "opacidadPlaca":  "Непрозрачность фона строки",
@@ -632,9 +643,9 @@
                                      "mostrarMedallas":  "Медали на пьедестале",
                                      "derechaAIzquierda":  "Фото справа",
                                      "ocultarTras":  "Скрывать сообщения через (секунды, 0: никогда)",
-                                     "duracionEntrada":  "Время появления (миллисекунды)",
+                                     "duracionEntrada":  "Длительность появления (секунды)",
                                      "animacionSalida":  "Анимация исчезновения",
-                                     "duracionSalida":  "Время исчезновения (миллисекунды)",
+                                     "duracionSalida":  "Длительность исчезновения (секунды)",
                                      "animacionEntrada":  "Анимация появления",
                                      "unaLinea":  "Сообщения в одну строку",
                                      "ajustarAncho":  "Ширина по сообщению",
@@ -645,7 +656,24 @@
                                      "rolOla":  "Эффект волны в имени",
                                      "rolResplandor":  "Свечение имени",
                                      "rolColorComentario":  "Цвет сообщения",
-                                     "rolColorFondo":  "Цвет фона"
+                                     "rolColorFondo":  "Цвет фона",
+                                     "mostrarVideo":  "Показывать видео вместо обложки",
+                                     "redondeo":  "Скругление углов",
+                                     "avatarPedido":  "Фото заказавшего",
+                                     "textoLargo":  "Длинное название",
+                                     "ladoPortada":  "Сторона обложки",
+                                     "mostrarPedido":  "Показывать, кто заказал",
+                                     "mostrarEtiqueta":  "Показывать «Сейчас играет»",
+                                     "alineacionPedido":  "Выравнивание заказавшего",
+                                     "mostrarBarra":  "Полоса времени",
+                                     "mostrarTiempos":  "Минуты трека",
+                                     "mostrarCola":  "Показывать следующие в очереди",
+                                     "meta":  "Цель по новым подписчикам",
+                                     "seguidoresActuales":  "Текущие подписчики",
+                                     "vueltaCreditos":  "Время одного круга (секунды)",
+                                     "disposicion":  "Расположение",
+                                     "imagenAlerta":  "Изображение оповещения",
+                                     "colorTexto":  "Цвет текста"
                                  },
                        "opcion":  {
                                       "izquierda":  "Слева",
@@ -718,8 +746,42 @@
                                       "sale-sacudida":  "Тряска",
                                       "sale-glitch":  "Помехи",
                                       "fade":  "Плавное появление",
-                                      "ninguna":  "Без анимации"
-                                  }
+                                      "ninguna":  "Без анимации",
+                                      "cortar":  "Обрезать с многоточием",
+                                      "desvanecer":  "Растворить конец",
+                                      "desplazar":  "Прокручивать, чтобы прочитать",
+                                      "cols":  "Две колонки",
+                                      "rows":  "Одна колонка",
+                                      "icono":  "Значок",
+                                      "regalo":  "Подарок",
+                                      "perfil":  "Фото профиля"
+                                  },
+                       "tipoSkin":  {
+                         "overlays": "Оверлеи",
+                         "ranking": "Рейтинг"
+                       },
+                       "epik":  {
+                         "titulo": "Файлы .epik",
+                         "soltar": "Перетащите сюда файл .epik или нажмите, чтобы выбрать",
+                         "soltarAyuda": "Дизайны на заказ от Epik. Добавляются как ещё один скин этого оверлея.",
+                         "usar": "Выбрать",
+                         "ajustes": "Настройки «{nombre}»",
+                         "restablecer": "Сбросить настройки",
+                         "importado": "«{nombre}» добавлен в ваши скины",
+                         "actualizado": "«{nombre}» обновлён до версии {version}. Ваши настройки сохранены.",
+                         "noEpik": "Это не файл .epik",
+                         "otroTitulo": "Этот файл для другого оверлея",
+                         "otroTexto": "«{nombre}» — дизайн для «{destino}», но вы перетащили его в «{origen}».",
+                         "otroAgregar": "Добавить в «{destino}»",
+                         "cancelar": "Отмена",
+                         "descargar": "Скачать шаблон",
+                         "descargado": "Сохранено в «Загрузки»: {archivo}",
+                         "eliminar": "Удалить",
+                         "confirmarEliminar": "Удалить?",
+                         "eliminado": "«{nombre}» удалён",
+                         "quitarFavorito": "Убрать из избранного",
+                         "agregarFavorito": "Добавить в избранное"
+                       }
                    },
     "overlayStr":  {
                        "newFollowers":  "Новые подписчики",
@@ -889,7 +951,9 @@
                   "allChannelsDisconnected":  "Все каналы отключены",
                   "youtubeAutoSaved":  "YouTube сохранён; подключится когда начнётся эфир",
                   "youtubeTmpSaved":  "YouTube сохранён как ручной канал",
-                  "settingSaveFailed":  "Не удалось сохранить настройку ({keys}). Проверьте подключение."
+                  "settingSaveFailed":  "Не удалось сохранить настройку ({keys}). Проверьте подключение.",
+                  "seekNoDisponible":  "Эта часть песни ещё загружается",
+                  "testOverlaySent":  "Тест отправлен в оверлей"
               },
     "dictLang":  {
                      "title":  "Разрешённые языки",
@@ -1272,7 +1336,12 @@
                    "identidadTomada":  "Этот аккаунт Google уже привязан к другому пользователю.",
                    "googleUnlinkSinPassword":  "Так вы останетесь без способа входа; сначала задайте пароль.",
                    "invalidResetCode":  "Неверный или просроченный код.",
-                   "emailNoConfigurado":  "Сейчас не удалось отправить письмо. Попробуйте позже."
+                   "emailNoConfigurado":  "Сейчас не удалось отправить письмо. Попробуйте позже.",
+                   "epikInvalido":  "Файл .epik повреждён или недействителен.",
+                   "epikOtroOverlay":  "Этот файл .epik для другого оверлея.",
+                   "epikNoSoportado":  "Для этого оверлея пока нельзя импортировать файлы .epik.",
+                   "epikNoEncontrado":  "Этот файл .epik больше не установлен.",
+                   "epikIntegrado":  "Тестовый шаблон нельзя удалить или заменить."
                },
     "mcp":  {
                 "title":  "Агент MCP",
@@ -1317,7 +1386,10 @@
                                  "overlay_stats":  "Подписчики, топ лайкеров, кто поделился и подарки этой сессии",
                                  "get_config":  "Читает видимые настройки приложения, без чувствительных данных",
                                  "set_config":  "Меняет настройки приложения на лету, только разрешённые",
-                                 "remote_command":  "Управляй с компьютера как с мобильной панели: пауза TTS, пропуск, клип"
+                                 "remote_command":  "Управляй с компьютера как с мобильной панели: пауза TTS, пропуск, клип",
+                                 "epik_list":  "Список установленных оверлеев .epik",
+                                 "epik_import":  "Импортирует или обновляет оверлей .epik",
+                                 "epik_delete":  "Удаляет оверлей .epik"
                              },
                 "domain":  {
                                "canales":  "Каналы",
@@ -1326,7 +1398,8 @@
                                "moderacion":  "Модерация",
                                "movil":  "Мобильная панель",
                                "overlay":  "Overlay",
-                               "sonido":  "Звук"
+                               "sonido":  "Звук",
+                               "epik":  "Файлы .epik"
                            },
                 "devLabel":  "Инструменты разработчика",
                 "devHint":  "Вставка чата/событий, сырые логи, полный статус, шина. Только для отладки.",
@@ -1415,7 +1488,6 @@
                    "linkGoogle":  "Привязать Google",
                    "googleLinked":  "Google привязан ({email})",
                    "googleLinkedDone":  "Ваш аккаунт Google привязан.",
-                   "googleUnlinkedDone":  "Ваш аккаунт Google отвязан.",
                    "deleteConfirmGoogle":  "Подтвердить через Google",
                    "forgotPassword":  "Забыли пароль?",
                    "forgotModalTitle":  "Сброс пароля",
@@ -1794,8 +1866,6 @@
                         "navAyuda":  "Помощь",
                         "close":  "Закрыть",
                         "changeBanner":  "Сменить баннер",
-                        "fullName":  "Полное имя",
-                        "fullNameUnknown":  "Не указано",
                         "googleRow":  "Вход через Google",
                         "link":  "Привязать",
                         "linked":  "Привязан",
@@ -1989,6 +2059,14 @@
             "compartido": "поделился(-ась) эфиром",
             "entrada": "вошёл(-ла) в эфир",
             "fin-directo": "Эфир завершён"
-        }
+        },
+        "irAlOverlay": "Перейти к оверлею",
+        "mensajePrueba": "Привет! Это тестовое сообщение",
+        "musicaSiguientes": "Далее",
+        "skinAplicada": "{skin} применён к вашим оверлеям",
+        "escuchar": "Слушать",
+        "pausar": "Пауза",
+        "verVistaPrevia": "Предпросмотр",
+        "cerrar": "Закрыть"
     }
 }

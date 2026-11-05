@@ -6,7 +6,7 @@
                 "mobile":  "モバイル",
                 "settings":  "音声設定",
                 "soundpad":  "サウンド",
-                "bot":  "Bot",
+                "bot":  "音楽ボット",
                 "moderation":  "モデレーション",
                 "moreTools":  "プラグインストア",
                 "mcp":  "MCP エージェント",
@@ -161,7 +161,8 @@
                 "useF8":  "F8 を使用",
                 "usePlayPause":  "再生/一時停止キーを使用",
                 "clearShortcut":  "クリア",
-                "delete":  "削除"
+                "delete":  "削除",
+                "test":  "テスト"
             },
     "chat":  {
                  "title":  "ライブチャット",
@@ -397,7 +398,9 @@
                 "songPlural":  "曲",
                 "playlistSavedHint":  "アプリのフォルダに保存されます",
                 "playlistUnsaved":  "未保存",
-                "playlistPlayNow":  "今すぐ再生"
+                "playlistPlayNow":  "今すぐ再生",
+                "adelantar":  "曲を早送り・巻き戻し",
+                "fromPlaylist":  "あなたのプレイリストから"
             },
     "overlay2":  {
                      "giftsTitle":  "ギフトアラート",
@@ -557,7 +560,14 @@
            "terminal":  "ターミナル",
            "retro":  "レトロ",
            "degradado":  "グラデーション",
-           "bloque":  "ブロック"
+           "bloque":  "ブロック",
+           "vinilo":  "レコード",
+           "widgetPequeno":  "小ウィジェット",
+           "widgetMediano":  "中ウィジェット",
+           "widgetGrande":  "大ウィジェット",
+           "podio":  "表彰台",
+           "pixel":  "ピクセル",
+           "cinta":  "リボン"
        },
        "probarNivelesNota":  "プレビューのみ変更され、OBS のアラートは変わりません。",
        "verFavoritas":  "お気に入りを見る",
@@ -580,7 +590,8 @@
                                      "comportamiento":  "動作",
                                      "viewer":  "視聴者",
                                      "moderador":  "モデレーター",
-                                     "suscriptor":  "登録者とスーパーファン"
+                                     "suscriptor":  "登録者とスーパーファン",
+                                     "cancion":  "曲"
                                  },
                        "subgrupo":  {
                            "espaciado":  "間隔",
@@ -595,7 +606,7 @@
                           "alineacionTexto":  "テキストの配置",
                           "posicion":  "位置",
                           "posicionV":  "垂直位置",
-        "duracion": "アラートごとの時間(ミリ秒)",
+        "duracion": "アラートごとの表示時間（秒）",
                                      "maxFilas":  "最大行数",
                                      "colorAcento":  "メインの色",
                                      "opacidadPlaca":  "行の背景の不透明度",
@@ -632,9 +643,9 @@
                                      "mostrarMedallas":  "表彰台メダル",
                                      "derechaAIzquierda":  "画像を右に",
                                      "ocultarTras":  "メッセージを隠すまでの時間(秒、0 で隠さない)",
-                                     "duracionEntrada":  "登場の時間(ミリ秒)",
+                                     "duracionEntrada":  "登場の時間（秒）",
                                      "animacionSalida":  "退場アニメーション",
-                                     "duracionSalida":  "退場の時間(ミリ秒)",
+                                     "duracionSalida":  "退場の時間（秒）",
                                      "animacionEntrada":  "登場アニメーション",
                                      "unaLinea":  "メッセージを1行で",
                                      "ajustarAncho":  "メッセージに幅を合わせる",
@@ -645,7 +656,24 @@
                                      "rolOla":  "名前に波の効果",
                                      "rolResplandor":  "名前を光らせる",
                                      "rolColorComentario":  "メッセージの色",
-                                     "rolColorFondo":  "背景色"
+                                     "rolColorFondo":  "背景色",
+                                     "mostrarVideo":  "ジャケットの代わりに動画を表示",
+                                     "redondeo":  "角の丸み",
+                                     "avatarPedido":  "リクエストした人の写真",
+                                     "textoLargo":  "長いタイトル",
+                                     "ladoPortada":  "ジャケットの位置",
+                                     "mostrarPedido":  "リクエストした人を表示",
+                                     "mostrarEtiqueta":  "「再生中」を表示",
+                                     "alineacionPedido":  "リクエストした人の配置",
+                                     "mostrarBarra":  "タイムバー",
+                                     "mostrarTiempos":  "曲の時間",
+                                     "mostrarCola":  "キューの次の曲を表示",
+                                     "meta":  "新規フォロワーの目標",
+                                     "seguidoresActuales":  "現在のフォロワー",
+                                     "vueltaCreditos":  "1 周の時間（秒）",
+                                     "disposicion":  "レイアウト",
+                                     "imagenAlerta":  "アラートの画像",
+                                     "colorTexto":  "文字の色"
                                  },
                        "opcion":  {
                                       "izquierda":  "左",
@@ -718,8 +746,42 @@
                                       "sale-sacudida":  "シェイク",
                                       "sale-glitch":  "ノイズ",
                                       "fade":  "ゆっくり表示",
-                                      "ninguna":  "アニメーションなし"
-                                  }
+                                      "ninguna":  "アニメーションなし",
+                                      "cortar":  "「…」で省略",
+                                      "desvanecer":  "末尾をフェード",
+                                      "desplazar":  "スクロールして表示",
+                                      "cols":  "2 列",
+                                      "rows":  "1 列",
+                                      "icono":  "アイコン",
+                                      "regalo":  "ギフト",
+                                      "perfil":  "プロフィール写真"
+                                  },
+                       "tipoSkin":  {
+                         "overlays": "オーバーレイ",
+                         "ranking": "ランキング"
+                       },
+                       "epik":  {
+                         "titulo": ".epik ファイル",
+                         "soltar": ".epik ファイルをここにドロップするか、クリックして選択",
+                         "soltarAyuda": "Epik によるオーダーメイドのデザイン。このオーバーレイのスキンとして追加されます。",
+                         "usar": "使う",
+                         "ajustes": "{nombre} の設定",
+                         "restablecer": "設定をリセット",
+                         "importado": "「{nombre}」をスキンに追加しました",
+                         "actualizado": "「{nombre}」をバージョン {version} に更新しました。設定はそのままです。",
+                         "noEpik": "このファイルは .epik ではありません",
+                         "otroTitulo": "このファイルは別のオーバーレイ用です",
+                         "otroTexto": "「{nombre}」は{destino}用のデザインですが、{origen}にドロップされました。",
+                         "otroAgregar": "{destino}に追加",
+                         "cancelar": "キャンセル",
+                         "descargar": "テンプレートをダウンロード",
+                         "descargado": "ダウンロードに保存しました: {archivo}",
+                         "eliminar": "削除",
+                         "confirmarEliminar": "削除しますか？",
+                         "eliminado": "「{nombre}」を削除しました",
+                         "quitarFavorito": "お気に入りから外す",
+                         "agregarFavorito": "お気に入りに追加"
+                       }
                    },
     "overlayStr":  {
                        "newFollowers":  "新しいフォロワー",
@@ -889,7 +951,9 @@
                   "allChannelsDisconnected":  "すべてのチャンネルを切断しました",
                   "youtubeAutoSaved":  "YouTubeを保存しました；ライブ時に接続します",
                   "youtubeTmpSaved":  "YouTubeを手動チャンネルとして保存しました",
-                  "settingSaveFailed":  "設定（{keys}）を保存できませんでした。接続を確認してください。"
+                  "settingSaveFailed":  "設定（{keys}）を保存できませんでした。接続を確認してください。",
+                  "seekNoDisponible":  "曲のその部分はまだダウンロード中です",
+                  "testOverlaySent":  "オーバーレイにテストを送信しました"
               },
     "dictLang":  {
                      "title":  "許可する言語",
@@ -1272,7 +1336,12 @@
                    "identidadTomada":  "そのGoogleアカウントはすでに別のユーザーに連携されています。",
                    "googleUnlinkSinPassword":  "ログイン方法がなくなってしまいます。先にパスワードを設定してください。",
                    "invalidResetCode":  "コードが無効または期限切れです。",
-                   "emailNoConfigurado":  "現在メールを送信できません。後でもう一度お試しください。"
+                   "emailNoConfigurado":  "現在メールを送信できません。後でもう一度お試しください。",
+                   "epikInvalido":  ".epik ファイルが壊れているか、無効です。",
+                   "epikOtroOverlay":  "この .epik ファイルは別のオーバーレイ用です。",
+                   "epikNoSoportado":  "このオーバーレイにはまだ .epik ファイルをインポートできません。",
+                   "epikNoEncontrado":  "その .epik ファイルはもうインストールされていません。",
+                   "epikIntegrado":  "テスト用テンプレートは削除も置き換えもできません。"
                },
     "mcp":  {
                 "title":  "MCP エージェント",
@@ -1317,7 +1386,10 @@
                                  "overlay_stats":  "今回のセッションのフォロワー、トップいいね、シェア、ギフト",
                                  "get_config":  "機密情報なしでアプリの表示設定を読む",
                                  "set_config":  "許可された項目だけアプリ設定を即時変更",
-                                 "remote_command":  "モバイルパネル同様に PC 操作: TTS停止、スキップ、クリップ"
+                                 "remote_command":  "モバイルパネル同様に PC 操作: TTS停止、スキップ、クリップ",
+                                 "epik_list":  "インストール済みの .epik オーバーレイを一覧表示",
+                                 "epik_import":  ".epik オーバーレイをインポートまたは更新",
+                                 "epik_delete":  ".epik オーバーレイを削除"
                              },
                 "domain":  {
                                "canales":  "チャンネル",
@@ -1326,7 +1398,8 @@
                                "moderacion":  "モデレーション",
                                "movil":  "モバイルパネル",
                                "overlay":  "Overlay",
-                               "sonido":  "サウンド"
+                               "sonido":  "サウンド",
+                               "epik":  ".epik ファイル"
                            },
                 "devLabel":  "開発者ツール",
                 "devHint":  "チャット/イベント注入、生ログ、詳細ステータス、バス。デバッグ専用。",
@@ -1415,7 +1488,6 @@
                    "linkGoogle":  "Googleを連携",
                    "googleLinked":  "Google連携済み（{email}）",
                    "googleLinkedDone":  "Googleアカウントを連携しました。",
-                   "googleUnlinkedDone":  "Google アカウントの連携を解除しました。",
                    "deleteConfirmGoogle":  "Googleで確認",
                    "forgotPassword":  "パスワードをお忘れですか？",
                    "forgotModalTitle":  "パスワードをリセット",
@@ -1794,8 +1866,6 @@
                         "navAyuda":  "ヘルプ",
                         "close":  "閉じる",
                         "changeBanner":  "バナーを変更",
-                        "fullName":  "氏名",
-                        "fullNameUnknown":  "未設定",
                         "googleRow":  "Google でログイン",
                         "link":  "連携",
                         "linked":  "連携済み",
@@ -1989,6 +2059,14 @@
             "compartido": "が配信をシェアしました",
             "entrada": "が入室しました",
             "fin-directo": "配信が終了しました"
-        }
+        },
+        "irAlOverlay": "オーバーレイへ移動",
+        "mensajePrueba": "こんにちは！これはテストメッセージです",
+        "musicaSiguientes": "次に再生",
+        "skinAplicada": "{skin} をオーバーレイに適用しました",
+        "escuchar": "試聴する",
+        "pausar": "一時停止",
+        "verVistaPrevia": "プレビューを見る",
+        "cerrar": "閉じる"
     }
 }

@@ -42,6 +42,15 @@
       "icon": "tray-icon.ico",
       "verifyUpdateCodeSignature": false
     },
+    "fileAssociations": [
+      {
+        "ext": "epik",
+        "name": "TikLiveTTS.Epik",
+        "description": "Overlay Epik para TikLiveTTS",
+        "icon": "build/epik.ico",
+        "role": "Viewer"
+      }
+    ],
     "nsis": {
       "oneClick": false,
       "perMachine": false,
@@ -73,6 +82,13 @@
       {
         "from": "lang-words/",
         "to": "lang-words"
+      },
+      {
+        "from": "epik/",
+        "to": "epik",
+        "filter": [
+          "*.epik"
+        ]
       },
       {
         "from": "blocked-words.md",

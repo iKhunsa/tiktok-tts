@@ -33,6 +33,7 @@ const { testShare } = require('./routes/test-share');
 const { testLikes } = require('./routes/test-likes');
 const { testDonors } = require('./routes/test-donors');
 const { testViewers } = require('./routes/test-viewers');
+const { testEvento } = require('./routes/test-evento');
 
 const LIKE_DEBOUNCE_FALLBACK_MS = 1500;
 module.exports = {
@@ -67,14 +68,14 @@ module.exports = {
       bus.emit('ws:broadcast', {
         type: 'gift', platform: payload.platform, user, ttsUser: resolveSpokenName(info.nickname, info.userId),
         giftName: info.giftName, giftId: info.giftId, giftPictureUrl: info.giftPictureUrl,
-        kind: info.kind, amount: info.amount, repeatCount: info.repeatCount, usdValue, timestamp: Date.now(),
+        kind: info.kind, amount: info.amount, repeatCount: info.repeatCount, usdValue, avatar: info.avatar || null, timestamp: Date.now(),
       });
     }, 'overlay');
 
     bus.on('canal:follow', (payload) => {
       const user = cleanNick(payload.nick, payload.userId);
       addFollower(state.credits, { platform: payload.platform, userId: payload.userId, user });
-      bus.emit('ws:broadcast', { type: 'follow', platform: payload.platform, user, ttsUser: resolveSpokenName(payload.nick, payload.userId), userId: payload.userId || null, timestamp: Date.now() });
+      bus.emit('ws:broadcast', { type: 'follow', platform: payload.platform, user, ttsUser: resolveSpokenName(payload.nick, payload.userId), userId: payload.userId || null, avatar: payload.avatar || null, timestamp: Date.now() });
       if (payload.platform === 'tiktok') state.followCount += 1;
     }, 'overlay');
 
@@ -194,6 +195,7 @@ module.exports = {
     app.post('/api/test/likes', testLikes(deps));
     app.post('/api/test/donors', testDonors(deps));
     app.post('/api/test/viewers', testViewers(deps));
+    app.post('/api/test/evento', testEvento(deps));
 
     // ── MCP ──────────────────────────────────────────────────────────────
     const slice = () => {
@@ -221,6 +223,6 @@ module.exports = {
       handler: () => slice().overlay,
     });
 
-    return { rutas: 9, listeners: 8 };
+    return { rutas: 10, listeners: 8 };
   },
 };

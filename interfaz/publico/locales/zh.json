@@ -6,7 +6,7 @@
                 "mobile":  "手机",
                 "settings":  "语音设置",
                 "soundpad":  "音效",
-                "bot":  "Bot",
+                "bot":  "音乐机器人",
                 "moderation":  "管理",
                 "moreTools":  "插件商店",
                 "mcp":  "MCP 代理",
@@ -161,7 +161,8 @@
                 "useF8":  "使用 F8",
                 "usePlayPause":  "使用播放/暂停键",
                 "clearShortcut":  "清除",
-                "delete":  "删除"
+                "delete":  "删除",
+                "test":  "测试"
             },
     "chat":  {
                  "title":  "实时聊天",
@@ -397,7 +398,9 @@
                 "songPlural":  "首歌曲",
                 "playlistSavedHint":  "保存在应用文件夹中",
                 "playlistUnsaved":  "未保存",
-                "playlistPlayNow":  "立即播放"
+                "playlistPlayNow":  "立即播放",
+                "adelantar":  "快进或后退歌曲",
+                "fromPlaylist":  "来自你的歌单"
             },
     "overlay2":  {
                      "giftsTitle":  "礼物提醒",
@@ -557,7 +560,14 @@
            "terminal":  "终端",
            "retro":  "复古",
            "degradado":  "渐变",
-           "bloque":  "方块"
+           "bloque":  "方块",
+           "vinilo":  "黑胶",
+           "widgetPequeno":  "小组件",
+           "widgetMediano":  "中组件",
+           "widgetGrande":  "大组件",
+           "podio":  "领奖台",
+           "pixel":  "像素",
+           "cinta":  "缎带"
        },
        "probarNivelesNota":  "只改变预览，不影响 OBS 中的提醒。",
        "verFavoritas":  "查看收藏",
@@ -580,7 +590,8 @@
                                      "comportamiento":  "行为",
                                      "viewer":  "观众",
                                      "moderador":  "管理员",
-                                     "suscriptor":  "订阅者和超级粉丝"
+                                     "suscriptor":  "订阅者和超级粉丝",
+                                     "cancion":  "歌曲"
                                  },
                        "subgrupo":  {
                            "espaciado":  "间距",
@@ -595,7 +606,7 @@
                           "alineacionTexto":  "文本对齐",
                           "posicion":  "位置",
                           "posicionV":  "垂直位置",
-        "duracion": "每条提醒时长(毫秒)",
+        "duracion": "每条提醒的时长（秒）",
                                      "maxFilas":  "最大行数",
                                      "colorAcento":  "主色",
                                      "opacidadPlaca":  "行背景不透明度",
@@ -632,9 +643,9 @@
                                      "mostrarMedallas":  "领奖台奖牌",
                                      "derechaAIzquierda":  "头像在右侧",
                                      "ocultarTras":  "多久后隐藏消息(秒,0 为从不)",
-                                     "duracionEntrada":  "进入时长(毫秒)",
+                                     "duracionEntrada":  "进入时长（秒）",
                                      "animacionSalida":  "退场动画",
-                                     "duracionSalida":  "退出时长(毫秒)",
+                                     "duracionSalida":  "退出时长（秒）",
                                      "animacionEntrada":  "入场动画",
                                      "unaLinea":  "消息单行显示",
                                      "ajustarAncho":  "宽度适应消息",
@@ -645,7 +656,24 @@
                                      "rolOla":  "名称波浪效果",
                                      "rolResplandor":  "名称发光",
                                      "rolColorComentario":  "消息颜色",
-                                     "rolColorFondo":  "背景颜色"
+                                     "rolColorFondo":  "背景颜色",
+                                     "mostrarVideo":  "用视频代替封面",
+                                     "redondeo":  "圆角程度",
+                                     "avatarPedido":  "点歌人头像",
+                                     "textoLargo":  "长标题",
+                                     "ladoPortada":  "封面位置",
+                                     "mostrarPedido":  "显示点歌人",
+                                     "mostrarEtiqueta":  "显示“正在播放”",
+                                     "alineacionPedido":  "点歌人对齐",
+                                     "mostrarBarra":  "进度条",
+                                     "mostrarTiempos":  "歌曲时长",
+                                     "mostrarCola":  "显示队列中的下一首",
+                                     "meta":  "新关注者目标",
+                                     "seguidoresActuales":  "当前关注者",
+                                     "vueltaCreditos":  "每轮时长（秒）",
+                                     "disposicion":  "布局",
+                                     "imagenAlerta":  "提醒图片",
+                                     "colorTexto":  "文字颜色"
                                  },
                        "opcion":  {
                                       "izquierda":  "左",
@@ -718,8 +746,42 @@
                                       "sale-sacudida":  "抖动",
                                       "sale-glitch":  "信号干扰",
                                       "fade":  "逐渐出现",
-                                      "ninguna":  "无动画"
-                                  }
+                                      "ninguna":  "无动画",
+                                      "cortar":  "用省略号截断",
+                                      "desvanecer":  "末尾渐隐",
+                                      "desplazar":  "滚动显示全文",
+                                      "cols":  "两列",
+                                      "rows":  "单列",
+                                      "icono":  "图标",
+                                      "regalo":  "礼物",
+                                      "perfil":  "头像"
+                                  },
+                       "tipoSkin":  {
+                         "overlays": "叠加层",
+                         "ranking": "排行榜"
+                       },
+                       "epik":  {
+                         "titulo": ".epik 文件",
+                         "soltar": "将 .epik 文件拖到这里，或点击选择",
+                         "soltarAyuda": "由 Epik 定制的设计，会作为此叠加层的一个新皮肤添加。",
+                         "usar": "使用",
+                         "ajustes": "{nombre} 设置",
+                         "restablecer": "重置设置",
+                         "importado": "“{nombre}”已添加到你的皮肤",
+                         "actualizado": "“{nombre}”已更新到 {version} 版本，你的设置已保留。",
+                         "noEpik": "该文件不是 .epik",
+                         "otroTitulo": "此文件属于另一个叠加层",
+                         "otroTexto": "“{nombre}”是为{destino}制作的设计，但你把它拖到了{origen}。",
+                         "otroAgregar": "添加到{destino}",
+                         "cancelar": "取消",
+                         "descargar": "下载模板",
+                         "descargado": "已保存到“下载”：{archivo}",
+                         "eliminar": "删除",
+                         "confirmarEliminar": "确定删除？",
+                         "eliminado": "已删除「{nombre}」",
+                         "quitarFavorito": "从收藏中移除",
+                         "agregarFavorito": "加入收藏"
+                       }
                    },
     "overlayStr":  {
                        "newFollowers":  "新粉丝",
@@ -889,7 +951,9 @@
                   "allChannelsDisconnected":  "所有频道已断开",
                   "youtubeAutoSaved":  "YouTube已保存；直播时将自动连接",
                   "youtubeTmpSaved":  "YouTube已保存为手动频道",
-                  "settingSaveFailed":  "无法保存设置（{keys}）。请检查网络连接。"
+                  "settingSaveFailed":  "无法保存设置（{keys}）。请检查网络连接。",
+                  "seekNoDisponible":  "这部分歌曲仍在下载中",
+                  "testOverlaySent":  "测试已发送到叠加层"
               },
     "dictLang":  {
                      "title":  "允许的语言",
@@ -1272,7 +1336,12 @@
                    "identidadTomada":  "该 Google 账号已绑定到其他用户。",
                    "googleUnlinkSinPassword":  "这样你就无法登录了，请先设置密码。",
                    "invalidResetCode":  "验证码无效或已过期。",
-                   "emailNoConfigurado":  "暂时无法发送邮件，请稍后再试。"
+                   "emailNoConfigurado":  "暂时无法发送邮件，请稍后再试。",
+                   "epikInvalido":  ".epik 文件已损坏或无效。",
+                   "epikOtroOverlay":  "此 .epik 文件属于另一个叠加层。",
+                   "epikNoSoportado":  "暂时无法为该叠加层导入 .epik 文件。",
+                   "epikNoEncontrado":  "该 .epik 文件已不再安装。",
+                   "epikIntegrado":  "测试模板无法删除或替换。"
                },
     "mcp":  {
                 "title":  "MCP 代理",
@@ -1317,7 +1386,10 @@
                                  "overlay_stats":  "本场关注者、点赞榜、分享者和礼物",
                                  "get_config":  "读取应用可见设置，不含敏感数据",
                                  "set_config":  "热更新应用设置，仅限允许的项",
-                                 "remote_command":  "像手机面板一样控制电脑：暂停 TTS、跳过、剪辑"
+                                 "remote_command":  "像手机面板一样控制电脑：暂停 TTS、跳过、剪辑",
+                                 "epik_list":  "列出已安装的 .epik 叠加层",
+                                 "epik_import":  "导入或更新 .epik 叠加层",
+                                 "epik_delete":  "移除 .epik 叠加层"
                              },
                 "domain":  {
                                "canales":  "频道",
@@ -1326,7 +1398,8 @@
                                "moderacion":  "审核",
                                "movil":  "手机面板",
                                "overlay":  "Overlays",
-                               "sonido":  "声音"
+                               "sonido":  "声音",
+                               "epik":  ".epik 文件"
                            },
                 "devLabel":  "开发者工具",
                 "devHint":  "注入聊天/事件、查看原始日志、完整状态、总线。仅用于调试。",
@@ -1415,7 +1488,6 @@
                    "linkGoogle":  "绑定 Google",
                    "googleLinked":  "已绑定 Google（{email}）",
                    "googleLinkedDone":  "你的 Google 账号已绑定成功。",
-                   "googleUnlinkedDone":  "已取消 Google 账号关联。",
                    "deleteConfirmGoogle":  "使用 Google 确认",
                    "forgotPassword":  "忘记密码了？",
                    "forgotModalTitle":  "重置密码",
@@ -1794,8 +1866,6 @@
                         "navAyuda":  "帮助",
                         "close":  "关闭",
                         "changeBanner":  "更换横幅",
-                        "fullName":  "全名",
-                        "fullNameUnknown":  "未设置",
                         "googleRow":  "使用 Google 登录",
                         "link":  "关联",
                         "linked":  "已关联",
@@ -1989,6 +2059,14 @@
             "compartido": "分享了直播",
             "entrada": "进入了直播间",
             "fin-directo": "直播已结束"
-        }
+        },
+        "irAlOverlay": "前往叠加层",
+        "mensajePrueba": "你好！这是一条测试消息",
+        "musicaSiguientes": "接下来",
+        "skinAplicada": "已将 {skin} 应用到你的叠加层",
+        "escuchar": "试听",
+        "pausar": "暂停",
+        "verVistaPrevia": "查看预览",
+        "cerrar": "关闭"
     }
 }

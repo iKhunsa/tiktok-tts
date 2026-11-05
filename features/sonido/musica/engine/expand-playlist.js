@@ -4,6 +4,7 @@ const { ensureReady } = require('./ensure-ready');
 const { runYtdlp } = require('./run-ytdlp');
 const { commonArgs } = require('./common-args');
 const { formatDuration } = require('../format-duration');
+const { youtubeThumbnail } = require('../youtube-thumbnail');
 
 // Techo de items al expandir una playlist de YouTube: evita que alguien pegue
 // una lista de 5.000 videos y llene la memoria / cuelgue yt-dlp.
@@ -26,9 +27,8 @@ async function expandPlaylist(state, url) {
     let j;
     try { j = JSON.parse(s); } catch (_) { continue; }
     if (!j.id) continue;
-    const thumb = (Array.isArray(j.thumbnails) && j.thumbnails.length
-      ? j.thumbnails[j.thumbnails.length - 1].url
-      : `https://i.ytimg.com/vi/${j.id}/mqdefault.jpg`);
+    // Las thumbnails de --flat-playlist son de baja resolucion (336x188).
+    const thumb = youtubeThumbnail(j.id);
     items.push({
       raw: `https://www.youtube.com/watch?v=${j.id}`,
       videoId: j.id,

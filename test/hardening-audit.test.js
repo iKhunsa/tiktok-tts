@@ -105,3 +105,17 @@ test('set_config (MCP): rechaza subscriptionsEnabled / mcp*ToolsEnabled / mcpEna
   );
   assert.deepEqual(out.result.keysChanged, ['musicEnabled'], 'solo la clave publica se aplico');
 });
+
+test('refresh avisa a la UI si cambian la foto o el banner aunque el plan sea el mismo', () => {
+  const { EventEmitter } = require('node:events');
+  const { crearRefresh } = require('../features/auth/refresh');
+  const bus = new EventEmitter();
+  const avisos = [];
+  bus.on('ws:broadcast', (m) => avisos.push(m.type));
+  const { emitirCambio } = crearRefresh({ cliente: {}, bus, logger: { log() {} } });
+  const sesion = (bannerUrl) => ({ signedIn: true, plan: 'free', degraded: false, entitlements: [], user: { id: 'u1', nombre: 'Ana', avatarUrl: null, bannerUrl } });
+  emitirCambio(sesion(null), sesion(null));
+  assert.deepEqual(avisos, []);
+  emitirCambio(sesion(null), sesion('https://res.cloudinary.com/x/banner.png'));
+  assert.deepEqual(avisos, ['auth-updated']);
+});

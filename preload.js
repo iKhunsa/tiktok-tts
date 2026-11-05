@@ -63,6 +63,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
   registerSoundpadShortcut: (soundId, shortcut) => ipcRenderer.invoke('register-soundpad-shortcut', { soundId, shortcut }),
   unregisterSoundpadShortcut: (soundId) => ipcRenderer.invoke('unregister-soundpad-shortcut', soundId),
   onPlaySoundpad: (cb) => on('play-soundpad', (_e, d) => cb(d)),
+  // .epik abiertos con doble clic: primero lo que llego antes de que la UI escuchara, despues en vivo.
+  onEpikAbierto: (cb) => {
+    const quitar = on('epik-abierto', (_e, resultado) => cb(resultado));
+    ipcRenderer.invoke('epik:pendientes').then((lista) => lista.forEach(cb)).catch(() => {});
+    return quitar;
+  },
   offPlaySoundpad: (cb) => off('play-soundpad', cb),
   portalView: {
     show: () => ipcRenderer.invoke('portal:show'),

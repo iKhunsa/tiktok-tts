@@ -62,17 +62,18 @@ test('los regalos de ejemplo existen en gifts/ para mostrar su imagen real', asy
 });
 
 test('cada overlay con muestra importa el modo vista previa', () => {
-  const esperado = {
-    'overlay-chat.js': 'MUESTRA_CHAT', 'overlay-viewers.js': 'MUESTRA_VIEWERS', 'overlay-likes.js': 'MUESTRA_LIKES',
-    'overlay-donadores.js': 'MUESTRA_DONADORES', 'overlay-alertas.js': 'MUESTRA_REGALO',
-    'overlay-alertas-social.js': 'MUESTRA_ALERTA_SOCIAL', 'overlay-social.js': 'MUESTRA_SOCIAL',
-    'overlay-seguidores.js': 'MUESTRA_SEGUIDORES', 'overlay-creditos.js': 'MUESTRA_CREDITOS',
-  };
-  for (const [archivo, muestra] of Object.entries(esperado)) {
-    const fuente = leer(`interfaz/${archivo}`);
-    assert.match(fuente, new RegExp(muestra), `${archivo} no usa ${muestra}`);
+  // [overlay, muestra, archivo que la usa]: la muestra vive en la capa de datos compartida con los .epik.
+  const esperado = [
+    ['overlay-chat.js', 'MUESTRA_CHAT', 'compartido/fuente-chat.js'], ['overlay-viewers.js', 'MUESTRA_VIEWERS', 'compartido/fuente-contador.js'],
+    ['overlay-likes.js', 'MUESTRA_LIKES', 'compartido/fuente-ranking.js'], ['overlay-donadores.js', 'MUESTRA_DONADORES', 'compartido/fuente-ranking.js'],
+    ['overlay-alertas.js', 'MUESTRA_REGALO', 'compartido/fuente-alerta.js'], ['overlay-alertas-social.js', 'MUESTRA_ALERTA_SOCIAL', 'compartido/fuente-alerta.js'],
+    ['overlay-social.js', 'MUESTRA_SOCIAL', 'overlay-social.js'], ['overlay-seguidores.js', 'MUESTRA_SEGUIDORES', 'compartido/fuente-contador.js'],
+    ['overlay-creditos.js', 'MUESTRA_CREDITOS', 'compartido/fuente-creditos.js'],
+  ];
+  for (const [archivo, muestra, donde] of esperado) {
+    assert.match(leer(`interfaz/${donde}`), new RegExp(muestra), `${donde} no usa ${muestra}`);
     // likes y donadores pasan por iniciar-ranking.js, que es quien decide con esVistaPrevia.
-    if (!/overlay-(likes|donadores)/.test(archivo)) assert.match(fuente, /esVistaPrevia/, `${archivo} no consulta esVistaPrevia`);
+    if (!/overlay-(likes|donadores)/.test(archivo)) assert.match(leer(`interfaz/${archivo}`), /esVistaPrevia/, `${archivo} no consulta esVistaPrevia`);
   }
   assert.match(leer('interfaz/compartido/iniciar-ranking.js'), /esVistaPrevia/);
 });
@@ -125,7 +126,7 @@ test('créditos se redibuja al cargar el idioma para no dejar claves a la vista'
 test('la vista previa del chat atenúa las plataformas excluidas y el chat de una sola no muestra otras', () => {
   const js = readFileSync(resolve(raiz, 'interfaz/overlay-chat.js'), 'utf8');
   assert.match(js, /if \(!plataformaVisible && \(!vistaPrevia \|\| plataformaUnica\)\) return;/, 'fuera de la vista previa (OBS) se sigue filtrando');
-  assert.match(js, /platform: plataformaUnica/, 'la muestra de un chat de una sola plataforma sale toda de esa plataforma');
+  assert.match(leer('interfaz/compartido/fuente-chat.js'), /platform: unica/, 'la muestra de un chat de una sola plataforma sale toda de esa plataforma');
   assert.match(js, /if \(!plataformaVisible\) elemento\.classList\.add\('msg-excluido'\)/);
   assert.match(readFileSync(resolve(raiz, 'interfaz/overlay-chat.css'), 'utf8'), /\.msg-excluido \{ filter: /);
 });

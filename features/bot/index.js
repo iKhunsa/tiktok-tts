@@ -48,6 +48,7 @@ module.exports = {
         platform: payload.platform,
         user: payload.user,
         userId: payload.userId,
+        avatar: payload.avatar || '',
       });
     }, 'bot');
 

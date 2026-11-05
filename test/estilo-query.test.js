@@ -151,3 +151,31 @@ test('las favoritas se ponen, se quitan y respetan el maximo', async () => {
   const opciones = camposChat().find(({ clave }) => clave === 'skin').opciones;
   assert.ok(SKINS_PREMIUM.every((skin) => opciones.includes(skin)));
 });
+
+test('las duraciones se guardan en ms y la URL no cambia por mostrarlas en segundos', async () => {
+  const { ESQUEMAS } = await cargar('esquemas.js');
+  const { construirQuery } = await cargar('query.js');
+  const duraciones = Object.values(ESQUEMAS).flat().filter((campo) => campo.segundos);
+  assert.ok(duraciones.length && duraciones.every((campo) => campo.def >= 100 && campo.min >= 100), 'son milisegundos');
+  assert.equal(construirQuery(ESQUEMAS.alertas, { dur: 6000 }), 'dur=6000');
+  for (const id of ['alertas', 'alertas-social', 'bits']) {
+    assert.ok(ESQUEMAS[id].some((campo) => campo.clave === 'animacionEntrada'), id);
+  }
+});
+
+test('las favoritas de chat y de ranking tienen cada una su propio maximo', async () => {
+  const { MAX_FAVORITAS, alternarFavorita } = await import('../interfaz/compartido/estilo/campos-chat.js');
+  const chat = Array.from({ length: MAX_FAVORITAS }, (_, i) => `c${i}`);
+  assert.deepEqual(alternarFavorita(chat, 'podio', ['podio', 'pixel']), [...chat, 'podio']);
+  assert.equal(alternarFavorita(chat, 'c9', chat), null);
+});
+
+test('todos los overlays con vista previa tienen 5 skins gratis y las de pago', async () => {
+  const { ESQUEMAS } = await cargar('esquemas.js');
+  for (const [id, esquema] of Object.entries(ESQUEMAS)) {
+    const skin = esquema.find(({ clave }) => clave === 'skin');
+    assert.ok(skin, `${id} sin skin`);
+    assert.equal(skin.libres.length, 5, id);
+    assert.ok(skin.premium.length && skin.premium.every((s) => skin.opciones.includes(s)), id);
+  }
+});

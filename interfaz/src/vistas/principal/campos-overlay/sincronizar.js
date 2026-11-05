@@ -2,7 +2,7 @@ import { ESQUEMAS } from '../../../../compartido/estilo/esquemas.js';
 import { construirQuery } from '../../../../compartido/estilo/query.js';
 import { appSettings } from '../../../nucleo/estado/ajustes-app.js';
 import { paintRangeFill } from '../../../componentes/campos-formulario.js';
-import { textoValor } from './etiquetas.js';
+import { enInterfaz, textoValor } from './etiquetas.js';
 
 function entradaDe(overlay, clave, plataforma) {
   const extra = plataforma ? `[data-cfg-plataforma="${plataforma}"]` : ':not([data-cfg-plataforma])';
@@ -22,12 +22,11 @@ function pintarCampo(overlay, campo, valor) {
   if (campo.tipo === 'plataformas') return pintarPlataformas(overlay, campo, valor);
 
   const entrada = entradaDe(overlay, campo.clave);
-  if (!entrada) return; // campo escrito a mano en index.html: lo pinta applySettings
   if (campo.tipo === 'bool') {
     entrada.checked = Boolean(valor);
     return;
   }
-  entrada.value = valor;
+  entrada.value = enInterfaz(campo, valor);
   if (campo.ui !== 'rango') return;
   paintRangeFill(entrada);
   entrada.closest('.cfg-field').querySelector('[data-cfg-valor]').textContent = textoValor(campo, valor);

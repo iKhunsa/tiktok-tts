@@ -16,7 +16,7 @@ let musicRequestSeq = 0;
  * deteccion se movio a /bot. Migracion de handleMusicRequest.
  */
 function handleMusicRequest(deps) {
-  return async ({ query, user, userId, platform }) => {
+  return async ({ query, user, userId, platform, avatar }) => {
     const { musicState, engine, bus, logger } = deps;
 
     logger.log(
@@ -159,6 +159,7 @@ function handleMusicRequest(deps) {
     );
 
     track.requestedBy = user;
+    track.requestedByAvatar = avatar || ''; // URL firmada (TikTok/YouTube) que caduca: el overlay tiene respaldo
     track.platform = platform;
 
     const wasEmpty = musicState.queue.length === 0 && !musicState.currentTrack;

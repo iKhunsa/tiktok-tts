@@ -1,0 +1,20 @@
+/* Foto de perfil con el icono del evento en la esquina (foto-con-icono.js). */
+.foto-icono { position: relative; flex-shrink: 0; width: 72px; height: 72px; }
+.foto-icono-avatar { display: block; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: #2a2a2a; }
+.foto-icono > :not(.foto-icono-avatar) {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  display: grid;
+  place-items: center;
+  width: 46%;
+  height: 46%;
+  margin: 0;
+  padding: 0;
+  border-radius: 50%;
+  background: rgba(8, 8, 8, 0.85);
+  font-size: 22px;
+  line-height: 1;
+  object-fit: contain;
+}
+.foto-icono > :not(.foto-icono-avatar) img { width: 72%; height: 72%; }

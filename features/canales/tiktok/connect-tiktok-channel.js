@@ -236,7 +236,7 @@ function setupTikTokConnection(deps, cleanUsername) {
     armStaleWatchdog();
     bus.emit('canal:follow', {
       platform: 'tiktok', channel: cleanUsername,
-      userId: data.uniqueId || null, nick: data.nickname || null,
+      userId: data.uniqueId || null, nick: data.nickname || null, avatar: data.avatarUrl || null,
     });
   });
 

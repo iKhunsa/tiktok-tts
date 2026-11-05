@@ -1,4 +1,4 @@
-import { etiquetaCampo, etiquetaOpcion } from './etiquetas.js';
+import { enInterfaz, etiquetaCampo, etiquetaOpcion } from './etiquetas.js';
 
 const PLATAFORMAS = { tiktok: 'TikTok', twitch: 'Twitch', youtube: 'YouTube', kick: 'Kick' };
 
@@ -15,7 +15,8 @@ function crearEntrada(overlay, campo) {
     const opciones = campo.opciones.map((valor) => `<option value="${valor}">${etiquetaOpcion(campo, valor)}</option>`);
     return `<select ${base}>${opciones.join('')}</select>`;
   }
-  const limites = `min="${campo.min ?? ''}" max="${campo.max ?? ''}" step="${campo.step ?? 'any'}"`;
+  const limite = (valor) => (valor === undefined ? '' : enInterfaz(campo, valor));
+  const limites = `min="${limite(campo.min)}" max="${limite(campo.max)}" step="${campo.step === undefined ? 'any' : enInterfaz(campo, campo.step)}"`;
   if (campo.ui === 'rango') return `<input type="range" ${limites} ${base} />`;
   if (campo.tipo === 'numero') return `<input type="number" ${limites} ${base} />`;
   return `<input type="text" ${base} />`;

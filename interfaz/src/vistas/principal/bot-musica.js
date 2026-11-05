@@ -101,23 +101,96 @@ function musicPlayTrack(track) {
     if (audio !== musicAudio) return;
     fetch('/api/music/next', { method: 'POST' }).catch(() => {});
   };
+  ['playing', 'pause', 'seeked'].forEach((evento) => audio.addEventListener(evento, () => reportarProgreso(audio, track)));
+  // El tiempo sale del audio (respeta pausas y saltos); la duracion del stream puede ser Infinity hasta terminar de bajar.
   const durSecs = parseDurationSecs(track.duration);
+  const tick = () => {
+    if (audio !== musicAudio || arrastrando) return;
+    pintarTiempo(audio.currentTime, duracionDe(audio, durSecs));
+  };
+  tick();
+  musicProgressInterval = setInterval(tick, 500);
+}
+
+const duracionDe = (audio, porDefecto) => (Number.isFinite(audio?.duration) && audio.duration > 0 ? audio.duration : porDefecto);
+
+function pintarTiempo(posicion, total) {
+  const bar = document.getElementById('music-progress-bar');
   const timeEl = document.getElementById('music-time');
-  if (durSecs > 0) {
-    const started = Date.now();
-    const tick = () => {
-      const elapsed = Math.min(durSecs, (Date.now() - started) / 1000);
-      const pct = Math.min(100, (elapsed / durSecs) * 100);
-      const bar = document.getElementById('music-progress-bar');
-      if (bar) bar.style.width = pct + '%';
-      if (timeEl) timeEl.textContent = `${formatSecs(elapsed)} / ${formatSecs(durSecs)}`;
-      if (pct >= 100) clearInterval(musicProgressInterval);
-    };
-    tick();
-    musicProgressInterval = setInterval(tick, 1000);
-  } else if (timeEl) {
-    timeEl.textContent = '';
+  const seek = document.getElementById('music-seek');
+  const pos = Math.min(Math.max(posicion, 0), total || 0);
+  if (bar) bar.style.width = total ? `${(pos / total) * 100}%` : '0%';
+  if (timeEl) timeEl.textContent = total ? `${formatSecs(pos)} / ${formatSecs(total)}` : '';
+  if (seek) {
+    seek.setAttribute('aria-valuemax', String(Math.floor(total || 0)));
+    seek.setAttribute('aria-valuenow', String(Math.floor(pos)));
+    seek.setAttribute('aria-valuetext', timeEl?.textContent || '');
   }
+}
+
+// Adelantar o atrasar la cancion. Mientras yt-dlp la sigue bajando solo se puede saltar a lo ya descargado.
+const SALTO_TECLADO_S = 5;
+let arrastrando = false;
+
+function totalActual() {
+  return duracionDe(musicAudio, parseDurationSecs(musicCurrentTrack?.duration));
+}
+
+function saltarA(segundos) {
+  const audio = musicAudio;
+  const total = totalActual();
+  if (!audio || !total) return;
+  const destino = Math.min(Math.max(segundos, 0), total - 0.5);
+  const { seekable } = audio;
+  const limite = seekable.length ? seekable.end(seekable.length - 1) : 0;
+  if (destino > limite + 1) {
+    showToast(t('toast.seekNoDisponible'));
+    pintarTiempo(audio.currentTime, total);
+    return;
+  }
+  audio.currentTime = destino; // 'seeked' avisa al overlay
+  pintarTiempo(destino, total);
+}
+
+const posicionDelPuntero = (barra, evento) => {
+  const { left, width } = barra.getBoundingClientRect();
+  return Math.min(Math.max((evento.clientX - left) / width, 0), 1) * totalActual();
+};
+
+document.addEventListener('pointerdown', (evento) => {
+  const barra = evento.target.closest('#music-seek');
+  if (!barra || !musicAudio || !totalActual() || evento.button !== 0) return;
+  arrastrando = true;
+  barra.setPointerCapture(evento.pointerId);
+  pintarTiempo(posicionDelPuntero(barra, evento), totalActual());
+  const mover = (e) => pintarTiempo(posicionDelPuntero(barra, e), totalActual());
+  const soltar = (e) => {
+    arrastrando = false;
+    barra.removeEventListener('pointermove', mover);
+    barra.removeEventListener('pointerup', soltar);
+    barra.removeEventListener('pointercancel', soltar);
+    if (e.type === 'pointerup') saltarA(posicionDelPuntero(barra, e));
+  };
+  barra.addEventListener('pointermove', mover);
+  barra.addEventListener('pointerup', soltar);
+  barra.addEventListener('pointercancel', soltar);
+});
+
+document.addEventListener('keydown', (evento) => {
+  if (!evento.target.closest?.('#music-seek') || !musicAudio) return;
+  const pasos = { ArrowRight: SALTO_TECLADO_S, ArrowUp: SALTO_TECLADO_S, ArrowLeft: -SALTO_TECLADO_S, ArrowDown: -SALTO_TECLADO_S };
+  if (evento.key in pasos) saltarA(musicAudio.currentTime + pasos[evento.key]);
+  else if (evento.key === 'Home') saltarA(0);
+  else if (evento.key === 'End') saltarA(totalActual());
+  else return;
+  evento.preventDefault();
+});
+
+// El overlay de OBS no ve este audio: el servidor guarda la posicion y el overlay interpola entre avisos.
+function reportarProgreso(audio, track) {
+  if (audio !== musicAudio) return;
+  const body = { videoId: track.videoId, position: audio.currentTime, duration: Number.isFinite(audio.duration) ? audio.duration : 0, paused: audio.paused };
+  fetch('/api/music/progress', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).catch(() => {});
 }
 
 function parseDurationSecs(dur) {
@@ -189,6 +262,17 @@ export function musicRenderNowPlaying(track) {
   }
 }
 
+// Lo que suena despues de las peticiones (playlist de fondo), en orden. Solo para mostrar:
+// las peticiones del chat siempre van antes, y estas se quitan editando la playlist.
+let musicPlaylistNext = [];
+
+function musicRefreshPlaylistNext() {
+  fetch('/api/music/queue').then((r) => r.json()).then((d) => {
+    musicPlaylistNext = (d.upcoming || []).filter((track) => track.platform === 'playlist');
+    musicRenderQueue();
+  }).catch(() => {});
+}
+
 export function musicRenderQueue() {
   const list = document.getElementById('music-queue-list');
   const count = document.getElementById('music-queue-count');
@@ -196,7 +280,7 @@ export function musicRenderQueue() {
   musicPrunePending();
   if (count) count.textContent = `(${musicQueue.length + musicPending.length})`;
   const engineHtml = musicEngineBannerHtml();
-  if (musicQueue.length === 0 && musicPending.length === 0 && !engineHtml) {
+  if (musicQueue.length === 0 && musicPending.length === 0 && musicPlaylistNext.length === 0 && !engineHtml) {
     list.innerHTML = `<div style="color:var(--text-muted);font-size:13px;">${t('bot.queueEmpty')}</div>`;
     return;
   }
@@ -216,6 +300,13 @@ export function musicRenderQueue() {
         <div style="font-size:11px;color:var(--text-muted);">${escHtml(track.requestedBy || '')}</div>
       </div>
       <button class="queue-item-remove" onclick="musicRemoveFromQueue(${i})" title="${t('btn.remove')}">✕</button>
+    </div>`).join('') + musicPlaylistNext.map((track, i) => `
+    <div class="queue-item">
+      <span style="font-size:11px;color:var(--text-muted);min-width:16px;">${musicQueue.length + i + 1}</span>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(track.title || '')}</div>
+        <div style="font-size:11px;color:var(--text-muted);">${t('bot.fromPlaylist')}</div>
+      </div>
     </div>`).join('');
 }
 
@@ -239,6 +330,7 @@ export async function musicRemoveFromQueue(index) {
 }
 
 export function musicOnNowPlaying(track) {
+  musicRefreshPlaylistNext();
   musicPlayTrack(track);
   musicRenderNowPlaying(track);
   updateMusicPauseBtn();
@@ -252,6 +344,7 @@ export function musicOnIdle() {
 }
 
 export function musicOnStateSync(data) {
+  musicRefreshPlaylistNext(); // llega con cada cambio de cola, playlist o activado
   if (typeof data.enabled === 'boolean') {
     syncMusicChip('musicEnabledToggle', data.enabled);
   }
@@ -275,6 +368,7 @@ let playlistSavedValue = '';
 let playlistResolvedCount = null;
 
 export function musicOnPlaylistUpdate(data) {
+  musicRefreshPlaylistNext();
   if (Array.isArray(data.playlist)) playlistResolvedCount = data.playlist.length;
   if (data.raw) {
     playlistSavedValue = data.raw.join('\n');

@@ -55,6 +55,9 @@ export const DEFAULT_SETTINGS = {
   overlays: DEFAULTS_OVERLAYS,
   overlayLienzo: '16:9',
   skinsFavoritas: [],
+  // Ajustes propios de cada archivo .epik, por id (vistas/principal/epik/estado.js).
+  epik: {},
+  epikOcultos: [], // .epik quitados de favoritos: no salen en el selector de skins
 };
 
 export let appSettings = {};
@@ -93,7 +96,10 @@ function migrarOverlaysAnteriores(guardado) {
 export function loadSettings() {
   try {
     const raw = datosPorCuenta.get(SETTINGS_KEY);
-    appSettings = raw ? deepMerge(DEFAULT_SETTINGS, migrarOverlaysAnteriores(JSON.parse(raw))) : JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+    const guardado = raw ? migrarOverlaysAnteriores(JSON.parse(raw)) : null;
+    appSettings = guardado ? deepMerge(DEFAULT_SETTINGS, guardado) : JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+    // deepMerge solo conserva claves conocidas: los ids de .epik no lo son, se copian tal cual.
+    if (guardado?.epik && typeof guardado.epik === 'object') appSettings.epik = guardado.epik;
   } catch (e) {
     console.warn('[settings] localStorage corrupto, usando valores por defecto', e);
     appSettings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
@@ -149,47 +155,7 @@ export function applySettings() {
   // servidor (loadRuntimeConfig corre despues de applySettings en el
   // arranque, ver vistas/principal/index.js).
 
-  const { seguidores, alertas, creditos, social } = appSettings.overlays || {};
-
-  setFieldVal('cfg-seg-goal', seguidores.goal);
-  setFieldVal('cfg-seg-color', seguidores.color);
-  setFieldVal('cfg-seg-bg', seguidores.bg);
-  const bgValEl = document.getElementById('cfg-seg-bg-val');
-  if (bgValEl) bgValEl.textContent = Math.round(seguidores.bg * 100);
-
   renderizarTodosLosCamposOverlay();
-
-  setFieldVal('cfg-alertas-dur', alertas.dur);
-  setFieldVal('cfg-alertas-color', alertas.color);
-  setFieldVal('cfg-alertas-bg', alertas.bg);
-  const abValEl = document.getElementById('cfg-alertas-bg-val');
-  if (abValEl) abValEl.textContent = Math.round(alertas.bg * 100);
-
-  if (creditos) {
-    setFieldVal('cfg-creditos-speed', creditos.speed);
-    setFieldVal('cfg-creditos-color', creditos.color);
-    setFieldVal('cfg-creditos-bg', creditos.bg);
-    const csValEl = document.getElementById('cfg-creditos-speed-val');
-    if (csValEl) csValEl.textContent = creditos.speed;
-    const cbValEl2 = document.getElementById('cfg-creditos-bg-val');
-    if (cbValEl2) cbValEl2.textContent = Math.round(creditos.bg * 100);
-  }
-
-  if (social) {
-    setFieldVal('cfg-social-layout', social.layout);
-    setFieldVal('cfg-social-color', social.color);
-    setFieldVal('cfg-social-bg', social.bg);
-    const sbValEl = document.getElementById('cfg-social-bg-val');
-    if (sbValEl) sbValEl.textContent = Math.round(social.bg * 100);
-  }
-
-  const alertasSocial = appSettings.overlays['alertas-social'];
-  if (alertasSocial) {
-    setFieldVal('cfg-alertas-social-color', alertasSocial.color);
-    setFieldVal('cfg-alertas-social-bg', alertasSocial.bg);
-    const asbValEl = document.getElementById('cfg-alertas-social-bg-val');
-    if (asbValEl) asbValEl.textContent = Math.round(alertasSocial.bg * 100);
-  }
 
   updateOverlayUrl('seguidores');
   updateOverlayUrl('alertas');

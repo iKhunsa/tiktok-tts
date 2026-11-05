@@ -28,6 +28,9 @@ function propagarError(res, r, logger) {
 const intervaloValido = (v) => (v === 'month' ? 'month' : 'year');
 
 function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
+  // La respuesta de login/registro puede no traer foto ni banner: se pide la sesion completa
+  // despues de responder (el servicio puede tardar) y, si cambia el perfil, la UI se entera por WS.
+  const rehidratarPerfil = () => Promise.resolve().then(() => refresh.tick()).catch((err) => logger.log('warn', 'auth', 'auth/routes.js#rehidratarPerfil', 'auth.refresh.fallo', err.message, {}));
   const guard = (req, res, next) => (subscriptionsEnabled() ? next() : res.status(404).end());
 
   app.post('/api/auth/register', guard, async (req, res) => {
@@ -39,6 +42,7 @@ function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
     logger.log('info', 'auth', 'auth/routes.js#register', 'auth.sesion.iniciada', 'Registro OK', { via: 'register' });
     refresh.emitirCambio(antes, estado.getSesion());
     res.json(estado.getSesion());
+    rehidratarPerfil();
   });
 
   app.post('/api/auth/login', guard, async (req, res) => {
@@ -50,6 +54,7 @@ function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
     logger.log('info', 'auth', 'auth/routes.js#login', 'auth.sesion.iniciada', 'Login OK', { via: 'login' });
     refresh.emitirCambio(antes, estado.getSesion());
     res.json(estado.getSesion());
+    rehidratarPerfil();
   });
 
   app.post('/api/auth/google', guard, async (req, res) => {
@@ -61,6 +66,7 @@ function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
     logger.log('info', 'auth', 'auth/routes.js#google', 'auth.sesion.iniciada', 'Login/registro con Google OK', { via: 'google' });
     refresh.emitirCambio(antes, estado.getSesion());
     res.json(estado.getSesion());
+    rehidratarPerfil();
   });
 
   // Sin sesion (se usa antes de registrarse): sin guard de token, solo el

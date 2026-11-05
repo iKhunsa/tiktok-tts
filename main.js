@@ -19,6 +19,7 @@ if (app.isPackaged) {
 process.env.TIKTOK_USER_DATA_PATH = app.getPath('userData');
 
 const { ensureSingleInstance } = require('./electron-shell/single-instance');
+const { crearAbridorEpik } = require('./electron-shell/abrir-epik');
 const { createWindow, showMainWindow, waitForServer, PORT } = require('./electron-shell/window');
 const { createTray, buildTrayMenu, showStartupError } = require('./electron-shell/tray');
 const { setupAutoUpdater, installUpdate } = require('./electron-shell/updater');
@@ -65,7 +66,12 @@ let ipcHandles = null;
 let portalView = null;
 let portalViewIpcHandles = null;
 
-ensureSingleInstance(app, () => showMainWindow(mainWindow));
+let abridorEpik = null; // se crea con el servidor; antes no hay a donde importar
+// Segunda instancia = otro doble clic (o un .epik abierto con la app ya corriendo): se trae la ventana y se importa.
+ensureSingleInstance(app, (_event, argv) => {
+  showMainWindow(mainWindow);
+  abridorEpik?.desdeArgumentos(argv);
+});
 
 // Aptabase (analytics de eventos de producto) — init temprano (antes de
 // app.isReady(), requisito del SDK) pero DESPUÉS del lock de instancia única:
@@ -179,6 +185,10 @@ app.whenReady().then(() => {
         app.quit();
       },
     });
+
+    abridorEpik = crearAbridorEpik({ port: PORT, logger });
+    abridorEpik.conectar(mainWindow);
+    abridorEpik.desdeArgumentos(process.argv); // la app se abrio con doble clic en un .epik
 
     portalView = createPortalViewController({ mainWindow, logger, accountId: getActiveAccount() });
     portalViewIpcHandles = attachPortalViewIpc({ controller: portalView });

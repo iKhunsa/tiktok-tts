@@ -1,14 +1,8 @@
 import { iniciarRanking } from './compartido/iniciar-ranking.js';
+import { RANKINGS } from './compartido/fuente-ranking.js';
 import { ESQUEMAS } from './compartido/estilo/esquemas.js';
 import { CORAZON_SVG } from './compartido/leaderboard-iconos.js';
-import { MUESTRA_LIKES } from './compartido/muestras-vista-previa.js';
+import { elegirEntrada } from './compartido/epik/anfitrion.js';
 
-iniciarRanking({
-  esquema: ESQUEMAS.likes,
-  claveLista: 'topLikers',
-  tipoMensajeWs: 'top-likers',
-  campoValor: 'totalLikes',
-  simboloHtml: CORAZON_SVG,
-  claveTextoVacio: 'overlayStr.waitingLikes',
-  muestra: MUESTRA_LIKES,
-});
+const nativo = () => iniciarRanking({ ...RANKINGS.likes, esquema: ESQUEMAS.likes, simboloHtml: CORAZON_SVG });
+elegirEntrada({ nativo, epik: () => import('./compartido/epik/anfitrion-ranking.js').then((m) => m.iniciar('likes', nativo)) });

@@ -8,6 +8,8 @@ const { search } = require('./search');
 const { getInfo } = require('./get-info');
 const { expandPlaylist } = require('./expand-playlist');
 const { createStream } = require('./create-stream');
+const { downloadMedia } = require('./download-media');
+const { cachedMedia } = require('./media-cache');
 const { shutdown } = require('./shutdown');
 
 /**
@@ -38,6 +40,10 @@ function createMusicEngine({ dataDir, logger, onStatus }) {
     getInfo: (videoId) => getInfo(state, videoId),
     expandPlaylist: (url) => expandPlaylist(state, url),
     createStream: (videoId) => createStream(state, videoId),
+    downloadAudio: (videoId) => downloadMedia(state, 'audio', videoId),
+    cachedAudio: (videoId) => cachedMedia(state, 'audio', videoId),
+    downloadVideo: (videoId) => downloadMedia(state, 'video', videoId),
+    cachedVideo: (videoId) => cachedMedia(state, 'video', videoId),
     shutdown: () => shutdown(state),
   };
 }

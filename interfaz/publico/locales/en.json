@@ -6,7 +6,7 @@
                 "mobile":  "Mobile",
                 "settings":  "Voice settings",
                 "soundpad":  "Sounds",
-                "bot":  "Bot",
+                "bot":  "Music bot",
                 "moderation":  "Moderation",
                 "moreTools":  "Plugin Store",
                 "mcp":  "MCP Agent",
@@ -161,7 +161,8 @@
                 "useF8":  "Use F8",
                 "usePlayPause":  "Use Play/Pause key",
                 "clearShortcut":  "Clear",
-                "delete":  "Delete"
+                "delete":  "Delete",
+                "test":  "Test"
             },
     "chat":  {
                  "title":  "Live chat",
@@ -397,7 +398,9 @@
                 "songPlural":  "songs",
                 "playlistSavedHint":  "saved to your app folder",
                 "playlistUnsaved":  "unsaved",
-                "playlistPlayNow":  "Play now"
+                "playlistPlayNow":  "Play now",
+                "adelantar":  "Seek through the song",
+                "fromPlaylist":  "From your playlist"
             },
     "overlay2":  {
                      "giftsTitle":  "Gift Alert",
@@ -557,7 +560,14 @@
            "terminal":  "Terminal",
            "retro":  "Retro",
            "degradado":  "Gradient",
-           "bloque":  "Block"
+           "bloque":  "Block",
+           "vinilo":  "Vinyl",
+           "widgetPequeno":  "Small widget",
+           "widgetMediano":  "Medium widget",
+           "widgetGrande":  "Large widget",
+           "podio":  "Podium",
+           "pixel":  "Pixel",
+           "cinta":  "Ribbon"
        },
        "probarNivelesNota":  "Only changes the preview, not the alert in OBS.",
        "verFavoritas":  "See favorites",
@@ -580,7 +590,8 @@
                                      "comportamiento":  "Behavior",
                                      "viewer":  "Viewers",
                                      "moderador":  "Moderators",
-                                     "suscriptor":  "Subscribers and super fans"
+                                     "suscriptor":  "Subscribers and super fans",
+                                     "cancion":  "Song"
                                  },
                        "subgrupo":  {
                            "espaciado":  "Spacing",
@@ -595,7 +606,7 @@
                           "alineacionTexto":  "Text alignment",
                           "posicion":  "Position",
                           "posicionV":  "Vertical position",
-        "duracion": "Time per alert (milliseconds)",
+        "duracion": "Duration of each alert (seconds)",
                                      "maxFilas":  "Max rows",
                                      "colorAcento":  "Main color",
                                      "opacidadPlaca":  "Row background opacity",
@@ -632,9 +643,9 @@
                                      "mostrarMedallas":  "Podium medals",
                                      "derechaAIzquierda":  "Picture on the right",
                                      "ocultarTras":  "Hide messages after (seconds, 0 for never)",
-                                     "duracionEntrada":  "Entrance time (milliseconds)",
+                                     "duracionEntrada":  "Entrance duration (seconds)",
                                      "animacionSalida":  "Exit animation",
-                                     "duracionSalida":  "Exit time (milliseconds)",
+                                     "duracionSalida":  "Exit duration (seconds)",
                                      "animacionEntrada":  "Entrance animation",
                                      "unaLinea":  "Messages on one line",
                                      "ajustarAncho":  "Fit width to message",
@@ -645,7 +656,24 @@
                                      "rolOla":  "Wave effect on the name",
                                      "rolResplandor":  "Glow on the name",
                                      "rolColorComentario":  "Message color",
-                                     "rolColorFondo":  "Background color"
+                                     "rolColorFondo":  "Background color",
+                                     "mostrarVideo":  "Show the video instead of the cover",
+                                     "redondeo":  "Corner roundness",
+                                     "avatarPedido":  "Requester photo",
+                                     "textoLargo":  "Long title",
+                                     "ladoPortada":  "Cover side",
+                                     "mostrarPedido":  "Show who requested it",
+                                     "mostrarEtiqueta":  "Show \"Now playing\"",
+                                     "alineacionPedido":  "Requester alignment",
+                                     "mostrarBarra":  "Time bar",
+                                     "mostrarTiempos":  "Song minutes",
+                                     "mostrarCola":  "Show what's next in the queue",
+                                     "meta":  "New followers goal",
+                                     "seguidoresActuales":  "Current followers",
+                                     "vueltaCreditos":  "Time per loop (seconds)",
+                                     "disposicion":  "Layout",
+                                     "imagenAlerta":  "Alert image",
+                                     "colorTexto":  "Text color"
                                  },
                        "opcion":  {
                                       "izquierda":  "Left",
@@ -718,8 +746,42 @@
                                       "sale-sacudida":  "Shake",
                                       "sale-glitch":  "Static",
                                       "fade":  "Fade in",
-                                      "ninguna":  "No animation"
-                                  }
+                                      "ninguna":  "No animation",
+                                      "cortar":  "Cut with dots",
+                                      "desvanecer":  "Fade the end",
+                                      "desplazar":  "Scroll to read it",
+                                      "cols":  "Two columns",
+                                      "rows":  "One column",
+                                      "icono":  "Icon",
+                                      "regalo":  "Gift",
+                                      "perfil":  "Profile photo"
+                                  },
+                       "tipoSkin":  {
+                         "overlays": "Overlays",
+                         "ranking": "Ranking"
+                       },
+                       "epik":  {
+                         "titulo": ".epik files",
+                         "soltar": "Drop your .epik file here or click to choose it",
+                         "soltarAyuda": "Custom designs made by Epik. They're added as one more skin for this overlay.",
+                         "usar": "Use",
+                         "ajustes": "{nombre} settings",
+                         "restablecer": "Reset settings",
+                         "importado": "“{nombre}” was added to your skins",
+                         "actualizado": "“{nombre}” was updated to version {version}. Your settings are kept.",
+                         "noEpik": "That file isn't a .epik",
+                         "otroTitulo": "This file is for another overlay",
+                         "otroTexto": "“{nombre}” is a design for {destino}, but you dropped it on {origen}.",
+                         "otroAgregar": "Add to {destino}",
+                         "cancelar": "Cancel",
+                         "descargar": "Download template",
+                         "descargado": "Saved to Downloads: {archivo}",
+                         "eliminar": "Delete",
+                         "confirmarEliminar": "Delete?",
+                         "eliminado": "“{nombre}” was deleted",
+                         "quitarFavorito": "Remove from favorites",
+                         "agregarFavorito": "Add to favorites"
+                       }
                    },
     "overlayStr":  {
                        "newFollowers":  "New followers",
@@ -889,7 +951,9 @@
                   "allChannelsDisconnected":  "All channels disconnected",
                   "youtubeAutoSaved":  "YouTube saved; will connect when live",
                   "youtubeTmpSaved":  "YouTube saved as manual channel",
-                  "settingSaveFailed":  "Could not save the setting ({keys}). Check your connection."
+                  "settingSaveFailed":  "Could not save the setting ({keys}). Check your connection.",
+                  "seekNoDisponible":  "That part of the song is still downloading",
+                  "testOverlaySent":  "Test sent to the overlay"
               },
     "errors":  {
                    "wrongPassword":  "Wrong password",
@@ -947,7 +1011,12 @@
                    "identidadTomada":  "That Google account is already linked to another user.",
                    "googleUnlinkSinPassword":  "That would leave you without a way to sign in; set a password first.",
                    "invalidResetCode":  "Invalid or expired code.",
-                   "emailNoConfigurado":  "Couldn't send the email right now. Try again later."
+                   "emailNoConfigurado":  "Couldn't send the email right now. Try again later.",
+                   "epikInvalido":  "The .epik file is damaged or invalid.",
+                   "epikOtroOverlay":  "This .epik file is for another overlay.",
+                   "epikNoSoportado":  ".epik files can't be imported for that overlay yet.",
+                   "epikNoEncontrado":  "That .epik file is no longer installed.",
+                   "epikIntegrado":  "The test template can't be deleted or replaced."
                },
     "dictLang":  {
                      "title":  "Allowed languages",
@@ -1317,7 +1386,10 @@
                                  "overlay_stats":  "Followers, top likers, who shared and gifts this session",
                                  "get_config":  "Reads the app\u0027s visible settings, no sensitive data",
                                  "set_config":  "Changes app settings on the fly, only the allowed ones",
-                                 "remote_command":  "Control the computer like from the mobile panel: pause TTS, skip, clip"
+                                 "remote_command":  "Control the computer like from the mobile panel: pause TTS, skip, clip",
+                                 "epik_list":  "Lists installed .epik overlays",
+                                 "epik_import":  "Imports or updates a .epik overlay",
+                                 "epik_delete":  "Removes a .epik overlay"
                              },
                 "domain":  {
                                "canales":  "Channels",
@@ -1326,7 +1398,8 @@
                                "moderacion":  "Moderation",
                                "movil":  "Mobile panel",
                                "overlay":  "Overlays",
-                               "sonido":  "Sound"
+                               "sonido":  "Sound",
+                               "epik":  ".epik files"
                            },
                 "devLabel":  "Developer tools",
                 "devHint":  "Inject chat/events, view raw logs, full status, bus. For debugging only.",
@@ -1415,7 +1488,6 @@
                    "linkGoogle":  "Link Google",
                    "googleLinked":  "Google linked ({email})",
                    "googleLinkedDone":  "Your Google account is now linked.",
-                   "googleUnlinkedDone":  "Your Google account was disconnected.",
                    "deleteConfirmGoogle":  "Confirm with Google",
                    "forgotPassword":  "Forgot your password?",
                    "forgotModalTitle":  "Reset password",
@@ -1794,8 +1866,6 @@
                         "navAyuda":  "Help",
                         "close":  "Close",
                         "changeBanner":  "Change banner",
-                        "fullName":  "Full name",
-                        "fullNameUnknown":  "Not set",
                         "googleRow":  "Sign in with Google",
                         "link":  "Link",
                         "linked":  "Linked",
@@ -1989,6 +2059,14 @@
             "compartido": "shared the stream",
             "entrada": "joined the stream",
             "fin-directo": "The stream has ended"
-        }
+        },
+        "irAlOverlay": "Go to overlay",
+        "mensajePrueba": "Hi! This is a test message",
+        "musicaSiguientes": "Up next",
+        "skinAplicada": "{skin} applied to your overlays",
+        "escuchar": "Listen",
+        "pausar": "Pause",
+        "verVistaPrevia": "View preview",
+        "cerrar": "Close"
     }
 }

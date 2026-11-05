@@ -1,107 +1,86 @@
 import { cargarLocaleOverlay, t, aplicarI18nOverlay } from './compartido/i18n-overlay.js';
 import { leerParametros, aplicarParametrosVisuales, intParam } from './compartido/parametros.js';
-import { conectarWSOverlay } from './compartido/ws-cliente.js';
 import { iniciarAccesibilidadOverlay } from './compartido/accesibilidad.js';
 import { registrarErroresOverlay } from './compartido/registrar-errores.js';
 import { escaparHtml } from './compartido/escapar-html.js';
 import { crearColaAlertas, programarRetiro, PLATFORM_META } from './compartido/cola-alertas.js';
 import { esVistaPrevia } from './compartido/vista-previa.js';
-import { MUESTRA_REGALO } from './compartido/muestras-vista-previa.js';
+import { iniciarFuenteAlerta } from './compartido/fuente-alerta.js';
+import { cargarImagenesRegalo, imagenRegalo as rutaImagenRegalo } from './compartido/imagen-regalo.js';
 import { iniciarOverlayFijo } from './compartido/estilo/aplicar-overlay-fijo.js';
+import { crearFotoConIcono } from './compartido/foto-con-icono.js';
 import { cargarRecurso, etiquetaRegalo, recursoDeEvento } from './compartido/recurso-plataforma.js';
+import { elegirEntrada } from './compartido/epik/anfitrion.js';
 
-iniciarOverlayFijo('alertas', 440, 130);
-registrarErroresOverlay();
-const params = leerParametros();
-const vistaPrevia = esVistaPrevia(params);
-aplicarParametrosVisuales(params);
-const alertDur = intParam(params, 'dur', 4000);
-const userSetColor = !!params.get('color');
-let giftMap = new Map();
-let giftDict = {};
+function nativo() {
+  const cfgFijo = iniciarOverlayFijo('alertas', 440, 130);
+  registrarErroresOverlay();
+  const params = leerParametros();
+  const vistaPrevia = esVistaPrevia(params);
+  aplicarParametrosVisuales(params);
+  const alertDur = intParam(params, 'dur', 4000);
+  const userSetColor = !!params.get('color');
+  const listas = cargarImagenesRegalo();
 
-function normalizeStr(str) { return str.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, ''); }
+  function useEmojiFor(el) {
+    const span = document.createElement('span');
+    span.className = 'gift-fallback';
+    span.textContent = '🎁';
+    if (el.isConnected) el.replaceWith(span);
+    return span;
+  }
 
-fetch('/gift-dict.json').then((r) => r.json()).then((dict) => {
-  giftDict = Object.fromEntries(Object.entries(dict).map(([k, v]) => [normalizeStr(k), v]));
-}).catch(() => {});
-fetch('/api/gifts-list').then((r) => r.json()).then((files) => {
-  giftMap = new Map(files.flatMap((f) => {
-    const match = f.match(/^\d+_(.+)\.png$/i);
-    if (!match) return [];
-    const slug = normalizeStr(match[1]);
-    return [[slug, f], [slug.replace(/_/g, ''), f]];
-  }));
-}).catch(() => {});
+  function showGenericAlert(d, done) {
+    if (d.type !== 'superchat') { done(); return; }
+    const meta = PLATFORM_META[d.platform] || PLATFORM_META.tiktok;
+    const card = document.createElement('div');
+    card.className = `alert-card anim-${cfgFijo.animacionEntrada}`;
+    if (!userSetColor) card.style.setProperty('--accent', d.color || meta.color);
+    card.innerHTML = `<span class="gift-fallback">💰</span><div class="info"><div class="action-label">${meta.label} · SUPERCHAT</div><div class="gift-name">${escaparHtml(d.user || t('overlayStr.anonymous'))}</div>${d.comment ? `<div class="username">${escaparHtml(d.comment)}</div>` : ''}</div>${d.amount ? `<div class="qty-badge">${escaparHtml(d.amount)}</div>` : ''}`;
+    const recurso = recursoDeEvento(d);
+    if (recurso) {
+      const img = document.createElement('img');
+      img.className = 'gift-img';
+      img.alt = '';
+      cargarRecurso(img, recurso, () => img.replaceWith(useEmojiFor(img)));
+      card.querySelector('.gift-fallback').replaceWith(img);
+    }
+    document.body.appendChild(card);
+    programarRetiro(card, d.duration || alertDur, done, cfgFijo.animacionSalida);
+  }
 
-function resolveGiftImage(giftName) {
-  if (!giftName) return null;
-  const normalized = normalizeStr(giftName);
-  if (giftDict[normalized]) return '/gifts/' + giftDict[normalized];
-  if (giftMap.has(normalized)) return '/gifts/' + giftMap.get(normalized);
-  for (const [slug, fname] of giftMap) if (slug.includes(normalized) || normalized.includes(slug)) return '/gifts/' + fname;
-  return null;
-}
-
-function useEmojiFor(el) {
-  const span = document.createElement('span');
-  span.className = 'gift-fallback';
-  span.textContent = '🎁';
-  if (el.isConnected) el.replaceWith(span);
-  return span;
-}
-
-function showGenericAlert(d, done) {
-  if (d.type !== 'superchat') { done(); return; }
-  const meta = PLATFORM_META[d.platform] || PLATFORM_META.tiktok;
-  const card = document.createElement('div');
-  card.className = 'alert-card';
-  if (!userSetColor) card.style.setProperty('--accent', d.color || meta.color);
-  card.innerHTML = `<span class="gift-fallback">💰</span><div class="info"><div class="action-label">${meta.label} · SUPERCHAT</div><div class="gift-name">${escaparHtml(d.user || t('overlayStr.anonymous'))}</div>${d.comment ? `<div class="username">${escaparHtml(d.comment)}</div>` : ''}</div>${d.amount ? `<div class="qty-badge">${escaparHtml(d.amount)}</div>` : ''}`;
-  const recurso = recursoDeEvento(d);
-  if (recurso) {
+  function showAlert(gift, done) {
+    if (gift.type && gift.type !== 'gift') { showGenericAlert(gift, done); return; }
+    const nombreRegalo = etiquetaRegalo(t, gift);
+    const imgSrc = gift.kind ? null : rutaImagenRegalo(gift.giftName);
+    const cdnSrc = gift.giftPictureUrl || '';
+    const card = document.createElement('div');
+    card.className = `alert-card anim-${cfgFijo.animacionEntrada}`;
     const img = document.createElement('img');
     img.className = 'gift-img';
-    img.alt = '';
-    cargarRecurso(img, recurso, () => img.replaceWith(useEmojiFor(img)));
-    card.querySelector('.gift-fallback').replaceWith(img);
+    img.alt = nombreRegalo;
+    if (imgSrc) { img.src = imgSrc; img.onerror = () => { if (cdnSrc) { img.src = cdnSrc; img.onerror = () => useEmojiFor(img); } else useEmojiFor(img); }; }
+    else if (cdnSrc) { img.src = cdnSrc; img.onerror = () => useEmojiFor(img); }
+    const recurso = gift.kind ? recursoDeEvento(gift) : null;
+    if (recurso) cargarRecurso(img, recurso, () => useEmojiFor(img));
+    const imagenRegalo = imgSrc || cdnSrc || recurso ? img : useEmojiFor(img);
+    card.appendChild(cfgFijo.imagenAlerta === 'perfil' ? crearFotoConIcono(gift, imagenRegalo) : imagenRegalo);
+    const info = document.createElement('div');
+    info.className = 'info';
+    info.innerHTML = `<div class="action-label">${t('overlayStr.giftReceived')}</div><div class="gift-name">${escaparHtml(nombreRegalo)}</div><div class="username">${t('overlayStr.giftFrom', { user: escaparHtml(gift.user) })}</div>${gift.usdValue ? `<div class="usd-value">≈ $${escaparHtml(String(gift.usdValue))} USD</div>` : ''}`;
+    card.appendChild(info);
+    if ((gift.repeatCount || 1) > 1) { const badge = document.createElement('div'); badge.className = 'qty-badge'; badge.textContent = 'x' + gift.repeatCount; card.appendChild(badge); }
+    document.body.appendChild(card);
+    if (!vistaPrevia) programarRetiro(card, gift.duration || alertDur, done, cfgFijo.animacionSalida); // la vista previa deja la tarjeta fija
   }
-  document.body.appendChild(card);
-  programarRetiro(card, d.duration || alertDur, done);
-}
 
-function showAlert(gift, done) {
-  if (gift.type && gift.type !== 'gift') { showGenericAlert(gift, done); return; }
-  const nombreRegalo = etiquetaRegalo(t, gift);
-  const imgSrc = gift.kind ? null : resolveGiftImage(gift.giftName || '');
-  const cdnSrc = gift.giftPictureUrl || '';
-  const card = document.createElement('div');
-  card.className = 'alert-card';
-  const img = document.createElement('img');
-  img.className = 'gift-img';
-  img.alt = nombreRegalo;
-  if (imgSrc) { img.src = imgSrc; img.onerror = () => { if (cdnSrc) { img.src = cdnSrc; img.onerror = () => useEmojiFor(img); } else useEmojiFor(img); }; }
-  else if (cdnSrc) { img.src = cdnSrc; img.onerror = () => useEmojiFor(img); }
-  const recurso = gift.kind ? recursoDeEvento(gift) : null;
-  if (recurso) cargarRecurso(img, recurso, () => useEmojiFor(img));
-  card.appendChild(imgSrc || cdnSrc || recurso ? img : useEmojiFor(img));
-  const info = document.createElement('div');
-  info.className = 'info';
-  info.innerHTML = `<div class="action-label">${t('overlayStr.giftReceived')}</div><div class="gift-name">${escaparHtml(nombreRegalo)}</div><div class="username">${t('overlayStr.giftFrom', { user: escaparHtml(gift.user) })}</div>${gift.usdValue ? `<div class="usd-value">≈ $${escaparHtml(String(gift.usdValue))} USD</div>` : ''}`;
-  card.appendChild(info);
-  if ((gift.repeatCount || 1) > 1) { const badge = document.createElement('div'); badge.className = 'qty-badge'; badge.textContent = 'x' + gift.repeatCount; card.appendChild(badge); }
-  document.body.appendChild(card);
-  if (!vistaPrevia) programarRetiro(card, gift.duration || alertDur, done); // la vista previa deja la tarjeta fija
-}
-
-const cola = crearColaAlertas(showAlert);
-const ESPERA_IMAGENES_MS = 600; // deja cargar la lista de regalos para que el primero salga con su imagen
-const aplicarA11y = iniciarAccesibilidadOverlay();
-cargarLocaleOverlay().then(() => {
-  aplicarI18nOverlay();
-  if (vistaPrevia) setTimeout(() => cola.encolar(MUESTRA_REGALO), ESPERA_IMAGENES_MS);
-  conectarWSOverlay((d) => {
-    if (['gift', 'superchat'].includes(d.type)) cola.encolar(d);
-    else if (d.type === 'config-updated') aplicarA11y(d.config || {});
+  const cola = crearColaAlertas(showAlert);
+  const aplicarA11y = iniciarAccesibilidadOverlay();
+  cargarLocaleOverlay().then(() => {
+    aplicarI18nOverlay();
+    // Espera la lista de regalos para que el primero salga con su imagen.
+    listas.then(() => iniciarFuenteAlerta('alertas', { params, vistaPrevia, alAlerta: cola.encolar, alConfig: aplicarA11y }));
   });
-});
+}
+
+elegirEntrada({ nativo, epik: () => import('./compartido/epik/anfitrion-alerta.js').then((m) => m.iniciar('alertas', nativo)) });

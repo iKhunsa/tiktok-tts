@@ -56,6 +56,7 @@ mount('avanzado', './features/avanzado');
 mount('donar', './features/donar');
 mount('portal-view', './features/portal-view');
 mount('telemetria', './features/telemetria');
+mount('epik', './features/epik');
 // mcp va ULTIMO: para cuando corre su register(), cada dominio ya llamo
 // mcpRegistry.registerTool() desde el suyo, asi que el set de tools esta completo.
 mount('mcp', './features/mcp');

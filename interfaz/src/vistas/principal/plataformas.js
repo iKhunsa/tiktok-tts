@@ -336,10 +336,8 @@ function pintarCuentasVinculadas() {
   }
   const logos = document.getElementById('linkedPlatforms');
   if (!logos) return;
-  // Solo lo que esta pasando (conectado / conectando / fallo): un canal
-  // guardado pero sin conectar no muestra logo.
-  const activas = vinculadas.filter((platform) => estadoLogo(platform).estado !== 'idle');
-  logos.replaceChildren(...activas.map((platform) => {
+  // Toda cuenta vinculada muestra su logo; sin conectar sale en gris (idle).
+  logos.replaceChildren(...vinculadas.map((platform) => {
     const { estado, motivo } = estadoLogo(platform);
     const texto = t(CLAVE_ESTADO[estado], { platform: PLATFORM_LABELS[platform], reason: motivo });
     // Con fallo es boton: abre el aviso de ayuda (en vivo? -> Discord).

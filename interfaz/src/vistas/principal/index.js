@@ -48,6 +48,7 @@ import {
   testTopLikers, testTopDonors, testViewers,
 } from './configurador-overlays.js';
 import { iniciarCamposOverlay } from './campos-overlay/index.js';
+import { iniciarEpik } from './epik/seccion.js';
 import { iniciarSelectorColor } from '../../componentes/selector-color/index.js';
 import { iniciarTarjetasOverlays } from './overlays-tarjetas.js';
 import { iniciarCatalogoOverlays } from './overlays-catalogo/index.js';
@@ -231,6 +232,7 @@ function iniciarArranque() {
   iniciarCierreDropdownVoces();
   iniciarPintadoDeRangos();
   iniciarCamposOverlay();
+  iniciarEpik();
   iniciarSelectorColor();
   iniciarCatalogoOverlays();
   iniciarTarjetasOverlays();

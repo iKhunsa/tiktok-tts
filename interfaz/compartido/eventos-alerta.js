@@ -6,6 +6,7 @@
  * Son datos puros: los comparten el overlay, el configurador y los tests.
  */
 import { NIVELES_CHEER, NIVELES_KICKS } from './recurso-plataforma.js';
+import { imagenRegaloYoutube } from './regalos-youtube.js';
 
 const usuario = 'luna_vibes';
 
@@ -20,6 +21,9 @@ const NIVELES_SUPER_CHAT = [
   { etiqueta: '$50', amount: '$50.00', color: '#C2185B' },
   { etiqueta: '$100', amount: '$100.00', color: '#D00000' },
 ];
+// Imagenes de regalos de YouTube como sticker de ejemplo, de menos a mas valiosas segun el nivel.
+const STICKERS_MUESTRA = ['gold_coin_v2_320x320', 'high_five', 'cat_jammin', 'finger_heart', 'goat_trophy', 'sports_car', 'castle'];
+const conSticker = (niveles) => niveles.map((nivel, i) => ({ ...nivel, sticker: imagenRegaloYoutube(STICKERS_MUESTRA[i]) }));
 const porCantidad = (cantidades) => cantidades.map((amount) => ({ etiqueta: String(amount), amount }));
 
 export const EVENTOS_ALERTA = {
@@ -68,8 +72,8 @@ export const EVENTOS_ALERTA = {
     icono: 'sticky_note_2',
     coincide: (d) => d.type === 'superchat' && !!d.sticker,
     insignia: (d) => d.amount,
-    muestra: { type: 'superchat', platform: 'youtube', user: usuario, amount: '$5.00', color: '#00BFA5', sticker: 'icons/youtube-logo.svg' },
-    muestras: NIVELES_SUPER_CHAT,
+    muestra: { type: 'superchat', platform: 'youtube', user: usuario, amount: '$5.00', color: '#00BFA5', sticker: imagenRegaloYoutube(STICKERS_MUESTRA[2]) },
+    muestras: conSticker(NIVELES_SUPER_CHAT),
     inicial: 2,
   },
   suscripcion: {

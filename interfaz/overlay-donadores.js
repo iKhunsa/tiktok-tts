@@ -1,14 +1,8 @@
 import { iniciarRanking } from './compartido/iniciar-ranking.js';
+import { RANKINGS } from './compartido/fuente-ranking.js';
 import { ESQUEMAS } from './compartido/estilo/esquemas.js';
 import { MONEDA_SVG } from './compartido/leaderboard-iconos.js';
-import { MUESTRA_DONADORES } from './compartido/muestras-vista-previa.js';
+import { elegirEntrada } from './compartido/epik/anfitrion.js';
 
-iniciarRanking({
-  esquema: ESQUEMAS.donadores,
-  claveLista: 'topDonors',
-  tipoMensajeWs: 'top-donors',
-  campoValor: 'totalCoins',
-  simboloHtml: MONEDA_SVG,
-  claveTextoVacio: 'overlayStr.waitingDonors',
-  muestra: MUESTRA_DONADORES,
-});
+const nativo = () => iniciarRanking({ ...RANKINGS.donadores, esquema: ESQUEMAS.donadores, simboloHtml: MONEDA_SVG });
+elegirEntrada({ nativo, epik: () => import('./compartido/epik/anfitrion-ranking.js').then((m) => m.iniciar('donadores', nativo)) });

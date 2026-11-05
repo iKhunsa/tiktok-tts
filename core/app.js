@@ -141,7 +141,7 @@ function attachFallbackStatus(app) {
  * loguea como core.ruta.excepcion (si no, cada asset faltante = un issue).
  */
 function attachErrorHandler(app, logger) {
-  app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
+  app.use((err, req, res, next) => {  
     const error = err instanceof Error ? err : new Error(String(err));
     const status = error.statusCode || error.status || 500;
 

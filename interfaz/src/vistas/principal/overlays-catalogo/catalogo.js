@@ -46,7 +46,7 @@ export const PLATAFORMAS_OVERLAY = {
 /** Tarjetas que se generan por JS; las otras 9 son markup estatico en index.html. */
 export const OVERLAYS_GENERADOS = [
   ...Object.entries(EVENTOS_ALERTA).map(([id, { icono, pendiente }]) => ({ id, icono, pendiente: !!pendiente, medida: '440 × 130 px' })),
-  { id: 'contador-likes', icono: 'favorite', pendiente: false, medida: '200 × 150 px' },
+  { id: 'contador-likes', icono: 'favorite', pendiente: false, medida: '360 × 110 px' },
   { id: 'musica', icono: 'music_note', pendiente: false, medida: '420 × 100 px' },
   ...Object.keys(CHATS_POR_PLATAFORMA).map((id) => ({ id, icono: 'chat', pendiente: false, medida: '420 × 720 px' })),
 ];
@@ -56,7 +56,7 @@ export const FONDOS_DESTACADOS = [
   'linear-gradient(120deg, #7a1f10, #e6532e 55%, #ffb057)',
   'linear-gradient(120deg, #36207f, #7c4dff 55%, #c79bff)',
   'linear-gradient(120deg, #6d4a00, #d48a00 55%, #ffd23f)',
-  'linear-gradient(120deg, #0b4f46, #0e9f8a 55%, #63e0c6)',
+  'center / cover no-repeat url("img/destacado-michi-metro.png"), #0b4f46',
 ];
 
 export const categoriaDe = (idOverlay) => CATEGORIAS.find((categoria) => categoria.overlays.includes(idOverlay));

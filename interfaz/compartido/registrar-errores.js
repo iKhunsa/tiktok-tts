@@ -3,7 +3,11 @@
  * el backend los sube a GlitchTip). Estaba copiado al inicio de cada
  * overlay-*.html.
  */
+let registrado = false;
+
 export function registrarErroresOverlay() {
+  if (registrado) return; // un .epik que cae al overlay de siempre llega aqui dos veces
+  registrado = true;
   const enviar = (message, stack) => {
     fetch('/api/logs/client', {
       method: 'POST',

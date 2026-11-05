@@ -1,0 +1,45 @@
+/* Skins de los overlays de tarjeta (alertas, contadores, musica, creditos, listas).
+   Son las mismas opciones que el chat: cambian la forma de la tarjeta, no sus colores (--accent). */
+body[data-skin="cristal"] :is(.alert-card, .card, .tarjeta, .viewer-card, .panel) {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 22px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+}
+body[data-skin="neon"] :is(.alert-card, .card, .tarjeta, .viewer-card, .panel) {
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 55%, transparent), inset 0 0 10px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+body[data-skin="minimal"] :is(.alert-card, .card, .tarjeta, .viewer-card, .panel) {
+  background: none;
+  border-color: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+body[data-skin="bloque"] :is(.alert-card, .card, .tarjeta, .viewer-card, .panel) {
+  border: 0;
+  border-left: 4px solid var(--accent);
+  border-radius: 4px;
+}
+body[data-skin="burbuja"] :is(.alert-card, .card, .tarjeta, .viewer-card, .panel) { border-radius: 26px 26px 26px 6px; }
+body[data-skin="terminal"] :is(.alert-card, .card, .tarjeta, .viewer-card, .panel) {
+  border: 1px dashed var(--accent);
+  border-radius: 0;
+  font-family: Consolas, "Courier New", monospace;
+}
+body[data-skin="retro"] :is(.alert-card, .card, .tarjeta, .viewer-card, .panel) {
+  border: 2px solid var(--accent);
+  border-radius: 0;
+  box-shadow: 5px 5px 0 color-mix(in srgb, var(--accent) 60%, transparent);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+body[data-skin="degradado"] :is(.alert-card, .card, .tarjeta, .viewer-card, .panel) {
+  background: linear-gradient(120deg, color-mix(in srgb, var(--accent) 45%, transparent), rgba(8, 8, 8, var(--bg-alpha)));
+  border-color: transparent;
+}

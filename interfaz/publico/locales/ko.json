@@ -6,7 +6,7 @@
                 "mobile":  "모바일",
                 "settings":  "음성 설정",
                 "soundpad":  "사운드",
-                "bot":  "봇",
+                "bot":  "음악 봇",
                 "moderation":  "모더레이션",
                 "moreTools":  "플러그인 스토어",
                 "mcp":  "MCP 에이전트",
@@ -161,7 +161,8 @@
                 "useF8":  "F8 사용",
                 "usePlayPause":  "재생/일시정지 키 사용",
                 "clearShortcut":  "지우기",
-                "delete":  "삭제"
+                "delete":  "삭제",
+                "test":  "테스트"
             },
     "chat":  {
                  "title":  "라이브 채팅",
@@ -397,7 +398,9 @@
                 "songPlural":  "곡",
                 "playlistSavedHint":  "앱 폴더에 저장됩니다",
                 "playlistUnsaved":  "저장 안 됨",
-                "playlistPlayNow":  "지금 재생"
+                "playlistPlayNow":  "지금 재생",
+                "adelantar":  "곡 앞으로/뒤로 이동",
+                "fromPlaylist":  "내 플레이리스트에서"
             },
     "overlay2":  {
                      "giftsTitle":  "선물 알림",
@@ -557,7 +560,14 @@
            "terminal":  "터미널",
            "retro":  "레트로",
            "degradado":  "그라데이션",
-           "bloque":  "블록"
+           "bloque":  "블록",
+           "vinilo":  "바이닐",
+           "widgetPequeno":  "작은 위젯",
+           "widgetMediano":  "중간 위젯",
+           "widgetGrande":  "큰 위젯",
+           "podio":  "시상대",
+           "pixel":  "픽셀",
+           "cinta":  "리본"
        },
        "probarNivelesNota":  "미리 보기만 바뀌며 OBS 알림은 바뀌지 않습니다.",
        "verFavoritas":  "즐겨찾기 보기",
@@ -580,7 +590,8 @@
                                      "comportamiento":  "동작",
                                      "viewer":  "시청자",
                                      "moderador":  "모더레이터",
-                                     "suscriptor":  "구독자와 슈퍼팬"
+                                     "suscriptor":  "구독자와 슈퍼팬",
+                                     "cancion":  "곡"
                                  },
                        "subgrupo":  {
                            "espaciado":  "간격",
@@ -595,7 +606,7 @@
                           "alineacionTexto":  "텍스트 정렬",
                           "posicion":  "위치",
                           "posicionV":  "세로 위치",
-        "duracion": "알림별 시간(밀리초)",
+        "duracion": "알림당 표시 시간(초)",
                                      "maxFilas":  "최대 행 수",
                                      "colorAcento":  "기본 색상",
                                      "opacidadPlaca":  "행 배경 불투명도",
@@ -632,9 +643,9 @@
                                      "mostrarMedallas":  "시상대 메달",
                                      "derechaAIzquierda":  "사진을 오른쪽에",
                                      "ocultarTras":  "메시지 숨기기까지 시간(초, 0은 숨기지 않음)",
-                                     "duracionEntrada":  "등장 시간(밀리초)",
+                                     "duracionEntrada":  "등장 시간(초)",
                                      "animacionSalida":  "퇴장 애니메이션",
-                                     "duracionSalida":  "퇴장 시간(밀리초)",
+                                     "duracionSalida":  "퇴장 시간(초)",
                                      "animacionEntrada":  "등장 애니메이션",
                                      "unaLinea":  "메시지를 한 줄로",
                                      "ajustarAncho":  "메시지에 너비 맞춤",
@@ -645,7 +656,24 @@
                                      "rolOla":  "이름에 물결 효과",
                                      "rolResplandor":  "이름에 빛 효과",
                                      "rolColorComentario":  "메시지 색상",
-                                     "rolColorFondo":  "배경 색상"
+                                     "rolColorFondo":  "배경 색상",
+                                     "mostrarVideo":  "커버 대신 영상 표시",
+                                     "redondeo":  "모서리 둥글기",
+                                     "avatarPedido":  "신청한 사람 사진",
+                                     "textoLargo":  "긴 제목",
+                                     "ladoPortada":  "커버 위치",
+                                     "mostrarPedido":  "신청한 사람 표시",
+                                     "mostrarEtiqueta":  "\"지금 재생 중\" 표시",
+                                     "alineacionPedido":  "신청한 사람 정렬",
+                                     "mostrarBarra":  "시간 막대",
+                                     "mostrarTiempos":  "곡 시간",
+                                     "mostrarCola":  "대기열의 다음 곡 표시",
+                                     "meta":  "신규 팔로워 목표",
+                                     "seguidoresActuales":  "현재 팔로워",
+                                     "vueltaCreditos":  "한 바퀴 시간(초)",
+                                     "disposicion":  "배치",
+                                     "imagenAlerta":  "알림 이미지",
+                                     "colorTexto":  "글자 색"
                                  },
                        "opcion":  {
                                       "izquierda":  "왼쪽",
@@ -718,8 +746,42 @@
                                       "sale-sacudida":  "진동",
                                       "sale-glitch":  "화면 잡음",
                                       "fade":  "서서히 나타나기",
-                                      "ninguna":  "애니메이션 없음"
-                                  }
+                                      "ninguna":  "애니메이션 없음",
+                                      "cortar":  "말줄임표로 자르기",
+                                      "desvanecer":  "끝부분 흐리게",
+                                      "desplazar":  "스크롤해서 보기",
+                                      "cols":  "두 열",
+                                      "rows":  "한 열",
+                                      "icono":  "아이콘",
+                                      "regalo":  "선물",
+                                      "perfil":  "프로필 사진"
+                                  },
+                       "tipoSkin":  {
+                         "overlays": "오버레이",
+                         "ranking": "순위"
+                       },
+                       "epik":  {
+                         "titulo": ".epik 파일",
+                         "soltar": ".epik 파일을 여기에 놓거나 클릭해서 선택하세요",
+                         "soltarAyuda": "Epik이 맞춤 제작한 디자인입니다. 이 오버레이의 스킨으로 추가됩니다.",
+                         "usar": "사용",
+                         "ajustes": "{nombre} 설정",
+                         "restablecer": "설정 초기화",
+                         "importado": "‘{nombre}’이(가) 스킨에 추가되었습니다",
+                         "actualizado": "‘{nombre}’이(가) {version} 버전으로 업데이트되었습니다. 설정은 유지됩니다.",
+                         "noEpik": "이 파일은 .epik 파일이 아닙니다",
+                         "otroTitulo": "이 파일은 다른 오버레이용입니다",
+                         "otroTexto": "‘{nombre}’은(는) {destino}용 디자인인데 {origen}에 놓았습니다.",
+                         "otroAgregar": "{destino}에 추가",
+                         "cancelar": "취소",
+                         "descargar": "템플릿 다운로드",
+                         "descargado": "다운로드에 저장됨: {archivo}",
+                         "eliminar": "삭제",
+                         "confirmarEliminar": "삭제할까요?",
+                         "eliminado": "'{nombre}'을(를) 삭제했어요",
+                         "quitarFavorito": "즐겨찾기에서 제거",
+                         "agregarFavorito": "즐겨찾기에 추가"
+                       }
                    },
     "overlayStr":  {
                        "newFollowers":  "새 팔로워",
@@ -889,7 +951,9 @@
                   "allChannelsDisconnected":  "모든 채널 연결 해제됨",
                   "youtubeAutoSaved":  "YouTube 저장됨; 라이브 시 연결됩니다",
                   "youtubeTmpSaved":  "YouTube를 수동 채널로 저장했습니다",
-                  "settingSaveFailed":  "설정({keys})을 저장하지 못했습니다. 연결을 확인하세요."
+                  "settingSaveFailed":  "설정({keys})을 저장하지 못했습니다. 연결을 확인하세요.",
+                  "seekNoDisponible":  "곡의 해당 부분은 아직 다운로드 중입니다",
+                  "testOverlaySent":  "오버레이에 테스트를 보냈습니다"
               },
     "dictLang":  {
                      "title":  "허용 언어",
@@ -1272,7 +1336,12 @@
                    "identidadTomada":  "해당 Google 계정은 이미 다른 사용자와 연결되어 있습니다.",
                    "googleUnlinkSinPassword":  "그러면 로그인할 방법이 없어집니다. 먼저 비밀번호를 설정하세요.",
                    "invalidResetCode":  "코드가 유효하지 않거나 만료되었습니다.",
-                   "emailNoConfigurado":  "지금은 이메일을 보낼 수 없습니다. 나중에 다시 시도해 주세요."
+                   "emailNoConfigurado":  "지금은 이메일을 보낼 수 없습니다. 나중에 다시 시도해 주세요.",
+                   "epikInvalido":  ".epik 파일이 손상되었거나 올바르지 않습니다.",
+                   "epikOtroOverlay":  "이 .epik 파일은 다른 오버레이용입니다.",
+                   "epikNoSoportado":  "이 오버레이에는 아직 .epik 파일을 가져올 수 없습니다.",
+                   "epikNoEncontrado":  "해당 .epik 파일이 더 이상 설치되어 있지 않습니다.",
+                   "epikIntegrado":  "테스트 템플릿은 삭제하거나 교체할 수 없습니다."
                },
     "mcp":  {
                 "title":  "MCP 에이전트",
@@ -1317,7 +1386,10 @@
                                  "overlay_stats":  "이번 세션의 팔로워, 톱 라이커, 공유, 선물",
                                  "get_config":  "민감 정보 없이 앱의 공개 설정을 조회",
                                  "set_config":  "허용된 앱 설정만 실시간으로 변경",
-                                 "remote_command":  "모바일 패널처럼 제어: TTS 정지, 건너뛰기, 클립"
+                                 "remote_command":  "모바일 패널처럼 제어: TTS 정지, 건너뛰기, 클립",
+                                 "epik_list":  "설치된 .epik 오버레이 목록",
+                                 "epik_import":  ".epik 오버레이 가져오기 또는 업데이트",
+                                 "epik_delete":  ".epik 오버레이 삭제"
                              },
                 "domain":  {
                                "canales":  "채널",
@@ -1326,7 +1398,8 @@
                                "moderacion":  "모더레이션",
                                "movil":  "모바일 패널",
                                "overlay":  "오버레이",
-                               "sonido":  "사운드"
+                               "sonido":  "사운드",
+                               "epik":  ".epik 파일"
                            },
                 "devLabel":  "개발자 도구",
                 "devHint":  "채팅/이벤트 주입, 원시 로그, 전체 상태, 버스. 디버깅 전용.",
@@ -1415,7 +1488,6 @@
                    "linkGoogle":  "Google 연결",
                    "googleLinked":  "Google 연결됨 ({email})",
                    "googleLinkedDone":  "Google 계정이 연결되었습니다.",
-                   "googleUnlinkedDone":  "Google 계정 연동이 해제되었습니다.",
                    "deleteConfirmGoogle":  "Google로 확인",
                    "forgotPassword":  "비밀번호를 잊으셨나요?",
                    "forgotModalTitle":  "비밀번호 재설정",
@@ -1794,8 +1866,6 @@
                         "navAyuda":  "도움말",
                         "close":  "닫기",
                         "changeBanner":  "배너 변경",
-                        "fullName":  "이름",
-                        "fullNameUnknown":  "설정 안 됨",
                         "googleRow":  "Google로 로그인",
                         "link":  "연결",
                         "linked":  "연결됨",
@@ -1989,6 +2059,14 @@
             "compartido": "님이 방송을 공유했습니다",
             "entrada": "님이 입장했습니다",
             "fin-directo": "방송이 종료되었습니다"
-        }
+        },
+        "irAlOverlay": "오버레이로 이동",
+        "mensajePrueba": "안녕하세요! 테스트 메시지입니다",
+        "musicaSiguientes": "다음 곡",
+        "skinAplicada": "{skin}을(를) 오버레이에 적용했어요",
+        "escuchar": "들어보기",
+        "pausar": "일시정지",
+        "verVistaPrevia": "미리보기 보기",
+        "cerrar": "닫기"
     }
 }

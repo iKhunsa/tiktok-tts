@@ -6,7 +6,7 @@
                 "mobile":  "Móvil",
                 "settings":  "Ajustes de voz",
                 "soundpad":  "Sonidos",
-                "bot":  "Bot",
+                "bot":  "Bot de música",
                 "moderation":  "Moderación",
                 "moreTools":  "Tienda de Plugins",
                 "mcp":  "Agente MCP",
@@ -197,7 +197,8 @@
                 "useF8":  "Usar F8",
                 "usePlayPause":  "Usar tecla Play/Pausa",
                 "clearShortcut":  "Limpiar",
-                "delete":  "Eliminar"
+                "delete":  "Eliminar",
+                "test":  "Test"
             },
     "chat":  {
                  "title":  "Chat en vivo",
@@ -433,7 +434,9 @@
                 "songPlural":  "canciones",
                 "playlistSavedHint":  "se guarda en tu carpeta de la app",
                 "playlistUnsaved":  "sin guardar",
-                "playlistPlayNow":  "Reproducir ahora"
+                "playlistPlayNow":  "Reproducir ahora",
+                "adelantar":  "Adelantar o atrasar la canción",
+                "fromPlaylist":  "De tu playlist"
             },
     "overlay2":  {
                      "giftsTitle":  "Alerta de Regalo",
@@ -593,7 +596,14 @@
            "terminal":  "Terminal",
            "retro":  "Retro",
            "degradado":  "Degradado",
-           "bloque":  "Bloque"
+           "bloque":  "Bloque",
+           "vinilo":  "Vinilo",
+           "widgetPequeno":  "Widget pequeño",
+           "widgetMediano":  "Widget mediano",
+           "widgetGrande":  "Widget grande",
+           "podio":  "Podio",
+           "pixel":  "Píxel",
+           "cinta":  "Cinta"
        },
        "probarNivelesNota":  "Solo cambia la vista previa, no la alerta en OBS.",
        "verFavoritas":  "Ver favoritas",
@@ -616,7 +626,8 @@
                                      "comportamiento":  "Comportamiento",
                                      "viewer":  "Espectadores",
                                      "moderador":  "Moderadores",
-                                     "suscriptor":  "Suscriptores y superfans"
+                                     "suscriptor":  "Suscriptores y superfans",
+                                     "cancion":  "Canción"
                                  },
                        "subgrupo":  {
                            "espaciado":  "Espacios",
@@ -631,7 +642,7 @@
                           "alineacionTexto":  "Alineación del texto",
                           "posicion":  "Posición",
                           "posicionV":  "Posición vertical",
-        "duracion": "Duración de cada alerta (milisegundos)",
+        "duracion": "Duración de cada alerta (segundos)",
                                      "maxFilas":  "Máximo de filas",
                                      "colorAcento":  "Color principal",
                                      "opacidadPlaca":  "Opacidad del fondo de fila",
@@ -668,9 +679,9 @@
                                      "mostrarMedallas":  "Medallas en el podio",
                                      "derechaAIzquierda":  "Foto a la derecha",
                                      "ocultarTras":  "Ocultar mensajes después de (segundos, 0 para nunca)",
-                                     "duracionEntrada":  "Duración de entrada (milisegundos)",
+                                     "duracionEntrada":  "Duración de entrada (segundos)",
                                      "animacionSalida":  "Animación de salida",
-                                     "duracionSalida":  "Duración de salida (milisegundos)",
+                                     "duracionSalida":  "Duración de salida (segundos)",
                                      "animacionEntrada":  "Animación de entrada",
                                      "unaLinea":  "Mensajes en una línea",
                                      "ajustarAncho":  "Ajustar el ancho al mensaje",
@@ -681,7 +692,24 @@
                                      "rolOla":  "Efecto de ola en el nombre",
                                      "rolResplandor":  "Brillo en el nombre",
                                      "rolColorComentario":  "Color del mensaje",
-                                     "rolColorFondo":  "Color de fondo"
+                                     "rolColorFondo":  "Color de fondo",
+                                     "mostrarVideo":  "Mostrar el video en lugar de la portada",
+                                     "redondeo":  "Redondeo de las esquinas",
+                                     "avatarPedido":  "Foto de quien la pidió",
+                                     "textoLargo":  "Título largo",
+                                     "ladoPortada":  "Lado de la portada",
+                                     "mostrarPedido":  "Mostrar quién la pidió",
+                                     "mostrarEtiqueta":  "Mostrar «Sonando ahora»",
+                                     "alineacionPedido":  "Alineación de quién la pidió",
+                                     "mostrarBarra":  "Barra de tiempo",
+                                     "mostrarTiempos":  "Minutos de la canción",
+                                     "mostrarCola":  "Mostrar lo que sigue en la cola",
+                                     "meta":  "Meta de nuevos seguidores",
+                                     "seguidoresActuales":  "Seguidores actuales",
+                                     "vueltaCreditos":  "Tiempo de una vuelta (segundos)",
+                                     "disposicion":  "Disposición",
+                                     "imagenAlerta":  "Imagen de la alerta",
+                                     "colorTexto":  "Color del texto"
                                  },
                        "opcion":  {
                                       "izquierda":  "Izquierda",
@@ -754,8 +782,42 @@
                                       "sale-sacudida":  "Sacudida",
                                       "sale-glitch":  "Interferencia",
                                       "fade":  "Aparecer poco a poco",
-                                      "ninguna":  "Sin animación"
-                                  }
+                                      "ninguna":  "Sin animación",
+                                      "cortar":  "Cortar con puntos",
+                                      "desvanecer":  "Desvanecer el final",
+                                      "desplazar":  "Desplazar para leerlo",
+                                      "cols":  "Dos columnas",
+                                      "rows":  "Una columna",
+                                      "icono":  "Icono",
+                                      "regalo":  "Regalo",
+                                      "perfil":  "Foto de perfil"
+                                  },
+                       "tipoSkin":  {
+                         "overlays": "Overlays",
+                         "ranking": "Ranking"
+                       },
+                       "epik":  {
+                         "titulo": "Archivos .epik",
+                         "soltar": "Suelta aquí tu archivo .epik o haz clic para elegirlo",
+                         "soltarAyuda": "Diseños a medida hechos por Epik. Se agregan como una skin más de este overlay.",
+                         "usar": "Usar",
+                         "ajustes": "Ajustes de {nombre}",
+                         "restablecer": "Restablecer ajustes",
+                         "importado": "«{nombre}» se agregó a tus skins",
+                         "actualizado": "«{nombre}» se actualizó a la versión {version}. Tus ajustes se mantienen.",
+                         "noEpik": "Ese archivo no es .epik",
+                         "otroTitulo": "Este archivo es para otro overlay",
+                         "otroTexto": "«{nombre}» es un diseño para {destino}, pero lo soltaste en {origen}.",
+                         "otroAgregar": "Agregar a {destino}",
+                         "cancelar": "Cancelar",
+                         "descargar": "Descargar plantilla",
+                         "descargado": "Guardada en Descargas: {archivo}",
+                         "eliminar": "Eliminar",
+                         "confirmarEliminar": "¿Eliminar?",
+                         "eliminado": "«{nombre}» se eliminó",
+                         "quitarFavorito": "Quitar de favoritos",
+                         "agregarFavorito": "Agregar a favoritos"
+                       }
                    },
     "overlayStr":  {
                        "newFollowers":  "Nuevos seguidores",
@@ -925,7 +987,9 @@
                   "allChannelsDisconnected":  "Todos los canales desconectados",
                   "youtubeAutoSaved":  "YouTube guardado; se conectará cuando haya live",
                   "youtubeTmpSaved":  "YouTube temporal guardado como manual",
-                  "settingSaveFailed":  "No se pudo guardar el ajuste ({keys}). Revisá la conexión."
+                  "settingSaveFailed":  "No se pudo guardar el ajuste ({keys}). Revisá la conexión.",
+                  "seekNoDisponible":  "Esa parte de la canción todavía se está descargando",
+                  "testOverlaySent":  "Test enviado al overlay"
               },
     "dictLang":  {
                      "title":  "Idiomas permitidos",
@@ -1292,7 +1356,12 @@
                    "identidadTomada":  "Esa cuenta de Google ya está vinculada a otro usuario.",
                    "googleUnlinkSinPassword":  "Eso te dejaría sin forma de iniciar sesión; primero poné una contraseña.",
                    "invalidResetCode":  "Código inválido o vencido.",
-                   "emailNoConfigurado":  "No se pudo enviar el email ahora mismo. Probá más tarde."
+                   "emailNoConfigurado":  "No se pudo enviar el email ahora mismo. Probá más tarde.",
+                   "epikInvalido":  "El archivo .epik está dañado o no es válido.",
+                   "epikOtroOverlay":  "Este archivo .epik es para otro overlay.",
+                   "epikNoSoportado":  "Todavía no se pueden importar archivos .epik para ese overlay.",
+                   "epikNoEncontrado":  "Ese archivo .epik ya no está instalado.",
+                   "epikIntegrado":  "La plantilla de prueba no se puede eliminar ni reemplazar."
                },
     "mcp":  {
                 "title":  "Agente MCP",
@@ -1337,7 +1406,10 @@
                                  "overlay_stats":  "Seguidores, top likers, quién compartió y regalos de esta sesión",
                                  "get_config":  "Lee los ajustes visibles de la app, sin datos sensibles",
                                  "set_config":  "Cambia ajustes de la app en caliente, solo los permitidos",
-                                 "remote_command":  "Controlá la compu como desde el panel móvil: pausar TTS, saltar, clip"
+                                 "remote_command":  "Controlá la compu como desde el panel móvil: pausar TTS, saltar, clip",
+                                 "epik_list":  "Lista los overlays .epik instalados",
+                                 "epik_import":  "Importa o actualiza un overlay .epik",
+                                 "epik_delete":  "Quita un overlay .epik"
                              },
                 "domain":  {
                                "canales":  "Canales",
@@ -1346,7 +1418,8 @@
                                "moderacion":  "Moderación",
                                "movil":  "Panel móvil",
                                "overlay":  "Overlays",
-                               "sonido":  "Sonido"
+                               "sonido":  "Sonido",
+                               "epik":  "Archivos .epik"
                            },
                 "devLabel":  "Herramientas de desarrollo",
                 "devHint":  "Inyectar chat/eventos, ver logs crudos, status completo, bus. Solo para debug.",
@@ -1435,7 +1508,6 @@
                    "linkGoogle":  "Vincular Google",
                    "googleLinked":  "Google vinculado ({email})",
                    "googleLinkedDone":  "Tu cuenta de Google quedó vinculada.",
-                   "googleUnlinkedDone":  "Tu cuenta de Google quedó desvinculada.",
                    "deleteConfirmGoogle":  "Confirmar con Google",
                    "forgotPassword":  "¿Olvidaste tu contraseña?",
                    "forgotModalTitle":  "Recuperar contraseña",
@@ -1794,8 +1866,6 @@
                         "navAyuda":  "Ayuda",
                         "close":  "Cerrar",
                         "changeBanner":  "Cambiar banner",
-                        "fullName":  "Nombre completo",
-                        "fullNameUnknown":  "Sin definir",
                         "googleRow":  "Iniciar sesión con Google",
                         "link":  "Vincular",
                         "linked":  "Vinculado",
@@ -1989,6 +2059,14 @@
             "compartido": "compartió el directo",
             "entrada": "entró al directo",
             "fin-directo": "El directo ha terminado"
-        }
+        },
+        "irAlOverlay": "Ir al overlay",
+        "mensajePrueba": "¡Hola! Este es un mensaje de prueba",
+        "musicaSiguientes": "A continuación",
+        "skinAplicada": "{skin} aplicada a tus overlays",
+        "escuchar": "Escuchar",
+        "pausar": "Pausar",
+        "verVistaPrevia": "Ver vista previa",
+        "cerrar": "Cerrar"
     }
 }

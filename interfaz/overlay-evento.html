@@ -6,8 +6,11 @@
   <title>Overlay — Alerta de evento</title>
   <link rel="stylesheet" href="./compartido/tema-overlay.css">
   <link rel="stylesheet" href="./compartido/estilo/estilo-texto.css">
+  <link rel="stylesheet" href="./compartido/estilo/skins-tarjeta.css">
+  <link rel="stylesheet" href="./compartido/foto-con-icono.css">
+  <link rel="stylesheet" href="./compartido/estilo/animaciones.css">
   <style>
-    :root { --bg-alpha: 0.90; }
+    html:root { --bg-alpha: 0.90; }
     body {
       background: transparent;
       width: 440px;
@@ -25,16 +28,6 @@
       display: flex;
       align-items: center;
       gap: 14px;
-      animation: entrar 0.3s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-    }
-    .alert-card.leaving { animation: salir 0.2s ease-out forwards; }
-    @keyframes entrar {
-      from { opacity: 0; transform: translateY(-16px) scale(0.96); }
-      to   { opacity: 1; transform: none; }
-    }
-    @keyframes salir {
-      from { opacity: 1; transform: none; }
-      to   { opacity: 0; transform: translateY(-10px) scale(0.98); }
     }
     .icono {
       flex-shrink: 0;

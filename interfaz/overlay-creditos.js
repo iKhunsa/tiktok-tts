@@ -1,174 +1,141 @@
 import { cargarLocaleOverlay, t, aplicarI18nOverlay } from './compartido/i18n-overlay.js';
 import { leerParametros, aplicarParametrosVisuales } from './compartido/parametros.js';
-import { conectarWSOverlay } from './compartido/ws-cliente.js';
 import { registrarErroresOverlay } from './compartido/registrar-errores.js';
-import { crearCreditos } from './compartido/creditos-agregados.js';
 import { esVistaPrevia } from './compartido/vista-previa.js';
-import { MUESTRA_CREDITOS } from './compartido/muestras-vista-previa.js';
+import { iniciarFuenteCreditos, textoRegalos } from './compartido/fuente-creditos.js';
 import { iniciarOverlayFijo } from './compartido/estilo/aplicar-overlay-fijo.js';
-import { etiquetaRegalo, logoPlataforma } from './compartido/recurso-plataforma.js';
+import { logoPlataforma } from './compartido/recurso-plataforma.js';
+import { elegirEntrada } from './compartido/epik/anfitrion.js';
 
-iniciarOverlayFijo('creditos', 380, 500);
-registrarErroresOverlay();
+function nativo() {
+  iniciarOverlayFijo('creditos', 380, 500);
+  registrarErroresOverlay();
 
-const params = leerParametros();
-aplicarParametrosVisuales(params);
-const _s = parseFloat(params.get('speed'));
-const hasManualSpeed = Number.isFinite(_s) && _s > 0;
-const baseSpeed = hasManualSpeed ? _s : 40;
-if (hasManualSpeed) document.documentElement.style.setProperty('--speed', _s + 's');
+  const params = leerParametros();
+  aplicarParametrosVisuales(params);
+  const _s = parseFloat(params.get('speed'));
+  const hasManualSpeed = Number.isFinite(_s) && _s > 0;
+  const baseSpeed = hasManualSpeed ? _s : 40;
+  if (hasManualSpeed) document.documentElement.style.setProperty('--speed', _s + 's');
 
-const track = document.getElementById('track');
-const credits = crearCreditos();
-const RENDER_MS = 2000;
-let ultimoRender = 0;
-let renderTimer = null;
+  const track = document.getElementById('track');
+  let credits = null;
+  const RENDER_MS = 2000;
+  let ultimoRender = 0;
+  let renderTimer = null;
 
-// Vista previa: sin eventos reales se cargan donantes, seguidores y compartidos de ejemplo.
-function cargarMuestra() {
-  if (!esVistaPrevia(params) || credits.donors.length || credits.followers.length || credits.sharers.length) return;
-  MUESTRA_CREDITOS.donantes.forEach(credits.agregarDonante);
-  MUESTRA_CREDITOS.donantesPlataformas.forEach(credits.agregarDonante);
-  MUESTRA_CREDITOS.seguidores.forEach(credits.agregarSeguidor);
-  MUESTRA_CREDITOS.compartidos.forEach(credits.agregarSharer);
-}
+  function buildRows(list) {
+    return list.map((item) => {
+      const row = document.createElement('div');
+      row.className = 'credit-row';
+      const icon = document.createElement('span');
+      icon.className = 'credit-icon';
+      const logo = logoPlataforma(item.platform);
+      if (logo) {
+        const imagen = document.createElement('img');
+        imagen.src = logo;
+        imagen.alt = '';
+        icon.append(imagen);
+      } else icon.textContent = String(item.icon || '');
+      const name = document.createElement('span');
+      name.className = 'credit-name';
+      name.textContent = String(item.name || '');
+      row.append(icon, name);
+      if (item.badge) {
+        const badge = document.createElement('span');
+        badge.className = 'credit-badge';
+        badge.textContent = String(item.badge);
+        row.appendChild(badge);
+      }
+      return row;
+    });
+  }
 
-function buildRows(list) {
-  return list.map((item) => {
-    const row = document.createElement('div');
-    row.className = 'credit-row';
-    const icon = document.createElement('span');
-    icon.className = 'credit-icon';
-    const logo = logoPlataforma(item.platform);
-    if (logo) {
-      const imagen = document.createElement('img');
-      imagen.src = logo;
-      imagen.alt = '';
-      icon.append(imagen);
-    } else icon.textContent = String(item.icon || '');
-    const name = document.createElement('span');
-    name.className = 'credit-name';
-    name.textContent = String(item.name || '');
-    row.append(icon, name);
-    if (item.badge) {
-      const badge = document.createElement('span');
-      badge.className = 'credit-badge';
-      badge.textContent = String(item.badge);
-      row.appendChild(badge);
+  function renderTrack() {
+    if (!credits) return;
+    track.innerHTML = '';
+    const sections = [];
+
+    if (credits.donors.length) {
+      sections.push({
+        label: t('overlayStr.donations'),
+        items: credits.donors.map((d) => ({ icon: '🎁', platform: d.platform, name: d.nombre, badge: textoRegalos(t, d) })),
+      });
     }
-    return row;
+    if (credits.followers.length) {
+      sections.push({
+        label: t('overlayStr.newFollowersSect'),
+        items: credits.followers.map((f) => ({ icon: '💜', platform: f.platform, name: f.nombre, badge: '' })),
+      });
+    }
+    if (credits.sharers.length) {
+      sections.push({
+        label: t('overlayStr.sharedSect'),
+        items: credits.sharers.map((s) => ({ icon: '🔗', platform: s.platform, name: s.nombre, badge: '' })),
+      });
+    }
+
+    if (!sections.length) {
+      const ph = document.createElement('div');
+      ph.className = 'credit-row';
+      const text = document.createElement('span');
+      text.className = 'credit-name';
+      text.style.cssText = 'color:rgba(255,255,255,0.3);text-align:center;width:100%';
+      text.textContent = t('overlayStr.waitingEvents');
+      ph.appendChild(text);
+      track.appendChild(ph);
+      return;
+    }
+
+    for (let pass = 0; pass < 2; pass++) {
+      for (const sec of sections) {
+        const hdr = document.createElement('div');
+        hdr.className = 'section-header';
+        hdr.textContent = sec.label;
+        track.appendChild(hdr);
+        for (const row of buildRows(sec.items)) track.appendChild(row);
+        const div = document.createElement('div');
+        div.className = 'divider-section';
+        track.appendChild(div);
+      }
+    }
+  }
+
+  // Como mucho un render cada RENDER_MS: una rafaga de gifts/follows no
+  // reconstruye el DOM (y reinicia el scroll) por cada evento.
+  function pedirRender() {
+    if (renderTimer) return;
+    renderTimer = setTimeout(() => {
+      renderTimer = null;
+      ultimoRender = Date.now();
+      renderTrack();
+    }, Math.max(0, RENDER_MS - (Date.now() - ultimoRender)));
+  }
+
+  // Reduce motion aca no detiene el scroll (es la funcion del overlay), solo
+  // lo hace mas lento para menor estimulacion — por eso no usa el modulo
+  // compartido de accesibilidad (que togglea la clase reduce-motion global).
+  function aplicarA11y(cfg) {
+    if (hasManualSpeed) return;
+    const speed = cfg.a11yReduceMotion ? baseSpeed * 1.6 : baseSpeed;
+    document.documentElement.style.setProperty('--speed', speed + 's');
+  }
+  fetch('/api/config').then((r) => r.json()).then(aplicarA11y).catch(() => {});
+
+  cargarLocaleOverlay().then(() => {
+    aplicarI18nOverlay();
+    renderTrack(); // el primer dibujado pudo ocurrir antes de cargar el idioma y mostrar las claves
+  });
+
+  iniciarFuenteCreditos({
+    vistaPrevia: esVistaPrevia(params),
+    alCambio: (creditos, inicial) => {
+      credits = creditos;
+      if (inicial) renderTrack();
+      else pedirRender();
+    },
+    alConfig: aplicarA11y,
   });
 }
 
-// Bits y Kicks ya dicen su cantidad; el resto se cuenta por repeticiones.
-function textoRegalos(donante) {
-  return [...donante.regalos].map(([giftName, veces]) => {
-    const tipo = donante.tipos.get(giftName);
-    const texto = etiquetaRegalo(t, { giftName, ...tipo });
-    return tipo && tipo.kind !== 'sub' ? texto : `x${veces} ${texto}`;
-  }).join(', ');
-}
-
-function renderTrack() {
-  track.innerHTML = '';
-  const sections = [];
-
-  if (credits.donors.length) {
-    sections.push({
-      label: t('overlayStr.donations'),
-      items: credits.donors.map((d) => ({ icon: '🎁', platform: d.platform, name: d.nombre, badge: textoRegalos(d) })),
-    });
-  }
-  if (credits.followers.length) {
-    sections.push({
-      label: t('overlayStr.newFollowersSect'),
-      items: credits.followers.map((f) => ({ icon: '💜', platform: f.platform, name: f.nombre, badge: '' })),
-    });
-  }
-  if (credits.sharers.length) {
-    sections.push({
-      label: t('overlayStr.sharedSect'),
-      items: credits.sharers.map((s) => ({ icon: '🔗', platform: s.platform, name: s.nombre, badge: '' })),
-    });
-  }
-
-  if (!sections.length) {
-    const ph = document.createElement('div');
-    ph.className = 'credit-row';
-    const text = document.createElement('span');
-    text.className = 'credit-name';
-    text.style.cssText = 'color:rgba(255,255,255,0.3);text-align:center;width:100%';
-    text.textContent = t('overlayStr.waitingEvents');
-    ph.appendChild(text);
-    track.appendChild(ph);
-    return;
-  }
-
-  for (let pass = 0; pass < 2; pass++) {
-    for (const sec of sections) {
-      const hdr = document.createElement('div');
-      hdr.className = 'section-header';
-      hdr.textContent = sec.label;
-      track.appendChild(hdr);
-      for (const row of buildRows(sec.items)) track.appendChild(row);
-      const div = document.createElement('div');
-      div.className = 'divider-section';
-      track.appendChild(div);
-    }
-  }
-}
-
-fetch('/api/overlay-stats')
-  .then((r) => r.json())
-  .then((d) => {
-    if (d.credits) credits.cargar(d.credits);
-    cargarMuestra();
-    renderTrack();
-  })
-  .catch(() => { cargarMuestra(); renderTrack(); });
-
-// Como mucho un render cada RENDER_MS: una rafaga de gifts/follows no
-// reconstruye el DOM (y reinicia el scroll) por cada evento.
-function pedirRender() {
-  if (renderTimer) return;
-  renderTimer = setTimeout(() => {
-    renderTimer = null;
-    ultimoRender = Date.now();
-    renderTrack();
-  }, Math.max(0, RENDER_MS - (Date.now() - ultimoRender)));
-}
-
-function alManejarMensaje(d) {
-  if (d.type === 'gift') {
-    credits.agregarDonante({ user: d.user, giftName: d.giftName || d.kind, count: d.repeatCount || 1, platform: d.platform, kind: d.kind, amount: d.amount });
-    pedirRender();
-  } else if (d.type === 'follow') {
-    credits.agregarSeguidor({ user: d.user, platform: d.platform });
-    pedirRender();
-  } else if (d.type === 'share') {
-    credits.agregarSharer({ user: d.user, platform: d.platform });
-    pedirRender();
-  } else if (d.type === 'connected' && d.isFirst) {
-    credits.vaciar();
-    cargarMuestra();
-    pedirRender();
-  } else if (d.type === 'config-updated') {
-    aplicarA11y(d.config || {});
-  }
-}
-
-// Reduce motion aca no detiene el scroll (es la funcion del overlay), solo
-// lo hace mas lento para menor estimulacion — por eso no usa el modulo
-// compartido de accesibilidad (que togglea la clase reduce-motion global).
-function aplicarA11y(cfg) {
-  if (hasManualSpeed) return;
-  const speed = cfg.a11yReduceMotion ? baseSpeed * 1.6 : baseSpeed;
-  document.documentElement.style.setProperty('--speed', speed + 's');
-}
-fetch('/api/config').then((r) => r.json()).then(aplicarA11y).catch(() => {});
-
-cargarLocaleOverlay().then(() => {
-  aplicarI18nOverlay();
-  renderTrack(); // el primer dibujado pudo ocurrir antes de cargar el idioma y mostrar las claves
-  conectarWSOverlay(alManejarMensaje);
-});
+elegirEntrada({ nativo, epik: () => import('./compartido/epik/anfitrion-creditos.js').then((m) => m.iniciar('creditos', nativo)) });

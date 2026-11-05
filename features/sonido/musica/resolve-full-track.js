@@ -2,6 +2,7 @@
 
 const { resolveYoutubeId } = require('./resolve-youtube-id');
 const perf = require('../../../core/contracts/perf');
+const { youtubeThumbnail } = require('./youtube-thumbnail');
 
 async function resolveFullTrack(deps, query) {
   const { engine, logger } = deps;
@@ -12,13 +13,13 @@ async function resolveFullTrack(deps, query) {
   try {
     const info = await perf.span('musica.getinfo', { videoId: partial.videoId }, () => engine.getInfo(partial.videoId));
     if (info) return info;
-    return { videoId: partial.videoId, title: query, channelName: '', thumbnail: '', duration: '' };
+    return { videoId: partial.videoId, title: query, channelName: '', thumbnail: youtubeThumbnail(partial.videoId), duration: '' };
   } catch (error) {
     logger.log(
       'warn', 'sonido', 'sonido/musica/resolve-full-track.js#resolveFullTrack', 'sonido.musica.info_fallida',
       `getInfo fallo para ${partial.videoId}: ${error.message}`, { videoId: partial.videoId, error: error.message }
     );
-    return { videoId: partial.videoId, title: query, channelName: '', thumbnail: '', duration: '' };
+    return { videoId: partial.videoId, title: query, channelName: '', thumbnail: youtubeThumbnail(partial.videoId), duration: '' };
   }
 }
 

@@ -6,6 +6,8 @@
   <title>Overlay — Bot de Música</title>
   <link rel="stylesheet" href="./compartido/tema-overlay.css">
   <link rel="stylesheet" href="./compartido/estilo/estilo-texto.css">
+  <link rel="stylesheet" href="./compartido/estilo/skins-tarjeta.css">
+  <link rel="stylesheet" href="./compartido/estilo/animaciones.css">
   <style>
     body {
       background: transparent;
@@ -22,15 +24,12 @@
       background: rgba(8, 8, 8, var(--bg-alpha));
       border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 18px;
-      color: #fff;
+      color: var(--txt-color, #fff);
     }
-    .tarjeta.entrando { animation: entrar 0.3s cubic-bezier(0.23, 1, 0.32, 1); }
     .tarjeta[hidden] { display: none; }
-    @keyframes entrar {
-      from { opacity: 0; transform: translateY(10px) scale(0.98); }
-      to   { opacity: 1; transform: none; }
-    }
+    body.portada-derecha .tarjeta { flex-direction: row-reverse; padding: 12px 12px 12px 16px; }
     .portada {
+      position: relative;
       flex-shrink: 0;
       width: 64px;
       height: 64px;
@@ -41,24 +40,151 @@
     }
     .portada img { width: 34px; height: 34px; filter: brightness(0) invert(1); }
     .portada img.miniatura { width: 100%; height: 100%; object-fit: cover; filter: none; }
-    .info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+    /* Video del tema (mostrarVideo): ocupa el sitio de la miniatura y aparece al estar listo */
+    .portada video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s ease-out; }
+    .portada.con-video video { opacity: 1; }
+    body[data-skin="vinilo"] .portada video { inset: 0; margin: auto; width: 41%; height: 41%; border-radius: 50%; }
+    .info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; text-align: var(--txt-align, left); }
     .etiqueta { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); }
     .titulo { font-size: 16px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .detalle { font-size: 12px; opacity: 0.75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .detalle:empty { display: none; }
-    body.reduce-motion .tarjeta.entrando { animation: none; }
-    @media (prefers-reduced-motion: reduce) { .tarjeta.entrando { animation: none; } }
+    .detalle, .pedido { font-size: 12px; opacity: 0.75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .detalle:empty, .pedido:empty { display: none; }
+    .pedido { text-align: var(--pedido-align, left); color: var(--accent); opacity: 0.9; }
+    .pedido img { width: 1.5em; height: 1.5em; margin-inline-end: 6px; border-radius: 50%; object-fit: cover; vertical-align: middle; }
+    /* Redondeo elegido: overlay-musica.js escala las esquinas de la skin y las fija aqui */
+    body.redondeo-propio .tarjeta { border-radius: var(--radio-tarjeta) !important; }
+    /* Texto que no cabe (overlay-musica.js marca .desborda): desvanecer el final o desplazarlo de ida y vuelta */
+    body.largo-desvanecer .desborda, body.largo-desplazar .desborda { text-overflow: clip; }
+    body.largo-desvanecer .desborda { mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); }
+    body.largo-desplazar .desborda span { display: inline-block; animation: desplazar var(--recorrido-s) ease-in-out infinite alternate; }
+    @keyframes desplazar { 0%, 15% { transform: none; } 85%, 100% { transform: translateX(var(--recorrido)); } }
+    body.reduce-motion .desborda span { animation: none; }
+    @media (prefers-reduced-motion: reduce) { .desborda span { animation: none; } }
+    .progreso { display: flex; align-items: center; gap: 8px; margin-top: 5px; font-size: 10px; font-variant-numeric: tabular-nums; opacity: 0.8; }
+    .progreso[hidden] { display: none; }
+    .barra { flex: 1; height: 4px; border-radius: 999px; overflow: hidden; background: rgba(255, 255, 255, 0.18); }
+    .barra i { display: block; height: 100%; background: var(--accent); transform-origin: left; transform: scaleX(0); transition: transform 0.5s linear; }
+    body.sin-barra .barra, body.sin-tiempos .progreso span { display: none; }
+    body.sin-barra.sin-tiempos .progreso { display: none; }
+
+    /* Vinilo (Pro): un disco grande que gira mientras suena, montado sobre el borde de una tarjeta blanca.
+       La miniatura de la cancion hace de etiqueta; sin ella queda la etiqueta naranja. */
+    body[data-skin="vinilo"] { padding: 12px 0; }
+    body[data-skin="vinilo"] .tarjeta {
+      position: relative;
+      min-height: 104px;
+      margin-left: 64px;
+      padding: 14px 26px 14px 82px;
+      background: rgba(255, 255, 255, var(--bg-alpha));
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 34px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      color: var(--txt-color, #111);
+    }
+    body[data-skin="vinilo"].portada-derecha .tarjeta { margin: 0 64px 0 0; padding: 14px 82px 14px 26px; }
+    body[data-skin="vinilo"] .barra { background: rgba(0, 0, 0, 0.12); }
+    body[data-skin="vinilo"] .portada {
+      position: absolute;
+      left: -64px;
+      top: calc(50% - 64px);
+      z-index: 1;
+      width: 128px;
+      height: 128px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, #fff3c4 0 8%, #ffc56b 8.5% 13%, #ff9a3c 20.5%, #0b0b0b 21% 23%, transparent 23.5%),
+        conic-gradient(from 20deg, transparent 0 8%, rgba(255, 255, 255, 0.1) 13%, transparent 18% 58%, rgba(255, 255, 255, 0.07) 63%, transparent 68%),
+        repeating-radial-gradient(circle, #121212 0 1.5px, #1f1f1f 1.5px 3px);
+      box-shadow: 0 0 0 3px #0a0a0a, 0 10px 28px rgba(0, 0, 0, 0.5);
+      animation: girar 6s linear infinite;
+    }
+    body[data-skin="vinilo"].portada-derecha .portada { left: auto; right: -64px; }
+    body[data-skin="vinilo"] .portada img:not(.miniatura) { display: none; }
+    body[data-skin="vinilo"] .portada img.miniatura { width: 41%; height: 41%; border-radius: 50%; }
+    body[data-skin="vinilo"] .portada::after {
+      content: '';
+      position: absolute;
+      width: 14%;
+      height: 14%;
+      border-radius: 50%;
+      background: radial-gradient(circle, #e2e2e2 0 38%, #b5b5b5 45%, #fff3c4 50%);
+    }
+    body.sin-etiqueta .etiqueta { display: none; }
+    /* Lo que sigue en la cola (mostrarCola): hasta 3 canciones reales */
+    .siguientes { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+    .siguientes[hidden] { display: none; }
+    .siguientes-titulo { font-size: 9px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; opacity: 0.7; }
+    .siguientes ul { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+    .siguientes li { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .siguientes li > :first-child { flex-shrink: 0; width: 28px; height: 28px; border-radius: 7px; object-fit: cover; background: linear-gradient(160deg, #ffd27a, #ff9a3c); }
+    .siguientes li div { min-width: 0; }
+    .siguientes b, .siguientes small { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .siguientes b { font-size: 12px; }
+    .siguientes small { font-size: 10px; opacity: 0.6; }
+    .estado { display: none; }
+
+    /* Widgets (Pro): pequeno 2x2 (caratula a sangre), mediano 4x2 (caratula + texto) y grande 4x4 (banner + cola) */
+    body[data-skin^="widget"] .tarjeta { padding: 0; gap: 0; border: 0; overflow: hidden; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35); }
+    body[data-skin^="widget"] .portada { border-radius: 0; background: linear-gradient(160deg, #ffd27a, #ff9a3c 55%, #7a3b12); }
+    body[data-skin^="widget"] .portada img:not(.miniatura) { width: 38%; height: 38%; }
+    body[data-skin="widgetMediano"] .etiqueta, body[data-skin="widgetGrande"] .etiqueta { color: #555; font-weight: 700; font-size: 11px; letter-spacing: 0.5px; }
+    body[data-skin="widgetMediano"] .barra, body[data-skin="widgetGrande"] .barra { background: rgba(0, 0, 0, 0.12); }
+
+    body[data-skin="widgetPequeno"] { width: 220px; }
+    body[data-skin="widgetPequeno"] .tarjeta { position: relative; flex-direction: column; align-items: stretch; width: 220px; min-height: 220px; border-radius: 44px; background: #1c1c1e; color: var(--txt-color, #fff); }
+    body[data-skin="widgetPequeno"] .portada { position: absolute; inset: 0; width: 100%; height: 100%; }
+    body[data-skin="widgetPequeno"] .tarjeta::after { content: ''; position: absolute; inset: 0; background: linear-gradient(transparent 40%, rgba(0, 0, 0, 0.6)); pointer-events: none; }
+    body[data-skin="widgetPequeno"] .info { position: relative; z-index: 1; justify-content: flex-end; padding: 20px 22px; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45); }
+    body[data-skin="widgetPequeno"] .titulo { font-size: 20px; }
+    body[data-skin="widgetPequeno"] .detalle { font-size: 15px; opacity: 0.9; }
+    body[data-skin="widgetPequeno"] .estado { position: absolute; z-index: 1; top: 16px; left: 16px; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(60, 40, 20, 0.55); backdrop-filter: blur(8px); }
+    .estado img { width: 22px; height: 22px; filter: brightness(0) invert(1); }
+    .estado .ic-play, body.pausada .estado .ic-pausa { display: none; }
+    body.pausada .estado .ic-play { display: block; }
+
+    body[data-skin="widgetMediano"] { width: 440px; }
+    body[data-skin="widgetMediano"] .tarjeta { align-items: stretch; min-height: 200px; border-radius: 40px; background: rgba(255, 255, 255, var(--bg-alpha)); color: var(--txt-color, #111); }
+    body[data-skin="widgetMediano"] .portada { width: 46%; height: auto; }
+    body[data-skin="widgetMediano"] .info { justify-content: center; gap: 4px; padding: 20px 24px; }
+    body[data-skin="widgetMediano"] .titulo { font-size: 22px; }
+    body[data-skin="widgetMediano"] .detalle { font-size: 16px; opacity: 0.7; }
+    body[data-skin="widgetMediano"] .barra { height: 5px; }
+
+    body[data-skin="widgetGrande"] { width: 320px; }
+    body[data-skin="widgetGrande"] .tarjeta { position: relative; flex-direction: column; align-items: stretch; border-radius: 30px; background: rgba(255, 255, 255, var(--bg-alpha)); color: var(--txt-color, #111); }
+    body[data-skin="widgetGrande"] .portada { width: 100%; height: 170px; }
+    body[data-skin="widgetGrande"] .portada::after { content: ''; position: absolute; inset: 0; background: linear-gradient(transparent 45%, rgba(0, 0, 0, 0.55)); }
+    body[data-skin="widgetGrande"] .info { gap: 4px; padding: 12px 16px 16px; }
+    body[data-skin="widgetGrande"] :is(.titulo, .detalle) { position: absolute; left: 16px; right: 16px; color: #fff; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45); }
+    body[data-skin="widgetGrande"] .titulo { top: 116px; font-size: 16px; }
+    body[data-skin="widgetGrande"] .detalle { top: 139px; font-size: 11px; opacity: 0.9; }
+    body.pausada .portada { animation-play-state: paused; }
+    @keyframes girar { to { transform: rotate(1turn); } }
+
+    body.reduce-motion .portada, body.reduce-motion .barra i { animation: none; transition: none; }
+    @media (prefers-reduced-motion: reduce) { .portada, .barra i { animation: none; transition: none; } }
   </style>
 </head>
 <body>
   <div class="tarjeta" id="tarjeta" hidden>
-    <div class="portada"><img id="portada" src="icons/music_note.svg" alt=""></div>
+    <div class="portada" id="portadaCaja"><img id="portada" src="icons/music_note.svg" alt=""><video id="video" muted playsinline preload="auto"></video></div>
+    <span class="estado" aria-hidden="true"><img class="ic-pausa" src="icons/pause.svg" alt=""><img class="ic-play" src="icons/play_arrow.svg" alt=""></span>
     <div class="info">
       <div class="etiqueta" data-i18n="overlayCat.musicaSonando">Sonando ahora</div>
       <div class="titulo" id="titulo"></div>
       <div class="detalle" id="detalle"></div>
+      <div class="pedido" id="pedido"></div>
+      <div class="progreso" id="progreso" hidden>
+        <span id="transcurrido"></span>
+        <div class="barra"><i id="relleno"></i></div>
+        <span id="total"></span>
+      </div>
+      <div class="siguientes" id="siguientes" hidden>
+        <div class="siguientes-titulo" data-i18n="overlayCat.musicaSiguientes">A continuación</div>
+        <ul id="cola"></ul>
+      </div>
     </div>
   </div>
-  <script type="module" src="./overlay-musica.js"></script>
+  <script type="module" src="./overlay-musica-entrada.js"></script>
 </body>
 </html>

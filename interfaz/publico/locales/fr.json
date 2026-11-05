@@ -6,7 +6,7 @@
                 "mobile":  "Mobile",
                 "settings":  "Réglages de la voix",
                 "soundpad":  "Sons",
-                "bot":  "Bot",
+                "bot":  "Bot musical",
                 "moderation":  "Modération",
                 "moreTools":  "Boutique de plugins",
                 "mcp":  "Agent MCP",
@@ -161,7 +161,8 @@
                 "useF8":  "Utiliser F8",
                 "usePlayPause":  "Utiliser touche Lecture/Pause",
                 "clearShortcut":  "Effacer",
-                "delete":  "Supprimer"
+                "delete":  "Supprimer",
+                "test":  "Tester"
             },
     "chat":  {
                  "title":  "Chat en direct",
@@ -397,7 +398,9 @@
                 "songPlural":  "chansons",
                 "playlistSavedHint":  "enregistrée dans le dossier de l\u0027appli",
                 "playlistUnsaved":  "non enregistrée",
-                "playlistPlayNow":  "Lire maintenant"
+                "playlistPlayNow":  "Lire maintenant",
+                "adelantar":  "Avancer ou reculer dans le morceau",
+                "fromPlaylist":  "De ta playlist"
             },
     "overlay2":  {
                      "giftsTitle":  "Alerte Cadeau",
@@ -557,7 +560,14 @@
            "terminal":  "Terminal",
            "retro":  "Rétro",
            "degradado":  "Dégradé",
-           "bloque":  "Bloc"
+           "bloque":  "Bloc",
+           "vinilo":  "Vinyle",
+           "widgetPequeno":  "Petit widget",
+           "widgetMediano":  "Widget moyen",
+           "widgetGrande":  "Grand widget",
+           "podio":  "Podium",
+           "pixel":  "Pixel",
+           "cinta":  "Ruban"
        },
        "probarNivelesNota":  "Modifie seulement l'aperçu, pas l'alerte dans OBS.",
        "verFavoritas":  "Voir les favoris",
@@ -580,7 +590,8 @@
                                      "comportamiento":  "Comportement",
                                      "viewer":  "Spectateurs",
                                      "moderador":  "Modérateurs",
-                                     "suscriptor":  "Abonnés et super fans"
+                                     "suscriptor":  "Abonnés et super fans",
+                                     "cancion":  "Morceau"
                                  },
                        "subgrupo":  {
                            "espaciado":  "Espaces",
@@ -595,7 +606,7 @@
                           "alineacionTexto":  "Alignement du texte",
                           "posicion":  "Position",
                           "posicionV":  "Position verticale",
-        "duracion": "Durée de chaque alerte (millisecondes)",
+        "duracion": "Durée de chaque alerte (secondes)",
                                      "maxFilas":  "Lignes max",
                                      "colorAcento":  "Couleur principale",
                                      "opacidadPlaca":  "Opacité du fond de ligne",
@@ -632,9 +643,9 @@
                                      "mostrarMedallas":  "Médailles du podium",
                                      "derechaAIzquierda":  "Photo à droite",
                                      "ocultarTras":  "Masquer les messages après (secondes, 0 pour jamais)",
-                                     "duracionEntrada":  "Durée d'entrée (millisecondes)",
+                                     "duracionEntrada":  "Durée d'entrée (secondes)",
                                      "animacionSalida":  "Animation de sortie",
-                                     "duracionSalida":  "Durée de sortie (millisecondes)",
+                                     "duracionSalida":  "Durée de sortie (secondes)",
                                      "animacionEntrada":  "Animation d\u0027entrée",
                                      "unaLinea":  "Messages sur une ligne",
                                      "ajustarAncho":  "Ajuster la largeur au message",
@@ -645,7 +656,24 @@
                                      "rolOla":  "Effet de vague sur le nom",
                                      "rolResplandor":  "Éclat sur le nom",
                                      "rolColorComentario":  "Couleur du message",
-                                     "rolColorFondo":  "Couleur d\u0027arrière-plan"
+                                     "rolColorFondo":  "Couleur d\u0027arrière-plan",
+                                     "mostrarVideo":  "Afficher la vidéo à la place de la pochette",
+                                     "redondeo":  "Arrondi des coins",
+                                     "avatarPedido":  "Photo de qui l'a demandée",
+                                     "textoLargo":  "Titre long",
+                                     "ladoPortada":  "Côté de la pochette",
+                                     "mostrarPedido":  "Afficher qui l'a demandé",
+                                     "mostrarEtiqueta":  "Afficher « En cours »",
+                                     "alineacionPedido":  "Alignement du demandeur",
+                                     "mostrarBarra":  "Barre de temps",
+                                     "mostrarTiempos":  "Minutes du morceau",
+                                     "mostrarCola":  "Afficher la suite de la file",
+                                     "meta":  "Objectif d'abonnés",
+                                     "seguidoresActuales":  "Abonnés actuels",
+                                     "vueltaCreditos":  "Durée d'un tour (secondes)",
+                                     "disposicion":  "Disposition",
+                                     "imagenAlerta":  "Image de l'alerte",
+                                     "colorTexto":  "Couleur du texte"
                                  },
                        "opcion":  {
                                       "izquierda":  "Gauche",
@@ -718,8 +746,42 @@
                                       "sale-sacudida":  "Secousse",
                                       "sale-glitch":  "Interférence",
                                       "fade":  "Apparition progressive",
-                                      "ninguna":  "Aucune animation"
-                                  }
+                                      "ninguna":  "Aucune animation",
+                                      "cortar":  "Couper avec des points",
+                                      "desvanecer":  "Estomper la fin",
+                                      "desplazar":  "Défiler pour le lire",
+                                      "cols":  "Deux colonnes",
+                                      "rows":  "Une colonne",
+                                      "icono":  "Icône",
+                                      "regalo":  "Cadeau",
+                                      "perfil":  "Photo de profil"
+                                  },
+                       "tipoSkin":  {
+                         "overlays": "Overlays",
+                         "ranking": "Classement"
+                       },
+                       "epik":  {
+                         "titulo": "Fichiers .epik",
+                         "soltar": "Déposez votre fichier .epik ici ou cliquez pour le choisir",
+                         "soltarAyuda": "Designs sur mesure créés par Epik. Ils s'ajoutent comme un skin de plus pour cet overlay.",
+                         "usar": "Utiliser",
+                         "ajustes": "Réglages de {nombre}",
+                         "restablecer": "Réinitialiser les réglages",
+                         "importado": "« {nombre} » a été ajouté à vos skins",
+                         "actualizado": "« {nombre} » a été mis à jour vers la version {version}. Vos réglages sont conservés.",
+                         "noEpik": "Ce fichier n'est pas un .epik",
+                         "otroTitulo": "Ce fichier est pour un autre overlay",
+                         "otroTexto": "« {nombre} » est un design pour {destino}, mais vous l'avez déposé sur {origen}.",
+                         "otroAgregar": "Ajouter à {destino}",
+                         "cancelar": "Annuler",
+                         "descargar": "Télécharger le modèle",
+                         "descargado": "Enregistré dans Téléchargements : {archivo}",
+                         "eliminar": "Supprimer",
+                         "confirmarEliminar": "Supprimer ?",
+                         "eliminado": "« {nombre} » a été supprimé",
+                         "quitarFavorito": "Retirer des favoris",
+                         "agregarFavorito": "Ajouter aux favoris"
+                       }
                    },
     "overlayStr":  {
                        "newFollowers":  "Nouveaux abonnés",
@@ -889,7 +951,9 @@
                   "allChannelsDisconnected":  "Tous les canaux déconnectés",
                   "youtubeAutoSaved":  "YouTube enregistré; se connectera quand en direct",
                   "youtubeTmpSaved":  "YouTube enregistré comme canal manuel",
-                  "settingSaveFailed":  "Impossible d\u0027enregistrer le paramètre ({keys}). Vérifiez la connexion."
+                  "settingSaveFailed":  "Impossible d\u0027enregistrer le paramètre ({keys}). Vérifiez la connexion.",
+                  "seekNoDisponible":  "Cette partie du morceau est encore en téléchargement",
+                  "testOverlaySent":  "Test envoyé à l’overlay"
               },
     "dictLang":  {
                      "title":  "Langues autorisées",
@@ -1272,7 +1336,12 @@
                    "identidadTomada":  "Ce compte Google est déjà associé à un autre utilisateur.",
                    "googleUnlinkSinPassword":  "Cela te laisserait sans moyen de te connecter ; définis d'abord un mot de passe.",
                    "invalidResetCode":  "Code invalide ou expiré.",
-                   "emailNoConfigurado":  "Impossible d'envoyer l'email pour le moment. Réessaie plus tard."
+                   "emailNoConfigurado":  "Impossible d'envoyer l'email pour le moment. Réessaie plus tard.",
+                   "epikInvalido":  "Le fichier .epik est endommagé ou invalide.",
+                   "epikOtroOverlay":  "Ce fichier .epik est pour un autre overlay.",
+                   "epikNoSoportado":  "Impossible pour l'instant d'importer des fichiers .epik pour cet overlay.",
+                   "epikNoEncontrado":  "Ce fichier .epik n'est plus installé.",
+                   "epikIntegrado":  "Le modèle de test ne peut être ni supprimé ni remplacé."
                },
     "mcp":  {
                 "title":  "Agent MCP",
@@ -1317,7 +1386,10 @@
                                  "overlay_stats":  "Abonnés, top likers, qui a partagé et cadeaux de cette session",
                                  "get_config":  "Lit les réglages visibles de l\u0027app, sans données sensibles",
                                  "set_config":  "Change les réglages de l\u0027app à chaud, seulement ceux autorisés",
-                                 "remote_command":  "Contrôle l\u0027ordi comme depuis le panneau mobile : pause TTS, saut, clip"
+                                 "remote_command":  "Contrôle l\u0027ordi comme depuis le panneau mobile : pause TTS, saut, clip",
+                                 "epik_list":  "Liste les overlays .epik installés",
+                                 "epik_import":  "Importe ou met à jour un overlay .epik",
+                                 "epik_delete":  "Retire un overlay .epik"
                              },
                 "domain":  {
                                "canales":  "Canaux",
@@ -1326,7 +1398,8 @@
                                "moderacion":  "Modération",
                                "movil":  "Panneau mobile",
                                "overlay":  "Overlays",
-                               "sonido":  "Son"
+                               "sonido":  "Son",
+                               "epik":  "Fichiers .epik"
                            },
                 "devLabel":  "Outils de développement",
                 "devHint":  "Injecter chat/événements, logs bruts, état complet, bus. Debug uniquement.",
@@ -1415,7 +1488,6 @@
                    "linkGoogle":  "Associer Google",
                    "googleLinked":  "Google associé ({email})",
                    "googleLinkedDone":  "Votre compte Google a été associé.",
-                   "googleUnlinkedDone":  "Ton compte Google a été dissocié.",
                    "deleteConfirmGoogle":  "Confirmer avec Google",
                    "forgotPassword":  "Mot de passe oublié ?",
                    "forgotModalTitle":  "Réinitialiser le mot de passe",
@@ -1794,8 +1866,6 @@
                         "navAyuda":  "Aide",
                         "close":  "Fermer",
                         "changeBanner":  "Changer la bannière",
-                        "fullName":  "Nom complet",
-                        "fullNameUnknown":  "Non défini",
                         "googleRow":  "Se connecter avec Google",
                         "link":  "Lier",
                         "linked":  "Lié",
@@ -1989,6 +2059,14 @@
             "compartido": "a partagé le live",
             "entrada": "a rejoint le live",
             "fin-directo": "Le live est terminé"
-        }
+        },
+        "irAlOverlay": "Aller à l’overlay",
+        "mensajePrueba": "Salut ! Ceci est un message de test",
+        "musicaSiguientes": "À suivre",
+        "skinAplicada": "{skin} appliqué à vos overlays",
+        "escuchar": "Écouter",
+        "pausar": "Pause",
+        "verVistaPrevia": "Voir l'aperçu",
+        "cerrar": "Fermer"
     }
 }
