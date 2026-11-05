@@ -2,7 +2,7 @@
 
 ## Qué es
 
-App de escritorio Electron que lee en voz alta el chat de TikTok Live, Twitch y YouTube en tiempo real. Diseñada para streamers que quieren TTS integrado sin depender de herramientas externas. La UI corre dentro de la app (no en navegador externo). Los overlays (alertas, likes, seguidores) se pegan en OBS como Browser Source via `http://localhost:3000/overlay-*.html`.
+App de escritorio Electron que lee en voz alta el chat de TikTok Live, Twitch, YouTube y Kick en tiempo real. Diseñada para streamers que quieren TTS integrado sin depender de herramientas externas. La UI corre dentro de la app (no en navegador externo). Los overlays (alertas, likes, seguidores) se pegan en OBS como Browser Source via `http://localhost:3000/overlay-*.html`.
 
 ## Stack técnico
 
@@ -10,521 +10,76 @@ App de escritorio Electron que lee en voz alta el chat de TikTok Live, Twitch y 
 |------|-----------|
 | Desktop shell | Electron 41 |
 | Backend | Express + WebSocket (ws) en el mismo proceso Electron |
-| TikTok connection | tiktok-live-connector (WebSocket scraping) |
-| Twitch connection | tmi.js (IRC anónimo o autenticado) |
-| YouTube connection | youtube-chat (scraping, requiere stream activo) |
-| Kick connection | API pública kick.com + Centrifugo WS (`ws`, token de invitado, sin login) |
+| Plataformas | TikTok, Twitch (tmi.js), YouTube (youtube-chat), Kick (API + Centrifugo WS) |
 | TTS | Google Translate TTS API (google-tts-api, online) |
 | Auto-update | electron-updater → GitHub Releases |
 | Build/CI | electron-builder + GitHub Actions (windows-latest) |
 | Distribución | NSIS installer via GitHub Releases, sin firma de código |
 
-## Arquitectura
+## Reglas críticas
 
-Backend reconstruido por dominios (rebuild completo, ver `plan-fases/` para
-el historial de las 14 fases y `arquitectura-propuesta.md` para el
-documento de diseño vivo). Ya no es un monolito: `main.js`/`server.js` son
-orquestadores delgados, toda la lógica de negocio vive repartida en
-carpetas por dominio bajo `features/` (los 16 dominios agrupados ahí a
-propósito, para no saturar la raíz del repo — `core/` y `electron-shell/`
-NO son features, se quedan sueltos en la raíz por ser kernel/shell).
+**Modularidad:** Backend dividido por dominios bajo `features/`; fronted modularizado en `interfaz/`. Ver `/docs/ARQUITECTURA.md` y `/docs/MODULARIDAD.md` para la estructura completa. Un archivo por función; antes de copiar código, grep para reusar.
 
-```
-main.js (Electron main process)
-  ├── require('./server.js')       ← arranca /core + registra los 16 dominios de features/
-  ├── electron-shell/window.js     ← BrowserWindow, carga http://localhost:3000
-  ├── electron-shell/tray.js       ← ícono bandeja, menú open/exit
-  ├── electron-shell/updater.js    ← autoUpdater, chequea GitHub Releases
-  ├── electron-shell/uiohook.js    ← atajos globales (fullscreen-safe)
-  ├── electron-shell/ipc-bridge.js ← IPC con el renderer (atajos, soundpad, telemetría)
-  └── electron-shell/single-instance.js
+**i18n:** 10 idiomas (es, en, it, pt, fr, de, zh, ja, ko, ru). Nunca hardcodear strings; usar `t(key, vars)` en frontend o `data-i18n` en markup. Ver `/docs/FRONTEND.md`.
 
-server.js (Express + WS en puerto 3000)
-  ├── core/                          ← kernel: bus de eventos, logger, http/ws server, register-domain
-  └── features/
-      ├── configuracion/             ← único dueño de config.json y platform-config.json
-      ├── idioma/                    ← filtro de idioma/script de voz (puro)
-      ├── reporte-bug/                ← webhook de Discord, retención de logs
-      ├── moderacion/                ← moderation.json, blocked-words.json, @tiklivetts/chat-guard
-      ├── canales/                   ← TikTok/Twitch/YouTube/Kick + OBS — único productor de eventos crudos
-      ├── chat/                      ← orquesta: crudo → moderación → chat:mensaje-permitido
-      ├── promo/                     ← avisos promocionales periódicos (announce-texts)
-      ├── overlay/                   ← estado visual (gifts, followers, likes) para OBS
-      ├── movil/                     ← panel remoto (espejo de estado + comandos)
-      ├── sonido/                    ← TTS (Google), bot musical (yt-dlp), soundpad
-      ├── bot/                       ← detección de comandos de chat (!p)
-      ├── clips/                     ← marca clip en OBS (atajo o comando móvil)
-      ├── avanzado/ + donar/         ← no-op documentados: lugar para crecer (UI avanzada / donación real) sin acoplar
-      ├── telemetria/                ← uso agregado anónimo, self-hosted (ver sección propia)
-      └── mcp/                       ← servidor MCP (tools para agentes), registrado ÚLTIMO
-```
+**Iconografía:** Nunca emojis en UI nueva. Material Icons en `asset/icons/` → copiar a `interfaz/publico/icons/` → usar con `<img class="icon-inline" src="icons/nombre.svg" alt="">`. Ver `/docs/FRONTEND.md`.
 
-**Contrato entre dominios:** un dominio nunca importa el módulo interno de
-otro (`require('../otro-dominio/...')`). Toda comunicación cruzada pasa por
-`core/event-bus.js` (`bus.emit`/`bus.on`) o por un contrato síncrono
-inyectado en `core/contracts/*.js` (ej. `moderacion-policy.js`,
-`idioma-filtrar.js`, `obs-replay.js`, `idioma-datos.js`, `entitlements.js`)
-cuando el orden de ejecución importa y no alcanza con un evento
-fire-and-forget. `core/register-domain.js` monta cada dominio en su propio
-try/catch — un dominio que falla al arrancar no tumba a los demás.
+## Documentación
 
-## Regla de modularidad — "un archivo por función" + antes reusar
+| Área | Doc |
+|------|-----|
+| Backend + dominios | [`/docs/ARQUITECTURA.md`](/docs/ARQUITECTURA.md) |
+| Reglas de ubicación de código | [`/docs/MODULARIDAD.md`](/docs/MODULARIDAD.md) |
+| Moderación + Rust Chat Guard | [`/docs/MODERACION.md`](/docs/MODERACION.md) |
+| Telemetría, errors, analytics | [`/docs/TELEMETRIA.md`](/docs/TELEMETRIA.md) |
+| MCP — tools para agentes | [`/docs/MCP.md`](/docs/MCP.md) |
+| Overlays (.epik + esquema OBS) | [`/docs/OVERLAYS.md`](/docs/OVERLAYS.md) |
+| Frontend, i18n, iconografía, UX | [`/docs/FRONTEND.md`](/docs/FRONTEND.md) |
+| Build, release, decisiones técnicas | [`/docs/BUILD.md`](/docs/BUILD.md) |
 
-La estructura es **un archivo `.js` por función/responsabilidad** (backend y
-frontend). Si una responsabilidad necesita varios archivos (estado +
-helpers), se agrupan en una carpeta con su `index.js`. Nombres de archivo en
-kebab-case inglés describiendo lo que exportan; carpetas de dominio/vista en
-kebab-case español.
+## Funcionalidades actuales
 
-Pero "un archivo por función" **no es licencia para copiar y pegar**. Antes
-de escribir un helper:
+- TTS en 13 idiomas via Google Translate (es, es-MX, es-AR, en, en-GB, pt, pt-PT, fr, de, it, ja, zh-CN, ru, ko)
+- Chat multi-plataforma: TikTok Live + Twitch (tmi.js) + YouTube (youtube-chat) + Kick (API + Centrifugo WS)
+- Cola TTS ordenada por timestamp (mensajes de 4 plataformas en orden cronológico real)
+- Filtro de spam (palabras bloqueadas, mensajes largos, repetidos)
+- Moderación local por usuario (mute/ban, solo en app, no en plataformas)
+- Rust Chat Guard (segunda capa de contenido, detección por IA)
+- Overlays: alertas de regalos, contador de likes, top likers, top donadores
+- Panel remoto (móvil: espejo de estado + comandos)
+- Bot musical (yt-dlp, soundpad)
+- Detectores de comandos (!p, !skip, etc.)
+- Auto-reconexión con backoff exponencial
+- Single-instance lock (doble clic → bring to front)
+- Atajo global Ctrl+Shift+M → marca clip en OBS
 
-1. **Grepealo.** Si ya existe en el repo — aunque sea en otro dominio —
-   reusalo, no lo reimplementes.
-2. **Si dos o más lugares necesitan la misma lógica**, va en **UN** archivo
-   compartido, nunca duplicado:
-   - backend puro (sin estado, sin config) → `core/<nombre>.js`
-     (ej. `core/config-snapshot.js`)
-   - backend con orden de ejecución / inyección → contrato en
-     `core/contracts/*.js`
-   - frontend agnóstico de vista → `interfaz/src/nucleo/` o
-     `interfaz/compartido/` (este último si además lo usan los overlays)
-3. **Un dominio nunca comparte su helper importándolo desde otro dominio.**
-   Si `sonido/` y `moderacion/` necesitan lo mismo, sube a `core/`.
+## Datos por cuenta
 
-Señales de que te pasaste para el otro lado (borrar, no crear):
-- un archivo que **solo re-exporta** otro (barrel de un símbolo)
-- un contrato/factory/wrapper con **un solo productor y un solo consumidor**
-  y sin lógica propia — inline en el call site
-- un flag de config que nadie prende/apaga (siempre el mismo valor)
+Todo dato del streamer se guarda por `user.id`:
+- Renderer: `interfaz/src/nucleo/estado/datos-por-cuenta.js`
+- Backend: `core/account-data-path.js`
 
-**Umbral — dónde vive un helper (por alcance, no por conteo):**
+Sin sesión se usa `anonymous`; nunca reutilizar claves/rutas globales para datos de cuenta. Los datos de instalación (sesión, telemetría, logs, binarios) permanecen en `DATA_BASE`.
 
-- **1 consumidor** → inline en el call site, o archivo local al dominio si ya
-  tiene su carpeta. No sube. (`telemetria/identity.js#sessionId` → 1, se queda.)
-- **2+ consumidores en el MISMO dominio** → archivo compartido dentro de esa
-  carpeta de dominio.
-- **2+ consumidores que CRUZAN un límite de dominio** → `core/<nombre>.js`,
-  cualquiera sea el conteo. El disparador es el cruce, no el número.
-  (`getConfigSnapshot` → 5 dominios → `core/config-snapshot.js`.)
-- Regla de pulgar: la 2ª copia textual es olor; la 3ª es un bug. Al ver la 2ª,
-  extraé al alcance más chico que la cubra.
+La transición se anuncia como `account:changing` (flush y desconexión) y `account:changed` (contexto y recarga). `config.json`, `moderation.json`, soundpad y cache de telemetría son por cuenta; `installation-config.json` conserva globales.
 
-**Cuándo un `core/contracts/*.js` (y no un `core/<nombre>.js` pelado), incluso
-a n=1** — solo si compra una de estas tres:
+## graphify
 
-1. **Desacople de una dependencia pesada/opcional.** `perf.js` evita que
-   `sonido/` haga `require('@sentry/electron')`. Sin el contrato, el dominio
-   queda atado a Sentry.
-2. **Orden de arranque forzado / inyección.** `obs-replay.js` garantiza que el
-   productor (`canales/obs`) registró su impl antes de que el consumidor la
-   llame. Un `require` normal no expresa "esto tiene que proveerse primero".
-3. **Default no-op que ya funciona sin proveedor.** `entitlements.check()`
-   devuelve `true` mientras nadie llamó `provide()`.
+Este proyecto tiene un knowledge graph en `graphify-out/` con nodos, estructura de comunidades y relaciones entre archivos.
 
-Si no compra ninguna de las tres, es solo mover una función detrás de una capa
-→ `core/<nombre>.js` pelado, sin la ceremonia del contrato.
+**Reglas:**
+- SIEMPRE lee `graphify-out/GRAPH_REPORT.md` antes de leer archivos fuente o responder preguntas del codebase
+- SI `graphify-out/wiki/index.md` existe, navégalo en lugar de leer archivos raw
+- Para preguntas "cómo se relacionan X e Y", prefiere `graphify query`, `graphify path`, `graphify explain` sobre grep
+- Tras modificar código, ejecuta `graphify update .` para mantener el graph actualizado
 
-Excepciones documentadas (copias deliberadas, NO tocar): los `toast.js` de
-`avanzada/` y `movil/` (cada vista
-legacy conserva el suyo hasta unificar la paleta CSS — ver `plan-fases/06`).
+## Notas de parche (bitácora de cambios por versión)
 
-Endpoints HTTP relevantes (repartidos por dominio, ver cada carpeta para
-el resto):
-```
-GET  /                       ← index.html (UI principal)
-GET  /advanced.html          ← configuración avanzada
-GET  /overlay-*.html         ← overlays para OBS
-POST /api/connect            ← conecta a TikTok Live (features/canales/)
-POST /api/tts                ← Google TTS → stream MP3 (features/sonido/)
-WS   /                       ← broadcast eventos al browser (core/broadcast.js)
-GET  /api/gifts-list         ← lista PNGs de regalos (features/overlay/)
-PATCH /api/config            ← ajusta config en runtime (features/configuracion/)
-GET  /api/platforms/status   ← estado twitch/youtube (features/canales/)
-POST /api/platforms/connect  ← conecta twitch o youtube (features/canales/)
-POST /api/platforms/disconnect
-GET  /api/moderation/viewers ← registro de espectadores (moderacion/)
-POST /api/moderation/{mute,unmute,ban,unban,clear,follower}
-```
-
-## Moderación de espectadores (`features/moderacion/`)
-
-Registro persistente de todo espectador que interactúa, más los seguidores, con
-moderación **local** por usuario (no se toca la plataforma). Único dueño de
-`moderation.json` (en `DATA_BASE`, o sea `app.getPath('userData')`). El store
-está migrado un archivo por función (`features/moderacion/store/*.js`) sobre un
-`state` compartido en vez de un closure — ver `features/moderacion/store/create-store.js`.
-
-- Clave por usuario: `` `${platform}:${id}` ``; sin id estable cae a
-  `` `${platform}:name:${nick}` `` y se marca `idk:'name'` (castigo frágil: se
-  pierde si el usuario cambia de nombre). Las dos formas nunca se fusionan.
-- Dos ejes ortogonales: `mute` (el mensaje se ve, el TTS no lo lee) y `ban`
-  (el mensaje ni se emite). Valores `0` / `-1` (indefinido) / epoch ms.
-- Expiración perezosa (comparación contra `Date.now()`), nunca un `setTimeout`
-  por usuario: sobrevive a la app cerrada y al equipo suspendido.
-- Escritura con debounce de 15 s (techo de 60 s) para la ingesta de alta
-  frecuencia; las acciones de moderación hacen flush inmediato. `writeFileSync`
-  a `.tmp` + `rename`. JSON corrupto → se aparta como `.corrupt-<ts>` y se
-  arranca vacío; **nunca lanza**, porque el require corre al arrancar la app.
-- Cap de 5.000 espectadores con purga LRU a 4.000 que jamás descarta
-  seguidores, whitelisted ni usuarios con castigo vivo.
-- `features/chat/emit-chat-message.js` es el **único** punto por el que salen los
-  mensajes de las 3 plataformas: llega crudo de `features/canales/` vía el bus
-  (`canal:mensaje-crudo`), llama sincrónicamente a `moderacionPolicy.evaluate()`
-  (contrato inyectado por `features/moderacion/`, fail-open si lanza) y publica
-  `chat:mensaje-permitido`/`chat:mensaje-bloqueado`. Los handlers de plataforma
-  y el cliente no repiten ninguna de esas reglas.
-- UI: vista "Moderación" en el menú izquierdo, con pestañas Seguidores / No
-  seguidores sobre la misma tabla.
-
-**Rust Chat Guard (`features/moderacion/rust-guard/`)** — segunda capa de contenido,
-encendida por defecto en shadow (`rustGuardEnabled: true`, `rustGuardMode: 'shadow'|'enforce'`, por
-cuenta). Corre dentro de `moderacionPolicy.review` DESPUÉS del guard JS y solo endurece
-(BLOCK→drop, REVIEW→mute). Fail-open: cualquier fallo/paquete ausente conserva el veredicto
-JS y loguea `moderacion.rust.*` (nunca silencioso). Paquete `@tiklivetts/rust-chat-guard`
-opcional, cargado solo en `load-engine.js`. El cableado en `index.js` lleva `// rust-guard`.
-UI en Ajustes > «Moderación del chat» (`interfaz/src/vistas/principal/moderacion-contenido/`): maestro
-(`rustGuardEnabled`), nivel/idiomas/personalizado (`chatGuardLevel|Langs|Custom`, constantes en
-`core/chat-guard-options.js`), modo `rustGuardMode`, palabras permitidas (`chat-guard-allowed-words.json`
-por cuenta, solo palabras sueltas) y estado del motor (`GET /api/chat-guard/status`: `off|unavailable|error|ok`).
-Las bloqueadas reusan `/api/block-word`. Desviaciones respecto al plan: `docs/06_FRONTEND_PLAN.md` §15 del repo del motor.
-**Idiomas según la voz:** con `chatGuardLangsAuto` (default `true`) los idiomas del motor = `localesForVoice(ttsVoiceLang)`
-(`core/chat-guard-voice-languages.js`, siempre + inglés); con `false` manda `chatGuardLangs`. `create-rust-guard.js` arranca el
-motor SIN `languages` para descubrir los soportados (`getStatus().languages`) y recorta lo pedido a eso (log
-`moderacion.rust.idioma_no_soportado`, nunca excepción). Un cambio de voz llega por `config:actualizado` y se aplica en caliente;
-la UI se refresca con el WS `config-updated`. Cuentas antiguas: `normalizeStoredConfig` pone auto=false solo si eligieron idiomas
-distintos de la lista por defecto vieja (`LEGACY_DEFAULT_LANGS`).
-
-**Popup de moderación (badge de la vista Chat)** — `emit-chat-message.js` publica por WS
-`moderation-blocked` `{platform, accion: drop|mute|shadow, origen, motivo, nick, text, timestamp}`
-(`features/chat/describe-moderation.js` deduce origen/motivo de `verdict.reasons`; `shadow` lo anota
-`rust-guard/review-with-rust.js`). El cliente lo guarda en `nucleo/estado/moderacion-sesion.js`: buffer
-**solo en memoria**, máx. 200, jamás a disco ni telemetría (política de privacidad). El log
-`moderacion.filtro.mensaje_bloqueado` lleva solo plataforma/acción/origen/motivo, sin texto ni nick.
-UI: `vistas/principal/moderacion-popup/`. «descartados» del badge = cola TTS llena, no moderación.
-
-## Telemetría (`features/telemetria/`)
-
-Dominio aparte que reporta uso agregado y anónimo a un servicio propio
-(`telemetria-tts`, repo separado, self-hosted en Docker — no Vercel). Sin
-`TELEMETRY_URL` configurada, el módulo es un no-op: cero peticiones de red.
-
-- `features/telemetria/index.js` — dominio registrado normal (`register({bus, logger})`):
-  engancha los conectores al bus de inmediato, aunque `runtime.init()` todavía
-  no haya corrido (`track()` es no-op mientras no esté habilitada).
-- `features/telemetria/runtime.js` — el ciclo de vida real (`init`, `track`, `flush`,
-  `shutdown`). Separado de `index.js` porque `init()` necesita datos que solo
-  Electron tiene (`app.getVersion()`, `app.getPath('userData')`) — lo llama
-  `main.js` tras `waitForServer`.
-- `features/telemetria/transport.js` — envía batches por `fetch` nativo a
-  `TELEMETRY_URL` (o al `url` de `telemetry.json`), con cola en disco
-  (`features/telemetria/buffer.js`) y reintentos. 4xx ya no se trata como éxito
-  silencioso: todo fallo de red queda logueado (`telemetria.envio.*`).
-- `features/telemetria/connectors/*.js` — un conector por área (creators, platforms,
-  counters, obs, mobile, overlays, updates, settings). Cada uno
-  escucha el bus de dominios (`canal:estado`, `movil:comando`, etc.) o el
-  espejo de logs (`core/logger.js` emite **todo** log como `log:entry` al
-  bus) en vez de que cada dominio de negocio tenga que conocer telemetría.
-  `counters.js` agrega eventos de alta frecuencia (TTS, música, moderación)
-  en un contador por latido de 5 min en vez de uno por mensaje.
-- La URL sale de `TELEMETRY_URL` (env, inyectada en build) o de
-  `%APPDATA%\tiktok-live-tts\telemetry.json` — archivo separado de
-  `config.json` a propósito, porque `features/configuracion/` descarta claves que no
-  reconoce y lo borraría en el primer guardado.
-- `connectors/blocked-words.js` (+ `blocked-words/`) — snapshot de la lista de palabras bloqueadas, activo por defecto; `blockedWordsTelemetryDisabled` (default `false`) queda como llave técnica por cuenta para apagarlo (`true` = cero eventos); se renombró desde `blockedWordsTelemetryEnabled` para que el `false` guardado por el antiguo interruptor opt-in no deje cuentas apagadas. Lee la lista por el bus (`moderacion:palabras-get`, aviso `moderacion:palabras-cambiadas`), la sanea igual que el servidor, calcula hash sha256 y guarda el último envío en `accountDataPath('blocked-words-telemetry.json')`. Envía al arrancar si pasaron >7 días, al cambiar la lista (debounce 10 min) y cada semana; mismo hash y <7 días = nada. No incluye nick ni IDs de espectadores, solo palabras de la lista del streamer. Texto legal: publicado en la v2.1 de `docs/legal/` (ver `NOTAS-DE-REVISION.md` §6).
-- Casi todos los eventos se emiten directo desde los conectores. Solo
-  `tts:skipped`, `tts:queue-overflow`, `ui:language-set` y los `ui:*` de uso de
-  la interfaz (Discord, vistas, overlays, promos, planes, tours…) nacen en el
-  renderer y llegan al bus vía IPC: `trackUi(evento, valor)`
-  (`interfaz/src/nucleo/telemetria-ui.js`) → `window.electronAPI.trackEvent` →
-  `preload.js` → `ipcMain.on('telemetry:track', ...)` en `electron-shell/ipc-bridge.js`,
-  con la misma lista blanca de nombres en ambos lados. `payload` solo se reenvía
-  si es string, recortado a 24 chars; el valor es siempre de lista cerrada y lo
-  valida `aptabase.js` (`EVENTOS_UI`) — nunca texto libre.
-
-## Error tracking (`electron-shell/glitchtip.js`)
-
-GlitchTip (self-hosted, compatible con Sentry, `@sentry/electron`). **Los errores
-van acá, no a Aptabase.** Captura crashes del main + `error:handled`/`error:uncaught`
-del bus, con breadcrumbs (150) de la actividad previa, snapshot de `estado_app`
-(plataformas, OBS, minutos, config), tail del log de sesión metido en el issue,
-fingerprint en español (`error_conexion_tiktok`, …), `warn` promovidos a issue,
-detección de "sesión problemática", perf spans (`tracesSampleRate: 0.05`). El botón
-"Reportar bug" también llega acá. DSN de ingesta (no secreto) override por
-`SENTRY_DSN`/`GLITCHTIP_DSN` o `glitchtip.json` en userData.
-
-## Analytics de producto (`electron-shell/aptabase.js`)
-
-Aptabase (self-hosted en `https://aptabase.tiklivetts.es`, `@aptabase/electron`).
-**Solo analítica de producto — conteo de eventos, funnels, DAU/MAU, retención.
-Los errores NO van acá.** Sin `APTABASE_APP_KEY` (env o `aptabase-config.json`
-bakeado) es un no-op total.
-
-- **Regla igual que GlitchTip/telemetría:** los dominios no conocen Aptabase.
-  Loguean su evento de negocio; `aptabase.js#attach` mapea `log:entry` +
-  algunos eventos directos del bus (`canal:estado`, `movil:comando`,
-  `reporte-bug:enviado`, `ui:language-set`) → `trackEvent()`.
-- `init()` corre en `main.js` **antes de `app.isReady()`** (requisito del SDK)
-  pero **después** del lock de instancia única (para no doble-disparar
-  `installacion`/`app_started`). Recibe `{appVersion, isPackaged, isDebug,
-  userDataDir, logger}` — patrón de inyección como `telemetria/runtime.js`.
-- **`installacion`** — evento que se dispara **exactamente una vez en la vida
-  del usuario**, vía marca persistida `%APPDATA%\tiktok-live-tts\aptabase-instalacion.json`
-  (helper compartido `electron-shell/install-marker.js`, también lo usa
-  glitchtip con su propio archivo). Conteo diario en el dashboard =
-  instalaciones únicas de por vida (Aptabase no tiene id de cliente). Sin
-  `machine_id` a propósito (máxima privacidad).
-- **Eventos:** ciclo de vida (`installacion`, `app_started`, `app_updated`,
-  `session_ended`), activación (`platform_connected`, `platform_connect_failed`,
-  `first_tts`), adopción (`overlay_opened`,
-  `mobile_paired`, `mobile_command`, `clip_marked`, `music_requested`,
-  `promo_fired`, `bug_report_sent` (solo `version`, nunca el canal),
-  `soundpad` en resumen, `overlay_test` (`tipo`), `overlay_url_copied`
-  (`overlay`), `view_opened` (`view`, 1 vez por vista y sesión),
-  `tour_started` (`tour`), `event_effects_toggled` (`state`), `news_opened`,
-  `donations_opened`, `portalview_opened`), Discord y promos
-  (`discord_modal_opened` y `discord_join_clicked` con `source` =
-  `titlebar|sidebar|account_menu|sidebar_banner|connect_fail|bug_report|idea_modal|chat_banner_1..4`
-  — lo que no esté en la lista cae a `otro` —, `promo_code_opened`,
-  `promo_code_copied`, `promo_plans_clicked`, `tiktok_banner_clicked`),
-  cuentas y planes (`auth_signed_in`, `auth_signed_out`, `plans_opened`,
-  `checkout_started` con `plan`/`intervalo`, `pro_gate_hit` con `featureId`,
-  `account_deleted` sin props), config
-  (`config_changed` **solo la clave, nunca el valor**, `voice_changed`,
-  `ui_language_set`), moderación (`moderation_action`, `moderation_action_failed`,
-  `mod_words_saved`). `platform_connect_failed` sale de `canales.conexion.fallida`
-  con `platform` + `code` (nunca el mensaje: puede traer el canal).
-- **Resúmenes de sesión:** los de alta frecuencia (TTS, música, errores,
-  mensajes filtrados) se acumulan en memoria y salen como props bucketeadas de
-  `session_ended` (1 POST al cerrar), nunca 1 evento por ocurrencia. `bucket()`
-  vive en `electron-shell/bucket.js` (testeado en `test/aptabase-bucket.test.js`).
-- **Flush manual:** el SDK v0.3.1 **no batchea ni flushea al cerrar** — cada
-  `trackEvent` es su propio POST. `shutdown()` manda `session_ended` y espera
-  los POST en vuelo con race de 1500 ms, dentro del `Promise.allSettled` de
-  `main.js#before-quit`.
-- Toda prop pasa por `sanear()` (rutas de home fuera) + clip a 200 chars, tope
-  de 20 props/evento. Nunca nick/userId/ip/texto libre.
-
-## MCP — servidor de herramientas para agentes (`features/mcp/`)
-
-Dominio que expone las capacidades de la app como **tools MCP** (Model Context
-Protocol) para que un agente (Claude Code, Claude Desktop) opere la app: leer el
-chat, moderar, manejar música, consultar estado. Transporte **Streamable HTTP**
-en `POST /mcp` (SDK `@modelcontextprotocol/sdk`, stateless, server+transport
-nuevos por request). `features/mcp/` se registra **último** en `server.js`.
-
-- **`core/contracts/mcp-registry.js`** — registro append-only (mismo idiom que
-  `core/contracts/perf.js`: singleton require-once). `registerTool({name, title,
-  description, inputSchema, handler, readOnly?, destructive?, idempotent?,
-  domain})`, `listTools()`, `callTool(name, args)` (devuelve `{ok, result}` o
-  `{ok:false, error:{code,message,stack?}}` — nunca lanza), `registerStateProvider(fn, domain)`,
-  `collectState()`.
-- **Regla de crecimiento (forzada por CI):** todo dominio que monta
-  `app.post/patch/delete` **debe** llamar `mcp.registerTool()` desde su propio
-  `register()`, colocado con la feature. Lo verifican `scripts/check-mcp.js`
-  (grep) y `test/mcp-registry.test.js` (boot + assert). Exentos con
-  justificación: `chat` (lectura vía `get_recent_chat`), `reporte-bug` (post
-  externo). Ver `features/mcp/PROTOCOL.md`.
-- **`inputSchema` en JSON Schema plano** — los dominios no tocan Zod;
-  `features/mcp/transport/schema-adapter.js` lo convierte al shape que pide el SDK.
-- **Handlers** usan seams de bus/dominio, no self-calls HTTP (salvo donde el
-  acople req/res es pesado — `channels_disconnect` marcado `// MCP-FALLBACK`).
-- **Estado pull-based** (anti-`movil`): `get_state` = `collectState()` (cada
-  `registerStateProvider` de cada dominio) + pulls de `config:get` etc. Un campo
-  nuevo se agrega en el provider de su dominio, en un solo lugar.
-- **Doble gate de destructivas:** `mcpEnabled` (default `true` — endpoint
-  solo-localhost) + `mcpDestructiveToolsEnabled` (default `false`). Las tools con
-  `destructive:true` (ban/mute/disconnect/delete/set_config) se filtran del cable
-  en `build-server.js` cuando el 2º toggle está off; el host del agente igual
-  pide confirmación por el `destructiveHint`.
-- **Auth remota (seam):** por defecto solo-localhost (`core/app.js#validateLocalMutation`).
-  Env `MCP_TOKEN` seteada → acepta cualquier host con `Authorization: Bearer <token>`.
-- **Observabilidad:** `features/mcp/observability.js` decora `callTool` →
-  `mcp.tool.{llamada,fallo,excepcion}` al bus → GlitchTip + Aptabase
-  (`mcp_tool_used`) + telemetría, gratis. **Todo error del subsistema MCP**
-  (`mcp.*.excepcion`, `mcp.transport.error`, `mcp.registro.*`) se fingerprintea
-  en GlitchTip como `error_mcp_*`; los fallos esperados de tool (`mcp.tool.fallo`)
-  NO son issue.
-- **UI:** sección "Agente MCP" en la tienda de plugins (`interfaz/src/vistas/principal/mcp/`,
-  nace oculta) — toggles, endpoint, snippets de config, tabla de tools por dominio.
-  El `description`/`title` del schema (lo que ve el agente) queda en **inglés**;
-  la tabla de la UI usa claves i18n propias `mcp.toolDesc.<name>` y `mcp.domain.<slug>`
-  (fallback al `description` inglés). El endpoint URL y los snippets JSON no se traducen.
-- `GET /api/mcp/info` — estado + catálogo de tools para la UI (GET, sin auth).
-
-## Overlays de OBS — esquema de ajustes (`interfaz/compartido/estilo/`)
-
-Chat, Top Likers y Top Donadores se personalizan con un **esquema declarativo**
-(`esquemas.js` + `campos-*.js`): cada campo `{ clave, param, tipo, def, grupo }` es la
-única fuente de su default, su nombre en la URL y su control en el configurador.
-`construirQuery`/`leerConfig` (`query.js`, puras y testeadas) convierten config ↔
-querystring omitiendo defaults; `ajustes-app.js` deriva `DEFAULTS_OVERLAYS` del esquema.
-Para agregar un ajuste: un campo en el esquema + sus claves `overlayCfg.campo.<clave>`
-en los 10 locales; el panel "Personalizar" (`vistas/principal/campos-overlay/`) lo dibuja solo.
-Los params históricos (`rows,color,bg,size,maxmsgs,usernames,platforms`) no se renombran.
-
-- Rankings: el **servidor es la fuente de verdad** (`top-likers`/`top-donors` por WS, snapshot en
-  `/api/overlay-stats`); `compartido/iniciar-ranking.js` + `leaderboard.js` solo pintan.
-- Avatar y roles (moderador/suscriptor) salen de `raw` en `features/chat/author-meta/` (chat-guard
-  no los transporta). El avatar de TikTok lo decodifica `@tiklivetts/tiktok-live-client` (`avatarUrl`,
-  desde v0.1.10); las URLs son firmadas y caducan → placeholder. TikTok no informa moderadores.
-- Fuentes: Google Fonts por CDN, solo desde `cargarFuente()` (`fuentes.js`); el default es la del sistema.
-
-## Variables de entorno clave
-
-- `TIKTOK_RESOURCES_PATH` — set por `main.js` en modo packaged para que `core/paths.js` (`RESOURCE_BASE`) resuelva `gifts/`, `public/` (output empaquetado de `interfaz/dist/`, ver extraResources), `asset/`, `lang-words/`, `blocked-words.md` en `process.resourcesPath` (fuera del asar)
-- `TIKTOK_USER_DATA_PATH` — set por `main.js` a `app.getPath('userData')`; `core/paths.js` (`DATA_BASE`) lo usa para `config.json`, `moderation.json`, `logs/`, etc.
-
-**Regla — nunca armar un path de recurso con `__dirname` en el backend.** Siempre
-`RESOURCE_BASE` / `DATA_BASE` de `core/paths.js`. En el paquete NSIS el código del
-backend corre desde dentro de `app.asar`, así que `__dirname` cae dentro del asar y
-`interfaz/`, `gifts/`, `asset/`, etc. **no viajan ahí** (van a `resources/` vía
-`extraResources`). La raíz estática de la UI se resuelve con `core/static-root.js`
-(`interfaz/dist` en dev, `<resources>/public` en empaquetado) — lo usan `core/app.js`
-y `features/movil/routes/mobile-page.js`. Este descuido causó el bug "Cannot GET /"
-de v1.8.0–v1.8.3 (`core/app.js` servía `interfaz/dist` con ruta `__dirname`-relativa);
-cubierto ahora por `test/serve-ui.test.js`.
-
-## Paths críticos en producción (packaged)
-
-```
-%LOCALAPPDATA%\TikLiveTTS\
-  TikLiveTTS.exe
-  resources\
-    app.asar              ← main.js + server.js + los 17 dominios + electron-shell/ + telemetria/ + node_modules (interfaz/ fuente NO viaja, solo su build)
-    gifts\                ← 810 PNGs de regalos TikTok (188 MB)
-    public\               ← output de `vite build` (interfaz/dist/), vía extraResources — HTML/CSS/JS de la UI, overlays y estaticos (icons/flags/locales/vendor/plugin-store)
-    asset\                ← flags SVG, iconos (fuente para asset/icons/, catalogo Material Icons)
-    lang-words\           ← diccionarios de frecuencia por idioma (filtro dictFilterEnabled, `features/idioma/lang-dicts.js`)
-    blocked-words.md      ← palabras bloqueadas (r/w en runtime)
-    tray-icon.ico
-```
-
-## Flujo de build y release
-
-```bash
-# Desarrollo local
-npm run electron          # abre app en dev mode (sin packager)
-npm run dev               # solo el servidor Node.js (sin Electron)
-
-# Release
-# 1. Editar version en package.json (ej: "1.0.3")
-# 2. Commitear cambios
-git tag v1.0.3
-git push origin main --tags
-# → GitHub Actions (windows-latest) compila NSIS installer
-# → sube a GitHub Releases como draft
-# → publicar manualmente con: gh release edit v1.0.3 --draft=false
-```
-
-## GitHub Actions (.github/workflows/release.yml)
-
-- Trigger: push de tag `v*`
-- Runner: `windows-latest` (requerido para NSIS sin wine)
-- Permisos: `contents: write` para publicar release
-- Sin firma de código (`CSC_IDENTITY_AUTO_DISCOVERY=false`)
-- electron-builder publica automáticamente con `--publish always`
-
-## Auto-update
-
-`electron-updater` chequea `https://github.com/iKhunsa/tiktok-tts/releases/latest/download/latest.yml` al arrancar. Si hay versión nueva → descarga en background → diálogo "Instalar ahora / Después" → `autoUpdater.quitAndInstall()`. Solo activo en modo packaged (`app.isPackaged`).
-
-## i18n de la UI — obligatorio para todo texto nuevo visible al usuario
-
-La app tiene un sistema de traducción funcionando en 10 idiomas
-(`es, en, it, pt, fr, de, zh, ja, ko, ru`). **Cualquier código nuevo (o
-modificado) que agregue texto visible al usuario final tiene que pasar por
-este sistema — nunca hardcodear un string en español (ni en ningún idioma)
-directo en HTML/JS/backend.**
-
-- Frontend (`interfaz/`): función única `t(key, vars)` en
-  `interfaz/src/nucleo/i18n/i18n.js` (`index.html`/`advanced.html`/`mobile.html`)
-  y su espejo `interfaz/compartido/i18n-overlay.js` para los 7 overlays vanilla
-  de OBS — ya no hay copy-paste por archivo (`fase-01`/`fase-03`/`fase-04`
-  del rebuild del frontend lo unificaron). Objeto `_locale` cargado desde
-  `fetch('/locales/${lang}.json')` (fallback a `es.json`). Interpolación de
-  variables con `{var}` dentro del string.
-  - Markup estático → atributo `data-i18n="seccion.clave"` (aplica a
-    `textContent`), `data-i18n-html` (a `innerHTML`), `data-i18n-placeholder`
-    (a `placeholder`). `advanced.html` además soporta `data-i18n-title`.
-  - Texto armado en JS → `t('seccion.clave', { var: valor })`, nunca template
-    literal con la frase en español embebida.
-  - Idioma elegido persiste en `localStorage['tikliveTTS_lang']` — no hay
-    equivalente server-side, es puramente client-side.
-- Diccionario: `interfaz/publico/locales/{es,en,it,pt,fr,de,zh,ja,ko,ru}.json`
-  (Vite `publicDir` — se copian tal cual a `interfaz/dist/locales/` al buildear).
-  **`es.json` es la fuente de verdad** — agregar la clave ahí primero, después
-  propagar la traducción a los otros 9 (no dejar ningún idioma sin la clave
-  nueva; la paridad de claves entre los 10 archivos es lo que se valida).
-  Nombrar las claves seccion.claveDescriptiva, reusando una sección existente
-  cuando el texto encaja ahí (`toast.*`, `conn.*`, `overlayStr.*`, etc.) en vez
-  de crear secciones nuevas sin necesidad.
-- Backend: si una ruta HTTP devuelve un mensaje de error que el frontend
-  muestra al usuario (`res.status(N).json({ error: '...' })` seguido en el
-  cliente por un `showToast(data.error...)` o similar), sumarle también
-  `errorKey: 'errors.claveDescriptiva'` — nunca reemplazar `error` (mantiene
-  compat con builds viejos), solo agregar la clave. El frontend prefiere
-  `errorKey` traducido vía el helper `tErr(data, fallbackKey)` (definido
-  junto a `t()` en `index.html` y `advanced.html`) y cae al texto crudo si no
-  hay `errorKey` o no resuelve.
-- Excepciones legítimas — no traducir: nombres de marca/plataforma
-  (`TIKTOK`, `TWITCH`, `YOUTUBE`, `BITS`, `RAID`, `SUPERCHAT`), `<title>` de
-  los overlays (solo los ve el streamer armando OBS, nunca el espectador),
-  contenido dinámico que viene del usuario (nombre de usuario, texto del
-  chat).
-- `core/announce-texts.js` (avisos TTS de admin/promo) y `features/idioma/` (filtro de
-  idioma/script de voz) son sistemas **aparte**, ya cubren sus propios
-  idiomas — no tocar ni confundir con el i18n de UI de arriba.
-- Antes de dar por terminada una función con texto nuevo: correr un
-  script rápido que cuente claves hoja de los 10 JSON y confirme que
-  coinciden en cantidad — un idioma con menos claves que el resto es señal
-  de que faltó propagar algo.
-
-## Íconos — nunca emojis en UI nueva
-
-Los emojis que ya están en el código (`🎁`, `💾`, `🔴`, etc.) se quedan tal
-cual — no hay que salir a limpiarlos. Pero **de acá en adelante, código
-nuevo o modificado nunca usa emoji como ícono de UI** (botones, labels,
-badges, títulos de card). En su lugar:
-
-1. Buscar el ícono que mejor encaje en `asset/icons/` (catálogo Material
-   Icons completo, ~1300 SVGs — es solo fuente, la app no lo sirve).
-2. Copiarlo a `interfaz/publico/icons/` (Vite `publicDir` — se copia tal cual
-   a `interfaz/dist/icons/`, que sí sirve Express; el HTML lo referencia
-   como `icons/nombre.svg`, con `class="icon-inline"`).
-3. Usarlo con `<img class="icon-inline" src="icons/nombre.svg" alt="">`,
-   mismo patrón que el resto de la app.
-
-Los SVG de `asset/icons/` vienen en un solo color (negro/currentColor). Si
-el ícono necesita otro color para calzar con el diseño (ej. un ícono de
-estado en rojo/verde), está permitido copiarlo con otro nombre y editar el
-`fill`/`stroke` directo en el XML del SVG — son archivos de texto planos,
-no binarios, se editan igual que cualquier código.
-
-## Diseño / UX del frontend — skills de referencia obligatorias
-
-**Cada vez que se toque UX/UI del frontend o se agregue código visual nuevo**
-(vistas, componentes, CSS, markup, animaciones, transiciones, estados de
-interacción) hay que **consultar y tener presentes las skills de design
-engineering de Emil Kowalski** (instaladas vía `npx skills add emilkowalski/skill`,
-carpeta `.agents/skills/`, symlink en `.claude/skills/`):
-
-- `emil-design-eng` — filosofía de pulido de UI, diseño de componentes,
-  decisiones de detalle. Es la skill base, invocarla antes de escribir el
-  markup/CSS.
-- `animate` — construir una animación desde cero (curva, duración, propiedades).
-- `review-animations` / `improve-animations` — auditar animaciones existentes.
-- `find-animation-opportunities` — dónde una animación aporta de verdad (y dónde no).
-- `animation-vocabulary` — vocabulario preciso para describir el movimiento.
-- `apple-design` — principios de interfaz y movimiento fluido de Apple.
-- `prototype` — varias versiones de una pieza de UI para elegir en vivo.
-- `pick-ui-library` — elegir librería para la tarea.
-
-Regla práctica: antes de dar por cerrada una mejora visual, pasar el diff por
-`review-animations` (si hay movimiento) y por el criterio de `emil-design-eng`
-(jerarquía, foco, estados `:active`/`:focus`, `transition` con propiedades
-explícitas nunca `all`, `ease-out` para feedback inmediato). Sigue aplicando
-todo lo de las secciones **i18n** e **Íconos** de arriba.
+- Las notas se escriben en `NOTAS-PARCHE-<version>.md` (raíz del repo)
+- **Nunca escribir por iniciativa propia**: solo cuando el usuario dé la señal
+- Al recibirla, mostrar el texto exacto que se va a agregar y esperar aprobación; recién entonces escribirlo
+- Una vez aprobada, redactar la misma nota también en las notas de la app (modal de Novedades): `CHANGELOG.md` (español, fuente) y sus traducciones en `changelog/<idioma>.md`
+- Cuando el usuario publique el release público, preguntarle cuál es la próxima versión y renombrar el md accordingly
 
 ## Funcionalidades actuales
 
