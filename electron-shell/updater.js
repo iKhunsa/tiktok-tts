@@ -146,15 +146,17 @@ function checkForUpdates() {
   return chequear();
 }
 
-// Silencioso (`/S`, ver instalar-version.js) y espera a que el instalador
-// termine antes de reiniciar — antes se lanzaba el instalador (que abria su
-// propio wizard) y se cerraba la app al toque, sin esperar nada: quedaba
-// una ventana de instalador suelta mientras la app ya habia desaparecido.
+// Silencioso + `--force-run` (ver instalar-version.js): el instalador
+// reemplaza el .exe que esta corriendo ahora mismo, asi que no se puede
+// esperar a que termine antes de cerrar — hay que soltar el archivo YA.
+// `app.quit()` (no `app.relaunch()+app.exit()`: el instalador se relanza
+// solo con `--force-run`, y relanzar desde aca competiria por el mismo
+// archivo que el instalador todavia esta reemplazando).
 async function installUpdate() {
   if (!_pendiente) return;
   sendUpdate({ type: 'installing', version: _pendiente.version });
   try {
-    await ejecutarInstalador(_pendiente.destino);
+    ejecutarInstalador(_pendiente.destino);
   } catch (err) {
     sendUpdate({ type: 'error', message: err.message });
     _logger.log(
@@ -163,8 +165,7 @@ async function installUpdate() {
     );
     return;
   }
-  _app.relaunch();
-  _app.exit();
+  _app.quit();
 }
 
 module.exports = { setupAutoUpdater, checkForUpdates, confirmarDescarga, cancelarDescarga, installUpdate };

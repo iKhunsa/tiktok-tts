@@ -29,7 +29,7 @@
 
 <!-- ── Update banner: solo avisa, no descarga ni instala nada ──── -->
 <div id="update-banner">
-  <span class="upd-icon">⬆️</span>
+  <span class="upd-icon"><img class="icon-inline" src="icons/update.svg" alt=""></span>
   <span class="upd-text" id="update-text" data-i18n="update.checking">Buscando actualizaciones...</span>
   <button id="update-btn-view" style="display:none" onclick="openUpdateFlowModal()" data-i18n="update.view">Ver</button>
   <button id="update-btn-later" style="display:none" onclick="document.getElementById('update-banner').classList.remove('visible')" data-i18n="update.later">Después</button>
@@ -41,7 +41,7 @@
 <div id="updateFlowModal" class="modal-overlay" onclick="closeUpdateFlowModal(event)">
   <div class="modal-content update-flow-content" onclick="event.stopPropagation()">
     <button class="modal-close" id="updateFlowClose" onclick="closeUpdateFlowModal()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
-    <img class="update-flow-icon icon-inline" src="icons/update.svg" alt="">
+    <div class="update-flow-badge"><span class="update-flow-badge-icon"></span></div>
     <h2 id="updateFlowTitle"></h2>
     <p id="updateFlowDesc" class="update-flow-desc"></p>
     <div id="update-bar-wrap" style="display:none">

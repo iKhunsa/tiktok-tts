@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execFile } = require('child_process');
+const { spawn } = require('child_process');
 
 // Descarga + ejecuta un instalador real de GitHub Releases — mismo camino
 // para ir hacia adelante (updater.js) o hacia atras (rollback.js). Separado
@@ -40,17 +40,25 @@ async function descargarInstalador(app, asset, onProgress, signal) {
   return destino;
 }
 
-// `/S` = instalacion silenciosa de NSIS: sin el wizard propio del
-// instalador (esa ventana aparte confundia — el usuario ya confirmo
-// "Instalar ahora" DENTRO de la app, no hace falta otro dialogo). Devuelve
-// una promesa que resuelve cuando el instalador termino de verdad, para que
-// quien llama pueda esperar antes de reiniciar la app -- antes se llamaba
-// `app.quit()` al toque de lanzar el instalador (detached + unref), lo que
-// cerraba la app mientras el instalador recien estaba arrancando.
+// `/S` = instalacion silenciosa de NSIS (sin el wizard propio del
+// instalador — el usuario ya confirmo "Instalar ahora" DENTRO de la app).
+// `--force-run` = el flag propio que agrega electron-builder para que el
+// instalador asistido (oneClick:false, nuestro caso) vuelva a abrir la app
+// el solo al terminar — SIN ese flag, un instalador silencioso NUNCA
+// relanza nada: el "Run after finish" de NSIS esta atado al boton de la
+// pagina de Finish, que en modo /S jamas se dibuja (confirmado leyendo
+// installSection.nsh de app-builder-lib: `${if} isForceRun ${andIf}
+// Silent` es la unica rama que relanza en un instalador asistido).
+//
+// No se espera a que el instalador termine: tiene que reemplazar el .exe
+// que esta instalado ahi mismo, el mismo que esta app tiene abierto ahora
+// — mientras sigamos vivos ese archivo queda bloqueado y el instalador no
+// puede avanzar. Por eso se lanza detached+unref (como hace electron-updater
+// en su propio NsisUpdater) y quien llama cierra la app enseguida despues.
 function ejecutarInstalador(destino) {
-  return new Promise((resolve, reject) => {
-    execFile(destino, ['/S'], (err) => (err ? reject(err) : resolve()));
-  });
+  const hijo = spawn(destino, ['/S', '--force-run'], { stdio: 'ignore', detached: true });
+  hijo.on('error', () => { /* best-effort: un listener vacio evita que un ENOENT tire abajo el proceso */ });
+  hijo.unref();
 }
 
 module.exports = { descargarInstalador, ejecutarInstalador };

@@ -17,9 +17,11 @@ async function rollbackAVersion(app, version, onProgress) {
   if (!objetivo) throw new Error('version_no_encontrada');
 
   const destino = await descargarInstalador(app, objetivo.asset, onProgress);
-  await ejecutarInstalador(destino);
-  app.relaunch();
-  app.exit();
+  // Mismo motivo que en updater.js#installUpdate: no se espera al instalador
+  // (necesita que soltemos el .exe) y no hace falta `app.relaunch()` -- el
+  // instalador se reabre solo con `--force-run` (ver instalar-version.js).
+  ejecutarInstalador(destino);
+  app.quit();
 }
 
 module.exports = { listarVersionesAnteriores, rollbackAVersion };
