@@ -1,5 +1,6 @@
 import { conectarWSOverlay } from './ws-cliente.js';
 import { EVENTOS_ALERTA } from './eventos-alerta.js';
+import { reproducirSonidoAlerta } from './sonido-alerta.js';
 import { MUESTRA_ALERTA_SOCIAL, MUESTRA_REGALO } from './muestras-vista-previa.js';
 
 /** Que eventos del WS muestra cada overlay de alertas, y su ejemplo para la vista previa. */
@@ -21,13 +22,18 @@ export const maxPendientesDe = (overlay) => ALERTAS[overlay]?.maxPendientes;
  * Eventos crudos del WS para un overlay de alertas (alertas, alertas-social o uno de EVENTOS_ALERTA),
  * comun al overlay de la app y a los .epik. En la vista previa manda primero su ejemplo.
  * alAlerta(evento): un evento que le toca a este overlay. alConfig(config): cambio de ajustes de la app.
+ * sonido: ajustes con el sonido de la alerta. La vista previa no reproduce las alertas (queda fija con su ejemplo), asi que
+ * suena aqui cuando llega un evento de prueba (boton Probar / Probar escena); en OBS suena con la alerta real.
  */
-export function iniciarFuenteAlerta(overlay, { params, vistaPrevia, alAlerta, alConfig }) {
+export function iniciarFuenteAlerta(overlay, { params, vistaPrevia, alAlerta, alConfig, sonido }) {
   const alerta = ALERTAS[overlay];
   if (!alerta) return;
   if (vistaPrevia) alAlerta(alerta.muestra(params));
   conectarWSOverlay((d) => {
     if (d.type === 'config-updated') alConfig(d.config || {});
-    else if (alerta.coincide(d)) alAlerta(d);
+    else if (alerta.coincide(d)) {
+      if (vistaPrevia && d.test && sonido) reproducirSonidoAlerta(sonido);
+      alAlerta(d);
+    }
   });
 }

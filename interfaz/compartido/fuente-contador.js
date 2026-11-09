@@ -1,5 +1,5 @@
 import { conectarWSOverlay } from './ws-cliente.js';
-import { MUESTRA_LIKES, MUESTRA_SEGUIDORES, MUESTRA_VIEWERS } from './muestras-vista-previa.js';
+import { MUESTRA_LIKES, MUESTRA_VIEWERS } from './muestras-vista-previa.js';
 
 const sumarLikes = (filas) => filas.reduce((acumulado, fila) => acumulado + (fila.totalLikes || 0), 0);
 const PAUSA_LIKES_DEMO_MS = 1800;
@@ -14,30 +14,10 @@ async function pedirEstadisticas() {
 
 /**
  * Cada contador: de donde sale su cifra. Todos avisan con alCambio({ valor, base, suma }):
- * `valor` lo que se muestra, `base` desde donde cuenta la sesion (seguidores), `suma` lo que acaba de
+ * `valor` lo que se muestra, `suma` lo que acaba de
  * entrar (sin `suma` = la cifra cambio entera: carga, reinicio, nuevo total).
  */
 const CONTADORES = {
-  seguidores: {
-    metrica: 'seguidores',
-    iniciar({ vistaPrevia, alCambio }, estadisticas) {
-      let sesion = estadisticas.followCount || 0;
-      let base = estadisticas.baseFollowerCount || 0;
-      // Vista previa: sin seguidores reales se muestra un contador de ejemplo.
-      const aplicarMuestra = () => {
-        if (!vistaPrevia || sesion || base) return;
-        ({ sesion, base } = MUESTRA_SEGUIDORES);
-      };
-      const avisar = (suma) => alCambio({ valor: base + sesion, base, suma });
-      aplicarMuestra();
-      avisar();
-      return (mensaje) => {
-        if (mensaje.type === 'follow') { sesion += 1; avisar(1); }
-        if (mensaje.type === 'connected' && mensaje.isFirst) { sesion = 0; aplicarMuestra(); avisar(); }
-        if (mensaje.type === 'follower-base') { base = mensaje.count || 0; avisar(); }
-      };
-    },
-  },
   viewers: {
     metrica: 'viewers',
     iniciar({ vistaPrevia, alCambio }, estadisticas) {
@@ -73,7 +53,7 @@ const CONTADORES = {
 export const metricaDe = (overlay) => CONTADORES[overlay].metrica;
 
 /**
- * Datos de un contador (seguidores, viewers, contador-likes), comun al overlay de la app y a los .epik.
+ * Datos de un contador (viewers, contador-likes), comun al overlay de la app y a los .epik.
  * alConfig(config): cambio de ajustes de la app (accesibilidad).
  */
 export async function iniciarFuenteContador(overlay, { vistaPrevia, alCambio, alConfig }) {

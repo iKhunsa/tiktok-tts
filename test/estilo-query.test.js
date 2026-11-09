@@ -89,14 +89,12 @@ test('ningun esquema repite un param ni una clave', async () => {
 test('DEFAULTS_OVERLAYS conserva los defaults historicos de los overlays simples', async () => {
   const { DEFAULTS_OVERLAYS } = await cargar('esquemas.js');
 
-  const { goal, color, bg } = DEFAULTS_OVERLAYS.seguidores;
-  assert.deepEqual({ goal, color, bg }, { goal: '', color: '#FFBB00', bg: 0.8 });
   assert.equal(DEFAULTS_OVERLAYS.alertas.dur, 4000);
   assert.equal(DEFAULTS_OVERLAYS.alertas.bg, 0.9);
   assert.equal(DEFAULTS_OVERLAYS['alertas-social'].color, '#FFBB00');
   assert.equal(DEFAULTS_OVERLAYS['alertas-social'].bg, 0.9);
   // Lo nuevo no cambia las URLs ya pegadas en OBS: con los defaults no se escribe ningun parametro.
-  assert.equal(DEFAULTS_OVERLAYS.seguidores.escala, 1);
+  assert.equal(DEFAULTS_OVERLAYS.alertas.escala, 1);
 });
 
 test('las opciones de tipografia solo viajan si difieren del default y vuelven igual', async () => {

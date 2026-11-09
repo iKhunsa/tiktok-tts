@@ -45,7 +45,7 @@ test('las muestras tienen la forma que consume cada overlay', async () => {
   assert.ok(m.MUESTRA_CHAT.some((c) => c.isModerator) && m.MUESTRA_CHAT.some((c) => c.isSubscriber), 'cubre los 3 roles');
   assert.ok(['follow', 'share'].includes(m.MUESTRA_ALERTA_SOCIAL.type) && plataformas.includes(m.MUESTRA_ALERTA_SOCIAL.platform) && m.MUESTRA_ALERTA_SOCIAL.user);
   assert.ok(m.MUESTRA_REGALO.type === 'gift' && m.MUESTRA_REGALO.giftName && m.MUESTRA_REGALO.user && m.MUESTRA_REGALO.repeatCount >= 1);
-  assert.ok(m.MUESTRA_VIEWERS > 0 && m.MUESTRA_SEGUIDORES.sesion > 0 && m.MUESTRA_SEGUIDORES.base > 0);
+  assert.ok(m.MUESTRA_VIEWERS > 0);
   assert.ok(m.MUESTRA_SOCIAL.seguidores.length && m.MUESTRA_SOCIAL.compartidos.length);
   assert.ok(m.MUESTRA_CREDITOS.donantes.length && m.MUESTRA_CREDITOS.seguidores.length && m.MUESTRA_CREDITOS.compartidos.length);
 });
@@ -67,7 +67,7 @@ test('cada overlay con muestra importa el modo vista previa', () => {
     ['overlay-chat.js', 'MUESTRA_CHAT', 'compartido/fuente-chat.js'], ['overlay-viewers.js', 'MUESTRA_VIEWERS', 'compartido/fuente-contador.js'],
     ['overlay-likes.js', 'MUESTRA_LIKES', 'compartido/fuente-ranking.js'], ['overlay-donadores.js', 'MUESTRA_DONADORES', 'compartido/fuente-ranking.js'],
     ['overlay-alertas.js', 'MUESTRA_REGALO', 'compartido/fuente-alerta.js'], ['overlay-alertas-social.js', 'MUESTRA_ALERTA_SOCIAL', 'compartido/fuente-alerta.js'],
-    ['overlay-social.js', 'MUESTRA_SOCIAL', 'overlay-social.js'], ['overlay-seguidores.js', 'MUESTRA_SEGUIDORES', 'compartido/fuente-contador.js'],
+    ['overlay-social.js', 'MUESTRA_SOCIAL', 'overlay-social.js'],
     ['overlay-creditos.js', 'MUESTRA_CREDITOS', 'compartido/fuente-creditos.js'],
   ];
   for (const [archivo, muestra, donde] of esperado) {
@@ -78,9 +78,9 @@ test('cada overlay con muestra importa el modo vista previa', () => {
   assert.match(leer('interfaz/compartido/iniciar-ranking.js'), /esVistaPrevia/);
 });
 
-test('las 9 tarjetas de overlay tienen su iframe de vista previa', () => {
+test('las 8 tarjetas de overlay tienen su iframe de vista previa', () => {
   const html = leer('interfaz/index.html');
-  for (const tipo of ['chat', 'viewers', 'likes', 'donadores', 'seguidores', 'alertas', 'alertas-social', 'creditos', 'social']) {
+  for (const tipo of ['chat', 'viewers', 'likes', 'donadores', 'alertas', 'alertas-social', 'creditos', 'social']) {
     assert.equal((html.match(new RegExp(`data-preview="${tipo}"`, 'g')) || []).length, 1, `falta el iframe de ${tipo}`);
   }
 });

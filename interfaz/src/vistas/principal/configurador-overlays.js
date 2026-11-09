@@ -135,17 +135,26 @@ async function enviarTest(endpoint, cuerpo, claveEnviado) {
   }
 }
 
-const testChat = (platform) => enviarTest('/api/test/chat', { platform, user: 'TestUser', comment: t('overlayCat.mensajePrueba') }, 'toast.testChatSent');
+// Las pruebas del editor pueden ir sin voz: solo importa lo visual.
+let pruebaSinTts = false;
+export const fijarPruebaSinTts = (valor) => { pruebaSinTts = valor; };
+
+const testChat = (platform) => enviarTest('/api/test/chat', { platform, user: 'TestUser', comment: t('overlayCat.mensajePrueba'), sinModeracion: true, sinTts: pruebaSinTts }, 'toast.testChatSent');
 const testEvento = (evento) => enviarTest('/api/test/evento', { evento }, 'toast.testOverlaySent');
 
 // Test de los overlays que no traen boton propio en index.html.
 const TESTS_OVERLAY = {
   chat: () => testChat('tiktok'),
-  seguidores: () => testSocialAlert('follow'),
   social: () => testSocialAlert('follow'),
   'nuevo-seguidor': () => testSocialAlert('follow'),
   compartido: () => testSocialAlert('share'),
   creditos: testGiftAlert,
+  alertas: testGiftAlert,
+  seguidores: () => testSocialAlert('follow'),
+  'alertas-social': () => testSocialAlert('follow'),
+  donadores: testTopDonors,
+  likes: testTopLikers,
+  viewers: testViewers,
   'contador-likes': testTopLikers,
   musica: () => testEvento({ type: 'music-test' }),
 };

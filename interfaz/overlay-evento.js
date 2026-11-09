@@ -77,7 +77,7 @@ function nativo() {
 
   cargarLocaleOverlay().then(() => {
     aplicarI18nOverlay();
-    iniciarFuenteAlerta(idAlerta, { params, vistaPrevia, alAlerta: cola.encolar, alConfig: aplicarA11y });
+    iniciarFuenteAlerta(idAlerta, { params, vistaPrevia, alAlerta: cola.encolar, alConfig: aplicarA11y, sonido: cfgFijo });
   });
 }
 

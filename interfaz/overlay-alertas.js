@@ -74,7 +74,7 @@ function nativo() {
     card.appendChild(crearImagenGifAlerta(cfgFijo.gifAlerta, cfgFijo) || (cfgFijo.imagenAlerta === 'perfil' ? crearFotoConIcono(gift, imagenRegalo) : imagenRegalo));
     const info = document.createElement('div');
     info.className = 'info';
-    info.innerHTML = `<div class="action-label">${t('overlayStr.giftReceived')}</div><div class="gift-name">${escaparHtml(nombreRegalo)}</div><div class="username">${t('overlayStr.giftFrom', { user: escaparHtml(gift.user) })}</div>${gift.usdValue ? `<div class="usd-value">≈ $${escaparHtml(String(gift.usdValue))} USD</div>` : ''}`;
+    info.innerHTML = `<div class="action-label">${t('overlayStr.giftReceived')}</div><div class="gift-name">${escaparHtml(nombreRegalo)}</div><div class="username">${t('overlayStr.giftFrom', { user: escaparHtml(gift.user) })}</div>${gift.usdValue && cfgFijo.mostrarMonto !== 'no' ? `<div class="usd-value">≈ $${escaparHtml(String(gift.usdValue))} USD</div>` : ''}`;
     card.appendChild(info);
     if ((gift.repeatCount || 1) > 1) { const badge = document.createElement('div'); badge.className = 'qty-badge'; badge.textContent = 'x' + gift.repeatCount; card.appendChild(badge); }
     aplicarPosicionTexto(card, cfgFijo);
@@ -88,7 +88,7 @@ function nativo() {
   cargarLocaleOverlay().then(() => {
     aplicarI18nOverlay();
     // Espera la lista de regalos para que el primero salga con su imagen.
-    listas.then(() => iniciarFuenteAlerta('alertas', { params, vistaPrevia, alAlerta: cola.encolar, alConfig: aplicarA11y }));
+    listas.then(() => iniciarFuenteAlerta('alertas', { params, vistaPrevia, alAlerta: cola.encolar, alConfig: aplicarA11y, sonido: cfgFijo }));
   });
 }
 

@@ -17,11 +17,11 @@ function resetAdminAnnounce() {
 }
 
 function emitChatMessage({ bus, logger }) {
-  return ({ platform, channel, raw } = {}) => {
+  return ({ platform, channel, raw, skipModeration, skipTts } = {}) => {
     if (!raw) return;
 
     emitSpecialEvent({ bus, platform, channel, raw });
-    const verdict = reviewMessage({ logger, platform, raw });
+    const verdict = skipModeration ? allowVerdict({ platform, raw }) : reviewMessage({ logger, platform, raw });
 
     if (!verdict.message || verdict.action === 'drop') {
       return reportBlocked({ bus, logger, platform, verdict });
@@ -30,6 +30,7 @@ function emitChatMessage({ bus, logger }) {
     reportShadow({ bus, logger, platform, verdict });
 
     const payload = buildPayload({ bus, channel, platform, verdict, raw });
+    if (skipTts) payload.ttsBlocked = true; // prueba solo visual: el mensaje se ve pero no se lee
     broadcastMessage(bus, payload);
     announceAdminOnce({ bus, isAdmin: payload.isAdmin });
   };
@@ -43,6 +44,13 @@ function emitSpecialEvent({ bus, platform, channel, raw }) {
     kind: 'superchat',
     raw: { ...raw.superchat, author: raw.author },
   });
+}
+
+// Mensajes de prueba de overlays: se adaptan y pasan sin moderacion ni Chat Guard.
+function allowVerdict({ platform, raw }) {
+  const message = adaptMessage({ platform, raw });
+  if (!message || message.skip) return { action: 'drop', reasons: ['message-adaptation-failed'], message: null };
+  return { action: 'allow', reasons: [], message };
 }
 
 function reviewMessage({ logger, platform, raw }) {

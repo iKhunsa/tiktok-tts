@@ -138,16 +138,13 @@ function crearBotonFormato(formato, { clave }) {
   return `<button class="cfg-boton" type="button" data-lienzo="${formato}"><span data-i18n="overlayCfg.opcion.${clave}"></span> ${formato}</button>`;
 }
 
-/** Primera seccion del panel: el formato es uno solo para todos los overlays (en el editor de canvas, el de la escena). */
-export function crearSeccionLienzo() {
-  const seccion = document.createElement('details');
-  seccion.className = 'cfg-grupo';
-  seccion.open = true;
-  seccion.innerHTML = `
-    <summary class="cfg-grupo-titulo" data-i18n="overlayCfg.grupo.lienzo"></summary>
-    <div class="cfg-botones" role="group">${Object.entries(FORMATOS).map(([formato, datos]) => crearBotonFormato(formato, datos)).join('')}</div>
-    <p class="cfg-lienzo-nota"><span data-i18n="overlayCfg.lienzoNota"></span> <strong data-lienzo-medida></strong></p>`;
-  seccion.addEventListener('click', (evento) => {
+/** Los botones de formato (16:9 / 9:16) con su clic: los usan la seccion del panel y la barra de herramientas del editor. */
+export function crearBotonesLienzo() {
+  const grupo = document.createElement('div');
+  grupo.className = 'cfg-botones';
+  grupo.setAttribute('role', 'group');
+  grupo.innerHTML = Object.entries(FORMATOS).map(([formato, datos]) => crearBotonFormato(formato, datos)).join('');
+  grupo.addEventListener('click', (evento) => {
     const boton = evento.target.closest('[data-lienzo]');
     if (!boton) return;
     if (formatoPropio) formatoPropio.guardar(boton.dataset.lienzo);
@@ -155,6 +152,19 @@ export function crearSeccionLienzo() {
     saveSettings();
     pintarLienzos();
   });
+  aplicarTraducciones(grupo);
+  return grupo;
+}
+
+/** Primera seccion del panel: el formato es uno solo para todos los overlays (en el editor de canvas, el de la escena). */
+export function crearSeccionLienzo() {
+  const seccion = document.createElement('details');
+  seccion.className = 'cfg-grupo';
+  seccion.open = true;
+  seccion.innerHTML = `
+    <summary class="cfg-grupo-titulo" data-i18n="overlayCfg.grupo.lienzo"></summary>
+    <p class="cfg-lienzo-nota"><span data-i18n="overlayCfg.lienzoNota"></span> <strong data-lienzo-medida></strong></p>`;
+  seccion.querySelector('summary').after(crearBotonesLienzo());
   aplicarTraducciones(seccion);
   return seccion;
 }

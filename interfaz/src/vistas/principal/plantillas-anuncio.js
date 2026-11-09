@@ -5,7 +5,8 @@ import { showToast } from '../../componentes/toast.js';
 
 // evento -> sufijo de las claves i18n (etiqueta y ejemplo). giftUsd no tiene campo:
 // el monto se agrega solo a la frase de "gift".
-const EVENTOS = { gift: 'Gift', join: 'Join', follow: 'Follow', like: 'Like', share: 'Share' };
+const EVENTOS = { gift: 'Gift', join: 'Join', follow: 'Follow', like: 'Like', share: 'Share', chat: 'Chat' };
+// chat no es un aviso: es la palabra de "usuario dice mensaje" (la lee chat-ui.js).
 
 /** Dibuja los campos de frase; guardan solos al salir del campo (como el resto de Configuracion TTS). */
 export async function cargarPlantillas() {

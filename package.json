@@ -14,6 +14,7 @@
     "make-icon": "electron scripts/make-app-icon.js && python scripts/make-app-icon.py",
     "dev:front": "vite --config interfaz/vite.config.js",
     "dev:build-watch": "vite build --config interfaz/vite.config.js --watch",
+    "dev:app": "concurrently \"npm run dev:build-watch\" \"electron .\"",
     "dev:all": "concurrently \"npm run dev:build-watch\" \"npm run dev\"",
     "build:front": "vite build --config interfaz/vite.config.js",
     "postbuild:front": "node scripts/verify-front-build.js",

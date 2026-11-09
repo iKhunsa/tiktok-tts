@@ -34,6 +34,7 @@ export let isSpeaking = false;
 export let currentMsgId = null;
 export let speechQueue = [];
 let activeAudio = null;
+let activeEsAnuncio = false;
 let ttsDroppedCount = 0;
 let ttsErrorCount = 0;
 let ttsAbortController = null;
@@ -211,7 +212,10 @@ async function prepararFuenteAudio(audio, blob) {
   audio.preservesPitch = true;
 }
 
-export async function playAudioBlob(blob, { onEnd, onError } = {}) {
+// Los anuncios (regalo, entrada, follow, like, share) suenan al volumen del TTS por el factor `announceVol`.
+const volumenDe = (esAnuncio) => ttsVol * (esAnuncio ? (appSettings.announceVol ?? 1) : 1);
+
+export async function playAudioBlob(blob, { onEnd, onError, esAnuncio = false } = {}) {
   if (!blob || blob.size === 0) { onError?.(); return; }
 
   // Si quedo un audio previo referenciado (dos blobs resolvieron casi juntos),
@@ -224,8 +228,9 @@ export async function playAudioBlob(blob, { onEnd, onError } = {}) {
   }
 
   const audio = new Audio();
-  audio.volume = ttsVol;
+  audio.volume = volumenDe(esAnuncio);
   activeAudio = audio;
+  activeEsAnuncio = esAnuncio;
 
   let settled = false;
   const finish = (cb) => {
@@ -283,8 +288,15 @@ export function updateRate(v) {
 export function updateVol(v) {
   setTtsVol(parseFloat(v));
   document.getElementById('volVal').textContent = Math.round(ttsVol * 100);
-  if (activeAudio) activeAudio.volume = ttsVol;
+  if (activeAudio) activeAudio.volume = volumenDe(activeEsAnuncio);
   appSettings.vol = ttsVol;
+  saveSettings();
+}
+
+export function updateAnnounceVol(v) {
+  appSettings.announceVol = parseFloat(v);
+  document.getElementById('announceVolVal').textContent = Math.round(appSettings.announceVol * 100);
+  if (activeAudio) activeAudio.volume = volumenDe(activeEsAnuncio);
   saveSettings();
 }
 
@@ -299,7 +311,7 @@ export function updatePitch(v) {
   saveSettings();
 }
 
-export function speak(text, msgId, timestamp) {
+export function speak(text, msgId, timestamp, esAnuncio = false) {
   if (!ttsGlobalEnabled) return;
   if (speechQueue.length >= MAX_QUEUE_SIZE) {
     ttsDroppedCount++;
@@ -311,7 +323,7 @@ export function speak(text, msgId, timestamp) {
   // latencia variable a los mensajes de chat, mientras que joins/gifts/
   // alertas no pasan por ese filtro y pueden llegar antes aunque hayan
   // ocurrido despues.
-  speechQueue.push({ text, msgId, timestamp: timestamp || Date.now() });
+  speechQueue.push({ text, msgId, timestamp: timestamp || Date.now(), esAnuncio });
   speechQueue.sort((a, b) => a.timestamp - b.timestamp);
   updateQueueBadge();
   if (!isSpeaking) processQueue();
@@ -350,7 +362,7 @@ async function _processQueueOnce() {
 
   isSpeaking = true;
   const queueItem = speechQueue.shift();
-  const { text, msgId } = queueItem;
+  const { text, msgId, esAnuncio } = queueItem;
   updateQueueBadge();
 
   if (currentMsgId) {
@@ -395,7 +407,7 @@ async function _processQueueOnce() {
     logStorage.addLog('info', 'network', 'Audio recibido', { size: blob.size });
     ttsErrorCount = 0;
     updateQueueBadge();
-    playAudioBlob(blob, { onEnd: () => processQueue(), onError: () => processQueue() });
+    playAudioBlob(blob, { onEnd: () => processQueue(), onError: () => processQueue(), esAnuncio });
   } catch (err) {
     if (err.name === 'AbortError') {
       isSpeaking = false;

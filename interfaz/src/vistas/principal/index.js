@@ -22,7 +22,7 @@ import { loadRuntimeConfig } from '../../nucleo/estado/config-runtime.js';
 import { connectWS } from '../../nucleo/ws/cliente-ws.js';
 import {
   updateQueueBadge, skipCurrentTTS, togglePauseTts, toggleGlobalTTS,
-  enableEmergencyTTSMode, updateRate, updateVol, updatePitch,
+  enableEmergencyTTSMode, updateRate, updateVol, updateAnnounceVol, updatePitch,
 } from '../../nucleo/tts/cola-tts.js';
 
 import { t, tErr } from '../../nucleo/i18n/i18n.js';
@@ -67,6 +67,7 @@ import {
   loadVoices, testVoice, iniciarCierreDropdownVoces,
 } from './voces.js';
 import { escapeHtml, initChatScrollFollow, initSpeakingGoto, clearChatAndQueue } from './chat-ui.js';
+import { iniciarVistaChat } from './chat-vista.js';
 import {
   openDonationsModal, closeDonationsModal, openDiscordModal, closeDiscordModal,
   openBugReportModal, closeBugReportModal, submitBugReport, openDictLangModal,
@@ -136,7 +137,7 @@ Object.assign(window, {
   selectVoice, testVoice,
   // chat / tts
   clearChatAndQueue, skipCurrentTTS, togglePauseTts, toggleGlobalTTS,
-  enableEmergencyTTSMode, updateRate, updateVol, updatePitch,
+  enableEmergencyTTSMode, updateRate, updateVol, updateAnnounceVol, updatePitch,
   // modales y avisos
   openDonationsModal, closeDonationsModal, openDiscordModal, closeDiscordModal,
   openBugReportModal, closeBugReportModal, submitBugReport, openDictLangModal,
@@ -241,7 +242,8 @@ function iniciarArranque() {
   document.addEventListener('DOMContentLoaded', () => {
     initChatScrollFollow();
     initSpeakingGoto();
-    document.querySelectorAll('.cfg-field input[type="range"], #rateRange, #volRange, #pitchRange').forEach(paintRangeFill);
+    iniciarVistaChat();
+    document.querySelectorAll('.cfg-field input[type="range"], #rateRange, #volRange, #announceVolRange, #pitchRange').forEach(paintRangeFill);
   });
 
   // ─── INIT (mismo orden que el original) ──────────────────────

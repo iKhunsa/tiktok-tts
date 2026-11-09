@@ -225,6 +225,9 @@
                      "clipsHistory":  "Historique des marqueurs",
                      "announceTplTitle":  "Personnalisez la fin des annonces",
                      "announceTplDesc":  "Facultatif : écris ce qui vient après le nom. Les détails de l\u0027événement s\u0027ajoutent automatiquement ; laisse vide pour utiliser le texte standard.",
+                     "announceVolEyebrow":  "Volume des annonces",
+                     "announceVolTitle":  "Volume des annonces",
+                     "announceVolDesc":  "Cadeaux, arrivées, follows, likes et partages sont joués à ce volume, relatif à celui du TTS. Baisse-le pour qu'ils restent en fond sonore pendant que le chat est lu fort.",
                      "announceTplGift":  "Après avoir reçu un cadeau",
                      "announceTplExGift":  "a tout donné",
                      "announceTplJoin":  "Après l\u0027arrivée de quelqu\u0027un",
@@ -235,6 +238,8 @@
                      "announceTplExLike":  "donne tout",
                      "announceTplShare":  "Après que quelqu\u0027un partage",
                      "announceTplExShare":  "a fait passer le mot",
+                     "announceTplChat":  "Mot utilisé en lisant un message du chat",
+                     "announceTplExChat":  "dit",
                      "window":  "Fenêtre et démarrage"
                  },
     "label":  {
@@ -604,7 +609,7 @@
                            "estilo":  "Style",
                            "efectos":  "Effets"
                        },
-                       "campo":  { "posicionTexto": "Position du texte",
+                       "campo":  { "mostrarMonto": "Afficher le montant en argent", "posicionTexto": "Position du texte",
                           "anchoMensajes":  "Largeur des messages",
                           "escala":  "Taille totale",
                           "desplazaX":  "Déplacer horizontalement",
@@ -682,7 +687,7 @@
                                      "imagenAlerta":  "Image de l'alerte",
                                      "colorTexto":  "Couleur du texte"
                                  },
-                       "opcion":  { "alLado": "À côté", "debajo": "Dessous",
+                       "opcion":  { "si": "Oui", "no": "Non", "alLado": "À côté", "debajo": "Dessous",
                                       "izquierda":  "Gauche",
                                       "centro":  "Centre",
                                       "derecha":  "Droite",
@@ -1967,6 +1972,7 @@
                          "statusIdle":  "{platform} : non connecté",
                          "reasonTiktokLogin":  "TikTok demande de se connecter."
                      },
+    "chatVista": {"ajustes": "Paramètres du chat", "pantallaCompleta": "Chat en plein écran", "ventana": "Ouvrir le chat dans une autre fenêtre", "titulo": "Paramètres du chat en direct", "cerrar": "Fermer", "seccionTexto": "Texte", "tamano": "Taille du texte", "fuente": "Police", "fuenteSistema": "Par défaut du système", "fuenteOtra": "Autre…", "fuenteOtraEjemplo": "Nom d'une police installée, ex. Verdana", "seccionEmotes": "Emotes", "emotesMostrar": "Afficher les emotes", "emotesTerceros": "Emotes tierces (BetterTTV, 7TV)", "seccionPantalla": "Affichage", "dividido": "Écran partagé par plateforme", "divididoAyuda": "Deux plateformes connectées ou plus s'affichent côte à côte, chacune dans sa colonne.", "plataformasVisibles": "Plateformes visibles", "restablecer": "Réinitialiser", "columnaSistema": "Système", "ventanaVacia": "En attente des messages du chat…", "tamanoAyuda": "Choisissez la taille du texte du chat. N'affecte pas le reste de l'application.", "fuenteAyuda": "N'importe quelle police installée sur votre ordinateur.", "emotesAyuda": "Affiche les images des emotes du chat. Désactivé, leur nom s'affiche à la place.", "emotesPorPlataforma": "Par plateforme"},
     "overlayCat": {
         "explorar": "Explorer",
         "editorUnificado": "Éditeur unifié",
@@ -1990,7 +1996,7 @@
         "bannerLienzoTitulo": "Réunissez toutes vos alertes dans un seul canvas",
         "bannerLienzoDesc": "Concevez, modifiez et contrôlez depuis un seul HTML.",
         "bannerLienzoCta": "Modifier maintenant",
-        "editor": { "titulo": "Éditeur de canvas", "quitar": "Retirer du canvas", "vacio": "Choisissez un overlay dans les catégories ci-dessous pour l’ajouter au canvas et le régler ici.", "sinSeleccion": "Aucun overlay sélectionné", "capas": "Calques", "pantallaCompleta": "Plein écran", "probar": "Tester en direct (aussi dans OBS)", "probarEscena": "Tester la scène", "probarEscenaAyuda": "Déclenche l’événement de test de chaque calque visible de cette scène (aussi dans OBS)", "probarEscenaVacio": "Aucun calque visible de cette scène n’a de test.", "copiarObs": "Copier le lien OBS", "copiarObsAyuda": "Copie un seul lien avec tous les calques visibles de cette scène à coller comme Browser Source dans OBS", "copiarObsVacio": "Aucun calque visible à copier. Ajoutez-en un ou affichez-en un d'abord.", "duplicar": "Dupliquer", "plegarBiblioteca": "Réduire ou afficher la bibliothèque", "escenas": "Scènes", "escena": "Scène {n}", "escenaNueva": "Nouvelle scène", "escenaEliminar": "Supprimer la scène", "mediaSubir": "Importer des images", "mediaVacio": "Vous n’avez pas encore importé d’images. Importez des PNG, JPEG, WebP ou GIF pour les utiliser dans vos overlays.", "mediaContador": "{n} images", "mediaSubido": "Images importées", "mediaError": "L'action n'a pas pu être effectuée. Réessayez.", "mediaErrorFormato": "Format non valide : utilisez PNG, JPEG, WebP ou GIF.", "mediaErrorTamano": "L'image dépasse 8 Mo.", "mediaErrorLlena": "La bibliothèque est pleine (200 images au maximum). Supprimez-en une pour en ajouter une autre.", "copiarProps": "Copier les propriétés", "pegarProps": "Coller les propriétés", "ajustes": "Réglages", "capasVacio": "Aucun overlay sur le canvas.", "ocultar": "Masquer", "mostrar": "Afficher", "bloquear": "Verrouiller", "desbloquear": "Déverrouiller", "frente": "Premier plan", "fondo": "Arrière-plan", "restablecer": "Réinitialiser l’élément", "subir": "Monter d’un niveau", "bajar": "Descendre d’un niveau", "seccion": { "editor": "Éditeur", "gif": "Recherche de GIF", "sonido": "Effets sonores" }, "tab": { "gif": "GIF", "overlays": "Overlays", "media": "Médias", "stickers": "Stickers", "texto": "Texte", "formas": "Formes", "mas": "Plus" } },
+        "editor": { "titulo": "Éditeur de canvas", "beta": "Bêta", "quitar": "Retirer du canvas", "vacio": "Choisissez un overlay dans les catégories ci-dessous pour l’ajouter au canvas et le régler ici.", "sinSeleccion": "Aucun overlay sélectionné", "capas": "Calques", "pantallaCompleta": "Plein écran", "probar": "Tester en direct (aussi dans OBS)", "probarEscena": "Tester la scène", "probarEscenaAyuda": "Déclenche l’événement de test de chaque calque visible de cette scène (aussi dans OBS)", "probarEscenaVacio": "Aucun calque visible de cette scène n’a de test.", "sinTts": "Sans voix", "copiarObs": "Copier le lien OBS", "copiarObsAyuda": "Copie un seul lien avec tous les calques visibles de cette scène à coller comme Browser Source dans OBS", "copiarObsVacio": "Aucun calque visible à copier. Ajoutez-en un ou affichez-en un d'abord.", "duplicar": "Dupliquer", "plegarBiblioteca": "Réduire ou afficher la bibliothèque", "escenas": "Scènes", "escena": "Scène {n}", "escenaNueva": "Nouvelle scène", "escenaEliminar": "Supprimer la scène", "mediaSubir": "Importer des images", "mediaVacio": "Vous n’avez pas encore importé d’images. Importez des PNG, JPEG, WebP ou GIF pour les utiliser dans vos overlays.", "mediaContador": "{n} images", "mediaSubido": "Images importées", "mediaError": "L'action n'a pas pu être effectuée. Réessayez.", "mediaErrorFormato": "Format non valide : utilisez PNG, JPEG, WebP ou GIF.", "mediaErrorTamano": "L'image dépasse 8 Mo.", "mediaErrorLlena": "La bibliothèque est pleine (200 images au maximum). Supprimez-en une pour en ajouter une autre.", "copiarProps": "Copier les propriétés", "pegarProps": "Coller les propriétés", "ajustes": "Réglages", "capasVacio": "Aucun overlay sur le canvas.", "ocultar": "Masquer", "mostrar": "Afficher", "bloquear": "Verrouiller", "desbloquear": "Déverrouiller", "frente": "Premier plan", "fondo": "Arrière-plan", "restablecer": "Réinitialiser l’élément", "subir": "Monter d’un niveau", "bajar": "Descendre d’un niveau", "seccion": { "editor": "Éditeur", "gif": "Recherche de GIF", "sonido": "Effets sonores" }, "tab": { "gif": "GIF", "overlays": "Overlays", "media": "Médias", "stickers": "Stickers", "texto": "Texte", "formas": "Formes", "mas": "Plus" } },
         "verDestacado": "Voir la sélection",
         "cat": {
             "chat": {

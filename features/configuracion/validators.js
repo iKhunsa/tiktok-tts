@@ -8,7 +8,7 @@ function isStringArray(v) {
 }
 
 // Espejo de ANUNCIO_VARS/ANUNCIO_MAX_LEN (interfaz/src/nucleo/i18n/plantilla-anuncio.js).
-const ANNOUNCE_KEYS = ['gift', 'giftUsd', 'join', 'follow', 'like', 'share'];
+const ANNOUNCE_KEYS = ['gift', 'giftUsd', 'join', 'follow', 'like', 'share', 'chat'];
 const ANNOUNCE_MAX_LEN = 120;
 
 function isAnnounceTemplates(v) {

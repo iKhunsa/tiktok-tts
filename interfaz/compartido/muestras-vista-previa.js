@@ -34,8 +34,6 @@ export const MUESTRAS_MUSICA = [
   { title: 'Midnight City', channelName: 'M83', requestedBy: 'nova_star', duration: '4:03' },
 ];
 
-export const MUESTRA_SEGUIDORES = { sesion: 37, base: 12400 };
-
 export const MUESTRA_SOCIAL = {
   seguidores: ['luna_vibes', 'pixel_fox', 'nova_star', 'sam.plays', 'kiko_gamer'],
   compartidos: ['mia.live', 'dario_tv', 'ana_rose'],

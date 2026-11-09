@@ -16,6 +16,8 @@ import { updateConnectorChipState } from '../../vistas/principal/voces.js';
 import { updateOverlayUrl } from '../../vistas/principal/configurador-overlays.js';
 import { renderizarTodosLosCamposOverlay } from '../../vistas/principal/campos-overlay/index.js';
 import { DEFAULTS_OVERLAYS } from '../../../compartido/estilo/esquemas.js';
+import { reportarFallo } from '../../../compartido/reportar-fallo.js';
+import { VISTA_CHAT_DEFECTO } from '../../componentes/chat-vista/ajustes.js';
 import * as datosPorCuenta from './datos-por-cuenta.js';
 
 // Circular import a proposito: los 4 modulos de arriba importan
@@ -30,6 +32,7 @@ export const DEFAULT_SETTINGS = {
   voice: 'es-MX',
   rate: 1.0,
   vol: 1.0,
+  announceVol: 1.0, // volumen de los anuncios (regalos, entradas, follows, likes, shares) relativo al volumen del TTS
   sonidosVolumen: 50, // volumen de la ventana del navegador de sonidos (0-100): hay sonidos muy fuertes, por eso arranca a la mitad
   pitch: 1.0,
   readChat: true,
@@ -42,6 +45,7 @@ export const DEFAULT_SETTINGS = {
   sayUsername: true,
   sayUsernameConnector: true,
   chatTogglesCollapsed: true,
+  chatVista: VISTA_CHAT_DEFECTO, // ajustes visuales del chat en vivo (componentes/chat-vista)
   eventEffects: true, // animaciones/sonidos de temporada (componentes/eventos); activos por defecto
   // langFilterEnabled/dictFilterEnabled/allowedExtraLangs NO viven aca
   // (fase-05): fuente unica de verdad = config.json del servidor, ver
@@ -108,6 +112,7 @@ export function loadSettings() {
     }
   } catch (e) {
     console.warn('[settings] localStorage corrupto, usando valores por defecto', e);
+    reportarFallo('interfaz.editor.ajustes_corruptos', 'Ajustes de la interfaz ilegibles: se cargaron los valores por defecto', { error: e.name });
     appSettings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
   }
 }
@@ -128,7 +133,12 @@ function enviarRespaldo() {
   }).catch(() => {}); // sin servidor la copia de localStorage sigue valiendo; el siguiente guardado reintenta
 }
 
+// Gancho que el editor de canvas usa para dejar en cada escena las URLs de sus capas antes de guardar (enlace estatico de OBS).
+let alGuardar = null;
+export const alGuardarAjustes = (fn) => { alGuardar = fn; };
+
 export function saveSettings() {
+  alGuardar?.();
   datosPorCuenta.set(SETTINGS_KEY, JSON.stringify(appSettings));
   datosPorCuenta.set(SETTINGS_TS_KEY, String(Date.now()));
   clearTimeout(temporizadorRespaldo);
@@ -172,6 +182,8 @@ export function applySettings() {
   const pr = document.getElementById('pitchRange');
   if (rr) { rr.value = ttsRate; document.getElementById('rateVal').textContent = ttsRate.toFixed(1); paintRangeFill(rr); }
   if (vr) { vr.value = ttsVol; document.getElementById('volVal').textContent = Math.round(ttsVol * 100); paintRangeFill(vr); }
+  const av = document.getElementById('announceVolRange');
+  if (av) { av.value = appSettings.announceVol; document.getElementById('announceVolVal').textContent = Math.round(appSettings.announceVol * 100); paintRangeFill(av); }
   if (pr) { pr.value = ttsPitch; document.getElementById('pitchVal').textContent = ttsPitch.toFixed(2); paintRangeFill(pr); }
 
   const chipMap = {
@@ -204,7 +216,6 @@ export function applySettings() {
 
   renderizarTodosLosCamposOverlay();
 
-  updateOverlayUrl('seguidores');
   updateOverlayUrl('alertas');
   updateOverlayUrl('creditos');
   updateOverlayUrl('social');

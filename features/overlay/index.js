@@ -75,7 +75,7 @@ module.exports = {
     bus.on('canal:follow', (payload) => {
       const user = cleanNick(payload.nick, payload.userId);
       addFollower(state.credits, { platform: payload.platform, userId: payload.userId, user });
-      bus.emit('ws:broadcast', { type: 'follow', platform: payload.platform, user, ttsUser: resolveSpokenName(payload.nick, payload.userId), userId: payload.userId || null, avatar: payload.avatar || null, timestamp: Date.now() });
+      bus.emit('ws:broadcast', { type: 'follow', platform: payload.platform, user, ttsUser: resolveSpokenName(payload.nick, payload.userId), userId: payload.userId || null, avatar: payload.avatar || null, timestamp: Date.now(), ...(payload.channel === 'test' && { test: true }) });
       if (payload.platform === 'tiktok') state.followCount += 1;
     }, 'overlay');
 
@@ -137,7 +137,7 @@ module.exports = {
       if (kind === 'share') {
         const user = cleanNick(nick, userId);
         addSharer(state.credits, { platform, userId, user });
-        bus.emit('ws:broadcast', { type: 'share', platform, user, ttsUser: resolveSpokenName(nick, userId), timestamp: Date.now() });
+        bus.emit('ws:broadcast', { type: 'share', platform, user, ttsUser: resolveSpokenName(nick, userId), timestamp: Date.now(), ...(channel === 'test' && { test: true }) });
       } else if (kind === 'join') {
         bus.emit('ws:broadcast', { type: 'join', platform, user: cleanNick(nick, userId), ttsUser: resolveSpokenName(nick, userId), userId: userId || null, timestamp: Date.now() });
       } else if (kind === 'superchat') {

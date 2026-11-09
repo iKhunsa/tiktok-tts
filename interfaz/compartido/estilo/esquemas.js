@@ -67,12 +67,6 @@ const BASE = {
   chat: camposChat(),
   likes: camposRanking({ colorValor: '#ffffff' }),
   donadores: camposRanking({ colorValor: '#ffd23f' }),
-  seguidores: [
-    { clave: 'goal', param: 'goal', tipo: 'texto', def: '', etiqueta: 'meta', grupo: 'base' },
-    colorAcento,
-    opacidadFondo(0.8),
-    ...camposOverlayFijo({ texto: false }),
-  ],
   viewers: [
     { ...colorAcento, def: '#F0213A' },
     opacidadFondo(0.8),
@@ -82,6 +76,7 @@ const BASE = {
     { clave: 'dur', param: 'dur', tipo: 'numero', def: 4000, min: 1000, max: 12000, step: 500, segundos: true, etiqueta: 'duracion', grupo: 'base' },
     campoImagenAlerta('regalo'),
     campoPosicionTexto(),
+    { clave: 'mostrarMonto', param: 'mm', tipo: 'opcion', def: 'si', opciones: ['si', 'no'], opcionesTraducidas: ['si', 'no'], ui: 'botones', grupo: 'base' },
     campoGifAlerta(),
     ...camposGifAlertaMedida(), ...camposSonidoAlerta(),
     colorAcento,
@@ -114,7 +109,7 @@ const BASE = {
  * test/epik-familias.test.js vigila que las dos listas coincidan.
  */
 const CON_EPIK = new Set([
-  'musica', 'likes', 'donadores', 'seguidores', 'viewers', 'contador-likes',
+  'musica', 'likes', 'donadores', 'viewers', 'contador-likes',
   'alertas', 'alertas-social', ...Object.keys(EVENTOS_ALERTA),
   'chat', ...Object.keys(CHATS_POR_PLATAFORMA),
   'creditos', 'social',

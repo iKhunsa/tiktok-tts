@@ -7,7 +7,7 @@
 const FAMILIAS = {
   musica: ['musica'],
   ranking: ['likes', 'donadores'],
-  contador: ['seguidores', 'viewers', 'contador-likes'],
+  contador: ['viewers', 'contador-likes'],
   // Las de EVENTOS_ALERTA (interfaz/compartido/eventos-alerta.js); test/epik-familias.test.js vigila que coincidan.
   alerta: ['alertas', 'alertas-social', 'nuevo-seguidor', 'compartido', 'entrada', 'bits', 'kicks', 'superchat', 'supersticker',
     'suscripcion', 'renovacion', 'fin-directo'],

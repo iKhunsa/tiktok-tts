@@ -4,7 +4,7 @@ import { CHATS_POR_PLATAFORMA } from '../../../../compartido/estilo/esquemas.js'
 /** Los 25 overlays por categoria. Textos: overlayCat.cat.<id>.titulo|desc. */
 export const CATEGORIAS = [
   { id: 'chat', icono: 'chat', color: '#2f6fed', overlays: ['chat', 'chat-tiktok', 'chat-twitch', 'chat-youtube', 'chat-kick'] },
-  { id: 'seguidores', icono: 'people', color: '#7c4dff', overlays: ['seguidores', 'social', 'nuevo-seguidor'] },
+  { id: 'seguidores', icono: 'people', color: '#7c4dff', overlays: ['social', 'nuevo-seguidor'] },
   { id: 'regalos', icono: 'card_giftcard', color: '#e6532e', overlays: ['alertas', 'donadores', 'bits', 'kicks', 'superchat', 'supersticker'] },
   { id: 'suscripciones', icono: 'card_membership', color: '#c23fb0', overlays: ['suscripcion', 'renovacion'] },
   { id: 'interacciones', icono: 'favorite', color: '#e0245e', overlays: ['likes', 'alertas-social', 'contador-likes', 'compartido'] },
@@ -21,7 +21,6 @@ export const PLATAFORMAS_OVERLAY = {
   'chat-twitch': ['twitch'],
   'chat-youtube': ['youtube'],
   'chat-kick': ['kick'],
-  seguidores: ['tiktok', 'twitch', 'kick'],
   social: ['tiktok'],
   'nuevo-seguidor': ['tiktok', 'twitch', 'kick'],
   alertas: ['tiktok'],
@@ -54,7 +53,7 @@ export const OVERLAYS_GENERADOS = [
 export const FONDOS_DESTACADOS = [
   'center / cover no-repeat url("img/destacado-michi-metro.png"), #0b4f46',
   'center / cover no-repeat url("img/destacado-2.png"), #111',
-  'linear-gradient(120deg, #173a8f, #2f6fed 55%, #58a6ff)',
+  'center / cover no-repeat url("img/destacado-3.png"), #111',
 ];
 
 /** Enlace externo por indice de FONDOS_DESTACADOS (el slide abre la web). */

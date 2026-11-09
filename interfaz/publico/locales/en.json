@@ -225,6 +225,9 @@
                      "clipsHistory":  "Clip history",
                      "announceTplTitle":  "Customize announcement endings",
                      "announceTplDesc":  "Optional: type what comes after the name. Event details are added automatically; leave it empty to use the standard text.",
+                     "announceVolEyebrow":  "Announcement volume",
+                     "announceVolTitle":  "Announcement volume",
+                     "announceVolDesc":  "Gifts, joins, follows, likes and shares play at this volume, relative to the TTS volume. Lower it so they stay in the background while chat is read loud.",
                      "announceTplGift":  "After receiving a gift",
                      "announceTplExGift":  "went all in",
                      "announceTplJoin":  "After someone joins",
@@ -235,6 +238,8 @@
                      "announceTplExLike":  "gives it everything",
                      "announceTplShare":  "After someone shares",
                      "announceTplExShare":  "spread the word",
+                     "announceTplChat":  "Word used when reading a chat message",
+                     "announceTplExChat":  "says",
                      "window":  "Window & startup"
                  },
     "label":  {
@@ -604,7 +609,7 @@
                            "estilo":  "Style",
                            "efectos":  "Effects"
                        },
-                       "campo":  { "posicionTexto": "Text position",
+                       "campo":  { "mostrarMonto": "Show money amount", "posicionTexto": "Text position",
                           "anchoMensajes":  "Message width",
                           "escala":  "Total size",
                           "desplazaX":  "Move horizontally",
@@ -682,7 +687,7 @@
                                      "imagenAlerta":  "Alert image",
                                      "colorTexto":  "Text color"
                                  },
-                       "opcion":  { "alLado": "Beside", "debajo": "Below",
+                       "opcion":  { "si": "Yes", "no": "No", "alLado": "Beside", "debajo": "Below",
                                       "izquierda":  "Left",
                                       "centro":  "Center",
                                       "derecha":  "Right",
@@ -1967,6 +1972,7 @@
                          "statusIdle":  "{platform}: not connected",
                          "reasonTiktokLogin":  "TikTok requires you to sign in."
                      },
+    "chatVista": {"ajustes": "Chat settings", "pantallaCompleta": "Fullscreen chat", "ventana": "Open chat in a separate window", "titulo": "Live chat settings", "cerrar": "Close", "seccionTexto": "Text", "tamano": "Font size", "fuente": "Typeface", "fuenteSistema": "System default", "fuenteOtra": "Other…", "fuenteOtraEjemplo": "Name of an installed font, e.g. Verdana", "seccionEmotes": "Emotes", "emotesMostrar": "Show emotes", "emotesTerceros": "Third-party emotes (BetterTTV, 7TV)", "seccionPantalla": "Display", "dividido": "Split screen by platform", "divididoAyuda": "Two or more connected platforms are shown side by side, each in its own column.", "plataformasVisibles": "Visible platforms", "restablecer": "Reset", "columnaSistema": "System", "ventanaVacia": "Waiting for chat messages…", "tamanoAyuda": "Choose how large the chat text is. Doesn't affect the rest of the app.", "fuenteAyuda": "Any font installed on your computer.", "emotesAyuda": "Shows chat emote images. If off, you'll see their name instead.", "emotesPorPlataforma": "By platform"},
     "overlayCat": {
         "explorar": "Browse",
         "editorUnificado": "Unified editor",
@@ -1990,7 +1996,7 @@
         "bannerLienzoTitulo": "Unify all your alerts in a single canvas",
         "bannerLienzoDesc": "Design, edit and control from one single HTML.",
         "bannerLienzoCta": "Edit now",
-        "editor": { "titulo": "Canvas editor", "quitar": "Remove from canvas", "vacio": "Pick an overlay from the categories below to add it to the canvas and tweak it here.", "sinSeleccion": "No overlay selected", "capas": "Layers", "pantallaCompleta": "Full screen", "probar": "Test live (also in OBS)", "probarEscena": "Test scene", "probarEscenaAyuda": "Fires the test event of every visible layer in this scene (also in OBS)", "probarEscenaVacio": "No visible layer in this scene has a test.", "copiarObs": "Copy OBS link", "copiarObsAyuda": "Copies a single link with all visible layers of this scene to paste as a Browser Source in OBS", "copiarObsVacio": "There are no visible layers to copy. Add or show one first.", "duplicar": "Duplicate", "plegarBiblioteca": "Minimize or show the library", "escenas": "Scenes", "escena": "Scene {n}", "escenaNueva": "New scene", "escenaEliminar": "Delete scene", "mediaSubir": "Upload images", "mediaVacio": "You have not uploaded any images yet. Upload PNG, JPEG, WebP or GIF to use them in your overlays.", "mediaContador": "{n} images", "mediaSubido": "Images uploaded", "mediaError": "The action could not be completed. Please try again.", "mediaErrorFormato": "Invalid format: use PNG, JPEG, WebP or GIF.", "mediaErrorTamano": "The image is larger than 8 MB.", "mediaErrorLlena": "The library is full (200 images maximum). Delete one to upload another.", "copiarProps": "Copy properties", "pegarProps": "Paste properties", "ajustes": "Settings", "capasVacio": "No overlays on the canvas yet.", "ocultar": "Hide", "mostrar": "Show", "bloquear": "Lock", "desbloquear": "Unlock", "frente": "Bring to front", "fondo": "Send to back", "restablecer": "Reset element", "subir": "Move up one level", "bajar": "Move down one level", "seccion": { "editor": "Editor", "gif": "GIF search", "sonido": "Sound effects" }, "tab": { "gif": "GIF", "overlays": "Overlays", "media": "Media", "stickers": "Stickers", "texto": "Text", "formas": "Shapes", "mas": "More" } },
+        "editor": { "titulo": "Canvas editor", "beta": "Beta", "quitar": "Remove from canvas", "vacio": "Pick an overlay from the categories below to add it to the canvas and tweak it here.", "sinSeleccion": "No overlay selected", "capas": "Layers", "pantallaCompleta": "Full screen", "probar": "Test live (also in OBS)", "probarEscena": "Test scene", "probarEscenaAyuda": "Fires the test event of every visible layer in this scene (also in OBS)", "probarEscenaVacio": "No visible layer in this scene has a test.", "sinTts": "No voice", "copiarObs": "Copy OBS link", "copiarObsAyuda": "Copies a single link with all visible layers of this scene to paste as a Browser Source in OBS", "copiarObsVacio": "There are no visible layers to copy. Add or show one first.", "duplicar": "Duplicate", "plegarBiblioteca": "Minimize or show the library", "escenas": "Scenes", "escena": "Scene {n}", "escenaNueva": "New scene", "escenaEliminar": "Delete scene", "mediaSubir": "Upload images", "mediaVacio": "You have not uploaded any images yet. Upload PNG, JPEG, WebP or GIF to use them in your overlays.", "mediaContador": "{n} images", "mediaSubido": "Images uploaded", "mediaError": "The action could not be completed. Please try again.", "mediaErrorFormato": "Invalid format: use PNG, JPEG, WebP or GIF.", "mediaErrorTamano": "The image is larger than 8 MB.", "mediaErrorLlena": "The library is full (200 images maximum). Delete one to upload another.", "copiarProps": "Copy properties", "pegarProps": "Paste properties", "ajustes": "Settings", "capasVacio": "No overlays on the canvas yet.", "ocultar": "Hide", "mostrar": "Show", "bloquear": "Lock", "desbloquear": "Unlock", "frente": "Bring to front", "fondo": "Send to back", "restablecer": "Reset element", "subir": "Move up one level", "bajar": "Move down one level", "seccion": { "editor": "Editor", "gif": "GIF search", "sonido": "Sound effects" }, "tab": { "gif": "GIF", "overlays": "Overlays", "media": "Media", "stickers": "Stickers", "texto": "Text", "formas": "Shapes", "mas": "More" } },
         "verDestacado": "View featured",
         "cat": {
             "chat": {

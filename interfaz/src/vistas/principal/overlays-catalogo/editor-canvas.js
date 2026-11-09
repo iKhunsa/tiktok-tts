@@ -1,11 +1,11 @@
 import { leerEstadoUi, guardarEstadoUi } from '../../../nucleo/estado/estado-ui.js';
 import { aplicarTraducciones, t } from '../../../nucleo/i18n/i18n.js';
-import { appSettings, saveSettings } from '../../../nucleo/estado/ajustes-app.js';
+import { appSettings, saveSettings, alGuardarAjustes } from '../../../nucleo/estado/ajustes-app.js';
 import { ESQUEMAS } from '../../../../compartido/estilo/esquemas.js';
-import { crearArrastre, formatoActual, pintarLienzos, usarFormatoPropio } from '../lienzo-overlay.js';
-import { buildOverlayUrl, probarOverlay, restablecerOverlayDeFabrica, tieneTest, updateOverlayUrl } from '../configurador-overlays.js';
+import { crearArrastre, crearBotonesLienzo, formatoActual, pintarLienzos, usarFormatoPropio } from '../lienzo-overlay.js';
+import { buildOverlayUrl, fijarPruebaSinTts, probarOverlay, restablecerOverlayDeFabrica, tieneTest, updateOverlayUrl } from '../configurador-overlays.js';
 import { sincronizarCamposOverlay } from '../campos-overlay/sincronizar.js';
-import { CATEGORIAS } from './catalogo.js';
+import { CATEGORIAS, NOMBRES_PLATAFORMA, PLATAFORMAS_OVERLAY } from './catalogo.js';
 import { alCerrarGif, alMostrarGif, alOcultarGif, iniciarGifBuscador } from '../gif-buscador/index.js';
 import { alCerrarSonidos, alMostrarSonidos, alOcultarSonidos, iniciarSonidosBuscador } from '../sonidos-buscador/index.js';
 import { moverZ, ordenZ, ponerZ } from './editor-profundidad.js';
@@ -18,7 +18,11 @@ import { esCapaGif } from '../../../../compartido/estilo/campos-gif.js';
 import { idCapaGif, prepararCapaGif } from './gif-capas.js';
 import { crearSelectorSkin } from '../selector-skin.js';
 import { showToast } from '../../../componentes/toast.js';
+import { abrirPopupPro } from '../../../componentes/popup-pro.js';
+import { tieneAcceso } from './tienda.js';
 import { crearMedia } from './media.js';
+import { deshacer, rehacer, registrarCambio, reiniciarHistorial } from './editor-historial.js';
+import { renderizarTodosLosCamposOverlay } from '../campos-overlay/index.js';
 
 const $ = (id) => document.getElementById(id);
 const TODAS = 'todas';
@@ -28,6 +32,8 @@ let temporizadorResalte = 0;
 let zoom = 1; // 1 = el canvas cabe entero en el escenario; Ctrl + rueda lo acerca
 const ZOOM_MAX = 8;
 let seleccionado = null;
+let mano = false; // Espacio pulsado: arrastrar desplaza el lienzo (tras hacer zoom)
+let panorama = null; // { x, y, izquierda, arriba } mientras se arrastra con la mano
 let categoria = TODAS;
 let busqueda = '';
 let propiedadesCopiadas = null; // { de, valores }: ajustes copiados con el menu
@@ -60,9 +66,7 @@ function ajustar() {
   const { ancho, alto } = formatoActual();
   const escenario = $('ovlEditorEscenario');
   const escala = Math.min(escenario.clientWidth / ancho, escenario.clientHeight / alto) * zoom;
-  $('ovlEditorMedida').textContent = `${ancho} × ${alto}`;
   if (!(escala > 0)) return;
-  $('ovlEditorZoom').textContent = `${Math.round(escala * 100)}%`;
   const marco = $('ovlEditorMarco');
   marco.style.width = `${ancho * escala}px`;
   marco.style.height = `${alto * escala}px`;
@@ -226,7 +230,7 @@ function alternarBloqueo(id) {
   pintar();
 }
 
-/** Doble clic en un nombre: lo cambia por un campo de texto. Enter guarda, Esc cancela, vacio vuelve al nombre por defecto. */
+/** Clic en el nombre de una fila ya seleccionada: lo cambia por un campo de texto. Enter guarda, Esc cancela, vacio vuelve al nombre por defecto. */
 function renombrar(boton, actual, guardar) {
   const campo = document.createElement('input');
   campo.className = 'edi-renombrar';
@@ -252,13 +256,16 @@ function renombrar(boton, actual, guardar) {
 
 function nombreCapa(id) {
   const propio = escena().nombres[id];
-  const boton = crearBoton('edi-capa-nombre', `<img src="${icono(id)}" alt=""><span ${propio ? '' : `data-i18n="${claveTitulo(id)}"`}></span>`, () => seleccionar(id));
+  const boton = crearBoton('edi-capa-nombre', `<img src="${icono(id)}" alt=""><span ${propio ? '' : `data-i18n="${claveTitulo(id)}"`}></span>`, () => {
+    // Clic en la capa ya seleccionada: edita su nombre en la misma fila.
+    if (id !== seleccionado) return seleccionar(id);
+    renombrar(boton, propio ?? t(claveTitulo(id)), (nombre) => {
+      if (nombre) escena().nombres[id] = nombre;
+      else delete escena().nombres[id];
+      saveSettings();
+    });
+  });
   if (propio) boton.lastChild.textContent = propio;
-  boton.addEventListener('dblclick', () => renombrar(boton, propio ?? t(claveTitulo(id)), (nombre) => {
-    if (nombre) escena().nombres[id] = nombre;
-    else delete escena().nombres[id];
-    saveSettings();
-  }));
   return boton;
 }
 
@@ -393,13 +400,17 @@ function pintarCapas() {
   aplicarTraducciones($('ovlEditorCapas'));
 }
 
+// Logos de las redes donde aplica el overlay, para distinguir tarjetas parecidas.
+const logosPlataforma = (id) => `<span class="ovl-plataformas">${(PLATAFORMAS_OVERLAY[id] || [])
+  .map((p) => `<span class="ovl-plataforma"><img src="icons/${p}-logo.svg" alt="">${NOMBRES_PLATAFORMA[p]}</span>`).join('')}</span>`;
+
 function pintarBiblioteca() {
   document.querySelectorAll('.edi-categoria').forEach((boton) => boton.classList.toggle('activa', boton.dataset.cat === categoria));
   const ids = CATEGORIAS.filter(({ id }) => categoria === TODAS || id === categoria).flatMap(({ overlays }) => overlays);
   const tarjetas = ids.map((id) => crearBoton(
     `edi-tarjeta${capas.has(id) ? ' en-lienzo' : ''}`,
     `<span class="edi-tarjeta-icono"><img src="${icono(id)}" alt=""></span>
-     <span class="edi-tarjeta-texto"><strong data-i18n="${claveTitulo(id)}"></strong><span data-i18n="${claveSubtitulo(id)}"></span></span>`,
+     <span class="edi-tarjeta-texto"><strong data-i18n="${claveTitulo(id)}"></strong><span data-i18n="${claveSubtitulo(id)}"></span>${logosPlataforma(id)}</span>`,
     () => { agregar(id); seleccionar(id); },
   ));
   $('ovlEditorOverlays').replaceChildren(...tarjetas);
@@ -417,9 +428,11 @@ function pintarEscenas() {
     const fila = document.createElement('div');
     fila.className = `edi-capa-fila${i === escenaActiva ? ' sel' : ''}`;
     const defecto = t('overlayCat.editor.escena', { n: i + 1 });
-    const nombre = crearBoton('edi-capa-nombre', '', () => cambiarEscena(i));
+    // Clic en la escena ya activa: edita su nombre en la misma fila.
+    const nombre = crearBoton('edi-capa-nombre', '', () => (i !== escenaActiva
+      ? cambiarEscena(i)
+      : renombrar(nombre, escenas[i].nombre || defecto, (nuevo) => { escenas[i].nombre = nuevo; saveSettings(); })));
     nombre.textContent = escenas[i].nombre || defecto;
-    nombre.addEventListener('dblclick', () => renombrar(nombre, escenas[i].nombre || defecto, (nuevo) => { escenas[i].nombre = nuevo; saveSettings(); }));
     fila.append(nombre);
     fila.addEventListener('contextmenu', (evento) => abrirMenu(evento, opcionesEscena(i)));
     if (escenas.length > 1) {
@@ -441,7 +454,7 @@ function pintarEscenas() {
 
 function duplicarEscena(i) {
   const { nombre, ids, nombres, bloqueadas = [], formato } = appSettings.escenas[i];
-  appSettings.escenas.splice(i + 1, 0, { nombre: nombre ? `${nombre} (2)` : '', ids: [...ids], nombres: { ...nombres }, bloqueadas: [...bloqueadas], formato });
+  appSettings.escenas.splice(i + 1, 0, { id: crypto.randomUUID().slice(0, 8), nombre: nombre ? `${nombre} (2)` : '', ids: [...ids], nombres: { ...nombres }, bloqueadas: [...bloqueadas], formato });
   cargarEscena(i + 1);
 }
 
@@ -450,7 +463,7 @@ const opcionesEscena = (i) => [
   { clave: 'escenaEliminar', icono: 'delete', peligro: true, desactivada: appSettings.escenas.length < 2, accion: () => eliminarEscena(i) },
 ];
 
-const nuevaEscena = (ids = []) => ({ nombre: '', ids, nombres: {}, bloqueadas: [] });
+const nuevaEscena = (ids = []) => ({ id: crypto.randomUUID().slice(0, 8), nombre: '', ids, nombres: {}, bloqueadas: [] });
 
 function cargarEscena(i) {
   for (const id of [...capas.keys()]) soltar(id);
@@ -461,6 +474,15 @@ function cargarEscena(i) {
   appSettings.escenas[i].ids.forEach((id) => { if (prepararCapaGif(id) || (ESQUEMAS[id] && tarjetaDe(id))) agregar(id); });
   seleccionar(null);
   ajustar(); // cada escena puede tener otro formato
+}
+
+// Tras deshacer/rehacer: los ajustes ya estan puestos; se repinta el formulario, las URLs y las capas de la escena.
+function refrescarDesdeAjustes() {
+  const elegido = seleccionado;
+  renderizarTodosLosCamposOverlay();
+  Object.keys(ESQUEMAS).forEach((id) => { if (tarjetaDe(id)) updateOverlayUrl(id); });
+  cargarEscena(Math.min(escenaActiva, appSettings.escenas.length - 1));
+  if (elegido && capas.has(elegido)) seleccionar(elegido);
 }
 
 function cambiarEscena(i) {
@@ -476,7 +498,6 @@ function pintar() {
   pintarEscenas();
   $('ovlEditorVacio').hidden = !!seleccionado;
   $('ovlEditorQuitar').hidden = !seleccionado;
-  $('ovlEditorProbar').hidden = !seleccionado || !tieneTest(seleccionado);
   $('ovlEditorQuitar').disabled = !!seleccionado && estaBloqueada(seleccionado);
   $('ovlEditorRestablecer').hidden = !seleccionado;
   $('ovlEditorPanelTitulo').dataset.i18n = seleccionado ? claveTitulo(seleccionado) : 'overlayCat.editor.sinSeleccion';
@@ -488,6 +509,7 @@ function pintar() {
 }
 
 export function abrirEditorCanvas() {
+  if (!tieneAcceso()) return abrirPopupPro(); // el editor unificado es solo Pro
   usarFormatoPropio({
     leer: () => appSettings.escenas?.[escenaActiva]?.formato,
     guardar: (formato) => { escena().formato = formato; ajustar(); resaltar(); },
@@ -499,7 +521,10 @@ export function abrirEditorCanvas() {
   appSettings.escenas = appSettings.escenas.map((e) => (Array.isArray(e) ? nuevaEscena(e) : { ...nuevaEscena(), ...e }));
   const previo = leerEstadoUi(); // cargarEscena deselecciona: lo que se guardó se lee antes
   guardarEstadoUi({ editor: true });
+  alGuardarAjustes(() => { publicarUrlsEscena(); registrarCambio(); });
+  saveSettings(); // persiste los ids de escena recien asignados
   cargarEscena(Math.min(escenaActiva, appSettings.escenas.length - 1));
+  reiniciarHistorial();
   // Tras una recarga se vuelve a la misma sección y capa.
   if (previo.capa && capas.has(previo.capa)) seleccionar(previo.capa);
   if (previo.seccion && previo.seccion !== SECCIONES[0]) document.querySelectorAll('.edi-seccion')[SECCIONES.indexOf(previo.seccion)]?.click();
@@ -508,20 +533,24 @@ export function abrirEditorCanvas() {
   temporizadorResalte = setInterval(resaltar, 500);
 }
 
-// Un solo enlace para OBS con toda la escena: las capas visibles, de abajo hacia arriba, como paginas dentro de una (overlay-escena).
+// Enlace estatico por escena (overlay-escena.html?e=<id>): las URLs de las capas visibles, de abajo hacia arriba,
+// se guardan en la escena y la pagina las lee de /api/ajustes-ui, asi el enlace no cambia cuando cambia el contenido.
+function publicarUrlsEscena() {
+  const e = escena();
+  if (e) e.urls = orden().filter((id) => !capas.get(id).oculta).map((id) => { const { pathname, search } = new URL(buildOverlayUrl(id)); return pathname + search; });
+}
+
 function copiarEnlaceObs() {
-  const visibles = orden().filter((id) => !capas.get(id).oculta);
-  if (!visibles.length) { showToast(t('overlayCat.editor.copiarObsVacio'), 'error'); return; }
-  const query = visibles.map((id) => {
-    const { pathname, search } = new URL(buildOverlayUrl(id));
-    return `l=${encodeURIComponent(pathname + search)}`;
-  }).join('&');
-  navigator.clipboard.writeText(`${location.origin}/overlay-escena.html?${query}`)
+  publicarUrlsEscena();
+  if (!escena().urls.length) { showToast(t('overlayCat.editor.copiarObsVacio'), 'error'); return; }
+  saveSettings();
+  navigator.clipboard.writeText(`${location.origin}/overlay-escena.html?e=${escena().id}`)
     .then(() => showToast(t('toast.urlCopied')))
     .catch(() => showToast(t('toast.copyError'), 'error'));
 }
 
 function cerrar() {
+  alGuardarAjustes(null);
   zoom = 1;
   usarFormatoPropio(null);
   pintarLienzos();
@@ -631,10 +660,22 @@ export function iniciarEditorCanvas() {
     ajustar(); // el canvas gana (o devuelve) el alto de la biblioteca
   });
   $('ovlEditorCopiarObs').addEventListener('click', copiarEnlaceObs);
-  $('ovlEditorCerrar').addEventListener('click', cerrar);
+  // El formato de la escena se elige aqui mismo, con los mismos botones del panel derecho.
+  document.querySelector('.edi-herramientas').prepend(crearBotonesLienzo());
+  // Desde GIF/Sonidos la flecha vuelve primero al editor de canvas; ya en él, cierra.
+  $('ovlEditorCerrar').addEventListener('click', () => {
+    if ($('ovlEditor').dataset.seccion !== SECCIONES[0]) document.querySelector('.edi-seccion').click();
+    else cerrar();
+  });
   $('ovlEditorRestablecer').addEventListener('click', () => restablecerOverlayDeFabrica(seleccionado));
   $('ovlEditorQuitar').addEventListener('click', () => quitar(seleccionado));
-  $('ovlEditorProbar').addEventListener('click', () => probarOverlay(seleccionado));
+  $('ovlEditorSinTts').addEventListener('click', (evento) => {
+    const boton = evento.currentTarget;
+    const activo = boton.getAttribute('aria-pressed') !== 'true';
+    boton.setAttribute('aria-pressed', String(activo));
+    boton.querySelector('img').src = activo ? 'icons/volume_off.svg' : 'icons/volume_up.svg';
+    fijarPruebaSinTts(activo);
+  });
   // Prueba de toda la escena: el evento de ejemplo de cada capa visible que lo tenga (se ve en el canvas y en OBS).
   $('ovlEditorProbarEscena').addEventListener('click', () => {
     const probables = orden().filter((id) => !capas.get(id).oculta && tieneTest(id));
@@ -644,6 +685,15 @@ export function iniciarEditorCanvas() {
   $('ovlEditorBuscar').addEventListener('input', (evento) => { busqueda = normalizar(evento.target.value.trim()); pintarBiblioteca(); });
   const superficie = $('ovlEditorSeleccion');
   superficie.addEventListener('pointerdown', (evento) => {
+    // Mano (Espacio) o boton central: se arrastra el lienzo en vez de seleccionar o mover una capa.
+    if (mano || evento.button === 1) {
+      evento.preventDefault();
+      const escenario = $('ovlEditorEscenario');
+      panorama = { x: evento.clientX, y: evento.clientY, izquierda: escenario.scrollLeft, arriba: escenario.scrollTop };
+      superficie.setPointerCapture(evento.pointerId);
+      escenario.classList.add('edi-mano-arrastrando');
+      return;
+    }
     if (evento.button !== 0) return;
     const id = capaBajo(evento);
     if (id !== seleccionado) seleccionar(id);
@@ -652,13 +702,26 @@ export function iniciarEditorCanvas() {
     superficie.setPointerCapture(evento.pointerId);
     arrastreActivo.iniciar(evento);
   });
-  superficie.addEventListener('pointermove', (evento) => { arrastreActivo?.mover(evento); if (arrastreActivo) resaltar(); });
+  superficie.addEventListener('pointermove', (evento) => {
+    if (panorama) {
+      $('ovlEditorEscenario').scrollLeft = panorama.izquierda - (evento.clientX - panorama.x);
+      $('ovlEditorEscenario').scrollTop = panorama.arriba - (evento.clientY - panorama.y);
+      return;
+    }
+    arrastreActivo?.mover(evento); if (arrastreActivo) resaltar();
+  });
   superficie.addEventListener('contextmenu', (evento) => {
     const id = capaBajo(evento);
     if (id) abrirMenuCapa(evento, id);
     else evento.preventDefault();
   });
   const terminar = () => {
+    if (panorama) {
+      panorama = null;
+      $('ovlEditorEscenario').classList.remove('edi-mano-arrastrando');
+      resaltar();
+      return;
+    }
     if (arrastreActivo?.soltar()) capas.get(seleccionado).yaAplicada = true;
     arrastreActivo = null;
     setTimeout(resaltar, 500);
@@ -693,11 +756,30 @@ export function iniciarEditorCanvas() {
   document.addEventListener('fullscreenchange', () => {
     pantallaCompleta.querySelector('img').src = `icons/${document.fullscreenElement ? 'fullscreen_exit' : 'fullscreen'}.svg`;
   });
+  const ponerMano = (activa) => { mano = activa; $('ovlEditorEscenario').classList.toggle('edi-mano', activa); };
+  document.addEventListener('keyup', (evento) => { if (evento.code === 'Space') ponerMano(false); });
+  window.addEventListener('blur', () => ponerMano(false));
   // Cualquier clic fuera del menu, o Esc, lo cierra; con el menu cerrado Esc sale del editor.
   document.addEventListener('pointerdown', (evento) => { if (!evento.target.closest('#ovlEditorMenu')) cerrarMenu(); });
   document.addEventListener('keydown', (evento) => {
     if (editor.hidden || editor.dataset.seccion !== 'editor' || document.querySelector('.modal-overlay.show')) return;
     const escribiendo = evento.target.closest('input, textarea, select, [contenteditable]');
+    if (evento.code === 'Space' && !escribiendo) {
+      evento.preventDefault(); // sin esto Espacio pulsaria el boton enfocado
+      ponerMano(true);
+      return;
+    }
+    if (!escribiendo && (evento.ctrlKey || evento.metaKey) && evento.key.toLowerCase() === 'z') {
+      evento.preventDefault();
+      cerrarMenu();
+      (evento.shiftKey ? rehacer : deshacer)(refrescarDesdeAjustes);
+      return;
+    }
+    if (!escribiendo && (evento.ctrlKey || evento.metaKey) && evento.key.toLowerCase() === 'y') {
+      evento.preventDefault();
+      rehacer(refrescarDesdeAjustes);
+      return;
+    }
     if ((evento.key === 'Delete' || evento.key === 'Backspace') && seleccionado && !escribiendo) {
       if (estaBloqueada(seleccionado)) return;
       evento.preventDefault();

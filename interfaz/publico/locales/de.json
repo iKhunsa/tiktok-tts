@@ -225,6 +225,9 @@
                      "clipsHistory":  "Markierungsverlauf",
                      "announceTplTitle":  "Passe den Schluss der Ansagen an",
                      "announceTplDesc":  "Optional: Schreib, was nach dem Namen kommt. Die Ereignisdaten werden automatisch ergänzt; leer lassen für den Standardtext.",
+                     "announceVolEyebrow":  "Lautstärke der Ansagen",
+                     "announceVolTitle":  "Lautstärke der Ansagen",
+                     "announceVolDesc":  "Geschenke, Beitritte, Follows, Likes und Shares werden in dieser Lautstärke abgespielt, relativ zur TTS-Lautstärke. Senke sie, damit sie im Hintergrund bleiben, während der Chat laut vorgelesen wird.",
                      "announceTplGift":  "Nach einem Geschenk",
                      "announceTplExGift":  "hat alles gegeben",
                      "announceTplJoin":  "Nachdem jemand beitritt",
@@ -235,6 +238,8 @@
                      "announceTplExLike":  "gibt alles",
                      "announceTplShare":  "Nachdem jemand teilt",
                      "announceTplExShare":  "hat es weitererzählt",
+                     "announceTplChat":  "Wort beim Vorlesen einer Chat-Nachricht",
+                     "announceTplExChat":  "sagt",
                      "window":  "Fenster & Start"
                  },
     "label":  {
@@ -604,7 +609,7 @@
                            "estilo":  "Stil",
                            "efectos":  "Effekte"
                        },
-                       "campo":  { "posicionTexto": "Textposition",
+                       "campo":  { "mostrarMonto": "Geldbetrag anzeigen", "posicionTexto": "Textposition",
                           "anchoMensajes":  "Nachrichtenbreite",
                           "escala":  "Gesamtgröße",
                           "desplazaX":  "Horizontal verschieben",
@@ -682,7 +687,7 @@
                                      "imagenAlerta":  "Bild der Benachrichtigung",
                                      "colorTexto":  "Textfarbe"
                                  },
-                       "opcion":  { "alLado": "Daneben", "debajo": "Darunter",
+                       "opcion":  { "si": "Ja", "no": "Nein", "alLado": "Daneben", "debajo": "Darunter",
                                       "izquierda":  "Links",
                                       "centro":  "Mitte",
                                       "derecha":  "Rechts",
@@ -1967,6 +1972,7 @@
                          "statusIdle":  "{platform}: nicht verbunden",
                          "reasonTiktokLogin":  "TikTok verlangt eine Anmeldung."
                      },
+    "chatVista": {"ajustes": "Chat-Einstellungen", "pantallaCompleta": "Chat im Vollbild", "ventana": "Chat in separatem Fenster öffnen", "titulo": "Einstellungen für den Live-Chat", "cerrar": "Schließen", "seccionTexto": "Text", "tamano": "Schriftgröße", "fuente": "Schriftart", "fuenteSistema": "Systemstandard", "fuenteOtra": "Andere…", "fuenteOtraEjemplo": "Name einer installierten Schrift, z. B. Verdana", "seccionEmotes": "Emotes", "emotesMostrar": "Emotes anzeigen", "emotesTerceros": "Emotes von Drittanbietern (BetterTTV, 7TV)", "seccionPantalla": "Anzeige", "dividido": "Geteilte Ansicht nach Plattform", "divididoAyuda": "Zwei oder mehr verbundene Plattformen werden nebeneinander angezeigt, jede in einer eigenen Spalte.", "plataformasVisibles": "Sichtbare Plattformen", "restablecer": "Zurücksetzen", "columnaSistema": "System", "ventanaVacia": "Warte auf Chatnachrichten…", "tamanoAyuda": "Lege fest, wie groß der Chat-Text ist. Betrifft nicht den Rest der App.", "fuenteAyuda": "Jede auf deinem Computer installierte Schrift.", "emotesAyuda": "Zeigt die Emote-Bilder im Chat. Ausgeschaltet siehst du stattdessen ihren Namen.", "emotesPorPlataforma": "Nach Plattform"},
     "overlayCat": {
         "explorar": "Entdecken",
         "editorUnificado": "Einheitlicher Editor",
@@ -1990,7 +1996,7 @@
         "bannerLienzoTitulo": "Vereine alle deine Alerts in einem Canvas",
         "bannerLienzoDesc": "Gestalten, bearbeiten und steuern in einem einzigen HTML.",
         "bannerLienzoCta": "Jetzt bearbeiten",
-        "editor": { "titulo": "Canvas-Editor", "quitar": "Vom Canvas entfernen", "vacio": "Wähle unten in den Kategorien ein Overlay, um es dem Canvas hinzuzufügen und hier anzupassen.", "sinSeleccion": "Kein Overlay ausgewählt", "capas": "Ebenen", "pantallaCompleta": "Vollbild", "probar": "Live testen (auch in OBS)", "probarEscena": "Szene testen", "probarEscenaAyuda": "Löst das Testereignis jeder sichtbaren Ebene dieser Szene aus (auch in OBS)", "probarEscenaVacio": "Keine sichtbare Ebene dieser Szene hat einen Test.", "copiarObs": "OBS-Link kopieren", "copiarObsAyuda": "Kopiert einen einzigen Link mit allen sichtbaren Ebenen dieser Szene, zum Einfügen als Browser Source in OBS", "copiarObsVacio": "Es gibt keine sichtbaren Ebenen zum Kopieren. Füge zuerst eine hinzu oder blende eine ein.", "duplicar": "Duplizieren", "plegarBiblioteca": "Bibliothek ein- oder ausklappen", "escenas": "Szenen", "escena": "Szene {n}", "escenaNueva": "Neue Szene", "escenaEliminar": "Szene löschen", "mediaSubir": "Bilder hochladen", "mediaVacio": "Du hast noch keine Bilder hochgeladen. Lade PNG, JPEG, WebP oder GIF hoch, um sie in deinen Overlays zu verwenden.", "mediaContador": "{n} Bilder", "mediaSubido": "Bilder hochgeladen", "mediaError": "Die Aktion konnte nicht abgeschlossen werden. Bitte versuche es erneut.", "mediaErrorFormato": "Ungültiges Format: nutze PNG, JPEG, WebP oder GIF.", "mediaErrorTamano": "Das Bild ist größer als 8 MB.", "mediaErrorLlena": "Die Bibliothek ist voll (höchstens 200 Bilder). Lösche eines, um ein neues hochzuladen.", "copiarProps": "Eigenschaften kopieren", "pegarProps": "Eigenschaften einfügen", "ajustes": "Einstellungen", "capasVacio": "Noch keine Overlays im Canvas.", "ocultar": "Ausblenden", "mostrar": "Einblenden", "bloquear": "Sperren", "desbloquear": "Entsperren", "frente": "In den Vordergrund", "fondo": "In den Hintergrund", "restablecer": "Element zurücksetzen", "subir": "Eine Ebene nach oben", "bajar": "Eine Ebene nach unten", "seccion": { "editor": "Editor", "gif": "GIF-Suche", "sonido": "Soundeffekte" }, "tab": { "gif": "GIF", "overlays": "Overlays", "media": "Medien", "stickers": "Sticker", "texto": "Text", "formas": "Formen", "mas": "Mehr" } },
+        "editor": { "titulo": "Canvas-Editor", "beta": "Beta", "quitar": "Vom Canvas entfernen", "vacio": "Wähle unten in den Kategorien ein Overlay, um es dem Canvas hinzuzufügen und hier anzupassen.", "sinSeleccion": "Kein Overlay ausgewählt", "capas": "Ebenen", "pantallaCompleta": "Vollbild", "probar": "Live testen (auch in OBS)", "probarEscena": "Szene testen", "probarEscenaAyuda": "Löst das Testereignis jeder sichtbaren Ebene dieser Szene aus (auch in OBS)", "probarEscenaVacio": "Keine sichtbare Ebene dieser Szene hat einen Test.", "sinTts": "Ohne Stimme", "copiarObs": "OBS-Link kopieren", "copiarObsAyuda": "Kopiert einen einzigen Link mit allen sichtbaren Ebenen dieser Szene, zum Einfügen als Browser Source in OBS", "copiarObsVacio": "Es gibt keine sichtbaren Ebenen zum Kopieren. Füge zuerst eine hinzu oder blende eine ein.", "duplicar": "Duplizieren", "plegarBiblioteca": "Bibliothek ein- oder ausklappen", "escenas": "Szenen", "escena": "Szene {n}", "escenaNueva": "Neue Szene", "escenaEliminar": "Szene löschen", "mediaSubir": "Bilder hochladen", "mediaVacio": "Du hast noch keine Bilder hochgeladen. Lade PNG, JPEG, WebP oder GIF hoch, um sie in deinen Overlays zu verwenden.", "mediaContador": "{n} Bilder", "mediaSubido": "Bilder hochgeladen", "mediaError": "Die Aktion konnte nicht abgeschlossen werden. Bitte versuche es erneut.", "mediaErrorFormato": "Ungültiges Format: nutze PNG, JPEG, WebP oder GIF.", "mediaErrorTamano": "Das Bild ist größer als 8 MB.", "mediaErrorLlena": "Die Bibliothek ist voll (höchstens 200 Bilder). Lösche eines, um ein neues hochzuladen.", "copiarProps": "Eigenschaften kopieren", "pegarProps": "Eigenschaften einfügen", "ajustes": "Einstellungen", "capasVacio": "Noch keine Overlays im Canvas.", "ocultar": "Ausblenden", "mostrar": "Einblenden", "bloquear": "Sperren", "desbloquear": "Entsperren", "frente": "In den Vordergrund", "fondo": "In den Hintergrund", "restablecer": "Element zurücksetzen", "subir": "Eine Ebene nach oben", "bajar": "Eine Ebene nach unten", "seccion": { "editor": "Editor", "gif": "GIF-Suche", "sonido": "Soundeffekte" }, "tab": { "gif": "GIF", "overlays": "Overlays", "media": "Medien", "stickers": "Sticker", "texto": "Text", "formas": "Formen", "mas": "Mehr" } },
         "verDestacado": "Empfehlung ansehen",
         "cat": {
             "chat": {

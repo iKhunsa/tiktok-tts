@@ -225,6 +225,9 @@
                      "clipsHistory":  "マーカー履歴",
                      "announceTplTitle":  "アナウンスの後半をカスタマイズ",
                      "announceTplDesc":  "任意：名前の後に読む言葉を入力してください。イベント情報は自動で追加され、空欄なら標準テキストが使われます。",
+                     "announceVolEyebrow":  "アナウンスの音量",
+                     "announceVolTitle":  "アナウンスの音量",
+                     "announceVolDesc":  "ギフト・入室・フォロー・いいね・シェアはこの音量で再生されます（TTS音量に対する比率）。下げると、チャットが大きく読まれている間は背景音になります。",
                      "announceTplGift":  "ギフトを受け取った後",
                      "announceTplExGift":  "奮発しました",
                      "announceTplJoin":  "誰かが入室した後",
@@ -235,6 +238,8 @@
                      "announceTplExLike":  "全力です",
                      "announceTplShare":  "シェアされた後",
                      "announceTplExShare":  "みんなに広めました",
+                     "announceTplChat":  "チャットを読み上げるときの言葉",
+                     "announceTplExChat":  "言った",
                      "window":  "ウィンドウと起動"
                  },
     "label":  {
@@ -604,7 +609,7 @@
                            "estilo":  "スタイル",
                            "efectos":  "効果"
                        },
-                       "campo":  { "posicionTexto": "テキストの位置",
+                       "campo":  { "mostrarMonto": "金額を表示", "posicionTexto": "テキストの位置",
                           "anchoMensajes":  "メッセージの幅",
                           "escala":  "全体のサイズ",
                           "desplazaX":  "水平に移動",
@@ -682,7 +687,7 @@
                                      "imagenAlerta":  "アラートの画像",
                                      "colorTexto":  "文字の色"
                                  },
-                       "opcion":  { "alLado": "横", "debajo": "下",
+                       "opcion":  { "si": "はい", "no": "いいえ", "alLado": "横", "debajo": "下",
                                       "izquierda":  "左",
                                       "centro":  "中央",
                                       "derecha":  "右",
@@ -1967,6 +1972,7 @@
                          "statusIdle":  "{platform}：未接続",
                          "reasonTiktokLogin":  "TikTok へのログインが必要です。"
                      },
+    "chatVista": {"ajustes": "チャット設定", "pantallaCompleta": "チャットを全画面表示", "ventana": "チャットを別ウィンドウで開く", "titulo": "ライブチャットの設定", "cerrar": "閉じる", "seccionTexto": "テキスト", "tamano": "文字サイズ", "fuente": "フォント", "fuenteSistema": "システム標準", "fuenteOtra": "その他…", "fuenteOtraEjemplo": "インストール済みフォント名（例: Verdana）", "seccionEmotes": "エモート", "emotesMostrar": "エモートを表示", "emotesTerceros": "サードパーティのエモート（BetterTTV、7TV）", "seccionPantalla": "表示", "dividido": "プラットフォームごとに画面分割", "divididoAyuda": "接続中の2つ以上のプラットフォームを、それぞれの列で並べて表示します。", "plataformasVisibles": "表示するプラットフォーム", "restablecer": "リセット", "columnaSistema": "システム", "ventanaVacia": "チャットメッセージを待っています…", "tamanoAyuda": "チャットの文字サイズを選べます。アプリの他の部分には影響しません。", "fuenteAyuda": "お使いのPCにインストールされている任意のフォント。", "emotesAyuda": "チャットのエモート画像を表示します。オフの場合は名前が表示されます。", "emotesPorPlataforma": "プラットフォーム別"},
     "overlayCat": {
         "explorar": "見つける",
         "editorUnificado": "統合エディター",
@@ -1990,7 +1996,7 @@
         "bannerLienzoTitulo": "すべてのアラートを1つのキャンバスに統合",
         "bannerLienzoDesc": "1つのHTMLでデザイン、編集、操作。",
         "bannerLienzoCta": "今すぐ編集",
-        "editor": { "titulo": "キャンバスエディタ", "quitar": "キャンバスから削除", "vacio": "下のカテゴリからオーバーレイを選んでキャンバスに追加し、ここで調整します。", "sinSeleccion": "オーバーレイ未選択", "capas": "レイヤー", "pantallaCompleta": "全画面表示", "probar": "ライブでテスト（OBSにも反映）", "probarEscena": "シーンをテスト", "probarEscenaAyuda": "このシーンの表示中レイヤーごとにテストイベントを発生させます（OBSにも反映）", "probarEscenaVacio": "このシーンにテストできる表示中レイヤーがありません。", "copiarObs": "OBS用リンクをコピー", "copiarObsAyuda": "このシーンの表示中レイヤーをまとめた1つのリンクをコピーし、OBSのブラウザソースに貼り付けます", "copiarObsVacio": "コピーできる表示中のレイヤーがありません。先に追加するか表示してください。", "duplicar": "複製", "plegarBiblioteca": "ライブラリを最小化／表示", "escenas": "シーン", "escena": "シーン {n}", "escenaNueva": "新しいシーン", "escenaEliminar": "シーンを削除", "mediaSubir": "画像をアップロード", "mediaVacio": "まだ画像がありません。PNG、JPEG、WebP、GIF をアップロードすると、オーバーレイで使えます。", "mediaContador": "{n} 件の画像", "mediaSubido": "画像をアップロードしました", "mediaError": "操作を完了できませんでした。もう一度お試しください。", "mediaErrorFormato": "無効な形式です。PNG、JPEG、WebP、GIF を使用してください。", "mediaErrorTamano": "画像が 8 MB を超えています。", "mediaErrorLlena": "ライブラリがいっぱいです（最大 200 枚）。1 枚削除してからアップロードしてください。", "copiarProps": "プロパティをコピー", "pegarProps": "プロパティを貼り付け", "ajustes": "設定", "capasVacio": "キャンバスにオーバーレイがありません。", "ocultar": "非表示", "mostrar": "表示", "bloquear": "ロック", "desbloquear": "ロック解除", "frente": "最前面へ", "fondo": "最背面へ", "restablecer": "要素をリセット", "subir": "1つ前面へ", "bajar": "1つ背面へ", "seccion": { "editor": "エディタ", "gif": "GIF検索", "sonido": "効果音" }, "tab": { "gif": "GIF", "overlays": "オーバーレイ", "media": "メディア", "stickers": "ステッカー", "texto": "テキスト", "formas": "図形", "mas": "その他" } },
+        "editor": { "titulo": "キャンバスエディタ", "beta": "ベータ", "quitar": "キャンバスから削除", "vacio": "下のカテゴリからオーバーレイを選んでキャンバスに追加し、ここで調整します。", "sinSeleccion": "オーバーレイ未選択", "capas": "レイヤー", "pantallaCompleta": "全画面表示", "probar": "ライブでテスト（OBSにも反映）", "probarEscena": "シーンをテスト", "probarEscenaAyuda": "このシーンの表示中レイヤーごとにテストイベントを発生させます（OBSにも反映）", "probarEscenaVacio": "このシーンにテストできる表示中レイヤーがありません。", "sinTts": "音声なし", "copiarObs": "OBS用リンクをコピー", "copiarObsAyuda": "このシーンの表示中レイヤーをまとめた1つのリンクをコピーし、OBSのブラウザソースに貼り付けます", "copiarObsVacio": "コピーできる表示中のレイヤーがありません。先に追加するか表示してください。", "duplicar": "複製", "plegarBiblioteca": "ライブラリを最小化／表示", "escenas": "シーン", "escena": "シーン {n}", "escenaNueva": "新しいシーン", "escenaEliminar": "シーンを削除", "mediaSubir": "画像をアップロード", "mediaVacio": "まだ画像がありません。PNG、JPEG、WebP、GIF をアップロードすると、オーバーレイで使えます。", "mediaContador": "{n} 件の画像", "mediaSubido": "画像をアップロードしました", "mediaError": "操作を完了できませんでした。もう一度お試しください。", "mediaErrorFormato": "無効な形式です。PNG、JPEG、WebP、GIF を使用してください。", "mediaErrorTamano": "画像が 8 MB を超えています。", "mediaErrorLlena": "ライブラリがいっぱいです（最大 200 枚）。1 枚削除してからアップロードしてください。", "copiarProps": "プロパティをコピー", "pegarProps": "プロパティを貼り付け", "ajustes": "設定", "capasVacio": "キャンバスにオーバーレイがありません。", "ocultar": "非表示", "mostrar": "表示", "bloquear": "ロック", "desbloquear": "ロック解除", "frente": "最前面へ", "fondo": "最背面へ", "restablecer": "要素をリセット", "subir": "1つ前面へ", "bajar": "1つ背面へ", "seccion": { "editor": "エディタ", "gif": "GIF検索", "sonido": "効果音" }, "tab": { "gif": "GIF", "overlays": "オーバーレイ", "media": "メディア", "stickers": "ステッカー", "texto": "テキスト", "formas": "図形", "mas": "その他" } },
         "verDestacado": "おすすめを見る",
         "cat": {
             "chat": {

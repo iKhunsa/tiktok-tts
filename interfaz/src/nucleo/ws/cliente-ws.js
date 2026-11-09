@@ -144,7 +144,7 @@ function handleMessage(data) {
           iconSrc: 'icons/card_giftcard.svg',
           accentText: data.usdValue ? `≈ $${data.usdValue} USD` : '',
         });
-        speak(giftText, giftId, data.timestamp);
+        speak(giftText, giftId, data.timestamp, true);
       }
       break;
 
@@ -153,7 +153,7 @@ function handleMessage(data) {
         const joinId = nuevoMsgId();
         const joinText = (usuario) => resolverAnuncio(announceTemplates, 'join', { usuario }, () => t('announce.join', { user: usuario }));
         addSystemMsg(joinText(data.user), 'join', joinId, { iconSrc: 'icons/emoji_people.svg' });
-        speak(joinText(nombreHablado(data)), joinId, data.timestamp);
+        speak(joinText(nombreHablado(data)), joinId, data.timestamp, true);
       }
       break;
 
@@ -162,7 +162,7 @@ function handleMessage(data) {
         const followId = nuevoMsgId();
         const followText = (usuario) => resolverAnuncio(announceTemplates, 'follow', { usuario }, () => t('announce.follow', { user: usuario }));
         addSystemMsg(followText(data.user), 'join', followId, { iconSrc: 'icons/person_add.svg' });
-        speak(followText(nombreHablado(data)), followId, data.timestamp);
+        speak(followText(nombreHablado(data)), followId, data.timestamp, true);
       }
       break;
     }
@@ -176,7 +176,7 @@ function handleMessage(data) {
           const likeId = nuevoMsgId();
           const likeText = (usuario) => resolverAnuncio(announceTemplates, 'like', { usuario, cantidad: data.likeCount }, () => tLike(usuario, data.likeCount));
           addSystemMsg(likeText(data.user), 'join', likeId, { iconSrc: 'icons/thumb_up.svg' });
-          speak(likeText(nombreHablado(data)), likeId, data.timestamp);
+          speak(likeText(nombreHablado(data)), likeId, data.timestamp, true);
         }
       }
       break;
@@ -186,7 +186,7 @@ function handleMessage(data) {
         const shareId = nuevoMsgId();
         const shareText = (usuario) => resolverAnuncio(announceTemplates, 'share', { usuario }, () => t('announce.share', { user: usuario }));
         addSystemMsg(shareText(data.user), 'join', shareId, { iconSrc: 'icons/public.svg' });
-        speak(shareText(nombreHablado(data)), shareId, data.timestamp);
+        speak(shareText(nombreHablado(data)), shareId, data.timestamp, true);
       }
       break;
 

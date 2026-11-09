@@ -2,7 +2,8 @@
 
 const path = require('path');
 const http = require('http');
-const { BrowserWindow } = require('electron');
+const fs = require('fs');
+const { app, BrowserWindow } = require('electron');
 const { openExternalSafe } = require('./open-external');
 const { TITLEBAR_WINDOW_OPTIONS } = require('./titlebar');
 
@@ -57,6 +58,21 @@ function retryWaitForServer(cb, onFailure, attempts) {
   }
 }
 
+// Solo en desarrollo: recarga la ventana cuando `vite build --watch` regenera interfaz/dist.
+function watchFront(win) {
+  // Se vigila interfaz/ (no dist/): Vite vacia dist al arrancar y el watcher sobre dist se perderia.
+  const raiz = path.join(__dirname, '..', 'interfaz');
+  let timer;
+  try {
+    const watcher = fs.watch(raiz, { recursive: true }, (_, archivo) => {
+      if (!archivo || !archivo.replaceAll('\\', '/').startsWith('dist/')) return;
+      clearTimeout(timer);
+      timer = setTimeout(() => { if (!win.isDestroyed()) win.webContents.reloadIgnoringCache(); }, 300);
+    });
+    win.on('closed', () => watcher.close());
+  } catch { /* interfaz/ siempre existe; por si el SO no soporta recursive */ }
+}
+
 function createWindow({ iconPath, onClose, bus }) {
   const win = new BrowserWindow({
     width: 1280,
@@ -78,18 +94,21 @@ function createWindow({ iconPath, onClose, bus }) {
 
   win.loadURL(`http://127.0.0.1:${PORT}`);
   win.removeMenu();
+  if (!app.isPackaged) watchFront(win);
 
   // URLs localhost (overlays) y el checkout de Polar abren en una ventana
   // Electron nueva; el resto de URLs externas van al navegador del sistema.
   win.webContents.setWindowOpenHandler(({ url }) => {
     if (isAppUrl(url)) {
+      const esChat = new URL(url).pathname === '/chat-ventana.html';
       return {
         action: 'allow',
         overrideBrowserWindowOptions: {
-          width: 1100,
-          height: 800,
-          minWidth: 800,
-          minHeight: 600,
+          width: esChat ? 420 : 1100,
+          height: esChat ? 720 : 800,
+          minWidth: esChat ? 280 : 800,
+          minHeight: esChat ? 320 : 600,
+          title: esChat ? 'TikLiveTTS · Chat' : undefined,
           icon: iconPath,
           autoHideMenuBar: true,
           webPreferences: {

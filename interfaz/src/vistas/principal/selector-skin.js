@@ -97,7 +97,10 @@ export function crearSelectorSkin(overlay) {
     cerrar();
     if (document.fullscreenElement) document.exitFullscreen();
     if (cta.dataset.accion === 'comprar') comprarPro(cta);
-    else document.querySelector('[data-ovl-modo="tienda"]').click();
+    else {
+      document.getElementById('ovlEditorCerrar')?.click(); // el editor tapa el catálogo
+      document.querySelector('[data-ovl-modo="tienda"]').click();
+    }
   });
   boton.addEventListener('click', () => {
     if (boton.getAttribute('aria-expanded') === 'true') return cerrar();

@@ -71,5 +71,5 @@ export async function iniciar(overlay, nativo) {
   }, { maxPendientes: maxPendientesDe(overlay) });
 
   await cargarImagenesRegalo();
-  iniciarFuenteAlerta(overlay, { params: epik.params, vistaPrevia: epik.vistaPrevia, alAlerta: cola.encolar, alConfig: epik.alConfig });
+  iniciarFuenteAlerta(overlay, { params: epik.params, vistaPrevia: epik.vistaPrevia, alAlerta: cola.encolar, alConfig: epik.alConfig, sonido: epik.cfg });
 }

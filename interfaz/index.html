@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="./src/estilos/portal-view.css">
   <link rel="stylesheet" href="./src/estilos/barra-titulo.css">
   <link rel="stylesheet" href="./src/estilos/vincular-cuentas.css">
+  <link rel="stylesheet" href="./src/estilos/chat-vista.css">
   <link rel="stylesheet" href="./src/estilos/modal-cuenta.css">
   <link rel="stylesheet" href="./src/estilos/formularios-modal.css">
   <link rel="stylesheet" href="./src/estilos/modal-agregar-canal.css">
@@ -134,11 +135,13 @@
     </nav>
 
     <a href="https://www.tiktok.com/@tiklivetts" target="_blank" rel="noopener" class="tiktok-banner">
-      <img src="asset/ads/siguenos-tiktok-gatito-negro.png" width="811" height="1938" loading="lazy" decoding="async" alt="Síguenos en TikTok">
+      <img class="tb-fondo" src="asset/ads/tiktok/fondo.webp" alt="" decoding="async">
+      <img class="tb-gato" src="asset/ads/tiktok/gato.webp" alt="" decoding="async">
+      <img class="tb-logo" src="asset/ads/tiktok/logo.webp" alt="Síguenos en TikTok" decoding="async">
     </a>
 
     <a href="https://discord.com/invite/mwY859tcQK" target="_blank" rel="noopener" class="community-banner">
-      <img src="community-banner.png" width="1536" height="728" loading="lazy" decoding="async" alt="Comunidad TikLiveTTS — Discord oficial">
+      <img src="community-banner.png" width="1521" height="720" loading="lazy" decoding="async" alt="Comunidad TikLiveTTS — Discord oficial">
     </a>
 
     <div class="sidebar-footer">
@@ -287,7 +290,13 @@
           <span id="speakingText">Leyendo...</span>
           <button type="button" class="speaking-goto" id="speakingGoto" data-i18n-title="chat.gotoSpeaking" data-i18n-aria-label="chat.gotoSpeaking" title="Ir al mensaje" aria-label="Ir al mensaje"><img class="icon-inline" src="icons/my_location-white.svg" alt=""></button>
         </div>
-        <div class="queue-badge" id="queueBadge" aria-live="polite">Cola de voz vacía · sin bloqueados</div>
+        <div class="chat-pie">
+          <div class="queue-badge" id="queueBadge" aria-live="polite">Cola de voz vacía · sin bloqueados</div>
+          <div class="chat-pie-botones">
+            <button type="button" class="chat-pie-btn" id="chatBtnPantalla" data-i18n-title="chatVista.pantallaCompleta" data-i18n-aria-label="chatVista.pantallaCompleta"><img class="icon-inline" src="icons/fullscreen.svg" alt=""></button>
+            <button type="button" class="chat-pie-btn" id="chatBtnAjustes" data-i18n-title="chatVista.ajustes" data-i18n-aria-label="chatVista.ajustes"><img class="icon-inline" src="icons/settings.svg" alt=""></button>
+          </div>
+        </div>
       </div>
 
       <!-- Fuera de .chat-section a propósito: es un espacio de publicidad,
@@ -345,9 +354,11 @@
             <button class="ovl-volver" id="ovlEditorCerrar" type="button" data-i18n-aria-label="overlayCat.volver"><img src="icons/arrow_back.svg" alt=""></button>
             <img class="edi-barra-icono" src="icons/layers.svg" alt="">
             <strong data-i18n="overlayCat.editor.titulo"></strong>
+            <span class="edi-beta" data-i18n="overlayCat.editor.beta"></span>
           </div>
           <nav class="edi-secciones" id="ovlEditorSecciones"></nav>
           <div class="edi-barra-fin"><button type="button" class="edi-copiar-obs" id="ovlEditorCopiarObs" data-i18n-title="overlayCat.editor.copiarObsAyuda"><img class="icon-inline" src="icons/content_copy.svg" alt=""> <span data-i18n="overlayCat.editor.copiarObs"></span></button>
+          <button type="button" class="edi-probar-escena edi-sin-tts" id="ovlEditorSinTts" aria-pressed="false" data-i18n-title="overlayCat.editor.sinTts"><img class="icon-inline" src="icons/volume_up.svg" alt=""> <span data-i18n="overlayCat.editor.sinTts"></span></button>
           <button type="button" class="edi-probar-escena" id="ovlEditorProbarEscena" data-i18n-title="overlayCat.editor.probarEscenaAyuda"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> <span data-i18n="overlayCat.editor.probarEscena"></span></button></div>
         </header>
         <section class="edi-gif" id="ovlEditorGif"></section>
@@ -357,11 +368,10 @@
           <div class="edi-lista edi-escenas" id="ovlEditorEscenas"></div>
           <div class="edi-seccion-titulo edi-acordeon" aria-expanded="true"><span class="edi-acordeon-titulo"><img class="edi-chevron" src="icons/expand_more.svg" alt=""><span data-i18n="overlayCat.editor.capas"></span></span></div>
           <div class="edi-lista" id="ovlEditorCapas"></div>
+          <button type="button" class="edi-reportar-bug" onclick="openBugReportModal()"><img class="icon-inline" src="icons/bug_report.svg" alt=""> <span data-i18n="footer.bugReport"></span></button>
         </aside>
         <div class="edi-centro">
           <div class="edi-herramientas">
-            <span class="edi-medida" id="ovlEditorMedida"></span>
-            <span class="edi-zoom" id="ovlEditorZoom"></span>
             <button type="button" class="edi-pantalla-completa" id="ovlEditorPantallaCompleta" data-i18n-title="overlayCat.editor.pantallaCompleta" data-i18n-aria-label="overlayCat.editor.pantallaCompleta"><img class="icon-inline" src="icons/fullscreen.svg" alt=""></button>
           </div>
           <div class="edi-escenario" id="ovlEditorEscenario"><div class="edi-marco" id="ovlEditorMarco"><div class="edi-resalte" id="ovlEditorResalte" hidden></div><div class="edi-seleccion" id="ovlEditorSeleccion"></div></div></div>
@@ -382,7 +392,7 @@
         <aside class="edi-ajustes" id="ovlEditorPanel">
           <div class="edi-seccion-titulo">
             <span id="ovlEditorPanelTitulo"></span>
-            <span class="edi-acciones-panel"><button class="edi-icono-boton edi-probar-icono" id="ovlEditorProbar" type="button" data-i18n-title="overlayCat.editor.probar" data-i18n-aria-label="overlayCat.editor.probar" hidden><img src="icons/play_arrow.svg" alt=""></button><button class="edi-icono-boton" id="ovlEditorRestablecer" type="button" hidden data-i18n-title="overlayCat.editor.restablecer" data-i18n-aria-label="overlayCat.editor.restablecer"><img src="icons/restore.svg" alt=""></button><button class="edi-icono-boton" id="ovlEditorQuitar" type="button" hidden data-i18n-title="overlayCat.editor.quitar" data-i18n-aria-label="overlayCat.editor.quitar"><img src="icons/delete.svg" alt=""></button></span>
+            <span class="edi-acciones-panel"><button class="edi-icono-boton" id="ovlEditorRestablecer" type="button" hidden data-i18n-title="overlayCat.editor.restablecer" data-i18n-aria-label="overlayCat.editor.restablecer"><img src="icons/restore.svg" alt=""></button><button class="edi-icono-boton" id="ovlEditorQuitar" type="button" hidden data-i18n-title="overlayCat.editor.quitar" data-i18n-aria-label="overlayCat.editor.quitar"><img src="icons/delete.svg" alt=""></button></span>
           </div>
           <p class="edi-vacio" id="ovlEditorVacio" data-i18n="overlayCat.editor.vacio"></p>
           <div class="edi-panel-cuerpo" id="ovlEditorPanelCuerpo"></div>
@@ -436,30 +446,6 @@
           <span class="cfg-url-text" id="cfg-url-chat">http://localhost:3000/overlay-chat.html</span>
           <button class="cfg-btn" onclick="copyCfgUrl('chat')" data-i18n="btn.copy">Copiar</button>
           <a class="cfg-btn" id="cfg-open-chat" href="http://localhost:3000/overlay-chat.html" target="_blank" data-i18n="btn.open">Abrir</a>
-        </div>
-      </div>
-
-      <!-- Seguidores -->
-      <div class="cfg-card">
-        <div class="cfg-header">
-          <div class="cfg-icon"><img class="icon-inline" src="icons/people.svg" alt=""></div>
-          <div class="cfg-meta">
-            <div class="cfg-title" data-i18n="overlay.followers.title">Contador de Seguidores</div>
-            <div class="cfg-subtitle" data-i18n="overlay.followers.subtitle">Nuevos seguidores del stream en tiempo real</div>
-          </div>
-          <span class="obs-hint">200 × 180 px</span>
-        </div>
-        <div class="cfg-fields" data-campos-base="seguidores">
-          <div class="cfg-field" data-campos-fijo><label data-i18n="overlayCfg.campo.seguidoresActuales"></label><div id="cfg-seg-auto" style="padding: 8px 11px; font-size: 13px; color: var(--text-muted); background: var(--bg-button); border: 1px solid var(--border-strong); border-radius: 8px; min-height: 36px; display: flex; align-items: center;" data-i18n="label.connectToGet">
-              Conecta para obtener
-            </div></div>
-        </div>
-        <div class="cfg-personalizar" data-campos-panel="seguidores"></div>
-        <iframe class="cfg-preview" data-preview="seguidores" tabindex="-1" aria-hidden="true"></iframe>
-        <div class="cfg-url-row">
-          <span class="cfg-url-text" id="cfg-url-seguidores">http://localhost:3000/overlay-seguidores.html</span>
-          <button class="cfg-btn" onclick="copyCfgUrl('seguidores')" data-i18n="btn.copy">Copiar</button>
-          <a class="cfg-btn" id="cfg-open-seguidores" href="http://localhost:3000/overlay-seguidores.html" target="_blank" data-i18n="btn.open">Abrir</a>
         </div>
       </div>
 
@@ -828,6 +814,15 @@
                 <label><img class="icon-inline" src="icons/chat.svg" alt=""> <span data-i18n="settings.announceTplTitle">Personaliza el final de los anuncios</span></label>
                 <div class="voz-audio-hint" data-i18n="settings.announceTplDesc">Opcional: escribe lo que va después del nombre. Los datos se añaden solos; si lo dejas vacío, se usa el texto estándar.</div>
                 <div id="announceTplFields"></div>
+              </div>
+            </div>
+            <div class="voz-audio-card">
+              <div class="voz-audio-eyebrow" data-i18n="settings.announceVolEyebrow">Volumen de los anuncios</div>
+              <div class="setting-group" id="voiceAnnounceVolGroup">
+                <label><img class="icon-inline" src="icons/volume_up.svg" alt=""> <span data-i18n="settings.announceVolTitle">Volumen de los anuncios</span> — <span id="announceVolVal">100</span>%</label>
+                <div class="voz-audio-hint" data-i18n="settings.announceVolDesc">Regalos, entradas, follows, likes y shares suenan a este volumen, relativo al del TTS. Bájalo para que sean un sonido de fondo mientras el chat se lee fuerte.</div>
+                <input type="range" id="announceVolRange" min="0" max="1" step="0.05" value="1" oninput="updateAnnounceVol(this.value)" />
+                <div class="range-labels"><span data-i18n="label.mute">Mute</span><span data-i18n="label.max">Máx</span></div>
               </div>
             </div>
           </div>

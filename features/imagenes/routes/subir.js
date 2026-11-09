@@ -21,6 +21,7 @@ function subir({ store, logger }) {
         const codigo = error.code === 'LIMIT_FILE_SIZE' ? 'muy_grande' : 'formato_invalido';
         return res.status(codigo === 'muy_grande' ? 413 : 400).json({ error: codigo, codigo });
       }
+      try {
       const db = store.cargar(logger);
       const guardados = [];
       const rechazos = [];
@@ -39,7 +40,14 @@ function subir({ store, logger }) {
         guardados.push(store.conSrc(item));
       }
       if (guardados.length) store.guardar(db);
+      // Rechazos = culpa del usuario (formato, biblioteca llena): solo log de sesion, nunca issue.
+      if (rechazos.length) logger.log('warn', 'imagenes', 'imagenes/routes/subir.js#subir', 'imagenes.subir.rechazada', `${rechazos.length} imagen(es) rechazada(s)`, { rechazos: rechazos.join(','), guardados: guardados.length });
       res.json({ items: guardados, rechazos });
+      } catch (fallo) {
+        // Disco lleno / permisos / antivirus. Dentro del callback de multer Express no lo atrapa: sin esto tumba el proceso.
+        logger.log('error', 'imagenes', 'imagenes/routes/subir.js#subir', 'imagenes.subir.fallida', `No se pudo guardar la imagen: ${fallo.message}`, { error: fallo.message, code: fallo.code, stack: fallo.stack });
+        res.status(500).json({ error: 'no_se_pudo_guardar', codigo: 'no_se_pudo_guardar' });
+      }
     });
   };
 }

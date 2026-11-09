@@ -151,6 +151,12 @@ const EVENTO_A_TIPO = {
   'promo.autopromocion.fallo_callback': 'error_autopromo',
   'clips.marcado.fallido': 'error_clip_no_marcado',
   'idioma.dict.carga_fallida': 'error_diccionario_idioma',
+  // Interfaz de overlays: reportarFallo (interfaz/compartido/reportar-fallo.js) solo envia lo que no es culpa del
+  // usuario. Los de nivel warn (p. ej. .epik ilegible en OBS) quedan en el log de sesion y en Logs, sin issue.
+  'interfaz.editor.ajustes_corruptos': 'error_editor_ajustes',
+  // Subidas a las bibliotecas del editor (imagenes / GIFs / sonidos): disco lleno, permisos, antivirus.
+  'imagenes.subir.fallida': 'error_biblioteca_archivos',
+  'gifs.subir.fallida': 'error_biblioteca_archivos',
   // MCP — todo error del subsistema (Fase 5). El cap por fingerprint
   // (CAP_ISSUES_POR_TIPO) evita que un tool roto en loop llene el panel.
   'mcp.tool.excepcion': 'error_mcp_tool',
@@ -386,9 +392,10 @@ function reportarIssue(e, logger) {
     if (!esError) return;
     tipo = `error_${String(e.domain || 'desconocido').replace(/[^a-z_]/gi, '_')}`;
   }
-  const esRenderer = e.event === 'configuracion.log_cliente.recibido';
+  const esErrorVentana = e.event === 'configuracion.log_cliente.recibido';
+  const esRenderer = esErrorVentana || e.domain === 'interfaz';
   const src = esRenderer ? String((e.data && e.data.source) || 'principal') : null;
-  if (esRenderer && src.startsWith('overlay:')) tipo = 'error_overlay';
+  if (esErrorVentana && src.startsWith('overlay:')) tipo = 'error_overlay';
 
   // Techo por fingerprint: una racha de la misma causa raíz (Google TTS
   // devolviendo vacío, un dominio que no monta y reintenta, etc.) no debe

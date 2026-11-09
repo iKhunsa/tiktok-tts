@@ -63,7 +63,8 @@ function testChat(deps) {
     const messageId = `test-${crypto.randomUUID()}`;
     const raw = RAW_BUILDERS[platform]({ user, userId: b.userId, comment, messageId, role: b.role });
 
-    bus.emit('canal:mensaje-crudo', { platform, channel: 'test', raw });
+    // sinModeracion: la prueba de overlays no debe frenarla el filtro ni el Chat Guard.
+    bus.emit('canal:mensaje-crudo', { platform, channel: 'test', raw, skipModeration: b.sinModeracion === true, skipTts: b.sinTts === true });
 
     logger.log(
       'info', 'chat', 'chat/routes/test-chat.js#testChat', 'chat.test.inyectado',

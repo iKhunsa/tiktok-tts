@@ -84,3 +84,16 @@ test('plataforma:evento de otra plataforma o tipo desconocido no hace nada', () 
   bus.emit('plataforma:evento', { plataforma: 'kick', tipo: 'channel.subscription.new', datos: {} });
   assert.strictEqual(broadcasts.length, 0);
 });
+
+test('plataforma:evento de Twitch: channel.follow se remapea a canal:follow y cuenta por plataforma', () => {
+  const { bus, broadcasts } = context;
+  resetOverlay();
+  bus.emit('plataforma:evento', {
+    plataforma: 'twitch', tipo: 'channel.follow',
+    datos: { user_id: '99', user_login: 'nuevofan', user_name: 'NuevoFan' },
+  });
+  const f = broadcasts.find((b) => b.type === 'follow');
+  assert.strictEqual(f.platform, 'twitch');
+  assert.strictEqual(f.user, 'NuevoFan');
+  assert.strictEqual(f.userId, '99');
+});

@@ -434,6 +434,9 @@ body.reduce-motion .ovl-vista, body.reduce-motion .ovl-vista::backdrop { animati
 .edi-seccion-titulo { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 52px; padding: 0 16px; border-bottom: 1px solid var(--border); font-size: var(--text-sm); font-weight: 600; }
 .edi-lista, .edi-panel-cuerpo { flex: 1; min-height: 0; overflow-y: auto; }
 .edi-lista { display: flex; flex-direction: column; gap: 2px; padding: 8px; }
+.edi-reportar-bug { flex: none; display: flex; align-items: center; justify-content: center; gap: 8px; margin: 8px; padding: 10px 12px; border: 1px solid rgba(240, 33, 58, .35); border-radius: 10px; background: rgba(240, 33, 58, .14); color: #fff; font-size: var(--text-sm); font-weight: 500; cursor: pointer; }
+.edi-reportar-bug:hover { background: rgba(240, 33, 58, .24); }
+.edi-reportar-bug img { filter: brightness(0) invert(1); }
 .edi-vacio { margin: 16px; font-size: var(--text-xs); color: var(--text-muted); }
 .edi-escenas { flex: none; max-height: 30%; border-bottom: 1px solid var(--border); }
 .edi-capa-fila { display: flex; align-items: center; border-radius: 10px; }
@@ -450,8 +453,9 @@ body.reduce-motion .ovl-vista, body.reduce-motion .ovl-vista::backdrop { animati
 .edi-icono-boton { display: grid; place-items: center; width: 34px; height: 34px; margin-right: 4px; border: 0; border-radius: 8px; background: transparent; cursor: pointer; opacity: .6; }
 .edi-icono-boton:hover { opacity: 1; }
 .edi-centro { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
-.edi-herramientas { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; font-size: var(--text-xs); color: var(--text-muted); font-variant-numeric: tabular-nums; }
-.edi-pantalla-completa { display: grid; place-items: center; padding: 4px; border: 0; border-radius: 6px; background: transparent; color: inherit; cursor: pointer; }
+.edi-herramientas { display: flex; align-items: center; gap: 8px; padding: 10px 16px; font-size: var(--text-xs); color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.edi-zoom::before { content: "·"; margin-right: 8px; }
+.edi-pantalla-completa { margin-left: auto; display: grid; place-items: center; padding: 4px; border: 0; border-radius: 6px; background: transparent; color: inherit; cursor: pointer; }
 .edi-pantalla-completa .icon-inline { filter: brightness(0) invert(1); }
 .edi-pantalla-completa:hover { background: var(--surface-raised); }
 .edi-escenario:fullscreen { margin: 0; background: var(--bg); }
@@ -463,6 +467,8 @@ body.reduce-motion .ovl-vista, body.reduce-motion .ovl-vista::backdrop { animati
 .edi-iframe { position: absolute; top: 0; left: 0; max-width: none; border: 0; transform-origin: top left; pointer-events: none; }
 .edi-resalte { position: absolute; z-index: 1001; pointer-events: none; outline: 2px solid var(--brand); outline-offset: 2px; }
 .edi-resalte[hidden] { display: none; }
+.edi-mano .edi-seleccion { cursor: grab; }
+.edi-mano-arrastrando .edi-seleccion { cursor: grabbing; }
 .edi-seleccion { position: absolute; inset: 0; z-index: 1000; touch-action: none; }
 .edi-biblioteca { flex-shrink: 0; height: 278px; display: flex; flex-direction: column; margin: 0 16px 16px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); overflow: hidden; }
 .edi-biblioteca-cabecera { padding: 10px 12px; border-bottom: 1px solid var(--border); }
@@ -542,6 +548,7 @@ body.reduce-motion .ovl-vista, body.reduce-motion .ovl-vista::backdrop { animati
 /* Barra del editor: titulo a la izquierda, secciones en el centro */
 .edi-barra { display: grid; grid-template-columns: 1fr auto 1fr; }
 .edi-barra-inicio { display: flex; align-items: center; gap: 12px; }
+.edi-beta { padding: 2px 8px; border-radius: 999px; background: var(--bg); border: 1px solid var(--text-muted); color: var(--text-muted); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
 .edi-secciones { display: flex; gap: 4px; }
 .edi-seccion { padding: 8px 20px; border: 0; border-radius: 8px; background: transparent; color: var(--text-muted); font-size: var(--text-sm); font-weight: 500; cursor: pointer; }
 .edi-seccion:hover { color: var(--text); }
@@ -559,7 +566,7 @@ body.reduce-motion .ovl-vista, body.reduce-motion .ovl-vista::backdrop { animati
 .edi-chevron { width: 18px; height: 18px; opacity: .7; transition: transform .15s; }
 .edi-acordeon[aria-expanded="false"] .edi-chevron { transform: rotate(-90deg); }
 .edi-acordeon[aria-expanded="false"] + .edi-lista { display: none; }
-.edi-acciones-panel { display: flex; align-items: center; }
+.edi-acciones-panel { display: flex; flex-direction: row-reverse; align-items: center; } /* visual: basura, restaurar, play (el DOM va al revés) */
 .edi-acciones-panel [hidden] { display: none; }
 
 /* Boton "Cambiar skin" sobre el lienzo del editor unificado (los estilos del selector son los de la vista de un overlay) */
@@ -605,14 +612,29 @@ body.reduce-motion :is(.edi-pestana, .edi-categoria, .edi-tarjeta, .edi-gif-tarj
 .edi-icono-boton:disabled { opacity: .3; cursor: not-allowed; }
 
 /* Boton rojo de test: lanza el evento de prueba en vivo (llega tambien al OBS). */
-.edi-probar-escena { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border: 0; border-radius: 8px; background: #e5484d; color: #fff; font: inherit; font-size: var(--text-sm, 14px); font-weight: 600; cursor: pointer; }
+.edi-probar-escena { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border: 0; border-radius: 8px; background: var(--brand, #F0213A); color: #fff; font: inherit; font-size: var(--text-sm, 14px); font-weight: 600; cursor: pointer; }
 .edi-probar-escena .icon-inline { width: 16px; height: 16px; filter: brightness(0) invert(1); }
 .edi-probar-escena:hover { filter: brightness(1.1); }
-.edi-icono-boton.edi-probar-icono { background: #e5484d; opacity: 1; }
-.edi-icono-boton.edi-probar-icono:hover { filter: brightness(1.1); }
 /* Probar escena: solo el icono; al pasar el raton (o enfocarlo) se despliega con su texto. */
 .edi-probar-escena { gap: 0; padding: 6px 9px; }
 .edi-probar-escena span { max-width: 0; margin-left: 0; overflow: hidden; white-space: nowrap; opacity: 0; transition: max-width var(--dur-2, 200ms) var(--ease-out, ease-out), margin-left var(--dur-2, 200ms) var(--ease-out, ease-out), opacity var(--dur-2, 200ms) var(--ease-out, ease-out); }
 .edi-probar-escena:is(:hover, :focus-visible) { padding: 6px 12px; }
 .edi-probar-escena:is(:hover, :focus-visible) span { max-width: 160px; margin-left: 6px; opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .edi-probar-escena span { transition: none; } }
+/* Probar sin voz: gris en reposo, rojo cuando el TTS esta silenciado en las pruebas. */
+.edi-sin-tts { background: var(--surface-raised); }
+.edi-sin-tts[aria-pressed="true"] { background: var(--brand, #F0213A); }
+
+
+/* Con poco ancho "Copiar enlace para OBS" se queda en icono, como sus hermanos, y se despliega al pasar el cursor. */
+.edi-barra { container-type: inline-size; }
+@container (max-width: 1250px) {
+  .edi-copiar-obs { gap: 0; padding: 6px 9px; }
+  .edi-copiar-obs span { max-width: 0; margin-left: 0; overflow: hidden; white-space: nowrap; opacity: 0; transition: max-width var(--dur-2, 200ms) var(--ease-out, ease-out), margin-left var(--dur-2, 200ms) var(--ease-out, ease-out), opacity var(--dur-2, 200ms) var(--ease-out, ease-out); }
+  .edi-copiar-obs:is(:hover, :focus-visible) { padding: 6px 12px; }
+  .edi-copiar-obs:is(:hover, :focus-visible) span { max-width: 220px; margin-left: 6px; opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .edi-copiar-obs span { transition: none; } }
+
+/* El formato 16:9 / 9:16 ya está en la barra del editor. */
+#ovlEditorPanel .cfg-grupo:has(> .cfg-botones [data-lienzo]) { display: none; }

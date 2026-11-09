@@ -398,9 +398,17 @@
     /* Tamaño fijo: la columna flex del sidebar nunca lo encoge. */
     .community-banner { flex-shrink: 0; }
     .community-banner img { height: 80px; object-fit: cover; }
-    /* Banner vertical: si no cabe, recorta arriba y abajo por igual y mantiene el centro visible. */
-    .tiktok-banner { flex: 1 1 auto; min-height: 80px; max-height: 461px; }
-    .tiktok-banner img { height: 100%; object-fit: cover; object-position: center; }
+    /* Banner de TikTok por capas (fondo, gato, logo). Ocupa el hueco que deja el sidebar (80-461 px de alto) y cada
+       capa se recoloca segun la proporcion de la caja: vertical (gato abajo, logo en medio) o apaisada (gato a la izquierda). */
+    .tiktok-banner { flex: 1 1 auto; min-height: 80px; max-height: 461px; position: relative; container-type: size; background: #050505; }
+    .tiktok-banner img { position: absolute; max-width: none; pointer-events: none; user-select: none; }
+    .tiktok-banner .tb-fondo { inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .tiktok-banner .tb-logo { left: 50cqw; translate: -50% -50%; top: 44cqh; height: min(36cqh, 73cqw); width: auto; }
+    .tiktok-banner .tb-gato { left: 46cqw; translate: -50% 0; bottom: -5cqh; height: min(36cqh, 92cqw); width: auto; }
+    @container (min-aspect-ratio: 17/20) {
+      .tiktok-banner .tb-logo { left: auto; right: 3cqw; translate: none; top: auto; bottom: 8cqh; height: min(104cqh, 46cqw); }
+      .tiktok-banner .tb-gato { left: -3cqw; translate: none; bottom: -8cqh; height: min(100cqh, 46cqw); }
+    }
 
     /* ── SOUND PAD ───────────────────────────────────────── */
     .soundpad-count { font-size: var(--text-xs); font-weight: 400; color: var(--text-muted); margin-left: 4px; }
@@ -776,14 +784,15 @@
     .voz-audio-column { display: contents; }
 
     /* Ancho suficiente: Voz y Finales arriba lado a lado (alto de su contenido),
-       Filtros abajo a todo el ancho con sus dos grupos en fila. */
+       Volumen de anuncios a todo el ancho debajo, Filtros abajo del todo a todo el ancho con sus dos grupos en fila. */
     @container voz-audio (min-width: 740px) {
       .voz-audio-layout { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .voz-audio-layout > .voz-audio-card { grid-column: 1; grid-row: 1; }
-      .voz-audio-column > .voz-audio-card:last-child { grid-column: 2; grid-row: 1; }
+      .voz-audio-column > .voz-audio-card:nth-child(2) { grid-column: 2; grid-row: 1; }
+      .voz-audio-column > .voz-audio-card:nth-child(3) { grid-column: 1 / -1; grid-row: 2; }
       .voz-audio-column > .voz-audio-card:first-child {
         grid-column: 1 / -1;
-        grid-row: 2;
+        grid-row: 3;
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         column-gap: var(--space-6);
@@ -1557,7 +1566,7 @@
        tramo vacío = puntos. El % de llenado lo pinta paintRangeFill()
        vía la custom prop --range-pct. Solo Chromium (la app es Electron). */
     .cfg-field input[type="range"],
-    #rateRange, #volRange, #pitchRange {
+    #rateRange, #volRange, #announceVolRange, #pitchRange {
       -webkit-appearance: none;
       appearance: none;
       width: 100%;
@@ -1570,6 +1579,7 @@
     .cfg-field input[type="range"]::-webkit-slider-runnable-track,
     #rateRange::-webkit-slider-runnable-track,
     #volRange::-webkit-slider-runnable-track,
+    #announceVolRange::-webkit-slider-runnable-track,
     #pitchRange::-webkit-slider-runnable-track {
       height: 24px;
       border-radius: 3px;
@@ -1583,6 +1593,7 @@
     .cfg-field input[type="range"]::-webkit-slider-thumb,
     #rateRange::-webkit-slider-thumb,
     #volRange::-webkit-slider-thumb,
+    #announceVolRange::-webkit-slider-thumb,
     #pitchRange::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
@@ -1593,7 +1604,7 @@
       background: #ffffff;
     }
     .cfg-field input[type="range"]:focus,
-    #rateRange:focus, #volRange:focus, #pitchRange:focus { outline: none; }
+    #rateRange:focus, #volRange:focus, #announceVolRange:focus, #pitchRange:focus { outline: none; }
 
     .cfg-field .range-hint {
       font-size: var(--text-3xs);

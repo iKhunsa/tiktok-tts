@@ -5,6 +5,7 @@ import { leerParametros } from '../parametros.js';
 import { esVistaPrevia } from '../vista-previa.js';
 import { iniciarAccesibilidadOverlay } from '../accesibilidad.js';
 import { registrarErroresOverlay } from '../registrar-errores.js';
+import { reportarFallo } from '../reportar-fallo.js';
 import { esquemaEpik, esSkinEpik, idDeSkin } from './skin-epik.js';
 
 const MAX_PENDIENTES = 200;
@@ -44,10 +45,15 @@ export async function montarEpik({ id, tipo, overlay = tipo, cfgBase, textos, pa
   let manifest;
   try {
     manifest = await fetch(`${base}manifest.json`, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : Promise.reject(r.status)));
-  } catch {
+  } catch (e) {
+    // El overlay cae al diseno nativo. Warn (log de sesion, sin issue): lo normal es un .epik que el streamer ya borro.
+    reportarFallo('interfaz.overlay.epik_ilegible', 'El overlay no pudo leer el manifest del .epik, usa el diseno nativo', { id, status: typeof e === 'number' ? e : 0 }, 'warn');
     return null;
   }
-  if (manifest.overlay !== tipo) return null;
+  if (manifest.overlay !== tipo) {
+    reportarFallo('interfaz.overlay.epik_familia_distinta', 'El .epik es de otra familia de overlay, usa el diseno nativo', { id, esperado: tipo, recibido: String(manifest.overlay) }, 'warn');
+    return null;
+  }
 
   const propios = leerConfig(esquemaEpik(manifest.campos), params);
   const config = { tipo, overlay, idioma: idiomaOverlay(), medida: manifest.medida, ...cfgBase, ...propios };

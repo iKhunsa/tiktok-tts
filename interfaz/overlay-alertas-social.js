@@ -84,7 +84,7 @@ function nativo() {
 
   cargarLocaleOverlay().then(() => {
     aplicarI18nOverlay();
-    iniciarFuenteAlerta('alertas-social', { params, vistaPrevia, alAlerta: cola.encolar, alConfig: aplicarA11y });
+    iniciarFuenteAlerta('alertas-social', { params, vistaPrevia, alAlerta: cola.encolar, alConfig: aplicarA11y, sonido: cfgFijo });
   });
 }
 

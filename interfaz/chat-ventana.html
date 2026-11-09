@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TikLiveTTS · Chat</title>
+  <link rel="stylesheet" href="./src/estilos/index-legacy.css">
+  <link rel="stylesheet" href="./src/estilos/modal-cuenta.css">
+  <link rel="stylesheet" href="./src/estilos/chat-vista.css">
+</head>
+<body class="chat-ventana">
+  <div id="chatVentana" class="chat-section">
+    <div id="chatLog"><div class="empty-state" id="emptyState"><div class="empty-text" data-i18n="chatVista.ventanaVacia"></div></div></div>
+    <div class="chat-pie">
+      <div class="queue-badge"></div>
+      <div class="chat-pie-botones">
+        <button type="button" class="chat-pie-btn" id="chatBtnAjustes" data-i18n-title="chatVista.ajustes" data-i18n-aria-label="chatVista.ajustes"><img class="icon-inline" src="icons/settings.svg" alt=""></button>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="./src/vistas/chat-ventana/index.js"></script>
+</body>
+</html>

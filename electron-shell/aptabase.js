@@ -52,7 +52,7 @@ const VISTAS = new Set([
   'chat', 'overlays', 'clips', 'soundpad', 'mobile', 'bot', 'moderacion', 'mcp', 'tools', 'settings', 'cuenta',
 ]);
 const OVERLAYS = new Set([
-  'chat', 'seguidores', 'viewers', 'likes', 'donadores', 'alertas', 'alertas-social', 'creditos', 'social',
+  'chat', 'viewers', 'likes', 'donadores', 'alertas', 'alertas-social', 'creditos', 'social',
 ]);
 const TOURS = new Set([
   'overlays', 'chat_actions', 'voice', 'shortcuts', 'soundpad', 'clips', 'moderacion', 'plugin_store', 'channels', 'music_bot',

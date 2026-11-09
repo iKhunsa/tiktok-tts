@@ -261,6 +261,9 @@
                      "clipsHistory":  "Historial de marcadores",
                      "announceTplTitle":  "Personaliza el final de los anuncios",
                      "announceTplDesc":  "Opcional: escribe lo que va después del nombre. Los datos se añaden solos; si lo dejas vacío, se usa el texto estándar.",
+                     "announceVolEyebrow":  "Volumen de los anuncios",
+                     "announceVolTitle":  "Volumen de los anuncios",
+                     "announceVolDesc":  "Regalos, entradas, follows, likes y shares suenan a este volumen, relativo al del TTS. Bájalo para que sean un sonido de fondo mientras el chat se lee fuerte.",
                      "announceTplGift":  "Después de recibir un regalo",
                      "announceTplExGift":  "se la comió",
                      "announceTplJoin":  "Después de que alguien entre",
@@ -271,6 +274,8 @@
                      "announceTplExLike":  "lo da todo",
                      "announceTplShare":  "Después de que compartan",
                      "announceTplExShare":  "se corrió la voz",
+                     "announceTplChat":  "Palabra al leer un mensaje del chat",
+                     "announceTplExChat":  "dice",
                      "window":  "Ventana e inicio"
                  },
     "label":  {
@@ -640,7 +645,7 @@
                            "estilo":  "Estilo",
                            "efectos":  "Efectos"
                        },
-                       "campo":  { "posicionTexto": "Posición del texto",
+                       "campo":  { "mostrarMonto": "Mostrar monto en dinero", "posicionTexto": "Posición del texto",
                           "anchoMensajes":  "Ancho de los mensajes",
                           "escala":  "Tamaño total",
                           "desplazaX":  "Mover en horizontal",
@@ -718,7 +723,7 @@
                                      "imagenAlerta":  "Imagen de la alerta",
                                      "colorTexto":  "Color del texto"
                                  },
-                       "opcion":  { "alLado": "Al lado", "debajo": "Debajo",
+                       "opcion":  { "si": "Sí", "no": "No", "alLado": "Al lado", "debajo": "Debajo",
                                       "izquierda":  "Izquierda",
                                       "centro":  "Centro",
                                       "derecha":  "Derecha",
@@ -1967,6 +1972,7 @@
                          "statusIdle":  "{platform}: sin conectar",
                          "reasonTiktokLogin":  "TikTok pide iniciar sesión."
                      },
+    "chatVista": {"ajustes": "Ajustes del chat", "pantallaCompleta": "Chat en pantalla completa", "ventana": "Abrir el chat en otra ventana", "titulo": "Ajustes del chat en vivo", "cerrar": "Cerrar", "seccionTexto": "Texto", "tamano": "Tamaño de letra", "fuente": "Tipografía", "fuenteSistema": "Predeterminada del sistema", "fuenteOtra": "Otra…", "fuenteOtraEjemplo": "Nombre de una fuente instalada, ej. Verdana", "seccionEmotes": "Emotes", "emotesMostrar": "Mostrar emotes", "emotesTerceros": "Emotes de terceros (BetterTTV, 7TV)", "seccionPantalla": "Pantalla", "dividido": "Pantalla dividida por plataforma", "divididoAyuda": "Dos o más plataformas conectadas se ven lado a lado, cada una en su columna.", "plataformasVisibles": "Plataformas visibles", "restablecer": "Restablecer", "columnaSistema": "Sistema", "ventanaVacia": "Esperando mensajes del chat…", "tamanoAyuda": "Elige qué tan grande se lee el texto del chat. No afecta al resto de la app.", "fuenteAyuda": "Cualquier fuente instalada en tu equipo.", "emotesAyuda": "Muestra las imágenes de los emotes del chat. Si lo apagas, se verá su nombre.", "emotesPorPlataforma": "Por plataforma"},
     "overlayCat": {
         "explorar": "Explorar",
         "editorUnificado": "Editor unificado",
@@ -1990,7 +1996,7 @@
         "bannerLienzoTitulo": "Unifica todas tus alertas en un solo canvas",
         "bannerLienzoDesc": "Diseña, edita y controla desde un único HTML.",
         "bannerLienzoCta": "Editar ahora",
-        "editor": { "titulo": "Editor de canvas", "quitar": "Quitar del canvas", "vacio": "Elige un overlay de las categorías de abajo para añadirlo al canvas y ajustarlo aquí.", "sinSeleccion": "Sin overlay seleccionado", "capas": "Capas", "pantallaCompleta": "Pantalla completa", "probar": "Probar en vivo (también en OBS)", "probarEscena": "Probar escena", "probarEscenaAyuda": "Lanza el evento de prueba de cada capa visible de esta escena (también en OBS)", "probarEscenaVacio": "Ninguna capa visible de esta escena tiene prueba.", "copiarObs": "Copiar enlace para OBS", "copiarObsAyuda": "Copia un solo enlace con todas las capas visibles de esta escena para pegarlo como Browser Source en OBS", "copiarObsVacio": "No hay capas visibles que copiar. Añade o muestra alguna primero.", "duplicar": "Duplicar", "plegarBiblioteca": "Minimizar o mostrar la biblioteca", "escenas": "Escenas", "escena": "Escena {n}", "escenaNueva": "Nueva escena", "escenaEliminar": "Eliminar escena", "mediaSubir": "Subir imágenes", "mediaVacio": "Aún no has subido imágenes. Sube PNG, JPEG, WebP o GIF para usarlas en tus overlays.", "mediaContador": "{n} imágenes", "mediaSubido": "Imágenes subidas", "mediaError": "No se pudo completar la acción. Inténtalo de nuevo.", "mediaErrorFormato": "Formato no válido: usa PNG, JPEG, WebP o GIF.", "mediaErrorTamano": "La imagen pesa más de 8 MB.", "mediaErrorLlena": "La biblioteca está llena (máximo 200 imágenes). Borra alguna para subir otra.", "copiarProps": "Copiar propiedades", "pegarProps": "Pegar propiedades", "ajustes": "Ajustes", "capasVacio": "Aún no hay overlays en el canvas.", "ocultar": "Ocultar", "mostrar": "Mostrar", "bloquear": "Bloquear", "desbloquear": "Desbloquear", "frente": "Traer al frente", "fondo": "Enviar al fondo", "restablecer": "Restablecer elemento", "subir": "Subir un nivel", "bajar": "Bajar un nivel", "seccion": { "editor": "Editor", "gif": "Buscador de GIF", "sonido": "Efectos de sonido" }, "tab": { "gif": "GIF", "overlays": "Overlays", "media": "Media", "stickers": "Stickers", "texto": "Texto", "formas": "Formas", "mas": "Más" } },
+        "editor": { "titulo": "Editor de canvas", "beta": "Beta", "quitar": "Quitar del canvas", "vacio": "Elige un overlay de las categorías de abajo para añadirlo al canvas y ajustarlo aquí.", "sinSeleccion": "Sin overlay seleccionado", "capas": "Capas", "pantallaCompleta": "Pantalla completa", "probar": "Probar en vivo (también en OBS)", "probarEscena": "Probar escena", "probarEscenaAyuda": "Lanza el evento de prueba de cada capa visible de esta escena (también en OBS)", "probarEscenaVacio": "Ninguna capa visible de esta escena tiene prueba.", "sinTts": "Sin voz", "copiarObs": "Copiar enlace para OBS", "copiarObsAyuda": "Copia un solo enlace con todas las capas visibles de esta escena para pegarlo como Browser Source en OBS", "copiarObsVacio": "No hay capas visibles que copiar. Añade o muestra alguna primero.", "duplicar": "Duplicar", "plegarBiblioteca": "Minimizar o mostrar la biblioteca", "escenas": "Escenas", "escena": "Escena {n}", "escenaNueva": "Nueva escena", "escenaEliminar": "Eliminar escena", "mediaSubir": "Subir imágenes", "mediaVacio": "Aún no has subido imágenes. Sube PNG, JPEG, WebP o GIF para usarlas en tus overlays.", "mediaContador": "{n} imágenes", "mediaSubido": "Imágenes subidas", "mediaError": "No se pudo completar la acción. Inténtalo de nuevo.", "mediaErrorFormato": "Formato no válido: usa PNG, JPEG, WebP o GIF.", "mediaErrorTamano": "La imagen pesa más de 8 MB.", "mediaErrorLlena": "La biblioteca está llena (máximo 200 imágenes). Borra alguna para subir otra.", "copiarProps": "Copiar propiedades", "pegarProps": "Pegar propiedades", "ajustes": "Ajustes", "capasVacio": "Aún no hay overlays en el canvas.", "ocultar": "Ocultar", "mostrar": "Mostrar", "bloquear": "Bloquear", "desbloquear": "Desbloquear", "frente": "Traer al frente", "fondo": "Enviar al fondo", "restablecer": "Restablecer elemento", "subir": "Subir un nivel", "bajar": "Bajar un nivel", "seccion": { "editor": "Editor", "gif": "Buscador de GIF", "sonido": "Efectos de sonido" }, "tab": { "gif": "GIF", "overlays": "Overlays", "media": "Media", "stickers": "Stickers", "texto": "Texto", "formas": "Formas", "mas": "Más" } },
         "verDestacado": "Ver destacado",
         "cat": {
             "chat": {

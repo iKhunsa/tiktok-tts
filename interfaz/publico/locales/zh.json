@@ -225,6 +225,9 @@
                      "clipsHistory":  "标记历史",
                      "announceTplTitle":  "自定义播报结尾",
                      "announceTplDesc":  "可选：输入名字后要说的话。事件信息会自动添加；留空则使用标准文本。",
+                     "announceVolEyebrow":  "播报音量",
+                     "announceVolTitle":  "播报音量",
+                     "announceVolDesc":  "礼物、进入、关注、点赞和分享按此音量播放，相对于 TTS 音量。调低后，聊天大声朗读时它们只作为背景音。",
                      "announceTplGift":  "收到礼物后",
                      "announceTplExGift":  "大手笔",
                      "announceTplJoin":  "有人进入后",
@@ -235,6 +238,8 @@
                      "announceTplExLike":  "全力以赴",
                      "announceTplShare":  "有人分享后",
                      "announceTplExShare":  "帮忙传开了",
+                     "announceTplChat":  "朗读聊天消息时使用的词",
+                     "announceTplExChat":  "说",
                      "window":  "窗口与启动"
                  },
     "label":  {
@@ -604,7 +609,7 @@
                            "estilo":  "样式",
                            "efectos":  "效果"
                        },
-                       "campo":  { "posicionTexto": "文字位置",
+                       "campo":  { "mostrarMonto": "显示金额", "posicionTexto": "文字位置",
                           "anchoMensajes":  "消息宽度",
                           "escala":  "整体大小",
                           "desplazaX":  "水平移动",
@@ -682,7 +687,7 @@
                                      "imagenAlerta":  "提醒图片",
                                      "colorTexto":  "文字颜色"
                                  },
-                       "opcion":  { "alLado": "旁边", "debajo": "下方",
+                       "opcion":  { "si": "是", "no": "否", "alLado": "旁边", "debajo": "下方",
                                       "izquierda":  "左",
                                       "centro":  "居中",
                                       "derecha":  "右",
@@ -1967,6 +1972,7 @@
                          "statusIdle":  "{platform}：未连接",
                          "reasonTiktokLogin":  "TikTok 要求登录。"
                      },
+    "chatVista": {"ajustes": "聊天设置", "pantallaCompleta": "聊天全屏", "ventana": "在单独窗口中打开聊天", "titulo": "直播聊天设置", "cerrar": "关闭", "seccionTexto": "文字", "tamano": "字体大小", "fuente": "字体", "fuenteSistema": "系统默认", "fuenteOtra": "其他…", "fuenteOtraEjemplo": "已安装字体的名称，例如 Verdana", "seccionEmotes": "表情", "emotesMostrar": "显示表情", "emotesTerceros": "第三方表情（BetterTTV、7TV）", "seccionPantalla": "显示", "dividido": "按平台分屏", "divididoAyuda": "两个或更多已连接的平台并排显示，各占一列。", "plataformasVisibles": "可见平台", "restablecer": "重置", "columnaSistema": "系统", "ventanaVacia": "正在等待聊天消息…", "tamanoAyuda": "选择聊天文字的大小。不影响应用的其他部分。", "fuenteAyuda": "电脑上安装的任何字体。", "emotesAyuda": "显示聊天中的表情图片。关闭后将显示表情名称。", "emotesPorPlataforma": "按平台"},
     "overlayCat": {
         "explorar": "浏览",
         "editorUnificado": "统一编辑器",
@@ -1990,7 +1996,7 @@
         "bannerLienzoTitulo": "将所有提醒统一到一个画布",
         "bannerLienzoDesc": "在同一个 HTML 中设计、编辑和控制。",
         "bannerLienzoCta": "立即编辑",
-        "editor": { "titulo": "画布编辑器", "quitar": "从画布移除", "vacio": "从下方分类中选择一个 overlay，添加到画布并在此调整。", "sinSeleccion": "未选择 overlay", "capas": "图层", "pantallaCompleta": "全屏", "probar": "实时测试（OBS 中同步）", "probarEscena": "测试场景", "probarEscenaAyuda": "触发此场景中每个可见图层的测试事件（OBS 中同步）", "probarEscenaVacio": "此场景中没有可测试的可见图层。", "copiarObs": "复制 OBS 链接", "copiarObsAyuda": "复制包含此场景所有可见图层的单个链接，粘贴到 OBS 的浏览器源中", "copiarObsVacio": "没有可复制的可见图层。请先添加或显示一个。", "duplicar": "复制", "plegarBiblioteca": "收起或展开素材库", "escenas": "场景", "escena": "场景 {n}", "escenaNueva": "新建场景", "escenaEliminar": "删除场景", "mediaSubir": "上传图片", "mediaVacio": "你还没有上传图片。上传 PNG、JPEG、WebP 或 GIF，即可在叠加层中使用。", "mediaContador": "{n} 张图片", "mediaSubido": "图片已上传", "mediaError": "操作未能完成，请重试。", "mediaErrorFormato": "格式无效：请使用 PNG、JPEG、WebP 或 GIF。", "mediaErrorTamano": "图片超过 8 MB。", "mediaErrorLlena": "图库已满（最多 200 张）。请先删除一张再上传。", "copiarProps": "复制属性", "pegarProps": "粘贴属性", "ajustes": "设置", "capasVacio": "画布上还没有 overlay。", "ocultar": "隐藏", "mostrar": "显示", "bloquear": "锁定", "desbloquear": "解锁", "frente": "置于顶层", "fondo": "置于底层", "restablecer": "重置元素", "subir": "上移一层", "bajar": "下移一层", "seccion": { "editor": "编辑器", "gif": "GIF 搜索", "sonido": "音效" }, "tab": { "gif": "GIF", "overlays": "Overlay", "media": "媒体", "stickers": "贴纸", "texto": "文字", "formas": "形状", "mas": "更多" } },
+        "editor": { "titulo": "画布编辑器", "beta": "测试版", "quitar": "从画布移除", "vacio": "从下方分类中选择一个 overlay，添加到画布并在此调整。", "sinSeleccion": "未选择 overlay", "capas": "图层", "pantallaCompleta": "全屏", "probar": "实时测试（OBS 中同步）", "probarEscena": "测试场景", "probarEscenaAyuda": "触发此场景中每个可见图层的测试事件（OBS 中同步）", "probarEscenaVacio": "此场景中没有可测试的可见图层。", "sinTts": "无语音", "copiarObs": "复制 OBS 链接", "copiarObsAyuda": "复制包含此场景所有可见图层的单个链接，粘贴到 OBS 的浏览器源中", "copiarObsVacio": "没有可复制的可见图层。请先添加或显示一个。", "duplicar": "复制", "plegarBiblioteca": "收起或展开素材库", "escenas": "场景", "escena": "场景 {n}", "escenaNueva": "新建场景", "escenaEliminar": "删除场景", "mediaSubir": "上传图片", "mediaVacio": "你还没有上传图片。上传 PNG、JPEG、WebP 或 GIF，即可在叠加层中使用。", "mediaContador": "{n} 张图片", "mediaSubido": "图片已上传", "mediaError": "操作未能完成，请重试。", "mediaErrorFormato": "格式无效：请使用 PNG、JPEG、WebP 或 GIF。", "mediaErrorTamano": "图片超过 8 MB。", "mediaErrorLlena": "图库已满（最多 200 张）。请先删除一张再上传。", "copiarProps": "复制属性", "pegarProps": "粘贴属性", "ajustes": "设置", "capasVacio": "画布上还没有 overlay。", "ocultar": "隐藏", "mostrar": "显示", "bloquear": "锁定", "desbloquear": "解锁", "frente": "置于顶层", "fondo": "置于底层", "restablecer": "重置元素", "subir": "上移一层", "bajar": "下移一层", "seccion": { "editor": "编辑器", "gif": "GIF 搜索", "sonido": "音效" }, "tab": { "gif": "GIF", "overlays": "Overlay", "media": "媒体", "stickers": "贴纸", "texto": "文字", "formas": "形状", "mas": "更多" } },
         "verDestacado": "查看推荐",
         "cat": {
             "chat": {

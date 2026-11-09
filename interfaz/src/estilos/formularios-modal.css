@@ -92,7 +92,12 @@ body.reduce-motion .modal-overlay.show > .fm-modal:not(.idea-modal-content) { an
 .fm-btn:focus-visible { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
 .fm-btn .icon-inline { width: 16px; height: 16px; flex: none; }
 .fm-btn--ghost, .fm-btn--link { min-height: 32px; padding: 6px 16px; background: transparent; color: var(--text); border-radius: 8px; }
+/* Discord: solo icono a la izquierda (50%); en hover/foco revela el texto y pasa a blanco 100% */
+.fm-btn--link { margin-right: auto; gap: 0; opacity: .5; }
 .fm-btn--link .icon-inline { width: 20px; height: 20px; }
+.fm-btn--link span { max-width: 0; overflow: hidden; opacity: 0; transition: max-width 200ms ease, opacity 150ms ease, margin-left 200ms ease; }
+.fm-btn--link:hover, .fm-btn--link:focus-visible { opacity: 1; color: #fff; }
+.fm-btn--link:hover span, .fm-btn--link:focus-visible span { max-width: 200px; opacity: 1; margin-left: 8px; }
 .fm-btn--primary { min-height: 32px; min-width: 104px; padding: 6px 16px; background: var(--brand); color: #fff; font-weight: 500; border-radius: 8px; }
 @media (hover: hover) and (pointer: fine) {
   .fm-btn--ghost:hover, .fm-btn--link:hover { background: var(--surface-raised, rgba(255, 255, 255, .06)); }
