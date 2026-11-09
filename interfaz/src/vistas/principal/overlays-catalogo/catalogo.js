@@ -11,6 +11,7 @@ export const CATEGORIAS = [
   { id: 'audiencia', icono: 'groups', color: '#0e9f8a', overlays: ['viewers', 'entrada'] },
   { id: 'musica', icono: 'music_note', color: '#d48a00', overlays: ['musica'] },
   { id: 'resumen', icono: 'emoji_events', color: '#4b5563', overlays: ['creditos', 'fin-directo'] },
+  { id: 'teclado', icono: 'keyboard', color: '#38bdf8', overlays: ['teclado'] },
 ];
 
 export const NOMBRES_PLATAFORMA = { tiktok: 'TikTok', twitch: 'Twitch', youtube: 'YouTube', kick: 'Kick' };
@@ -40,6 +41,7 @@ export const PLATAFORMAS_OVERLAY = {
   'fin-directo': ['tiktok'],
   creditos: ['tiktok', 'twitch', 'kick'],
   musica: ['tiktok', 'twitch', 'youtube', 'kick'],
+  teclado: [],
 };
 
 /** Tarjetas que se generan por JS; las otras 9 son markup estatico en index.html. */

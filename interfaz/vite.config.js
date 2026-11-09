@@ -32,6 +32,7 @@ export default defineConfig({
         'overlay-musica': entry('overlay-musica.html'),
         'overlay-gif': entry('overlay-gif.html'),
         'overlay-escena': entry('overlay-escena.html'),
+        'overlay-teclado': entry('overlay-teclado.html'),
       },
     },
   },

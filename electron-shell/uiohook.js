@@ -42,7 +42,46 @@ function unregisterUiohookShortcut(id) {
   shortcuts.delete(id);
 }
 
-function startUiohook(logger) {
+// Overlay de teclado/mouse (OBS): mismo hook global que los atajos de arriba,
+// solo agrega listeners sobre el emisor ya arrancado -- no abre un segundo
+// SetWindowsHookEx. Solo reporta las 14 teclas + 5 botones de mouse de abajo
+// (nunca el teclado completo): no es un keylogger, es el mismo subset que usa
+// Inkput (la app de referencia de este overlay).
+function buildTecladoKeyMap(UiohookKey) {
+  const K = UiohookKey;
+  return {
+    [K.Q]: 'Q', [K.W]: 'W', [K.E]: 'E', [K.R]: 'R',
+    [K.A]: 'A', [K.S]: 'S', [K.D]: 'D', [K.F]: 'F',
+    [K.Z]: 'Z', [K.X]: 'X', [K.C]: 'C',
+    [K.Shift]: 'SHIFT', // solo shift izquierdo, K.ShiftRight se ignora
+    [K.Tab]: 'TAB',
+    [K.Space]: 'SPACE',
+  };
+}
+// Numeracion de boton normalizada por libuiohook (WM_RBUTTON->2, WM_MBUTTON->3, XBUTTON1/2->4/5 en Windows).
+const TECLADO_MOUSE_MAP = { 1: 'M1', 2: 'M2', 3: 'M3', 4: 'M4', 5: 'M5' };
+const tecladoHeld = new Set();
+
+function attachTecladoOverlay(bus) {
+  if (!uiohook || !bus) return;
+  const keyMap = buildTecladoKeyMap(uiohook.UiohookKey);
+  const emitir = (t, k) => bus.emit('ws:broadcast', { type: 'teclado-input', t, k });
+  const down = (id) => {
+    if (!id || tecladoHeld.has(id)) return;
+    tecladoHeld.add(id);
+    emitir('d', id);
+  };
+  const up = (id) => {
+    if (!id || !tecladoHeld.delete(id)) return;
+    emitir('u', id);
+  };
+  uiohook.uIOhook.on('keydown', (e) => down(keyMap[e.keycode]));
+  uiohook.uIOhook.on('keyup', (e) => up(keyMap[e.keycode]));
+  uiohook.uIOhook.on('mousedown', (e) => down(TECLADO_MOUSE_MAP[e.button]));
+  uiohook.uIOhook.on('mouseup', (e) => up(TECLADO_MOUSE_MAP[e.button]));
+}
+
+function startUiohook(logger, bus) {
   if (!uiohook || uiohookActive) return;
   try {
     uiohook.uIOhook.on('keydown', (e) => {
@@ -50,6 +89,7 @@ function startUiohook(logger) {
         if (check(e)) callback();
       }
     });
+    attachTecladoOverlay(bus);
     uiohook.uIOhook.start();
     uiohookActive = true;
     logger.log(

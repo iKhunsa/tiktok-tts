@@ -244,7 +244,7 @@ app.whenReady().then(() => {
     }
     if (telemetryRuntime.enabled) glitchtip.setTelemetryIdentity(telemetryRuntime.identity);
 
-    startUiohook(logger);
+    startUiohook(logger, bus);
 
     ipcHandles = attachIpcBridge({ app, bus, logger, getMainWindow, globalShortcut });
 

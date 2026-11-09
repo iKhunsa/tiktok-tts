@@ -98,6 +98,12 @@ const BASE = {
   ],
   'alertas-social': [campoImagenAlerta('icono'), campoPosicionTexto(), campoGifAlerta(), ...camposGifAlertaMedida(), ...camposSonidoAlerta(), colorAcento, opacidadFondo(0.9), ...camposOverlayFijo({ texto: true }), ...ANIMACION_ALERTA],
   'contador-likes': [{ ...colorAcento, def: '#FE2C55' }, opacidadFondo(0.8), ...camposOverlayFijo({ texto: false })],
+  teclado: [
+    { clave: 'tema', param: 'tema', tipo: 'opcion', def: 'oscuro', opciones: ['oscuro', 'claro'], opcionesTraducidas: ['oscuro', 'claro'], ui: 'botones', grupo: 'base' },
+    { ...colorAcento, def: '#38bdf8' },
+    opacidadFondo(0.84),
+    ...camposOverlayFijo({ texto: false }),
+  ],
   musica: [colorAcento, opacidadFondo(0.9), ...camposMusica(camposOverlayFijo({ texto: true }))],
   ...Object.fromEntries(Object.keys(CHATS_POR_PLATAFORMA).map((id) => [id, camposChatFijo()])),
   ...Object.fromEntries(Object.entries(EVENTOS_ALERTA).map(([id, alerta]) => [id, esquemaAlerta(alerta)])),
