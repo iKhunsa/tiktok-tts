@@ -1,5 +1,6 @@
 import { ESQUEMAS } from '../../../../compartido/estilo/esquemas.js';
 import { appSettings, saveSettings } from '../../../nucleo/estado/ajustes-app.js';
+import { almacenSesion, tieneAccesoPro } from '../../../nucleo/estado/sesion.js';
 import { t } from '../../../nucleo/i18n/i18n.js';
 import { showToast } from '../../../componentes/toast.js';
 import { updateOverlayUrl } from '../configurador-overlays.js';
@@ -111,4 +112,13 @@ export function iniciarCamposOverlay() {
   vista.addEventListener('input', alEditarCampo);
   vista.addEventListener('click', alPulsarBoton);
   vista.addEventListener('click', alPulsarRestablecerGrupo);
+
+  // Las URL de OBS y las vistas previas dependen del plan (una skin premium guardada no sale sin Pro, ver
+  // buildOverlayUrl). La sesion se hidrata despues de arrancar y el plan puede cambiar (compra, vencimiento).
+  let conAcceso = tieneAccesoPro();
+  almacenSesion.subscribe(() => {
+    if (tieneAccesoPro() === conAcceso) return;
+    conAcceso = tieneAccesoPro();
+    OVERLAYS_CON_ESQUEMA.forEach(updateOverlayUrl);
+  });
 }

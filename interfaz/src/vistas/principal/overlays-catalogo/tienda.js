@@ -1,5 +1,5 @@
 import { t, aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
-import { almacenSesion } from '../../../nucleo/estado/sesion.js';
+import { almacenSesion, tieneAccesoPro } from '../../../nucleo/estado/sesion.js';
 import { showToast } from '../../../componentes/toast.js';
 import { abrirPopupPro } from '../../../componentes/popup-pro.js';
 import { irACheckout } from '../cuenta/checkout.js';
@@ -22,10 +22,7 @@ const SECCIONES = [
 ];
 
 // Con el sistema de cuentas apagado, la app funciona toda desbloqueada.
-export function tieneAcceso() {
-  const { activo, plan } = almacenSesion.getState();
-  return !activo || plan === 'pro';
-}
+export const tieneAcceso = tieneAccesoPro;
 
 /** Lleva directo al pago del plan Pro; sin sesion, primero a iniciarla. */
 export function comprarPro(boton) {

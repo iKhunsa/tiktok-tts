@@ -28,6 +28,13 @@ export const almacenSesion = crearAlmacen({
 });
 let sesionHidratada = false;
 
+/** ¿El plan incluye lo Pro (skins premium, etc.)? Con el sistema de cuentas
+ * apagado, la app funciona toda desbloqueada. Fuente unica de esta regla. */
+export function tieneAccesoPro() {
+  const { activo, plan } = almacenSesion.getState();
+  return !activo || plan === 'pro';
+}
+
 /** Con el sistema de cuentas activo, nadie usa la app sin sesión: hay que
  * registrarse o iniciar sesión. Con el sistema apagado (flag off / sin
  * CUENTAS_URL) nunca bloquea — la app funciona como siempre. */
