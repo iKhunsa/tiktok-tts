@@ -9,6 +9,9 @@ const { applyConfigPatch } = require('./apply-patch');
 const { LEGACY_DEFAULT_LANGS } = require('../../core/chat-guard-options');
 
 function configFile() { return accountDataPath('config.json'); }
+// Siempre salen de DEFAULT_CONFIG: si se persistieran, un cambio de nick admin
+// en una version nueva nunca llegaria a quien ya tenia config.json guardado.
+const NON_PERSISTED_KEYS = ['adminIdentities'];
 const INSTALLATION_KEYS = ['subscriptionsEnabled', 'mcpEnabled', 'mcpDestructiveToolsEnabled', 'mcpDevToolsEnabled', 'closeToTray'];
 const INSTALLATION_FILE = path.join(DATA_BASE, 'installation-config.json');
 const LEGACY_CONFIG_FILE = path.join(DATA_BASE, 'config.json');
@@ -79,7 +82,7 @@ function createConfigStore(logger) {
   function save() {
     try {
       const file = configFile();
-      fs.writeFileSync(`${file}.tmp`, `${JSON.stringify(Object.fromEntries(Object.entries(config).filter(([key]) => !INSTALLATION_KEYS.includes(key))), null, 2)}\n`, 'utf8');
+      fs.writeFileSync(`${file}.tmp`, `${JSON.stringify(Object.fromEntries(Object.entries(config).filter(([key]) => !INSTALLATION_KEYS.includes(key) && !NON_PERSISTED_KEYS.includes(key))), null, 2)}\n`, 'utf8');
       fs.renameSync(`${file}.tmp`, file);
       fs.writeFileSync(`${INSTALLATION_FILE}.tmp`, `${JSON.stringify(pick(config, INSTALLATION_KEYS), null, 2)}\n`, 'utf8');
       fs.renameSync(`${INSTALLATION_FILE}.tmp`, INSTALLATION_FILE);
@@ -102,7 +105,7 @@ function createConfigStore(logger) {
       if (require('../../core/account-data-path').getActiveAccount() !== 'anonymous') migrateLegacyConfig();
       if (!fs.existsSync(file)) return;
       const parsed = normalizeStoredConfig(JSON.parse(fs.readFileSync(file, 'utf8')));
-      const { rejected } = applyConfigPatch(config, Object.fromEntries(Object.entries(parsed).filter(([key]) => !INSTALLATION_KEYS.includes(key))));
+      const { rejected } = applyConfigPatch(config, Object.fromEntries(Object.entries(parsed).filter(([key]) => !INSTALLATION_KEYS.includes(key) && !NON_PERSISTED_KEYS.includes(key))));
       if (rejected.length) {
         logger.log(
           'warn', 'configuracion', 'configuracion/store.js#load', 'configuracion.store.claves_invalidas_ignoradas',
