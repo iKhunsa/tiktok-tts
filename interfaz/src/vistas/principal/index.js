@@ -99,7 +99,7 @@ import {
   musicRemoveFromQueue, musicSkip, musicTogglePause, musicSetEnabled, musicSetVolume,
   musicSaveCooldown, musicSaveMaxQueue, musicClearQueue, musicBanUser, musicUnbanUser,
   playlistSave, playlistSetEnabled, playlistSetShuffle, playlistPlay, musicInit,
-  updatePlaylistInfo,
+  updatePlaylistInfo, aplicarPlanMusica,
 } from './bot-musica.js';
 import {
   modPage, modSetTab, modOnSearch, modWipe, checkModWipeConfirmInput, closeModWipeConfirm,
@@ -202,7 +202,7 @@ function aplicarBloqueoApp() {
   // visual cada vez que cambia la sesion (login, pago, degradado) sin
   // re-fetchear su estado.
   aplicarBloqueoVista('view-soundpad', 'soundpad');
-  aplicarBloqueoVista('view-bot', 'bot-musical');
+  aplicarPlanMusica();
   aplicarBloqueoVista('mcpPanel', 'mcp-agente');
   aplicarBloqueoVista('view-mobile', 'panel-movil');
   aplicarBloqueoVista('view-clips', 'clips');

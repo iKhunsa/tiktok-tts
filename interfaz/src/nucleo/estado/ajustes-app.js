@@ -30,6 +30,7 @@ export const DEFAULT_SETTINGS = {
   voice: 'es-MX',
   rate: 1.0,
   vol: 1.0,
+  sonidosVolumen: 50, // volumen de la ventana del navegador de sonidos (0-100): hay sonidos muy fuertes, por eso arranca a la mitad
   pitch: 1.0,
   readChat: true,
   readGifts: false,
@@ -54,6 +55,7 @@ export const DEFAULT_SETTINGS = {
   musicSkipShortcut: null,
   overlays: DEFAULTS_OVERLAYS,
   overlayLienzo: '16:9',
+  escenas: [{ nombre: "", ids: [], nombres: {} }], // editor de canvas: ids de overlay por escena
   skinsFavoritas: [],
   // Ajustes propios de cada archivo .epik, por id (vistas/principal/epik/estado.js).
   epik: {},
@@ -100,14 +102,59 @@ export function loadSettings() {
     appSettings = guardado ? deepMerge(DEFAULT_SETTINGS, guardado) : JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
     // deepMerge solo conserva claves conocidas: los ids de .epik no lo son, se copian tal cual.
     if (guardado?.epik && typeof guardado.epik === 'object') appSettings.epik = guardado.epik;
+    // Igual con las capas GIF del editor de canvas (`gif:<id>`): se copian tal cual (campos-gif.js#esCapaGif las valida al usarlas).
+    for (const [id, cfg] of Object.entries(guardado?.overlays ?? {})) {
+      if (id.startsWith('gif:') && cfg && typeof cfg === 'object') appSettings.overlays[id] = cfg;
+    }
   } catch (e) {
     console.warn('[settings] localStorage corrupto, usando valores por defecto', e);
     appSettings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
   }
 }
 
+// Respaldo en disco (/api/ajustes-ui, por cuenta): localStorage puede vaciarse o corromperse, y con él se irían los
+// overlays, escenas y capas del editor de canvas. Cada guardado lleva su marca de tiempo para saber cuál copia es más nueva.
+const SETTINGS_TS_KEY = 'tikliveTTS_v1_guardado';
+const ESPERA_RESPALDO_MS = 800;
+let temporizadorRespaldo = null;
+
+function enviarRespaldo() {
+  temporizadorRespaldo = null;
+  const guardado = Number(datosPorCuenta.get(SETTINGS_TS_KEY)) || Date.now();
+  fetch('/api/ajustes-ui', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ guardado, datos: appSettings }),
+  }).catch(() => {}); // sin servidor la copia de localStorage sigue valiendo; el siguiente guardado reintenta
+}
+
 export function saveSettings() {
   datosPorCuenta.set(SETTINGS_KEY, JSON.stringify(appSettings));
+  datosPorCuenta.set(SETTINGS_TS_KEY, String(Date.now()));
+  clearTimeout(temporizadorRespaldo);
+  temporizadorRespaldo = setTimeout(enviarRespaldo, ESPERA_RESPALDO_MS); // agrupa ráfagas (sliders, arrastres)
+}
+
+/**
+ * Concilia localStorage con la copia en disco, una vez conocida la cuenta: gana la más nueva. Si localStorage se
+ * vació, los ajustes vuelven del disco; si el disco no tiene copia todavía, se crea con lo que hay en localStorage.
+ */
+export async function hidratarAjustesDesdeDisco() {
+  try {
+    const respuesta = await fetch('/api/ajustes-ui');
+    if (!respuesta.ok) return;
+    const { guardado, datos } = await respuesta.json();
+    const local = Number(datosPorCuenta.get(SETTINGS_TS_KEY)) || 0;
+    const hayLocal = !!datosPorCuenta.get(SETTINGS_KEY);
+    if (datos && guardado > local) {
+      datosPorCuenta.set(SETTINGS_KEY, JSON.stringify(datos));
+      datosPorCuenta.set(SETTINGS_TS_KEY, String(guardado));
+      loadSettings();
+      applySettings();
+    } else if (hayLocal && (!datos || local > guardado)) {
+      enviarRespaldo();
+    }
+  } catch (_) { /* sin servidor se sigue con localStorage */ }
 }
 
 /**

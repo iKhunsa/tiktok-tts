@@ -1,6 +1,7 @@
 import { switchView, historialVistas } from '../vistas-router.js';
 import { novedadVigente } from '../novedades/vigencia.js';
 import { abrirNovedades, iniciarModalNovedades } from '../novedades/modal.js';
+import { leerEstadoUi } from '../../../nucleo/estado/estado-ui.js';
 import { openDiscordModal } from '../modales-avisos.js';
 
 function irA(vista) {
@@ -18,6 +19,13 @@ function iniciarNavegacion() {
   adelante.addEventListener('click', () => irA(historialVistas.avanzar()));
   historialVistas.suscribir(sincronizar);
   sincronizar();
+  // Esc = flecha atras, salvo que Esc ya tenga otro trabajo (popup abierto, escribiendo, handler propio).
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape' || e.defaultPrevented || atras.disabled) return;
+    if (document.querySelector('.modal-overlay.show')) return;
+    if (e.target.closest?.('input, textarea, select, [contenteditable="true"]')) return;
+    atras.click();
+  });
 }
 
 // Sin versión (corriendo en navegador, fuera de Electron) queda compacto.
@@ -43,9 +51,14 @@ function iniciarAtenuadoDeControles() {
   }).observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['class'] });
 }
 
-// Mismo refresco completo que el logo del sidebar (recarga nativa de la
-// pagina, re-ejecuta todo el bootstrap del renderer), pero sin su
-// navegacion a "/": location.reload() recarga la vista actual tal cual.
+// Recarga nativa de la página (re-ejecuta todo el bootstrap del renderer). El arranque cae en el chat, así que
+// se vuelve a donde se estaba con el estado que la interfaz guarda en cada cambio (nucleo/estado/estado-ui.js).
+function restaurarTrasRecarga() {
+  const { vista, editor } = leerEstadoUi();
+  if (vista) switchView(vista);
+  if (editor) document.getElementById('ovlEditorUnificado')?.click(); // el editor restaura su sección, escena y capa
+}
+
 function iniciarBotonRefrescar() {
   const boton = document.getElementById('titlebarRefresh');
   boton.addEventListener('click', () => {
@@ -54,6 +67,7 @@ function iniciarBotonRefrescar() {
     boton.disabled = true;
     window.location.reload();
   });
+  restaurarTrasRecarga();
 }
 
 export function iniciarBarraTitulo() {

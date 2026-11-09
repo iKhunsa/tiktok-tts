@@ -89,7 +89,7 @@ function validateLocalApiRequest(req, res, next) {
 function createApp(bus) {
   const app = express();
   app.set('case sensitive routing', true);
-  app.use(express.json());
+  app.use(express.json({ limit: '2mb' })); // los ajustes de la interfaz (/api/ajustes-ui) superan los 100 KB por defecto
   app.use(validateLocalApiRequest);
   // Con subscriptionsEnabled activo, /api/* exige sesion (salvo whitelist).
   app.use(crearGuardSuscripcion(bus));

@@ -6,6 +6,7 @@ import { fijarAbierta } from '../overlays-tarjetas.js';
 import { CATEGORIAS, NOMBRES_PLATAFORMA, OVERLAYS_GENERADOS, PLATAFORMAS_OVERLAY, categoriaDe } from './catalogo.js';
 import { crearTarjetaOverlay } from './crear-tarjeta.js';
 import { iniciarDestacados } from './destacado.js';
+import { iniciarEditorCanvas } from './editor-canvas.js';
 import { iniciarTienda } from './tienda.js';
 
 const MODO = { EXPLORAR: 'explorar', TODOS: 'todos', CATEGORIA: 'categoria', OVERLAY: 'overlay', TIENDA: 'tienda' };
@@ -204,6 +205,7 @@ export function iniciarCatalogoOverlays() {
   iniciarTienda($('ovlTiendaProductos'), abrirOverlay);
   iniciarDestacados($('ovlDestacado'));
   iniciarDestacados($('ovlTiendaDestacado'));
+  iniciarEditorCanvas();
   aplicarTraducciones($('view-overlays'));
 
   document.querySelectorAll('[data-ovl-modo]').forEach((pestana) => {

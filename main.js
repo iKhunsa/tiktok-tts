@@ -26,6 +26,8 @@ const { setupAutoUpdater, installUpdate } = require('./electron-shell/updater');
 const { attachIpcBridge } = require('./electron-shell/ipc-bridge');
 const { createPortalViewController } = require('./electron-shell/portal-view/controller');
 const { attachPortalViewIpc } = require('./electron-shell/portal-view/ipc');
+const { createGifBrowserController } = require('./electron-shell/gif-browser/controller');
+const { attachGifBrowserIpc } = require('./electron-shell/gif-browser/ipc');
 const { startUiohook, stopUiohook, isUiohookActive, registerUiohookShortcut } = require('./electron-shell/uiohook');
 const { GLOBAL_SHORTCUT } = require('./features/clips/global-shortcut');
 const telemetryRuntime = require('./features/telemetria/runtime');
@@ -65,6 +67,8 @@ let cierresListos = false;
 let ipcHandles = null;
 let portalView = null;
 let portalViewIpcHandles = null;
+let gifBrowser = null;
+let gifBrowserIpcHandles = null;
 
 let abridorEpik = null; // se crea con el servidor; antes no hay a donde importar
 // Segunda instancia = otro doble clic (o un .epik abierto con la app ya corriendo): se trae la ventana y se importa.
@@ -192,7 +196,16 @@ app.whenReady().then(() => {
 
     portalView = createPortalViewController({ mainWindow, logger, accountId: getActiveAccount() });
     portalViewIpcHandles = attachPortalViewIpc({ controller: portalView });
+    // El buscador de GIFs comparte la sesion de Portal View: por cuenta, igual que el.
+    const crearGifBrowser = (accountId) => {
+      gifBrowser = createGifBrowserController({ mainWindow, logger, accountId, port: PORT });
+      gifBrowserIpcHandles = attachGifBrowserIpc({ controller: gifBrowser });
+    };
+    crearGifBrowser(getActiveAccount());
     bus.on('account:changing', () => {
+      gifBrowser?.destroyAll();
+      gifBrowserIpcHandles?.dispose();
+      gifBrowser = null;
       if (!portalView) return;
       portalView.destroyAll();
       portalViewIpcHandles?.dispose();
@@ -201,6 +214,7 @@ app.whenReady().then(() => {
     bus.on('account:changed', ({ current }) => {
       portalView = createPortalViewController({ mainWindow, logger, accountId: current });
       portalViewIpcHandles = attachPortalViewIpc({ controller: portalView });
+      crearGifBrowser(current);
     }, 'electron-shell');
 
     tray = createTray({ iconPath: ICON_PATH, logger, ...trayCallbacks() });
@@ -299,6 +313,8 @@ app.on('will-quit', () => {
   }
   if (portalViewIpcHandles) portalViewIpcHandles.dispose();
   if (portalView) portalView.destroyAll();
+  gifBrowserIpcHandles?.dispose();
+  gifBrowser?.destroyAll();
   stopUiohook();
 });
 

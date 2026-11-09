@@ -25,6 +25,7 @@ body {
 }
 #leaderboard {
   translate: var(--dx, 0) var(--dy, 0);
+  transform: perspective(1200px) rotateY(var(--ry, 0deg)); /* rotacion 3D tipo puerta (campo rotaY) */
   width: min(100%, var(--ancho-base, 340) * var(--u));
   display: flex;
   flex-direction: column;

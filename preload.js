@@ -70,6 +70,21 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return quitar;
   },
   offPlaySoundpad: (cb) => off('play-soundpad', cb),
+  // Buscador de GIFs del editor de canvas: navegador de Portal View colocado en el rectangulo que pide la UI.
+  gifBrowser: {
+    open: (bounds, url, textos, modo) => ipcRenderer.invoke('gifbrowser:open', { bounds, url, textos, modo }),
+    setBounds: (bounds) => ipcRenderer.invoke('gifbrowser:bounds', { bounds }),
+    hide: () => ipcRenderer.invoke('gifbrowser:hide'),
+    close: () => ipcRenderer.invoke('gifbrowser:close'),
+    navigate: (input) => ipcRenderer.invoke('gifbrowser:navigate', { input }),
+    back: () => ipcRenderer.invoke('gifbrowser:back'),
+    forward: () => ipcRenderer.invoke('gifbrowser:forward'),
+    reload: () => ipcRenderer.invoke('gifbrowser:reload'),
+    getState: () => ipcRenderer.invoke('gifbrowser:state'),
+    onState: (cb) => on('gifbrowser:state', (_e, state) => cb(state)),
+    onImportado: (cb) => on('gifbrowser:importado', (_e, datos) => cb(datos)),
+    onVolumen: (cb) => on('gifbrowser:volumen', (_e, datos) => cb(datos)),
+  },
   portalView: {
     show: () => ipcRenderer.invoke('portal:show'),
     hide: () => ipcRenderer.invoke('portal:hide'),

@@ -10,7 +10,12 @@ const FORMATOS = {
   '9:16': { ancho: 1080, alto: 1920, clave: 'vertical' },
 };
 
-const formatoActual = () => FORMATOS[appSettings.overlayLienzo];
+// El editor de canvas da a cada escena su propio formato: mientras esta abierto presta `{ leer, guardar }` y todo lo que
+// pregunta por el formato (lienzos, arrastre, redimensionado) sigue a la escena activa. Sin el, manda el ajuste global.
+let formatoPropio = null;
+export const usarFormatoPropio = (gancho) => { formatoPropio = gancho; };
+const claveFormato = () => formatoPropio?.leer() || appSettings.overlayLienzo;
+export const formatoActual = () => FORMATOS[claveFormato()];
 
 // El iframe se dibuja a la resolucion real, como en OBS, y se reduce para caber en el espacio disponible.
 function ajustarMarco(escenario) {
@@ -31,7 +36,7 @@ export function pintarLienzos() {
   const { ancho, alto } = formatoActual();
   document.querySelectorAll('.ovl-escenario').forEach(ajustarMarco);
   document.querySelectorAll('[data-lienzo]').forEach((boton) => {
-    boton.setAttribute('aria-pressed', String(boton.dataset.lienzo === appSettings.overlayLienzo));
+    boton.setAttribute('aria-pressed', String(boton.dataset.lienzo === claveFormato()));
   });
   document.querySelectorAll('[data-lienzo-medida]').forEach((medida) => {
     medida.textContent = `${ancho} × ${alto}`;
@@ -41,39 +46,52 @@ export function pintarLienzos() {
 const limitar = (valor) => Math.round(Math.min(1, Math.max(-1, valor)) * 1000) / 1000;
 
 // Mientras se arrastra solo se mueve el iframe por CSS: guardar en cada paso recargaria la vista previa.
+// Devuelve los tres pasos del gesto para que lo maneje cualquier superficie (la capa propia o el editor de canvas).
+export function crearArrastre(marco, iframe, overlay) {
+  let inicio = null;
+  let destino = null;
+  return {
+    iniciar(evento) {
+      const { desplazaX, desplazaY } = appSettings.overlays[overlay];
+      inicio = { x: evento.clientX, y: evento.clientY, desplazaX, desplazaY };
+      destino = null;
+    },
+    mover(evento) {
+      if (!inicio) return;
+      destino = {
+        desplazaX: limitar(inicio.desplazaX + (evento.clientX - inicio.x) / marco.clientWidth),
+        desplazaY: limitar(inicio.desplazaY + (evento.clientY - inicio.y) / marco.clientHeight),
+      };
+      const raiz = iframe.contentDocument?.documentElement.style;
+      raiz?.setProperty('--dx', `${destino.desplazaX * 100}vw`);
+      raiz?.setProperty('--dy', `${destino.desplazaY * 100}vh`);
+    },
+    /** Guarda el movimiento; devuelve si hubo alguno (si no, no cambia nada y no hay que recargar). */
+    soltar() {
+      inicio = null;
+      if (!destino) return false;
+      Object.assign(appSettings.overlays[overlay], destino);
+      destino = null;
+      saveSettings();
+      updateOverlayUrl(overlay);
+      sincronizarCamposOverlay(overlay);
+      return true;
+    },
+  };
+}
+
 function permitirArrastre(marco, iframe, overlay) {
   const capa = document.createElement('div');
   capa.className = 'ovl-arrastre';
   capa.dataset.i18nTitle = 'overlayCfg.arrastrar';
-  let inicio = null;
-  let destino = null;
+  const arrastre = crearArrastre(marco, iframe, overlay);
   capa.addEventListener('pointerdown', (evento) => {
     capa.setPointerCapture(evento.pointerId);
-    const { desplazaX, desplazaY } = appSettings.overlays[overlay];
-    inicio = { x: evento.clientX, y: evento.clientY, desplazaX, desplazaY };
-    destino = null;
+    arrastre.iniciar(evento);
   });
-  capa.addEventListener('pointermove', (evento) => {
-    if (!inicio) return;
-    destino = {
-      desplazaX: limitar(inicio.desplazaX + (evento.clientX - inicio.x) / marco.clientWidth),
-      desplazaY: limitar(inicio.desplazaY + (evento.clientY - inicio.y) / marco.clientHeight),
-    };
-    const raiz = iframe.contentDocument?.documentElement.style;
-    raiz?.setProperty('--dx', `${destino.desplazaX * 100}vw`);
-    raiz?.setProperty('--dy', `${destino.desplazaY * 100}vh`);
-  });
-  const soltar = () => {
-    inicio = null;
-    if (!destino) return;
-    Object.assign(appSettings.overlays[overlay], destino);
-    destino = null;
-    saveSettings();
-    updateOverlayUrl(overlay);
-    sincronizarCamposOverlay(overlay);
-  };
-  capa.addEventListener('pointerup', soltar);
-  capa.addEventListener('pointercancel', soltar);
+  capa.addEventListener('pointermove', arrastre.mover);
+  capa.addEventListener('pointerup', arrastre.soltar);
+  capa.addEventListener('pointercancel', arrastre.soltar);
   marco.append(capa);
   aplicarTraducciones(marco);
 }
@@ -120,7 +138,7 @@ function crearBotonFormato(formato, { clave }) {
   return `<button class="cfg-boton" type="button" data-lienzo="${formato}"><span data-i18n="overlayCfg.opcion.${clave}"></span> ${formato}</button>`;
 }
 
-/** Primera seccion del panel: el formato es uno solo para todos los overlays. */
+/** Primera seccion del panel: el formato es uno solo para todos los overlays (en el editor de canvas, el de la escena). */
 export function crearSeccionLienzo() {
   const seccion = document.createElement('details');
   seccion.className = 'cfg-grupo';
@@ -132,7 +150,8 @@ export function crearSeccionLienzo() {
   seccion.addEventListener('click', (evento) => {
     const boton = evento.target.closest('[data-lienzo]');
     if (!boton) return;
-    appSettings.overlayLienzo = boton.dataset.lienzo;
+    if (formatoPropio) formatoPropio.guardar(boton.dataset.lienzo);
+    else appSettings.overlayLienzo = boton.dataset.lienzo;
     saveSettings();
     pintarLienzos();
   });

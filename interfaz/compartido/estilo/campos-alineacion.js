@@ -9,7 +9,11 @@ const campoOpcion = (clave, param, opciones, def, extra) => (
 
 // Desplazamiento libre desde la posicion elegida, como fraccion del tamano de la fuente de OBS.
 const campoMover = (clave, param) => ({ clave, param, tipo: 'numero', def: 0, min: -1, max: 1, step: 0.005, ui: 'rango', porcentaje: true, grupo: 'alineacion' });
-const camposMover = () => [campoMover('desplazaX', 'dx'), campoMover('desplazaY', 'dy')];
+// Orden de apilado en el lienzo unificado (mayor queda por encima). Sin control en el panel: se cambia desde el menu de la capa del editor.
+const campoZ = () => ({ clave: 'capaZ', param: 'z', tipo: 'numero', def: 0, min: -30, max: 30, step: 1, ui: 'oculto', grupo: 'alineacion' });
+// Giro 3D sobre el eje vertical, como una puerta que se abre: 0 = de frente, +/- = hacia un lado u otro.
+const campoRotar = () => ({ clave: 'rotaY', param: 'ry', tipo: 'numero', def: 0, min: -80, max: 80, step: 1, ui: 'rango', grupo: 'base' });
+export const camposMover = () => [campoMover('desplazaX', 'dx'), campoMover('desplazaY', 'dy'), campoZ(), campoRotar()];
 
 const alineacionTexto = () => campoOpcion('alineacionTexto', 'ta', ALINEACIONES_TEXTO, 'izquierda', { ui: 'botones', iconos: ICONOS_TEXTO });
 

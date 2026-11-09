@@ -8,6 +8,9 @@ import { esVistaPrevia } from './compartido/vista-previa.js';
 import { EVENTOS_ALERTA } from './compartido/eventos-alerta.js';
 import { iniciarOverlayFijo } from './compartido/estilo/aplicar-overlay-fijo.js';
 import { crearFotoConIcono } from './compartido/foto-con-icono.js';
+import { crearImagenGifAlerta } from './compartido/imagen-gif-alerta.js';
+import { reproducirSonidoAlerta } from './compartido/sonido-alerta.js';
+import { aplicarPosicionTexto } from './compartido/posicion-texto-alerta.js';
 import { cargarRecurso, recursoDeEvento } from './compartido/recurso-plataforma.js';
 import { elegirEntrada } from './compartido/epik/anfitrion.js';
 
@@ -31,6 +34,8 @@ function nativo() {
   }
 
   function crearIcono(evento) {
+    const gif = crearImagenGifAlerta(cfgFijo?.gifAlerta, cfgFijo);
+    if (gif) return gif;
     const contenedor = crearElemento('icono');
     const imagen = document.createElement('img');
     imagen.alt = '';
@@ -61,7 +66,9 @@ function nativo() {
     const valorInsignia = alerta.insignia?.(evento);
     if (valorInsignia) tarjeta.append(crearElemento('insignia', String(valorInsignia)));
 
+    aplicarPosicionTexto(tarjeta, cfgFijo);
     document.body.append(tarjeta);
+    if (!vistaPrevia) reproducirSonidoAlerta(cfgFijo);
     if (!vistaPrevia) programarRetiro(tarjeta, evento.duration || duracion, alTerminar, cfgFijo.animacionSalida); // la vista previa deja la tarjeta fija
   }
 

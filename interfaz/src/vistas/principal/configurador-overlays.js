@@ -6,9 +6,11 @@ import { ESQUEMAS, DEFAULTS_OVERLAYS, CHATS_POR_PLATAFORMA } from '../../../comp
 import { trackUi } from '../../nucleo/telemetria-ui.js';
 import { urlConVistaPrevia } from '../../../compartido/vista-previa.js';
 import { EVENTOS_ALERTA } from '../../../compartido/eventos-alerta.js';
+import { esCapaGif, urlCapaGif } from '../../../compartido/estilo/campos-gif.js';
 import { queryEpik } from './epik/estado.js';
 
 export function buildOverlayUrl(type) {
+  if (esCapaGif(type)) return urlCapaGif(location.origin, appSettings.overlays[type]);
   // Con una skin .epik se suman sus ajustes propios (x.<clave>).
   const query = [construirQuery(ESQUEMAS[type], appSettings.overlays[type]), queryEpik(type)].filter(Boolean).join('&');
   // Las alertas de evento comparten pagina: ?evento= elige cual es.
@@ -148,6 +150,9 @@ const TESTS_OVERLAY = {
   musica: () => testEvento({ type: 'music-test' }),
 };
 
+/** Si el overlay tiene un evento de prueba que lanzar (las capas GIF e imagenes no). */
+export const tieneTest = (type) => !!(TESTS_OVERLAY[type] || CHATS_POR_PLATAFORMA[type] || EVENTOS_ALERTA[type]);
+
 /** Lanza un evento de prueba que ve el overlay (en OBS y en la vista previa). */
 export function probarOverlay(type) {
   if (TESTS_OVERLAY[type]) return TESTS_OVERLAY[type]();
@@ -159,5 +164,7 @@ export function restablecerOverlayDeFabrica(type) {
   appSettings.overlays[type] = JSON.parse(JSON.stringify(DEFAULTS_OVERLAYS[type]));
   saveSettings();
   applySettings();
+  // Las capas GIF no son de las 25 que applySettings repinta: quien las dibuja se entera por este aviso.
+  document.dispatchEvent(new window.CustomEvent('overlay:restablecido', { detail: { type } }));
   showToast(t('toast.overlayReset'));
 }

@@ -8,6 +8,9 @@ import { esVistaPrevia } from './compartido/vista-previa.js';
 import { iniciarFuenteAlerta } from './compartido/fuente-alerta.js';
 import { iniciarOverlayFijo } from './compartido/estilo/aplicar-overlay-fijo.js';
 import { crearFotoConIcono } from './compartido/foto-con-icono.js';
+import { crearImagenGifAlerta } from './compartido/imagen-gif-alerta.js';
+import { reproducirSonidoAlerta } from './compartido/sonido-alerta.js';
+import { aplicarPosicionTexto } from './compartido/posicion-texto-alerta.js';
 import { logoPlataforma } from './compartido/recurso-plataforma.js';
 import { elegirEntrada } from './compartido/epik/anfitrion.js';
 
@@ -52,7 +55,7 @@ function nativo() {
     if (meta && !userSetColor) card.style.setProperty('--accent', meta.color);
 
     const icono = makeDefaultIcon(isFollow, event.platform);
-    card.appendChild(cfgFijo.imagenAlerta === 'perfil' ? crearFotoConIcono({ user: event.username || event.user, avatar: event.avatar }, icono) : icono);
+    card.appendChild(crearImagenGifAlerta(cfgFijo.gifAlerta, cfgFijo) || (cfgFijo.imagenAlerta === 'perfil' ? crearFotoConIcono({ user: event.username || event.user, avatar: event.avatar }, icono) : icono));
 
     const info = document.createElement('div');
     info.className = 'info';
@@ -69,7 +72,9 @@ function nativo() {
     badge.textContent = isFollow ? '💜 Follow' : '🔗 Share';
     card.appendChild(badge);
 
+    aplicarPosicionTexto(card, cfgFijo);
     document.body.appendChild(card);
+    if (!vistaPrevia) reproducirSonidoAlerta(cfgFijo);
     if (!vistaPrevia) programarRetiro(card, event.duration || alertDur, alTerminar, cfgFijo.animacionSalida); // la vista previa deja la tarjeta fija
   }
 

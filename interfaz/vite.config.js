@@ -30,6 +30,8 @@ export default defineConfig({
         'overlay-evento': entry('overlay-evento.html'),
         'overlay-contador-likes': entry('overlay-contador-likes.html'),
         'overlay-musica': entry('overlay-musica.html'),
+        'overlay-gif': entry('overlay-gif.html'),
+        'overlay-escena': entry('overlay-escena.html'),
       },
     },
   },

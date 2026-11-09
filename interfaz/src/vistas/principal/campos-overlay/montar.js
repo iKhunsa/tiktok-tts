@@ -67,7 +67,7 @@ export function montarCamposOverlay(overlay) {
   const panel = document.querySelector(`[data-campos-panel="${overlay}"]`);
 
   // [data-campos-fijo]: datos que no son ajustes (ej. seguidores actuales); se conservan al redibujar.
-  base.replaceChildren(...grupos.get('base').map((campo) => crearCampo(overlay, campo)), ...base.querySelectorAll(':scope > [data-campos-fijo]'));
+  base.replaceChildren(...grupos.get('base').filter(({ ui }) => ui !== 'oculto').map((campo) => crearCampo(overlay, campo)), ...base.querySelectorAll(':scope > [data-campos-fijo]'));
   grupos.delete('base');
 
   if (!panel) return;

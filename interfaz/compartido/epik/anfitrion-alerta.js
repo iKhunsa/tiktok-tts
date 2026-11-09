@@ -5,6 +5,7 @@ import { iniciarFuenteAlerta, maxPendientesDe } from '../fuente-alerta.js';
 import { t } from '../i18n-overlay.js';
 import { cargarImagenesRegalo, imagenRegalo } from '../imagen-regalo.js';
 import { etiquetaRegalo, recursoDeEvento } from '../recurso-plataforma.js';
+import { reproducirSonidoAlerta } from '../sonido-alerta.js';
 import { prepararEpik } from './anfitrion.js';
 
 const absoluta = (url) => (url ? new URL(url, location.href).href : null);
@@ -23,7 +24,7 @@ function imagenDe(d, tipo) {
  * Contrato publico de una alerta (ficha del kit, docs/tipos/alerta.md): nombres en espanol, URLs absolutas,
  * textos ya traducidos al idioma del streamer y nada que no sea de la alerta.
  */
-function alertaPublica(d, duracion) {
+function alertaPublica(d, duracion, gif) {
   const tipo = tipoDe(d);
   const usuario = EVENTOS_ALERTA[tipo]?.sinUsuario ? null : (d.username || d.user || null);
   const esRegalo = d.type === 'gift';
@@ -33,7 +34,8 @@ function alertaPublica(d, duracion) {
     usuario,
     avatar: absoluta(d.avatar),
     avatarRespaldo: usuario ? avatarGenerado(usuario) : null,
-    ...imagenDe(d, tipo),
+    // El GIF elegido en el editor de canvas sustituye a la imagen de la alerta, igual que en las alertas nativas.
+    ...(gif ? { imagen: absoluta(gif), imagenRespaldo: null } : imagenDe(d, tipo)),
     titulo: tipo === 'regalo' ? t('overlayStr.giftReceived') : t(`overlayCat.ov.${tipo}.titulo`),
     accion: tipo === 'regalo' ? null : t(`overlayCat.alerta.${tipo}`),
     regalo: esRegalo ? etiquetaRegalo(t, d) || null : null,
@@ -59,8 +61,9 @@ export async function iniciar(overlay, nativo) {
 
   const cola = crearColaAlertas((d, alTerminar) => {
     const duracion = d.duration || duracionBase;
-    epik.enviar('alerta', alertaPublica(d, duracion));
+    epik.enviar('alerta', alertaPublica(d, duracion, epik.cfg.gifAlerta));
     if (epik.vistaPrevia) return;
+    reproducirSonidoAlerta(epik.cfg); // el sonido elegido en el editor suena tambien con una skin .epik
     setTimeout(() => {
       epik.enviar('alerta', null);
       setTimeout(alTerminar, salidaMs);

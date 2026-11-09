@@ -9,6 +9,9 @@ import { iniciarFuenteAlerta } from './compartido/fuente-alerta.js';
 import { cargarImagenesRegalo, imagenRegalo as rutaImagenRegalo } from './compartido/imagen-regalo.js';
 import { iniciarOverlayFijo } from './compartido/estilo/aplicar-overlay-fijo.js';
 import { crearFotoConIcono } from './compartido/foto-con-icono.js';
+import { crearImagenGifAlerta } from './compartido/imagen-gif-alerta.js';
+import { reproducirSonidoAlerta } from './compartido/sonido-alerta.js';
+import { aplicarPosicionTexto } from './compartido/posicion-texto-alerta.js';
 import { cargarRecurso, etiquetaRegalo, recursoDeEvento } from './compartido/recurso-plataforma.js';
 import { elegirEntrada } from './compartido/epik/anfitrion.js';
 
@@ -45,7 +48,11 @@ function nativo() {
       cargarRecurso(img, recurso, () => img.replaceWith(useEmojiFor(img)));
       card.querySelector('.gift-fallback').replaceWith(img);
     }
+    const gif = crearImagenGifAlerta(cfgFijo.gifAlerta, cfgFijo);
+    if (gif) card.firstElementChild.replaceWith(gif);
+    aplicarPosicionTexto(card, cfgFijo);
     document.body.appendChild(card);
+    if (!vistaPrevia) reproducirSonidoAlerta(cfgFijo);
     programarRetiro(card, d.duration || alertDur, done, cfgFijo.animacionSalida);
   }
 
@@ -64,13 +71,15 @@ function nativo() {
     const recurso = gift.kind ? recursoDeEvento(gift) : null;
     if (recurso) cargarRecurso(img, recurso, () => useEmojiFor(img));
     const imagenRegalo = imgSrc || cdnSrc || recurso ? img : useEmojiFor(img);
-    card.appendChild(cfgFijo.imagenAlerta === 'perfil' ? crearFotoConIcono(gift, imagenRegalo) : imagenRegalo);
+    card.appendChild(crearImagenGifAlerta(cfgFijo.gifAlerta, cfgFijo) || (cfgFijo.imagenAlerta === 'perfil' ? crearFotoConIcono(gift, imagenRegalo) : imagenRegalo));
     const info = document.createElement('div');
     info.className = 'info';
     info.innerHTML = `<div class="action-label">${t('overlayStr.giftReceived')}</div><div class="gift-name">${escaparHtml(nombreRegalo)}</div><div class="username">${t('overlayStr.giftFrom', { user: escaparHtml(gift.user) })}</div>${gift.usdValue ? `<div class="usd-value">≈ $${escaparHtml(String(gift.usdValue))} USD</div>` : ''}`;
     card.appendChild(info);
     if ((gift.repeatCount || 1) > 1) { const badge = document.createElement('div'); badge.className = 'qty-badge'; badge.textContent = 'x' + gift.repeatCount; card.appendChild(badge); }
+    aplicarPosicionTexto(card, cfgFijo);
     document.body.appendChild(card);
+    if (!vistaPrevia) reproducirSonidoAlerta(cfgFijo);
     if (!vistaPrevia) programarRetiro(card, gift.duration || alertDur, done, cfgFijo.animacionSalida); // la vista previa deja la tarjeta fija
   }
 

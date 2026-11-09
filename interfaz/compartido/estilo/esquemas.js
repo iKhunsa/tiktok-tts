@@ -11,9 +11,38 @@ const opacidadFondo = (def) => ({ clave: 'bg', param: 'bg', tipo: 'numero', def,
 const ANIMACION_ALERTA = camposAnimacion({ entrada: 'slide-down', salida: 'sale-arriba', msEntrada: 350, msSalida: 300 });
 // Icono del evento o foto de quien lo dispara, con el icono en la esquina. `icono` nombra la primera opcion.
 const campoImagenAlerta = (icono) => ({ clave: 'imagenAlerta', param: 'img', tipo: 'opcion', def: icono, opciones: [icono, 'perfil'], opcionesTraducidas: [icono, 'perfil'], ui: 'botones', grupo: 'base' });
+// Texto de la alerta al lado de su imagen (lo de siempre) o debajo de ella; sale en General.
+const campoPosicionTexto = () => ({ clave: 'posicionTexto', param: 'tp', tipo: 'opcion', def: 'alLado', opciones: ['alLado', 'debajo'], opcionesTraducidas: ['alLado', 'debajo'], ui: 'botones', grupo: 'base' });
+// GIF o foto de la biblioteca que sustituye la imagen de la alerta. Solo se elige desde el editor de canvas
+// unificado (por eso es ui: 'oculto': no sale en los ajustes de cada overlay) y viaja en la URL como `gif`.
+const campoGifAlerta = () => ({ clave: 'gifAlerta', param: 'gif', tipo: 'texto', def: '', ui: 'oculto', grupo: 'base' });
+// Aspecto del GIF de la alerta (tambien ocultos): ancho y alto libres en px, cuanto se redondean las esquinas (% del lado
+// menor; 22 equivale a las 14 px de siempre en 64, 50 es un circulo) y el croma: color de fondo a quitar (hex sin #;
+// vacio = sin croma) con su tolerancia.
+const camposGifAlertaMedida = () => [
+  { clave: 'gifAncho', param: 'gw', tipo: 'numero', def: 64, min: 16, max: 600, ui: 'oculto', grupo: 'base' },
+  { clave: 'gifAlto', param: 'gh', tipo: 'numero', def: 64, min: 16, max: 600, ui: 'oculto', grupo: 'base' },
+  { clave: 'gifRadio', param: 'gx', tipo: 'numero', def: 22, min: 0, max: 50, ui: 'oculto', grupo: 'base' },
+  { clave: 'gifCroma', param: 'gk', tipo: 'texto', def: '', ui: 'oculto', grupo: 'base' },
+  { clave: 'gifCromaTol', param: 'gt', tipo: 'numero', def: 40, min: 0, max: 100, ui: 'oculto', grupo: 'base' },
+];
+// Sonido de la biblioteca "Mis sonidos" que suena cuando aparece la alerta (tambien oculto, solo se elige en el editor
+// de canvas), su volumen de 0 a 100, el tono en semitonos (-12 a 12) y las bandas del ecualizador basico en dB (-12 a 12).
+// Viajan en la URL como `snd`, `sv`, `st`, `sg` (graves), `sm` (medios) y `sa` (agudos).
+const camposSonidoAlerta = () => [
+  { clave: 'sonidoAlerta', param: 'snd', tipo: 'texto', def: '', ui: 'oculto', grupo: 'base' },
+  { clave: 'sonidoVolumen', param: 'sv', tipo: 'numero', def: 100, min: 0, max: 100, ui: 'oculto', grupo: 'base' },
+  { clave: 'sonidoTono', param: 'st', tipo: 'numero', def: 0, min: -12, max: 12, ui: 'oculto', grupo: 'base' },
+  { clave: 'sonidoGraves', param: 'sg', tipo: 'numero', def: 0, min: -12, max: 12, ui: 'oculto', grupo: 'base' },
+  { clave: 'sonidoMedios', param: 'sm', tipo: 'numero', def: 0, min: -12, max: 12, ui: 'oculto', grupo: 'base' },
+  { clave: 'sonidoAgudos', param: 'sa', tipo: 'numero', def: 0, min: -12, max: 12, ui: 'oculto', grupo: 'base' },
+];
 const esquemaAlerta = ({ duracion = 4000 }) => [
   { clave: 'dur', param: 'dur', tipo: 'numero', def: duracion, min: 1000, max: 12000, step: 500, segundos: true, etiqueta: 'duracion', grupo: 'base' },
   campoImagenAlerta('icono'),
+  campoPosicionTexto(),
+  campoGifAlerta(),
+  ...camposGifAlertaMedida(), ...camposSonidoAlerta(),
   colorAcento,
   opacidadFondo(0.9),
   ...camposOverlayFijo({ texto: true }),
@@ -52,6 +81,9 @@ const BASE = {
   alertas: [
     { clave: 'dur', param: 'dur', tipo: 'numero', def: 4000, min: 1000, max: 12000, step: 500, segundos: true, etiqueta: 'duracion', grupo: 'base' },
     campoImagenAlerta('regalo'),
+    campoPosicionTexto(),
+    campoGifAlerta(),
+    ...camposGifAlertaMedida(), ...camposSonidoAlerta(),
     colorAcento,
     opacidadFondo(0.9),
     ...camposOverlayFijo({ texto: true }),
@@ -69,7 +101,7 @@ const BASE = {
     opacidadFondo(0.8),
     ...camposOverlayFijo({ texto: true }),
   ],
-  'alertas-social': [campoImagenAlerta('icono'), colorAcento, opacidadFondo(0.9), ...camposOverlayFijo({ texto: true }), ...ANIMACION_ALERTA],
+  'alertas-social': [campoImagenAlerta('icono'), campoPosicionTexto(), campoGifAlerta(), ...camposGifAlertaMedida(), ...camposSonidoAlerta(), colorAcento, opacidadFondo(0.9), ...camposOverlayFijo({ texto: true }), ...ANIMACION_ALERTA],
   'contador-likes': [{ ...colorAcento, def: '#FE2C55' }, opacidadFondo(0.8), ...camposOverlayFijo({ texto: false })],
   musica: [colorAcento, opacidadFondo(0.9), ...camposMusica(camposOverlayFijo({ texto: true }))],
   ...Object.fromEntries(Object.keys(CHATS_POR_PLATAFORMA).map((id) => [id, camposChatFijo()])),

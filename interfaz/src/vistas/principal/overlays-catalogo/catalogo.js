@@ -52,11 +52,14 @@ export const OVERLAYS_GENERADOS = [
 ];
 
 export const FONDOS_DESTACADOS = [
-  'linear-gradient(120deg, #173a8f, #2f6fed 55%, #58a6ff)',
-  'linear-gradient(120deg, #7a1f10, #e6532e 55%, #ffb057)',
-  'linear-gradient(120deg, #36207f, #7c4dff 55%, #c79bff)',
-  'linear-gradient(120deg, #6d4a00, #d48a00 55%, #ffd23f)',
   'center / cover no-repeat url("img/destacado-michi-metro.png"), #0b4f46',
+  'center / cover no-repeat url("img/destacado-2.png"), #111',
+  'linear-gradient(120deg, #173a8f, #2f6fed 55%, #58a6ff)',
 ];
+
+/** Enlace externo por indice de FONDOS_DESTACADOS (el slide abre la web). */
+export const ENLACES_DESTACADOS = {
+  1: 'https://streamer.epik.click/servicios/overlays-para-twitch',
+};
 
 export const categoriaDe = (idOverlay) => CATEGORIAS.find((categoria) => categoria.overlays.includes(idOverlay));

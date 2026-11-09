@@ -14,7 +14,7 @@ import { abrirPopupPlanes } from '../../componentes/popup-planes.js';
 import { toggleAccountPopover } from '../../componentes/popover-cuenta.js';
 import { obtenerAvatarPerfil } from './avatar-perfil.js';
 import { migrarDatosLegacy } from './datos-por-cuenta.js';
-import { loadSettings, applySettings } from './ajustes-app.js';
+import { loadSettings, applySettings, hidratarAjustesDesdeDisco } from './ajustes-app.js';
 
 export const almacenSesion = crearAlmacen({
   activo: false, // ¿el server tiene subscriptionsEnabled? (404 => false)
@@ -66,8 +66,13 @@ export function aplicarSesion(data) {
   window.renderPluginStore?.();
 }
 
-/** Carga inicial. 404 => el server no tiene el sistema activo. */
+/** Carga inicial. 404 => el server no tiene el sistema activo. Con la cuenta ya conocida, concilia los ajustes con su copia en disco. */
 export async function cargarSesion() {
+  await leerSesion();
+  hidratarAjustesDesdeDisco();
+}
+
+async function leerSesion() {
   try {
     const r = await fetch('/api/auth/session');
     if (r.status === 404) {
@@ -86,7 +91,6 @@ export async function cargarSesion() {
 
 // Vista de sidebar -> featureId Pro. Solo las que son un modulo entero.
 const VISTA_FEATURE = {
-  bot: 'bot-musical',
   soundpad: 'soundpad',
   mobile: 'panel-movil',
   clips: 'clips',

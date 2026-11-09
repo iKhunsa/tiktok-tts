@@ -5,6 +5,7 @@ import { renderCuentaPanel } from './cuenta/index.js';
 import { appBloqueada } from '../../nucleo/estado/sesion.js';
 import { aplicarBloqueoVista } from '../../nucleo/estado/vista-bloqueada.js';
 import { crearHistorialVistas } from '../../nucleo/estado/historial-vistas.js';
+import { guardarEstadoUi } from '../../nucleo/estado/estado-ui.js';
 import { trackUi } from '../../nucleo/telemetria-ui.js';
 
 // La app abre en 'chat' sin pasar por switchView.
@@ -17,6 +18,7 @@ export function switchView(name, { desdeHistorial = false } = {}) {
   // accesible es "cuenta". Cualquier otro destino rebota ahí.
   if (appBloqueada() && name !== 'cuenta') name = 'cuenta';
   trackUi('ui:view-opened', name);
+  guardarEstadoUi({ vista: name });
   if (!desdeHistorial) historialVistas.registrar(name);
   // Si se estaba capturando un atajo del soundpad, cancelarlo: si no, el
   // listener global de keydown queda pegado y se come todas las teclas.
@@ -32,11 +34,10 @@ export function switchView(name, { desdeHistorial = false } = {}) {
   if (name === 'tools' && window.renderPluginStore) window.renderPluginStore();
   if (name === 'mcp') renderMcpPanel();
   if (name === 'cuenta') renderCuentaPanel();
-  // Sonidos/Bot ya se pintaron una vez al arrancar (spLoad/musicInit) -- acá
+  // Sonidos ya se pintó una vez al arrancar (spLoad/musicInit) -- acá
   // solo se re-evalua el bloqueo Pro al entrar de verdad a la
   // vista, sin repetir sus fetches.
   if (name === 'soundpad') aplicarBloqueoVista('view-soundpad', 'soundpad');
-  if (name === 'bot') aplicarBloqueoVista('view-bot', 'bot-musical');
   if (name === 'mobile') aplicarBloqueoVista('view-mobile', 'panel-movil');
   if (name === 'clips') aplicarBloqueoVista('view-clips', 'clips');
   // El refresco de la tabla de moderacion solo corre con la vista visible.

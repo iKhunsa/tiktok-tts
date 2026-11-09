@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Overlay — GIF</title>
+  <style>
+    html, body { margin: 0; background: transparent; overflow: hidden; }
+    /* Ancho base: 20 % de la fuente de OBS, por el tamano elegido; --dx/--dy mueven desde la esquina superior izquierda. */
+    .medio {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: calc(var(--escala, 1) * 20vw);
+      height: auto;
+      opacity: var(--op, 1);
+      transform: translate(var(--dx, 0px), var(--dy, 0px)) perspective(1200px) rotateY(var(--ry, 0deg));
+    }
+  </style>
+</head>
+<body>
+  <script type="module" src="./overlay-gif.js"></script>
+</body>
+</html>

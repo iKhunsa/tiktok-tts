@@ -34,6 +34,7 @@ import {
   musicStop, musicOnIdle, musicOnStateSync, setMusicVol, getMusicAudio, musicOnPlaylistUpdate,
   musicOnEngineStatus,
 } from '../../vistas/principal/bot-musica.js';
+import { abrirPopupLimiteMusica } from '../../componentes/popup-limite-musica.js';
 import { modOnViewerUpdated } from '../../vistas/principal/moderacion.js';
 import { cargarEpiks } from '../../vistas/principal/epik/estado.js';
 import { updateBlockedWords, refreshModeracionStatus } from '../../vistas/principal/moderacion-contenido/index.js';
@@ -336,6 +337,9 @@ function handleMessage(data) {
         setMusicQueue(data.queue);
         musicRenderQueue();
       }
+      break;
+    case 'music-limit-reached':
+      abrirPopupLimiteMusica(data.limit);
       break;
     case 'music-request-cancelled':
       musicDropPending(data.requestId);

@@ -7,7 +7,17 @@
 .ovl-titulo h2 { margin-bottom: 0; }
 .ovl-titulo .cfg-btn { flex-shrink: 0; }
 
-.ovl-controles { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-4); }
+.ovl-editor-unificado {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border: 0; border-radius: 999px;
+  background: var(--brand); color: #fff;
+  font: inherit; font-size: var(--text-sm); font-weight: 600; cursor: pointer;
+  transition: background-color var(--dur-1) ease-out;
+}
+.ovl-editor-unificado:hover { background: var(--brand-hover); }
+.ovl-editor-unificado:focus-visible { outline: 2px solid var(--text-muted); outline-offset: 2px; }
+.ovl-editor-unificado img { filter: brightness(0) invert(1); }
+.ovl-controles { display: flex; align-items: center; justify-content: flex-start; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-4); }
 .ovl-pestanas { display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; background: var(--surface); }
 .ovl-pestana {
   padding: 6px 14px;
@@ -28,10 +38,23 @@
 .ovl-destacado { position: relative; height: 204px; margin-bottom: var(--space-4); border-radius: 20px; overflow: hidden; background: var(--surface); }
 .ovl-diapositiva { position: absolute; inset: 0; opacity: 0; transition: opacity var(--dur-4) ease-out; }
 .ovl-diapositiva.activa { opacity: 1; }
-.ovl-puntos { position: absolute; left: 50%; bottom: 10px; z-index: 2; display: flex; gap: 2px; transform: translateX(-50%); }
+.ovl-diapositiva-enlace { cursor: pointer; }
+.ovl-diapositiva:not(.activa) { pointer-events: none; }
+.ovl-diapositiva-enlace .icon-inline { position: absolute; top: 12px; right: 12px; width: 28px; height: 28px; padding: 6px; border-radius: 50%; background: rgba(0, 0, 0, .75); box-sizing: border-box; }
+.ovl-puntos { position: absolute; left: 50%; bottom: 10px; z-index: 2; display: flex; gap: 2px; padding: 0 4px; border-radius: 999px; background: rgba(0, 0, 0, 0.35); transform: translateX(-50%); }
 .ovl-punto { width: 18px; height: 16px; padding: 0; border: 0; background: transparent; cursor: pointer; display: grid; place-items: center; }
 .ovl-punto::before { content: ''; width: 5px; height: 5px; border-radius: 999px; background: rgba(255, 255, 255, 0.55); transition: width var(--dur-2) ease-out, background-color var(--dur-2) ease-out; }
 .ovl-punto.activo::before { width: 14px; background: #fff; }
+
+/* Banner del lienzo unico, sobre las categorias */
+.ovl-banner { display: flex; align-items: center; gap: 14px; margin-bottom: var(--space-4); padding: 14px 16px; border: 1px solid var(--accent-border); border-radius: 16px; background: var(--brand-a10); }
+.ovl-banner-icono { flex-shrink: 0; width: 28px; height: 28px; filter: brightness(0) invert(1); }
+.ovl-banner-texto { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.ovl-banner-texto strong { font-size: var(--text-sm); }
+.ovl-banner-texto span { font-size: var(--text-2xs); color: var(--text-muted); }
+.ovl-banner-cta { flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border: 0; border-radius: 999px; background: var(--brand); color: #fff; font-size: var(--text-xs); font-weight: 600; cursor: pointer; }
+.ovl-banner-cta:hover { background: var(--brand-hover); }
+.ovl-banner-cta .icon-inline { filter: brightness(0) invert(1); }
 
 /* Categorias en dos columnas */
 .ovl-categorias { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 12px; }
@@ -399,3 +422,197 @@ body.reduce-motion .ovl-vista, body.reduce-motion .ovl-vista::backdrop { animati
 @media (max-width: 640px) { .ovl-vista { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; } .ovl-vista-arte { display: none; } }
 /* Skin .epik importada: miniatura que trae el archivo, en el hueco de la dibujada */
 .ovl-skin-epik { display: block; width: 100%; height: 40px; border-radius: 7px; object-fit: cover; }
+
+/* Editor de canvas: capas a la izquierda, lienzo y biblioteca al centro, ajustes del overlay a la derecha */
+.edi { position: fixed; inset: var(--titlebar-h) 0 0 0; z-index: 900; display: grid; grid-template-columns: 280px minmax(0, 1fr) 340px; grid-template-rows: auto minmax(0, 1fr); background: var(--bg); }
+.edi[hidden] { display: none; }
+.edi-barra { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid var(--border); background: var(--surface); }
+.edi-barra-icono { width: 20px; height: 20px; filter: brightness(0) invert(1); }
+.edi-capas, .edi-ajustes { display: flex; flex-direction: column; min-height: 0; background: var(--surface); }
+.edi-capas { border-right: 1px solid var(--border); }
+.edi-ajustes { border-left: 1px solid var(--border); }
+.edi-seccion-titulo { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 52px; padding: 0 16px; border-bottom: 1px solid var(--border); font-size: var(--text-sm); font-weight: 600; }
+.edi-lista, .edi-panel-cuerpo { flex: 1; min-height: 0; overflow-y: auto; }
+.edi-lista { display: flex; flex-direction: column; gap: 2px; padding: 8px; }
+.edi-vacio { margin: 16px; font-size: var(--text-xs); color: var(--text-muted); }
+.edi-escenas { flex: none; max-height: 30%; border-bottom: 1px solid var(--border); }
+.edi-capa-fila { display: flex; align-items: center; border-radius: 10px; }
+.edi-capa-fila:hover { background: var(--surface-raised); }
+.edi-capa-fila { position: relative; }
+.edi-capa-fila.arrastrando { opacity: .4; }
+.edi-capa-fila.destino-arriba::before, .edi-capa-fila.destino-abajo::after { content: ""; position: absolute; left: 6px; right: 6px; height: 2px; border-radius: 1px; background: var(--brand, #7c4dff); pointer-events: none; }
+.edi-capa-fila.destino-arriba::before { top: -1px; }
+.edi-capa-fila.destino-abajo::after { bottom: -1px; }
+.edi-capa-fila.sel { background: var(--brand-a12); }
+.edi-capa-fila.oculta .edi-capa-nombre { opacity: .45; }
+.edi-capa-nombre { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; padding: 10px; border: 0; background: transparent; color: var(--text); font-size: var(--text-xs); font-weight: 600; text-align: left; cursor: pointer; }
+.edi-capa-nombre img, .edi-icono-boton img { width: 18px; height: 18px; filter: brightness(0) invert(1); }
+.edi-icono-boton { display: grid; place-items: center; width: 34px; height: 34px; margin-right: 4px; border: 0; border-radius: 8px; background: transparent; cursor: pointer; opacity: .6; }
+.edi-icono-boton:hover { opacity: 1; }
+.edi-centro { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.edi-herramientas { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; font-size: var(--text-xs); color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.edi-pantalla-completa { display: grid; place-items: center; padding: 4px; border: 0; border-radius: 6px; background: transparent; color: inherit; cursor: pointer; }
+.edi-pantalla-completa .icon-inline { filter: brightness(0) invert(1); }
+.edi-pantalla-completa:hover { background: var(--surface-raised); }
+.edi-escenario:fullscreen { margin: 0; background: var(--bg); }
+.edi-escenario { flex: 1; display: flex; min-height: 0; margin: 0 16px 16px; overflow: auto; scrollbar-width: none; } /* sin barras: al hacer zoom cambiarian el espacio medido */
+.edi-escenario > .edi-marco { margin: auto; } /* centrado que no recorta al desbordar */
+.edi-marco { position: relative; flex-shrink: 0; overflow: hidden; border-radius: 6px; outline: 1px solid var(--border); background: repeating-conic-gradient(var(--bg-button) 0 25%, var(--surface) 0 50%) 0 0 / 20px 20px; }
+.edi-capa { position: absolute; inset: 0; pointer-events: none; } /* el z-index de cada capa sube con la pila: sin esto, con 4+ overlays taparian la superficie de seleccion */
+.edi-capa[hidden] { display: none; }
+.edi-iframe { position: absolute; top: 0; left: 0; max-width: none; border: 0; transform-origin: top left; pointer-events: none; }
+.edi-resalte { position: absolute; z-index: 1001; pointer-events: none; outline: 2px solid var(--brand); outline-offset: 2px; }
+.edi-resalte[hidden] { display: none; }
+.edi-seleccion { position: absolute; inset: 0; z-index: 1000; touch-action: none; }
+.edi-biblioteca { flex-shrink: 0; height: 278px; display: flex; flex-direction: column; margin: 0 16px 16px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); overflow: hidden; }
+.edi-biblioteca-cabecera { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+/* Plegar la biblioteca: queda una franja con solo el boton, el canvas gana el alto. */
+.edi-biblioteca { position: relative; }
+.edi-biblioteca-plegar { flex: none; align-self: center; width: 44px; height: 18px; display: grid; place-items: center; padding: 0; border: 1px solid var(--border); border-top: 0; border-radius: 0 0 10px 10px; background: var(--surface); cursor: pointer; }
+.edi-biblioteca-plegar .icon-inline { width: 16px; height: 16px; opacity: 0.75; transition: rotate var(--dur-2, 200ms) var(--ease-out, ease-out); }
+.edi-biblioteca-plegar:hover .icon-inline { opacity: 1; }
+.edi-biblioteca.plegada { height: 20px; border-color: transparent; background: transparent; }
+.edi-biblioteca.plegada > :not(.edi-biblioteca-plegar) { display: none; }
+.edi-biblioteca.plegada .edi-biblioteca-plegar .icon-inline { rotate: 180deg; }.edi-biblioteca-cuerpo { flex: 1; min-height: 0; display: grid; grid-template-columns: 190px minmax(0, 1fr); }
+.edi-categorias { display: flex; flex-direction: column; gap: 2px; padding: 8px; overflow-y: auto; border-right: 1px solid var(--border); }
+.edi-categoria { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border: 0; border-radius: 8px; background: transparent; color: var(--text-muted); font-size: var(--text-xs); font-weight: 600; text-align: left; cursor: pointer; }
+.edi-categoria:hover { color: var(--text); background: var(--surface-raised); }
+.edi-categoria.activa { color: var(--text); background: var(--brand-a12); }
+.edi-categoria-icono { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 6px; }
+.edi-categoria-icono img { width: 14px; height: 14px; filter: brightness(0) invert(1); }
+.edi-tarjetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); align-content: start; gap: 10px; padding: 12px; overflow-y: auto; }
+.edi-tarjeta { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg); color: var(--text); text-align: left; cursor: pointer; }
+.edi-tarjeta[hidden] { display: none; }
+.edi-tarjeta:hover { background: var(--surface-raised); }
+.edi-tarjeta.en-lienzo { border-color: var(--accent-border); }
+.edi-tarjeta-icono { flex-shrink: 0; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--surface-raised); }
+.edi-tarjeta-icono img { width: 18px; height: 18px; filter: brightness(0) invert(1); }
+.edi-tarjeta-texto { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.edi-tarjeta-texto strong { font-size: var(--text-xs); }
+.edi-tarjeta-texto span { font-size: var(--text-2xs); color: var(--text-muted); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.edi .ovl-inspector { display: block; }
+@media (max-width: 1100px) { .edi { grid-template-columns: 220px minmax(0, 1fr) 300px; } }
+
+/* Menu contextual del editor */
+.edi-menu { position: fixed; z-index: 1000; min-width: 220px; padding: 6px; border: 1px solid var(--border-strong); border-radius: 12px; background: var(--surface-raised); box-shadow: 0 12px 32px rgba(0, 0, 0, .5); }
+.edi-menu[hidden] { display: none; }
+.edi-menu-opcion { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; border: 0; border-radius: 8px; background: transparent; color: var(--text); font-size: var(--text-xs); font-weight: 500; text-align: left; cursor: pointer; }
+.edi-menu-opcion img { width: 16px; height: 16px; filter: brightness(0) invert(1); opacity: .8; }
+.edi-menu-opcion:hover:not(:disabled) { background: var(--brand-a12); }
+.edi-menu-opcion:disabled { opacity: .35; cursor: default; }
+.edi-menu-opcion.peligro { color: var(--accent); }
+.edi-menu-opcion.peligro img { filter: none; }
+
+/* Biblioteca del editor, version minimalista: categorias en texto, buscador a la derecha, tarjetas de borde fino */
+.edi-biblioteca { background: var(--bg); }
+.edi-biblioteca-cabecera { display: flex; justify-content: flex-end; }
+.edi-biblioteca-cabecera .ovl-busqueda { width: min(375px, 100%); }
+.edi-categorias { gap: 0; padding: 12px 8px; }
+.edi-categoria-icono { display: none; }
+.edi-categoria { padding: 5px 12px; border-radius: 7px; font-weight: 500; }
+.edi-categoria.activa { color: var(--text); font-weight: 600; background: var(--brand-a12); }
+.edi-tarjetas { gap: 12px; }
+.edi-tarjeta { background: transparent; }
+.edi-tarjeta:hover { background: var(--surface); }
+.edi-tarjeta.en-lienzo { border-color: var(--accent-border); }
+
+/* Pestanas de la biblioteca: solo la de overlays tiene contenido; el resto muestra "Proximamente" */
+.edi-biblioteca-cabecera { align-items: center; justify-content: space-between; gap: 12px; }
+.edi-pestanas { display: flex; gap: 2px; overflow-x: auto; }
+.edi-pestana { flex-shrink: 0; padding: 7px 16px; border: 0; border-radius: 8px; background: transparent; color: var(--text-muted); font-size: var(--text-xs); font-weight: 500; cursor: pointer; }
+.edi-pestana:hover { color: var(--text); }
+.edi-pestana.activa { color: var(--text); font-weight: 600; background: var(--surface-raised); }
+.edi-proximamente { display: none; align-self: center; justify-self: center; grid-column: 1 / -1; }
+.edi-biblioteca:not([data-pestana="overlays"]) .edi-biblioteca-cuerpo { grid-template-columns: minmax(0, 1fr); }
+.edi-biblioteca:not([data-pestana="overlays"]) :is(.edi-categorias, .edi-tarjetas, .ovl-busqueda) { display: none; }
+.edi-biblioteca:not([data-pestana="overlays"]) .edi-proximamente { display: block; }
+.edi-media { display: none; flex-direction: column; min-height: 0; grid-column: 1 / -1; }
+.edi-biblioteca[data-pestana="media"] .edi-media { display: flex; }
+.edi-biblioteca[data-pestana="media"] .edi-proximamente { display: none; }
+
+/* Tiradores de tamano en las esquinas del marco de seleccion */
+.edi-resalte { z-index: 1001; }
+.edi-tirador { display: none; position: absolute; width: 12px; height: 12px; border: 2px solid var(--brand); border-radius: 3px; background: #fff; pointer-events: auto; touch-action: none; }
+.edi-resalte.con-tiradores .edi-tirador { display: block; }
+.edi-tirador[data-esquina="nw"] { top: -7px; left: -7px; cursor: nwse-resize; }
+.edi-tirador[data-esquina="ne"] { top: -7px; right: -7px; cursor: nesw-resize; }
+.edi-tirador[data-esquina="sw"] { bottom: -7px; left: -7px; cursor: nesw-resize; }
+.edi-tirador[data-esquina="se"] { bottom: -7px; right: -7px; cursor: nwse-resize; }
+
+/* Barra del editor: titulo a la izquierda, secciones en el centro */
+.edi-barra { display: grid; grid-template-columns: 1fr auto 1fr; }
+.edi-barra-inicio { display: flex; align-items: center; gap: 12px; }
+.edi-secciones { display: flex; gap: 4px; }
+.edi-seccion { padding: 8px 20px; border: 0; border-radius: 8px; background: transparent; color: var(--text-muted); font-size: var(--text-sm); font-weight: 500; cursor: pointer; }
+.edi-seccion:hover { color: var(--text); }
+.edi-seccion.activa { color: var(--text); font-weight: 600; background: var(--bg); }
+.edi-gif, .edi-sonido { grid-column: 1 / -1; min-height: 0; }
+.edi:not([data-seccion="gif"]) .edi-gif { display: none; }
+.edi[data-seccion="gif"] > :is(.edi-capas, .edi-centro, .edi-ajustes) { display: none; }
+/* "Efectos de sonido": sección en blanco por ahora (su contenido está por definir) */
+.edi-sonido { display: none; }
+.edi[data-seccion="sonido"] .edi-sonido { display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+.edi[data-seccion="sonido"] > :is(.edi-capas, .edi-centro, .edi-ajustes) { display: none; }
+.edi-renombrar { flex: 1; min-width: 0; margin: 2px 8px; padding: 6px 8px; border: 1px solid var(--brand-a12); border-radius: 8px; background: var(--surface-raised); color: inherit; font: inherit; }
+.edi-acordeon { cursor: pointer; user-select: none; }
+.edi-acordeon-titulo { display: flex; align-items: center; gap: 6px; }
+.edi-chevron { width: 18px; height: 18px; opacity: .7; transition: transform .15s; }
+.edi-acordeon[aria-expanded="false"] .edi-chevron { transform: rotate(-90deg); }
+.edi-acordeon[aria-expanded="false"] + .edi-lista { display: none; }
+.edi-acciones-panel { display: flex; align-items: center; }
+.edi-acciones-panel [hidden] { display: none; }
+
+/* Boton "Cambiar skin" sobre el lienzo del editor unificado (los estilos del selector son los de la vista de un overlay) */
+.edi-escenario { position: relative; }
+/* Por encima de la superficie de seleccion (1000) y de su marco (1001): si no, se comen los clics del selector. */
+.edi-escenario > .ovl-skin { z-index: 1100; }
+
+/* Animaciones de la biblioteca del editor: solo transform y opacidad, ease-out fuerte y menos de 250 ms. Nada con teclado
+   (buscar) ni en lo repetitivo; al plegar no hay animacion (lo que se va, se va rapido). */
+@keyframes edi-entra { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes edi-entra-suave { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+/* Al desplegar el panel, su contenido (cabecera y cuerpo) vuelve a mostrarse: entra en vez de aparecer de golpe. */
+.edi-biblioteca > :not(.edi-biblioteca-plegar) { animation: edi-entra 220ms var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)) both; }
+/* Al cambiar de pestana, el contenido de la nueva entra con un desplazamiento mas corto. */
+.edi-tarjetas, .edi-gifs, .edi-media { animation: edi-entra-suave 180ms var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)) both; }
+/* Al cambiar de categoria, las tarjetas entran escalonadas (30 ms entre una y otra, hasta la sexta). */
+.edi-entra > .edi-tarjeta { animation: edi-entra 200ms var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)) both; }
+.edi-entra > .edi-tarjeta:nth-child(2) { animation-delay: 30ms; }
+.edi-entra > .edi-tarjeta:nth-child(3) { animation-delay: 60ms; }
+.edi-entra > .edi-tarjeta:nth-child(4) { animation-delay: 90ms; }
+.edi-entra > .edi-tarjeta:nth-child(5) { animation-delay: 120ms; }
+.edi-entra > .edi-tarjeta:nth-child(n+6) { animation-delay: 150ms; }
+/* Respuesta al pulsar y colores suaves: lo que se toca debe notar que se le oye. */
+.edi-pestana, .edi-categoria, .edi-tarjeta, .edi-gif-tarjeta, .edi-biblioteca-plegar { transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, transform 140ms var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)); }
+.edi-pestana:active, .edi-categoria:active, .edi-tarjeta:active, .edi-gif-tarjeta:active:not(.arrastrando) { transform: scale(0.97); }
+@media (prefers-reduced-motion: reduce) {
+  .edi-biblioteca > :not(.edi-biblioteca-plegar), .edi-tarjetas, .edi-gifs, .edi-media, .edi-entra > .edi-tarjeta { animation: none; }
+  .edi-pestana:active, .edi-categoria:active, .edi-tarjeta:active, .edi-gif-tarjeta:active:not(.arrastrando) { transform: none; }
+}
+body.reduce-motion .edi-biblioteca > :not(.edi-biblioteca-plegar), body.reduce-motion .edi-tarjetas, body.reduce-motion .edi-gifs, body.reduce-motion .edi-media, body.reduce-motion .edi-entra > .edi-tarjeta { animation: none; }
+body.reduce-motion :is(.edi-pestana, .edi-categoria, .edi-tarjeta, .edi-gif-tarjeta):active { transform: none; }
+
+.edi-barra-fin { justify-self: end; display: flex; align-items: center; gap: 8px; }
+.edi-copiar-obs { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border: 0; border-radius: 8px; background: var(--brand); color: #fff; font: inherit; font-size: var(--text-sm, 14px); font-weight: 600; cursor: pointer; }
+.edi-copiar-obs .icon-inline { width: 16px; height: 16px; filter: brightness(0) invert(1); }
+.edi-copiar-obs:hover { filter: brightness(1.1); }
+
+/* Bloqueo de capas: el candado solo se ve al pasar por la fila (o si la capa esta bloqueada, que debe notarse de un vistazo). */
+.edi-capa-fila .edi-bloqueo { opacity: 0; transition: opacity 150ms ease; }
+.edi-capa-fila:hover .edi-bloqueo, .edi-capa-fila.sel .edi-bloqueo, .edi-bloqueo:focus-visible { opacity: .6; }
+.edi-capa-fila .edi-bloqueo.activo { opacity: 1; }
+.edi-capa-fila.bloqueada .edi-capa-nombre { font-style: italic; }
+.edi-icono-boton:disabled { opacity: .3; cursor: not-allowed; }
+
+/* Boton rojo de test: lanza el evento de prueba en vivo (llega tambien al OBS). */
+.edi-probar-escena { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border: 0; border-radius: 8px; background: #e5484d; color: #fff; font: inherit; font-size: var(--text-sm, 14px); font-weight: 600; cursor: pointer; }
+.edi-probar-escena .icon-inline { width: 16px; height: 16px; filter: brightness(0) invert(1); }
+.edi-probar-escena:hover { filter: brightness(1.1); }
+.edi-icono-boton.edi-probar-icono { background: #e5484d; opacity: 1; }
+.edi-icono-boton.edi-probar-icono:hover { filter: brightness(1.1); }
+/* Probar escena: solo el icono; al pasar el raton (o enfocarlo) se despliega con su texto. */
+.edi-probar-escena { gap: 0; padding: 6px 9px; }
+.edi-probar-escena span { max-width: 0; margin-left: 0; overflow: hidden; white-space: nowrap; opacity: 0; transition: max-width var(--dur-2, 200ms) var(--ease-out, ease-out), margin-left var(--dur-2, 200ms) var(--ease-out, ease-out), opacity var(--dur-2, 200ms) var(--ease-out, ease-out); }
+.edi-probar-escena:is(:hover, :focus-visible) { padding: 6px 12px; }
+.edi-probar-escena:is(:hover, :focus-visible) span { max-width: 160px; margin-left: 6px; opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .edi-probar-escena span { transition: none; } }

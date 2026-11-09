@@ -1,0 +1,112 @@
+/*
+ * Formularios en modal: baja de cuenta, confirmar eliminacion, cancelar plan,
+ * reporte de problemas y sugerencia de ideas. Un solo set de componentes
+ * `.fm-*` y UNA escala de espaciado (multiplos de 4) para todos:
+ *
+ *   --fm-pad      32  padding del modal
+ *   --fm-gap      16  entre bloques (titulo, descripcion, campos, hint)
+ *   --fm-gap-sm    6  etiqueta -> control, y entre chips
+ *   --fm-gap-act  24  ultimo bloque -> botones (16 de gap + 8 propios)
+ *
+ * Sin anchos fijos en contenido: todo fluye con flex/grid y envuelve.
+ * Movimiento (skill emil-design-eng): entrada 200ms ease-out desde scale(.96)
+ * + opacity, feedback :active en chips y botones, solo propiedades concretas
+ * en transition, hover solo en punteros finos, reduced-motion sin movimiento.
+ */
+.modal-content.fm-modal {
+  --fm-pad: 32px;
+  --fm-gap: 16px;
+  --fm-gap-sm: 6px;
+  --fm-gap-act: 8px;
+  width: min(480px, calc(100% - 24px));
+  max-width: none;
+  padding: var(--fm-pad);
+  display: flex;
+  flex-direction: column;
+  gap: var(--fm-gap);
+  border-radius: 12px;
+}
+.fm-modal [hidden] { display: none !important; }
+.fm-modal .modal-close:focus-visible { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
+
+/* Entrada: los modales son centrados, asi que el origen queda en el centro */
+.modal-overlay.show > .fm-modal:not(.idea-modal-content) { animation: fm-in 200ms var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)); }
+@keyframes fm-in { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .modal-overlay.show > .fm-modal:not(.idea-modal-content) { animation: none; } }
+body.reduce-motion .modal-overlay.show > .fm-modal:not(.idea-modal-content) { animation: none; }
+
+.fm-form { display: flex; flex-direction: column; gap: var(--fm-gap); margin: 0; min-width: 0; }
+.fm-modal .fm-title { margin: 0; padding-right: 32px; font-size: 20px; line-height: 28px; font-weight: 500; letter-spacing: -0.3px; color: var(--text); }
+.fm-desc, .fm-hint { margin: 0; font-size: var(--text-sm); line-height: 1.5; color: var(--text-muted); }
+.fm-hint--sm { font-size: var(--text-xs); }
+
+/* Lista con vinetas (confirmacion de eliminacion) */
+.fm-list { margin: 0; padding-left: 20px; display: flex; flex-direction: column; font-size: var(--text-base); line-height: 1.6; color: var(--text-muted); }
+.fm-list b { font-weight: 700; }
+
+/* Motivos: chips en 2 columnas (columna por columna) */
+.fm-fieldset { border: 0; margin: 0; padding: 0; min-width: 0; display: flex; flex-direction: column; gap: var(--fm-gap-sm); }
+.fm-legend { padding: 0 0 10px; font-size: var(--text-xs); line-height: 1.5; font-weight: 500; color: var(--text-secondary); }
+.fm-chips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(var(--fm-rows, 3), auto); grid-auto-flow: column; gap: var(--fm-gap-sm); }
+.fm-chip {
+  display: flex; align-items: center; min-width: 0; padding: 10px 12px;
+  background: var(--bg-button); border: 1px solid var(--border-strong); border-radius: 8px;
+  font-size: var(--text-sm); line-height: 1.5; font-weight: 400; color: var(--text); cursor: pointer;
+  overflow-wrap: anywhere;
+  transition: border-color 150ms ease, background-color 150ms ease, transform 120ms var(--ease-out, ease-out);
+}
+.fm-chip input { position: absolute; opacity: 0; pointer-events: none; }
+.fm-chip--wide { justify-content: center; text-align: center; }
+.fm-chip:active { transform: scale(0.98); }
+@media (hover: hover) and (pointer: fine) { .fm-chip:hover { border-color: var(--text-muted); } }
+.fm-chip:has(input:checked) { border-color: var(--brand); background: var(--brand-a12); }
+.fm-chip:has(input:focus-visible) { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
+
+/* Campos: etiqueta 12px, control de 38px, 6px entre ambos */
+.fm-field { display: flex; flex-direction: column; gap: var(--fm-gap-sm); min-width: 0; }
+.fm-field > label { font-size: var(--text-xs); line-height: 1.5; font-weight: 500; letter-spacing: .2px; color: var(--text-secondary); }
+.fm-field :is(input, textarea) {
+  width: 100%; box-sizing: border-box; background: var(--bg-button); border: 1px solid var(--border-strong);
+  border-radius: 8px; color: var(--text); font: 400 var(--text-sm)/1.5 'Inter', sans-serif; outline: none;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+.fm-field input { height: 38px; padding: 0 12px; }
+.fm-field textarea { min-height: 76px; padding: 10px 12px; resize: vertical; }
+.fm-field :is(input, textarea)::placeholder { color: var(--text-muted); opacity: 1; }
+@media (hover: hover) and (pointer: fine) { .fm-field :is(input, textarea):hover { border-color: var(--text-muted); } }
+.fm-field :is(input, textarea):focus { border-color: var(--brand-a40); box-shadow: 0 0 0 3px var(--brand-a12); }
+.fm-field :is(input, textarea):disabled { opacity: .55; }
+.fm-required { color: var(--brand); margin-left: 3px; }
+.fm-modal .idea-char-count { align-self: flex-end; font-size: var(--text-3xs); line-height: 1.5; color: var(--text-muted); }
+.fm-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--fm-gap); }
+
+/* Acciones: a la derecha, mismo aire sobre ellas en todos los formularios */
+.fm-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 12px; padding-top: var(--fm-gap-act); }
+.fm-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box;
+  font: 400 var(--text-base)/20px 'Inter', sans-serif; letter-spacing: -0.15px; white-space: nowrap;
+  cursor: pointer; text-decoration: none; border: 0;
+  transition: opacity 150ms ease, background-color 150ms ease, transform 120ms var(--ease-out, ease-out);
+}
+.fm-btn:active:not(:disabled) { transform: scale(0.97); }
+.fm-btn:focus-visible { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
+.fm-btn .icon-inline { width: 16px; height: 16px; flex: none; }
+.fm-btn--ghost, .fm-btn--link { min-height: 32px; padding: 6px 16px; background: transparent; color: var(--text); border-radius: 8px; }
+.fm-btn--link .icon-inline { width: 20px; height: 20px; }
+.fm-btn--primary { min-height: 32px; min-width: 104px; padding: 6px 16px; background: var(--brand); color: #fff; font-weight: 500; border-radius: 8px; }
+@media (hover: hover) and (pointer: fine) {
+  .fm-btn--ghost:hover, .fm-btn--link:hover { background: var(--surface-raised, rgba(255, 255, 255, .06)); }
+  .fm-btn--primary:hover:not(:disabled) { opacity: .88; }
+}
+.fm-btn:disabled { opacity: .5; cursor: default; }
+
+/* Separador contrasena / Google en la confirmacion de eliminacion */
+.fm-divider { margin: 0; text-align: center; font-size: var(--text-xs); color: var(--text-muted); }
+
+@media (max-width: 520px) {
+  .modal-content.fm-modal { --fm-pad: 24px 20px; padding: 24px 20px; }
+  .fm-chips { grid-auto-flow: row; grid-template-rows: none; grid-template-columns: minmax(0, 1fr); }
+  .fm-row { grid-template-columns: minmax(0, 1fr); }
+  .fm-actions { flex-direction: column-reverse; align-items: stretch; }
+  .fm-btn { width: 100%; }
+}

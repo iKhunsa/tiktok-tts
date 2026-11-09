@@ -7,7 +7,8 @@ const { attachPopupHandling } = require('./popups');
 // CRUD de pestanas. Cada entrada: { view, url, title, isLoading, canGoBack,
 // canGoForward, hydrated, crashed }. No sabe nada de bounds ni de si el panel
 // esta visible — eso lo decide controller.js.
-function createTabPool({ session, onTabEvent, onPopupRequest, logger }) {
+// `preload` (opcional): script que corre en el mundo aislado de cada pestana, lo usa el navegador de GIFs.
+function createTabPool({ session, onTabEvent, onPopupRequest, logger, preload }) {
   const tabs = new Map();
 
   function emit(tabId) {
@@ -102,6 +103,7 @@ function createTabPool({ session, onTabEvent, onPopupRequest, logger }) {
         contextIsolation: true,
         sandbox: true,
         webSecurity: true,
+        ...(preload ? { preload } : {}),
       },
     });
     tab.view = view;

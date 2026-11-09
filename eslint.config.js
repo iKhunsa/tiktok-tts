@@ -100,6 +100,16 @@ module.exports = [
     },
   },
   {
+    // El selector de GIFs corre dentro de la pagina (mundo aislado de Electron): globales de navegador.
+    files: ['electron-shell/gif-browser/picker-preload.js'],
+    languageOptions: {
+      globals: {
+        document: 'readonly', window: 'readonly', location: 'readonly', getComputedStyle: 'readonly',
+        requestAnimationFrame: 'readonly', setTimeout: 'readonly', URL: 'readonly',
+      },
+    },
+  },
+  {
     // plugin-store/*.js (interfaz/publico/, Vite lo copia sin tocar a
     // dist/) son scripts clasicos con <script src=...> — no modulos ES,
     // a diferencia del resto de interfaz/. Mismos globals que el viejo

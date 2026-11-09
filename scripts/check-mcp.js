@@ -18,7 +18,10 @@ const REGISTRA_TOOL = /mcpRegistry\.registerTool\s*\(|mcp\.registerTool\s*\(/;
 //    MCP tiene un botón manual para eso (Fase 5).
 // sugerencias tambien publica feedback externo por decision manual de la
 // persona usuaria; un agente MCP no debe enviarlo autonomamente.
-const EXENTOS = new Set(['chat', 'reporte-bug', 'sugerencias']);
+// gifs e imagenes son las bibliotecas de medios del editor de canvas ("Mis GIFs", "Mis sonidos" y las imagenes subidas):
+// sus rutas de escritura importan una URL o suben un archivo que la persona elige a mano en la interfaz; no hay una accion
+// que un agente deba disparar solo.
+const EXENTOS = new Set(['chat', 'reporte-bug', 'sugerencias', 'gifs', 'imagenes']);
 
 function check() {
   const problemas = [];

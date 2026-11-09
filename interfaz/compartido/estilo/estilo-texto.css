@@ -21,6 +21,7 @@ html { justify-content: var(--pos-x, flex-start); }
 body.overlay-fijo {
   zoom: var(--zoom, 1);
   translate: calc(var(--dx, 0px) / var(--zoom, 1)) calc(var(--dy, 0px) / var(--zoom, 1));
+  transform: perspective(1200px) rotateY(var(--ry, 0deg)); /* rotacion 3D tipo puerta (campo rotaY) */
 }
 body.fijar-fuente { font-family: var(--ff); }
 /* Cada texto de estas tarjetas declara su propio peso y formato: el ajuste del usuario manda sobre ellos. */

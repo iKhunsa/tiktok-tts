@@ -22,6 +22,7 @@ export function abrirTarjetasOverlays(tipos) {
 function crearSeccionGeneral(campos) {
   const seccion = document.createElement('details');
   seccion.className = 'cfg-grupo';
+  seccion.dataset.grupo = 'general'; // el editor de canvas coloca despues su acordeon de GIF
   seccion.open = true;
   // El titulo va en un span: traducir el summary entero borraria el boton de restablecer.
   seccion.innerHTML = '<summary class="cfg-grupo-titulo"><span data-i18n="overlayCfg.grupo.general"></span></summary>';

@@ -107,6 +107,42 @@ Sección "Agente MCP" en la tienda de plugins (`interfaz/src/vistas/principal/mc
 
 ---
 
+## Buscador de GIFs y "Mis GIFs" (`features/gifs/` + `electron-shell/gif-browser/`)
+
+Sección «Buscador de GIF» del editor de canvas: un navegador para encontrar GIFs en la web (Google, GIPHY, Tenor o cualquier otra página) y una biblioteca personal por cuenta donde se guardan con un clic.
+
+**Navegador (`electron-shell/gif-browser/`):** reutiliza Portal View, no crea otro motor — misma sesión persistente por cuenta (`getPortalViewSession`), mismo `tab-pool` (con la opción `preload`) y `normalizeUrl`. Es una sola pestaña que el renderer coloca en el hueco `.gif-pagina` (`gifbrowser:open|bounds|hide|close`), no anclada a la derecha como el panel de Portal View. Los enlaces que abren ventana nueva se cargan en la misma pestaña.
+
+**Selector (`picker-preload.js`):** corre en el mundo aislado del `preload` (`contextIsolation` + `sandbox`), no expone nada a la página (sin `contextBridge`) y solo hace caso a eventos `isTrusted`. Detecta `<img>` .gif/.webp/.apng (también por `<picture><source type>`), `<video>` en bucle (`loop` o `autoplay`+`muted`) y fondos CSS, usando `elementsFromPoint` para que un enlace transparente encima no oculte el GIF. Resalta solo eso con un marco rojo `#F0213A` dibujado en un shadow root (no toca los estilos de la página), intercepta el clic y abre una tarjeta flotante con vista previa y «Añadir a TikLiveTTS». Es un solo archivo porque un preload en sandbox no puede hacer `require` de módulos locales; sus textos los traduce el renderer y se los entrega por `gifbrowser:textos`.
+
+**IPC:** `gifbrowser:importar` solo se acepta del `webContents` y el frame principal de la pestaña propia, de uno en uno, y solo reenvía `url`, `titulo` y `origen` a `POST /api/gifs/importar`.
+
+**Backend (`features/gifs/`):**
+- `GET /api/gifs`, `POST /api/gifs/importar`, `POST /api/gifs/verificar`, `PATCH|DELETE /api/gifs/:id`, `POST /api/gifs/carpetas`, `PATCH|DELETE /api/gifs/carpetas/:id`, `GET /gifs/<archivo>`.
+- `validar-url.js` (solo http(s), sin credenciales, y el servidor debe resolver a una IP pública: este endpoint lo alcanza cualquiera en la red local) → `descargar.js` (tope de 15 MB y 15 s, redirecciones a mano validando cada destino, sin cabeceras ni cookies de otro origen; 401/403/429 se informan como «el sitio no lo permite» y no se reintentan) → `sniff.js` (reconoce por los bytes GIF con más de un fotograma, WebP animado, APNG, MP4 y WebM; rechaza imágenes fijas y archivos incompatibles).
+- **Enlace o archivo:** de GIPHY, Tenor e Imgur (enlaces permanentes, `proveedores.js`) se guarda solo la referencia; de cualquier otro sitio se copia el archivo a `accountDataPath('gifs','archivos')`. Los duplicados se evitan por URL y por huella SHA-1 del contenido.
+- `verificar-enlaces.js` marca `caducado` los enlaces que ya no existen o dejaron de ser animados (como mucho 12 por pasada, uno por día cada uno); un fallo pasajero no cambia el estado.
+- Datos: `gifs/indice.json` por cuenta. Los errores viajan como `codigo` y el front los traduce (`gifs.error.<codigo>`).
+
+**UI:** `vistas/principal/gif-buscador/` — guía previa con tres pasos (se puede no volver a mostrar y reabrir), navegador, y «Mis GIFs» (carpetas, buscar, renombrar, mover, copiar URL, eliminar en dos pasos). Todo texto que viene de la web (nombres, dominios) se pinta con `textContent`, nunca como HTML.
+
+**Usar los GIFs en el editor de canvas** (`overlays-catalogo/`, solo en el editor unificado):
+- **Capas GIF** (`gif-capas.js`, `editor-gifs.js`): la pestaña «GIF» de la biblioteca lista «Mis GIFs»; un clic pone el GIF en el centro del canvas y arrastrarlo lo deja donde se suelta (reutiliza `permitirArrastreGif`). Cada GIF es su propia capa, un overlay más con id `gif:<id del GIF>`: esquema `ESQUEMA_GIF` (tamaño, opacidad, X/Y/Z), ajustes en `appSettings.overlays['gif:<id>']` y página de OBS `overlay-gif.html?src=…` (`urlCapaGif`). El editor la trata como a cualquier otra (mover, redimensionar, apilar, copiar propiedades, escenas) gracias a una tarjeta virtual oculta en `#ovlTarjetas` y al esquema registrado en `ESQUEMAS` en tiempo de ejecución. `loadSettings` conserva las capas `gif:*` (deepMerge solo guarda claves conocidas).
+- **GIF de la alerta** (`gif-alerta-panel.js`, `gif-selector-ventana.js`): el panel solo muestra el GIF en uso con un botón (Elegir, Cambiar, Quitar); la elección se hace en una ventana emergente con «Mis GIFs» (buscador y un único botón Usar). Como las tarjetas de alerta tienen un `body` de ancho fijo, `imagen-gif-alerta.js` lo ensancha lo que crece la imagen para que el texto no se comprima. Las alertas (`alertas`, `alertas-social` y los eventos de `EVENTOS_ALERTA`) tienen el campo oculto `gifAlerta` (param `gif`); el panel del editor ofrece elegir un GIF de la biblioteca, que sustituye la imagen de la alerta (`compartido/imagen-gif-alerta.js`, solo http(s)). El campo es `ui: 'oculto'`, así que no aparece en los ajustes de cada overlay.
+
+- **Sonido de la alerta** (`sonido-alerta-panel.js`, `sonido-selector-ventana.js`): acordeón hermano del de GIF, con el mismo aspecto. Sin sonido solo hay el botón «Elegir sonido», que abre la ventana de «Mis sonidos» (lista con botón de oír y un único «Usar»); con sonido, la tarjeta con la canción, «Cambiar sonido» y la papelera, y debajo volumen, tono y un ecualizador básico opcional (graves, medios y agudos; apagarlo los deja a cero). Los campos ocultos viajan en la URL: `snd` (sonido), `sv` (volumen 0-100), `st` (tono, -12 a +12 semitonos), `sg`, `sm` y `sa` (graves, medios y agudos en dB, -12 a +12). `compartido/sonido-alerta.js` (`crearAudioAlerta`) es la única función que prepara el audio y la usan el overlay (`reproducirSonidoAlerta`) y la prueba del editor, así que suenan igual. El tono cambia también la velocidad (`playbackRate` con `preservesPitch = false`, y `defaultPlaybackRate` porque asignar `src` reinicia la velocidad); el ecualizador usa tres `BiquadFilter` de Web Audio solo si alguna banda está tocada (con `crossOrigin = 'anonymous'`, si no un audio de otro origen saldría mudo).
+- **Alertas con skin `.epik`** (`compartido/epik/anfitrion-alerta.js`): la alerta la dibuja el diseño, pero el sonido lo reproduce el host (`reproducirSonidoAlerta(epik.cfg)`) y el GIF elegido viaja como `imagen` de la alerta pública (sustituye al icono o regalo). Sin esto, una alerta con skin `.epik` no sonaba ni mostraba el GIF.
+- **Capas bloqueadas** (`editor-canvas.js`): el candado de cada fila de Capas (y «Bloquear» en el menú) deja la capa sin arrastrar, redimensionar ni borrar, y el clic del lienzo la atraviesa; sigue eligiéndose desde la lista. Se guarda en la escena (`bloqueadas`). Si ya hay una capa seleccionada y se hace clic sobre ella, gana aunque otra la tape.
+
+**Probar alertas en OBS de verdad:**
+- `obs-websocket` (puerto 4455) permite capturar una fuente (`GetSourceScreenshot`) y medir su audio (`InputVolumeMeters`) si la fuente tiene «Controlar audio mediante OBS»; así se comprobó que cada alerta se ve, muestra su GIF y suena. Si OBS responde «OBS is not ready», se arregla reiniciándolo.
+- El audio de una fuente de navegador solo entra en la mezcla del directo con «Controlar audio mediante OBS» (`reroute_audio`); sin ella suena por los altavoces y no llega a los espectadores.
+- Las URL de OBS llevan los ajustes (GIF, sonido, posición, tamaño): una fuente antigua no cambia sola. Hay que copiar el enlace nuevo del editor («Copiar enlace para OBS» da toda la escena en una sola fuente de 1920x1080).
+- Los overlays de diseño fijo (alertas) se escalan a la fuente y la tarjeta va centrada: una fuente de 440x130 solo cabe la tarjeta de fábrica; con un GIF grande hay que agrandar la fuente al tamaño del bloque de la alerta.
+- El filtro de spam descarta los mensajes de chat idénticos: una prueba automática debe mandar un texto distinto cada vez.
+
+**Pendiente:** importar fotos fijas (hoy solo entran medios animados) y limitar el editor a usuarios Pro (hoy no hay bloqueo).
+
 ## Overlays — Archivos .epik y esquema de ajustes
 
 ### Archivos `.epik` (`features/epik/`)

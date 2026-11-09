@@ -25,6 +25,7 @@ const REQUIRED = [
   'overlay-viewers.html',
   'overlay-social.html',
   'overlay-evento.html',
+  'overlay-gif.html',
   'overlay-contador-likes.html',
   'overlay-musica.html',
   'assets',

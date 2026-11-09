@@ -27,6 +27,7 @@ body {
 body.rtl { direction: rtl; --dir: -1; }
 #chat-container {
   translate: var(--dx, 0) var(--dy, 0);
+  transform: perspective(1200px) rotateY(var(--ry, 0deg)); /* rotacion 3D tipo puerta (campo rotaY) */
   /* 100% del ajuste = la medida base escalada con --u. Los textos largos pasan de linea. */
   width: min(100%, var(--msg-w, 1) * var(--ancho-base, 420) * var(--u));
   align-self: var(--pos-msg, flex-start);

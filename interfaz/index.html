@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="./src/estilos/index-legacy.css">
   <link rel="stylesheet" href="./src/estilos/campos-overlay.css">
   <link rel="stylesheet" href="./src/estilos/overlays-catalogo.css">
+  <link rel="stylesheet" href="./src/estilos/gif-buscador.css">
   <link rel="stylesheet" href="./src/estilos/moderacion-contenido.css">
   <link rel="stylesheet" href="./src/estilos/gift-gate.css">
   <link rel="stylesheet" href="./src/estilos/moderacion-popup.css">
@@ -20,6 +21,7 @@
   <link rel="stylesheet" href="./src/estilos/barra-titulo.css">
   <link rel="stylesheet" href="./src/estilos/vincular-cuentas.css">
   <link rel="stylesheet" href="./src/estilos/modal-cuenta.css">
+  <link rel="stylesheet" href="./src/estilos/formularios-modal.css">
   <link rel="stylesheet" href="./src/estilos/modal-agregar-canal.css">
 </head>
 <body>
@@ -315,10 +317,19 @@
           <button class="ovl-pestana" type="button" data-ovl-modo="explorar" data-i18n="overlayCat.categorias"></button>
           <button class="ovl-pestana" type="button" data-ovl-modo="tienda" data-i18n="overlayCat.explorar"></button>
         </div>
+        <button class="ovl-editor-unificado" type="button" id="ovlEditorUnificado"><img class="icon-inline" src="icons/layers.svg" alt=""> <span data-i18n="overlayCat.editorUnificado"></span></button>
       </div>
 
       <div id="ovlExplorar">
         <div class="ovl-destacado" id="ovlDestacado"></div>
+        <div class="ovl-banner">
+          <img class="ovl-banner-icono" src="icons/layers.svg" alt="">
+          <div class="ovl-banner-texto">
+            <strong data-i18n="overlayCat.bannerLienzoTitulo"></strong>
+            <span data-i18n="overlayCat.bannerLienzoDesc"></span>
+          </div>
+          <button type="button" class="ovl-banner-cta"><span data-i18n="overlayCat.bannerLienzoCta"></span> <img class="icon-inline" src="icons/arrow_forward.svg" alt=""></button>
+        </div>
         <div class="ovl-categorias" id="ovlCategorias"></div>
         <p class="ovl-pie"><span data-i18n="overlayCat.pregunta"></span> <button type="button" onclick="openIdeaModal('overlay')" data-i18n="overlayCat.preguntaCta"></button></p>
       </div>
@@ -328,6 +339,58 @@
         <div class="ovl-tienda" id="ovlTiendaProductos"></div>
         <p class="ovl-pie"><span data-i18n="overlayCat.pregunta"></span> <button type="button" onclick="openIdeaModal('overlay')" data-i18n="overlayCat.preguntaCta"></button></p>
       </div>
+
+      <div class="edi" id="ovlEditor" data-seccion="editor" hidden>
+        <header class="edi-barra">
+          <div class="edi-barra-inicio">
+            <button class="ovl-volver" id="ovlEditorCerrar" type="button" data-i18n-aria-label="overlayCat.volver"><img src="icons/arrow_back.svg" alt=""></button>
+            <img class="edi-barra-icono" src="icons/layers.svg" alt="">
+            <strong data-i18n="overlayCat.editor.titulo"></strong>
+          </div>
+          <nav class="edi-secciones" id="ovlEditorSecciones"></nav>
+          <div class="edi-barra-fin"><button type="button" class="edi-copiar-obs" id="ovlEditorCopiarObs" data-i18n-title="overlayCat.editor.copiarObsAyuda"><img class="icon-inline" src="icons/content_copy.svg" alt=""> <span data-i18n="overlayCat.editor.copiarObs"></span></button>
+          <button type="button" class="edi-probar-escena" id="ovlEditorProbarEscena" data-i18n-title="overlayCat.editor.probarEscenaAyuda"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> <span data-i18n="overlayCat.editor.probarEscena"></span></button></div>
+        </header>
+        <section class="edi-gif" id="ovlEditorGif"></section>
+        <section class="edi-sonido" id="ovlEditorSonido"></section>
+        <aside class="edi-capas">
+          <div class="edi-seccion-titulo edi-acordeon" aria-expanded="true"><span class="edi-acordeon-titulo"><img class="edi-chevron" src="icons/expand_more.svg" alt=""><span data-i18n="overlayCat.editor.escenas"></span></span><button class="edi-icono-boton" id="ovlEditorEscenaNueva" type="button" data-i18n-aria-label="overlayCat.editor.escenaNueva"><img src="icons/add.svg" alt=""></button></div>
+          <div class="edi-lista edi-escenas" id="ovlEditorEscenas"></div>
+          <div class="edi-seccion-titulo edi-acordeon" aria-expanded="true"><span class="edi-acordeon-titulo"><img class="edi-chevron" src="icons/expand_more.svg" alt=""><span data-i18n="overlayCat.editor.capas"></span></span></div>
+          <div class="edi-lista" id="ovlEditorCapas"></div>
+        </aside>
+        <div class="edi-centro">
+          <div class="edi-herramientas">
+            <span class="edi-medida" id="ovlEditorMedida"></span>
+            <span class="edi-zoom" id="ovlEditorZoom"></span>
+            <button type="button" class="edi-pantalla-completa" id="ovlEditorPantallaCompleta" data-i18n-title="overlayCat.editor.pantallaCompleta" data-i18n-aria-label="overlayCat.editor.pantallaCompleta"><img class="icon-inline" src="icons/fullscreen.svg" alt=""></button>
+          </div>
+          <div class="edi-escenario" id="ovlEditorEscenario"><div class="edi-marco" id="ovlEditorMarco"><div class="edi-resalte" id="ovlEditorResalte" hidden></div><div class="edi-seleccion" id="ovlEditorSeleccion"></div></div></div>
+          <section class="edi-biblioteca" id="ovlEditorBiblioteca" data-pestana="overlays">
+            <button type="button" class="edi-biblioteca-plegar" id="ovlEditorPlegar" aria-expanded="true" data-i18n-title="overlayCat.editor.plegarBiblioteca" data-i18n-aria-label="overlayCat.editor.plegarBiblioteca"><img class="icon-inline" src="icons/expand_more.svg" alt=""></button>
+            <div class="edi-biblioteca-cabecera">
+              <div class="edi-pestanas" id="ovlEditorPestanas"></div>
+              <div class="ovl-busqueda"><img src="icons/search.svg" alt=""><input id="ovlEditorBuscar" type="search" data-i18n-placeholder="overlayCat.buscar" data-i18n-aria-label="overlayCat.buscar"></div>
+            </div>
+            <div class="edi-biblioteca-cuerpo">
+              <nav class="edi-categorias" id="ovlEditorCategorias"></nav>
+              <div class="edi-tarjetas" id="ovlEditorOverlays"></div>
+              <div class="edi-gifs" id="ovlEditorGifs"></div>
+              <p class="edi-vacio edi-proximamente" data-i18n="overlayCat.proximamente"></p>
+            </div>
+          </section>
+        </div>
+        <aside class="edi-ajustes" id="ovlEditorPanel">
+          <div class="edi-seccion-titulo">
+            <span id="ovlEditorPanelTitulo"></span>
+            <span class="edi-acciones-panel"><button class="edi-icono-boton edi-probar-icono" id="ovlEditorProbar" type="button" data-i18n-title="overlayCat.editor.probar" data-i18n-aria-label="overlayCat.editor.probar" hidden><img src="icons/play_arrow.svg" alt=""></button><button class="edi-icono-boton" id="ovlEditorRestablecer" type="button" hidden data-i18n-title="overlayCat.editor.restablecer" data-i18n-aria-label="overlayCat.editor.restablecer"><img src="icons/restore.svg" alt=""></button><button class="edi-icono-boton" id="ovlEditorQuitar" type="button" hidden data-i18n-title="overlayCat.editor.quitar" data-i18n-aria-label="overlayCat.editor.quitar"><img src="icons/delete.svg" alt=""></button></span>
+          </div>
+          <p class="edi-vacio" id="ovlEditorVacio" data-i18n="overlayCat.editor.vacio"></p>
+          <div class="edi-panel-cuerpo" id="ovlEditorPanelCuerpo"></div>
+        </aside>
+      </div>
+
+      <div class="edi-menu" id="ovlEditorMenu" role="menu" hidden></div>
 
       <div id="ovlLista" hidden>
         <div class="ovl-detalle" id="ovlDetalle" hidden>
@@ -553,7 +616,17 @@
       <div class="view-header">
         <h2><img class="icon-inline" src="icons/music_note.svg" alt=""> <span data-i18n="bot.title">Bot de Música</span></h2>
         <p data-i18n-html="bot.desc">El chat puede pedir canciones con <strong>!p nombre</strong> o <strong>!p link de YouTube</strong>. Tu playlist suena de fondo cuando no hay peticiones.</p>
+        <div id="music-quota" class="cuenta-hint" hidden></div>
         <button class="cfg-btn" id="btnBotTour" onclick="startBotTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
+      </div>
+
+      <div class="pro-banner" id="music-pro-banner" hidden>
+        <button type="button" class="pro-banner-main" id="musicProBannerOpen">
+          <img class="icon-inline pro-banner-icon" src="icons/workspace_premium-gold.svg" alt="">
+          <span class="pro-banner-title" data-i18n="bot.proBannerTitle">¿Quieres música ilimitada?</span>
+          <span class="pro-banner-sub" data-i18n="bot.proBannerSub">Hazte Pro: solicitudes y cola sin límites, playlist y más ajustes.</span>
+          <img class="icon-inline pro-banner-chevron" src="icons/chevron_right.svg" alt="">
+        </button>
       </div>
 
       <!-- Now Playing -->
@@ -606,7 +679,7 @@
         <div class="cfg-card" style="margin:0;">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;">
             <span class="eyebrow"><span data-i18n="bot.requestQueue">Cola de peticiones</span> <span id="music-queue-count">(0)</span></span>
-            <button class="btn-test" onclick="musicClearQueue()" title="Limpiar cola">
+            <button class="btn-test" id="btnMusicClear" onclick="musicClearQueue()" title="Limpiar cola">
             <img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="bot.clearQueue">Limpiar</span>
           </button>
           </div>
@@ -1355,64 +1428,64 @@
 
 <!-- ══ MODAL: Reportar Bug ═══════════════════════════════ -->
 <div id="bugReportModal" class="modal-overlay" onclick="closeBugReportModal(event)">
-  <div class="modal-content" onclick="event.stopPropagation()">
+  <div class="modal-content fm-modal" onclick="event.stopPropagation()">
     <button class="modal-close" onclick="closeBugReportModal()"><img class="icon-inline" src="icons/close.svg" alt=""></button>
-    <h2><img class="icon-inline" src="icons/warning.svg" alt=""> <span data-i18n="bugReport.title">Reportar un problema</span></h2>
+    <h2 class="fm-title" data-i18n="bugReport.title">Reportar un problema</h2>
 
-    <div class="bugreport-guide" data-i18n="bugReport.guide">
-      ¿Tenés un problema? 1) Intentá reproducirlo. 2) Contanos qué pasó en este formulario. 3) Al enviarlo, le llega al equipo junto con el registro técnico de tu sesión; no incluye contraseñas ni datos sensibles.
-    </div>
-
-    <div class="bugreport-fields">
-      <div class="idea-contacto">
-        <div class="cfg-field">
+    <div class="fm-form">
+      <div class="fm-row">
+        <div class="fm-field">
           <label for="bugReportDiscordNick" data-i18n="bugReport.discordNickLabel">Tu nick de Discord</label>
           <input type="text" id="bugReportDiscordNick" maxlength="40" autocomplete="off" data-i18n-placeholder="ideas.discordPlaceholder" placeholder="usuario" />
         </div>
-        <div class="cfg-field">
+        <div class="fm-field">
           <label for="bugReportEmail" data-i18n="ideas.emailLabel">Tu email</label>
           <input type="email" id="bugReportEmail" maxlength="254" autocomplete="email" data-i18n-placeholder="ideas.emailPlaceholder" placeholder="tu@email.com" />
         </div>
       </div>
 
-      <div class="cfg-field">
-        <label data-i18n="bugReport.descriptionLabel">Contanos qué pasó</label>
-        <textarea id="bugReportDescription" rows="5" data-i18n-placeholder="bugReport.descriptionPlaceholder" placeholder="¿Qué estabas haciendo? ¿Qué esperabas que pasara? ¿Qué pasó en realidad?"></textarea>
+      <div class="fm-field">
+        <label for="bugReportDescription" data-i18n="bugReport.descriptionLabel">Contanos qué pasó</label>
+        <textarea id="bugReportDescription" rows="5" style="min-height:102px" data-i18n-placeholder="bugReport.descriptionPlaceholder" placeholder="¿Qué estabas haciendo? ¿Qué esperabas que pasara? ¿Qué pasó en realidad?"></textarea>
       </div>
 
-      <div class="cfg-field">
-        <label data-i18n="bugReport.extraLabel">¿Algo más que quieras agregar? (opcional)</label>
+      <div class="fm-field">
+        <label for="bugReportExtra" data-i18n="bugReport.extraLabel">¿Algo más que quieras agregar? (opcional)</label>
         <textarea id="bugReportExtra" rows="3" data-i18n-placeholder="bugReport.extraPlaceholder" placeholder="Mensajes de error, cuándo pasó, etc."></textarea>
       </div>
 
-      <p class="idea-respuesta" data-i18n="ideas.replyNote">Te responderemos por email, o por Discord si estás en nuestro servidor.</p>
-      <a class="discord-cta idea-discord-cta" href="https://discord.com/invite/mwY859tcQK" target="_blank" rel="noopener"><img class="icon-inline" src="icons/discord.svg" alt=""> <span data-i18n="discordInvite.cta">Unirme al Discord</span></a>
-      <div style="margin-top:4px;"><button class="btn btn-connect" id="bugReportSubmitBtn" onclick="submitBugReport()"><span data-i18n="bugReport.submit">Enviar reporte</span></button></div>
+      <p class="fm-hint fm-hint--sm" data-i18n="ideas.replyNote">Te responderemos por email, o por Discord si estás en nuestro servidor.</p>
+      <div class="fm-actions">
+        <a class="fm-btn fm-btn--link" href="https://discord.com/invite/mwY859tcQK" target="_blank" rel="noopener"><img class="icon-inline" src="icons/discord.svg" alt=""><span data-i18n="discordInvite.cta">Unirme al Discord</span></a>
+        <button class="fm-btn fm-btn--primary" id="bugReportSubmitBtn" onclick="submitBugReport()"><span data-i18n="bugReport.submit">Enviar reporte</span></button>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- ══ MODAL: Sugerir idea ═══════════════════════════════ -->
 <div id="ideaModal" class="modal-overlay" onclick="closeIdeaModal(event)" role="dialog" aria-modal="true" aria-labelledby="ideaModalTitle">
-  <div class="modal-content idea-modal-content" onclick="event.stopPropagation()">
+  <div class="modal-content fm-modal idea-modal-content" onclick="event.stopPropagation()">
     <button class="modal-close" onclick="closeIdeaModal()" data-i18n-aria-label="ideas.close" aria-label="Cerrar"><img class="icon-inline" src="icons/close.svg" alt=""></button>
-    <h2 id="ideaModalTitle"><img class="icon-inline" src="icons/lightbulb.svg" alt=""> <span id="ideaModalTitleText" data-i18n="ideas.title">Sugerí una idea para TikLiveTTS</span></h2>
-    <p class="bugreport-guide" id="ideaModalSubtitle" data-i18n="ideas.subtitle">¿Tenés una idea para mejorar la app? Contanos el problema y cómo te gustaría resolverlo. Priorizamos funciones útiles para muchos streamers.</p>
-    <form id="ideaForm" class="bugreport-fields" onsubmit="submitIdea(event)">
-      <div class="cfg-field"><label for="ideaProblem"><span data-i18n="ideas.problemLabel">¿Qué problema querés resolver?</span><span class="idea-required" aria-hidden="true">*</span></label><textarea id="ideaProblem" rows="3" maxlength="2000" required data-i18n-placeholder="ideas.problemPlaceholder" placeholder="Contanos qué te pasa hoy."></textarea><span class="idea-char-count" data-counter-for="ideaProblem"></span></div>
-      <div class="cfg-field"><label for="ideaDescription"><span data-i18n="ideas.ideaLabel">¿Cuál es tu idea?</span><span class="idea-required" aria-hidden="true">*</span></label><textarea id="ideaDescription" rows="3" maxlength="2000" required data-i18n-placeholder="ideas.ideaPlaceholder" placeholder="Explicanos qué te gustaría que hiciera TikLiveTTS."></textarea><span class="idea-char-count" data-counter-for="ideaDescription"></span></div>
-      <div class="cfg-field"><label for="ideaSimilarApp" data-i18n="ideas.similarLabel">¿Conocés una app con algo parecido? <span data-i18n="ideas.optional">(opcional)</span></label><input id="ideaSimilarApp" type="text" maxlength="2000" data-i18n-placeholder="ideas.similarPlaceholder" placeholder="Nombre o enlace"></div>
-      <div class="idea-contacto">
-        <div class="cfg-field"><label for="ideaDiscord"><span data-i18n="ideas.discordLabel">Tu usuario de Discord</span></label><input id="ideaDiscord" type="text" maxlength="40" autocomplete="off" data-i18n-placeholder="ideas.discordPlaceholder" placeholder="usuario"></div>
-        <div class="cfg-field"><label for="ideaEmail"><span data-i18n="ideas.emailLabel">Tu email</span></label><input id="ideaEmail" type="email" maxlength="254" autocomplete="email" data-i18n-placeholder="ideas.emailPlaceholder" placeholder="tu@email.com"></div>
+    <h2 class="fm-title" id="ideaModalTitle"><span id="ideaModalTitleText" data-i18n="ideas.title">Sugerí una idea para TikLiveTTS</span></h2>
+    <p class="fm-desc" id="ideaModalSubtitle" data-i18n="ideas.subtitle" hidden>¿Tenés una idea para mejorar la app? Contanos el problema y cómo te gustaría resolverlo. Priorizamos funciones útiles para muchos streamers.</p>
+    <form id="ideaForm" class="fm-form" onsubmit="submitIdea(event)">
+      <div class="fm-field"><label for="ideaProblem"><span data-i18n="ideas.problemLabel">¿Qué problema querés resolver?</span><span class="fm-required" aria-hidden="true">*</span></label><textarea id="ideaProblem" rows="3" maxlength="2000" required data-i18n-placeholder="ideas.problemPlaceholder" placeholder="Contanos qué te pasa hoy."></textarea><span class="idea-char-count" data-counter-for="ideaProblem"></span></div>
+      <div class="fm-field"><label for="ideaDescription"><span data-i18n="ideas.ideaLabel">¿Cuál es tu idea?</span><span class="fm-required" aria-hidden="true">*</span></label><textarea id="ideaDescription" rows="3" maxlength="2000" required data-i18n-placeholder="ideas.ideaPlaceholder" placeholder="Explicanos qué te gustaría que hiciera TikLiveTTS."></textarea><span class="idea-char-count" data-counter-for="ideaDescription"></span></div>
+      <div class="fm-field"><label for="ideaSimilarApp"><span data-i18n="ideas.similarLabel">¿Conocés una app con algo parecido?</span></label><input id="ideaSimilarApp" type="text" maxlength="2000" data-i18n-placeholder="ideas.similarPlaceholder" placeholder="Nombre o enlace"></div>
+      <div class="fm-row">
+        <div class="fm-field"><label for="ideaDiscord"><span data-i18n="ideas.discordLabel">Tu usuario de Discord</span></label><input id="ideaDiscord" type="text" maxlength="40" autocomplete="off" data-i18n-placeholder="ideas.discordPlaceholder" placeholder="usuario"></div>
+        <div class="fm-field"><label for="ideaEmail"><span data-i18n="ideas.emailLabel">Tu email</span></label><input id="ideaEmail" type="email" maxlength="254" autocomplete="email" data-i18n-placeholder="ideas.emailPlaceholder" placeholder="tu@email.com"></div>
       </div>
-      <p class="idea-respuesta" data-i18n="ideas.replyNote">Te responderemos por email, o por Discord si estás en nuestro servidor.</p>
-      <a class="discord-cta idea-discord-cta" href="https://discord.com/invite/mwY859tcQK" target="_blank" rel="noopener"><img class="icon-inline" src="icons/discord.svg" alt=""> <span data-i18n="discordInvite.cta">Unirme al Discord</span></a>
-      <div style="margin-top:4px;"><button class="btn btn-connect" id="ideaSubmitBtn" type="submit" data-i18n="ideas.submit">Enviar idea</button></div>
+      <p class="fm-hint fm-hint--sm" data-i18n="ideas.replyNote">Te responderemos por email, o por Discord si estás en nuestro servidor.</p>
+      <div class="fm-actions">
+        <a class="fm-btn fm-btn--link" href="https://discord.com/invite/mwY859tcQK" target="_blank" rel="noopener"><img class="icon-inline" src="icons/discord.svg" alt=""><span data-i18n="discordInvite.cta">Unirme al Discord</span></a>
+        <button class="fm-btn fm-btn--primary" id="ideaSubmitBtn" type="submit" data-i18n="ideas.submit">Enviar idea</button>
+      </div>
     </form>
-    <form id="overlayIdeaForm" class="bugreport-fields" onsubmit="submitOverlayIdea(event)" hidden>
-      <div class="cfg-field"><label for="overlayIdeaText"><span data-i18n="ideas.ideaLabel">¿Cuál es tu idea?</span><span class="idea-required" aria-hidden="true">*</span></label><textarea id="overlayIdeaText" rows="3" maxlength="2000" required data-i18n-placeholder="ideas.overlayIdeaPlaceholder"></textarea><span class="idea-char-count" data-counter-for="overlayIdeaText"></span></div>
-      <div class="cfg-field">
+    <form id="overlayIdeaForm" class="fm-form" onsubmit="submitOverlayIdea(event)" hidden>
+      <div class="fm-field"><label for="overlayIdeaText"><span data-i18n="ideas.ideaLabel">¿Cuál es tu idea?</span><span class="fm-required" aria-hidden="true">*</span></label><textarea id="overlayIdeaText" rows="3" maxlength="2000" required data-i18n-placeholder="ideas.overlayIdeaPlaceholder"></textarea><span class="idea-char-count" data-counter-for="overlayIdeaText"></span></div>
+      <div class="fm-field">
         <label for="overlayIdeaImage"><span data-i18n="ideas.overlayImageLabel"></span> <span data-i18n="ideas.optional">(opcional)</span></label>
         <div class="idea-archivo" id="overlayIdeaDrop">
           <input id="overlayIdeaImage" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
@@ -1425,14 +1498,16 @@
           <button type="button" onclick="quitarImagenOverlay()" data-i18n="ideas.overlayImageRemove"></button>
         </div>
       </div>
-      <div class="cfg-field"><label for="overlayIdeaLink"><span data-i18n="ideas.overlayLinkLabel"></span> <span data-i18n="ideas.optional">(opcional)</span></label><input id="overlayIdeaLink" type="text" maxlength="500" placeholder="https://..."></div>
-      <div class="idea-contacto">
-        <div class="cfg-field"><label for="overlayIdeaDiscord"><span data-i18n="ideas.discordLabel">Tu usuario de Discord</span></label><input id="overlayIdeaDiscord" type="text" maxlength="40" autocomplete="off" data-i18n-placeholder="ideas.discordPlaceholder"></div>
-        <div class="cfg-field"><label for="overlayIdeaEmail"><span data-i18n="ideas.emailLabel">Tu email</span></label><input id="overlayIdeaEmail" type="email" maxlength="254" autocomplete="email" data-i18n-placeholder="ideas.emailPlaceholder"></div>
+      <div class="fm-field"><label for="overlayIdeaLink"><span data-i18n="ideas.overlayLinkLabel"></span> <span data-i18n="ideas.optional">(opcional)</span></label><input id="overlayIdeaLink" type="text" maxlength="500" placeholder="https://..."></div>
+      <div class="fm-row">
+        <div class="fm-field"><label for="overlayIdeaDiscord"><span data-i18n="ideas.discordLabel">Tu usuario de Discord</span></label><input id="overlayIdeaDiscord" type="text" maxlength="40" autocomplete="off" data-i18n-placeholder="ideas.discordPlaceholder"></div>
+        <div class="fm-field"><label for="overlayIdeaEmail"><span data-i18n="ideas.emailLabel">Tu email</span></label><input id="overlayIdeaEmail" type="email" maxlength="254" autocomplete="email" data-i18n-placeholder="ideas.emailPlaceholder"></div>
       </div>
-      <p class="idea-respuesta" data-i18n="ideas.replyNote">Te responderemos por email, o por Discord si estás en nuestro servidor.</p>
-      <a class="discord-cta idea-discord-cta" href="https://discord.com/invite/mwY859tcQK" target="_blank" rel="noopener"><img class="icon-inline" src="icons/discord.svg" alt=""> <span data-i18n="discordInvite.cta">Unirme al Discord</span></a>
-      <div style="margin-top:4px;"><button class="btn btn-connect" id="overlayIdeaSubmitBtn" type="submit" data-i18n="ideas.submit">Enviar idea</button></div>
+      <p class="fm-hint fm-hint--sm" data-i18n="ideas.replyNote">Te responderemos por email, o por Discord si estás en nuestro servidor.</p>
+      <div class="fm-actions">
+        <a class="fm-btn fm-btn--link" href="https://discord.com/invite/mwY859tcQK" target="_blank" rel="noopener"><img class="icon-inline" src="icons/discord.svg" alt=""><span data-i18n="discordInvite.cta">Unirme al Discord</span></a>
+        <button class="fm-btn fm-btn--primary" id="overlayIdeaSubmitBtn" type="submit" data-i18n="ideas.submit">Enviar idea</button>
+      </div>
     </form>
     <div id="ideaThanks" class="idea-thanks" hidden aria-live="polite"><img class="icon-inline" src="icons/check_circle.svg" alt=""><h3 data-i18n="ideas.thanksTitle">¡Gracias por tu idea!</h3><p data-i18n="ideas.thanksText">La revisaremos para seguir mejorando TikLiveTTS.</p></div>
   </div>
