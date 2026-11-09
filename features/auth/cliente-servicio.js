@@ -48,6 +48,8 @@ function crearCliente(baseUrl) {
     google: (b) => pedir('/api/auth/google', { method: 'POST', body: b }),
     logout: (token) => pedir('/api/auth/logout', { method: 'POST', token }),
     session: (token) => pedir('/api/session', { token, reintentos: 2 }),
+    // Publico y sin token: ¿ese canal de Twitch esta transmitiendo? ({live})
+    twitchEnVivo: (login) => pedir(`/api/twitch/live?login=${encodeURIComponent(login)}`),
     nicknameDisponible: (nombre) => pedir(`/api/auth/nickname-disponible?nombre=${encodeURIComponent(nombre)}`),
     forgotPassword: (b) => pedir('/api/auth/forgot-password', { method: 'POST', body: b }),
     resetPassword: (b) => pedir('/api/auth/reset-password', { method: 'POST', body: b }),

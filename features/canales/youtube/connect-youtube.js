@@ -199,4 +199,4 @@ function disconnectYoutube(deps, channelOrId) {
   state.youtubeChannels.delete(target.key);
 }
 
-module.exports = { connectYoutube, disconnectYoutube, clearReconnectTimer, clearWatchdogTimer };
+module.exports = { connectYoutube, disconnectYoutube, clearReconnectTimer, clearWatchdogTimer, confirmYoutubeStillLive };
