@@ -454,7 +454,7 @@ function pintarEscenas() {
 
 function duplicarEscena(i) {
   const { nombre, ids, nombres, bloqueadas = [], formato } = appSettings.escenas[i];
-  appSettings.escenas.splice(i + 1, 0, { id: crypto.randomUUID().slice(0, 8), nombre: nombre ? `${nombre} (2)` : '', ids: [...ids], nombres: { ...nombres }, bloqueadas: [...bloqueadas], formato });
+  appSettings.escenas.splice(i + 1, 0, { id: window.crypto.randomUUID().slice(0, 8), nombre: nombre ? `${nombre} (2)` : '', ids: [...ids], nombres: { ...nombres }, bloqueadas: [...bloqueadas], formato });
   cargarEscena(i + 1);
 }
 
@@ -463,7 +463,7 @@ const opcionesEscena = (i) => [
   { clave: 'escenaEliminar', icono: 'delete', peligro: true, desactivada: appSettings.escenas.length < 2, accion: () => eliminarEscena(i) },
 ];
 
-const nuevaEscena = (ids = []) => ({ id: crypto.randomUUID().slice(0, 8), nombre: '', ids, nombres: {}, bloqueadas: [] });
+const nuevaEscena = (ids = []) => ({ id: window.crypto.randomUUID().slice(0, 8), nombre: '', ids, nombres: {}, bloqueadas: [] });
 
 function cargarEscena(i) {
   for (const id of [...capas.keys()]) soltar(id);

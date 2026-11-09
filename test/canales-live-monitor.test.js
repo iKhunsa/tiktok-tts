@@ -10,7 +10,7 @@ const assert = require('node:assert/strict');
 const { createEventBus } = require('../core/event-bus');
 const { crearMonitorEnVivo } = require('../features/canales/live-status/live-monitor');
 
-const settle = () => new Promise((r) => setImmediate(r));
+const settle = () => new Promise((r) => globalThis.setImmediate(r));
 
 function setup() {
   const logger = { log() {} };
