@@ -97,7 +97,8 @@ export function abrirModalEliminarCuenta({ hasPassword, googleLinked, eliminar, 
   const passInput = overlay.querySelector('#cuentaDeletePass');
   const confirmar = overlay.querySelector('#cuentaDeleteConfirm');
   const confirmarGoogle = overlay.querySelector('#cuentaDeleteGoogle');
-  const botones = step2.querySelectorAll('button');
+  const cancelarStep2 = overlay.querySelector('#cuentaDeleteCancel');
+  const botones = [cancelarStep2, confirmar, confirmarGoogle].filter(Boolean);
   let enCurso = false;
 
   const palabraOk = () => normalizar(palabraInput.value) === normalizar(palabra);
@@ -127,7 +128,7 @@ export function abrirModalEliminarCuenta({ hasPassword, googleLinked, eliminar, 
 
   const enviarPassword = () => {
     if (!palabraOk() || !passInput.value) return;
-    enviar(() => eliminar(passInput.value));
+    return enviar(() => eliminar(passInput.value));
   };
 
   [palabraInput, passInput].filter(Boolean).forEach((campo) => {
@@ -137,7 +138,7 @@ export function abrirModalEliminarCuenta({ hasPassword, googleLinked, eliminar, 
   overlay.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarSiLibre(); });
   overlay.addEventListener('click', (e) => { if (e.target === overlay) cerrarSiLibre(); });
   overlay.querySelector('#cuentaDeleteClose').addEventListener('click', cerrarSiLibre);
-  overlay.querySelector('#cuentaDeleteCancel').addEventListener('click', cerrarSiLibre);
+  cancelarStep2.addEventListener('click', cerrarSiLibre);
   overlay.querySelector('#cuentaBajaCancel').addEventListener('click', cerrarSiLibre);
   confirmar?.addEventListener('click', enviarPassword);
   step1.addEventListener('change', () => { siguiente.disabled = !motivoElegido(); });

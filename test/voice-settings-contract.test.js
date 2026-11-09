@@ -16,7 +16,7 @@ const expectedIds = [
   'rateVal', 'rateRange', 'voicePitchGroup', 'pitchVal', 'pitchRange', 'voiceVolGroup',
   'volVal', 'volRange', 'voiceLangFilterGroup',
   'langFilterToggle', 'voiceDictFilterGroup', 'dictFilterToggle', 'btnOpenDictLangModal',
-  'voiceAnnounceGroup', 'announceTplFields',
+  'voiceAnnounceGroup', 'announceTplFields', 'voiceAnnounceVolGroup', 'announceVolVal', 'announceVolRange',
 ];
 
 const expectedHandlers = [
@@ -29,6 +29,7 @@ const expectedHandlers = [
   'onchange="toggleLangFilter(this)"',
   'onchange="toggleDictFilter(this)"',
   'onclick="openDictLangModal()"',
+  'oninput="updateAnnounceVol(this.value)"',
 ];
 
 const expectedI18n = [
@@ -51,6 +52,7 @@ const expectedI18n = [
   'data-i18n="toggle.dictFilterHint"',
   'data-i18n="settings.announceTplTitle"',
   'data-i18n="settings.announceTplDesc"',
+  'data-i18n="settings.announceVolTitle"',
 ];
 
 test('Voz y audio conserva ids, handlers y contratos i18n', () => {

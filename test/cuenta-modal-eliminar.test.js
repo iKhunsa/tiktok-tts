@@ -9,19 +9,30 @@ const importar = (ruta) => import(pathToFileURL(resolve(raiz, ruta)).href);
 const diccionario = (lang) => JSON.parse(readFileSync(resolve(raiz, `interfaz/publico/locales/${lang}.json`), 'utf8'));
 
 // DOM minimo: cada id del innerHTML se vuelve un elemento con listeners y `value`.
+// Los radios de "motivo" (paso 1) no tienen id en el markup, asi que se
+// trackean aparte -- ningun test de este archivo ejercita el formulario de
+// motivo en si, solo necesitan existir para que step1.querySelector(...) no
+// explote (igual que en el DOM real, donde step1 es un <form> que sí tiene
+// querySelector nativo).
 function crearDocumentoFalso() {
   const estado = { overlay: null, removido: false };
+  const radios = [];
   const crearElemento = () => ({
     listeners: {}, value: '', disabled: false, focused: false,
     addEventListener(tipo, fn) { this.listeners[tipo] = fn; },
     focus() { this.focused = true; },
     disparar(tipo, evento = {}) { return this.listeners[tipo]?.(evento); },
     escribir(valor) { this.value = valor; this.disparar('input'); },
+    querySelector(selector) { return selector.includes('input[name="motivo"]') ? (radios[0] || null) : null; },
   });
   const overlay = {
     ...crearElemento(),
     elementos: {},
     set innerHTML(html) {
+      radios.length = 0;
+      for (const [, valor] of html.matchAll(/<input type="radio" name="motivo" value="([^"]+)"/g)) {
+        radios.push({ value: valor, checked: false, focused: false, focus() { this.focused = true; }, addEventListener() {} });
+      }
       for (const [, id] of html.matchAll(/\bid="(\w+)"/g)) {
         const el = crearElemento();
         el.esBoton = new RegExp(`<button[^>]*id="${id}"`).test(html);
@@ -29,11 +40,12 @@ function crearDocumentoFalso() {
         this.elementos[id] = el;
       }
     },
-    querySelector(selector) { return this.elementos[selector.slice(1)]; },
+    querySelector(selector) { return selector.startsWith('#') ? this.elementos[selector.slice(1)] : null; },
     querySelectorAll() { return Object.values(this.elementos).filter((el) => el.esBoton); },
     remove() { estado.removido = true; },
   };
   estado.overlay = overlay;
+  estado.radios = radios;
   return {
     estado,
     documento: { createElement: () => overlay, body: { appendChild() {} } },
@@ -62,14 +74,17 @@ async function abrirModal({ lang = 'es', eliminar, hasPassword = true, googleLin
     clave: elementos.cuentaDeletePass,
     confirmar: elementos.cuentaDeleteConfirm,
     cancelar: elementos.cuentaDeleteCancel,
+    primerMotivo: estado.radios[0],
     overlay: estado.overlay,
   };
 }
 
-test('el botón de eliminar arranca deshabilitado y el foco va a la palabra', async () => {
+// Paso 1 (motivo) es el que se ve al abrir -- el foco arranca ahi, no en la
+// palabra del paso 2 (oculto hasta avanzar el formulario de motivo).
+test('el botón de eliminar arranca deshabilitado y el foco va al motivo', async () => {
   const modal = await abrirModal({ eliminar: async () => true });
   assert.equal(modal.confirmar.disabled, true);
-  assert.equal(modal.palabra.focused, true);
+  assert.equal(modal.primerMotivo.focused, true);
 });
 
 test('exige la palabra Y la contraseña para habilitar el botón', async () => {
