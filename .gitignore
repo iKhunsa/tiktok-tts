@@ -44,3 +44,7 @@ cuentas.json
 
 # scripts de release locales, nunca se comitean (ver comandos/tag.sh)
 /comandos/
+
+# docs y epik: solo locales
+/docs/
+/epik/
