@@ -16,4 +16,18 @@ function getOverlayIdeasWebhookUrl(logger) {
   return null;
 }
 
-module.exports = { getIdeasWebhookUrl, getOverlayIdeasWebhookUrl };
+function getAccountDeletionWebhookUrl(logger) {
+  const result = getWebhookConfigValue('discordAccountDeletionWebhookUrl');
+  if (result.value) return result.value;
+  logger.log('warn', 'sugerencias', 'sugerencias/webhook-url.js#getAccountDeletionWebhookUrl', 'baja.webhook.no_configurado', `Webhook de bajas no configurado (motivo: ${result.reason})`, { motivo: result.reason });
+  return null;
+}
+
+function getCancellationWebhookUrl(logger) {
+  const result = getWebhookConfigValue('discordCancellationWebhookUrl');
+  if (result.value) return result.value;
+  logger.log('warn', 'sugerencias', 'sugerencias/webhook-url.js#getCancellationWebhookUrl', 'cancelacion.webhook.no_configurado', `Webhook de cancelaciones no configurado (motivo: ${result.reason})`, { motivo: result.reason });
+  return null;
+}
+
+module.exports = { getIdeasWebhookUrl, getOverlayIdeasWebhookUrl, getAccountDeletionWebhookUrl, getCancellationWebhookUrl };

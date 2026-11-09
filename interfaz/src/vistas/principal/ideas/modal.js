@@ -28,6 +28,7 @@ export function openIdeaModal(tipo) {
   document.getElementById('ideaThanks').hidden = true;
   document.getElementById('ideaModalTitleText').dataset.i18n = esOverlay ? 'ideas.overlayTitle' : 'ideas.title';
   document.getElementById('ideaModalSubtitle').dataset.i18n = esOverlay ? 'ideas.overlaySubtitle' : 'ideas.subtitle';
+  document.getElementById('ideaModalSubtitle').hidden = !esOverlay;
   aplicarTraducciones(modal);
   updateCounters();
   modal.classList.add('show');

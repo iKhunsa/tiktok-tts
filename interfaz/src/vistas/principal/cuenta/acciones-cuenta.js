@@ -10,6 +10,7 @@ import { borrarDatosDeCuenta } from '../../../nucleo/estado/datos-por-cuenta.js'
 import { escaparAtributo as esc } from '../../../../compartido/escapar-html.js';
 import { pedir, toastError } from './api.js';
 import { autenticarConGoogleUI } from './plataforma-auth-cliente.js';
+import { modalFeedbackCancelacion } from './modal-feedback-cancelacion.js';
 
 // La sesion pasa a anonymous y la ventana se recarga: el aviso sobrevive al reload.
 export const AVISO_CUENTA_ELIMINADA = 'tikliveTTS_cuentaEliminada';
@@ -99,8 +100,16 @@ export function modalConfirmarCancelacion() {
 export async function cancelarSuscripcion() {
   const confirmado = await modalConfirmarCancelacion();
   if (!confirmado) return null;
+  const feedback = await modalFeedbackCancelacion();
+  if (!feedback) return null;
   const r = await pedir('/api/auth/subscription/cancel', { method: 'POST' });
   if (!r.ok) { toastError(r.body); return null; }
+  // Mejor esfuerzo: si el webhook falla la cancelacion ya esta hecha.
+  fetch('/api/cancelacion-feedback', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(feedback),
+  }).catch(() => {});
   aplicarSesion(r.body);
   showToast(t('cuenta.canceled'));
   return r.body;
