@@ -2,6 +2,7 @@
 
 const { currentProgress } = require('./progress');
 const { upcomingTracks } = require('../upcoming');
+const { liveQuota } = require('../free-limits');
 
 // Cola de la app y Siguientes del overlay: alcanza para una playlist entera.
 const MAX_PROXIMAS = 50;
@@ -9,7 +10,7 @@ const MAX_PROXIMAS = 50;
 function queue(deps) {
   const { musicState } = deps;
   return (_req, res) => {
-    res.json({ current: musicState.currentTrack, queue: musicState.queue, playlistActive: musicState.playlistActive, progress: currentProgress(musicState), upcoming: upcomingTracks(deps, MAX_PROXIMAS) });
+    res.json({ current: musicState.currentTrack, queue: musicState.queue, playlistActive: musicState.playlistActive, progress: currentProgress(musicState), upcoming: upcomingTracks(deps, MAX_PROXIMAS), requestsUsed: liveQuota(musicState).used, requestsLimit: liveQuota(musicState).limit });
   };
 }
 

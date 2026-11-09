@@ -9,6 +9,8 @@ function createMusicState() {
     // estan resolviendose en yt-dlp y no deben reaparecer despues del clear.
     queueGeneration: 0,
     currentTrack: null,
+    liveRequests: 0, // solicitudes aceptadas en el directo actual (cuota Free), ver live-reset.js
+    liveGen: 0,
     userLastRequest: {}, // { userId: timestamp }
     recentCommands: new Map(), // `${userId}::${query}` -> timestamp, dedup fijo
     playlistResolved: [],

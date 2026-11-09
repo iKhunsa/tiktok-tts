@@ -5,6 +5,7 @@ const { advanceMusicQueue } = require('./advance-queue');
 const { musicBroadcastState } = require('./broadcast-state');
 const { getConfigSnapshot } = require('../config-bridge');
 const { MUSIC_DEDUP_WINDOW_MS } = require('./state');
+const { FREE_MAX_REQUESTS, FREE_MAX_QUEUE, isPro } = require('./free-limits');
 
 // Secuencia monotona para identificar cada peticion !p mientras se resuelve.
 // El front la usa para mostrar un item "buscando…" en la cola y luego
@@ -73,11 +74,24 @@ function handleMusicRequest(deps) {
       return;
     }
 
-    if (musicState.queue.length >= config.musicMaxQueue) {
+    // Plan Free: tope de solicitudes por directo (validado aca, no en el front).
+    const pro = isPro();
+    if (!pro && musicState.liveRequests >= FREE_MAX_REQUESTS) {
+      logger.log(
+        'info', 'sonido', 'sonido/musica/handle-request.js#handleMusicRequest', 'sonido.musica.limite_free',
+        `Limite Free de solicitudes alcanzado, se ignora solicitud de ${user}`,
+        { user, platform, usadas: musicState.liveRequests, limite: FREE_MAX_REQUESTS }
+      );
+      bus.emit('ws:broadcast', { type: 'music-limit-reached', used: musicState.liveRequests, limit: FREE_MAX_REQUESTS });
+      return;
+    }
+    const maxQueue = pro ? config.musicMaxQueue : Math.min(config.musicMaxQueue, FREE_MAX_QUEUE);
+
+    if (musicState.queue.length >= maxQueue) {
       logger.log(
         'warn', 'sonido', 'sonido/musica/handle-request.js#handleMusicRequest', 'sonido.musica.cola_llena',
         `Cola de musica llena, se ignora solicitud de ${user}`,
-        { user, platform, colaActual: musicState.queue.length, colaMaxima: config.musicMaxQueue }
+        { user, platform, colaActual: musicState.queue.length, colaMaxima: maxQueue }
       );
       return;
     }
@@ -100,10 +114,27 @@ function handleMusicRequest(deps) {
     const queueGeneration = musicState.queueGeneration || 0;
     bus.emit('ws:broadcast', { type: 'music-request-pending', requestId, user, platform, query });
 
+    // Cuenta la solicitud ya (antes de los await) para que rafagas en vuelo no
+    // pasen el tope; si falla o se cancela se devuelve (salvo que ya sea otro directo).
+    const liveGen = musicState.liveGen;
+    let refunded = false;
+    if (!pro) {
+      musicState.liveRequests++;
+      musicBroadcastState(deps);
+    }
+    const refund = () => {
+      if (pro || refunded || musicState.liveGen !== liveGen) return;
+      refunded = true;
+      musicState.liveRequests = Math.max(0, musicState.liveRequests - 1);
+      musicBroadcastState(deps);
+    };
+
     const failRequest = (reason) => {
+      refund();
       bus.emit('ws:broadcast', { type: 'music-request-failed', requestId, query, reason });
     };
     const cancelRequest = () => {
+      refund();
       bus.emit('ws:broadcast', { type: 'music-request-cancelled', requestId });
     };
 

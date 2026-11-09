@@ -13,6 +13,7 @@ const { voices } = require('./tts/routes/voices');
 const { createMusicEngine } = require('./musica/engine/create');
 const { UPDATE_INTERVAL_MS } = require('./musica/engine/check-for-updates');
 const { createMusicState } = require('./musica/state');
+const { watchLiveReset } = require('./musica/live-reset');
 const { handleMusicRequest } = require('./musica/handle-request');
 const { resolveAndSavePlaylist } = require('./musica/resolve-and-save-playlist');
 const { getConfigSnapshot, patchConfig } = require('./config-bridge');
@@ -110,11 +111,11 @@ module.exports = {
     // de !p ya no vive aca, solo la ejecucion.
     const runMusicRequest = handleMusicRequest(deps);
     // Cada cambio de cola emite el estado: con eso se descargan las siguientes por adelantado.
+    watchLiveReset(deps);
     const precargar = createPrefetcher(deps);
     bus.on('sonido:musica-estado', () => { precargar(); }, 'sonido');
     bus.on('bot:comando', (cmd) => {
       if (!cmd || cmd.cmd !== 'play') return;
-      if (!entitlements.check('bot-musical')) return; // feature Pro (ya gateado en /bot, defensa extra)
       Promise.resolve(runMusicRequest({ query: cmd.args, user: cmd.user, userId: cmd.userId, platform: cmd.platform, avatar: cmd.avatar })).catch((error) => {
         logger.log(
           'error', 'sonido', 'sonido/index.js#register', 'sonido.musica.solicitud_fallida',
@@ -123,7 +124,8 @@ module.exports = {
       });
     }, 'sonido');
 
-    // Guards Pro para los paneles de UI del streamer.
+    // Guards Pro para los paneles de UI del streamer. Free conserva lo basico
+    // (reproducir, pausar, saltar, quitar un item, volumen/activar); el resto es Pro.
     const gateMusica = entitlements.guard('bot-musical');
     const gateSoundpad = entitlements.guard('soundpad');
 
@@ -137,17 +139,17 @@ module.exports = {
       bus.emit('sonido:hablar', { text, platform: payload.platform, user: payload.user });
     }, 'sonido');
 
-    app.get('/api/music/stream', gateMusica, stream(deps));
-    app.get('/api/music/video', gateMusica, video(deps, precargar));
+    app.get('/api/music/stream', stream(deps));
+    app.get('/api/music/video', video(deps, precargar));
     app.get('/api/music/engine', engineStatus(engine));
     app.get('/api/music/queue', queue(deps));
-    app.delete('/api/music/queue/:index', gateMusica, removeQueueItem(deps));
+    app.delete('/api/music/queue/:index', removeQueueItem(deps));
     app.delete('/api/music/queue', gateMusica, clearQueue(deps));
-    app.post('/api/music/skip', gateMusica, skip(deps));
-    app.post('/api/music/next', gateMusica, next(deps));
-    app.post('/api/music/progress', gateMusica, progress(deps));
+    app.post('/api/music/skip', skip(deps));
+    app.post('/api/music/next', next(deps));
+    app.post('/api/music/progress', progress(deps));
     app.get('/api/music/config', configGet(bus));
-    app.patch('/api/music/config', gateMusica, configPatch(deps));
+    app.patch('/api/music/config', configPatch(deps));
     app.post('/api/music/ban', gateMusica, ban(bus));
     app.post('/api/music/unban', gateMusica, unban(bus));
     app.get('/api/music/playlist', playlistGet(deps));

@@ -1,7 +1,6 @@
 'use strict';
 
 const { parseCommand } = require('./parse-command');
-const entitlements = require('../../core/contracts/entitlements');
 const { getConfigSnapshot } = require('../../core/config-snapshot');
 
 module.exports = {
@@ -9,18 +8,11 @@ module.exports = {
 
   register({ bus, logger }) {
     bus.on('chat:mensaje-permitido', (payload) => {
-      // bot-musical es feature Pro (entitlements). Con subscriptionsEnabled=false
-      // check() devuelve true -> comportamiento actual.
+      // El plan Free tambien usa !p: los limites (20 solicitudes/directo,
+      // 5 en cola) se validan en sonido/musica/handle-request.js.
       if (!payload) return;
       // rawComment: el display de chat-guard cambia las URLs por "link".
       const parsed = parseCommand(payload.rawComment || payload.comment);
-      if (!entitlements.check('bot-musical')) {
-        // Solo cuenta cuando el mensaje era de verdad un comando (si no, seria 1 hit por mensaje de chat).
-        if (parsed) logger.log('info', 'auth', 'bot/index.js#register', 'auth.gating.bloqueado',
-          'Comando de bot bloqueado (plan free)', { featureId: 'bot-musical' });
-        return;
-      }
-
       if (!parsed) {
         const config = getConfigSnapshot(bus);
         if (config.debugLog) {

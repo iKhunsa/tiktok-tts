@@ -1,7 +1,8 @@
 import { t, tErr } from '../../nucleo/i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
 import { escaparHtml as escHtml } from '../../../compartido/escapar-html.js';
-import { aplicarBloqueoVista } from '../../nucleo/estado/vista-bloqueada.js';
+import { abrirPopupPlanes } from '../../componentes/popup-planes.js';
+import { almacenSesion } from '../../nucleo/estado/sesion.js';
 
 let musicAudio = null;
 let musicVol = 0.5;
@@ -345,6 +346,7 @@ export function musicOnIdle() {
 
 export function musicOnStateSync(data) {
   musicRefreshPlaylistNext(); // llega con cada cambio de cola, playlist o activado
+  pintarCuotaMusica(data.requestsUsed, data.requestsLimit);
   if (typeof data.enabled === 'boolean') {
     syncMusicChip('musicEnabledToggle', data.enabled);
   }
@@ -544,11 +546,40 @@ export async function playlistPlay() {
   } catch (_) { /* red caida: el WS reconciliara el estado */ }
 }
 
+/**
+ * Plan Free: el bot funciona (cuota 20/directo, 5 en cola) pero lo avanzado
+ * (ajustes del bot, playlist, limpiar cola) queda atenuado. El backend lo
+ * valida igual; esto es solo la cara visual.
+ */
+export function aplicarPlanMusica() {
+  const s = almacenSesion.getState();
+  const free = s.activo && !s.entitlements.includes('bot-musical');
+  for (const id of ['music-bot-settings', 'music-playlist-card']) {
+    document.getElementById(id)?.classList.toggle('vista-bloqueada-demo', free);
+  }
+  const banner = document.getElementById('music-pro-banner');
+  if (banner) {
+    banner.hidden = !free;
+    banner.querySelector('#musicProBannerOpen').onclick = abrirPopupPlanes;
+  }
+  const clear = document.getElementById('btnMusicClear');
+  if (clear) clear.disabled = free;
+}
+
+/** "X/20 solicitudes utilizadas" (solo Free: limit null = Pro, se oculta). */
+export function pintarCuotaMusica(used, limit) {
+  const el = document.getElementById('music-quota');
+  if (!el) return;
+  el.hidden = typeof limit !== 'number';
+  if (!el.hidden) el.textContent = t('bot.quotaUsed', { used: used || 0, limit });
+}
+
 export function musicInit() {
-  aplicarBloqueoVista('view-bot', 'bot-musical');
+  aplicarPlanMusica();
   fetch('/api/music/queue').then((r) => r.json()).then((d) => {
     musicQueue = d.queue || [];
     musicRenderQueue();
+    pintarCuotaMusica(d.requestsUsed, d.requestsLimit);
     if (d.current) musicRenderNowPlaying(d.current);
   }).catch(() => {});
   fetch('/api/music/config').then((r) => r.json()).then((d) => {

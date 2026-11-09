@@ -1,6 +1,7 @@
 'use strict';
 
 const { getConfigSnapshot } = require('../config-bridge');
+const { liveQuota } = require('./free-limits');
 
 /**
  * /movil (Fase 8) refleja este estado via bus.on('sonido:musica-estado')
@@ -18,6 +19,8 @@ function musicBroadcastState(deps) {
     playlistActive: musicState.playlistActive,
     playlistIndex: musicState.playlistIndex,
     playlistTotal: musicState.playlistResolved.length,
+    requestsUsed: liveQuota(musicState).used,
+    requestsLimit: liveQuota(musicState).limit,
   };
   bus.emit('sonido:musica-estado', payload);
   bus.emit('ws:broadcast', { type: 'music-state', ...payload });
