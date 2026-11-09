@@ -24,6 +24,32 @@ function propagarError(res, r, logger) {
   return res.status(r.status).json({ error: b.error || 'Error', errorKey: b.errorKey || 'errors.generic' });
 }
 
+// Rastro de vincular/desvincular Twitch o Kick. Nunca se loguea el body (trae
+// el code/codeVerifier del OAuth). `accion` = 'vincular' | 'desvincular'.
+//  - ok -> info
+//  - 4xx (ya tenes otra cuenta, code invalido...) -> info "rechazada": lo causa
+//    el usuario, no es un bug.
+//  - 5xx / 501 (servicio-cuentas roto o sin configurar Twitch/Kick) -> warn
+//    "fallida", que GlitchTip promueve a issue.
+//  - status 0 (servicio caido) ya lo loguea propagarError: no se duplica.
+function logVinculo(logger, accion, plataforma, r) {
+  const ctx = 'auth/routes.js#logVinculo';
+  const hecho = accion === 'vincular' ? 'vinculada' : 'desvinculada';
+  if (r.ok) {
+    logger.log('info', 'auth', ctx, `auth.plataforma.${hecho}`, `${plataforma} ${hecho}`, { plataforma });
+    return;
+  }
+  if (r.status === 0) return;
+  const datos = { plataforma, status: r.status, errorKey: r.body && r.body.errorKey };
+  if (r.status >= 500) {
+    logger.log('warn', 'auth', ctx, `auth.plataforma.${accion === 'vincular' ? 'vinculacion' : 'desvinculacion'}_fallida`,
+      `${accion} ${plataforma} fallo en servicio-cuentas`, datos);
+  } else {
+    logger.log('info', 'auth', ctx, `auth.plataforma.${accion === 'vincular' ? 'vinculacion' : 'desvinculacion'}_rechazada`,
+      `${accion} ${plataforma} rechazado`, datos);
+  }
+}
+
 // Cualquier valor distinto de 'month' cae al default del contrato: anual.
 const intervaloValido = (v) => (v === 'month' ? 'month' : 'year');
 
@@ -188,6 +214,7 @@ function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
         return res.status(400).json({ error: 'Faltan datos', errorKey: 'errors.invalidBody' });
       }
       const r = await linkFn(token, body);
+      logVinculo(logger, 'vincular', plataforma, r);
       if (!r.ok) return propagarError(res, r, logger);
       res.json(r.body);
     });
@@ -202,6 +229,7 @@ function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
     const { plataforma } = req.params;
     if (!['twitch', 'kick'].includes(plataforma)) return res.status(404).end();
     const r = await cliente.unlinkPlatform(token, plataforma);
+    logVinculo(logger, 'desvincular', plataforma, r);
     if (!r.ok) return propagarError(res, r, logger);
     res.json(r.body);
   });

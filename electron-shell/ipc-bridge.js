@@ -6,6 +6,7 @@ const { TITLEBAR_OVERLAY, TITLEBAR_OVERLAY_DIMMED } = require('./titlebar');
 const { autenticarConGoogle } = require('./google-auth');
 const { autenticarConTwitch } = require('./twitch-auth');
 const { autenticarConKick } = require('./kick-auth');
+const { conLogOAuth } = require('./log-oauth');
 
 const FORBIDDEN_SHORTCUTS = new Set(['Alt+F4', 'Ctrl+C', 'Cmd+C', 'Ctrl+V', 'Cmd+V', 'Ctrl+Alt+Del', 'Ctrl+Shift+Esc', 'Cmd+Shift+Esc']);
 const SPECIAL_PAUSE_SHORTCUTS = new Set(['MediaPlayPause', 'F8', 'F9', 'F10', 'F11', 'F12']);
@@ -65,9 +66,9 @@ function attachIpcBridge({ app, bus, logger, getMainWindow, globalShortcut }) {
   // Twitch/Kick: abren el navegador externo + server loopback y devuelven
   // {code, codeVerifier?, redirectUri} para que el renderer lo mande al
   // endpoint que corresponda.
-  ipcMain.handle('auth:google', () => autenticarConGoogle());
-  ipcMain.handle('auth:twitch', () => autenticarConTwitch());
-  ipcMain.handle('auth:kick', () => autenticarConKick());
+  ipcMain.handle('auth:google', () => conLogOAuth(logger, 'google', autenticarConGoogle));
+  ipcMain.handle('auth:twitch', () => conLogOAuth(logger, 'twitch', autenticarConTwitch));
+  ipcMain.handle('auth:kick', () => conLogOAuth(logger, 'kick', autenticarConKick));
 
   ipcMain.on('titlebar:dim', (_event, dimmed) => {
     const win = getMainWindow();
