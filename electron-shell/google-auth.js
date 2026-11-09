@@ -24,6 +24,7 @@ function autenticarConGoogle() {
   const { codeVerifier, codeChallenge } = generarPKCE();
   return autenticarConLoopback({
     puerto: 0,
+    plataforma: 'google',
     construirAuthUrl: (redirectUri) => {
       const params = new URLSearchParams({
         client_id: googleClientId(),

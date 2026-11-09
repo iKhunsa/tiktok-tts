@@ -29,6 +29,7 @@ function autenticarConTwitch() {
   return autenticarConLoopback({
     puerto: PUERTO,
     host: 'localhost', // tiene que ser el mismo string registrado en Twitch
+    plataforma: 'twitch',
     construirAuthUrl: (redirectUri) => {
       const params = new URLSearchParams({
         client_id: twitchClientId(),
