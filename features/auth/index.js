@@ -2,6 +2,7 @@
 
 const mcpRegistry = require('../../core/contracts/mcp-registry');
 const entitlementsContract = require('../../core/contracts/entitlements');
+const liveCheckContract = require('../../core/contracts/live-check');
 const { crearSubsEnabledCache } = require('../../core/subs-enabled-cache');
 const { resolverUrl } = require('./config-servicio');
 const { crearCliente } = require('./cliente-servicio');
@@ -69,6 +70,15 @@ module.exports = {
     }
 
     const cliente = crearCliente(urlServicio);
+
+    // Contrato para /canales: ¿ese canal de Twitch sigue en vivo? (Twitch exige
+    // credenciales de app que solo tiene servicio-cuentas.) true | false | null;
+    // null = no se pudo saber (servicio caido, 5xx, 501): NO es "offline".
+    liveCheckContract.twitchEnVivo = async (login) => {
+      const r = await cliente.twitchEnVivo(login);
+      return r.ok && r.body && typeof r.body.live === 'boolean' ? r.body.live : null;
+    };
+
     estado.hidratarDesdeDisco();
     // El listener de 'account:changed' tiene que estar puesto ANTES del
     // emit de abajo, para que la rehidratacion inicial (si habia sesion en

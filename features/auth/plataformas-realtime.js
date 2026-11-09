@@ -45,18 +45,31 @@ function crearRealtime({ urlServicio, bus, logger }) {
 
     socket = new WebSocket(`${wsUrl}/ws?token=${encodeURIComponent(token)}`);
 
-    socket.on('open', () => { intentos = 0; });
+    socket.on('open', () => {
+      logger.log('info', 'auth', 'auth/plataformas-realtime.js#conectar', 'auth.realtime.conectado',
+        'WS de plataformas vinculadas conectado', { reintentos_previos: intentos });
+      intentos = 0;
+    });
 
     socket.on('message', (raw) => {
       let evento;
-      try { evento = JSON.parse(raw.toString()); } catch (_) { return; }
+      try { evento = JSON.parse(raw.toString()); } catch (_) {
+        // Un frame que no es JSON no deberia pasar nunca: lo descartamos pero
+        // dejamos rastro (antes se tragaba en silencio). Sin el contenido.
+        logger.log('warn', 'auth', 'auth/plataformas-realtime.js#conectar', 'auth.realtime.mensaje_invalido',
+          'Mensaje del WS de plataformas descartado: no es JSON', {});
+        return;
+      }
       bus.emit('ws:broadcast', { type: 'plataforma-evento', ...evento });
       bus.emit('plataforma:evento', evento); // version cruda para otros dominios (ver moderacion/index.js#gift-gate)
     });
 
     socket.on('close', () => {
       socket = null;
-      if (!detenido) reintentar();
+      if (detenido) return;
+      logger.log('info', 'auth', 'auth/plataformas-realtime.js#conectar', 'auth.realtime.desconectado',
+        'WS de plataformas vinculadas cerrado, se reintenta', { intento: intentos + 1 });
+      reintentar();
     });
 
     socket.on('error', (err) => {

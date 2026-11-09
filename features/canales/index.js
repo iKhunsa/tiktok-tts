@@ -8,6 +8,8 @@ const mcpRegistry = require('../../core/contracts/mcp-registry');
 const { connectPlatformChannel } = require('./connect-impl');
 const { gateMultiCanal } = require('./gate-multi-canal');
 const { teardownConn } = require('./tiktok/connect-tiktok-channel');
+const { crearMonitorEnVivo } = require('./live-status/live-monitor');
+const { checkLive } = require('./live-status/check-live');
 
 const { connect } = require('./routes/connect');
 const { disconnect } = require('./routes/disconnect');
@@ -25,6 +27,7 @@ const { obsDisconnect } = require('./routes/obs-disconnect');
 const { obsSaveReplay } = require('./routes/obs-save-replay');
 
 let channelState = null;
+let liveMonitor = null;
 
 module.exports = {
   name: 'canales',
@@ -38,6 +41,12 @@ module.exports = {
     // de apuntar los stores al namespace nuevo para que ningun callback viejo
     // siga emitiendo eventos del streamer anterior.
     bus.on('account:changing', () => module.exports.shutdown(), 'canales');
+
+    // Fin del directo en Twitch/Kick/YouTube (cuyo chat sigue conectado aunque
+    // el stream termine): emite `canal:live`, lo consume la telemetria para no
+    // seguir contando "en vivo". Ver live-status/live-monitor.js.
+    if (liveMonitor) liveMonitor.stop();
+    liveMonitor = crearMonitorEnVivo({ bus, logger, check: (platform, channel) => checkLive(platform, channel) });
 
     const rateLimit = connectRateLimiter(rateLimiterState, logger);
 
@@ -137,10 +146,11 @@ module.exports = {
       },
     });
 
-    return { rutas: 14, listeners: 3 };
+    return { rutas: 14, listeners: 4 };
   },
 
   shutdown() {
+    if (liveMonitor) liveMonitor.stop();
     if (!channelState) return;
     const state = channelState;
 

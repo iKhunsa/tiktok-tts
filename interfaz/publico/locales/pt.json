@@ -1321,7 +1321,7 @@
                    "emailTaken":  "Esse email já está registrado.",
                    "nicknameTaken":  "Esse apelido já está em uso.",
                    "invalidNickname":  "Apelido inválido.",
-                   "plataformaTomada":  "Essa conta já está vinculada a outro usuário.",
+                   "plataformaTomada":  "Você já tem outra conta desta plataforma vinculada. Desvincule-a primeiro.",
                    "invalidPlatformToken":  "Não foi possível validar o login. Tente de novo.",
                    "invalidCredentials":  "Email ou senha incorretos.",
                    "serviceUnavailable":  "Serviço de contas indisponível. Tente novamente em breve.",

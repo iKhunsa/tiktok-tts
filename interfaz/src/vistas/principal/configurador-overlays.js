@@ -2,6 +2,8 @@ import { appSettings, saveSettings, applySettings } from '../../nucleo/estado/aj
 import { t } from '../../nucleo/i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
 import { construirQuery } from '../../../compartido/estilo/query.js';
+import { ajustesSegunPlan } from '../../../compartido/estilo/ajustes-segun-plan.js';
+import { tieneAccesoPro } from '../../nucleo/estado/sesion.js';
 import { ESQUEMAS, DEFAULTS_OVERLAYS, CHATS_POR_PLATAFORMA } from '../../../compartido/estilo/esquemas.js';
 import { trackUi } from '../../nucleo/telemetria-ui.js';
 import { urlConVistaPrevia } from '../../../compartido/vista-previa.js';
@@ -11,8 +13,11 @@ import { queryEpik } from './epik/estado.js';
 
 export function buildOverlayUrl(type) {
   if (esCapaGif(type)) return urlCapaGif(location.origin, appSettings.overlays[type]);
+  // Lo guardado puede traer una skin premium (editor de canvas, plan vencido...): sin Pro no sale hacia OBS ni la
+  // vista previa. Un solo punto de salida para todo lo que se aplica; ver compartido/estilo/ajustes-segun-plan.js.
+  const aplicados = ajustesSegunPlan(ESQUEMAS[type], appSettings.overlays[type], tieneAccesoPro());
   // Con una skin .epik se suman sus ajustes propios (x.<clave>).
-  const query = [construirQuery(ESQUEMAS[type], appSettings.overlays[type]), queryEpik(type)].filter(Boolean).join('&');
+  const query = [construirQuery(ESQUEMAS[type], aplicados), queryEpik(type)].filter(Boolean).join('&');
   // Las alertas de evento comparten pagina: ?evento= elige cual es.
   if (EVENTOS_ALERTA[type]) return `${location.origin}/overlay-evento.html?evento=${type}${query ? `&${query}` : ''}`;
   if (CHATS_POR_PLATAFORMA[type]) return `${location.origin}/overlay-chat.html?platforms=${CHATS_POR_PLATAFORMA[type]}${query ? `&${query}` : ''}`;

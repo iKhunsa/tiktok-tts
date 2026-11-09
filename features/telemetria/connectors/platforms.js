@@ -13,6 +13,12 @@
 // heartbeat de 5 min, que solo dice "el proceso esta abierto" — para el mapa
 // y la tarjeta "en vivo ahora". Al quedarse sin canales se emite
 // app/live_stopped y el punto del mapa envejece (backend: ventana de 150s).
+//
+// Chat conectado NO es directo activo: en Twitch/Kick/YouTube el chat sigue
+// conectado cuando el stream ya termino. /canales (live-status/live-monitor.js)
+// confirma con la plataforma y emite `canal:live {platform, channel, live}`;
+// un canal con veredicto offline deja de contar aunque siga "conectado". Sin
+// veredicto (la consulta fallo o aun no respondio) cuenta como antes.
 const { flush } = require('../runtime');
 
 const LIVE_PING_MS = 60 * 1000;
@@ -20,6 +26,7 @@ const PLATFORMS = ['tiktok', 'twitch', 'youtube', 'kick'];
 
 function attach(bus, track, { markPlatform }) {
   const liveChannels = new Set(); // `${platform}:${channel}`
+  const offlineConfirmado = new Set(); // canales con veredicto "ya no esta en vivo"
   let liveTimer = null;
 
   function startLive() {
@@ -53,7 +60,9 @@ function attach(bus, track, { markPlatform }) {
     if (payload.state === 'conectado') {
       markPlatform(payload.platform);
       track('platforms', 'connected', { platform: payload.platform });
-      if (payload.channel) {
+      // Si el chat se reconecta (sin haberse dado de baja) y ya se confirmo que
+      // el directo termino, no vuelve a contar solo por estar "conectado".
+      if (payload.channel && !offlineConfirmado.has(`${payload.platform}:${payload.channel}`)) {
         liveChannels.add(`${payload.platform}:${payload.channel}`);
         startLive();
       }
@@ -61,7 +70,10 @@ function attach(bus, track, { markPlatform }) {
       if (payload.state === 'desconectado') {
         track('platforms', 'disconnected', { platform: payload.platform });
       }
-      if (payload.channel) liveChannels.delete(`${payload.platform}:${payload.channel}`);
+      if (payload.channel) {
+        liveChannels.delete(`${payload.platform}:${payload.channel}`);
+        offlineConfirmado.delete(`${payload.platform}:${payload.channel}`);
+      }
       if (liveChannels.size === 0) stopLive();
     } else if (payload.state === 'sin-canales') {
       // Emitido solo por TikTok (cleanup-after-last-channel.js) — no tocar
@@ -70,11 +82,31 @@ function attach(bus, track, { markPlatform }) {
       for (const key of liveChannels) {
         if (key.startsWith(prefix)) liveChannels.delete(key);
       }
+      for (const key of offlineConfirmado) {
+        if (key.startsWith(prefix)) offlineConfirmado.delete(key);
+      }
       if (liveChannels.size === 0) stopLive();
     }
     // 'reconectando' / 'error' se ignoran: son transitorios y la ventana de
     // 150s del backend absorbe el hueco hasta el proximo 'conectado' o el
     // 'desconectado'/'sin-canales' definitivo.
+  });
+
+  // Veredicto de /canales sobre si el directo sigue (Twitch/Kick/YouTube).
+  // live=false: deja de contar (aunque el chat siga conectado) y, si era el
+  // ultimo, corta app/live. live=true: vuelve a contar.
+  bus.on('canal:live', (payload) => {
+    if (!payload || !PLATFORMS.includes(payload.platform) || !payload.channel) return;
+    const key = `${payload.platform}:${payload.channel}`;
+    if (payload.live === true) {
+      offlineConfirmado.delete(key);
+      liveChannels.add(key);
+      startLive();
+    } else if (payload.live === false) {
+      offlineConfirmado.add(key);
+      liveChannels.delete(key);
+      if (liveChannels.size === 0) stopLive();
+    }
   });
 }
 

@@ -19,7 +19,7 @@ import { idCapaGif, prepararCapaGif } from './gif-capas.js';
 import { crearSelectorSkin } from '../selector-skin.js';
 import { showToast } from '../../../componentes/toast.js';
 import { abrirPopupPro } from '../../../componentes/popup-pro.js';
-import { tieneAcceso } from './tienda.js';
+import { almacenSesion, tieneAccesoPro } from '../../../nucleo/estado/sesion.js';
 import { crearMedia } from './media.js';
 import { deshacer, rehacer, registrarCambio, reiniciarHistorial } from './editor-historial.js';
 import { renderizarTodosLosCamposOverlay } from '../campos-overlay/index.js';
@@ -509,7 +509,13 @@ function pintar() {
 }
 
 export function abrirEditorCanvas() {
-  if (!tieneAcceso()) return abrirPopupPro(); // el editor unificado es solo Pro
+  // Todo el editor es Pro. Es el unico punto de entrada: lo usan los botones y tambien la restauracion tras una
+  // recarga (barra-titulo hace clic en #ovlEditorUnificado). Sin acceso no se entra y no se recuerda como abierto.
+  if (!tieneAccesoPro()) {
+    guardarEstadoUi({ editor: false });
+    abrirPopupPro();
+    return;
+  }
   usarFormatoPropio({
     leer: () => appSettings.escenas?.[escenaActiva]?.formato,
     guardar: (formato) => { escena().formato = formato; ajustar(); resaltar(); },
@@ -730,7 +736,30 @@ export function iniciarEditorCanvas() {
   superficie.addEventListener('pointercancel', terminar);
   // El formato 16:9 / 9:16 vive en el inspector: tras cambiarlo se reajusta el lienzo.
   editor.addEventListener('click', (evento) => { if (evento.target.closest('[data-lienzo]')) setTimeout(ajustar); });
-  document.querySelectorAll('.ovl-banner-cta, #ovlEditorUnificado').forEach((boton) => boton.addEventListener('click', abrirEditorCanvas));
+  const botonesEntrada = document.querySelectorAll('.ovl-banner-cta, #ovlEditorUnificado');
+  botonesEntrada.forEach((boton) => boton.addEventListener('click', abrirEditorCanvas));
+  // Sin Pro los botones de entrada se ven deshabilitados (candado) pero siguen siendo clicables: abren el popup de
+  // Pro. Si el editor estaba abierto cuando se sabe que no hay acceso (la sesion se hidrata despues de arrancar, o
+  // el plan vence), se cierra.
+  const pintarAcceso = () => {
+    const acceso = tieneAccesoPro();
+    botonesEntrada.forEach((boton) => {
+      boton.classList.toggle('bloqueado-pro', !acceso);
+      boton.setAttribute('aria-disabled', String(!acceso));
+      const candado = boton.querySelector('.ovl-candado-pro');
+      if (acceso) candado?.remove();
+      else if (!candado) {
+        const icono = document.createElement('img');
+        icono.className = 'icon-inline ovl-candado-pro';
+        icono.src = 'icons/lock.svg';
+        icono.alt = '';
+        boton.append(icono);
+      }
+    });
+    if (!acceso && !editor.hidden) cerrar();
+  };
+  almacenSesion.subscribe(pintarAcceso);
+  pintarAcceso();
   new window.ResizeObserver(ajustar).observe($('ovlEditorEscenario'));
   // Ctrl + rueda: zoom hacia el puntero (el marco crece de verdad, asi seleccion y tiradores siguen midiendo bien). Sin Ctrl, la rueda desplaza.
   $('ovlEditorEscenario').addEventListener('wheel', (evento) => {

@@ -114,6 +114,11 @@ const EVENTO_A_TIPO = {
   'auth.store.guardado_fallido': 'error_auth',
   'auth.servicio.error': 'error_auth_servicio',
   'auth.servicio.sin_respuesta': 'error_auth_servicio',
+  // Login OAuth (Google/Twitch/Kick) y vincular/desvincular Twitch/Kick.
+  // oauth.cancelado / oauth.timeout / *_rechazada son esperados: solo Logs.
+  'electron_shell.oauth.fallido': 'error_oauth',
+  'auth.plataforma.vinculacion_fallida': 'error_vinculacion_plataforma',
+  'auth.plataforma.desvinculacion_fallida': 'error_vinculacion_plataforma',
   'sonido.tts.error_google_red': 'error_tts_google',
   'sonido.musica.motor_no_disponible': 'error_musica_engine',
   'sonido.musica.stream_error': 'error_musica_engine',
@@ -223,6 +228,8 @@ const WARN_PROMOVIDOS = new Set([
   'electron_shell.updater.chequeo_fallido',
   'electron_shell.shortcut.registro_fallido',
   'electron_shell.atajo_clip_fallido',
+  'auth.plataforma.vinculacion_fallida',
+  'auth.plataforma.desvinculacion_fallida',
   'idioma.dict.carga_fallida',
   'moderacion.rust.no_disponible', // solo se loguea con rustGuardEnabled=true
 ]);

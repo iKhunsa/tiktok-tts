@@ -25,6 +25,7 @@ function autenticarConKick() {
   return autenticarConLoopback({
     puerto: PUERTO,
     host: 'localhost', // tiene que ser el mismo string registrado en Kick
+    plataforma: 'kick',
     construirAuthUrl: (redirectUri) => {
       const params = new URLSearchParams({
         client_id: kickClientId(),

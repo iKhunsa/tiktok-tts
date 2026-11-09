@@ -17,6 +17,10 @@
 .ovl-editor-unificado:hover { background: var(--brand-hover); }
 .ovl-editor-unificado:focus-visible { outline: 2px solid var(--text-muted); outline-offset: 2px; }
 .ovl-editor-unificado img { filter: brightness(0) invert(1); }
+/* El editor de canvas es Pro: sin acceso los botones de entrada se ven apagados con candado, pero siguen siendo
+   clicables (abren el popup de Pro). */
+.ovl-editor-unificado.bloqueado-pro, .ovl-banner-cta.bloqueado-pro { opacity: 0.55; }
+.ovl-candado-pro { flex-shrink: 0; }
 .ovl-controles { display: flex; align-items: center; justify-content: flex-start; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-4); }
 .ovl-pestanas { display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; background: var(--surface); }
 .ovl-pestana {

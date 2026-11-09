@@ -996,7 +996,7 @@
                    "emailTaken":  "That email is already registered.",
                    "nicknameTaken":  "That nickname is already taken.",
                    "invalidNickname":  "Invalid nickname.",
-                   "plataformaTomada":  "That account is already linked to another user.",
+                   "plataformaTomada":  "You already have another account from this platform linked. Unlink it first.",
                    "invalidPlatformToken":  "Couldn't verify the login. Try again.",
                    "invalidCredentials":  "Wrong email or password.",
                    "serviceUnavailable":  "Account service unavailable. Try again shortly.",

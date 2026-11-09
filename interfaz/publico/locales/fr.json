@@ -1321,7 +1321,7 @@
                    "emailTaken":  "Cet email est déjà enregistré.",
                    "nicknameTaken":  "Ce pseudo est déjà pris.",
                    "invalidNickname":  "Pseudo invalide.",
-                   "plataformaTomada":  "Ce compte est déjà lié à un autre utilisateur.",
+                   "plataformaTomada":  "Tu as déjà un autre compte de cette plateforme lié. Dissocie-le d'abord.",
                    "invalidPlatformToken":  "Impossible de vérifier la connexion. Réessaie.",
                    "invalidCredentials":  "Email ou mot de passe incorrect.",
                    "serviceUnavailable":  "Service de comptes indisponible. Réessayez bientôt.",
