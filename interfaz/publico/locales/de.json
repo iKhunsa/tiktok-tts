@@ -1316,7 +1316,7 @@
                    "emailTaken":  "Diese E-Mail ist bereits registriert.",
                    "nicknameTaken":  "Dieser Nickname ist bereits vergeben.",
                    "invalidNickname":  "Ungültiger Nickname.",
-                   "plataformaTomada":  "Dieses Konto ist bereits mit einem anderen Nutzer verknüpft.",
+                   "plataformaTomada":  "Du hast bereits ein anderes Konto dieser Plattform verknüpft. Hebe zuerst die Verknüpfung auf.",
                    "invalidPlatformToken":  "Der Login konnte nicht überprüft werden. Versuch es erneut.",
                    "invalidCredentials":  "Falsche E-Mail oder Passwort.",
                    "serviceUnavailable":  "Kontodienst nicht verfügbar. Versuche es bald erneut.",

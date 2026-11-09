@@ -1316,7 +1316,7 @@
                    "emailTaken":  "そのメールは既に登録されています。",
                    "nicknameTaken":  "そのニックネームは既に使われています。",
                    "invalidNickname":  "ニックネームが無効です。",
-                   "plataformaTomada":  "そのアカウントは既に他のユーザーに連携されています。",
+                   "plataformaTomada":  "このプラットフォームの別のアカウントが既に連携されています。先に連携を解除してください。",
                    "invalidPlatformToken":  "ログインを確認できませんでした。もう一度お試しください。",
                    "invalidCredentials":  "メールまたはパスワードが違います。",
                    "serviceUnavailable":  "アカウントサービスを利用できません。しばらくして再試行してください。",

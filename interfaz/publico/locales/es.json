@@ -1336,7 +1336,7 @@
                    "emailTaken":  "Ese email ya está registrado.",
                    "nicknameTaken":  "Ese nickname ya está en uso.",
                    "invalidNickname":  "Nickname inválido.",
-                   "plataformaTomada":  "Esa cuenta ya está vinculada a otro usuario.",
+                   "plataformaTomada":  "Ya tenés otra cuenta de esta plataforma vinculada. Desvinculala primero.",
                    "invalidPlatformToken":  "No se pudo validar el login. Probá de nuevo.",
                    "invalidCredentials":  "Email o contraseña incorrectos.",
                    "serviceUnavailable":  "Servicio de cuentas no disponible. Probá de nuevo en un rato.",
