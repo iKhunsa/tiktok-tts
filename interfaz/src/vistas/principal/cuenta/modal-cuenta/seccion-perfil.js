@@ -12,6 +12,7 @@ import { escaparAtributo as esc } from '../../../../../compartido/escapar-html.j
 import { pedir, toastError } from '../api.js';
 import { subirImagenDeCuenta } from '../cloudinary-upload.js';
 import { abrirModalEliminarCuenta } from '../modal-eliminar-cuenta.js';
+import { abrirModalCambiarPassword } from '../modal-cambiar-password.js';
 import {
   listaIdentidades, vincularGoogle,cerrarSesion, eliminarCuenta, eliminarCuentaGoogle,
 } from '../acciones-cuenta.js';
@@ -46,7 +47,7 @@ export function pintarPerfil(cont, s) {
     </div>
     <h3 class="mc-subtitulo" data-i18n="cuentaModal.accountTitle"></h3>
     <div class="mc-filas">
-      ${fila('cuentaModal.changePassword', '<button class="mc-accion" type="button" id="mcPassword" data-i18n="cuentaModal.update"></button>')}
+      ${u.hasPassword === false ? '' : fila('cuentaModal.changePassword', '<button class="mc-accion" type="button" id="mcPassword" data-i18n="cuentaModal.update"></button>')}
       ${fila('cuentaModal.logoutRow', '<button class="mc-accion" type="button" id="mcLogout" data-i18n="cuenta.logout"></button>')}
       ${fila(conSuscripcion ? 'cuentaModal.deleteBlocked' : 'cuenta.deleteHint', '<button class="mc-eliminar" type="button" id="mcEliminar" data-i18n="cuenta.deleteAccount"></button>')}
     </div>`);
@@ -56,8 +57,8 @@ export function pintarPerfil(cont, s) {
   enlazarNick(cont, u);
   pintarGoogle(cont);
 
-  // Sin endpoint todavia: la fila queda puesta para cuando exista.
-  cont.querySelector('#mcPassword').addEventListener('click', () => showToast(t('cuentaModal.soon')));
+  // Las cuentas que nacieron con Google no tienen contraseña (hasPassword false): no hay "actual" que pedir, la fila no sale.
+  cont.querySelector('#mcPassword')?.addEventListener('click', abrirModalCambiarPassword);
   cont.querySelector('#mcLogout').addEventListener('click', cerrarSesion);
   cont.querySelector('#mcEliminar').addEventListener('click', async () => {
     const lista = await listaIdentidades();

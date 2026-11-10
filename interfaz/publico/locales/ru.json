@@ -1924,6 +1924,8 @@
     "updatingStyle": "Обновляем ваш стиль...",
     "accountTitle": "Аккаунт",
     "changePassword": "Сменить пароль",
+    "currentPassword": "Текущий пароль",
+    "passwordChanged": "Пароль обновлён.",
     "update": "Обновить",
     "soon": "Скоро",
     "logoutRow": "Выйти на этом устройстве",

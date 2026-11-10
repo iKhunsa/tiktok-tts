@@ -8,19 +8,7 @@ import { t } from '../../../nucleo/i18n/i18n.js';
 import { showToast } from '../../../componentes/toast.js';
 import { escaparAtributo as esc } from '../../../../compartido/escapar-html.js';
 import { pedir, toastError } from './api.js';
-
-function campoPass(id, labelKey) {
-  return `
-    <div class="cuenta-field">
-      <label for="${id}" data-i18n="${labelKey}"></label>
-      <div class="cuenta-pass-wrap">
-        <input type="password" id="${id}" autocomplete="new-password">
-        <button type="button" class="cuenta-pass-toggle" data-toggle="${id}" aria-label="${esc(t('cuenta.showPassword'))}">
-          <img class="icon-inline" src="icons/visibility.svg" alt="">
-        </button>
-      </div>
-    </div>`;
-}
+import { campoPass, enlazarMostrarPassword } from './campo-password.js';
 
 export function abrirModalRecuperar({ emailInicial }) {
   const overlay = document.createElement('div');
@@ -116,15 +104,7 @@ export function abrirModalRecuperar({ emailInicial }) {
   $('#rpEmail').addEventListener('input', actualizarTextoEnvio);
   $('[data-back]').addEventListener('click', () => mostrarPaso(0));
   $('[data-submit]').addEventListener('click', confirmarReset);
-  overlay.querySelectorAll('[data-toggle]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const input = overlay.querySelector(`#${btn.dataset.toggle}`);
-      const mostrar = input.type === 'password';
-      input.type = mostrar ? 'text' : 'password';
-      btn.querySelector('img').src = mostrar ? 'icons/visibility_off.svg' : 'icons/visibility.svg';
-      btn.setAttribute('aria-label', t(mostrar ? 'cuenta.hidePassword' : 'cuenta.showPassword'));
-    });
-  });
+  enlazarMostrarPassword(overlay);
 
   mostrarPaso(0);
   $('#rpEmail').focus();

@@ -54,6 +54,7 @@ function crearCliente(baseUrl) {
     forgotPassword: (b) => pedir('/api/auth/forgot-password', { method: 'POST', body: b }),
     resetPassword: (b) => pedir('/api/auth/reset-password', { method: 'POST', body: b }),
     account: (token, b) => pedir('/api/account', { method: 'PATCH', token, body: b }),
+    cambiarPassword: (token, b) => pedir('/api/account/password', { method: 'PATCH', token, body: b }),
     eliminarCuenta: (token, b) => pedir('/api/account', { method: 'DELETE', token, body: b }),
     identities: (token) => pedir('/api/account/identities', { token }),
     linkGoogle: (token, b) => pedir('/api/account/link/google', { method: 'POST', token, body: b }),

@@ -1924,6 +1924,8 @@
     "updatingStyle": "스타일을 업데이트하는 중...",
     "accountTitle": "계정",
     "changePassword": "비밀번호 변경",
+    "currentPassword": "현재 비밀번호",
+    "passwordChanged": "비밀번호가 변경되었습니다.",
     "update": "업데이트",
     "soon": "곧 제공",
     "logoutRow": "이 기기에서 로그아웃",

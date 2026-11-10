@@ -1924,6 +1924,8 @@
     "updatingStyle": "Actualizando tu estilo...",
     "accountTitle": "Cuenta",
     "changePassword": "Cambiar contraseña",
+    "currentPassword": "Contraseña actual",
+    "passwordChanged": "Contraseña actualizada.",
     "update": "Actualizar",
     "soon": "Próximamente",
     "logoutRow": "Cerrar sesión en este dispositivo",

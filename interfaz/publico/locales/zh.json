@@ -1924,6 +1924,8 @@
     "updatingStyle": "正在更新你的样式…",
     "accountTitle": "账号",
     "changePassword": "修改密码",
+    "currentPassword": "当前密码",
+    "passwordChanged": "密码已更新。",
     "update": "更新",
     "soon": "即将推出",
     "logoutRow": "在此设备上退出登录",

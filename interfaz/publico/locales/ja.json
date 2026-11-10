@@ -1924,6 +1924,8 @@
     "updatingStyle": "スタイルを更新しています...",
     "accountTitle": "アカウント",
     "changePassword": "パスワードを変更",
+    "currentPassword": "現在のパスワード",
+    "passwordChanged": "パスワードを更新しました。",
     "update": "更新",
     "soon": "近日公開",
     "logoutRow": "このデバイスからログアウト",

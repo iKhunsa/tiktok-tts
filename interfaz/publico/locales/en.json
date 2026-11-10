@@ -1924,6 +1924,8 @@
     "updatingStyle": "Updating your style...",
     "accountTitle": "Account",
     "changePassword": "Change password",
+    "currentPassword": "Current password",
+    "passwordChanged": "Password updated.",
     "update": "Update",
     "soon": "Coming soon",
     "logoutRow": "Sign out on this device",

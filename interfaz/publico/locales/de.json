@@ -1924,6 +1924,8 @@
     "updatingStyle": "Dein Stil wird aktualisiert...",
     "accountTitle": "Konto",
     "changePassword": "Passwort ändern",
+    "currentPassword": "Aktuelles Passwort",
+    "passwordChanged": "Passwort aktualisiert.",
     "update": "Aktualisieren",
     "soon": "Demnächst",
     "logoutRow": "Auf diesem Gerät abmelden",

@@ -146,6 +146,21 @@ function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
     res.json(estado.getSesion());
   });
 
+  // Cambiar la contraseña con la sesion iniciada (exige la actual). Las contraseñas solo pasan de largo hacia
+  // servicio-cuentas: no se loguean ni se guardan aca. Las otras sesiones de la cuenta las cierra el back.
+  app.patch('/api/account/password', guard, async (req, res) => {
+    const token = estado.getToken();
+    if (!token) return res.status(401).json({ error: 'No autenticado', errorKey: 'errors.unauthorized' });
+    const { currentPassword, newPassword } = req.body || {};
+    if (typeof currentPassword !== 'string' || typeof newPassword !== 'string' || !currentPassword || !newPassword) {
+      return res.status(400).json({ error: 'Faltan datos', errorKey: 'errors.invalidBody' });
+    }
+    const r = await cliente.cambiarPassword(token, { currentPassword, newPassword });
+    if (!r.ok) return propagarError(res, r, logger);
+    logger.log('info', 'auth', 'auth/routes.js#cambiarPassword', 'auth.password.cambiada', 'Contraseña cambiada', {});
+    res.json({ ok: true });
+  });
+
   app.get('/api/account/identities', guard, async (req, res) => {
     const token = estado.getToken();
     if (!token) return res.status(401).json({ error: 'No autenticado', errorKey: 'errors.unauthorized' });

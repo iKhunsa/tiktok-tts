@@ -1924,6 +1924,8 @@
     "updatingStyle": "Mise à jour de ton style...",
     "accountTitle": "Compte",
     "changePassword": "Changer le mot de passe",
+    "currentPassword": "Mot de passe actuel",
+    "passwordChanged": "Mot de passe mis à jour.",
     "update": "Mettre à jour",
     "soon": "Bientôt disponible",
     "logoutRow": "Se déconnecter sur cet appareil",
