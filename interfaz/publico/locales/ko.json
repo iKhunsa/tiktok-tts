@@ -1985,7 +1985,12 @@
     "sizeMedium": "중간",
     "sizeLarge": "크게",
     "sizeXL": "아주 크게",
-    "notifications": "알림"
+    "notifications": "알림",
+    "addAnotherTiktokTitle": "TikTok 계정 추가로 연결",
+    "addAnotherTiktokSub": "두 번째 TikTok 계정을 연결해서 그 채팅도 함께 읽어줍니다.",
+    "addAnotherTiktok": "계정 추가로 연결",
+    "tiktokLimitReached": "이미 TikTok 계정을 최대 2개까지 연결했습니다.",
+    "tiktokAlreadyAdded": "그 TikTok 계정은 이미 연결되어 있습니다."
   },
   "linkAccounts": {
     "title": "계정을 연결하고 시작하세요",

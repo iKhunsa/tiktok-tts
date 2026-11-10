@@ -1985,7 +1985,12 @@
     "sizeMedium": "Mittel",
     "sizeLarge": "Groß",
     "sizeXL": "Sehr groß",
-    "notifications": "Benachrichtigungen"
+    "notifications": "Benachrichtigungen",
+    "addAnotherTiktokTitle": "Weiteres TikTok-Konto hinzufügen",
+    "addAnotherTiktokSub": "Verbinde ein zweites TikTok-Konto, um auch dessen Chat zu lesen.",
+    "addAnotherTiktok": "Weiteres Konto hinzufügen",
+    "tiktokLimitReached": "Du hast bereits das Maximum von 2 verknüpften TikTok-Konten erreicht.",
+    "tiktokAlreadyAdded": "Dieses TikTok-Konto ist bereits verknüpft."
   },
   "linkAccounts": {
     "title": "Verknüpfe deine Konten, um zu starten",

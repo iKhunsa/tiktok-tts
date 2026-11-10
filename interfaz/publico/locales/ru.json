@@ -1985,7 +1985,12 @@
     "sizeMedium": "Средний",
     "sizeLarge": "Большой",
     "sizeXL": "Очень большой",
-    "notifications": "Уведомления"
+    "notifications": "Уведомления",
+    "addAnotherTiktokTitle": "Добавить ещё один аккаунт TikTok",
+    "addAnotherTiktokSub": "Подключите второй аккаунт TikTok, чтобы читать и его чат тоже.",
+    "addAnotherTiktok": "Добавить ещё один аккаунт",
+    "tiktokLimitReached": "У вас уже подключено максимум 2 аккаунта TikTok.",
+    "tiktokAlreadyAdded": "Этот аккаунт TikTok уже подключён."
   },
   "linkAccounts": {
     "title": "Привяжите аккаунты, чтобы начать",

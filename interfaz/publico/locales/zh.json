@@ -1985,7 +1985,12 @@
     "sizeMedium": "中",
     "sizeLarge": "大",
     "sizeXL": "特大",
-    "notifications": "通知"
+    "notifications": "通知",
+    "addAnotherTiktokTitle": "添加另一个 TikTok 账号",
+    "addAnotherTiktokSub": "连接第二个 TikTok 账号，同时读取它的聊天。",
+    "addAnotherTiktok": "添加另一个账号",
+    "tiktokLimitReached": "你已经链接了最多 2 个 TikTok 账号。",
+    "tiktokAlreadyAdded": "该 TikTok 账号已经链接。"
   },
   "linkAccounts": {
     "title": "关联你的账号即可开始",

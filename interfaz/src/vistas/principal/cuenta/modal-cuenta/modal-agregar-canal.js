@@ -12,18 +12,23 @@
  * haya sesion, igual que el viejo formulario de Ajustes (ver nota de
  * tiktok-sesion.js) -- se escucha alCambiarSesionTiktok() para refrescarse
  * sola si la ventana de login/logout termina mientras el modal esta abierto.
+ *
+ * `opts.agregar` (solo TikTok, ver MAX_TIKTOK_CHANNELS en plataformas.js):
+ * en vez de reemplazar la cuenta guardada, suma una 2da sin pisar la
+ * primera -- mismo modal, solo cambia el texto y a donde guarda.
  */
 import { t, aplicarTraducciones } from '../../../../nucleo/i18n/i18n.js';
 import { escaparAtributo as esc } from '../../../../../compartido/escapar-html.js';
 import { showToast } from '../../../../componentes/toast.js';
-import { guardarCanal, PLATFORM_LABELS } from '../../plataformas.js';
+import { guardarCanal, agregarCanalTiktok, PLATFORM_LABELS } from '../../plataformas.js';
 import { fetchTiktokSession, alCambiarSesionTiktok, tiktokLogin, tiktokLogout } from '../../tiktok-sesion.js';
 
 // TikTok lleva el "@" como prefijo fijo del campo; YouTube acepta tambien
 // Channel ID o link, asi que ahi no hay prefijo.
 const PLACEHOLDER = { tiktok: 'usuario', youtube: '@canal, Channel ID o link live' };
 
-export function abrirModalAgregarCanal(platform) {
+export function abrirModalAgregarCanal(platform, opts = {}) {
+  const agregar = opts.agregar === true;
   return new Promise((resolve) => {
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay show';
@@ -32,8 +37,8 @@ export function abrirModalAgregarCanal(platform) {
         <button class="modal-close" type="button" data-cancel><img class="icon-inline" src="icons/close.svg" alt=""></button>
         <div class="ac-cabecera">
           <span class="ac-logo" aria-hidden="true"><img src="icons/${esc(platform)}-logo.svg" alt=""></span>
-          <h2 id="acTitle" data-i18n="cuentaModal.addChannelTitle_${platform}"></h2>
-          <p id="acSub" class="ac-sub" data-i18n="cuentaModal.addChannelSub_${platform}"></p>
+          <h2 id="acTitle" data-i18n="${agregar ? 'cuentaModal.addAnotherTiktokTitle' : `cuentaModal.addChannelTitle_${platform}`}"></h2>
+          <p id="acSub" class="ac-sub" data-i18n="${agregar ? 'cuentaModal.addAnotherTiktokSub' : `cuentaModal.addChannelSub_${platform}`}"></p>
         </div>
         ${platform === 'tiktok' ? '<div data-tiktok-session hidden></div>' : ''}
         <div class="ac-campo" data-channel-row>
@@ -65,8 +70,13 @@ export function abrirModalAgregarCanal(platform) {
       const btn = $('[data-save]');
       btn.disabled = true;
       try {
-        const r = await guardarCanal(platform, valor);
-        if (!r.ok) { showToast(t('toast.invalidChannel')); return; }
+        const r = agregar ? await agregarCanalTiktok(valor) : await guardarCanal(platform, valor);
+        if (!r.ok) {
+          if (r.limite) showToast(t('cuentaModal.tiktokLimitReached'));
+          else if (r.duplicado) showToast(t('cuentaModal.tiktokAlreadyAdded'));
+          else showToast(t('toast.invalidChannel'));
+          return;
+        }
         showToast(platform === 'youtube' && !r.autoConnect ? t('toast.youtubeTmpSaved') : t('toast.platformLinked', { platform: PLATFORM_LABELS[platform] }));
         cerrar(true);
       } finally {
@@ -82,15 +92,15 @@ export function abrirModalAgregarCanal(platform) {
 
     let desuscribirSesion;
     if (platform === 'tiktok') {
-      desuscribirSesion = alCambiarSesionTiktok(() => pintarSesionTiktok(overlay));
-      pintarSesionTiktok(overlay);
+      desuscribirSesion = alCambiarSesionTiktok(() => pintarSesionTiktok(overlay, agregar));
+      pintarSesionTiktok(overlay, agregar);
     } else {
       input.focus();
     }
   });
 }
 
-async function pintarSesionTiktok(overlay) {
+async function pintarSesionTiktok(overlay, agregar = false) {
   if (!overlay.isConnected) return;
   const slot = overlay.querySelector('[data-tiktok-session]');
   const channelRow = overlay.querySelector('[data-channel-row]');
@@ -110,7 +120,11 @@ async function pintarSesionTiktok(overlay) {
   channelRow.style.display = necesitaLogin ? 'none' : '';
   saveBtn.style.display = necesitaLogin ? 'none' : '';
   const sub = overlay.querySelector('#acSub');
-  sub.dataset.i18n = necesitaLogin ? 'cuentaModal.addChannelSub_tiktokLogin' : 'cuentaModal.addChannelSub_tiktok';
+  // Logueado: el texto cambia si es la 1ra cuenta o una 2da (agregar=true).
+  // El paso de login en si es el mismo pedido en los dos casos.
+  sub.dataset.i18n = necesitaLogin
+    ? 'cuentaModal.addChannelSub_tiktokLogin'
+    : (agregar ? 'cuentaModal.addAnotherTiktokSub' : 'cuentaModal.addChannelSub_tiktok');
   aplicarTraducciones(sub.parentElement);
 
   if (necesitaLogin) {

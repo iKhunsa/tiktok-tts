@@ -23,6 +23,17 @@
  * - 'conectado': ese canal esta activo ahora mismo en Chat.
  * - 'caducado' (solo TikTok): las cookies de sesion vencieron -- requiere
  *   volver a iniciar sesion sin perder el canal guardado.
+ *
+ * TikTok es la unica plataforma con mas de un slot (hasta MAX_TIKTOK_CHANNELS,
+ * ver plataformas.js -- el backend ya soporta 2+ canales de una misma
+ * plataforma detras del entitlement Pro 'multi-canal', esto solo expone un
+ * 2do slot en la UI). Por eso la fila de Tuyos se arma aparte (`filasTiktok`,
+ * una por cuenta guardada) en vez de salir del `conectores` generico que usan
+ * las otras 3 -- con 0 o 1 guardada se ve igual que las demas, con 2 son dos
+ * filas. La tarjeta de Descubrir en cambio sigue siendo UNA sola para TikTok
+ * (nunca dos tarjetas iguales): su accion es "agregar" mientras falte la 2da,
+ * y se deshabilita (ya no hay a donde agregar) al llegar al tope -- sacar una
+ * cuenta puntual se hace desde su fila en Tuyos, no desde la tarjeta.
  */
 import { t, aplicarTraducciones } from '../../../../nucleo/i18n/i18n.js';
 import { escaparAtributo as esc } from '../../../../../compartido/escapar-html.js';
@@ -30,7 +41,8 @@ import { toastError } from '../api.js';
 import { showToast } from '../../../../componentes/toast.js';
 import { listarPlataformasVinculadas, vincularPlataforma, desvincularPlataforma } from '../plataformas-vinculadas.js';
 import {
-  canalGuardado, removeChannel, sincronizarCanalOAuth, sincronizarCanalesOAuth, obtenerCanalesEnVivo, canalEnColeccion,
+  canalGuardado, canalesGuardados, removeChannel, sincronizarCanalOAuth, sincronizarCanalesOAuth,
+  obtenerCanalesEnVivo, canalEnColeccion, MAX_TIKTOK_CHANNELS,
 } from '../../plataformas.js';
 import { abrirModalAgregarCanal } from './modal-agregar-canal.js';
 import { fetchTiktokSession, alCambiarSesionTiktok, tiktokLogin } from '../../tiktok-sesion.js';
@@ -56,6 +68,11 @@ const ACCION_TARJETA = {
   caducado: RECONECTAR,
   desconectado: RECONECTAR,
   pendiente: { icono: 'refresh-warn', key: 'cuentaModal.pending', accion: null },
+  // Solo la tarjeta de Descubrir de TikTok usa estos dos (ver nota de arriba):
+  // con 1 de MAX_TIKTOK_CHANNELS guardada todavia se puede sumar otra; al
+  // tope no hay mas accion (sacar una se hace por fila, no por tarjeta).
+  'tiktok-incompleto': { icono: 'add-white', key: 'cuentaModal.addAnotherTiktok', accion: 'agregar' },
+  'tiktok-completo': { icono: 'check_circle_outline-ok', key: 'cuentaModal.linked', accion: null },
 };
 
 function estadoFilaHtml(c) {
@@ -77,8 +94,11 @@ function estadoFilaHtml(c) {
 }
 
 function filaHtml(c) {
+  // `channel`: solo las filas de TikTok lo traen (una por cuenta guardada) --
+  // identifica cual de las hasta MAX_TIKTOK_CHANNELS hay que tocar al
+  // reconectar/desvincular esta fila puntual, ver tabla-filas abajo.
   return `
-    <div class="mc-conector" data-id="${esc(c.id)}">
+    <div class="mc-conector" data-id="${esc(c.id)}"${c.channel ? ` data-channel="${esc(c.channel)}"` : ''}>
       <span class="mc-conector-icono" aria-hidden="true"><img src="icons/${esc(c.id)}-logo.svg" alt=""></span>
       <span class="mc-conector-nombre">${esc(c.nombre)}${c.username ? ` <span class="mc-conector-username">@${esc(c.username.replace(/^@+/, ''))}</span>` : ''}</span>
       <span class="mc-conector-estado">${estadoFilaHtml(c)}</span>
@@ -133,8 +153,12 @@ export function pintarVincular(cont) {
   const vacio = cont.querySelector('.mc-vacio');
 
   // Copia mutable del catalogo: cargarEstadoReal() pisa estado/username de
-  // las 4 plataformas con el estado real (OAuth o canal guardado).
+  // las 4 plataformas con el estado real (OAuth o canal guardado). TikTok
+  // ademas se expande en `filasTiktok` (una fila por cuenta, ver nota de
+  // arriba) -- su entrada en `conectores` sigue existiendo para la tarjeta
+  // de Descubrir y para resolver id->tipo/vinculadaOAuth en las acciones.
   let conectores = CATALOGO.map((c) => ({ ...c }));
+  let filasTiktok = [];
   // Null hasta la primera carga: sin nada vinculado se abre en Descubrir, con
   // al menos un conector en Tuyos.
   let pestana = null;
@@ -148,9 +172,13 @@ export function pintarVincular(cont) {
     }
     const filtro = input.value.trim().toLocaleLowerCase();
     const enDescubrir = pestana === 'descubrir';
-    const lista = conectores
-      .filter((c) => enDescubrir || c.estado !== 'sin-vincular')
-      .filter((c) => c.nombre.toLocaleLowerCase().includes(filtro));
+    // Descubrir: siempre las 4 tarjetas (una por plataforma, TikTok incluida
+    // aunque tenga 2 cuentas). Tuyos: todo conector no vacio MENOS TikTok
+    // (que sale aparte, fila por fila, desde filasTiktok).
+    const base = enDescubrir
+      ? conectores
+      : [...conectores.filter((c) => c.id !== 'tiktok' && c.estado !== 'sin-vincular'), ...filasTiktok];
+    const lista = base.filter((c) => c.nombre.toLocaleLowerCase().includes(filtro));
 
     const destino = enDescubrir ? descubrir.querySelector('.mc-tarjetas') : tabla.querySelector('.mc-tabla-filas');
     destino.innerHTML = lista.map(enDescubrir ? tarjetaHtml : filaHtml).join('');
@@ -172,6 +200,7 @@ export function pintarVincular(cont) {
     sincronizarCanalesOAuth(vinculadas);
     if (!cont.isConnected) return; // se cerro/cambio de seccion mientras pedia
     for (const c of conectores) {
+      if (c.id === 'tiktok') continue; // aparte, ver abajo
       c.vinculadaOAuth = c.tipo === 'oauth' && vinculadas.some((p) => p.plataforma === c.id);
       // Mismo criterio que la tarjeta de Chat (canal guardado), tambien en
       // OAuth: desvincular desde otro navegador deja aca el canal local. Sin
@@ -181,13 +210,25 @@ export function pintarVincular(cont) {
         || canalGuardado(c.id)?.channel || canalesEnVivo[c.id]?.[0];
       c.username = guardado || null;
       if (!guardado) { c.estado = 'sin-vincular'; continue; }
-      if (c.id === 'tiktok' && sesionTiktok.available && !sesionTiktok.loggedIn && sesionTiktok.authRequired.includes(guardado)) {
-        c.estado = 'caducado';
-        continue;
-      }
       c.estado = canalEnColeccion(c.id, guardado, canalesEnVivo) ? 'conectado' : 'guardado';
     }
-    pestana ??= conectores.some((c) => c.estado !== 'sin-vincular') ? 'tuyos' : 'descubrir';
+
+    // TikTok: una fila por cuenta guardada (0, 1 o MAX_TIKTOK_CHANNELS), cada
+    // una con su propio estado -- dos cuentas pueden estar en estados
+    // distintos (una conectada, la otra con la sesion caducada).
+    filasTiktok = canalesGuardados('tiktok').map((entry) => {
+      const guardado = entry.channel;
+      let estado;
+      if (sesionTiktok.available && !sesionTiktok.loggedIn && sesionTiktok.authRequired.includes(guardado)) estado = 'caducado';
+      else estado = canalEnColeccion('tiktok', guardado, canalesEnVivo) ? 'conectado' : 'guardado';
+      return { id: 'tiktok', nombre: 'TikTok', channel: guardado, username: guardado, estado };
+    });
+    const cTiktok = conectores.find((c) => c.id === 'tiktok');
+    cTiktok.username = filasTiktok[0]?.username || null;
+    cTiktok.estado = filasTiktok.length === 0 ? 'sin-vincular'
+      : filasTiktok.length < MAX_TIKTOK_CHANNELS ? 'tiktok-incompleto' : 'tiktok-completo';
+
+    pestana ??= (conectores.some((c) => c.estado !== 'sin-vincular') || filasTiktok.length) ? 'tuyos' : 'descubrir';
     pintarLista();
   }
 
@@ -209,14 +250,17 @@ export function pintarVincular(cont) {
   }
 
   async function conectarCanal(id) {
-    const guardo = await abrirModalAgregarCanal(id);
+    // TikTok con 1 cuenta guardada: el modal pasa a modo "agregar otra" en
+    // vez de reemplazarla (ver MAX_TIKTOK_CHANNELS/agregarCanalTiktok).
+    const agregar = id === 'tiktok' && filasTiktok.length >= 1;
+    const guardo = await abrirModalAgregarCanal(id, { agregar });
     if (!guardo) return;
     await cargarEstadoReal();
     pestana = 'tuyos';
     pintarLista();
   }
 
-  async function desconectar(id, btn) {
+  async function desconectar(id, btn, channel = null) {
     const conector = conectores.find((c) => c.id === id);
     btn.disabled = true;
     try {
@@ -227,7 +271,9 @@ export function pintarVincular(cont) {
         if (!r.ok) return toastError(r.body, 'errors.generic');
         await sincronizarCanalOAuth(id, null);
       } else {
-        await removeChannel(id);
+        // `channel`: solo en una fila puntual de TikTok (ver tabla-filas) --
+        // sin el, remueve TODO lo guardado de esa plataforma (las otras 3).
+        await removeChannel(id, channel);
       }
       await cargarEstadoReal();
     } finally {
@@ -269,9 +315,10 @@ export function pintarVincular(cont) {
   tabla.querySelector('.mc-tabla-filas').addEventListener('click', (e) => {
     const btn = e.target.closest('button[data-accion]');
     if (!btn) return;
-    const id = btn.closest('.mc-conector').dataset.id;
+    const fila = btn.closest('.mc-conector');
+    const id = fila.dataset.id;
     if (btn.dataset.accion === 'reconectar') reconectar(id, btn);
-    else desconectar(id, btn);
+    else desconectar(id, btn, fila.dataset.channel || null);
   });
 
   // Si la ventana de login/logout de TikTok termina mientras esta seccion

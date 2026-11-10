@@ -15,6 +15,13 @@ const SONIDO_CONECTADO = { src: 'audio/ui/connect-wallet.mp3', volumen: 0.35 };
 const PLATFORM_CHANNELS_KEY = 'tikliveTTS_platforms_v1';
 export const PLATFORMS = ['tiktok', 'twitch', 'youtube', 'kick'];
 export const PLATFORM_LABELS = { tiktok: 'TikTok', twitch: 'Twitch', youtube: 'YouTube', kick: 'Kick' };
+// Twitch/Kick/YouTube siguen siendo 1 cuenta por plataforma (Mi cuenta >
+// Vincular los modela asi a proposito, ver nota de replaceSavedChannel).
+// TikTok es la unica con mas de un slot: el backend (features/canales/
+// gate-multi-canal.js) ya soporta 2+ canales de la MISMA plataforma detras
+// del entitlement 'multi-canal' (Pro) -- esto solo expone un segundo slot
+// en la UI, capado en 2 por pedido explicito (no "sin limite").
+export const MAX_TIKTOK_CHANNELS = 2;
 
 function loadPlatformChannels() {
   try {
@@ -104,12 +111,13 @@ function upsertSavedChannel(platform, entry) {
   savePlatformChannels(saved);
 }
 
-// Mi perfil > Vincular (unica entrada que queda para tiktok/youtube, ya que
-// el formulario viejo de "Agregar canal" se elimino) modela un solo canal
-// por plataforma -- a diferencia de upsertSavedChannel, esto PISA cualquier
-// entrada anterior en vez de acumularla. Sin esto, corregir un canal mal
-// tipeado dejaba las dos entradas guardadas y canalGuardado() seguia
-// devolviendo la vieja (la primera del array).
+// Mi perfil > Vincular (ya que el formulario viejo de "Agregar canal" se
+// elimino) modela un solo canal por plataforma para youtube y para la 1ra
+// cuenta de tiktok -- a diferencia de upsertSavedChannel, esto PISA
+// cualquier entrada anterior en vez de acumularla. Sin esto, corregir un
+// canal mal tipeado dejaba las dos entradas guardadas y canalGuardado()
+// seguia devolviendo la vieja (la primera del array). TikTok usa esto solo
+// para su 1er slot; el 2do pasa por agregarCanalTiktok (no pisa).
 function replaceSavedChannel(platform, entry) {
   if (!entry) return;
   const saved = loadPlatformChannels();
@@ -126,22 +134,32 @@ function clearSavedChannels(platform) {
 let settingsChannelsRenderSeq = 0;
 
 // Exportada: la usa "Mi cuenta" > Vincular (seccion-vincular.js) para
-// desconectar tiktok/youtube. Limpia TODAS las entradas guardadas de la
-// plataforma (no solo `channel`) -- Mi perfil modela un solo canal por
-// plataforma, asi que "desvincular" es "dejar esta plataforma en blanco",
-// incluso si quedo alguna entrada vieja de un canal mal tipeado.
-export async function removeChannel(platform) {
+// desconectar tiktok/youtube. Sin `channel`, limpia TODAS las entradas
+// guardadas de la plataforma (no solo una) -- Twitch/Kick/YouTube modelan un
+// solo canal por plataforma, asi que "desvincular" ahi es "dejar esta
+// plataforma en blanco", incluso si quedo alguna entrada vieja de un canal
+// mal tipeado. Con `channel`, saca solo esa entrada puntual -- lo usa TikTok
+// (unica plataforma con mas de un slot, ver MAX_TIKTOK_CHANNELS) para poder
+// desvincular una de las dos cuentas sin tocar la otra.
+export async function removeChannel(platform, channel = null) {
   const saved = loadPlatformChannels();
   // Ademas de los guardados, todo lo que el servidor tenga conectado de esa
   // plataforma: un canal en vivo que no esta (o ya no esta) en localStorage
   // quedaria conectado en Chat aunque Mi cuenta lo muestre desvinculado.
   const enVivo = (await obtenerCanalesEnVivo())[platform] || [];
-  const canales = new Set([...(saved[platform] || []).map((e) => e.channel), ...enVivo]);
+  const canales = channel
+    ? [channel]
+    : [...new Set([...(saved[platform] || []).map((e) => e.channel), ...enVivo])];
   try {
-    await Promise.allSettled([...canales].map((channel) => fetch('/api/platforms/disconnect', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ platform, channel }),
+    await Promise.allSettled(canales.map((ch) => fetch('/api/platforms/disconnect', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ platform, channel: ch }),
     })));
-    clearSavedChannels(platform);
+    if (channel) {
+      saved[platform] = (saved[platform] || []).filter((e) => e.channel !== channel);
+      savePlatformChannels(saved);
+    } else {
+      clearSavedChannels(platform);
+    }
     renderSettingsChannels();
     showToast(t('toast.platformDisconnected').replace('{platform}', PLATFORM_LABELS[platform]));
   } catch (e) {
@@ -399,6 +417,31 @@ export async function guardarCanal(platform, valorCrudo) {
   const entry = normalizeChannelEntry(platform, valorCrudo);
   if (!entry) return { ok: false };
   replaceSavedChannel(platform, entry);
+  renderSettingsChannels();
+  return { ok: true, channel: entry.channel, autoConnect: entry.autoConnect };
+}
+
+/** Todas las cuentas guardadas de una plataforma (a diferencia de canalGuardado,
+ * que solo da la primera) -- la usa "Mi cuenta" > Vincular para pintar las
+ * filas de TikTok cuando hay mas de una. */
+export function canalesGuardados(platform) {
+  return loadPlatformChannels()[platform] || [];
+}
+
+/**
+ * Suma una 2da cuenta de TikTok sin pisar la que ya hay (a diferencia de
+ * guardarCanal, que reemplaza) -- capado en MAX_TIKTOK_CHANNELS. El backend
+ * igual gatea esto por su cuenta en /api/platforms/connect (gate-multi-canal.js,
+ * requiere plan Pro para 2+ canales de una misma plataforma); este tope de UI
+ * solo evita juntar una 3ra entrada que el "Conectar todo" nunca podria usar.
+ */
+export async function agregarCanalTiktok(valorCrudo) {
+  const entry = normalizeChannelEntry('tiktok', valorCrudo);
+  if (!entry) return { ok: false };
+  const actuales = canalesGuardados('tiktok');
+  if (actuales.length >= MAX_TIKTOK_CHANNELS) return { ok: false, limite: true };
+  if (actuales.some((e) => e.channel === entry.channel)) return { ok: false, duplicado: true };
+  upsertSavedChannel('tiktok', entry);
   renderSettingsChannels();
   return { ok: true, channel: entry.channel, autoConnect: entry.autoConnect };
 }

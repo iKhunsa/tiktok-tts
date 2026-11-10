@@ -1985,7 +1985,12 @@
     "sizeMedium": "Medio",
     "sizeLarge": "Grande",
     "sizeXL": "Molto grande",
-    "notifications": "Notifiche"
+    "notifications": "Notifiche",
+    "addAnotherTiktokTitle": "Aggiungi un altro account TikTok",
+    "addAnotherTiktokSub": "Collega un secondo account TikTok per leggere anche la sua chat.",
+    "addAnotherTiktok": "Aggiungi un altro account",
+    "tiktokLimitReached": "Hai già il massimo di 2 account TikTok collegati.",
+    "tiktokAlreadyAdded": "Quell'account TikTok è già collegato."
   },
   "linkAccounts": {
     "title": "Collega i tuoi account per iniziare",

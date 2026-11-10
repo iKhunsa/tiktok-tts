@@ -1985,7 +1985,12 @@
     "sizeMedium": "中",
     "sizeLarge": "大",
     "sizeXL": "特大",
-    "notifications": "通知"
+    "notifications": "通知",
+    "addAnotherTiktokTitle": "別のTikTokアカウントを追加",
+    "addAnotherTiktokSub": "2つ目のTikTokアカウントを接続して、そのチャットも読み上げます。",
+    "addAnotherTiktok": "別のアカウントを追加",
+    "tiktokLimitReached": "TikTokアカウントは最大2つまで連携できます。",
+    "tiktokAlreadyAdded": "そのTikTokアカウントはすでに連携されています。"
   },
   "linkAccounts": {
     "title": "アカウントを連携して始めましょう",
