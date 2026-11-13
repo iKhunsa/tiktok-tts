@@ -14,7 +14,7 @@ const fuente = readFileSync(resolve(raiz, 'interfaz/src/vistas/principal/overlay
 const cuerpo = (nombre) => {
   const inicio = fuente.indexOf(nombre);
   assert.ok(inicio >= 0, `no existe ${nombre}`);
-  return fuente.slice(inicio, inicio + 700);
+  return fuente.slice(inicio, inicio + 1000);
 };
 
 test('abrirEditorCanvas corta ANTES de tocar nada si no hay acceso Pro', () => {
