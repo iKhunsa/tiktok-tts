@@ -25,6 +25,7 @@ import { deshacer, rehacer, registrarCambio, reiniciarHistorial } from './editor
 import { renderizarTodosLosCamposOverlay } from '../campos-overlay/index.js';
 import { ajustesOverlay, fijarValorOverlay, usarAjustesPropios, valorOverlay } from './posicion-escena.js';
 import { exportarEscenas, importarArchivo } from './exportar-importar.js';
+import { abrirModalExportar } from './exportar-modal.js';
 
 const $ = (id) => document.getElementById(id);
 const TODAS = 'todas';
@@ -697,7 +698,7 @@ export function iniciarEditorCanvas() {
     titulo.setAttribute('aria-expanded', String(titulo.getAttribute('aria-expanded') !== 'true'));
   }));
   $('ovlEditorEscenaNueva').addEventListener('click', () => { $('ovlEditorEscenas').previousElementSibling.setAttribute('aria-expanded', 'true'); appSettings.escenas.push(nuevaEscena()); cargarEscena(appSettings.escenas.length - 1); });
-  $('ovlEditorEscenaExportarTodas').addEventListener('click', () => exportarEscenas(null));
+  $('ovlEditorEscenaExportar').addEventListener('click', abrirModalExportar);
   $('ovlEditorEscenaImportarArchivo').addEventListener('change', async (evento) => {
     const [archivo] = evento.target.files;
     evento.target.value = '';

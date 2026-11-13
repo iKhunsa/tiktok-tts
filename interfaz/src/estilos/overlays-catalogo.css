@@ -643,3 +643,11 @@ body.reduce-motion :is(.edi-pestana, .edi-categoria, .edi-tarjeta, .edi-gif-tarj
 
 /* El formato 16:9 / 9:16 ya está en la barra del editor. */
 #ovlEditorPanel .cfg-grupo:has(> .cfg-botones [data-lienzo]) { display: none; }
+
+/* Modal "Exportar escenas": lista de checkboxes + los dos modos de exportar. */
+.edi-export-lista { display: flex; flex-direction: column; gap: 4px; max-height: 40vh; overflow-y: auto; margin: 16px 0; }
+.edi-export-fila { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: var(--btn-radius); cursor: pointer; }
+.edi-export-fila:hover { background: var(--surface-2); }
+.edi-export-fila input { accent-color: var(--brand); }
+.edi-export-acciones { display: flex; gap: 10px; justify-content: flex-end; }
+.edi-export-acciones button:disabled { opacity: .5; cursor: not-allowed; }
