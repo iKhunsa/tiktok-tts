@@ -4,6 +4,7 @@ import { ESQUEMAS } from '../../../compartido/estilo/esquemas.js';
 import { probarMuestra, updateOverlayUrl } from './configurador-overlays.js';
 import { sincronizarCamposOverlay } from './campos-overlay/sincronizar.js';
 import { crearSelectorSkin } from './selector-skin.js';
+import { fijarValorOverlay, valorOverlay } from './overlays-catalogo/posicion-escena.js';
 
 const FORMATOS = {
   '16:9': { ancho: 1920, alto: 1080, clave: 'horizontal' },
@@ -52,7 +53,8 @@ export function crearArrastre(marco, iframe, overlay) {
   let destino = null;
   return {
     iniciar(evento) {
-      const { desplazaX, desplazaY } = appSettings.overlays[overlay];
+      const desplazaX = valorOverlay(overlay, 'desplazaX');
+      const desplazaY = valorOverlay(overlay, 'desplazaY');
       inicio = { x: evento.clientX, y: evento.clientY, desplazaX, desplazaY };
       destino = null;
     },
@@ -70,7 +72,8 @@ export function crearArrastre(marco, iframe, overlay) {
     soltar() {
       inicio = null;
       if (!destino) return false;
-      Object.assign(appSettings.overlays[overlay], destino);
+      fijarValorOverlay(overlay, 'desplazaX', destino.desplazaX);
+      fijarValorOverlay(overlay, 'desplazaY', destino.desplazaY);
       destino = null;
       saveSettings();
       updateOverlayUrl(overlay);

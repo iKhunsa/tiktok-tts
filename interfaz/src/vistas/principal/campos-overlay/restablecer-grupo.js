@@ -1,8 +1,9 @@
 import { valoresPorDefecto } from '../../../../compartido/estilo/query.js';
-import { appSettings, saveSettings } from '../../../nucleo/estado/ajustes-app.js';
+import { saveSettings } from '../../../nucleo/estado/ajustes-app.js';
 import { t } from '../../../nucleo/i18n/i18n.js';
 import { showToast } from '../../../componentes/toast.js';
 import { updateOverlayUrl } from '../configurador-overlays.js';
+import { fijarValorOverlay } from '../overlays-catalogo/posicion-escena.js';
 import { camposDeGrupo, sincronizarCamposOverlay } from './sincronizar.js';
 
 const CONFIRMACION_MS = 3000;
@@ -15,7 +16,8 @@ function cancelarConfirmacion(boton) {
 function restablecer(boton) {
   const { cfgOverlay: overlay, cfgResetGrupo: grupo } = boton.dataset;
   cancelarConfirmacion(boton);
-  Object.assign(appSettings.overlays[overlay], JSON.parse(JSON.stringify(valoresPorDefecto(camposDeGrupo(overlay, grupo)))));
+  const defaults = JSON.parse(JSON.stringify(valoresPorDefecto(camposDeGrupo(overlay, grupo))));
+  for (const [clave, valor] of Object.entries(defaults)) fijarValorOverlay(overlay, clave, valor);
   updateOverlayUrl(overlay);
   saveSettings();
   sincronizarCamposOverlay(overlay);

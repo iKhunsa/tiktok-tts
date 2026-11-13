@@ -436,6 +436,7 @@ body.reduce-motion .ovl-vista, body.reduce-motion .ovl-vista::backdrop { animati
 .edi-capas { border-right: 1px solid var(--border); }
 .edi-ajustes { border-left: 1px solid var(--border); }
 .edi-seccion-titulo { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 52px; padding: 0 16px; border-bottom: 1px solid var(--border); font-size: var(--text-sm); font-weight: 600; }
+.edi-escenas-acciones { display: flex; align-items: center; gap: 2px; }
 .edi-lista, .edi-panel-cuerpo { flex: 1; min-height: 0; overflow-y: auto; }
 .edi-lista { display: flex; flex-direction: column; gap: 2px; padding: 8px; }
 .edi-reportar-bug { flex: none; display: flex; align-items: center; justify-content: center; gap: 8px; margin: 8px; padding: 10px 12px; border: 1px solid rgba(240, 33, 58, .35); border-radius: 10px; background: rgba(240, 33, 58, .14); color: #fff; font-size: var(--text-sm); font-weight: 500; cursor: pointer; }

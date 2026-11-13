@@ -1,6 +1,7 @@
-import { appSettings, saveSettings } from '../../../nucleo/estado/ajustes-app.js';
+import { saveSettings } from '../../../nucleo/estado/ajustes-app.js';
 import { updateOverlayUrl } from '../configurador-overlays.js';
 import { sincronizarCamposOverlay } from '../campos-overlay/sincronizar.js';
+import { fijarValorOverlay, valorOverlay } from './posicion-escena.js';
 
 const ESCALA_MIN = 0.1; // los limites del campo `escala` del esquema
 const ESCALA_MAX = 2;
@@ -27,7 +28,7 @@ export function iniciarTiradores(resalte, { idSeleccionado, iframeDe, alMover, a
       const ancla = { x: esquina.includes('w') ? caja.right : caja.left, y: esquina.includes('n') ? caja.bottom : caja.top };
       const raiz = iframeDe(id).contentDocument.documentElement.style;
       const zoom = parseFloat(raiz.getPropertyValue('--zoom'));
-      gesto = { id, caja, ancla, raiz, zoom, escala: appSettings.overlays[id].escala, factor: 1, cuadro: 0 };
+      gesto = { id, caja, ancla, raiz, zoom, escala: valorOverlay(id, 'escala'), factor: 1, cuadro: 0 };
     });
     tirador.addEventListener('pointermove', (evento) => {
       if (!gesto) return;
@@ -44,7 +45,7 @@ export function iniciarTiradores(resalte, { idSeleccionado, iframeDe, alMover, a
       if (!gesto) return;
       const { id, escala, factor } = gesto;
       gesto = null;
-      appSettings.overlays[id].escala = Math.round(escala * factor * 100) / 100;
+      fijarValorOverlay(id, 'escala', Math.round(escala * factor * 100) / 100);
       saveSettings();
       alConfirmar(id);
       updateOverlayUrl(id);

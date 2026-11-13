@@ -1,9 +1,9 @@
 import { leerEstadoUi, guardarEstadoUi } from '../../../nucleo/estado/estado-ui.js';
 import { aplicarTraducciones, t } from '../../../nucleo/i18n/i18n.js';
 import { appSettings, saveSettings, alGuardarAjustes } from '../../../nucleo/estado/ajustes-app.js';
-import { ESQUEMAS } from '../../../../compartido/estilo/esquemas.js';
+import { ESQUEMAS, DEFAULTS_OVERLAYS } from '../../../../compartido/estilo/esquemas.js';
 import { crearArrastre, crearBotonesLienzo, formatoActual, pintarLienzos, usarFormatoPropio } from '../lienzo-overlay.js';
-import { buildOverlayUrl, fijarPruebaSinTts, probarOverlay, restablecerOverlayDeFabrica, tieneTest, updateOverlayUrl } from '../configurador-overlays.js';
+import { buildOverlayUrl, fijarPruebaSinTts, probarOverlay, tieneTest, updateOverlayUrl } from '../configurador-overlays.js';
 import { sincronizarCamposOverlay } from '../campos-overlay/sincronizar.js';
 import { CATEGORIAS, NOMBRES_PLATAFORMA, PLATAFORMAS_OVERLAY } from './catalogo.js';
 import { alCerrarGif, alMostrarGif, alOcultarGif, iniciarGifBuscador } from '../gif-buscador/index.js';
@@ -14,7 +14,7 @@ import { iniciarTiradores } from './editor-redimensionar.js';
 import { iniciarEditorGifs } from './editor-gifs.js';
 import { crearSeccionGifAlerta } from './gif-alerta-panel.js';
 import { crearSeccionSonidoAlerta } from './sonido-alerta-panel.js';
-import { esCapaGif } from '../../../../compartido/estilo/campos-gif.js';
+import { DEFAULTS_GIF, esCapaGif } from '../../../../compartido/estilo/campos-gif.js';
 import { idCapaGif, prepararCapaGif } from './gif-capas.js';
 import { crearSelectorSkin } from '../selector-skin.js';
 import { showToast } from '../../../componentes/toast.js';
@@ -23,6 +23,8 @@ import { almacenSesion, tieneAccesoPro } from '../../../nucleo/estado/sesion.js'
 import { crearMedia } from './media.js';
 import { deshacer, rehacer, registrarCambio, reiniciarHistorial } from './editor-historial.js';
 import { renderizarTodosLosCamposOverlay } from '../campos-overlay/index.js';
+import { fijarValorOverlay, usarAjustesPropios, valorOverlay } from './posicion-escena.js';
+import { exportarEscenas, importarArchivo } from './exportar-importar.js';
 
 const $ = (id) => document.getElementById(id);
 const TODAS = 'todas';
@@ -306,8 +308,7 @@ const NO_COPIABLES = ['alineacion', 'skin'];
 const copiable = (campo) => !NO_COPIABLES.includes(campo.grupo) && campo.tipo !== 'plataformas';
 
 function copiarPropiedades(id) {
-  const guardado = appSettings.overlays[id];
-  propiedadesCopiadas = { de: id, valores: Object.fromEntries(ESQUEMAS[id].filter(copiable).map(({ clave }) => [clave, window.structuredClone(guardado[clave])])) };
+  propiedadesCopiadas = { de: id, valores: Object.fromEntries(ESQUEMAS[id].filter(copiable).map(({ clave }) => [clave, window.structuredClone(valorOverlay(id, clave))])) };
 }
 
 function camposPegables(id) {
@@ -321,7 +322,7 @@ function camposPegables(id) {
 }
 
 function pegarPropiedades(id) {
-  for (const { clave } of camposPegables(id)) appSettings.overlays[id][clave] = window.structuredClone(propiedadesCopiadas.valores[clave]);
+  for (const { clave } of camposPegables(id)) fijarValorOverlay(id, clave, window.structuredClone(propiedadesCopiadas.valores[clave]));
   saveSettings();
   updateOverlayUrl(id);
   sincronizarCamposOverlay(id);
@@ -341,6 +342,21 @@ function duplicarCapaGif(id) {
   seleccionar(nueva);
 }
 
+// Restablecer dentro de una escena no debe tocar el ajuste global (lo usan la tarjeta individual y otras escenas):
+// se escriben los valores de fabrica directo como override de ESTA escena. Las capas GIF conservan su imagen
+// (DEFAULTS_GIF no trae `src`; perderlo dejaria la capa sin fuente).
+function restablecerEnEscena(id) {
+  const defaults = esCapaGif(id)
+    ? { ...DEFAULTS_GIF, src: valorOverlay(id, 'src') }
+    : DEFAULTS_OVERLAYS[id];
+  escena().ajustes = { ...escena().ajustes, [id]: JSON.parse(JSON.stringify(defaults)) };
+  saveSettings();
+  sincronizarCamposOverlay(id);
+  updateOverlayUrl(id);
+  document.dispatchEvent(new window.CustomEvent('overlay:restablecido', { detail: { type: id } }));
+  showToast(t('toast.overlayReset'));
+}
+
 function opcionesMenu(id) {
   const { oculta } = capas.get(id);
   const bloqueada = estaBloqueada(id);
@@ -357,7 +373,7 @@ function opcionesMenu(id) {
     { clave: 'copiarProps', icono: 'content_copy', accion: () => copiarPropiedades(id) },
     { clave: 'pegarProps', icono: 'content_paste', desactivada: !camposPegables(id).length || propiedadesCopiadas.de === id, accion: () => pegarPropiedades(id) },
     ...(esCapaGif(id) ? [{ clave: 'duplicar', icono: 'content_copy', accion: () => duplicarCapaGif(id) }] : []),
-    { clave: 'restablecer', icono: 'restore', accion: () => restablecerOverlayDeFabrica(id) },
+    { clave: 'restablecer', icono: 'restore', accion: () => restablecerEnEscena(id) },
     { clave: 'quitar', icono: 'delete', peligro: true, desactivada: bloqueada, accion: () => quitar(id) },
   ];
 }
@@ -453,17 +469,19 @@ function pintarEscenas() {
 }
 
 function duplicarEscena(i) {
-  const { nombre, ids, nombres, bloqueadas = [], formato } = appSettings.escenas[i];
-  appSettings.escenas.splice(i + 1, 0, { id: window.crypto.randomUUID().slice(0, 8), nombre: nombre ? `${nombre} (2)` : '', ids: [...ids], nombres: { ...nombres }, bloqueadas: [...bloqueadas], formato });
+  const { nombre, ids, nombres, bloqueadas = [], formato, ajustes = {} } = appSettings.escenas[i];
+  const ajustesCopiados = Object.fromEntries(Object.entries(ajustes).map(([id, valores]) => [id, { ...valores }]));
+  appSettings.escenas.splice(i + 1, 0, { id: window.crypto.randomUUID().slice(0, 8), nombre: nombre ? `${nombre} (2)` : '', ids: [...ids], nombres: { ...nombres }, bloqueadas: [...bloqueadas], formato, ajustes: ajustesCopiados });
   cargarEscena(i + 1);
 }
 
 const opcionesEscena = (i) => [
   { clave: 'duplicar', icono: 'content_copy', accion: () => duplicarEscena(i) },
+  { clave: 'exportarEscena', icono: 'download', accion: () => exportarEscenas([i]) },
   { clave: 'escenaEliminar', icono: 'delete', peligro: true, desactivada: appSettings.escenas.length < 2, accion: () => eliminarEscena(i) },
 ];
 
-const nuevaEscena = (ids = []) => ({ id: window.crypto.randomUUID().slice(0, 8), nombre: '', ids, nombres: {}, bloqueadas: [] });
+const nuevaEscena = (ids = []) => ({ id: window.crypto.randomUUID().slice(0, 8), nombre: '', ids, nombres: {}, bloqueadas: [], ajustes: {} });
 
 function cargarEscena(i) {
   for (const id of [...capas.keys()]) soltar(id);
@@ -520,6 +538,10 @@ export function abrirEditorCanvas() {
     leer: () => appSettings.escenas?.[escenaActiva]?.formato,
     guardar: (formato) => { escena().formato = formato; ajustar(); resaltar(); },
   });
+  usarAjustesPropios({
+    leer: (id) => escena()?.ajustes?.[id],
+    guardar: (id, parcial) => { const e = escena(); e.ajustes ??= {}; e.ajustes[id] = { ...e.ajustes[id], ...parcial }; },
+  });
   $('ovlEditor').hidden = false;
   document.body.classList.add('edi-abierto');
   // Las escenas eran listas de ids: se pasan al formato { nombre, ids, nombres }.
@@ -559,6 +581,7 @@ function cerrar() {
   alGuardarAjustes(null);
   zoom = 1;
   usarFormatoPropio(null);
+  usarAjustesPropios(null);
   pintarLienzos();
   cerrarMenu();
   alCerrarGif();
@@ -660,6 +683,14 @@ export function iniciarEditorCanvas() {
     titulo.setAttribute('aria-expanded', String(titulo.getAttribute('aria-expanded') !== 'true'));
   }));
   $('ovlEditorEscenaNueva').addEventListener('click', () => { $('ovlEditorEscenas').previousElementSibling.setAttribute('aria-expanded', 'true'); appSettings.escenas.push(nuevaEscena()); cargarEscena(appSettings.escenas.length - 1); });
+  $('ovlEditorEscenaExportarTodas').addEventListener('click', () => exportarEscenas(null));
+  $('ovlEditorEscenaImportarArchivo').addEventListener('change', async (evento) => {
+    const [archivo] = evento.target.files;
+    evento.target.value = '';
+    if (!archivo) return;
+    if (await importarArchivo(archivo)) pintarEscenas();
+  });
+  $('ovlEditorEscenaImportar').addEventListener('click', () => $('ovlEditorEscenaImportarArchivo').click());
   $('ovlEditorPlegar').addEventListener('click', () => {
     const plegada = $('ovlEditorBiblioteca').classList.toggle('plegada');
     $('ovlEditorPlegar').setAttribute('aria-expanded', String(!plegada));
@@ -673,7 +704,7 @@ export function iniciarEditorCanvas() {
     if ($('ovlEditor').dataset.seccion !== SECCIONES[0]) document.querySelector('.edi-seccion').click();
     else cerrar();
   });
-  $('ovlEditorRestablecer').addEventListener('click', () => restablecerOverlayDeFabrica(seleccionado));
+  $('ovlEditorRestablecer').addEventListener('click', () => restablecerEnEscena(seleccionado));
   $('ovlEditorQuitar').addEventListener('click', () => quitar(seleccionado));
   $('ovlEditorSinTts').addEventListener('click', (evento) => {
     const boton = evento.currentTarget;

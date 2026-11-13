@@ -1,7 +1,8 @@
 import { aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
-import { appSettings, saveSettings } from '../../../nucleo/estado/ajustes-app.js';
+import { saveSettings } from '../../../nucleo/estado/ajustes-app.js';
 import { updateOverlayUrl } from '../configurador-overlays.js';
 import { sincronizarCamposOverlay } from '../campos-overlay/sincronizar.js';
+import { fijarValorOverlay } from './posicion-escena.js';
 import { listarGifs } from '../gif-buscador/api.js';
 import { permitirArrastreGif } from '../gif-buscador/arrastrar-gif.js';
 import { formatoActual } from '../lienzo-overlay.js';
@@ -48,7 +49,11 @@ export function iniciarEditorGifs({ contenedor, marco, agregarCapa, nombrarCapa,
     prepararCapaGif(id, srcAbsoluta(item));
     const caja = marco.getBoundingClientRect();
     // Sin punto (clic) va al centro del canvas; al soltar una que ya estaba se recoloca donde se suelta.
-    if (punto || !yaEstaba) Object.assign(appSettings.overlays[id], posicionEn(item, punto?.x ?? caja.left + caja.width / 2, punto?.y ?? caja.top + caja.height / 2));
+    if (punto || !yaEstaba) {
+      const posicion = posicionEn(item, punto?.x ?? caja.left + caja.width / 2, punto?.y ?? caja.top + caja.height / 2);
+      fijarValorOverlay(id, 'desplazaX', posicion.desplazaX);
+      fijarValorOverlay(id, 'desplazaY', posicion.desplazaY);
+    }
     saveSettings();
     sincronizarCamposOverlay(id);
     updateOverlayUrl(id);

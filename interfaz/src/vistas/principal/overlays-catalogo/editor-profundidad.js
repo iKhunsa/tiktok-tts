@@ -1,9 +1,10 @@
-import { appSettings, saveSettings } from '../../../nucleo/estado/ajustes-app.js';
+import { saveSettings } from '../../../nucleo/estado/ajustes-app.js';
 import { updateOverlayUrl } from '../configurador-overlays.js';
 import { sincronizarCamposOverlay } from '../campos-overlay/sincronizar.js';
+import { fijarValorOverlay, valorOverlay } from './posicion-escena.js';
 
 /** Profundidad (eje Z) guardada de un overlay: mayor queda por encima. */
-export const zDe = (id) => appSettings.overlays[id].capaZ ?? 0;
+export const zDe = (id) => valorOverlay(id, 'capaZ') ?? 0;
 
 /** Ids de abajo hacia arriba: por capaZ y, a igualdad, por orden de llegada. */
 export const ordenZ = (ids) => ids
@@ -15,7 +16,7 @@ export const ordenZ = (ids) => ids
 function guardarOrden(orden) {
   orden.forEach((id, z) => {
     if (zDe(id) === z) return;
-    appSettings.overlays[id].capaZ = z;
+    fijarValorOverlay(id, 'capaZ', z);
     sincronizarCamposOverlay(id);
     updateOverlayUrl(id);
   });

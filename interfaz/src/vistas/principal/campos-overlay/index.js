@@ -4,6 +4,7 @@ import { almacenSesion, tieneAccesoPro } from '../../../nucleo/estado/sesion.js'
 import { t } from '../../../nucleo/i18n/i18n.js';
 import { showToast } from '../../../componentes/toast.js';
 import { updateOverlayUrl } from '../configurador-overlays.js';
+import { fijarValorOverlay, valorOverlay } from '../overlays-catalogo/posicion-escena.js';
 import { montarCamposOverlay } from './montar.js';
 import { pintarDependientes, pintarRestablecer, sincronizarCamposOverlay } from './sincronizar.js';
 import { alPulsarRestablecerGrupo } from './restablecer-grupo.js';
@@ -16,7 +17,7 @@ const OVERLAYS_CON_ESQUEMA = Object.keys(ESQUEMAS);
 const campoDe = (overlay, clave) => ESQUEMAS[overlay].find((campo) => campo.clave === clave);
 
 function guardarCambio(overlay, clave, valor) {
-  appSettings.overlays[overlay][clave] = valor;
+  fijarValorOverlay(overlay, clave, valor);
   // Elegir una skin con presets pone lo que esa skin muestra por defecto; luego el usuario lo cambia a mano.
   const presets = clave === 'skin' && campoDe(overlay, 'skin')?.presets;
   if (presets) Object.assign(appSettings.overlays[overlay], presets[valor] ?? presets.base);
@@ -56,7 +57,7 @@ const OPUESTO = { izquierda: 'derecha', derecha: 'izquierda' };
 // Invertir el mensaje invierte tambien sus alineaciones laterales, para que la vista siga coincidiendo con lo marcado.
 function espejar(overlay, campo) {
   for (const clave of campo.espeja) {
-    const valor = appSettings.overlays[overlay][clave];
+    const valor = valorOverlay(overlay, clave);
     if (OPUESTO[valor]) guardarCambio(overlay, clave, OPUESTO[valor]);
   }
 }

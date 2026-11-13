@@ -10,12 +10,14 @@ import { urlConVistaPrevia } from '../../../compartido/vista-previa.js';
 import { EVENTOS_ALERTA } from '../../../compartido/eventos-alerta.js';
 import { esCapaGif, urlCapaGif } from '../../../compartido/estilo/campos-gif.js';
 import { queryEpik } from './epik/estado.js';
+import { ajustesOverlay } from './overlays-catalogo/posicion-escena.js';
 
 export function buildOverlayUrl(type) {
   if (esCapaGif(type)) return urlCapaGif(location.origin, appSettings.overlays[type]);
   // Lo guardado puede traer una skin premium (editor de canvas, plan vencido...): sin Pro no sale hacia OBS ni la
   // vista previa. Un solo punto de salida para todo lo que se aplica; ver compartido/estilo/ajustes-segun-plan.js.
-  const aplicados = ajustesSegunPlan(ESQUEMAS[type], appSettings.overlays[type], tieneAccesoPro());
+  // ajustesOverlay suma encima la posicion/tamano/profundidad propios de la escena activa, si el editor esta abierto.
+  const aplicados = ajustesSegunPlan(ESQUEMAS[type], ajustesOverlay(type), tieneAccesoPro());
   // Con una skin .epik se suman sus ajustes propios (x.<clave>).
   const query = [construirQuery(ESQUEMAS[type], aplicados), queryEpik(type)].filter(Boolean).join('&');
   // Las alertas de evento comparten pagina: ?evento= elige cual es.
