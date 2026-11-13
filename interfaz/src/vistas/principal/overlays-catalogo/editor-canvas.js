@@ -23,7 +23,7 @@ import { almacenSesion, tieneAccesoPro } from '../../../nucleo/estado/sesion.js'
 import { crearMedia } from './media.js';
 import { deshacer, rehacer, registrarCambio, reiniciarHistorial } from './editor-historial.js';
 import { renderizarTodosLosCamposOverlay } from '../campos-overlay/index.js';
-import { fijarValorOverlay, usarAjustesPropios, valorOverlay } from './posicion-escena.js';
+import { ajustesOverlay, fijarValorOverlay, usarAjustesPropios, valorOverlay } from './posicion-escena.js';
 import { exportarEscenas, importarArchivo } from './exportar-importar.js';
 
 const $ = (id) => document.getElementById(id);
@@ -81,6 +81,16 @@ function ajustar() {
 
 function agregar(id) {
   if (capas.has(id)) return;
+  // Recien se agrega a ESTA escena (todavia no estaba en su lista de capas) y nadie la pre-sembro a mano
+  // (duplicarCapaGif lo hace antes de llamar aca): arranca de fabrica, nunca hereda el ajuste global ni el
+  // de otra escena. Si ya estaba en la lista (se esta cargando una escena guardada) no se toca nada.
+  if (!escena().ids.includes(id) && !escena().ajustes?.[id]) {
+    escena().ajustes = { ...escena().ajustes, [id]: JSON.parse(JSON.stringify(DEFAULTS_OVERLAYS[id])) };
+  }
+  // Los ajustes de esta capa pueden diferir entre escenas (o venir de la tarjeta suelta, fuera de cualquier
+  // escena): sin esto, la URL cacheada en el DOM es la del ultimo contexto que la toco, no la de ESTA escena.
+  updateOverlayUrl(id);
+  sincronizarCamposOverlay(id);
   const capa = document.createElement('div');
   capa.className = 'edi-capa';
   const iframe = document.createElement('iframe');
@@ -331,10 +341,14 @@ function pegarPropiedades(id) {
 // Una capa GIF tiene ajustes propios, asi que se puede clonar; los demas overlays son uno solo por tipo.
 function duplicarCapaGif(id) {
   const nueva = idCapaGif(window.crypto.randomUUID().slice(0, 8));
-  const copia = window.structuredClone(appSettings.overlays[id]);
+  // Se clona como se ve AHORA en esta escena (ajustesOverlay), no el ajuste global crudo: si la original tiene
+  // un override propio de posicion/tamano en esta escena, la copia tiene que salir de ahi.
+  const copia = window.structuredClone(ajustesOverlay(id));
   // Un poco desplazada, para que no quede tapando a la original.
   Object.assign(copia, { desplazaX: Math.min(1, (copia.desplazaX ?? 0) + 0.03), desplazaY: Math.min(1, (copia.desplazaY ?? 0) + 0.03) });
-  appSettings.overlays[nueva] = copia;
+  appSettings.overlays[nueva] = window.structuredClone(copia); // baseline global de la capa nueva (unica, nunca compartida)
+  // Pre-sembrada a mano: agregar() no debe pisarla con los valores de fabrica (ids.includes(nueva) es falso recien agregada).
+  escena().ajustes = { ...escena().ajustes, [nueva]: copia };
   prepararCapaGif(nueva);
   if (escena().nombres[id]) escena().nombres[nueva] = escena().nombres[id];
   saveSettings();
