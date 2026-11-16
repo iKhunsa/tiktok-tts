@@ -26,6 +26,8 @@ import { renderizarTodosLosCamposOverlay } from '../campos-overlay/index.js';
 import { ajustesOverlay, fijarValorOverlay, usarAjustesPropios, valorOverlay } from './posicion-escena.js';
 import { exportarEscenas, importarArchivo } from './exportar-importar.js';
 import { abrirModalExportar } from './exportar-modal.js';
+import { abrirModalCopiarUrl } from './copiar-url-modal.js';
+import { abrirModalAtajoEscena } from './escena-atajo-modal.js';
 
 const $ = (id) => document.getElementById(id);
 const TODAS = 'todas';
@@ -492,11 +494,12 @@ function duplicarEscena(i) {
 
 const opcionesEscena = (i) => [
   { clave: 'duplicar', icono: 'content_copy', accion: () => duplicarEscena(i) },
+  { clave: 'asignarAtajo', icono: 'keyboard', accion: () => abrirModalAtajoEscena(appSettings.escenas[i], saveSettings) },
   { clave: 'exportarEscena', icono: 'download', accion: () => exportarEscenas([i]) },
   { clave: 'escenaEliminar', icono: 'delete', peligro: true, desactivada: appSettings.escenas.length < 2, accion: () => eliminarEscena(i) },
 ];
 
-const nuevaEscena = (ids = []) => ({ id: window.crypto.randomUUID().slice(0, 8), nombre: '', ids, nombres: {}, bloqueadas: [], ajustes: {} });
+const nuevaEscena = (ids = []) => ({ id: window.crypto.randomUUID().slice(0, 8), nombre: '', ids, nombres: {}, bloqueadas: [], ajustes: {}, shortcut: null });
 
 function cargarEscena(i) {
   for (const id of [...capas.keys()]) soltar(id);
@@ -523,7 +526,8 @@ function cambiarEscena(i) {
 }
 
 function eliminarEscena(i) {
-  appSettings.escenas.splice(i, 1);
+  const [eliminada] = appSettings.escenas.splice(i, 1);
+  if (eliminada.shortcut) window.electronAPI?.unregisterSceneShortcut?.(eliminada.id);
   cargarEscena(Math.min(escenaActiva > i ? escenaActiva - 1 : escenaActiva, appSettings.escenas.length - 1));
 }
 
@@ -539,6 +543,15 @@ function pintar() {
   aplicarOrden();
   pintarCapas();
   pintarBiblioteca();
+}
+
+/** Re-registra en el proceso principal los atajos de escena guardados, una vez que electronAPI esta listo (al
+ * arrancar los atajos solo viven en appSettings — el Map del main process se vacia en cada reinicio). */
+export function restaurarAtajosEscenas() {
+  if (!window.electronAPI?.registerSceneShortcut) return;
+  for (const e of appSettings.escenas ?? []) {
+    if (e.shortcut) window.electronAPI.registerSceneShortcut(e.id, e.shortcut);
+  }
 }
 
 export function abrirEditorCanvas() {
@@ -587,9 +600,7 @@ function copiarEnlaceObs() {
   publicarUrlsEscena();
   if (!escena().urls.length) { showToast(t('overlayCat.editor.copiarObsVacio'), 'error'); return; }
   saveSettings();
-  navigator.clipboard.writeText(`${location.origin}/overlay-escena.html?e=${escena().id}`)
-    .then(() => showToast(t('toast.urlCopied')))
-    .catch(() => showToast(t('toast.copyError'), 'error'));
+  abrirModalCopiarUrl(escena().id);
 }
 
 function cerrar() {

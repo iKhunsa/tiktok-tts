@@ -60,6 +60,7 @@ export const DEFAULT_SETTINGS = {
   overlays: DEFAULTS_OVERLAYS,
   overlayLienzo: '16:9',
   escenas: [{ nombre: "", ids: [], nombres: {} }], // editor de canvas: ids de overlay por escena
+  escenaActivaId: null, // escena que sigue la URL dinamica de OBS (cambia con los atajos de teclado por escena)
   skinsFavoritas: [],
   // Ajustes propios de cada archivo .epik, por id (vistas/principal/epik/estado.js).
   epik: {},
@@ -143,6 +144,17 @@ export function saveSettings() {
   datosPorCuenta.set(SETTINGS_TS_KEY, String(Date.now()));
   clearTimeout(temporizadorRespaldo);
   temporizadorRespaldo = setTimeout(enviarRespaldo, ESPERA_RESPALDO_MS); // agrupa ráfagas (sliders, arrastres)
+}
+
+// El atajo de teclado por escena cambia `escenaActivaId` para la URL dinamica de OBS: a diferencia de saveSettings(),
+// no espera el debounce de 800ms — el streamer quiere ver el cambio de escena en OBS de inmediato.
+export function guardarEscenaActivaInmediato(escenaId) {
+  appSettings.escenaActivaId = escenaId;
+  datosPorCuenta.set(SETTINGS_KEY, JSON.stringify(appSettings));
+  datosPorCuenta.set(SETTINGS_TS_KEY, String(Date.now()));
+  clearTimeout(temporizadorRespaldo);
+  temporizadorRespaldo = null;
+  enviarRespaldo();
 }
 
 /**

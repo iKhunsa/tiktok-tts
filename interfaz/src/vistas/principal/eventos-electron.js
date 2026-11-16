@@ -5,6 +5,7 @@ import { spPlaySound } from './soundpad.js';
 import { showToast } from '../../componentes/toast.js';
 import { alAbrirEpik } from './epik/seccion.js';
 import { escaparHtml as escapeHtml } from '../../../compartido/escapar-html.js';
+import { guardarEscenaActivaInmediato } from '../../nucleo/estado/ajustes-app.js';
 
 function fmtBytes(b) {
   if (b > 1048576) return (b / 1048576).toFixed(1) + ' MB';
@@ -186,6 +187,7 @@ export function iniciarEventosElectron() {
   if (window.electronAPI.onMarkClip) electronCleanups.push(window.electronAPI.onMarkClip(() => markClip()));
   if (window.electronAPI.onTtsShortcut) electronCleanups.push(window.electronAPI.onTtsShortcut((action) => ejecutarAccionAtajo(action)));
   if (window.electronAPI.onPlaySoundpad) electronCleanups.push(window.electronAPI.onPlaySoundpad((d) => spPlaySound(d.soundId)));
+  if (window.electronAPI.onSceneShortcut) electronCleanups.push(window.electronAPI.onSceneShortcut((escenaId) => guardarEscenaActivaInmediato(escenaId)));
   if (window.electronAPI.onEpikAbierto) electronCleanups.push(window.electronAPI.onEpikAbierto(alAbrirEpik));
   if (window.electronAPI.onUpdateEvent) {
     electronCleanups.push(window.electronAPI.onUpdateEvent((ev) => {
