@@ -7,11 +7,11 @@ export function abrirModalCopiarUrl(escenaId) {
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay show';
   overlay.innerHTML = `
-    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="copiarUrlTitulo">
+    <div class="modal-content copiar-url-modal" role="dialog" aria-modal="true" aria-labelledby="copiarUrlTitulo">
       <button class="modal-close" type="button" data-cerrar><img class="icon-inline" src="icons/close.svg" alt=""></button>
       <h2 id="copiarUrlTitulo" data-i18n="overlayCat.editor.copiarUrlModalTitulo"></h2>
       <p class="cuenta-hint" data-i18n="overlayCat.editor.copiarUrlModalSub"></p>
-      <div class="edi-export-acciones">
+      <div class="edi-export-acciones copiar-url-acciones">
         <button type="button" class="cuenta-btn-ghost" data-esta-escena>${esc(t('overlayCat.editor.copiarUrlEstaEscena'))}</button>
         <button type="button" class="cuenta-btn-primary" data-dinamica>${esc(t('overlayCat.editor.copiarUrlDinamica'))}</button>
       </div>

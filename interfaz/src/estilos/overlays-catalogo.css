@@ -651,3 +651,20 @@ body.reduce-motion :is(.edi-pestana, .edi-categoria, .edi-tarjeta, .edi-gif-tarj
 .edi-export-fila input { accent-color: var(--brand); }
 .edi-export-acciones { display: flex; gap: 10px; justify-content: flex-end; }
 .edi-export-acciones button:disabled { opacity: .5; cursor: not-allowed; }
+
+/* Modal "Que enlace queres copiar?": separacion del texto de arriba (se
+   sentia pegado) y los dos botones mas parejos entre si — "Esta escena"
+   venia con el radius pill + ancho angosto genericos de .cuenta-btn-ghost,
+   quedaba como una pildora perdida al lado de "Dinamica". */
+.copiar-url-acciones { margin-top: 20px; }
+.copiar-url-modal .cuenta-btn-ghost {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 11px 16px;
+  border-radius: var(--radius-sm);
+}
+.copiar-url-modal .cuenta-btn-primary {
+  flex: 1.5 1 0;
+  width: auto;
+  margin-top: 0;
+}
