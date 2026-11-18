@@ -688,6 +688,7 @@
       "vueltaCreditos": "Time per loop (seconds)",
       "disposicion": "Layout",
       "imagenAlerta": "Alert image",
+      "posicionMouse": "Mouse position",
       "colorTexto": "Text color"
     },
     "opcion": {
@@ -831,6 +832,45 @@
     "kicksGifted": "{amount} Kicks",
     "keyboard": "Keyboard & mouse",
     "keyboardDesc": "Shows live which keys and mouse buttons you're pressing"
+  },
+  "teclado": {
+    "bindings": {
+      "titulo": "Overlay keys",
+      "desc": "Add or remove any keys you want. To move one, click it and then click another to swap their positions. The 5 mouse buttons are fixed.",
+      "presets": "Keyboard presets",
+      "presetDefault": "Default",
+      "presetWasd": "WASD",
+      "presetEsdf": "ESDF",
+      "presetMoba": "MOBA",
+      "presetFps": "FPS",
+      "presetMmo": "MMO",
+      "presetRhythm": "Rhythm",
+      "custom": "Custom",
+      "agregar": "+ Add key",
+      "limite": "You've reached the maximum number of keys.",
+      "swapHintGeneral": "Click a key to edit its width, remove it, or swap it with another.",
+      "swapHint": "Click to swap {tecla}'s position",
+      "seleccionar": "Select {tecla}",
+      "cancelarSwap": "Cancel swap",
+      "editando": "Editing: {tecla}",
+      "toolbarHint": "Click another key to swap positions, or Esc to close",
+      "quitarBoton": "Remove from overlay",
+      "anchoMas": "Make {tecla} wider",
+      "anchoMenos": "Make {tecla} narrower",
+      "quitar": "Remove {tecla} from the overlay",
+      "minimoUna": "At least one key has to stay.",
+      "yaAgregada": "{tecla} is already on the overlay.",
+      "presionaTecla": "Press a key...",
+      "teclaNoSoportada": "That key can't be used here. Try letters, numbers, F1-F12, Space, Tab or Shift.",
+      "guardarPreset": "+ Save as preset",
+      "nombrePreset": "Preset name",
+      "guardar": "Save",
+      "presetGuardado": "\"{nombre}\" saved",
+      "limitePresets": "You've reached the maximum number of saved presets.",
+      "nombreVacio": "Give the preset a name.",
+      "borrarPreset": "Delete the \"{nombre}\" preset",
+      "errorGuardar": "Couldn't save the change. Try again."
+    }
   },
   "donations": {
     "title": "Support my content",

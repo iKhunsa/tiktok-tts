@@ -688,6 +688,7 @@
       "vueltaCreditos": "Dauer eines Durchlaufs (Sekunden)",
       "disposicion": "Anordnung",
       "imagenAlerta": "Bild der Benachrichtigung",
+      "posicionMouse": "Mausposition",
       "colorTexto": "Textfarbe"
     },
     "opcion": {
@@ -831,6 +832,45 @@
     "kicksGifted": "{amount} Kicks",
     "keyboard": "Tastatur & Maus",
     "keyboardDesc": "Zeigt live, welche Tasten und Maustasten du gerade drückst"
+  },
+  "teclado": {
+    "bindings": {
+      "titulo": "Tasten des Overlays",
+      "desc": "Füge beliebige Tasten hinzu oder entferne sie. Um eine zu verschieben, klicke sie an und dann eine andere, um die Positionen zu tauschen. Die 5 Maustasten sind fix.",
+      "presets": "Tastatur-Presets",
+      "presetDefault": "Standard",
+      "presetWasd": "WASD",
+      "presetEsdf": "ESDF",
+      "presetMoba": "MOBA",
+      "presetFps": "FPS",
+      "presetMmo": "MMO",
+      "presetRhythm": "Rhythm",
+      "custom": "Benutzerdefiniert",
+      "agregar": "+ Taste hinzufügen",
+      "limite": "Du hast die maximale Anzahl an Tasten erreicht.",
+      "swapHintGeneral": "Klicke eine Taste an, um ihre Breite zu ändern, sie zu entfernen oder mit einer anderen zu tauschen.",
+      "swapHint": "Klicken, um die Position von {tecla} zu tauschen",
+      "seleccionar": "{tecla} auswählen",
+      "cancelarSwap": "Tausch abbrechen",
+      "editando": "Bearbeiten: {tecla}",
+      "toolbarHint": "Klicke eine andere Taste an, um die Positionen zu tauschen, oder Esc zum Schließen",
+      "quitarBoton": "Aus dem Overlay entfernen",
+      "anchoMas": "{tecla} breiter machen",
+      "anchoMenos": "{tecla} schmaler machen",
+      "quitar": "{tecla} aus dem Overlay entfernen",
+      "minimoUna": "Es muss mindestens eine Taste übrig bleiben.",
+      "yaAgregada": "{tecla} ist schon im Overlay.",
+      "presionaTecla": "Drücke eine Taste...",
+      "teclaNoSoportada": "Diese Taste kann hier nicht verwendet werden. Versuche Buchstaben, Zahlen, F1-F12, Leertaste, Tab oder Shift.",
+      "guardarPreset": "+ Als Preset speichern",
+      "nombrePreset": "Name des Presets",
+      "guardar": "Speichern",
+      "presetGuardado": "\"{nombre}\" gespeichert",
+      "limitePresets": "Du hast die maximale Anzahl gespeicherter Presets erreicht.",
+      "nombreVacio": "Gib dem Preset einen Namen.",
+      "borrarPreset": "Preset \"{nombre}\" löschen",
+      "errorGuardar": "Die Änderung konnte nicht gespeichert werden. Versuche es erneut."
+    }
   },
   "donations": {
     "title": "Unterstütze meinen Content",

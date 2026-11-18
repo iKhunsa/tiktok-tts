@@ -1,0 +1,128 @@
+/* Panel "Teclas del overlay": presets + grilla de teclas + barra de edicion
+   de la tecla seleccionada (mismo patron que un editor de layouts de teclado:
+   seleccionas UNA tecla y sus controles salen en un panel aparte, nunca
+   encima de cada tecla a la vez). */
+
+.teclado-bindings { border-top: 1px solid var(--border); padding-top: 14px; margin-top: 4px; }
+
+/* ── Presets (built-in + propios) ──────────────────────────────────────── */
+.teclado-presets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 8px;
+}
+.preset-chip-wrap { position: relative; display: block; }
+.preset-chip {
+  width: 100%;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-button);
+  color: var(--text);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+}
+.preset-chip:hover { border-color: var(--text-muted); }
+.preset-chip:focus-visible { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
+.preset-chip.active { background: var(--brand-a12); color: var(--brand); border-color: var(--brand); }
+.preset-chip-wrap .preset-borrar { position: absolute; top: -6px; right: -6px; }
+.teclado-bindings-custom-hint { font-size: var(--text-sm); color: var(--text-muted); margin: 8px 0 0; }
+
+/* ── Guardar preset propio ────────────────────────────────────────────── */
+.teclado-bindings-guardar-preset { margin-top: 10px; }
+.teclado-guardar-form { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.teclado-guardar-input {
+  flex: 1 1 160px;
+  min-width: 140px;
+  height: 36px;
+  padding: 0 10px;
+  background: var(--bg-button);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: var(--text-sm);
+}
+.teclado-guardar-input:focus { border-color: var(--brand-a40); outline: none; }
+
+/* ── Grilla de teclas: solo la etiqueta, sin controles encima ────────────
+   El ancho visual de cada boton refleja --ancho-u (1 = tecla normal, 2 =
+   tipo Shift, 3 = tipo Space) para que se vea proporcional al overlay real. */
+.teclado-bindings-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.tecla-bind-btn {
+  min-width: calc(34px * var(--ancho-u, 1));
+  height: 40px;
+  padding: 0 10px;
+  background: var(--bg-button);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  font-family: 'Source Code Pro', monospace;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+.tecla-bind-btn:hover { border-color: var(--text-muted); }
+.tecla-bind-btn:focus-visible { outline: 2px solid var(--brand-a40); outline-offset: 2px; }
+.tecla-bind-btn.seleccionada {
+  border-color: var(--accent, var(--brand));
+  background: var(--brand-a12);
+  color: var(--accent, var(--brand));
+}
+
+/* ── Barra de edicion de la tecla seleccionada ────────────────────────── */
+.teclado-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 10px 12px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+}
+.teclado-toolbar-label {
+  font-weight: 600;
+  font-family: 'Source Code Pro', monospace;
+  color: var(--accent, var(--brand));
+}
+.teclado-toolbar-ancho { display: flex; align-items: center; gap: 8px; }
+.teclado-toolbar-ancho-valor { min-width: 34px; text-align: center; font-variant-numeric: tabular-nums; }
+.tecla-ancho-btn {
+  width: 26px;
+  height: 26px;
+  line-height: 1;
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-button);
+  color: var(--text);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+.tecla-ancho-btn:hover { border-color: var(--text-muted); }
+.teclado-toolbar-quitar { margin-left: auto; }
+.teclado-toolbar-hint { width: 100%; font-size: var(--text-sm); color: var(--text-muted); }
+
+.teclado-bindings-add { margin-top: 12px; }
+.teclado-bindings-add.capturando {
+  border-color: var(--accent, var(--brand));
+  color: var(--accent, var(--brand));
+  animation: tecla-bind-pulso 1s ease-in-out infinite;
+}
+@keyframes tecla-bind-pulso {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+.teclado-bindings-hint-limite { color: var(--text-muted); font-size: var(--text-sm); margin-top: 6px; }
+.teclado-bindings-hint { margin-top: 10px; }

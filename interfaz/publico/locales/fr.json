@@ -688,6 +688,7 @@
       "vueltaCreditos": "Durée d'un tour (secondes)",
       "disposicion": "Disposition",
       "imagenAlerta": "Image de l'alerte",
+      "posicionMouse": "Position de la souris",
       "colorTexto": "Couleur du texte"
     },
     "opcion": {
@@ -831,6 +832,45 @@
     "kicksGifted": "{amount} Kicks",
     "keyboard": "Clavier et souris",
     "keyboardDesc": "Affiche en direct les touches et boutons de souris que vous appuyez"
+  },
+  "teclado": {
+    "bindings": {
+      "titulo": "Touches de l'overlay",
+      "desc": "Ajoutez ou supprimez les touches que vous voulez. Pour en déplacer une, cliquez sur elle puis sur une autre pour échanger leurs positions. Les 5 boutons de la souris sont fixes.",
+      "presets": "Préréglages de clavier",
+      "presetDefault": "Par défaut",
+      "presetWasd": "WASD",
+      "presetEsdf": "ESDF",
+      "presetMoba": "MOBA",
+      "presetFps": "FPS",
+      "presetMmo": "MMO",
+      "presetRhythm": "Rhythm",
+      "custom": "Personnalisé",
+      "agregar": "+ Ajouter une touche",
+      "limite": "Vous avez atteint le nombre maximum de touches.",
+      "swapHintGeneral": "Cliquez sur une touche pour modifier sa largeur, la retirer, ou l'échanger avec une autre.",
+      "swapHint": "Cliquez pour échanger la position de {tecla}",
+      "seleccionar": "Sélectionner {tecla}",
+      "cancelarSwap": "Annuler l'échange",
+      "editando": "Modification : {tecla}",
+      "toolbarHint": "Cliquez sur une autre touche pour échanger les positions, ou Échap pour fermer",
+      "quitarBoton": "Retirer de l'overlay",
+      "anchoMas": "Élargir {tecla}",
+      "anchoMenos": "Rétrécir {tecla}",
+      "quitar": "Retirer {tecla} de l'overlay",
+      "minimoUna": "Il doit rester au moins une touche.",
+      "yaAgregada": "{tecla} est déjà dans l'overlay.",
+      "presionaTecla": "Appuyez sur une touche...",
+      "teclaNoSoportada": "Cette touche ne peut pas être utilisée ici. Essayez des lettres, chiffres, F1-F12, Espace, Tab ou Shift.",
+      "guardarPreset": "+ Enregistrer comme préréglage",
+      "nombrePreset": "Nom du préréglage",
+      "guardar": "Enregistrer",
+      "presetGuardado": "\"{nombre}\" enregistré",
+      "limitePresets": "Vous avez atteint le nombre maximum de préréglages enregistrés.",
+      "nombreVacio": "Donnez un nom au préréglage.",
+      "borrarPreset": "Supprimer le préréglage \"{nombre}\"",
+      "errorGuardar": "Impossible d'enregistrer la modification. Réessayez."
+    }
   },
   "donations": {
     "title": "Soutenez mon contenu",
