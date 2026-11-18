@@ -13,6 +13,7 @@ import { appSettings, saveSettings } from '../estado/ajustes-app.js';
 import { options } from '../estado/opciones-lectura.js';
 import { applyA11yConfig, applyFiltroIdiomaConfig, applyAnnounceTemplates, announceTemplates } from '../estado/config-runtime.js';
 import { applyGiftGate } from '../../vistas/principal/gift-gate/index.js';
+import { applyTecladoBindingsConfig } from '../../vistas/principal/teclado-keys-ui.js';
 import { resolverAnuncio } from '../i18n/plantilla-anuncio.js';
 import { nombreHablado } from '../i18n/nombre-hablado.js';
 import { cargarSesion } from '../estado/sesion.js';
@@ -380,6 +381,7 @@ function handleMessage(data) {
       applyFiltroIdiomaConfig(data.config || {});
       applyAnnounceTemplates(data.config || {});
       applyGiftGate(data.config || {});
+      applyTecladoBindingsConfig(data.config || {});
       // El toggle de subscriptionsEnabled cambia si /api/auth/* existe (404
       // vs real) -> re-hidratar en vez de quedarse con el badge/vista viejos.
       if (data.config && 'subscriptionsEnabled' in data.config) cargarSesion();

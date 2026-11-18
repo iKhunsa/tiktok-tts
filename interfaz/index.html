@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="plugin-store/detail.css" />
   <link rel="stylesheet" href="./src/estilos/index-legacy.css">
   <link rel="stylesheet" href="./src/estilos/campos-overlay.css">
+  <link rel="stylesheet" href="./src/estilos/teclado-bindings.css">
   <link rel="stylesheet" href="./src/estilos/overlays-catalogo.css">
   <link rel="stylesheet" href="./src/estilos/gif-buscador.css">
   <link rel="stylesheet" href="./src/estilos/moderacion-contenido.css">
@@ -482,6 +483,32 @@
         </div>
         <div class="cfg-fields" data-campos-base="teclado"></div>
         <div class="cfg-personalizar" data-campos-panel="teclado"></div>
+        <details class="cfg-grupo teclado-bindings" id="tecladoBindings" open>
+          <summary class="cfg-grupo-titulo" data-i18n="teclado.bindings.titulo">Teclas del overlay</summary>
+          <p class="cfg-subtitulo" data-i18n="teclado.bindings.desc">Agregá o quitá las teclas que quieras. Para cambiarlas de lugar, hacé clic en una y después en otra para intercambiarlas. Los 5 botones de mouse son fijos.</p>
+          <div class="teclado-presets-grid" data-teclado-presets-grid role="tablist" aria-label="Presets de teclado" data-i18n-aria-label="teclado.bindings.presets"></div>
+          <p class="teclado-bindings-custom-hint" data-teclado-custom-hint hidden data-i18n="teclado.bindings.custom">Personalizado</p>
+          <button type="button" class="cfg-btn teclado-bindings-guardar-preset" data-teclado-guardar-preset data-i18n="teclado.bindings.guardarPreset">+ Guardar como preset</button>
+          <div class="teclado-guardar-form" data-teclado-guardar-form hidden>
+            <input type="text" class="teclado-guardar-input" data-teclado-guardar-input maxlength="24" data-i18n-placeholder="teclado.bindings.nombrePreset" placeholder="Nombre del preset">
+            <button type="button" class="cfg-btn" data-teclado-guardar-confirmar data-i18n="teclado.bindings.guardar">Guardar</button>
+            <button type="button" class="cfg-btn" data-teclado-guardar-cancelar data-i18n="btn.cancel">Cancelar</button>
+          </div>
+          <div class="teclado-bindings-grid" data-teclado-grid></div>
+          <div class="teclado-toolbar" data-teclado-toolbar hidden>
+            <span class="teclado-toolbar-label" data-teclado-toolbar-label>Editando: Q</span>
+            <span class="teclado-toolbar-ancho">
+              <button type="button" class="tecla-ancho-btn" data-teclado-ancho="-1">−</button>
+              <span class="teclado-toolbar-ancho-valor" data-teclado-toolbar-ancho>1×</span>
+              <button type="button" class="tecla-ancho-btn" data-teclado-ancho="1">+</button>
+            </span>
+            <button type="button" class="cfg-btn teclado-toolbar-quitar" data-teclado-toolbar-quitar data-i18n="teclado.bindings.quitarBoton">Quitar del overlay</button>
+            <span class="teclado-toolbar-hint" data-i18n="teclado.bindings.toolbarHint">Clic en otra tecla para intercambiarlas, o Esc para cerrar</span>
+          </div>
+          <button type="button" class="cfg-btn teclado-bindings-add" data-teclado-add data-i18n="teclado.bindings.agregar">+ Agregar tecla</button>
+          <p class="teclado-bindings-hint-limite" data-teclado-limite hidden data-i18n="teclado.bindings.limite">Llegaste al máximo de teclas.</p>
+          <p class="cfg-subtitulo teclado-bindings-hint" data-i18n="teclado.bindings.swapHintGeneral">Hacé clic en una tecla para editar su ancho, quitarla, o intercambiarla con otra.</p>
+        </details>
         <iframe class="cfg-preview" data-preview="teclado" tabindex="-1" aria-hidden="true"></iframe>
         <div class="cfg-url-row">
           <span class="cfg-url-text" id="cfg-url-teclado">http://localhost:3000/overlay-teclado.html</span>

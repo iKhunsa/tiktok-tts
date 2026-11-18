@@ -2,6 +2,7 @@
 
 const { CHAT_GUARD_LEVELS, isChatGuardLangs, isChatGuardCustom } = require('../../core/chat-guard-options');
 const { GOOGLE_TTS_LANGS, DICT_FILTER_LANGS } = require('../../core/contracts/idioma-datos');
+const { isValidTecladoKeys, isValidTecladoCustomPresets } = require('../../core/teclado-keys');
 
 function isStringArray(v) {
   return Array.isArray(v) && v.every((item) => typeof item === 'string');
@@ -66,6 +67,8 @@ const CONFIG_VALIDATORS = {
   closeToTray: (v) => typeof v === 'boolean',
   // Llave técnica de apagado de la telemetría de palabras (true = apagada).
   blockedWordsTelemetryDisabled: (v) => typeof v === 'boolean',
+  tecladoKeys: isValidTecladoKeys,
+  tecladoCustomPresets: isValidTecladoCustomPresets,
   adminIdentities: (v) => v && typeof v === 'object'
     && ['tiktok', 'twitch', 'youtube', 'kick'].every((p) => Array.isArray(v[p]) && v[p].every((x) => typeof x === 'string')),
 };
