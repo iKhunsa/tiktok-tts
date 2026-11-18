@@ -100,6 +100,7 @@ const BASE = {
   'contador-likes': [{ ...colorAcento, def: '#FE2C55' }, opacidadFondo(0.8), ...camposOverlayFijo({ texto: false })],
   teclado: [
     { clave: 'tema', param: 'tema', tipo: 'opcion', def: 'oscuro', opciones: ['oscuro', 'claro'], opcionesTraducidas: ['oscuro', 'claro'], ui: 'botones', grupo: 'base' },
+    { clave: 'posicionMouse', param: 'mp', tipo: 'opcion', def: 'derecha', opciones: ['derecha', 'izquierda'], opcionesTraducidas: ['derecha', 'izquierda'], ui: 'botones', grupo: 'base' },
     { ...colorAcento, def: '#38bdf8' },
     opacidadFondo(0.84),
     ...camposOverlayFijo({ texto: false }),

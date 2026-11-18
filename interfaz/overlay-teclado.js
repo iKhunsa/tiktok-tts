@@ -1,24 +1,22 @@
 import { cargarLocaleOverlay, aplicarI18nOverlay } from './compartido/i18n-overlay.js';
-import { leerParametros, aplicarParametrosVisuales } from './compartido/parametros.js';
+import { leerParametros, aplicarParametrosVisuales, strParam } from './compartido/parametros.js';
 import { iniciarAccesibilidadOverlay } from './compartido/accesibilidad.js';
 import { registrarErroresOverlay } from './compartido/registrar-errores.js';
 import { conectarWSOverlay } from './compartido/ws-cliente.js';
 import { iniciarOverlayFijo } from './compartido/estilo/aplicar-overlay-fijo.js';
+import { DEFAULT_TECLADO_KEYS } from './compartido/teclado-keys.js';
 
-// Disposicion tipo mitad izquierda de teclado (TAB/QWER, ASDF, SHIFT/ZXC,
-// SPACE) + 5 botones de mouse: misma geometria de composicion que usa
-// Inkput (la app de referencia de este overlay, en /inkput-source) --
-// solo se reusa el acomodo de teclas, el look es el del propio sistema
-// de overlays de TTS (tarjeta oscura + --accent), no el de Inkput.
+// Grilla de teclas elegidas por el usuario (features/configuracion,
+// tecladoKeys: [{key,w}]) + 5 botones de mouse fijos a la derecha. Cada tecla
+// tiene su propio ancho (w, en unidades — TAB/SHIFT/SPACE suelen ser mas
+// anchas que una tecla normal en un teclado real) y la cantidad de teclas es
+// variable (agregar/quitar desde la app). Se acomodan en filas que no superan
+// FILA_ANCHO_MAX unidades, en el orden de la lista — ese orden es lo que el
+// usuario cambia al "intercambiar posiciones" en el panel de ajustes.
 const UNIDAD = 44;
 const GAP = 6;
 const PASO = UNIDAD + GAP;
-const TECLAS = [
-  { id: 'TAB', x: 0, y: 0, w: 1.25 }, { id: 'Q', x: 1.25, y: 0, w: 1 }, { id: 'W', x: 2.25, y: 0, w: 1 }, { id: 'E', x: 3.25, y: 0, w: 1 }, { id: 'R', x: 4.25, y: 0, w: 1 },
-  { id: 'A', x: 1.5, y: 1, w: 1 }, { id: 'S', x: 2.5, y: 1, w: 1 }, { id: 'D', x: 3.5, y: 1, w: 1 }, { id: 'F', x: 4.5, y: 1, w: 1 },
-  { id: 'SHIFT', x: 0, y: 2, w: 2 }, { id: 'Z', x: 2, y: 2, w: 1 }, { id: 'X', x: 3, y: 2, w: 1 }, { id: 'C', x: 4, y: 2, w: 1 },
-  { id: 'SPACE', x: 2.5, y: 3, w: 3 },
-];
+const FILA_ANCHO_MAX = 5.5; // reproduce el layout original (TAB/QWER, ASDF, SHIFT/ZXC, SPACE)
 const MIN_VISIBLE_MS = 55; // una pulsacion mas corta que un frame igual se ve
 
 // Cuerpo del mouse: mismo contorno/regiones que Inkput (la app de
@@ -41,26 +39,58 @@ const MOUSE_SVG = [
   '</svg>',
 ].join('');
 
-function construirDOM(stage) {
-  const els = {};
-  let maxX = 0;
-  for (const k of TECLAS) {
-    const el = document.createElement('div');
-    el.className = 'tecl-key';
-    el.textContent = k.id;
-    el.style.left = (k.x * PASO) + 'px';
-    el.style.top = (k.y * PASO) + 'px';
-    el.style.width = (k.w * PASO - GAP) + 'px';
-    el.style.height = UNIDAD + 'px';
-    stage.appendChild(el);
-    els[k.id] = el;
-    maxX = Math.max(maxX, k.x * PASO + k.w * PASO - GAP);
+// Acomoda las teclas en filas sin pasarse de FILA_ANCHO_MAX unidades, en el
+// orden de la lista (mismo criterio que un wrap de izquierda a derecha).
+function distribuirFilas(keys) {
+  const filas = [];
+  let fila = [];
+  let ancho = 0;
+  for (const entry of keys) {
+    if (fila.length && ancho + entry.w > FILA_ANCHO_MAX) {
+      filas.push(fila);
+      fila = [];
+      ancho = 0;
+    }
+    fila.push(entry);
+    ancho += entry.w;
   }
+  if (fila.length) filas.push(fila);
+  return filas;
+}
 
-  const altoTeclado = 4 * PASO - GAP;
-  const mouseH = altoTeclado;
+// Reconstruye todo el stage desde cero: se llama al cargar y cada vez que
+// cambia la lista de teclas (agregar/quitar/reordenar/preset/ancho), porque
+// la cantidad de filas y el ancho del stage pueden cambiar. `mouseIzquierda`
+// es un ajuste puramente visual de ESTE overlay (param `mp` en la URL, ver
+// esquemas.js), no afecta que tecla dispara que boton de mouse.
+function construirDOM(stage, keys, mouseIzquierda) {
+  stage.replaceChildren();
+  const els = {};
+  const filas = distribuirFilas(keys);
+  const anchoUnidades = filas.reduce((max, fila) => Math.max(max, fila.reduce((s, e) => s + e.w, 0)), 0);
+  const altoGrilla = filas.length * PASO - GAP;
+  const anchoGrilla = anchoUnidades * PASO - GAP;
+  const mouseH = altoGrilla;
   const mouseW = mouseH * (MOUSE_VB_W / MOUSE_VB_H);
-  const mouseX = maxX + PASO;
+  const keysX = mouseIzquierda ? mouseW + PASO : 0;
+  const mouseX = mouseIzquierda ? 0 : anchoGrilla + PASO;
+
+  filas.forEach((fila, y) => {
+    let x = 0;
+    for (const entry of fila) {
+      const el = document.createElement('div');
+      el.className = 'tecl-key';
+      el.textContent = entry.key;
+      el.style.left = (keysX + x * PASO) + 'px';
+      el.style.top = (y * PASO) + 'px';
+      el.style.width = (entry.w * PASO - GAP) + 'px';
+      el.style.height = UNIDAD + 'px';
+      stage.appendChild(el);
+      els[entry.key] = el;
+      x += entry.w;
+    }
+  });
+
   const mouseEl = document.createElement('div');
   mouseEl.className = 'tecl-mouse';
   mouseEl.style.left = mouseX + 'px';
@@ -71,23 +101,35 @@ function construirDOM(stage) {
   stage.appendChild(mouseEl);
   for (const g of mouseEl.querySelectorAll('[data-k]')) els[g.dataset.k] = g;
 
-  stage.style.width = (mouseX + mouseW) + 'px';
-  stage.style.height = altoTeclado + 'px';
+  stage.style.width = (mouseW + PASO + anchoGrilla) + 'px';
+  stage.style.height = altoGrilla + 'px';
   return els;
 }
 
-function nativo() {
+async function nativo() {
   const cfg = iniciarOverlayFijo('teclado', 560, 210);
   document.body.classList.toggle('tema-claro', cfg.tema === 'claro');
   registrarErroresOverlay();
   const params = leerParametros();
   aplicarParametrosVisuales(params);
   iniciarAccesibilidadOverlay();
+  const mouseIzquierda = strParam(params, 'mp', 'derecha') === 'izquierda';
+
+  // La lista de teclas (que, cuantas y su ancho) viene del config del
+  // servidor, no de la URL — es global a la app, no por-escena de OBS.
+  let keys = DEFAULT_TECLADO_KEYS;
+  try {
+    const res = await fetch('/api/config');
+    if (res.ok) {
+      const remotas = (await res.json()).tecladoKeys;
+      if (Array.isArray(remotas) && remotas.length) keys = remotas;
+    }
+  } catch (_) { /* sin config real, se muestra el layout de siempre */ }
 
   const stage = document.getElementById('tecladoStage');
-  const els = construirDOM(stage);
-  const timers = {};
-  const downAt = {};
+  let els = construirDOM(stage, keys, mouseIzquierda);
+  let timers = {};
+  let downAt = {};
 
   function set(id, on) {
     const el = els[id];
@@ -109,6 +151,15 @@ function nativo() {
   }
 
   conectarWSOverlay((msg) => {
+    if (msg.type === 'config-updated') {
+      if (Array.isArray(msg.config && msg.config.tecladoKeys)) {
+        for (const id of Object.keys(timers)) clearTimeout(timers[id]);
+        timers = {}; downAt = {};
+        keys = msg.config.tecladoKeys;
+        els = construirDOM(stage, keys, mouseIzquierda);
+      }
+      return;
+    }
     if (msg.type !== 'teclado-input') return;
     if (msg.t === 'd') set(msg.k, true);
     else if (msg.t === 'u') set(msg.k, false);

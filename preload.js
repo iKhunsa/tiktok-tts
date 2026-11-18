@@ -62,6 +62,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   offTtsShortcut: (cb) => off('tts-shortcut', cb),
   registerSoundpadShortcut: (soundId, shortcut) => ipcRenderer.invoke('register-soundpad-shortcut', { soundId, shortcut }),
   unregisterSoundpadShortcut: (soundId) => ipcRenderer.invoke('unregister-soundpad-shortcut', soundId),
+  registerSceneShortcut: (escenaId, shortcut) => ipcRenderer.invoke('register-scene-shortcut', { escenaId, shortcut }),
+  unregisterSceneShortcut: (escenaId) => ipcRenderer.invoke('unregister-scene-shortcut', escenaId),
+  onSceneShortcut: (cb) => on('scene-shortcut', (_e, escenaId) => cb(escenaId)),
+  offSceneShortcut: (cb) => off('scene-shortcut', cb),
   onPlaySoundpad: (cb) => on('play-soundpad', (_e, d) => cb(d)),
   // .epik abiertos con doble clic: primero lo que llego antes de que la UI escuchara, despues en vivo.
   onEpikAbierto: (cb) => {

@@ -245,7 +245,7 @@ function setupTikTokConnection(deps, cleanUsername) {
     armStaleWatchdog();
     bus.emit('canal:evento-especial', {
       platform: 'tiktok', channel: cleanUsername, kind: 'share',
-      userId: data.uniqueId || null, nick: data.nickname || null,
+      userId: data.uniqueId || null, nick: data.nickname || null, avatar: data.avatarUrl || null,
     });
   });
 

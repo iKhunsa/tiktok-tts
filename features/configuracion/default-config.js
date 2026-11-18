@@ -1,6 +1,7 @@
 'use strict';
 
 const { CHAT_GUARD_LOCALES } = require('../../core/chat-guard-options');
+const { DEFAULT_TECLADO_KEYS } = require('../../core/teclado-keys');
 
 const DEFAULT_CONFIG = {
   LIKE_DEBOUNCE_MS: 1500,
@@ -71,6 +72,14 @@ const DEFAULT_CONFIG = {
   // sin nombres ni chat. Renombrada desde blockedWordsTelemetryEnabled para que el `false`
   // que guardó el antiguo interruptor opt-in no deje cuentas apagadas sin querer.
   blockedWordsTelemetryDisabled: false,
+  // Lista ordenada de teclas ({key,w}) que muestra el overlay de teclado
+  // (features/overlay, interfaz/overlay-teclado.js) — el usuario agrega/quita/
+  // reordena (swap) desde la app. Ver core/teclado-keys.js para el universo
+  // valido y los presets. Copia profunda: son objetos, no compartir referencia
+  // con el default.
+  tecladoKeys: JSON.parse(JSON.stringify(DEFAULT_TECLADO_KEYS)),
+  // Presets propios que el usuario guarda desde el panel de "Teclas del overlay".
+  tecladoCustomPresets: [],
   adminIdentities: {
     tiktok: ['tiklivetts'],
     twitch: ['soykurorai'],

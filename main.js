@@ -310,6 +310,7 @@ app.on('will-quit', () => {
   if (ipcHandles) {
     ipcHandles.clearSoundpadShortcuts();
     ipcHandles.unregisterAllTtsShortcuts();
+    ipcHandles.clearSceneShortcuts();
   }
   if (portalViewIpcHandles) portalViewIpcHandles.dispose();
   if (portalView) portalView.destroyAll();

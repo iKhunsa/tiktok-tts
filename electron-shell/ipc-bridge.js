@@ -253,6 +253,67 @@ function attachIpcBridge({ app, bus, logger, getMainWindow, globalShortcut }) {
     return { ok: true };
   });
 
+  // ── Atajos por escena — cambian la "escena activa" para la URL dinámica de OBS ──
+  const sceneShortcuts = new Map(); // escenaId -> normalizedShortcut
+
+  ipcMain.handle('register-scene-shortcut', (_event, { escenaId, shortcut }) => {
+    if (!escenaId) return { ok: false, error: 'escenaId requerido' };
+
+    const prev = sceneShortcuts.get(escenaId);
+    if (prev) {
+      if (isUiohookActive()) unregisterUiohookShortcut(`escena:${escenaId}`);
+      else { try { globalShortcut.unregister(prev); } catch (_) { /* best-effort */ } }
+      sceneShortcuts.delete(escenaId);
+    }
+
+    if (!shortcut) return { ok: true, shortcut: null };
+
+    const normalized = normalizeShortcut(shortcut);
+    if (!isValidShortcut(normalized)) return { ok: false, error: 'Atajo inválido o reservado por el sistema' };
+
+    // Conflictos: contra otras escenas, sonidos, atajos de TTS y el atajo global de clip.
+    for (const [otherId, sc] of sceneShortcuts) {
+      if (otherId !== escenaId && sc === normalized) return { ok: false, error: 'conflict' };
+    }
+    for (const sc of soundpadShortcuts.values()) {
+      if (sc === normalized) return { ok: false, error: 'conflict' };
+    }
+    for (const sc of ttsShortcuts.values()) {
+      if (sc === normalized) return { ok: false, error: 'conflict' };
+    }
+    if (normalizeShortcut('CommandOrControl+Shift+M') === normalized) return { ok: false, error: 'conflict' };
+
+    const activateCallback = () => {
+      const win = getMainWindow();
+      if (win && !win.isDestroyed()) win.webContents.send('scene-shortcut', escenaId);
+    };
+
+    if (isUiohookActive()) {
+      const ok = registerUiohookShortcut(`escena:${escenaId}`, normalized, activateCallback);
+      if (!ok) return { ok: false, error: 'Atajo no soportado por uiohook' };
+    } else {
+      try {
+        const registered = globalShortcut.register(normalized, activateCallback);
+        if (!registered) return { ok: false, error: 'Windows no permitió registrar este atajo' };
+      } catch (error) {
+        return { ok: false, error: error.message };
+      }
+    }
+
+    sceneShortcuts.set(escenaId, normalized);
+    return { ok: true, shortcut: normalized };
+  });
+
+  ipcMain.handle('unregister-scene-shortcut', (_event, escenaId) => {
+    const prev = sceneShortcuts.get(escenaId);
+    if (prev) {
+      if (isUiohookActive()) unregisterUiohookShortcut(`escena:${escenaId}`);
+      else { try { globalShortcut.unregister(prev); } catch (_) { /* best-effort */ } }
+      sceneShortcuts.delete(escenaId);
+    }
+    return { ok: true };
+  });
+
   return {
     unregisterAllTtsShortcuts: () => { for (const action of ttsShortcuts.keys()) unregisterTtsShortcut(action); },
     clearSoundpadShortcuts: () => {
@@ -261,6 +322,13 @@ function attachIpcBridge({ app, bus, logger, getMainWindow, globalShortcut }) {
         else { try { globalShortcut.unregister(sc); } catch (_) { /* best-effort */ } }
       }
       soundpadShortcuts.clear();
+    },
+    clearSceneShortcuts: () => {
+      for (const [escenaId, sc] of sceneShortcuts) {
+        if (isUiohookActive()) unregisterUiohookShortcut(`escena:${escenaId}`);
+        else { try { globalShortcut.unregister(sc); } catch (_) { /* best-effort */ } }
+      }
+      sceneShortcuts.clear();
     },
   };
 }

@@ -88,6 +88,7 @@ module.exports = [
         HTMLInputElement: 'readonly',
         confirm: 'readonly',
         FileReader: 'readonly',
+        crypto: 'readonly',
       },
     },
     rules: {
