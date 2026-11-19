@@ -147,24 +147,25 @@ function contenidoBajo(id, x, y) {
   return esContenido(elemento, ventana) ? elemento : null;
 }
 
-// Una foto o video a pantalla completa es un fondo: no debe quedarse con los clics que caen sobre lo que tiene encima.
-const cubreElLienzo = (elemento, ventana) => {
+// Una foto o video grande (la mitad del lienzo o mas) es un fondo: no debe quedarse con los clics que caen sobre lo que tiene encima.
+const esFondo = (elemento, ventana) => {
   const { width, height } = elemento.getBoundingClientRect();
-  return width >= ventana.innerWidth * 0.95 && height >= ventana.innerHeight * 0.95;
+  return width * height >= ventana.innerWidth * ventana.innerHeight * 0.5;
 };
 
-/** La capa mas alta que tiene contenido bajo el puntero; si la seleccionada esta ahi, gana (asi se arrastra aunque otra la tape), salvo que sea un fondo a pantalla completa. */
+/** La capa que recibe el clic: entre las que tienen contenido bajo el puntero, las que no son un fondo van primero; dentro del grupo gana la seleccionada (asi se arrastra aunque otra la tape) y si no, la mas alta. */
 function capaBajo(evento) {
   const marco = $('ovlEditorMarco').getBoundingClientRect();
   const { ancho } = formatoActual();
   const escala = marco.width / ancho;
   const x = (evento.clientX - marco.left) / escala;
   const y = (evento.clientY - marco.top) / escala;
-  return [seleccionado, ...orden().reverse()].find((id, posicion) => {
-    if (!capas.has(id)) return false;
+  const tocadas = orden().reverse().flatMap((id) => {
     const elemento = contenidoBajo(id, x, y);
-    return elemento && !(posicion === 0 && cubreElLienzo(elemento, capas.get(id).iframe.contentWindow));
-  }) ?? null;
+    return elemento ? [{ id, fondo: esFondo(elemento, capas.get(id).iframe.contentWindow) }] : [];
+  });
+  const grupo = tocadas.some(({ fondo }) => !fondo) ? tocadas.filter(({ fondo }) => !fondo) : tocadas;
+  return (grupo.find(({ id }) => id === seleccionado) ?? grupo[0])?.id ?? null;
 }
 
 // Marco alrededor del contenido visible del overlay seleccionado (la capa ocupa todo el lienzo, el overlay no).
