@@ -12,7 +12,7 @@ export function abrirModalExportar() {
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay show';
   overlay.innerHTML = `
-    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="expEscenasTitulo">
+    <div class="modal-content exportar-modal" role="dialog" aria-modal="true" aria-labelledby="expEscenasTitulo">
       <button class="modal-close" type="button" data-cerrar><img class="icon-inline" src="icons/close.svg" alt=""></button>
       <h2 id="expEscenasTitulo" data-i18n="overlayCat.editor.exportarTitulo"></h2>
       <p class="cuenta-hint" data-i18n="overlayCat.editor.exportarSub"></p>

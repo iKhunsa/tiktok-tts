@@ -27,6 +27,7 @@ import { ajustesOverlay, fijarValorOverlay, usarAjustesPropios, valorOverlay } f
 import { exportarEscenas, importarArchivo } from './exportar-importar.js';
 import { abrirModalExportar } from './exportar-modal.js';
 import { abrirModalCopiarUrl } from './copiar-url-modal.js';
+import { iniciarTourAtajoEscena } from './copiar-url-tour.js';
 import { abrirModalAtajoEscena } from './escena-atajo-modal.js';
 
 const $ = (id) => document.getElementById(id);
@@ -596,11 +597,22 @@ function publicarUrlsEscena() {
   if (e) e.urls = orden().filter((id) => !capas.get(id).oculta).map((id) => { const { pathname, search } = new URL(buildOverlayUrl(id)); return pathname + search; });
 }
 
+// Tutorial del atajo: el menu de la escena activa se abre solo, pegado a su fila, para senalar "Asignar atajo".
+function iniciarTourAtajo() {
+  iniciarTourAtajoEscena({
+    abrirMenuEscena: () => {
+      const { left, bottom } = $('ovlEditorEscenas').querySelector('.sel').getBoundingClientRect();
+      abrirMenu({ preventDefault() {}, clientX: left + 24, clientY: bottom - 8 }, opcionesEscena(escenaActiva));
+    },
+    cerrarMenu,
+  });
+}
+
 function copiarEnlaceObs() {
   publicarUrlsEscena();
   if (!escena().urls.length) { showToast(t('overlayCat.editor.copiarObsVacio'), 'error'); return; }
   saveSettings();
-  abrirModalCopiarUrl(escena().id);
+  abrirModalCopiarUrl(escena().id, iniciarTourAtajo);
 }
 
 function cerrar() {
@@ -705,10 +717,10 @@ export function iniciarEditorCanvas() {
   });
   // Escenas y Capas se pliegan al pulsar su titulo (el CSS oculta la lista que sigue).
   document.querySelectorAll('.edi-acordeon').forEach((titulo) => titulo.addEventListener('click', (evento) => {
-    if (evento.target.closest('button')) return;
+    if (evento.target.closest('button, input, .edi-escenas-acciones')) return;
     titulo.setAttribute('aria-expanded', String(titulo.getAttribute('aria-expanded') !== 'true'));
   }));
-  $('ovlEditorEscenaNueva').addEventListener('click', () => { $('ovlEditorEscenas').previousElementSibling.setAttribute('aria-expanded', 'true'); appSettings.escenas.push(nuevaEscena()); cargarEscena(appSettings.escenas.length - 1); });
+  $('ovlEditorEscenaNueva').addEventListener('click', () => { appSettings.escenas.push(nuevaEscena()); cargarEscena(appSettings.escenas.length - 1); });
   $('ovlEditorEscenaExportar').addEventListener('click', abrirModalExportar);
   $('ovlEditorEscenaImportarArchivo').addEventListener('change', async (evento) => {
     const [archivo] = evento.target.files;

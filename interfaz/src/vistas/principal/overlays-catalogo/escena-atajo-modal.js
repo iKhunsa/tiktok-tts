@@ -8,7 +8,7 @@ let temporizador = null;
 
 function actualizarValor(overlay, escena) {
   const valor = overlay.querySelector('[data-valor]');
-  valor.textContent = escena.shortcut || t('soundpad.noShortcut');
+  valor.textContent = escena.shortcut || t('overlayCat.editor.atajoEscenaVacio');
   valor.classList.remove('capturing');
   overlay.querySelector('[data-quitar]').disabled = !escena.shortcut;
 }
