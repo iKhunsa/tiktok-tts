@@ -22,7 +22,6 @@ function nativo() {
   const vistaPrevia = esVistaPrevia(params);
   aplicarParametrosVisuales(params);
   const alertDur = intParam(params, 'dur', 4000);
-  const userSetColor = !!params.get('color');
 
   // PLATFORM_META aca es distinto al de overlay-alertas.js (agrega tiktok con
   // otro color de marca): esta tarjeta la puede disparar follow/share desde
@@ -52,7 +51,6 @@ function nativo() {
     const meta = PLATFORM_META[event.platform] || null;
     const card = document.createElement('div');
     card.className = `alert-card anim-${cfgFijo.animacionEntrada}`;
-    if (meta && !userSetColor) card.style.setProperty('--accent', meta.color);
 
     const icono = makeDefaultIcon(isFollow, event.platform);
     card.appendChild(crearImagenGifAlerta(cfgFijo.gifAlerta, cfgFijo) || (cfgFijo.imagenAlerta === 'perfil' ? crearFotoConIcono({ user: event.username || event.user, avatar: event.avatar }, icono) : icono));

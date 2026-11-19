@@ -22,6 +22,7 @@ export const almacenSesion = crearAlmacen({
   user: null,
   plan: 'free',
   entitlements: [],
+  licenciasSkins: {},
   expiresAt: null,
   subscription: null,
   degraded: false,
@@ -31,8 +32,8 @@ let sesionHidratada = false;
 /** ¿El plan incluye lo Pro (skins premium, etc.)? Con el sistema de cuentas
  * apagado, la app funciona toda desbloqueada. Fuente unica de esta regla. */
 export function tieneAccesoPro() {
-  const { activo, plan } = almacenSesion.getState();
-  return !activo || plan === 'pro';
+  const { activo, signedIn, plan, expiresAt } = almacenSesion.getState();
+  return !activo || (signedIn && plan === 'pro' && (!expiresAt || Date.parse(expiresAt) > Date.now()));
 }
 
 /** Con el sistema de cuentas activo, nadie usa la app sin sesión: hay que
@@ -50,6 +51,7 @@ function normalizar(data) {
     user: data.user || null,
     plan: ['pro', 'sin-promos'].includes(data.plan) ? data.plan : 'free',
     entitlements: Array.isArray(data.entitlements) ? data.entitlements : [],
+    licenciasSkins: data.licenciasSkins || {},
     expiresAt: data.expiresAt || null,
     subscription: data.subscription || null,
     degraded: !!data.degraded,

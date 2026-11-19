@@ -1,5 +1,6 @@
-import { esSkinEpik } from './compartido/epik/skin-epik.js';
+import { elegirEntrada } from './compartido/epik/anfitrion.js';
 
-// Con una skin .epik el diseno lo pone el archivo importado; si no, el overlay de siempre.
-if (esSkinEpik(new URLSearchParams(location.search).get('skin'))) import('./compartido/epik/anfitrion-musica.js');
-else import('./overlay-musica.js');
+elegirEntrada({
+  nativo: () => import('./overlay-musica.js'),
+  epik: () => import('./compartido/epik/anfitrion-musica.js'),
+});

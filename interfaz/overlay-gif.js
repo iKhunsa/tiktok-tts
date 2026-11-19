@@ -1,8 +1,10 @@
+import { iniciarReproduccionOverlay } from './compartido/acceso-reproduccion.js';
 import { leerParametros } from './compartido/parametros.js';
 import { registrarErroresOverlay } from './compartido/registrar-errores.js';
 import { leerConfig } from './compartido/estilo/query.js';
 import { ESQUEMA_GIF } from './compartido/estilo/campos-gif.js';
 
+iniciarReproduccionOverlay(() => {
 registrarErroresOverlay();
 
 const params = leerParametros();
@@ -25,3 +27,5 @@ if (src && /^https?:\/\//i.test(src)) {
   medio.src = src;
   document.body.append(medio);
 }
+
+});

@@ -69,7 +69,7 @@ function crearCampo(epik, overlay, campo, valor) {
   entrada.id = id;
   if (campo.ayuda) contenedor.title = textoLocal(campo.ayuda);
   entrada.addEventListener(campo.tipo === 'texto' ? 'change' : 'input', () => {
-    guardarAjusteEpik(epik.id, campo.clave, leer(campo, entrada));
+    guardarAjusteEpik(epik.id, campo.clave, leer(campo, entrada), overlay);
     updateOverlayUrl(overlay);
   });
   return contenedor;
@@ -84,7 +84,7 @@ export function crearAjustesEpik(epik, overlay, alRestablecer) {
   const titulo = document.createElement('p');
   titulo.className = 'cfg-subtitulo';
   titulo.textContent = t('overlayCfg.epik.ajustes', { nombre: epik.nombre });
-  const guardado = ajustesEpik(epik.id);
+  const guardado = ajustesEpik(epik.id, overlay);
   const rejilla = document.createElement('div');
   rejilla.className = 'cfg-fields';
   rejilla.append(...epik.campos.map((campo) => crearCampo(epik, overlay, campo, guardado[campo.clave] ?? campo.def)));
@@ -94,7 +94,7 @@ export function crearAjustesEpik(epik, overlay, alRestablecer) {
   restablecer.className = 'cfg-btn epik-restablecer';
   restablecer.dataset.i18n = 'overlayCfg.epik.restablecer';
   restablecer.addEventListener('click', () => {
-    restablecerAjustesEpik(epik.id);
+    restablecerAjustesEpik(epik.id, overlay);
     updateOverlayUrl(overlay);
     alRestablecer();
   });

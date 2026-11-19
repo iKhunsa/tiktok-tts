@@ -8,8 +8,13 @@ const path = require('node:path');
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'ajustes-ui-'));
 process.env.TIKTOK_USER_DATA_PATH = tmp;
 const express = require('express');
-const { getAjustesUi, putAjustesUi } = require('../features/configuracion/routes/ajustes-ui');
+const { getAjustesUi, putAjustesUi, getEscenaOverlay } = require('../features/configuracion/routes/ajustes-ui');
 
+let conPro = false;
+const bus = { emit(evento, responder) {
+  if (evento === 'config:get') responder({ subscriptionsEnabled: true });
+  if (evento === 'auth:get') responder({ signedIn: true, plan: conPro ? 'pro' : 'free' });
+} };
 let servidor;
 let base;
 const logger = { log() {} };
@@ -17,6 +22,7 @@ const logger = { log() {} };
 before(async () => {
   const app = express();
   app.use(express.json({ limit: '2mb' }));
+  app.get('/api/overlays/escena', getEscenaOverlay({ bus }));
   app.get('/api/ajustes-ui', getAjustesUi({ logger }));
   app.put('/api/ajustes-ui', putAjustesUi({ logger }));
   await new Promise((listo) => { servidor = app.listen(0, '127.0.0.1', listo); });
@@ -40,4 +46,18 @@ test('rechaza un respaldo sin marca de tiempo o sin objeto de datos', async () =
   assert.equal((await pedir('PUT', { datos: {} })).status, 400);
   assert.equal((await pedir('PUT', { guardado: 1, datos: [1] })).status, 400);
   assert.equal((await pedir('PUT', { guardado: 1, datos: 'texto' })).status, 400);
+});
+
+
+test('escenas OBS se bloquean al perder Pro sin borrar el respaldo y vuelven al renovar', async () => {
+  const datos = { escenaActivaId: 'a', escenas: [{ id: 'a', urls: ['/overlay-chat.html?skin=terminal', 'https://externo/', '/overlay-escena.html?e=a'] }] };
+  await pedir('PUT', { guardado: 234, datos });
+  const escena = () => fetch(`${base}/api/overlays/escena?e=dinamica`);
+  conPro = true;
+  assert.deepEqual(await (await escena()).json(), { urls: ['/overlay-chat.html?skin=terminal'] });
+  conPro = false;
+  assert.equal((await escena()).status, 403);
+  assert.deepEqual((await pedir('GET')).json.datos, datos);
+  conPro = true;
+  assert.deepEqual(await (await escena()).json(), { urls: ['/overlay-chat.html?skin=terminal'] });
 });

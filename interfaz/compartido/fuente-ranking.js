@@ -1,5 +1,5 @@
 import { conectarWSOverlay } from './ws-cliente.js';
-import { conMuestra } from './vista-previa.js';
+import { conMuestra, esDemoTienda } from './vista-previa.js';
 import { MUESTRA_LIKES, MUESTRA_DONADORES } from './muestras-vista-previa.js';
 
 /** Lo que cambia entre rankings (datos); el simbolo y el pintado los pone cada overlay. */
@@ -41,7 +41,7 @@ function simularRanking({ muestra, campoValor }, alLista, hayDatosReales) {
  */
 export async function iniciarFuenteRanking(ranking, { vistaPrevia, alLista, alConfig }) {
   const conEjemplo = (entradas) => conMuestra(entradas, ranking.muestra, vistaPrevia);
-  const iniciales = await pedirRankingInicial(ranking.claveLista);
+  const iniciales = esDemoTienda(new URLSearchParams(location.search)) ? [] : await pedirRankingInicial(ranking.claveLista);
   alLista(conEjemplo(iniciales), false);
   let hayDatosReales = iniciales.length > 0;
   if (vistaPrevia) simularRanking(ranking, alLista, () => hayDatosReales);

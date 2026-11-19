@@ -1,5 +1,6 @@
 'use strict';
 
+const { overlayAccess } = require('../../../core/overlay-access');
 const fs = require('fs');
 const path = require('path');
 const { accountDataPath } = require('../../../core/account-data-path');
@@ -41,4 +42,21 @@ function putAjustesUi({ logger }) {
   };
 }
 
-module.exports = { getAjustesUi, putAjustesUi };
+function getEscenaOverlay({ bus }) {
+  return (req, res) => {
+    res.set('Cache-Control', 'no-store');
+    if (!overlayAccess(bus).pro) return res.status(403).json({ urls: [] });
+    try {
+      const { datos } = JSON.parse(fs.readFileSync(archivo(), 'utf8'));
+      const id = req.query.e === 'dinamica' ? datos?.escenaActivaId : req.query.e;
+      const escenas = Array.isArray(datos?.escenas) ? datos.escenas : [];
+      const guardadas = escenas.find((escena) => escena.id === id)?.urls;
+      const urls = Array.isArray(guardadas) ? guardadas : [];
+      return res.json({ urls: urls.filter((url) => typeof url === 'string' && /^\/overlay-(?!escena)[\w-]+\.html(\?|$)/.test(url)) });
+    } catch (error) {
+      return res.status(error.code === 'ENOENT' ? 404 : 500).json({ urls: [] });
+    }
+  };
+}
+
+module.exports = { getAjustesUi, putAjustesUi, getEscenaOverlay };

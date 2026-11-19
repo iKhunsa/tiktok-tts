@@ -2,7 +2,6 @@
  * Alertas de overlay-evento.html: cada una se queda con un tipo de evento del
  * WS. Las que llevan `pendiente` esperan un dato que el backend aun no manda:
  *   renovacion  -> { type: 'gift', kind: 'sub', renovacion: true } (hoy Twitch manda 'sub' sin distinguir)
- *   fin-directo -> { type: 'stream-end', platform }
  * Son datos puros: los comparten el overlay, el configurador y los tests.
  */
 import { NIVELES_CHEER, NIVELES_KICKS } from './recurso-plataforma.js';
@@ -86,12 +85,5 @@ export const EVENTOS_ALERTA = {
     pendiente: true,
     coincide: (d) => d.type === 'gift' && d.kind === 'sub' && d.renovacion === true,
     muestra: { type: 'gift', kind: 'sub', renovacion: true, platform: 'twitch', user: usuario },
-  },
-  'fin-directo': {
-    icono: 'tv_off',
-    pendiente: true,
-    sinUsuario: true,
-    coincide: (d) => d.type === 'stream-end',
-    muestra: { type: 'stream-end', platform: 'tiktok' },
   },
 };

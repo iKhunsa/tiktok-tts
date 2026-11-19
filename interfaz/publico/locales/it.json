@@ -614,6 +614,7 @@
       "posicionTexto": "Posizione del testo",
       "anchoMensajes": "Larghezza dei messaggi",
       "escala": "Dimensione totale",
+      "escalaFactor": "Dimensione totale (?)",
       "desplazaX": "Sposta in orizzontale",
       "desplazaY": "Sposta in verticale",
       "capaZ": "Profondità (asse Z)",
@@ -2081,6 +2082,7 @@
     "sinResultados": "Nessun overlay corrisponde alla ricerca.",
     "usar": "Usa",
     "incluidoPro": "Incluso in Pro",
+    "adquirida": "Acquisita",
     "musicaSonando": "In riproduzione",
     "musicaPedida": "richiesto da {user}",
     "todas": "Tutte",
@@ -2118,6 +2120,7 @@
       "atajoEscenaTitulo": "Scorciatoia da tastiera della scena",
       "atajoEscenaSub": "Premendola, questa scena diventa quella attiva per il link dinamico di OBS.",
       "duplicar": "Duplica",
+      "cubrirLienzo": "Copri tela",
       "plegarBiblioteca": "Riduci o mostra la libreria",
       "escenas": "Scene",
       "escena": "Scena {n}",
@@ -2272,10 +2275,6 @@
       "entrada": {
         "titulo": "Avviso ingresso in diretta",
         "desc": "Dà il benvenuto a chi entra in diretta"
-      },
-      "fin-directo": {
-        "titulo": "Avviso fine diretta",
-        "desc": "Appare quando la diretta termina"
       }
     },
     "alerta": {
@@ -2287,8 +2286,7 @@
       "suscripcion": "si è abbonato",
       "renovacion": "ha rinnovato l'abbonamento",
       "compartido": "ha condiviso la diretta",
-      "entrada": "è entrato in diretta",
-      "fin-directo": "La diretta è terminata"
+      "entrada": "è entrato in diretta"
     },
     "irAlOverlay": "Vai all’overlay",
     "mensajePrueba": "Ciao! Questo è un messaggio di prova",

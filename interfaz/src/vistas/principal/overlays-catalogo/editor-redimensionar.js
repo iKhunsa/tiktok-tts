@@ -1,10 +1,9 @@
+import { ESQUEMAS } from '../../../../compartido/estilo/esquemas.js';
 import { saveSettings } from '../../../nucleo/estado/ajustes-app.js';
 import { updateOverlayUrl } from '../configurador-overlays.js';
 import { sincronizarCamposOverlay } from '../campos-overlay/sincronizar.js';
 import { fijarValorOverlay, valorOverlay } from './posicion-escena.js';
 
-const ESCALA_MIN = 0.1; // los limites del campo `escala` del esquema
-const ESCALA_MAX = 2;
 
 /**
  * Cuatro tiradores en las esquinas del marco de seleccion: arrastrar uno cambia el campo `escala`
@@ -28,13 +27,14 @@ export function iniciarTiradores(resalte, { idSeleccionado, iframeDe, alMover, a
       const ancla = { x: esquina.includes('w') ? caja.right : caja.left, y: esquina.includes('n') ? caja.bottom : caja.top };
       const raiz = iframeDe(id).contentDocument.documentElement.style;
       const zoom = parseFloat(raiz.getPropertyValue('--zoom'));
-      gesto = { id, caja, ancla, raiz, zoom, escala: valorOverlay(id, 'escala'), factor: 1, cuadro: 0 };
+      const limites = ESQUEMAS[id].find((campo) => campo.clave === 'escala');
+      gesto = { id, caja, ancla, raiz, zoom, limites, escala: valorOverlay(id, 'escala'), factor: 1, cuadro: 0 };
     });
     tirador.addEventListener('pointermove', (evento) => {
       if (!gesto) return;
-      const { caja, ancla, raiz, zoom, escala } = gesto;
+      const { caja, ancla, raiz, zoom, escala, limites } = gesto;
       const pedido = Math.max(Math.abs(evento.clientX - ancla.x) / caja.width, Math.abs(evento.clientY - ancla.y) / caja.height);
-      gesto.factor = Math.min(ESCALA_MAX / escala, Math.max(ESCALA_MIN / escala, pedido));
+      gesto.factor = Math.min((limites.max ?? Infinity) / escala, Math.max(limites.min / escala, pedido));
       if (Number.isFinite(zoom)) raiz.setProperty('--zoom', String(zoom * gesto.factor));
       else raiz.setProperty('--escala', String(escala * gesto.factor));
       // Un repintado del marco por cuadro basta: se mide el overlay ya escalado.

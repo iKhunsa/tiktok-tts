@@ -1,5 +1,6 @@
 'use strict';
 
+const { overlayAccess } = require('../../core/overlay-access');
 const path = require('path');
 const express = require('express');
 const { RESOURCE_BASE } = require('../../core/paths');
@@ -43,6 +44,10 @@ module.exports = {
     const state = createOverlayState();
     state.likePendingTimers = new Map();
     const deps = { state, bus, logger };
+
+    app.get('/api/overlays/acceso', (_req, res) => {
+      res.set('Cache-Control', 'no-store').json(overlayAccess(bus));
+    });
 
     app.use('/gifts', express.static(path.join(RESOURCE_BASE, 'gifts')));
 

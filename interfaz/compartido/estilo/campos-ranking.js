@@ -15,7 +15,7 @@ export const camposRanking = ({ colorValor }) => [
   { clave: 'skin', param: 'skin', tipo: 'opcion', def: SKINS_RANKING[0], opciones: [...SKINS_RANKING, ...SKINS_RANKING_PREMIUM], libres: SKINS_RANKING, premium: SKINS_RANKING_PREMIUM, ui: 'oculto', grupo: 'skin' },
   campoEscala(),
   { clave: 'rows', param: 'rows', tipo: 'numero', def: 10, min: 3, max: 20, step: 1, etiqueta: 'maxFilas', grupo: 'base' },
-  { clave: 'color', param: 'color', tipo: 'color', def: '#FFBB00', etiqueta: 'colorAcento', grupo: 'base' },
+  { clave: 'color', param: 'color', tipo: 'color', def: '#F0213A', etiqueta: 'colorAcento', grupo: 'base' },
   ...camposTipografia(16),
   ...camposAlineacionVertical({ posicionV: 'arriba' }),
   ...camposUsuario(),

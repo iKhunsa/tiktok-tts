@@ -1,3 +1,4 @@
+import { esDemoTienda } from './vista-previa.js';
 /**
  * Cliente WS unico para los overlays vanilla. Reemplaza las 9 copias de
  * connectWS con 3 politicas de backoff distintas que existian en los 7
@@ -12,6 +13,7 @@
  * @param {{onOpen?: () => void}} [opts]
  */
 export function conectarWSOverlay(onMensaje, opts = {}) {
+  if (esDemoTienda(new URLSearchParams(location.search))) return { socket: null };
   let ws = null;
   let retryDelay = 2000;
 

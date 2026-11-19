@@ -2,7 +2,7 @@ import { appSettings, saveSettings } from '../../../nucleo/estado/ajustes-app.js
 
 // Deshacer / rehacer del editor de canvas: instantaneas de lo que el editor toca en appSettings.
 // Los cambios seguidos (arrastres, sliders) se agrupan en un solo paso.
-const CLAVES = ['overlays', 'escenas', 'overlayLienzo', 'epik'];
+const CLAVES = ['escenas', 'capasGif'];
 const MAX_PASOS = 100;
 const AGRUPAR_MS = 500;
 

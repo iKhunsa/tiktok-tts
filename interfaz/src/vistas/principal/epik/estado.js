@@ -1,11 +1,15 @@
+import { ESQUEMAS } from '../../../../compartido/estilo/esquemas.js';
+import { skinPermitida } from '../../../../compartido/estilo/ajustes-segun-plan.js';
+import { almacenSesion, tieneAccesoPro } from '../../../nucleo/estado/sesion.js';
+import { ajustesOverlay, fijarValorOverlay } from '../overlays-catalogo/posicion-escena.js';
 import { appSettings, saveSettings } from '../../../nucleo/estado/ajustes-app.js';
 import { construirQuery, valoresPorDefecto } from '../../../../compartido/estilo/query.js';
 import { esquemaEpik, idDeSkin } from '../../../../compartido/epik/skin-epik.js';
 
 /**
  * Archivos .epik instalados en la cuenta (los guarda el servidor, features/epik/).
- * Los ajustes propios de cada uno van en appSettings.epik[id]: por id, asi sobreviven
- * a una version nueva del archivo y a quitarlo y volver a importarlo.
+ * La biblioteca es compartida. Los ajustes se guardan por overlay o capa, separados por id de paquete,
+ * y sobreviven a una actualizacion o reimportacion del archivo.
  */
 // Familias: { musica: ['musica'], ranking: ['likes', 'donadores'], ... }. Un .epik declara su familia
 // (`epik.overlay`) y sirve en todos los overlays de ella.
@@ -64,27 +68,31 @@ export async function descargarPlantilla(id) {
   return { ...datos, ok: res.ok };
 }
 
-export function ajustesEpik(id) {
-  appSettings.epik[id] ??= {};
-  return appSettings.epik[id];
+export function ajustesEpik(id, overlay) {
+  return ajustesOverlay(overlay)?.epik?.[id] || {};
 }
 
-export function guardarAjusteEpik(id, clave, valor) {
-  ajustesEpik(id)[clave] = valor;
+export function guardarAjusteEpik(id, clave, valor, overlay) {
+  const propios = ajustesOverlay(overlay)?.epik || {};
+  fijarValorOverlay(overlay, 'epik', { ...propios, [id]: { ...propios[id], [clave]: valor } });
   saveSettings();
 }
 
-export function restablecerAjustesEpik(id) {
-  appSettings.epik[id] = {};
+export function restablecerAjustesEpik(id, overlay) {
+  const propios = ajustesOverlay(overlay)?.epik || {};
+  fijarValorOverlay(overlay, 'epik', { ...propios, [id]: {} });
   saveSettings();
 }
 
-/** El .epik que usa ahora un overlay (su skin es `epik:<id>` y sigue instalado), o null. */
-export const epikActivo = (overlay) => epikPorId(idDeSkin(appSettings.overlays?.[overlay]?.skin)) || null;
+export function epikActivo(overlay) {
+  const skin = ajustesOverlay(overlay)?.skin;
+  const sesion = almacenSesion.getState();
+  if (!skinPermitida(ESQUEMAS[overlay], skin, tieneAccesoPro(), sesion.entitlements, sesion.licenciasSkins)) return null;
+  return epikPorId(idDeSkin(skin)) || null;
+}
 
-/** Ajustes propios del .epik activo para la URL del overlay (`x.<clave>`, solo lo que difiere). */
-export function queryEpik(overlay) {
-  const epik = epikActivo(overlay);
+export function queryEpik(overlay, ajustes) {
+  const epik = epikPorId(idDeSkin(ajustes?.skin));
   if (!epik) return '';
-  return construirQuery(esquemaEpik(epik.campos), { ...valoresPorDefecto(epik.campos), ...ajustesEpik(epik.id) });
+  return construirQuery(esquemaEpik(epik.campos), { ...valoresPorDefecto(epik.campos), ...ajustes.epik?.[epik.id] });
 }

@@ -1,7 +1,7 @@
 import { EVENTOS_ALERTA } from '../../../../compartido/eventos-alerta.js';
 import { CHATS_POR_PLATAFORMA } from '../../../../compartido/estilo/esquemas.js';
 
-/** Los 25 overlays por categoria. Textos: overlayCat.cat.<id>.titulo|desc. */
+/** Overlays por categoria. Textos: overlayCat.cat.<id>.titulo|desc. */
 export const CATEGORIAS = [
   { id: 'chat', icono: 'chat', color: '#2f6fed', overlays: ['chat', 'chat-tiktok', 'chat-twitch', 'chat-youtube', 'chat-kick'] },
   { id: 'seguidores', icono: 'people', color: '#7c4dff', overlays: ['social', 'nuevo-seguidor'] },
@@ -10,7 +10,7 @@ export const CATEGORIAS = [
   { id: 'interacciones', icono: 'favorite', color: '#e0245e', overlays: ['likes', 'alertas-social', 'contador-likes', 'compartido'] },
   { id: 'audiencia', icono: 'groups', color: '#0e9f8a', overlays: ['viewers', 'entrada'] },
   { id: 'musica', icono: 'music_note', color: '#d48a00', overlays: ['musica'] },
-  { id: 'resumen', icono: 'emoji_events', color: '#4b5563', overlays: ['creditos', 'fin-directo'] },
+  { id: 'resumen', icono: 'emoji_events', color: '#4b5563', overlays: ['creditos'] },
   { id: 'teclado', icono: 'keyboard', color: '#38bdf8', overlays: ['teclado'] },
 ];
 
@@ -38,7 +38,6 @@ export const PLATAFORMAS_OVERLAY = {
   compartido: ['tiktok'],
   viewers: ['tiktok'],
   entrada: ['tiktok'],
-  'fin-directo': ['tiktok'],
   creditos: ['tiktok', 'twitch', 'kick'],
   musica: ['tiktok', 'twitch', 'youtube', 'kick'],
   teclado: [],

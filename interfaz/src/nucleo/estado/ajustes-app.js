@@ -15,6 +15,7 @@ import { renderChatTogglesState } from '../../vistas/principal/toggles-chat.js';
 import { updateConnectorChipState } from '../../vistas/principal/voces.js';
 import { updateOverlayUrl } from '../../vistas/principal/configurador-overlays.js';
 import { renderizarTodosLosCamposOverlay } from '../../vistas/principal/campos-overlay/index.js';
+import { migrarDominiosOverlay } from '../../../compartido/estilo/migrar-dominios-overlay.js';
 import { DEFAULTS_OVERLAYS } from '../../../compartido/estilo/esquemas.js';
 import { reportarFallo } from '../../../compartido/reportar-fallo.js';
 import { VISTA_CHAT_DEFECTO } from '../../componentes/chat-vista/ajustes.js';
@@ -58,12 +59,12 @@ export const DEFAULT_SETTINGS = {
   musicPauseShortcut: null,
   musicSkipShortcut: null,
   overlays: DEFAULTS_OVERLAYS,
+  capasGif: {},
+  versionDominiosOverlay: 1,
   overlayLienzo: '16:9',
   escenas: [{ nombre: "", ids: [], nombres: {} }], // editor de canvas: ids de overlay por escena
   escenaActivaId: null, // escena que sigue la URL dinamica de OBS (cambia con los atajos de teclado por escena)
   skinsFavoritas: [],
-  // Ajustes propios de cada archivo .epik, por id (vistas/principal/epik/estado.js).
-  epik: {},
   epikOcultos: [], // .epik quitados de favoritos: no salen en el selector de skins
 };
 
@@ -103,13 +104,11 @@ function migrarOverlaysAnteriores(guardado) {
 export function loadSettings() {
   try {
     const raw = datosPorCuenta.get(SETTINGS_KEY);
-    const guardado = raw ? migrarOverlaysAnteriores(JSON.parse(raw)) : null;
+    const guardado = raw ? migrarDominiosOverlay(migrarOverlaysAnteriores(JSON.parse(raw))) : null;
     appSettings = guardado ? deepMerge(DEFAULT_SETTINGS, guardado) : JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
-    // deepMerge solo conserva claves conocidas: los ids de .epik no lo son, se copian tal cual.
-    if (guardado?.epik && typeof guardado.epik === 'object') appSettings.epik = guardado.epik;
-    // Igual con las capas GIF del editor de canvas (`gif:<id>`): se copian tal cual (campos-gif.js#esCapaGif las valida al usarlas).
+    appSettings.capasGif = guardado?.capasGif || {};
     for (const [id, cfg] of Object.entries(guardado?.overlays ?? {})) {
-      if (id.startsWith('gif:') && cfg && typeof cfg === 'object') appSettings.overlays[id] = cfg;
+      if (appSettings.overlays[id] && cfg?.epik) appSettings.overlays[id].epik = cfg.epik;
     }
   } catch (e) {
     console.warn('[settings] localStorage corrupto, usando valores por defecto', e);

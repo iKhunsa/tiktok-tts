@@ -6,7 +6,7 @@ const MAYUSCULAS = ['none', 'uppercase', 'lowercase', 'capitalize'];
 const SIMBOLOS_MAYUSCULAS = { none: '—', uppercase: 'AB', lowercase: 'ab', capitalize: 'Ab' };
 
 /** Zoom de todo el overlay: texto, mensajes y separaciones, sin cambiar sus proporciones. */
-export const campoEscala = () => ({ clave: 'escala', param: 'zoom', tipo: 'numero', def: 1, min: 0.1, max: 2, step: 0.05, ui: 'rango', porcentaje: true, grupo: 'base' });
+export const campoEscala = () => ({ clave: 'escala', param: 'zoom', tipo: 'numero', def: 1, min: 0.1, step: 0.05, etiqueta: 'escalaFactor', grupo: 'base' });
 
 /** Tipografia comun a los 3 overlays con texto. */
 export const camposTipografia = (tamanoPorDefecto) => [

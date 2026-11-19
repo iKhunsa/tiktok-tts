@@ -1,3 +1,4 @@
+import { iniciarReproduccionOverlay } from '../acceso-reproduccion.js';
 import { leerConfig } from '../estilo/query.js';
 import { ESQUEMAS } from '../estilo/esquemas.js';
 import { cargarLocaleOverlay, idiomaOverlay, t } from '../i18n-overlay.js';
@@ -11,7 +12,7 @@ import { esquemaEpik, esSkinEpik, idDeSkin } from './skin-epik.js';
 const MAX_PENDIENTES = 200;
 
 /** Entrada de un overlay de la app: con skin `epik:<id>` monta el .epik, si no el overlay de siempre. */
-export const elegirEntrada = ({ nativo, epik }) => (esSkinEpik(new URLSearchParams(location.search).get('skin')) ? epik() : nativo());
+export const elegirEntrada = ({ nativo, epik }) => iniciarReproduccionOverlay(() => (esSkinEpik(new URLSearchParams(location.search).get('skin')) ? epik() : nativo()));
 
 /**
  * Lo comun de cada anfitrion de familia: config del overlay, textos traducidos, montar el .epik y la

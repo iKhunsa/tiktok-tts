@@ -63,7 +63,8 @@ function crearRefresh({ cliente, bus, logger }) {
     }
     if (antes.signedIn === ahora.signedIn && antes.plan === ahora.plan && antes.degraded === ahora.degraded
       && mismosEntitlements(antes.entitlements, ahora.entitlements) && cuentaAntes === cuentaAhora
-      && mismoPerfil(antes.user, ahora.user)) return;
+      && mismoPerfil(antes.user, ahora.user) && antes.expiresAt === ahora.expiresAt
+      && JSON.stringify(antes.licenciasSkins) === JSON.stringify(ahora.licenciasSkins)) return;
     bus.emit('auth:actualizado', { signedIn: ahora.signedIn, plan: ahora.plan });
     bus.emit('ws:broadcast', { type: 'auth-updated', session: estado.getSesionPublica() });
   }

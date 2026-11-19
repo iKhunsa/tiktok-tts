@@ -614,6 +614,7 @@
       "posicionTexto": "Posição do texto",
       "anchoMensajes": "Largura das mensagens",
       "escala": "Tamanho total",
+      "escalaFactor": "Tamanho total (?)",
       "desplazaX": "Mover na horizontal",
       "desplazaY": "Mover na vertical",
       "capaZ": "Profundidade (eixo Z)",
@@ -2081,6 +2082,7 @@
     "sinResultados": "Nenhum overlay corresponde à sua busca.",
     "usar": "Usar",
     "incluidoPro": "Incluído no Pro",
+    "adquirida": "Adquirida",
     "musicaSonando": "Tocando agora",
     "musicaPedida": "pedida por {user}",
     "todas": "Todas",
@@ -2118,6 +2120,7 @@
       "atajoEscenaTitulo": "Atalho de teclado da cena",
       "atajoEscenaSub": "Ao pressioná-lo, esta cena passa a ser a ativa para o link dinâmico do OBS.",
       "duplicar": "Duplicar",
+      "cubrirLienzo": "Cobrir tela",
       "plegarBiblioteca": "Minimizar ou mostrar a biblioteca",
       "escenas": "Cenas",
       "escena": "Cena {n}",
@@ -2272,10 +2275,6 @@
       "entrada": {
         "titulo": "Alerta de entrada na live",
         "desc": "Dá as boas-vindas a quem entra na live"
-      },
-      "fin-directo": {
-        "titulo": "Alerta de fim da live",
-        "desc": "Aparece quando sua live termina"
       }
     },
     "alerta": {
@@ -2287,8 +2286,7 @@
       "suscripcion": "assinou",
       "renovacion": "renovou a assinatura",
       "compartido": "compartilhou a live",
-      "entrada": "entrou na live",
-      "fin-directo": "A live terminou"
+      "entrada": "entrou na live"
     },
     "irAlOverlay": "Ir para o overlay",
     "mensajePrueba": "Olá! Esta é uma mensagem de teste",

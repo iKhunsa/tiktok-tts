@@ -1,5 +1,6 @@
 'use strict';
 
+const { overlayAccess } = require('../../core/overlay-access');
 const fs = require('fs');
 const path = require('path');
 const express = require('express');
@@ -69,6 +70,9 @@ module.exports = {
     });
 
     app.get('/epik/:id/*', (req, res) => {
+      const acceso = overlayAccess(bus);
+      const skin = `epik:${req.params.id}`;
+      if (acceso.licencias[skin] === 'pro' && !acceso.pro && !acceso.adquiridas.includes(`skin:${skin}`)) return res.status(403).end();
       const ruta = store.rutaArchivo(req.params.id, req.params[0]);
       if (!ruta || !fs.existsSync(ruta)) return res.status(404).end();
       res.set({

@@ -4,6 +4,7 @@ export function leerValorDeEntrada(entrada, campo) {
   if (campo.tipo === 'numero') {
     const numero = parseFloat(entrada.value);
     if (!Number.isFinite(numero)) return campo.def;
+    if (campo.clave === 'escala') return Math.max(campo.min, numero);
     return campo.segundos ? Math.round(numero * 1000) : numero;
   }
   return entrada.value;

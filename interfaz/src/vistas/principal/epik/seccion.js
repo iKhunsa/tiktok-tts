@@ -1,3 +1,4 @@
+import { ajustesOverlay } from '../overlays-catalogo/posicion-escena.js';
 import { t, tErr, aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
 import { appSettings } from '../../../nucleo/estado/ajustes-app.js';
 import { showToast } from '../../../componentes/toast.js';
@@ -52,7 +53,7 @@ async function descargar(epik) {
 // Los overlays de su familia que lo tenian puesto vuelven a su skin de fabrica.
 async function eliminar(epik) {
   const skin = skinDeEpik(epik.id);
-  const enUso = overlaysDe(epik.overlay).filter((overlay) => appSettings.overlays?.[overlay]?.skin === skin);
+  const enUso = overlaysDe(epik.overlay).filter((overlay) => ajustesOverlay(overlay)?.skin === skin);
   const respuesta = await eliminarEpik(epik.id).catch(() => ({ ok: false }));
   if (!respuesta.ok) return showToast(tErr(respuesta, 'errors.epikNoEncontrado'));
   enUso.forEach((overlay) => ponerSkin(overlay, DEFAULTS_OVERLAYS[overlay].skin));

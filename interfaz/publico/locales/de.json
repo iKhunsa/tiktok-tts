@@ -614,6 +614,7 @@
       "posicionTexto": "Textposition",
       "anchoMensajes": "Nachrichtenbreite",
       "escala": "Gesamtgröße",
+      "escalaFactor": "Gesamtgr??e (?)",
       "desplazaX": "Horizontal verschieben",
       "desplazaY": "Vertikal verschieben",
       "capaZ": "Tiefe (Z-Achse)",
@@ -2081,6 +2082,7 @@
     "sinResultados": "Kein Overlay passt zu deiner Suche.",
     "usar": "Verwenden",
     "incluidoPro": "In Pro enthalten",
+    "adquirida": "Erworben",
     "musicaSonando": "Läuft gerade",
     "musicaPedida": "gewünscht von {user}",
     "todas": "Alle",
@@ -2118,6 +2120,7 @@
       "atajoEscenaTitulo": "Tastenkürzel der Szene",
       "atajoEscenaSub": "Beim Drücken wird diese Szene zur aktiven Szene für den dynamischen OBS-Link.",
       "duplicar": "Duplizieren",
+      "cubrirLienzo": "Leinwand ausf?llen",
       "plegarBiblioteca": "Bibliothek ein- oder ausklappen",
       "escenas": "Szenen",
       "escena": "Szene {n}",
@@ -2272,10 +2275,6 @@
       "entrada": {
         "titulo": "Beitritts-Alert",
         "desc": "Begrüßt alle, die dem Stream beitreten"
-      },
-      "fin-directo": {
-        "titulo": "Stream-Ende-Alert",
-        "desc": "Erscheint, wenn dein Stream endet"
       }
     },
     "alerta": {
@@ -2287,8 +2286,7 @@
       "suscripcion": "hat abonniert",
       "renovacion": "hat das Abo verlängert",
       "compartido": "hat den Stream geteilt",
-      "entrada": "ist dem Stream beigetreten",
-      "fin-directo": "Der Stream ist beendet"
+      "entrada": "ist dem Stream beigetreten"
     },
     "irAlOverlay": "Zum Overlay",
     "mensajePrueba": "Hallo! Das ist eine Testnachricht",

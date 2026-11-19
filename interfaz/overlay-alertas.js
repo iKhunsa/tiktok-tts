@@ -22,7 +22,6 @@ function nativo() {
   const vistaPrevia = esVistaPrevia(params);
   aplicarParametrosVisuales(params);
   const alertDur = intParam(params, 'dur', 4000);
-  const userSetColor = !!params.get('color');
   const listas = cargarImagenesRegalo();
 
   function useEmojiFor(el) {
@@ -38,7 +37,6 @@ function nativo() {
     const meta = PLATFORM_META[d.platform] || PLATFORM_META.tiktok;
     const card = document.createElement('div');
     card.className = `alert-card anim-${cfgFijo.animacionEntrada}`;
-    if (!userSetColor) card.style.setProperty('--accent', d.color || meta.color);
     card.innerHTML = `<span class="gift-fallback">💰</span><div class="info"><div class="action-label">${meta.label} · SUPERCHAT</div><div class="gift-name">${escaparHtml(d.user || t('overlayStr.anonymous'))}</div>${d.comment ? `<div class="username">${escaparHtml(d.comment)}</div>` : ''}</div>${d.amount ? `<div class="qty-badge">${escaparHtml(d.amount)}</div>` : ''}`;
     const recurso = recursoDeEvento(d);
     if (recurso) {

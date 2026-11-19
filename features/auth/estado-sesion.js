@@ -11,6 +11,7 @@ const VACIA = Object.freeze({
   user: null,
   plan: 'free',
   entitlements: [],
+  licenciasSkins: {},
   expiresAt: null,
   subscription: null,
   degraded: false,
@@ -39,6 +40,7 @@ function normalizar(s) {
     // Solo se preservan slugs conocidos: un valor inesperado nunca habilita un plan local.
     plan: ['pro', 'sin-promos'].includes(s.plan) ? s.plan : 'free',
     entitlements: Array.isArray(s.entitlements) ? s.entitlements.slice() : [],
+    licenciasSkins: Object.fromEntries(Object.entries(s.licenciasSkins || {}).filter(([id, derecho]) => /^[a-zA-Z0-9:_-]{1,100}$/.test(id) && ['pro', 'adquirida'].includes(derecho))),
     expiresAt: s.expiresAt || null,
     subscription: s.subscription || null,
     degraded: false,
@@ -75,12 +77,14 @@ function marcarDegradado() {
   if (Date.now() - _cachedAt <= GRACIA_MS) {
     _sesion = { ..._sesion, degraded: true };
   } else {
-    _sesion = { ...VACIA, user: _sesion.user, signedIn: true, degraded: true, expiresAt: _sesion.expiresAt };
+    _sesion = { ...VACIA, user: _sesion.user, signedIn: true, degraded: true, expiresAt: _sesion.expiresAt,
+      entitlements: _sesion.entitlements.filter((id) => typeof id === 'string' && id.startsWith('skin:')),
+      licenciasSkins: { ..._sesion.licenciasSkins } };
   }
 }
 
 const getToken = () => _token;
-const getSesion = () => ({ ..._sesion, entitlements: _sesion.entitlements.slice() });
+const getSesion = () => ({ ..._sesion, entitlements: _sesion.entitlements.slice(), licenciasSkins: { ..._sesion.licenciasSkins } });
 
 // Vista sin PII para el broadcast por WS (llega a toda la LAN, sin auth —
 // overlays de OBS). Sin user/subscription/expiresAt.

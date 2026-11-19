@@ -650,6 +650,7 @@
       "posicionTexto": "Posición del texto",
       "anchoMensajes": "Ancho de los mensajes",
       "escala": "Tamaño total",
+      "escalaFactor": "Tama?o total (?)",
       "desplazaX": "Mover en horizontal",
       "desplazaY": "Mover en vertical",
       "capaZ": "Profundidad (eje Z)",
@@ -2081,6 +2082,7 @@
     "sinResultados": "Ningún overlay coincide con tu búsqueda.",
     "usar": "Usar",
     "incluidoPro": "Incluido en Pro",
+    "adquirida": "Adquirida",
     "musicaSonando": "Sonando ahora",
     "musicaPedida": "pedida por {user}",
     "todas": "Todas",
@@ -2118,6 +2120,7 @@
       "atajoEscenaTitulo": "Atajo de teclado de la escena",
       "atajoEscenaSub": "Al presionarlo, esta escena pasa a ser la activa para el enlace dinámico de OBS.",
       "duplicar": "Duplicar",
+      "cubrirLienzo": "Cubrir lienzo",
       "plegarBiblioteca": "Minimizar o mostrar la biblioteca",
       "escenas": "Escenas",
       "escena": "Escena {n}",
@@ -2272,10 +2275,6 @@
       "entrada": {
         "titulo": "Alerta de Entrada al Directo",
         "desc": "Da la bienvenida a quienes entran al directo"
-      },
-      "fin-directo": {
-        "titulo": "Alerta de Fin del Directo",
-        "desc": "Aparece cuando termina tu directo"
       }
     },
     "alerta": {
@@ -2287,8 +2286,7 @@
       "suscripcion": "se suscribió",
       "renovacion": "renovó su suscripción",
       "compartido": "compartió el directo",
-      "entrada": "entró al directo",
-      "fin-directo": "El directo ha terminado"
+      "entrada": "entró al directo"
     },
     "irAlOverlay": "Ir al overlay",
     "mensajePrueba": "¡Hola! Este es un mensaje de prueba",

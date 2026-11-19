@@ -1,3 +1,5 @@
+import { ajustesSegunPlan } from '../../../../compartido/estilo/ajustes-segun-plan.js';
+import { almacenSesion, tieneAccesoPro } from '../../../nucleo/estado/sesion.js';
 import { ESQUEMAS } from '../../../../compartido/estilo/esquemas.js';
 import { construirQuery } from '../../../../compartido/estilo/query.js';
 import { paintRangeFill } from '../../../componentes/campos-formulario.js';
@@ -42,7 +44,8 @@ function pintarBotones(overlay, guardado) {
 
 /** Los ajustes de un efecto solo se ven con el efecto encendido (`dependeDe` en el esquema). */
 export function pintarDependientes(overlay) {
-  const guardado = ajustesOverlay(overlay);
+  const sesion = almacenSesion.getState();
+  const guardado = ajustesSegunPlan(ESQUEMAS[overlay], ajustesOverlay(overlay), tieneAccesoPro(), sesion.entitlements, sesion.licenciasSkins);
   document.querySelectorAll(`[data-cfg-overlay="${overlay}"][data-cfg-depende-de]`).forEach((campo) => {
     campo.hidden = !guardado[campo.dataset.cfgDependeDe];
   });
@@ -59,7 +62,8 @@ export function pintarRestablecer(overlay) {
 
 /** Refleja appSettings.overlays[overlay] en los campos ya montados. */
 export function sincronizarCamposOverlay(overlay) {
-  const guardado = ajustesOverlay(overlay);
+  const sesion = almacenSesion.getState();
+  const guardado = ajustesSegunPlan(ESQUEMAS[overlay], ajustesOverlay(overlay), tieneAccesoPro(), sesion.entitlements, sesion.licenciasSkins);
   for (const campo of ESQUEMAS[overlay]) pintarCampo(overlay, campo, guardado[campo.clave]);
   pintarBotones(overlay, guardado);
   pintarDependientes(overlay);

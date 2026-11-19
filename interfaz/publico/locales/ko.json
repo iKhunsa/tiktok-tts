@@ -614,6 +614,7 @@
       "posicionTexto": "텍스트 위치",
       "anchoMensajes": "메시지 너비",
       "escala": "전체 크기",
+      "escalaFactor": "?? ?? (?)",
       "desplazaX": "가로로 이동",
       "desplazaY": "세로로 이동",
       "capaZ": "깊이 (Z축)",
@@ -2081,6 +2082,7 @@
     "sinResultados": "검색과 일치하는 오버레이가 없습니다.",
     "usar": "사용",
     "incluidoPro": "Pro에 포함",
+    "adquirida": "?? ?",
     "musicaSonando": "지금 재생 중",
     "musicaPedida": "신청자: {user}",
     "todas": "전체",
@@ -2118,6 +2120,7 @@
       "atajoEscenaTitulo": "장면 키보드 단축키",
       "atajoEscenaSub": "누르면 이 장면이 OBS 동적 링크의 활성 장면이 됩니다.",
       "duplicar": "복제",
+      "cubrirLienzo": "??? ???",
       "plegarBiblioteca": "라이브러리 접기/펼치기",
       "escenas": "장면",
       "escena": "장면 {n}",
@@ -2272,10 +2275,6 @@
       "entrada": {
         "titulo": "방송 입장 알림",
         "desc": "방송에 입장한 시청자를 환영"
-      },
-      "fin-directo": {
-        "titulo": "방송 종료 알림",
-        "desc": "방송이 끝나면 표시"
       }
     },
     "alerta": {
@@ -2287,8 +2286,7 @@
       "suscripcion": "님이 구독했습니다",
       "renovacion": "님이 구독을 갱신했습니다",
       "compartido": "님이 방송을 공유했습니다",
-      "entrada": "님이 입장했습니다",
-      "fin-directo": "방송이 종료되었습니다"
+      "entrada": "님이 입장했습니다"
     },
     "irAlOverlay": "오버레이로 이동",
     "mensajePrueba": "안녕하세요! 테스트 메시지입니다",

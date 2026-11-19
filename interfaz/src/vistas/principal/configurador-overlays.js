@@ -3,23 +3,23 @@ import { t } from '../../nucleo/i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
 import { construirQuery } from '../../../compartido/estilo/query.js';
 import { ajustesSegunPlan } from '../../../compartido/estilo/ajustes-segun-plan.js';
-import { tieneAccesoPro } from '../../nucleo/estado/sesion.js';
+import { almacenSesion, tieneAccesoPro } from '../../nucleo/estado/sesion.js';
 import { ESQUEMAS, DEFAULTS_OVERLAYS, CHATS_POR_PLATAFORMA } from '../../../compartido/estilo/esquemas.js';
 import { trackUi } from '../../nucleo/telemetria-ui.js';
 import { urlConVistaPrevia } from '../../../compartido/vista-previa.js';
 import { EVENTOS_ALERTA } from '../../../compartido/eventos-alerta.js';
 import { esCapaGif, urlCapaGif } from '../../../compartido/estilo/campos-gif.js';
 import { queryEpik } from './epik/estado.js';
-import { ajustesOverlay } from './overlays-catalogo/posicion-escena.js';
+import { ajustesOverlay, editandoEscena } from './overlays-catalogo/posicion-escena.js';
 
-export function buildOverlayUrl(type) {
-  if (esCapaGif(type)) return urlCapaGif(location.origin, appSettings.overlays[type]);
+export function buildOverlayUrl(type, ajustes = appSettings.overlays[type]) {
+  if (esCapaGif(type)) return urlCapaGif(location.origin, ajustes);
   // Lo guardado puede traer una skin premium (editor de canvas, plan vencido...): sin Pro no sale hacia OBS ni la
   // vista previa. Un solo punto de salida para todo lo que se aplica; ver compartido/estilo/ajustes-segun-plan.js.
-  // ajustesOverlay suma encima la posicion/tamano/profundidad propios de la escena activa, si el editor esta abierto.
-  const aplicados = ajustesSegunPlan(ESQUEMAS[type], ajustesOverlay(type), tieneAccesoPro());
+  // La configuracion es explicita: sin argumento usa solo el catalogo, nunca la escena abierta.
+  const aplicados = ajustesSegunPlan(ESQUEMAS[type], ajustes, tieneAccesoPro(), almacenSesion.getState().entitlements, almacenSesion.getState().licenciasSkins);
   // Con una skin .epik se suman sus ajustes propios (x.<clave>).
-  const query = [construirQuery(ESQUEMAS[type], aplicados), queryEpik(type)].filter(Boolean).join('&');
+  const query = [construirQuery(ESQUEMAS[type], aplicados), queryEpik(type, aplicados)].filter(Boolean).join('&');
   // Las alertas de evento comparten pagina: ?evento= elige cual es.
   if (EVENTOS_ALERTA[type]) return `${location.origin}/overlay-evento.html?evento=${type}${query ? `&${query}` : ''}`;
   if (CHATS_POR_PLATAFORMA[type]) return `${location.origin}/overlay-chat.html?platforms=${CHATS_POR_PLATAFORMA[type]}${query ? `&${query}` : ''}`;
@@ -66,12 +66,14 @@ export function alCerrarTarjetaOverlay(tarjeta) {
 }
 
 export function updateOverlayUrl(type) {
-  const url = buildOverlayUrl(type);
+  const url = buildOverlayUrl(type, appSettings.overlays[type] || ajustesOverlay(type));
   const urlEl = document.getElementById('cfg-url-' + type);
   const openEl = document.getElementById('cfg-open-' + type);
   if (urlEl) urlEl.textContent = url;
   if (openEl) openEl.href = url;
-  actualizarVistaPrevia(type, url);
+  const vista = new URL(buildOverlayUrl(type, ajustesOverlay(type)));
+  if (editandoEscena()) vista.searchParams.set('unificado', '1');
+  actualizarVistaPrevia(type, vista.href);
 }
 
 export function onCfgChange(type, field, value) {
@@ -82,7 +84,7 @@ export function onCfgChange(type, field, value) {
 
 export function copyCfgUrl(type) {
   navigator.clipboard
-    .writeText(buildOverlayUrl(type))
+    .writeText(buildOverlayUrl(type, appSettings.overlays[type] || ajustesOverlay(type)))
     .then(() => { trackUi('ui:overlay-copied', type); showToast(t('toast.urlCopied')); })
     .catch(() => showToast(t('toast.copyError')));
 }

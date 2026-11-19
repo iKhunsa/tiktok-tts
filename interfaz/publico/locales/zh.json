@@ -614,6 +614,7 @@
       "posicionTexto": "文字位置",
       "anchoMensajes": "消息宽度",
       "escala": "整体大小",
+      "escalaFactor": "???? (?)",
       "desplazaX": "水平移动",
       "desplazaY": "垂直移动",
       "capaZ": "深度（Z 轴）",
@@ -2081,6 +2082,7 @@
     "sinResultados": "没有符合搜索条件的叠加层。",
     "usar": "使用",
     "incluidoPro": "Pro 已包含",
+    "adquirida": "???",
     "musicaSonando": "正在播放",
     "musicaPedida": "点歌人：{user}",
     "todas": "全部",
@@ -2118,6 +2120,7 @@
       "atajoEscenaTitulo": "场景键盘快捷键",
       "atajoEscenaSub": "按下后，此场景将成为 OBS 动态链接的激活场景。",
       "duplicar": "复制",
+      "cubrirLienzo": "????",
       "plegarBiblioteca": "收起或展开素材库",
       "escenas": "场景",
       "escena": "场景 {n}",
@@ -2272,10 +2275,6 @@
       "entrada": {
         "titulo": "进入直播提醒",
         "desc": "欢迎进入直播间的观众"
-      },
-      "fin-directo": {
-        "titulo": "直播结束提醒",
-        "desc": "直播结束时显示"
       }
     },
     "alerta": {
@@ -2287,8 +2286,7 @@
       "suscripcion": "订阅了",
       "renovacion": "续订了",
       "compartido": "分享了直播",
-      "entrada": "进入了直播间",
-      "fin-directo": "直播已结束"
+      "entrada": "进入了直播间"
     },
     "irAlOverlay": "前往叠加层",
     "mensajePrueba": "你好！这是一条测试消息",

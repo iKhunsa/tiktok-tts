@@ -614,6 +614,7 @@
       "posicionTexto": "Position du texte",
       "anchoMensajes": "Largeur des messages",
       "escala": "Taille totale",
+      "escalaFactor": "Taille totale (?)",
       "desplazaX": "Déplacer horizontalement",
       "desplazaY": "Déplacer verticalement",
       "capaZ": "Profondeur (axe Z)",
@@ -2081,6 +2082,7 @@
     "sinResultados": "Aucun overlay ne correspond à votre recherche.",
     "usar": "Utiliser",
     "incluidoPro": "Inclus dans Pro",
+    "adquirida": "Acquise",
     "musicaSonando": "En cours de lecture",
     "musicaPedida": "demandé par {user}",
     "todas": "Toutes",
@@ -2118,6 +2120,7 @@
       "atajoEscenaTitulo": "Raccourci clavier de la scène",
       "atajoEscenaSub": "En l'appuyant, cette scène devient active pour le lien dynamique d'OBS.",
       "duplicar": "Dupliquer",
+      "cubrirLienzo": "Couvrir le canevas",
       "plegarBiblioteca": "Réduire ou afficher la bibliothèque",
       "escenas": "Scènes",
       "escena": "Scène {n}",
@@ -2272,10 +2275,6 @@
       "entrada": {
         "titulo": "Alerte arrivée sur le live",
         "desc": "Accueille les personnes qui rejoignent le live"
-      },
-      "fin-directo": {
-        "titulo": "Alerte fin du live",
-        "desc": "S'affiche à la fin de votre live"
       }
     },
     "alerta": {
@@ -2287,8 +2286,7 @@
       "suscripcion": "s'est abonné",
       "renovacion": "a renouvelé son abonnement",
       "compartido": "a partagé le live",
-      "entrada": "a rejoint le live",
-      "fin-directo": "Le live est terminé"
+      "entrada": "a rejoint le live"
     },
     "irAlOverlay": "Aller à l’overlay",
     "mensajePrueba": "Salut ! Ceci est un message de test",

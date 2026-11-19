@@ -5,7 +5,7 @@ import { camposMusica } from './campos-musica.js';
 import { valoresPorDefecto } from './query.js';
 import { EVENTOS_ALERTA } from '../eventos-alerta.js';
 
-const colorAcento = { clave: 'color', param: 'color', tipo: 'color', def: '#FFBB00', etiqueta: 'colorAcento', grupo: 'base' };
+const colorAcento = { clave: 'color', param: 'color', tipo: 'color', def: '#F0213A', etiqueta: 'colorAcento', grupo: 'base' };
 const opacidadFondo = (def) => ({ clave: 'bg', param: 'bg', tipo: 'numero', def, min: 0.3, max: 1, step: 0.05, ui: 'rango', porcentaje: true, etiqueta: 'opacidadFondo', grupo: 'base' });
 // Las alertas entran desde arriba y salen hacia arriba, como hacian antes de poder elegirlo.
 const ANIMACION_ALERTA = camposAnimacion({ entrada: 'slide-down', salida: 'sale-arriba', msEntrada: 350, msSalida: 300 });
@@ -68,7 +68,7 @@ const BASE = {
   likes: camposRanking({ colorValor: '#ffffff' }),
   donadores: camposRanking({ colorValor: '#ffd23f' }),
   viewers: [
-    { ...colorAcento, def: '#F0213A' },
+    colorAcento,
     opacidadFondo(0.8),
     ...camposOverlayFijo({ texto: false }),
   ],
@@ -97,11 +97,11 @@ const BASE = {
     ...camposOverlayFijo({ texto: true }),
   ],
   'alertas-social': [campoImagenAlerta('icono'), campoPosicionTexto(), campoGifAlerta(), ...camposGifAlertaMedida(), ...camposSonidoAlerta(), colorAcento, opacidadFondo(0.9), ...camposOverlayFijo({ texto: true }), ...ANIMACION_ALERTA],
-  'contador-likes': [{ ...colorAcento, def: '#FE2C55' }, opacidadFondo(0.8), ...camposOverlayFijo({ texto: false })],
+  'contador-likes': [colorAcento, opacidadFondo(0.8), ...camposOverlayFijo({ texto: false })],
   teclado: [
     { clave: 'tema', param: 'tema', tipo: 'opcion', def: 'oscuro', opciones: ['oscuro', 'claro'], opcionesTraducidas: ['oscuro', 'claro'], ui: 'botones', grupo: 'base' },
     { clave: 'posicionMouse', param: 'mp', tipo: 'opcion', def: 'derecha', opciones: ['derecha', 'izquierda'], opcionesTraducidas: ['derecha', 'izquierda'], ui: 'botones', grupo: 'base' },
-    { ...colorAcento, def: '#38bdf8' },
+    colorAcento,
     opacidadFondo(0.84),
     ...camposOverlayFijo({ texto: false }),
   ],

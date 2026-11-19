@@ -1,3 +1,4 @@
+import { campoEscala } from './campos-tipografia.js';
 import { camposMover } from './campos-alineacion.js';
 import { construirQuery, valoresPorDefecto } from './query.js';
 
@@ -7,7 +8,7 @@ import { construirQuery, valoresPorDefecto } from './query.js';
  * Tamano es una fraccion del ancho de la fuente de OBS (1 = 20 %), asi se ve igual en cualquier resolucion.
  */
 export const ESQUEMA_GIF = [
-  { clave: 'escala', param: 'zoom', tipo: 'numero', def: 1, min: 0.1, max: 2, step: 0.05, ui: 'rango', porcentaje: true, grupo: 'base' },
+  campoEscala(),
   { clave: 'opacidad', param: 'op', tipo: 'numero', def: 1, min: 0.1, max: 1, step: 0.05, ui: 'rango', porcentaje: true, etiqueta: 'opacidadFondo', grupo: 'base' },
   ...camposMover(),
 ];

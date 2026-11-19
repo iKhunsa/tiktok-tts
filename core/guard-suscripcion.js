@@ -12,6 +12,8 @@ const ABIERTAS = new Set([
   'GET /api/config', // bootstrap del cliente + overlays
   'GET /api/status', // health
   'POST /api/logs/client', // sink de errores (app + overlays)
+  'GET /api/overlays/acceso', // politica de reproduccion sin datos privados
+  'GET /api/overlays/escena', // aplica su propio control Pro
   'GET /api/overlay-stats', // overlays de OBS
   'GET /api/gifts-list', // overlay de alertas
   'GET /api/mcp/info', // panel MCP (auth propia via MCP_TOKEN)

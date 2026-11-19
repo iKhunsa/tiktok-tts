@@ -614,6 +614,7 @@
       "posicionTexto": "テキストの位置",
       "anchoMensajes": "メッセージの幅",
       "escala": "全体のサイズ",
+      "escalaFactor": "????? (?)",
       "desplazaX": "水平に移動",
       "desplazaY": "垂直に移動",
       "capaZ": "奥行き（Z軸）",
@@ -2081,6 +2082,7 @@
     "sinResultados": "検索に一致するオーバーレイはありません。",
     "usar": "使う",
     "incluidoPro": "Pro に含まれます",
+    "adquirida": "????",
     "musicaSonando": "再生中",
     "musicaPedida": "リクエスト：{user}",
     "todas": "すべて",
@@ -2118,6 +2120,7 @@
       "atajoEscenaTitulo": "シーンのキーボードショートカット",
       "atajoEscenaSub": "押すと、このシーンがOBSのダイナミックリンクのアクティブなシーンになります。",
       "duplicar": "複製",
+      "cubrirLienzo": "?????????",
       "plegarBiblioteca": "ライブラリを最小化／表示",
       "escenas": "シーン",
       "escena": "シーン {n}",
@@ -2272,10 +2275,6 @@
       "entrada": {
         "titulo": "入室アラート",
         "desc": "配信に入室した人を歓迎"
-      },
-      "fin-directo": {
-        "titulo": "配信終了アラート",
-        "desc": "配信が終了すると表示"
       }
     },
     "alerta": {
@@ -2287,8 +2286,7 @@
       "suscripcion": "がサブスクしました",
       "renovacion": "がサブスクを更新しました",
       "compartido": "が配信をシェアしました",
-      "entrada": "が入室しました",
-      "fin-directo": "配信が終了しました"
+      "entrada": "が入室しました"
     },
     "irAlOverlay": "オーバーレイへ移動",
     "mensajePrueba": "こんにちは！これはテストメッセージです",

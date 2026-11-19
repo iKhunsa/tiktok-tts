@@ -1,5 +1,6 @@
+import { ajustesOverlay } from './posicion-escena.js';
 import { ESQUEMAS } from '../../../../compartido/estilo/esquemas.js';
-import { appSettings, saveSettings } from '../../../nucleo/estado/ajustes-app.js';
+import { saveSettings } from '../../../nucleo/estado/ajustes-app.js';
 import { aplicarTraducciones, t } from '../../../nucleo/i18n/i18n.js';
 import { paintRangeFill } from '../../../componentes/campos-formulario.js';
 import { updateOverlayUrl } from '../configurador-overlays.js';
@@ -28,7 +29,7 @@ const TOLERANCIA_DEFECTO = 40;
  */
 export function crearSeccionGifAlerta(id) {
   if (!esAlerta(id)) return null;
-  const cfg = () => appSettings.overlays[id];
+  const cfg = () => ajustesOverlay(id);
   // `ovl-inspector` da a la seccion el mismo estilo de acordeones y campos que el inspector de cada overlay.
   const seccion = elemento('section', 'ovl-inspector edi-gif-alerta');
   const grupo = elemento('details', 'cfg-grupo');

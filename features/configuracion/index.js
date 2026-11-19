@@ -8,7 +8,7 @@ const { getLogs } = require('./routes/get-logs');
 const { postClientLog } = require('./routes/post-client-log');
 const { getSessionLogFile } = require('./routes/get-session-log-file');
 const { getLogsDownloadAll } = require('./routes/get-logs-download-all');
-const { getAjustesUi, putAjustesUi } = require('./routes/ajustes-ui');
+const { getAjustesUi, putAjustesUi, getEscenaOverlay } = require('./routes/ajustes-ui');
 const { getSafeConfig } = require('./safe-config');
 const mcpRegistry = require('../../core/contracts/mcp-registry');
 
@@ -73,6 +73,7 @@ module.exports = {
 
     app.get('/api/config', getConfig(configStore));
     app.patch('/api/config', patchConfig(configStore, bus, logger));
+    app.get('/api/overlays/escena', getEscenaOverlay({ bus }));
     app.get('/api/ajustes-ui', getAjustesUi({ logger }));
     app.put('/api/ajustes-ui', putAjustesUi({ logger }));
     app.get('/api/status', getStatus(configStore, { wss, bus }));

@@ -24,7 +24,6 @@ function nativo() {
   const alerta = EVENTOS_ALERTA[idAlerta];
   const cfgFijo = alerta ? iniciarOverlayFijo(idAlerta, 440, 130) : null;
   const duracion = intParam(params, 'dur', alerta?.duracion || 4000);
-  const colorPropio = !!params.get('color');
 
   function crearElemento(clase, texto) {
     const elemento = document.createElement('div');
@@ -53,7 +52,6 @@ function nativo() {
     const meta = PLATFORM_META[evento.platform];
     const tarjeta = crearElemento('alert-card');
     tarjeta.classList.add(`anim-${cfgFijo.animacionEntrada}`);
-    if (meta && !colorPropio) tarjeta.style.setProperty('--accent', evento.color || meta.color);
 
     const titulo = t(`overlayCat.ov.${idAlerta}.titulo`);
     const accion = t(`overlayCat.alerta.${idAlerta}`);

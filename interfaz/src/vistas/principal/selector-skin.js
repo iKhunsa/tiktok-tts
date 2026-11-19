@@ -36,8 +36,9 @@ const crearAviso = (claveTexto, claveBoton, accion) => `
   </div>`;
 
 function contenidoFavoritas(overlay, premium) {
-  if (!tieneAcceso()) return crearAviso('overlayCfg.favoritasPro', 'overlayCfg.favoritasComprar', 'comprar');
-  const favoritas = appSettings.skinsFavoritas.filter((skin) => premium.includes(skin));
+  const disponibles = premium.filter((skin) => tieneAcceso(skin, overlay));
+  if (!disponibles.length) return crearAviso('overlayCfg.favoritasPro', 'overlayCfg.favoritasComprar', 'comprar');
+  const favoritas = appSettings.skinsFavoritas.filter((skin) => disponibles.includes(skin));
   if (!favoritas.length) return crearAviso('overlayCfg.favoritasVacio', 'overlayCfg.favoritasExplorar', 'explorar');
   return favoritas.map((skin) => crearOpcion(overlay, skin)).join('');
 }
@@ -85,7 +86,7 @@ export function crearSelectorSkin(overlay) {
 
   const pintarEpik = () => {
     pagina.querySelectorAll('[data-epik]').forEach((boton) => boton.remove());
-    pagina.append(...favoritosDe(overlay).map((epik) => crearOpcionEpik(overlay, epik)));
+    pagina.append(...favoritosDe(overlay).filter((epik) => tieneAcceso(skinDeEpik(epik.id), overlay)).map((epik) => crearOpcionEpik(overlay, epik)));
   }; // la activa la marca sincronizarCamposOverlay al abrir el selector
   alCambiarEpiks(pintarEpik);
   pintarEpik();

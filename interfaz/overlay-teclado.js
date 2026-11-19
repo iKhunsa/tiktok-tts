@@ -1,3 +1,4 @@
+import { iniciarReproduccionOverlay } from './compartido/acceso-reproduccion.js';
 import { cargarLocaleOverlay, aplicarI18nOverlay } from './compartido/i18n-overlay.js';
 import { leerParametros, aplicarParametrosVisuales, strParam } from './compartido/parametros.js';
 import { iniciarAccesibilidadOverlay } from './compartido/accesibilidad.js';
@@ -169,4 +170,4 @@ async function nativo() {
   cargarLocaleOverlay().then(() => aplicarI18nOverlay());
 }
 
-nativo();
+iniciarReproduccionOverlay(nativo);

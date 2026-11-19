@@ -1,5 +1,5 @@
 import { appSettings, saveSettings } from '../../../nucleo/estado/ajustes-app.js';
-import { ESQUEMAS } from '../../../../compartido/estilo/esquemas.js';
+import { ESQUEMAS, DEFAULTS_OVERLAYS } from '../../../../compartido/estilo/esquemas.js';
 import { esCapaGif } from '../../../../compartido/estilo/campos-gif.js';
 import { prepararCapaGif } from './gif-capas.js';
 import { apiGifs } from '../gif-buscador/api.js';
@@ -15,8 +15,8 @@ const VERSION = 1;
 
 const slug = (texto) => (texto || '').normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'escena';
 
-/** Ajuste completo de una capa en una escena concreta (no necesariamente la activa): global + override de esa escena. */
-const ajustesDeCapa = (escenaObj, id) => ({ ...appSettings.overlays[id], ...(escenaObj.ajustes?.[id] ?? {}) });
+/** Ajuste completo de la capa; nunca lee la configuracion del catalogo. */
+const ajustesDeCapa = (escenaObj, id) => (escenaObj.ajustes?.[id] || appSettings.capasGif[id] || DEFAULTS_OVERLAYS[id]);
 
 async function archivoComoBase64(blob) {
   const bytes = new Uint8Array(await blob.arrayBuffer());
@@ -109,7 +109,7 @@ async function remaparCapaGif(capa) {
   const idNuevo = esMedia ? `gif:m${item.id}` : `gif:${item.id}`;
   const srcNuevo = new URL(item.src, location.origin).href;
   prepararCapaGif(idNuevo, srcNuevo);
-  Object.assign(appSettings.overlays[idNuevo], capa.ajustes, { src: srcNuevo });
+  Object.assign(appSettings.capasGif[idNuevo], capa.ajustes, { src: srcNuevo });
   return idNuevo;
 }
 
@@ -130,9 +130,9 @@ async function importarEscenaDatos(escenaDatos) {
       let id = capa.id;
       if (esCapaGif(id)) {
         id = await remaparCapaGif(capa);
-        ajustes[id] = appSettings.overlays[id];
+        ajustes[id] = appSettings.capasGif[id];
       } else if (ESQUEMAS[id]) {
-        ajustes[id] = capa.ajustes;
+        ajustes[id] = { ...globalThis.structuredClone(DEFAULTS_OVERLAYS[id]), ...capa.ajustes };
       } else {
         omitidas += 1;
         continue;

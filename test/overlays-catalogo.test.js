@@ -54,7 +54,7 @@ test('cada evento dispara solo la alerta que le toca', async () => {
   assert.deepEqual(quienCoincide({ type: 'gift', kind: 'sub', renovacion: true }), ['renovacion']);
   assert.deepEqual(quienCoincide({ type: 'superchat', sticker: null }), ['superchat']);
   assert.deepEqual(quienCoincide({ type: 'superchat', sticker: 'https://x/y.png' }), ['supersticker']);
-  assert.deepEqual(quienCoincide({ type: 'stream-end' }), ['fin-directo']);
+  assert.deepEqual(quienCoincide({ type: 'stream-end' }), []);
   assert.deepEqual(quienCoincide({ type: 'gift', giftName: 'Rosa' }), [], 'un regalo de TikTok no es una alerta de evento');
   for (const [id, alerta] of Object.entries(EVENTOS_ALERTA)) {
     assert.ok(alerta.coincide(alerta.muestra), `la muestra de ${id} no dispara su propia alerta`);

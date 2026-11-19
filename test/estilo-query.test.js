@@ -86,12 +86,12 @@ test('ningun esquema repite un param ni una clave', async () => {
   }
 });
 
-test('DEFAULTS_OVERLAYS conserva los defaults historicos de los overlays simples', async () => {
+test('DEFAULTS_OVERLAYS conserva duracion y opacidad de los overlays simples', async () => {
   const { DEFAULTS_OVERLAYS } = await cargar('esquemas.js');
 
   assert.equal(DEFAULTS_OVERLAYS.alertas.dur, 4000);
   assert.equal(DEFAULTS_OVERLAYS.alertas.bg, 0.9);
-  assert.equal(DEFAULTS_OVERLAYS['alertas-social'].color, '#FFBB00');
+  assert.equal(DEFAULTS_OVERLAYS['alertas-social'].color, '#F0213A');
   assert.equal(DEFAULTS_OVERLAYS['alertas-social'].bg, 0.9);
   // Lo nuevo no cambia las URLs ya pegadas en OBS: con los defaults no se escribe ningun parametro.
   assert.equal(DEFAULTS_OVERLAYS.alertas.escala, 1);
@@ -175,5 +175,16 @@ test('todos los overlays con vista previa tienen 5 skins gratis y las de pago', 
     assert.ok(skin, `${id} sin skin`);
     assert.equal(skin.libres.length, 5, id);
     assert.ok(skin.premium.length && skin.premium.every((s) => skin.opciones.includes(s)), id);
+  }
+});
+
+
+test('todos los acentos de overlay parten del rojo de marca y respetan colores personalizados', async () => {
+  const { ESQUEMAS } = await cargar('esquemas.js');
+  const { leerConfig } = await cargar('query.js');
+  for (const [tipo, esquema] of Object.entries(ESQUEMAS)) {
+    if (!esquema.some((campo) => campo.clave === 'color')) continue;
+    assert.equal(leerConfig(esquema, new URLSearchParams()).color, '#F0213A', tipo);
+    assert.equal(leerConfig(esquema, new URLSearchParams('color=9146ff')).color, '#9146ff', tipo);
   }
 });

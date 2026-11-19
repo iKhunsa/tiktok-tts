@@ -1,12 +1,7 @@
-/*
- * Paleta compartida por los 7 overlays. El :root de cada overlay
- * seguia definiendo --accent/--bg-alpha por separado con el mismo valor
- * repetido (#FFBB00) en 7 archivos. Ahora ese default vive una sola vez
- * aca (y en defaults-overlays.js para el JS); cada overlay puede seguir
- * pisando --accent/--bg-alpha via querystring con parametros.js.
- */
+/* Acento de marca compartido; cada overlay puede personalizarlo por URL. */
 :root {
-  --accent: #FFBB00;
+  --brand: #F0213A;
+  --accent: var(--brand);
   --bg-alpha: 0.80;
 }
 

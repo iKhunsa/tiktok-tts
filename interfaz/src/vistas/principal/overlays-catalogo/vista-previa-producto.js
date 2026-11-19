@@ -15,7 +15,7 @@ function urlEjemplo({ skin, overlay }) {
   const esquema = ESQUEMAS[overlay];
   const presets = esquema.find(({ clave }) => clave === 'skin')?.presets;
   const query = construirQuery(esquema, { skin, posicionH: 'centro', posicionV: 'centro', ...(presets?.[skin] ?? presets?.base), ...(overlay === 'musica' ? DEMO_MUSICA : {}) });
-  return urlConVistaPrevia(`${location.origin}/overlay-${overlay}.html?${query}${overlay === 'musica' ? '&demo=1' : ''}`);
+  return urlConVistaPrevia(`${location.origin}/overlay-${overlay}.html?${query}&demo=1`);
 }
 
 const VOLUMEN_DEMO = 0.5;
@@ -61,7 +61,7 @@ function crearReproductor(iframe) {
 }
 
 /** Popup al estilo de la tienda de Discord: ficha a la izquierda, overlay en vivo a la derecha. */
-export function abrirVistaPrevia(producto, { claveAccion, alAccionar, alIrAOverlay }) {
+export function abrirVistaPrevia(producto, { claveAccion, clavePrecio, alAccionar, alIrAOverlay }) {
   const dialogo = document.createElement('dialog');
   dialogo.className = 'ovl-vista';
   dialogo.setAttribute('aria-labelledby', 'ovlVistaNombre');
@@ -70,7 +70,7 @@ export function abrirVistaPrevia(producto, { claveAccion, alAccionar, alIrAOverl
       <div class="ovl-vista-arte">${arteSkin(producto.skin)}</div>
       <h2 id="ovlVistaNombre" data-i18n="overlayCfg.skins.${producto.skin}"></h2>
       <p class="ovl-vista-tipo" data-i18n="${producto.seccion}"></p>
-      <p class="ovl-vista-precio" data-i18n="overlayCat.incluidoPro"></p>
+      <p class="ovl-vista-precio" data-i18n="${clavePrecio}"></p>
       <div class="ovl-vista-botones">
         <button class="ovl-vista-accion" type="button" data-i18n="${claveAccion}"></button>
         <button class="ovl-vista-atajo" type="button" data-i18n-aria-label="overlayCat.irAlOverlay" data-i18n-title="overlayCat.irAlOverlay"><img src="icons/layers.svg" alt=""></button>

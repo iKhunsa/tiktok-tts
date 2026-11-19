@@ -14,3 +14,6 @@ export function urlConVistaPrevia(url) {
 
 // Sin datos reales y en vista previa se usa la muestra; con datos reales, siempre los reales.
 export const conMuestra = (entradas, muestra, vistaPrevia) => (entradas.length || !vistaPrevia ? entradas : muestra);
+
+/** Demo de tienda: solo muestras, nunca datos del directo. */
+export const esDemoTienda = (params) => esVistaPrevia(params) && params.get('demo') === '1';

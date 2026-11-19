@@ -614,6 +614,7 @@
       "posicionTexto": "Text position",
       "anchoMensajes": "Message width",
       "escala": "Total size",
+      "escalaFactor": "Overall size (?)",
       "desplazaX": "Move horizontally",
       "desplazaY": "Move vertically",
       "capaZ": "Depth (Z axis)",
@@ -2081,6 +2082,7 @@
     "sinResultados": "No overlays match your search.",
     "usar": "Use",
     "incluidoPro": "Included in Pro",
+    "adquirida": "Owned",
     "musicaSonando": "Now playing",
     "musicaPedida": "requested by {user}",
     "todas": "All",
@@ -2118,6 +2120,7 @@
       "atajoEscenaTitulo": "Scene keyboard shortcut",
       "atajoEscenaSub": "Pressing it makes this scene the active one for OBS's dynamic link.",
       "duplicar": "Duplicate",
+      "cubrirLienzo": "Cover canvas",
       "plegarBiblioteca": "Minimize or show the library",
       "escenas": "Scenes",
       "escena": "Scene {n}",
@@ -2272,10 +2275,6 @@
       "entrada": {
         "titulo": "Stream Join Alert",
         "desc": "Welcomes people joining your stream"
-      },
-      "fin-directo": {
-        "titulo": "Stream End Alert",
-        "desc": "Shows when your stream ends"
       }
     },
     "alerta": {
@@ -2287,8 +2286,7 @@
       "suscripcion": "subscribed",
       "renovacion": "renewed their subscription",
       "compartido": "shared the stream",
-      "entrada": "joined the stream",
-      "fin-directo": "The stream has ended"
+      "entrada": "joined the stream"
     },
     "irAlOverlay": "Go to overlay",
     "mensajePrueba": "Hi! This is a test message",

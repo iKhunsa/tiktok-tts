@@ -1,4 +1,4 @@
-import { DEFAULTS_OVERLAYS, ESQUEMAS } from '../../../../compartido/estilo/esquemas.js';
+import { ESQUEMAS } from '../../../../compartido/estilo/esquemas.js';
 import { DEFAULTS_GIF, ESQUEMA_GIF, esCapaGif } from '../../../../compartido/estilo/campos-gif.js';
 import { appSettings } from '../../../nucleo/estado/ajustes-app.js';
 import { aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
@@ -7,7 +7,7 @@ import { crearBotonRestablecer, montarCamposOverlay } from '../campos-overlay/mo
 import { sincronizarCamposOverlay } from '../campos-overlay/sincronizar.js';
 
 // Una capa GIF es un overlay mas para el editor de canvas (overlay-gif.html): tiene su esquema, sus ajustes en
-// appSettings.overlays['gif:<id>'] y una tarjeta con inspector. La tarjeta es virtual (oculta, no esta en el
+// appSettings.capasGif['gif:<id>'] y una tarjeta con inspector. La tarjeta es virtual (oculta, no esta en el
 // catalogo de 25): el editor la usa como a las demas para sacar el titulo, la URL de la vista y el inspector.
 
 export const idCapaGif = (idGif) => `gif:${idGif}`;
@@ -58,12 +58,11 @@ function crearTarjeta(id) {
  */
 export function prepararCapaGif(id, src) {
   if (!esCapaGif(id)) return false;
-  const guardado = appSettings.overlays[id];
+  const guardado = appSettings.capasGif[id];
   if (!guardado && !src) return false;
-  appSettings.overlays[id] = { ...JSON.parse(JSON.stringify(DEFAULTS_GIF)), ...guardado, ...(src ? { src } : {}) };
+  appSettings.capasGif[id] = { ...JSON.parse(JSON.stringify(DEFAULTS_GIF)), ...guardado, ...(src ? { src } : {}) };
   // El esquema y los defaults de cada capa son el de GIF: asi el editor, los campos y el restablecer las tratan como a cualquier overlay.
   ESQUEMAS[id] = ESQUEMA_GIF;
-  DEFAULTS_OVERLAYS[id] = { ...DEFAULTS_GIF, src: appSettings.overlays[id].src };
   if (!document.querySelector(`#ovlTarjetas [data-ovl-id="${id}"]`)) {
     const tarjeta = crearTarjeta(id);
     montarCamposOverlay(id);
@@ -76,7 +75,7 @@ export function prepararCapaGif(id, src) {
 
 // Restablecer de fabrica rehace los ajustes: los campos de la capa (que applySettings no repinta) se ponen al dia aqui.
 document.addEventListener('overlay:restablecido', ({ detail: { type } }) => {
-  if (!esCapaGif(type) || !appSettings.overlays[type]) return;
+  if (!esCapaGif(type) || !appSettings.capasGif[type]) return;
   sincronizarCamposOverlay(type);
   updateOverlayUrl(type);
 });

@@ -10,12 +10,14 @@ import { alCerrarGif, alMostrarGif, alOcultarGif, iniciarGifBuscador } from '../
 import { alCerrarSonidos, alMostrarSonidos, alOcultarSonidos, iniciarSonidosBuscador } from '../sonidos-buscador/index.js';
 import { moverZ, ordenZ, ponerZ } from './editor-profundidad.js';
 import { hacerReordenable } from './reordenar-lista.js';
+import { escalaParaCubrir } from '../../../../compartido/estilo/escala-para-cubrir.js';
 import { iniciarTiradores } from './editor-redimensionar.js';
 import { iniciarEditorGifs } from './editor-gifs.js';
 import { crearSeccionGifAlerta } from './gif-alerta-panel.js';
 import { crearSeccionSonidoAlerta } from './sonido-alerta-panel.js';
 import { DEFAULTS_GIF, esCapaGif } from '../../../../compartido/estilo/campos-gif.js';
 import { idCapaGif, prepararCapaGif } from './gif-capas.js';
+import { montarSeccionEpik } from '../epik/seccion.js';
 import { crearSelectorSkin } from '../selector-skin.js';
 import { showToast } from '../../../componentes/toast.js';
 import { abrirPopupPro } from '../../../componentes/popup-pro.js';
@@ -88,11 +90,12 @@ function agregar(id) {
   // (duplicarCapaGif lo hace antes de llamar aca): arranca de fabrica, nunca hereda el ajuste global ni el
   // de otra escena. Si ya estaba en la lista (se esta cargando una escena guardada) no se toca nada.
   if (!escena().ids.includes(id) && !escena().ajustes?.[id]) {
-    escena().ajustes = { ...escena().ajustes, [id]: JSON.parse(JSON.stringify(DEFAULTS_OVERLAYS[id])) };
+    escena().ajustes = { ...escena().ajustes, [id]: JSON.parse(JSON.stringify(esCapaGif(id) ? { ...DEFAULTS_GIF, ...appSettings.capasGif[id] } : DEFAULTS_OVERLAYS[id])) };
   }
   // Los ajustes de esta capa pueden diferir entre escenas (o venir de la tarjeta suelta, fuera de cualquier
   // escena): sin esto, la URL cacheada en el DOM es la del ultimo contexto que la toco, no la de ESTA escena.
   updateOverlayUrl(id);
+  montarSeccionEpik(id);
   sincronizarCamposOverlay(id);
   const capa = document.createElement('div');
   capa.className = 'edi-capa';
@@ -129,6 +132,7 @@ function agregar(id) {
 // Un overlay es lo que se pinta sobre el fondo transparente de su iframe: se ignora la raiz y los contenedores a pantalla completa.
 function esContenido(elemento, ventana) {
   if (!elemento || elemento === elemento.ownerDocument.documentElement || elemento === elemento.ownerDocument.body) return false;
+  if (elemento.matches('.medio')) return true;
   const { width, height } = elemento.getBoundingClientRect();
   return width < ventana.innerWidth * 0.95 || height < ventana.innerHeight * 0.95;
 }
@@ -338,6 +342,7 @@ function pegarPropiedades(id) {
   for (const { clave } of camposPegables(id)) fijarValorOverlay(id, clave, window.structuredClone(propiedadesCopiadas.valores[clave]));
   saveSettings();
   updateOverlayUrl(id);
+  montarSeccionEpik(id);
   sincronizarCamposOverlay(id);
 }
 
@@ -349,7 +354,7 @@ function duplicarCapaGif(id) {
   const copia = window.structuredClone(ajustesOverlay(id));
   // Un poco desplazada, para que no quede tapando a la original.
   Object.assign(copia, { desplazaX: Math.min(1, (copia.desplazaX ?? 0) + 0.03), desplazaY: Math.min(1, (copia.desplazaY ?? 0) + 0.03) });
-  appSettings.overlays[nueva] = window.structuredClone(copia); // baseline global de la capa nueva (unica, nunca compartida)
+  appSettings.capasGif[nueva] = window.structuredClone(copia); // baseline global de la capa nueva (unica, nunca compartida)
   // Pre-sembrada a mano: agregar() no debe pisarla con los valores de fabrica (ids.includes(nueva) es falso recien agregada).
   escena().ajustes = { ...escena().ajustes, [nueva]: copia };
   prepararCapaGif(nueva);
@@ -374,6 +379,21 @@ function restablecerEnEscena(id) {
   showToast(t('toast.overlayReset'));
 }
 
+function cubrirLienzo(id) {
+  const marco = capas.get(id)?.iframe;
+  const medio = marco?.contentDocument?.querySelector('.medio');
+  const ancho = medio?.naturalWidth || medio?.videoWidth;
+  const alto = medio?.naturalHeight || medio?.videoHeight;
+  if (!ancho || !alto) return;
+  const escala = escalaParaCubrir(ancho, alto, marco.contentWindow.innerWidth, marco.contentWindow.innerHeight);
+  fijarValorOverlay(id, 'escala', escala);
+  fijarValorOverlay(id, 'desplazaX', 0);
+  fijarValorOverlay(id, 'desplazaY', 0);
+  saveSettings();
+  updateOverlayUrl(id);
+  sincronizarCamposOverlay(id);
+}
+
 function opcionesMenu(id) {
   const { oculta } = capas.get(id);
   const bloqueada = estaBloqueada(id);
@@ -389,7 +409,10 @@ function opcionesMenu(id) {
     { clave: bloqueada ? 'desbloquear' : 'bloquear', icono: bloqueada ? 'lock_open' : 'lock', accion: () => alternarBloqueo(id) },
     { clave: 'copiarProps', icono: 'content_copy', accion: () => copiarPropiedades(id) },
     { clave: 'pegarProps', icono: 'content_paste', desactivada: !camposPegables(id).length || propiedadesCopiadas.de === id, accion: () => pegarPropiedades(id) },
-    ...(esCapaGif(id) ? [{ clave: 'duplicar', icono: 'content_copy', accion: () => duplicarCapaGif(id) }] : []),
+    ...(esCapaGif(id) ? [
+      { clave: 'cubrirLienzo', icono: 'open_in_full', desactivada: bloqueada, accion: () => cubrirLienzo(id) },
+      { clave: 'duplicar', icono: 'content_copy', accion: () => duplicarCapaGif(id) },
+    ] : []),
     { clave: 'restablecer', icono: 'restore', accion: () => restablecerEnEscena(id) },
     { clave: 'quitar', icono: 'delete', peligro: true, desactivada: bloqueada, accion: () => quitar(id) },
   ];
@@ -452,7 +475,7 @@ function pintarBiblioteca() {
   tarjetas.forEach((tarjeta) => { tarjeta.hidden = !normalizar(tarjeta.textContent).includes(busqueda); });
 }
 
-// Cada escena recuerda que overlays hay en su canvas; los ajustes de cada overlay son globales.
+// Cada escena conserva sus capas y sus ajustes completos, independientes del catalogo.
 function pintarEscenas() {
   const { escenas } = appSettings;
   escena().ids = [...capas.keys()];
@@ -593,7 +616,7 @@ export function abrirEditorCanvas() {
 // se guardan en la escena y la pagina las lee de /api/ajustes-ui, asi el enlace no cambia cuando cambia el contenido.
 function publicarUrlsEscena() {
   const e = escena();
-  if (e) e.urls = orden().filter((id) => !capas.get(id).oculta).map((id) => { const { pathname, search } = new URL(buildOverlayUrl(id)); return pathname + search; });
+  if (e) e.urls = orden().filter((id) => !capas.get(id).oculta).map((id) => { const { pathname, search } = new URL(buildOverlayUrl(id, ajustesOverlay(id))); return pathname + search; });
 }
 
 function copiarEnlaceObs() {
@@ -609,6 +632,7 @@ function cerrar() {
   usarFormatoPropio(null);
   usarAjustesPropios(null);
   pintarLienzos();
+  renderizarTodosLosCamposOverlay();
   cerrarMenu();
   alCerrarGif();
   alCerrarSonidos();

@@ -1,3 +1,5 @@
+import { skinAdquirida, skinPermitida } from '../../../../compartido/estilo/ajustes-segun-plan.js';
+import { ESQUEMAS } from '../../../../compartido/estilo/esquemas.js';
 import { t, aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
 import { almacenSesion, tieneAccesoPro } from '../../../nucleo/estado/sesion.js';
 import { showToast } from '../../../componentes/toast.js';
@@ -22,7 +24,7 @@ const SECCIONES = [
 ];
 
 // Con el sistema de cuentas apagado, la app funciona toda desbloqueada.
-export const tieneAcceso = tieneAccesoPro;
+export const tieneAcceso = (skin, overlay = 'chat') => skinPermitida(ESQUEMAS[overlay], skin, tieneAccesoPro(), almacenSesion.getState().entitlements, almacenSesion.getState().licenciasSkins);
 
 /** Lleva directo al pago del plan Pro; sin sesion, primero a iniciarla. */
 export function comprarPro(boton) {
@@ -31,7 +33,7 @@ export function comprarPro(boton) {
 }
 
 // Sin Pro la estrella lleva a comprar; con Pro guarda la skin en la pagina de favoritas del selector.
-function crearEstrella({ skin, delTipo }) {
+function crearEstrella({ skin, delTipo, overlay }) {
   const estrella = document.createElement('button');
   estrella.type = 'button';
   estrella.className = 'ovl-producto-estrella';
@@ -46,7 +48,7 @@ function crearEstrella({ skin, delTipo }) {
     icono.src = activa ? 'icons/star.svg' : 'icons/star_border.svg';
   };
   estrella.addEventListener('click', () => {
-    if (!tieneAcceso()) return abrirPopupPro();
+    if (!tieneAcceso(skin, overlay)) return abrirPopupPro();
     const lista = alternarFavorita(appSettings.skinsFavoritas, skin, delTipo);
     if (!lista) return showToast(t('overlayCfg.favoritasMaximo', { max: MAX_FAVORITAS }));
     appSettings.skinsFavoritas = lista;
@@ -77,7 +79,7 @@ function crearTarjeta(producto, alIrAOverlay) {
   accion.type = 'button';
   accion.className = 'ovl-producto-comprar';
   const accionar = (boton) => {
-    if (!tieneAcceso()) comprarPro(boton);
+    if (!tieneAcceso(producto.skin, producto.overlay)) comprarPro(boton);
     else usar(producto, estrella);
   };
   accion.addEventListener('click', () => accionar(accion));
@@ -93,13 +95,14 @@ function crearTarjeta(producto, alIrAOverlay) {
   tarjeta.addEventListener('click', (evento) => {
     const boton = evento.target.closest('button');
     if (boton && boton !== arte) return;
-    abrirVistaPrevia(producto, { claveAccion: accion.dataset.i18n, alAccionar: accionar, alIrAOverlay });
+    abrirVistaPrevia(producto, { claveAccion: accion.dataset.i18n, clavePrecio: precio.dataset.i18n, alAccionar: accionar, alIrAOverlay });
   });
   tarjeta.pintarAcceso = () => {
-    const acceso = tieneAcceso();
+    const acceso = tieneAcceso(producto.skin, producto.overlay);
     tarjeta.classList.toggle('incluido', acceso);
     accion.dataset.i18n = acceso ? 'overlayCat.usar' : 'overlayCat.comprar';
-    precio.dataset.i18n = 'overlayCat.incluidoPro';
+    const sesion = almacenSesion.getState();
+    precio.dataset.i18n = skinAdquirida(producto.skin, sesion.entitlements, sesion.licenciasSkins) ? 'overlayCat.adquirida' : 'overlayCat.incluidoPro';
     estrella.pintar();
   };
   return tarjeta;

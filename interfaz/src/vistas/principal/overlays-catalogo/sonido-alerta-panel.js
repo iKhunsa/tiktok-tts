@@ -1,6 +1,7 @@
+import { ajustesOverlay } from './posicion-escena.js';
 import { ESQUEMAS } from '../../../../compartido/estilo/esquemas.js';
 import { crearAudioAlerta } from '../../../../compartido/sonido-alerta.js';
-import { appSettings, saveSettings } from '../../../nucleo/estado/ajustes-app.js';
+import { saveSettings } from '../../../nucleo/estado/ajustes-app.js';
 import { aplicarTraducciones, t } from '../../../nucleo/i18n/i18n.js';
 import { paintRangeFill } from '../../../componentes/campos-formulario.js';
 import { updateOverlayUrl } from '../configurador-overlays.js';
@@ -29,7 +30,7 @@ const conSigno = (valor) => (valor > 0 ? `+${valor}` : String(valor));
  */
 export function crearSeccionSonidoAlerta(id) {
   if (!esAlerta(id)) return null;
-  const cfg = () => appSettings.overlays[id];
+  const cfg = () => ajustesOverlay(id);
   // `edi-gif-alerta` + `ovl-inspector` dan a la seccion el mismo estilo de acordeon que la de GIF y hacen que el editor la retire junto a ella.
   const seccion = elemento('section', 'ovl-inspector edi-gif-alerta edi-sonido-alerta');
   const grupo = elemento('details', 'cfg-grupo');

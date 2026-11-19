@@ -1,5 +1,7 @@
+import { skinPermitida } from '../../../../compartido/estilo/ajustes-segun-plan.js';
+import { abrirPopupPro } from '../../../componentes/popup-pro.js';
 import { ESQUEMAS } from '../../../../compartido/estilo/esquemas.js';
-import { appSettings, saveSettings } from '../../../nucleo/estado/ajustes-app.js';
+import { saveSettings } from '../../../nucleo/estado/ajustes-app.js';
 import { almacenSesion, tieneAccesoPro } from '../../../nucleo/estado/sesion.js';
 import { t } from '../../../nucleo/i18n/i18n.js';
 import { showToast } from '../../../componentes/toast.js';
@@ -17,10 +19,15 @@ const OVERLAYS_CON_ESQUEMA = Object.keys(ESQUEMAS);
 const campoDe = (overlay, clave) => ESQUEMAS[overlay].find((campo) => campo.clave === clave);
 
 function guardarCambio(overlay, clave, valor) {
+  const sesion = almacenSesion.getState();
+  if (clave === 'skin' && !skinPermitida(ESQUEMAS[overlay], valor, tieneAccesoPro(), sesion.entitlements, sesion.licenciasSkins)) {
+    abrirPopupPro();
+    return;
+  }
   fijarValorOverlay(overlay, clave, valor);
   // Elegir una skin con presets pone lo que esa skin muestra por defecto; luego el usuario lo cambia a mano.
   const presets = clave === 'skin' && campoDe(overlay, 'skin')?.presets;
-  if (presets) Object.assign(appSettings.overlays[overlay], presets[valor] ?? presets.base);
+  if (presets) for (const [campo, ajuste] of Object.entries(presets[valor] ?? presets.base)) fijarValorOverlay(overlay, campo, ajuste);
   updateOverlayUrl(overlay);
   saveSettings();
 }
@@ -28,7 +35,7 @@ function guardarCambio(overlay, clave, valor) {
 // Siempre debe quedar al menos una plataforma visible: si no, el chat quedaria vacio sin explicacion.
 function cambiarPlataforma(entrada, campo) {
   const { cfgOverlay: overlay, cfgPlataforma: plataforma } = entrada.dataset;
-  const visibles = { ...appSettings.overlays[overlay][campo.clave], [plataforma]: entrada.checked };
+  const visibles = { ...valorOverlay(overlay, campo.clave), [plataforma]: entrada.checked };
   if (!Object.values(visibles).some(Boolean)) {
     entrada.checked = true;
     showToast(t('toast.minOnePlatform'));
@@ -43,8 +50,8 @@ function cambiarValor(entrada, campo) {
     entrada.closest('.cfg-field').querySelector('[data-cfg-valor]').textContent = textoValor(campo, valor);
   }
   const overlay = entrada.dataset.cfgOverlay;
-  const prender = campo.activa && !appSettings.overlays[overlay][campo.activa];
-  if (prender) appSettings.overlays[overlay][campo.activa] = true;
+  const prender = campo.activa && !valorOverlay(overlay, campo.activa);
+  if (prender) fijarValorOverlay(overlay, campo.activa, true);
   guardarCambio(overlay, campo.clave, valor);
   pintarDependientes(overlay);
   pintarRestablecer(overlay);
@@ -116,10 +123,11 @@ export function iniciarCamposOverlay() {
 
   // Las URL de OBS y las vistas previas dependen del plan (una skin premium guardada no sale sin Pro, ver
   // buildOverlayUrl). La sesion se hidrata despues de arrancar y el plan puede cambiar (compra, vencimiento).
-  let conAcceso = tieneAccesoPro();
+  let conAcceso = '';
   almacenSesion.subscribe(() => {
-    if (tieneAccesoPro() === conAcceso) return;
-    conAcceso = tieneAccesoPro();
-    OVERLAYS_CON_ESQUEMA.forEach(updateOverlayUrl);
+    const actual = JSON.stringify([tieneAccesoPro(), almacenSesion.getState().entitlements, almacenSesion.getState().licenciasSkins]);
+    if (actual === conAcceso) return;
+    conAcceso = actual;
+    OVERLAYS_CON_ESQUEMA.forEach((overlay) => { sincronizarCamposOverlay(overlay); updateOverlayUrl(overlay); });
   });
 }
