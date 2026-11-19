@@ -1,3 +1,26 @@
+## [1.12.2] — 2026-11-19
+
+### One OBS link for all your scenes
+- **Copy link for OBS** now lets you choose between **“All my scenes in one source”** (recommended), which shows the active scene and switches with a keyboard shortcut without touching OBS, and **“This scene only”**.
+- Give each scene a keyboard shortcut by right-clicking it. The first time you copy the link a step-by-step guide appears, and you can replay it with **“Watch tutorial”**.
+- Saved shortcuts are ready every time you open the app, without entering the editor, and they accept several modifier keys (for example **Ctrl+Shift+1**).
+
+### Transitions between scenes
+- New **“Scene transitions”** accordion in the editor, with 56 transitions: slides, zoom, spins, wipes, 34 OBS-style ones (Clock, Watercolor, Zigzag…), **fade to color** and **stinger** with an image or video.
+- Adjust the duration, the color and **reverse animation**, and see the **preview** in a floating card next to the accordion.
+- Pick the stinger from your **Media** library (or upload it right there) or use a video URL.
+
+### Scenes and editor
+- Each scene keeps its own layout. Export scenes to one file (or one per scene) and import them into another account.
+- An overlay placed over a full-screen photo or video can now be selected and moved, and dragging no longer lags.
+- **Cover canvas** fits a GIF or an image to the whole canvas, and the overall size no longer has a cap.
+- Customizable **keyboard and mouse overlay**: add or remove keys (up to 20), change their width, use presets (WASD, MOBA, FPS…) or save your own, and put the mouse on the left.
+
+### Fixes
+- The TikTok **share** alert now shows the profile picture.
+- Shortcuts with **Shift + number** (Shift+1) can now be assigned, and a rejected shortcut change no longer leaves the scene without a shortcut.
+- Fixed texts that showed “?” in several languages.
+
 ## [1.12.0] — 2026-10-21
 
 ### Sign-in and sign-up

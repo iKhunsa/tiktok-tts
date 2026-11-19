@@ -1,3 +1,26 @@
+## [1.12.2] — 2026-11-19
+
+### Ein OBS-Link für alle deine Szenen
+- **Link für OBS kopieren** bietet jetzt die Wahl zwischen **„Alle meine Szenen in einer Quelle“** (empfohlen), die die aktive Szene zeigt und per Tastenkürzel wechselt, ohne OBS anzufassen, und **„Nur diese Szene“**.
+- Weise jeder Szene per Rechtsklick ein Tastenkürzel zu. Beim ersten Kopieren des Links erscheint eine Schritt-für-Schritt-Anleitung, die du mit **„Tutorial ansehen“** wiederholen kannst.
+- Gespeicherte Tastenkürzel sind bei jedem Start der App sofort bereit, ohne den Editor zu öffnen, und erlauben mehrere Modifikatortasten (zum Beispiel **Strg+Umschalt+1**).
+
+### Übergänge zwischen Szenen
+- Neues Akkordeon **„Szenenübergänge“** im Editor mit 56 Übergängen: Schieben, Zoom, Drehungen, Wischer, 34 im OBS-Stil (Uhr, Aquarell, Zickzack…), **Überblenden zu Farbe** und **Stinger** mit Bild oder Video.
+- Passe Dauer, Farbe und **Animation umkehren** an und sieh die **Vorschau** in einer schwebenden Karte neben dem Akkordeon.
+- Der Stinger wird aus deiner **Media**-Bibliothek gewählt (oder dort direkt hochgeladen) oder per Video-URL.
+
+### Szenen und Editor
+- Jede Szene behält ihr eigenes Layout. Exportiere Szenen in eine Datei (oder eine pro Szene) und importiere sie in ein anderes Konto.
+- Ein Overlay über einem Vollbild-Foto oder -Video lässt sich jetzt auswählen und verschieben, und das Ziehen ruckelt nicht mehr.
+- **Leinwand ausfüllen** passt ein GIF oder Bild an die ganze Leinwand an, und die Gesamtgröße hat keine Obergrenze mehr.
+- Anpassbares **Tastatur- und Maus-Overlay**: Tasten hinzufügen oder entfernen (bis zu 20), ihre Breite ändern, Presets nutzen (WASD, MOBA, FPS…) oder eigene speichern und die Maus nach links setzen.
+
+### Korrekturen
+- Die TikTok-**Teilen**-Meldung zeigt jetzt das Profilbild.
+- Tastenkürzel mit **Umschalt + Zahl** (Umschalt+1) lassen sich jetzt zuweisen, und eine abgelehnte Änderung lässt die Szene nicht mehr ohne Tastenkürzel.
+- Texte, die in mehreren Sprachen mit „?“ erschienen, wurden korrigiert.
+
 ## [1.12.0] — 2026-10-21
 
 ### Anmeldung und Registrierung

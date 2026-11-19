@@ -1,3 +1,26 @@
+## [1.12.2] — 2026-11-19
+
+### Un solo link OBS per tutte le tue scene
+- **Copia il link per OBS** ora permette di scegliere tra **«Tutte le mie scene in una sola sorgente»** (consigliato), che mostra la scena attiva e cambia con una scorciatoia da tastiera senza toccare OBS, e **«Solo questa scena»**.
+- Assegna una scorciatoia da tastiera a ogni scena con il clic destro. La prima volta che copi il link compare una guida passo passo, e puoi rivederla con **«Guarda il tutorial»**.
+- Le scorciatoie salvate sono pronte ogni volta che apri l'app, senza entrare nell'editor, e accettano più tasti modificatori (per esempio **Ctrl+Shift+1**).
+
+### Transizioni tra le scene
+- Nuovo accordion **«Transizioni tra scene»** nell'editor, con 56 transizioni: scorrimenti, zoom, rotazioni, tendine, 34 in stile OBS (Orologio, Acquerello, Zigzag…), **dissolvenza a colore** e **stinger** con immagine o video.
+- Regola durata, colore e **inverti animazione**, e guarda l'**anteprima** in una scheda flottante accanto all'accordion.
+- Lo stinger si sceglie dalla tua libreria **Media** (o si carica lì stesso) o con l'URL di un video.
+
+### Scene ed editor
+- Ogni scena conserva il proprio design. Esporta le scene in un file (o uno per scena) e importale in un altro account.
+- Un overlay posto sopra una foto o un video a schermo intero ora si può selezionare e spostare, e il trascinamento non va più a scatti.
+- **Copri la tela** adatta una GIF o un'immagine a tutta la tela, e la dimensione totale non ha più limite.
+- **Overlay di tastiera e mouse** personalizzabile: aggiungi o rimuovi tasti (fino a 20), cambia la larghezza, usa i preset (WASD, MOBA, FPS…) o salva i tuoi, e metti il mouse a sinistra.
+
+### Correzioni
+- L'avviso di **condivisione** di TikTok ora mostra la foto profilo.
+- Le scorciatoie con **Shift + numero** (Shift+1) ora si possono assegnare, e una modifica rifiutata non lascia più la scena senza scorciatoia.
+- Corretti testi che apparivano con «?» in diverse lingue.
+
 ## [1.12.0] — 2026-10-21
 
 ### Accesso e registrazione

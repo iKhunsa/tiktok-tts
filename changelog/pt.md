@@ -1,3 +1,26 @@
+## [1.12.2] — 2026-11-19
+
+### Um único link do OBS para todas as suas cenas
+- **Copiar link para o OBS** agora permite escolher entre **«Todas as minhas cenas em uma fonte»** (recomendado), que mostra a cena ativa e troca com um atalho de teclado sem mexer no OBS, e **«Só esta cena»**.
+- Atribua um atalho de teclado a cada cena com o botão direito sobre ela. Na primeira vez que copiar o link aparece um guia passo a passo, e você pode revê-lo em **«Ver tutorial»**.
+- Os atalhos salvos ficam prontos sempre que você abre o app, sem entrar no editor, e aceitam várias teclas modificadoras (por exemplo **Ctrl+Shift+1**).
+
+### Transições entre cenas
+- Novo acordeão **«Transições de cenas»** no editor, com 56 transições: deslizar, zoom, giros, cortinas, 34 do estilo OBS (Relógio, Aquarela, Zigue-zague…), **esmaecer para cor** e **stinger** com imagem ou vídeo.
+- Ajuste a duração, a cor e **inverter animação**, e veja a **pré-visualização** em um cartão flutuante ao lado do acordeão.
+- O stinger é escolhido na sua biblioteca **Media** (ou enviado ali mesmo) ou com a URL de um vídeo.
+
+### Cenas e editor
+- Cada cena guarda o seu próprio design. Exporte cenas para um arquivo (ou um por cena) e importe-as em outra conta.
+- Um overlay colocado sobre uma foto ou vídeo em tela cheia agora pode ser selecionado e movido, e arrastar não trava mais.
+- **Cobrir tela** ajusta um GIF ou uma imagem a toda a tela, e o tamanho total não tem mais limite.
+- **Overlay de teclado e mouse** personalizável: adicione ou remova teclas (até 20), mude a largura, use presets (WASD, MOBA, FPS…) ou salve os seus, e coloque o mouse à esquerda.
+
+### Correções
+- O alerta de **compartilhar** do TikTok agora mostra a foto de perfil.
+- Os atalhos com **Shift + número** (Shift+1) agora podem ser atribuídos, e uma troca de atalho rejeitada não deixa mais a cena sem atalho.
+- Foram corrigidos textos que apareciam com «?» em vários idiomas.
+
 ## [1.12.0] — 2026-10-21
 
 ### Login e cadastro

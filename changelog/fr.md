@@ -1,3 +1,26 @@
+## [1.12.2] — 2026-11-19
+
+### Un seul lien OBS pour toutes vos scènes
+- **Copier le lien pour OBS** permet maintenant de choisir entre **« Toutes mes scènes dans une source »** (recommandé), qui affiche la scène active et change avec un raccourci clavier sans toucher à OBS, et **« Cette scène uniquement »**.
+- Attribuez un raccourci clavier à chaque scène par un clic droit dessus. La première fois que vous copiez le lien, un guide pas à pas apparaît, et vous pouvez le revoir avec **« Voir le tutoriel »**.
+- Les raccourcis enregistrés sont prêts à chaque ouverture de l'app, sans passer par l'éditeur, et acceptent plusieurs touches modificatrices (par exemple **Ctrl+Shift+1**).
+
+### Transitions entre scènes
+- Nouvel accordéon **« Transitions de scènes »** dans l'éditeur, avec 56 transitions : glissements, zoom, rotations, volets, 34 de style OBS (Horloge, Aquarelle, Zigzag…), **fondu vers une couleur** et **stinger** avec image ou vidéo.
+- Réglez la durée, la couleur et **inverser l'animation**, et voyez l'**aperçu** dans une carte flottante à côté de l'accordéon.
+- Le stinger se choisit dans votre bibliothèque **Media** (ou s'y téléverse directement) ou avec l'URL d'une vidéo.
+
+### Scènes et éditeur
+- Chaque scène garde sa propre mise en forme. Exportez des scènes dans un fichier (ou un par scène) et importez-les dans un autre compte.
+- Un overlay placé sur une photo ou une vidéo plein écran peut maintenant être sélectionné et déplacé, et le glisser ne saccade plus.
+- **Couvrir le canevas** ajuste un GIF ou une image à tout le canevas, et la taille totale n'a plus de plafond.
+- **Overlay clavier et souris** personnalisable : ajoutez ou retirez des touches (jusqu'à 20), changez leur largeur, utilisez des préréglages (WASD, MOBA, FPS…) ou enregistrez les vôtres, et mettez la souris à gauche.
+
+### Corrections
+- L'alerte de **partage** TikTok affiche maintenant la photo de profil.
+- Les raccourcis avec **Shift + chiffre** (Shift+1) peuvent maintenant être attribués, et un changement de raccourci refusé ne laisse plus la scène sans raccourci.
+- Des textes qui s'affichaient avec « ? » ont été corrigés dans plusieurs langues.
+
 ## [1.12.0] — 2026-10-21
 
 ### Connexion et inscription
