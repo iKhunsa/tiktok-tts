@@ -138,18 +138,32 @@ function esContenido(elemento, ventana) {
   return width < ventana.innerWidth * 0.95 || height < ventana.innerHeight * 0.95;
 }
 
-/** La capa mas alta que tiene contenido bajo el puntero (las ocultas y bloqueadas no cuentan); si la seleccionada esta ahi, gana: asi se arrastra aunque otra la tape. */
+// El contenido de la capa bajo el punto (x, y) del lienzo, o null (las ocultas y bloqueadas no cuentan; un iframe aun sin cargar o roto tampoco).
+function contenidoBajo(id, x, y) {
+  const { iframe, oculta } = capas.get(id);
+  const ventana = iframe.contentWindow;
+  if (oculta || estaBloqueada(id) || !ventana) return null;
+  const elemento = iframe.contentDocument?.elementFromPoint(x, y);
+  return esContenido(elemento, ventana) ? elemento : null;
+}
+
+// Una foto o video a pantalla completa es un fondo: no debe quedarse con los clics que caen sobre lo que tiene encima.
+const cubreElLienzo = (elemento, ventana) => {
+  const { width, height } = elemento.getBoundingClientRect();
+  return width >= ventana.innerWidth * 0.95 && height >= ventana.innerHeight * 0.95;
+};
+
+/** La capa mas alta que tiene contenido bajo el puntero; si la seleccionada esta ahi, gana (asi se arrastra aunque otra la tape), salvo que sea un fondo a pantalla completa. */
 function capaBajo(evento) {
   const marco = $('ovlEditorMarco').getBoundingClientRect();
   const { ancho } = formatoActual();
   const escala = marco.width / ancho;
   const x = (evento.clientX - marco.left) / escala;
   const y = (evento.clientY - marco.top) / escala;
-  return [seleccionado, ...orden().reverse()].find((id) => {
+  return [seleccionado, ...orden().reverse()].find((id, posicion) => {
     if (!capas.has(id)) return false;
-    const { iframe, oculta } = capas.get(id);
-    const ventana = iframe.contentWindow;
-    return !oculta && !estaBloqueada(id) && ventana && esContenido(iframe.contentDocument?.elementFromPoint(x, y), ventana); // un iframe aun sin cargar (o roto) no debe romper la seleccion de los demas
+    const elemento = contenidoBajo(id, x, y);
+    return elemento && !(posicion === 0 && cubreElLienzo(elemento, capas.get(id).iframe.contentWindow));
   }) ?? null;
 }
 
@@ -176,6 +190,14 @@ function resaltar() {
     width: `${(Math.max(...cajas.map((caja) => caja.right)) - izquierda) * escala}px`,
     height: `${(Math.max(...cajas.map((caja) => caja.bottom)) - arriba) * escala}px`,
   });
+}
+
+// Mientras se arrastra, resaltar() mide todos los elementos del iframe y fuerza un layout por cada pointermove: se hace una vez por fotograma.
+let resaltePendiente = false;
+function resaltarEnFotograma() {
+  if (resaltePendiente) return;
+  resaltePendiente = true;
+  window.requestAnimationFrame(() => { resaltePendiente = false; resaltar(); });
 }
 
 function soltar(id) {
@@ -807,7 +829,7 @@ export function iniciarEditorCanvas() {
       $('ovlEditorEscenario').scrollTop = panorama.arriba - (evento.clientY - panorama.y);
       return;
     }
-    arrastreActivo?.mover(evento); if (arrastreActivo) resaltar();
+    arrastreActivo?.mover(evento); if (arrastreActivo) resaltarEnFotograma();
   });
   superficie.addEventListener('contextmenu', (evento) => {
     const id = capaBajo(evento);
