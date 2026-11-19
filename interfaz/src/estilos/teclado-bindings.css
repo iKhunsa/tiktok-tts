@@ -33,6 +33,7 @@
 
 /* ── Guardar preset propio ────────────────────────────────────────────── */
 .teclado-bindings-guardar-preset { margin-top: 10px; }
+.teclado-guardar-form[hidden] { display: none; }
 .teclado-guardar-form { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
 .teclado-guardar-input {
   flex: 1 1 160px;
@@ -47,17 +48,59 @@
 }
 .teclado-guardar-input:focus { border-color: var(--brand-a40); outline: none; }
 
-/* ── Grilla de teclas: solo la etiqueta, sin controles encima ────────────
-   El ancho visual de cada boton refleja --ancho-u (1 = tecla normal, 2 =
-   tipo Shift, 3 = tipo Space) para que se vea proporcional al overlay real. */
+/* ── Canvas de posicionamiento: cada tecla vive en una celda fija de la
+   grilla (grid-row/grid-column puestos desde JS segun su row/col/ancho). El
+   tablero de celdas SIEMPRE se ve (puntos .teclado-cell-vacia, mismo lenguaje
+   que el selector de posicion de 9 cuadros) — nunca aparece de la nada recien
+   al seleccionar una tecla, para que de entrada se entienda que es un tablero
+   donde las teclas se "sueltan" en un cuadro, no una lista para intercambiar.
+   Al seleccionar (o arrastrar) una tecla, los cuadros donde se puede soltar
+   pasan de punto pasivo a `.valida` (resaltado, clickeable). */
 .teclado-bindings-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 16px;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--teclado-grid-cols, 10), 34px);
+  grid-template-rows: repeat(var(--teclado-grid-rows, 8), 40px);
+  gap: 6px;
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-deep, var(--surface));
+  overflow-x: auto;
 }
+.teclado-canvas-hint { font-size: var(--text-sm); color: var(--text-muted); margin: 10px 0 0; }
+.teclado-cell-vacia {
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: default;
+}
+.teclado-cell-vacia::before {
+  content: '';
+  display: block;
+  width: 5px;
+  height: 5px;
+  margin: auto;
+  border-radius: 50%;
+  background: var(--border-strong);
+}
+.teclado-cell-vacia.valida {
+  cursor: pointer;
+  border: 2px dashed var(--brand-a40);
+  border-radius: var(--radius-sm);
+  transition: border-color 0.2s, background-color 0.2s;
+}
+.teclado-cell-vacia.valida::before { display: none; }
+.teclado-cell-vacia.valida:hover, .teclado-cell-vacia.valida:focus-visible {
+  background: var(--brand-a12);
+  border-color: var(--accent, var(--brand));
+  outline: none;
+}
+.teclado-cell-vacia.sobrevolada { background: var(--brand-a12); border-color: var(--accent, var(--brand)); }
 .tecla-bind-btn {
-  min-width: calc(34px * var(--ancho-u, 1));
+  justify-self: start;
+  align-self: start;
   height: 40px;
   padding: 0 10px;
   background: var(--bg-button);
@@ -67,7 +110,7 @@
   font-size: var(--text-sm);
   font-weight: 600;
   font-family: 'Source Code Pro', monospace;
-  cursor: pointer;
+  cursor: grab;
   transition: border-color 0.2s, background-color 0.2s;
 }
 .tecla-bind-btn:hover { border-color: var(--text-muted); }
@@ -77,8 +120,10 @@
   background: var(--brand-a12);
   color: var(--accent, var(--brand));
 }
+.tecla-bind-btn:active { cursor: grabbing; }
 
 /* ── Barra de edicion de la tecla seleccionada ────────────────────────── */
+.teclado-toolbar[hidden] { display: none; } /* el [hidden] del UA pierde contra la regla de abajo si no se repite aca */
 .teclado-toolbar {
   display: flex;
   align-items: center;

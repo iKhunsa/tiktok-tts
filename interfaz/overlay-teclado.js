@@ -5,19 +5,17 @@ import { iniciarAccesibilidadOverlay } from './compartido/accesibilidad.js';
 import { registrarErroresOverlay } from './compartido/registrar-errores.js';
 import { conectarWSOverlay } from './compartido/ws-cliente.js';
 import { iniciarOverlayFijo } from './compartido/estilo/aplicar-overlay-fijo.js';
-import { DEFAULT_TECLADO_KEYS } from './compartido/teclado-keys.js';
+import { DEFAULT_TECLADO_KEYS, spanCols } from './compartido/teclado-keys.js';
 
 // Grilla de teclas elegidas por el usuario (features/configuracion,
-// tecladoKeys: [{key,w}]) + 5 botones de mouse fijos a la derecha. Cada tecla
-// tiene su propio ancho (w, en unidades — TAB/SHIFT/SPACE suelen ser mas
-// anchas que una tecla normal en un teclado real) y la cantidad de teclas es
-// variable (agregar/quitar desde la app). Se acomodan en filas que no superan
-// FILA_ANCHO_MAX unidades, en el orden de la lista — ese orden es lo que el
-// usuario cambia al "intercambiar posiciones" en el panel de ajustes.
+// tecladoKeys: [{key,w,row,col}]) + 5 botones de mouse fijos a la derecha.
+// Cada tecla tiene su propio ancho (w, en unidades — TAB/SHIFT/SPACE suelen
+// ser mas anchas que una tecla normal en un teclado real) y su propia
+// posicion (row/col, en celdas enteras) elegida a mano en el panel de
+// ajustes — ya no se calcula por wrap automatico.
 const UNIDAD = 44;
 const GAP = 6;
 const PASO = UNIDAD + GAP;
-const FILA_ANCHO_MAX = 5.5; // reproduce el layout original (TAB/QWER, ASDF, SHIFT/ZXC, SPACE)
 const MIN_VISIBLE_MS = 55; // una pulsacion mas corta que un frame igual se ve
 
 // Cuerpo del mouse: mismo contorno/regiones que Inkput (la app de
@@ -40,57 +38,41 @@ const MOUSE_SVG = [
   '</svg>',
 ].join('');
 
-// Acomoda las teclas en filas sin pasarse de FILA_ANCHO_MAX unidades, en el
-// orden de la lista (mismo criterio que un wrap de izquierda a derecha).
-function distribuirFilas(keys) {
-  const filas = [];
-  let fila = [];
-  let ancho = 0;
-  for (const entry of keys) {
-    if (fila.length && ancho + entry.w > FILA_ANCHO_MAX) {
-      filas.push(fila);
-      fila = [];
-      ancho = 0;
-    }
-    fila.push(entry);
-    ancho += entry.w;
-  }
-  if (fila.length) filas.push(fila);
-  return filas;
-}
-
 // Reconstruye todo el stage desde cero: se llama al cargar y cada vez que
-// cambia la lista de teclas (agregar/quitar/reordenar/preset/ancho), porque
-// la cantidad de filas y el ancho del stage pueden cambiar. `mouseIzquierda`
-// es un ajuste puramente visual de ESTE overlay (param `mp` en la URL, ver
+// cambia la lista de teclas (agregar/quitar/mover/preset/ancho), porque la
+// cantidad de filas y el ancho del stage pueden cambiar. `mouseIzquierda` es
+// un ajuste puramente visual de ESTE overlay (param `mp` en la URL, ver
 // esquemas.js), no afecta que tecla dispara que boton de mouse.
 function construirDOM(stage, keys, mouseIzquierda) {
   stage.replaceChildren();
   const els = {};
-  const filas = distribuirFilas(keys);
-  const anchoUnidades = filas.reduce((max, fila) => Math.max(max, fila.reduce((s, e) => s + e.w, 0)), 0);
-  const altoGrilla = filas.length * PASO - GAP;
+  // Las teclas viven en una grilla fija (ver compartido/teclado-keys.js) pero
+  // el canvas del overlay solo tiene que mostrar el recorte que realmente se
+  // usa, recortado al bounding box de las celdas ocupadas.
+  const minCol = Math.min(...keys.map((e) => e.col));
+  const minRow = Math.min(...keys.map((e) => e.row));
+  const maxColEnd = Math.max(...keys.map((e) => e.col + spanCols(e)));
+  const maxRow = Math.max(...keys.map((e) => e.row));
+  const filas = maxRow - minRow + 1;
+  const anchoUnidades = maxColEnd - minCol;
+  const altoGrilla = filas * PASO - GAP;
   const anchoGrilla = anchoUnidades * PASO - GAP;
   const mouseH = altoGrilla;
   const mouseW = mouseH * (MOUSE_VB_W / MOUSE_VB_H);
   const keysX = mouseIzquierda ? mouseW + PASO : 0;
   const mouseX = mouseIzquierda ? 0 : anchoGrilla + PASO;
 
-  filas.forEach((fila, y) => {
-    let x = 0;
-    for (const entry of fila) {
-      const el = document.createElement('div');
-      el.className = 'tecl-key';
-      el.textContent = entry.key;
-      el.style.left = (keysX + x * PASO) + 'px';
-      el.style.top = (y * PASO) + 'px';
-      el.style.width = (entry.w * PASO - GAP) + 'px';
-      el.style.height = UNIDAD + 'px';
-      stage.appendChild(el);
-      els[entry.key] = el;
-      x += entry.w;
-    }
-  });
+  for (const entry of keys) {
+    const el = document.createElement('div');
+    el.className = 'tecl-key';
+    el.textContent = entry.key;
+    el.style.left = (keysX + (entry.col - minCol) * PASO) + 'px';
+    el.style.top = ((entry.row - minRow) * PASO) + 'px';
+    el.style.width = (entry.w * PASO - GAP) + 'px';
+    el.style.height = UNIDAD + 'px';
+    stage.appendChild(el);
+    els[entry.key] = el;
+  }
 
   const mouseEl = document.createElement('div');
   mouseEl.className = 'tecl-mouse';

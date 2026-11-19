@@ -1,17 +1,23 @@
 import {
   MAX_TECLADO_KEYS, MAX_CUSTOM_PRESETS, MAX_PRESET_NAME_LEN, TECLADO_PRESETS, DEFAULT_TECLADO_KEYS,
-  codigoDomAUniverso, siguienteAncho, presetActivo,
+  GRID_COLS, GRID_ROWS, spanCols, celdasOcupadas, codigoDomAUniverso, siguienteAncho, presetActivo,
+  destinosValidos, primeraCeldaAdyacenteLibre,
 } from '../../../compartido/teclado-keys.js';
 import { t } from '../../nucleo/i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
 
-// Mismo patron que un editor de layouts de teclado de verdad (keyboard-layout-editor.com):
-// las 20 teclas de la grilla quedan limpias (solo la etiqueta) y los controles
-// de una tecla (ancho, quitar) salen SOLO cuando esa tecla esta seleccionada,
-// en una barra aparte — nunca 3 botones encima de cada una a la vez.
+// El tablero de celdas SIEMPRE se ve (puntos .teclado-cell-vacia, mismo
+// lenguaje visual que el selector de posicion de 9 cuadros de otros
+// overlays) — nunca aparece de la nada recien al tocar una tecla, para que
+// de entrada se entienda que es un tablero donde las teclas se "sueltan" en
+// un cuadro. Mover una tecla: arrastrarla hasta un cuadro resaltado, o (sin
+// mouse fino) click en la tecla y despues click en el cuadro. Los controles
+// de ancho/quitar de la tecla seleccionada salen en una barra aparte.
+const EDITOR_UNIDAD = 34; // ancho en px de 1 celda/unidad en el editor (ver teclado-bindings.css)
+
 let keys = DEFAULT_TECLADO_KEYS;
 let customPresets = [];
-let selected = null; // key seleccionada: muestra su barra de edicion y arma el intercambio con la proxima que se clickee
+let selected = null; // key seleccionada/arrastrada: muestra su barra de edicion y los cuadros donde se puede soltar
 let capturing = false; // esperando la tecla a agregar
 let guardando = false; // formulario de "guardar como preset" visible
 
@@ -80,22 +86,72 @@ function renderPresets() {
   if (form) form.hidden = !guardando;
 }
 
+// Recorte visible del tablero: el bounding box de las teclas puestas + 1
+// anillo de celdas alrededor (para que siempre se note que hay mas lugar
+// donde mover), recortado a los limites reales de la grilla logica.
+function limitesVisibles() {
+  const minRow = Math.max(0, Math.min(...keys.map((e) => e.row)) - 1);
+  const minCol = Math.max(0, Math.min(...keys.map((e) => e.col)) - 1);
+  const maxRow = Math.min(GRID_ROWS - 1, Math.max(...keys.map((e) => e.row)) + 1);
+  const maxColEnd = Math.min(GRID_COLS, Math.max(...keys.map((e) => e.col + spanCols(e))) + 1);
+  return { minRow, minCol, maxRow, maxColEnd };
+}
+
+function ubicar(el, entry, limites) {
+  el.style.gridRow = `${entry.row - limites.minRow + 1} / span 1`;
+  el.style.gridColumn = `${entry.col - limites.minCol + 1} / span ${spanCols(entry)}`;
+}
+
 function renderGrid() {
   const grid = document.querySelector('[data-teclado-grid]');
   if (!grid) return;
-  grid.replaceChildren(...keys.map((entry) => {
+  const limites = limitesVisibles();
+  grid.style.setProperty('--teclado-grid-cols', limites.maxColEnd - limites.minCol);
+  grid.style.setProperty('--teclado-grid-rows', limites.maxRow - limites.minRow + 1);
+
+  const entrySeleccionada = keys.find((e) => e.key === selected);
+  const destinos = entrySeleccionada ? new Set(destinosValidos(keys, entrySeleccionada).map(({ row, col }) => `${row},${col}`)) : null;
+
+  const ocupadas = new Set();
+  for (const entry of keys) for (const { row, col } of celdasOcupadas(entry)) ocupadas.add(`${row},${col}`);
+
+  const celdas = [];
+  for (let row = limites.minRow; row <= limites.maxRow; row += 1) {
+    for (let col = limites.minCol; col < limites.maxColEnd; col += 1) {
+      if (ocupadas.has(`${row},${col}`)) continue;
+      const esValida = !!destinos?.has(`${row},${col}`);
+      const celda = document.createElement('button');
+      celda.type = 'button';
+      celda.className = 'teclado-cell-vacia';
+      celda.classList.toggle('valida', esValida);
+      celda.disabled = !esValida;
+      if (esValida) {
+        celda.dataset.tecladoDestinoRow = row;
+        celda.dataset.tecladoDestinoCol = col;
+        celda.setAttribute('aria-label', t('teclado.bindings.moverAca', { tecla: entrySeleccionada.key }));
+      } else {
+        celda.setAttribute('aria-hidden', 'true');
+      }
+      ubicar(celda, { row, col, w: 1 }, limites);
+      celdas.push(celda);
+    }
+  }
+
+  const teclas = keys.map((entry) => {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'tecla-bind-btn';
     btn.classList.toggle('seleccionada', selected === entry.key);
+    btn.draggable = true;
     btn.dataset.tecladoKey = entry.key;
-    btn.style.setProperty('--ancho-u', entry.w);
     btn.textContent = entry.key;
-    btn.title = selected
-      ? (selected === entry.key ? t('teclado.bindings.cancelarSwap') : t('teclado.bindings.swapHint', { tecla: entry.key }))
-      : t('teclado.bindings.seleccionar', { tecla: entry.key });
+    btn.style.width = `${entry.w * EDITOR_UNIDAD}px`;
+    btn.title = selected === entry.key ? t('teclado.bindings.cancelarMover') : t('teclado.bindings.seleccionar', { tecla: entry.key });
+    ubicar(btn, entry, limites);
     return btn;
-  }));
+  });
+
+  grid.replaceChildren(...celdas, ...teclas);
 
   const addBtn = document.querySelector('[data-teclado-add]');
   if (addBtn) {
@@ -143,17 +199,23 @@ function quitarTecla(key) {
   patchKeys(keys.filter((e) => e.key !== key));
 }
 
+// Agrandar nunca puede dejar el conjunto partido (una tecla que ya tocaba a
+// otra sigue tocandola al crecer) — solo hay que validar que el nuevo ancho
+// siga entrando en la grilla sin pisar a la tecla vecina.
 function ajustarAncho(key, direccion) {
-  patchKeys(keys.map((e) => (e.key === key ? { ...e, w: siguienteAncho(e.w, direccion) } : e)));
+  const entry = keys.find((e) => e.key === key);
+  if (!entry) return;
+  const siguiente = { ...entry, w: siguienteAncho(entry.w, direccion) };
+  const cabe = destinosValidos(keys, siguiente).some((c) => c.row === entry.row && c.col === entry.col);
+  if (!cabe) {
+    showToast(t('teclado.bindings.sinEspacio', { tecla: key }));
+    return;
+  }
+  patchKeys(keys.map((e) => (e.key === key ? siguiente : e)));
 }
 
-function intercambiar(a, b) {
-  const i = keys.findIndex((e) => e.key === a);
-  const j = keys.findIndex((e) => e.key === b);
-  if (i === -1 || j === -1) return;
-  const next = [...keys];
-  [next[i], next[j]] = [next[j], next[i]];
-  patchKeys(next);
+function moverTecla(key, row, col) {
+  patchKeys(keys.map((e) => (e.key === key ? { ...e, row, col } : e)));
 }
 
 function guardarPresetActual(nombreCrudo) {
@@ -236,19 +298,61 @@ function alClicPanel(evento) {
     return;
   }
 
+  const destinoBtn = evento.target.closest('.teclado-cell-vacia.valida');
+  if (destinoBtn && selected) {
+    const key = selected;
+    selected = null;
+    moverTecla(key, Number(destinoBtn.dataset.tecladoDestinoRow), Number(destinoBtn.dataset.tecladoDestinoCol));
+    return;
+  }
+
   const bindBtn = evento.target.closest('.tecla-bind-btn');
   if (bindBtn) {
     const key = bindBtn.dataset.tecladoKey;
-    if (!selected) { selected = key; render(); return; }
-    if (selected === key) { deseleccionar(); return; }
-    const a = selected;
-    selected = null;
-    intercambiar(a, key);
+    selected = selected === key ? null : key;
+    render();
     return;
   }
 
   // Clic fuera de la grilla/barra: cancela la seleccion en curso.
   if (!evento.target.closest('[data-teclado-toolbar]')) deseleccionar();
+}
+
+// Arrastrar y soltar: el gesto mas natural para reposicionar algo en un
+// tablero. Sigue existiendo el flujo de click+click (abajo) para quien no
+// pueda arrastrar con precision — ambos caminos usan el mismo `selected` y
+// los mismos cuadros `.teclado-cell-vacia.valida`.
+function alArrastrarInicio(evento) {
+  const bindBtn = evento.target.closest('.tecla-bind-btn');
+  if (!bindBtn) return;
+  const key = bindBtn.dataset.tecladoKey;
+  evento.dataTransfer.setData('text/plain', key);
+  evento.dataTransfer.effectAllowed = 'move';
+  selected = key;
+  render();
+}
+
+function alArrastrarSobre(evento) {
+  const destino = evento.target.closest('.teclado-cell-vacia.valida');
+  if (!destino || !selected) return;
+  evento.preventDefault();
+  if (!destino.classList.contains('sobrevolada')) {
+    document.querySelectorAll('.teclado-cell-vacia.sobrevolada').forEach((el) => el.classList.remove('sobrevolada'));
+    destino.classList.add('sobrevolada');
+  }
+}
+
+function alArrastrarSalir(evento) {
+  evento.target.closest('.teclado-cell-vacia')?.classList.remove('sobrevolada');
+}
+
+function alSoltar(evento) {
+  const destino = evento.target.closest('.teclado-cell-vacia.valida');
+  if (!destino || !selected) return;
+  evento.preventDefault();
+  const key = selected;
+  selected = null;
+  moverTecla(key, Number(destino.dataset.tecladoDestinoRow), Number(destino.dataset.tecladoDestinoCol));
 }
 
 function alPresionarTecla(e) {
@@ -267,7 +371,13 @@ function alPresionarTecla(e) {
       render();
       return;
     }
-    patchKeys([...keys, { key: tecla, w: 1 }]);
+    const celda = primeraCeldaAdyacenteLibre(keys, 1);
+    if (!celda) {
+      showToast(t('teclado.bindings.sinEspacio', { tecla }));
+      render();
+      return;
+    }
+    patchKeys([...keys, { key: tecla, w: 1, row: celda.row, col: celda.col }]);
     return;
   }
   if (selected && e.key === 'Escape' && !e.target.closest('[data-teclado-guardar-input]')) deseleccionar();
@@ -285,6 +395,10 @@ export async function initTecladoBindings() {
   const panel = document.querySelector('[data-teclado-grid]')?.closest('.teclado-bindings');
   panel?.addEventListener('click', alClicPanel);
   panel?.addEventListener('keydown', alEnterGuardarInput);
+  panel?.addEventListener('dragstart', alArrastrarInicio);
+  panel?.addEventListener('dragover', alArrastrarSobre);
+  panel?.addEventListener('dragleave', alArrastrarSalir);
+  panel?.addEventListener('drop', alSoltar);
   document.addEventListener('keydown', alPresionarTecla);
   try {
     const res = await fetch('/api/config');
