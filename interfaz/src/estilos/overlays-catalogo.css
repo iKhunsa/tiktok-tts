@@ -439,9 +439,6 @@ body.reduce-motion .ovl-vista, body.reduce-motion .ovl-vista::backdrop { animati
 .edi-escenas-acciones { display: flex; align-items: center; gap: 2px; }
 .edi-lista, .edi-panel-cuerpo { flex: 1; min-height: 0; overflow-y: auto; }
 .edi-lista { display: flex; flex-direction: column; gap: 2px; padding: 8px; }
-.edi-reportar-bug { flex: none; display: flex; align-items: center; justify-content: center; gap: 8px; margin: 8px; padding: 10px 12px; border: 1px solid rgba(240, 33, 58, .35); border-radius: 10px; background: rgba(240, 33, 58, .14); color: #fff; font-size: var(--text-sm); font-weight: 500; cursor: pointer; }
-.edi-reportar-bug:hover { background: rgba(240, 33, 58, .24); }
-.edi-reportar-bug img { filter: brightness(0) invert(1); }
 .edi-vacio { margin: 16px; font-size: var(--text-xs); color: var(--text-muted); }
 .edi-escenas { flex: none; max-height: 30%; border-bottom: 1px solid var(--border); }
 .edi-capa-fila { display: flex; align-items: center; border-radius: 10px; }
@@ -645,26 +642,50 @@ body.reduce-motion :is(.edi-pestana, .edi-categoria, .edi-tarjeta, .edi-gif-tarj
 #ovlEditorPanel .cfg-grupo:has(> .cfg-botones [data-lienzo]) { display: none; }
 
 /* Modal "Exportar escenas": lista de checkboxes + los dos modos de exportar. */
-.edi-export-lista { display: flex; flex-direction: column; gap: 4px; max-height: 40vh; overflow-y: auto; margin: 16px 0; }
-.edi-export-fila { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: var(--btn-radius); cursor: pointer; }
-.edi-export-fila:hover { background: var(--surface-2); }
-.edi-export-fila input { accent-color: var(--brand); }
+.exportar-modal { max-width: 460px; padding: 32px; }
+.exportar-modal h2 { margin: 0 0 6px; padding-right: 32px; }
+.exportar-modal .cuenta-hint { margin: 0; font-size: var(--text-xs); }
+.edi-export-lista { display: flex; flex-direction: column; gap: 2px; max-height: 40vh; overflow-y: auto; margin: 20px 0 24px; padding: 6px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-2); }
+.edi-export-fila { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: var(--btn-radius); cursor: pointer; }
+.edi-export-fila:hover { background: var(--surface-raised); }
+.edi-export-fila input { accent-color: var(--brand); flex: none; }
+.edi-export-fila span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .edi-export-acciones { display: flex; gap: 10px; justify-content: flex-end; }
 .edi-export-acciones button:disabled { opacity: .5; cursor: not-allowed; }
+/* Exportar: los dos botones iguales, una sola linea cada uno. "Un solo archivo" va relleno neutro, sin el rojo de marca. */
+.exportar-modal .edi-export-acciones button { flex: 1 1 0; width: auto; min-width: 0; margin: 0; padding: 11px 12px; white-space: nowrap; border-radius: var(--radius-sm); }
+.edi-export-acciones [data-un-archivo] {
+  border: 1px solid transparent;
+  background: var(--surface-raised);
+  color: var(--text-bright);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+.edi-export-acciones [data-un-archivo]:hover:not(:disabled) { background: var(--border-strong); }
 
 /* Modal "Que enlace queres copiar?": separacion del texto de arriba (se
    sentia pegado) y los dos botones mas parejos entre si — "Esta escena"
    venia con el radius pill + ancho angosto genericos de .cuenta-btn-ghost,
    quedaba como una pildora perdida al lado de "Dinamica". */
-.copiar-url-acciones { margin-top: 20px; }
-.copiar-url-modal .cuenta-btn-ghost {
-  flex: 1 1 0;
-  min-width: 0;
-  padding: 11px 16px;
-  border-radius: var(--radius-sm);
+.copiar-url-modal { max-width: 460px; padding: 32px; }
+.copiar-url-modal h2 { margin: 0 0 6px; padding-right: 32px; }
+.copiar-url-modal > .cuenta-hint { margin: 0; font-size: var(--text-xs); }
+.copiar-url-opciones { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; }
+.copiar-url-opcion {
+  display: flex; flex-direction: column; gap: 4px; width: 100%; padding: 14px 16px; text-align: left;
+  border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-2);
+  color: var(--text-bright); font-family: 'Inter', sans-serif; cursor: pointer;
+  transition: border-color var(--dur-2), background var(--dur-2), transform var(--dur-press) var(--ease-out);
 }
-.copiar-url-modal .cuenta-btn-primary {
-  flex: 1.5 1 0;
-  width: auto;
-  margin-top: 0;
-}
+.copiar-url-opcion.is-recomendada { border-color: var(--brand); background: var(--brand-a12, var(--surface-2)); }
+.copiar-url-opcion:hover { border-color: var(--text-bright-a30); background: var(--surface-raised); }
+.copiar-url-opcion.is-recomendada:hover { border-color: var(--brand-hover); }
+.copiar-url-opcion:active { transform: scale(0.98); }
+.copiar-url-opcion-titulo { display: flex; align-items: center; gap: 8px; font-size: var(--text-sm); font-weight: 600; }
+.copiar-url-opcion-desc { font-size: var(--text-xs); line-height: 1.5; color: var(--text-secondary); }
+.copiar-url-badge { padding: 2px 8px; border-radius: var(--radius-pill); background: var(--brand); color: #fff; font-size: var(--text-3xs); font-weight: 600; }
+.copiar-url-pie { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.copiar-url-pie .cuenta-hint { margin: 0; flex: 1; }
+.copiar-url-tutorial { display: inline-flex; align-items: center; gap: 6px; flex: none; white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) { .copiar-url-opcion { transition: none; } }
