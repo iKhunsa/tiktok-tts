@@ -1,5 +1,6 @@
 import { t, aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
 import { showToast } from '../../../componentes/toast.js';
+import { teclaDeAtajo } from '../../../nucleo/teclado/tecla-de-atajo.js';
 
 // Captura de atajo por escena, mismo mecanismo que soundpad.js (_spKeyCapture): requiere un modificador real
 // (Ctrl/Alt/Shift), 10s de ventana, Escape cancela. El atajo activa la escena en OBS via la URL dinamica.
@@ -35,7 +36,7 @@ async function capturarAtajo(overlay, escena, onCambiar) {
       actualizarValor(overlay, escena);
       return;
     }
-    const tecla = evento.key.toUpperCase();
+    const tecla = teclaDeAtajo(evento);
     if (['CONTROL', 'SHIFT', 'ALT', 'META'].includes(tecla)) return;
     const mods = [];
     if (evento.ctrlKey) mods.push('Ctrl');

@@ -1,6 +1,7 @@
 'use strict';
 
 const { overlayAccess } = require('../../../core/overlay-access');
+const { staticRoot } = require('../../../core/static-root');
 const fs = require('fs');
 const path = require('path');
 const { accountDataPath } = require('../../../core/account-data-path');
@@ -42,17 +43,44 @@ function putAjustesUi({ logger }) {
   };
 }
 
+// Transicion al cambiar de escena en el enlace dinamico (se elige en el editor). Solo se acepta un nombre simple y una duracion acotada.
+const acotar = (valor, minimo, maximo, defecto) => (Number.isFinite(valor) ? Math.min(maximo, Math.max(minimo, valor)) : defecto);
+
+function transicionDe(datos) {
+  const { tipo, duracion, invertir, color, stinger } = datos?.transicionEscena ?? {};
+  return {
+    tipo: typeof tipo === 'string' && /^[a-z0-9-]{1,40}$/.test(tipo) ? tipo : 'ninguna',
+    duracion: acotar(duracion, 150, 3000, 600),
+    invertir: invertir === true,
+    color: typeof color === 'string' && /^#[0-9a-fA-F]{6}$/.test(color) ? color : '#000000',
+    // El stinger solo puede ser una imagen/video de la biblioteca de la app o una URL https/http.
+    stinger: {
+      src: typeof stinger?.src === 'string' && /^(https?:\/\/|\/imagenes\/)\S{1,500}$/.test(stinger.src) ? stinger.src : '',
+      punto: acotar(stinger?.punto, 10, 90, 50),
+    },
+  };
+}
+
+// Version de la pagina del overlay de escena: si cambia (se actualizo la app), la Browser Source de OBS se recarga sola
+// en vez de seguir con el codigo viejo en memoria.
+function versionPagina() {
+  try { return fs.statSync(path.join(staticRoot(), 'overlay-escena.html')).mtimeMs; } catch (_) { return 0; }
+}
+
 function getEscenaOverlay({ bus }) {
   return (req, res) => {
     res.set('Cache-Control', 'no-store');
     if (!overlayAccess(bus).pro) return res.status(403).json({ urls: [] });
+    // ponytail: migracion. Las paginas de escena anteriores a v=2 no conocen las transiciones nuevas ni se recargan solas:
+    // se les da una "escena" que recarga la pagina. Quitar cuando ya no queden Browser Sources de OBS con esa version.
+    if (!req.query.v) return res.json({ urls: ['/overlay-recarga.html'] });
     try {
       const { datos } = JSON.parse(fs.readFileSync(archivo(), 'utf8'));
       const id = req.query.e === 'dinamica' ? datos?.escenaActivaId : req.query.e;
       const escenas = Array.isArray(datos?.escenas) ? datos.escenas : [];
       const guardadas = escenas.find((escena) => escena.id === id)?.urls;
       const urls = Array.isArray(guardadas) ? guardadas : [];
-      return res.json({ urls: urls.filter((url) => typeof url === 'string' && /^\/overlay-(?!escena)[\w-]+\.html(\?|$)/.test(url)) });
+      return res.json({ urls: urls.filter((url) => typeof url === 'string' && /^\/overlay-(?!escena)[\w-]+\.html(\?|$)/.test(url)), escenaId: id ?? null, transicion: transicionDe(datos), build: versionPagina() });
     } catch (error) {
       return res.status(error.code === 'ENOENT' ? 404 : 500).json({ urls: [] });
     }

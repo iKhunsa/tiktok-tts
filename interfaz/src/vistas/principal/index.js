@@ -53,7 +53,6 @@ import { iniciarEpik } from './epik/seccion.js';
 import { iniciarSelectorColor } from '../../componentes/selector-color/index.js';
 import { iniciarTarjetasOverlays } from './overlays-tarjetas.js';
 import { iniciarCatalogoOverlays } from './overlays-catalogo/index.js';
-import { restaurarAtajosEscenas } from './overlays-catalogo/editor-canvas.js';
 import {
   toggleChatToggles, toggleOption, setSoloChatMode,
   iniciarObservadorTogglesChat,
@@ -276,7 +275,6 @@ function iniciarArranque() {
       if (appSettings[settingKey]) registerTtsShortcut(action, appSettings[settingKey], { silent: true });
     }
   }
-  restaurarAtajosEscenas();
   loadVoices();
   connectWS();
   updateQueueBadge();

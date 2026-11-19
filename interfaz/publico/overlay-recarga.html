@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<!-- Solo para migrar: lo carga como "overlay" la pagina de escena de versiones anteriores y la recarga (como mucho una vez por minuto, por si sigue mostrandose la version vieja). -->
+<script>
+try {
+  const antes = Number(parent.sessionStorage.getItem('recargaEscena')) || 0;
+  if (Date.now() - antes > 60000) {
+    parent.sessionStorage.setItem('recargaEscena', String(Date.now()));
+    parent.location.reload();
+  }
+} catch (_) { /* sin padre o sin almacenamiento: nada que recargar */ }
+</script>

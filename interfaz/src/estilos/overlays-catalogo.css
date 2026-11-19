@@ -689,3 +689,26 @@ body.reduce-motion :is(.edi-pestana, .edi-categoria, .edi-tarjeta, .edi-gif-tarj
 .copiar-url-tutorial { display: inline-flex; align-items: center; gap: 6px; flex: none; white-space: nowrap; }
 
 @media (prefers-reduced-motion: reduce) { .copiar-url-opcion { transition: none; } }
+
+/* Acordeon "Transiciones de escenas": usa el estilo del inspector de los overlays (ovl-inspector); aqui solo se ajusta al ancho del lateral. */
+.edi-transiciones { flex: none; max-height: 55%; padding: 0; gap: 0; border-top: 1px solid var(--border); overflow-y: auto; }
+.edi-transiciones .ovl-inspector { overflow: visible; border-radius: 0; }
+.edi-transiciones .ovl-inspector .cfg-grupo { padding: 16px; }
+.edi-transiciones .ovl-inspector .cfg-field:has(> label + :is(input, select)) { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+.edi-transiciones .cfg-grupo[hidden] { display: none; }
+.edi-transicion-pie { display: flex; flex-direction: column; gap: 10px; padding: 16px; }
+.edi-transicion-probar { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; }
+.edi-transicion-probar:disabled { opacity: .5; cursor: not-allowed; }
+.edi-transicion-subir { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.edi-transiciones .cuenta-hint { margin: 0; line-height: 1.5; }
+
+/* Tarjeta flotante de prueba, junto al acordeon: dos escenas de muestra (A y B) en 16:9, como una vista previa de OBS. */
+.edi-transicion-tarjeta { position: fixed; z-index: 1400; width: 320px; padding: 8px; border: 1px solid var(--border-strong); border-radius: 12px; background: var(--surface-raised); box-shadow: 0 12px 32px rgba(0, 0, 0, .5); animation: edi-tarjeta-entra var(--dur-3, 200ms) var(--ease-out) both; }
+.edi-transicion-tarjeta-barra { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 4px 8px; font-size: var(--text-xs); font-weight: 600; color: var(--text-bright); }
+.edi-transicion-tarjeta-acciones { display: flex; align-items: center; gap: 2px; }
+.edi-transicion-vista { position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 8px; background: var(--bg); }
+.edi-transicion-a, .edi-transicion-b { position: absolute; inset: 0; display: grid; place-items: center; font-size: 12vmin; font-weight: 700; color: #fff; }
+.edi-transicion-a { background: linear-gradient(135deg, var(--brand), #7a1230); }
+.edi-transicion-b { background: linear-gradient(135deg, #2a6df4, #0d2f73); }
+@keyframes edi-tarjeta-entra { from { opacity: 0; transform: scale(0.96) translateX(-6px); } }
+@media (prefers-reduced-motion: reduce) { .edi-transicion-tarjeta { animation: none; } }

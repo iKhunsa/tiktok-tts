@@ -2,7 +2,8 @@ import { t, tErr } from '../../nucleo/i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
 import { aplicarBloqueoVista } from '../../nucleo/estado/vista-bloqueada.js';
 import { logStorage } from '../../nucleo/log-storage.js';
-import { trackUi } from '../../nucleo/telemetria-ui.js';
+import { trackUi } from '../../nucleo/telemetria-ui.js';
+import { teclaDeAtajo } from '../../nucleo/teclado/tecla-de-atajo.js';
 
 let _spSounds = [];
 let _spCapturing = null; // soundId capturando un atajo
@@ -227,7 +228,7 @@ async function _spKeyCapture(e) {
     spCancelCapture();
     return;
   }
-  const key = e.key.toUpperCase();
+  const key = teclaDeAtajo(e);
   if (['CONTROL', 'SHIFT', 'ALT', 'META'].includes(key)) return;
   const mods = [];
   if (e.ctrlKey) mods.push('Ctrl');

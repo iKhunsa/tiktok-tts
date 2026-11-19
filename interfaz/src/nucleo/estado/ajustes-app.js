@@ -16,6 +16,7 @@ import { updateConnectorChipState } from '../../vistas/principal/voces.js';
 import { updateOverlayUrl } from '../../vistas/principal/configurador-overlays.js';
 import { renderizarTodosLosCamposOverlay } from '../../vistas/principal/campos-overlay/index.js';
 import { migrarDominiosOverlay } from '../../../compartido/estilo/migrar-dominios-overlay.js';
+import { restaurarAtajosEscenas } from '../../vistas/principal/overlays-catalogo/restaurar-atajos-escenas.js';
 import { DEFAULTS_OVERLAYS } from '../../../compartido/estilo/esquemas.js';
 import { reportarFallo } from '../../../compartido/reportar-fallo.js';
 import { VISTA_CHAT_DEFECTO } from '../../componentes/chat-vista/ajustes.js';
@@ -64,6 +65,7 @@ export const DEFAULT_SETTINGS = {
   overlayLienzo: '16:9',
   escenas: [{ nombre: "", ids: [], nombres: {} }], // editor de canvas: ids de overlay por escena
   escenaActivaId: null, // escena que sigue la URL dinamica de OBS (cambia con los atajos de teclado por escena)
+  transicionEscena: { tipo: 'ninguna', duracion: 600, invertir: false, color: '#000000', stinger: { src: '', punto: 50 } }, // animacion al cambiar de escena con atajo en el enlace dinamico de OBS
   skinsFavoritas: [],
   epikOcultos: [], // .epik quitados de favoritos: no salen en el selector de skins
 };
@@ -115,6 +117,9 @@ export function loadSettings() {
     reportarFallo('interfaz.editor.ajustes_corruptos', 'Ajustes de la interfaz ilegibles: se cargaron los valores por defecto', { error: e.name });
     appSettings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
   }
+  // Los atajos de escena guardados quedan listos al abrir la app, sin abrir el editor: el proceso principal arranca
+  // vacio y los ajustes de la cuenta llegan cuando se conoce la sesion, asi que se registran con cada carga.
+  restaurarAtajosEscenas();
 }
 
 // Respaldo en disco (/api/ajustes-ui, por cuenta): localStorage puede vaciarse o corromperse, y con él se irían los

@@ -31,10 +31,11 @@ function normalizeShortcut(shortcut) {
     .filter(Boolean)
     .map((part) => {
       const lower = part.toLowerCase();
-      if (lower === 'control') return 'Ctrl';
+      if (lower === 'control' || lower === 'ctrl') return 'Ctrl';
+      if (lower === 'shift') return 'Shift';
       if (lower === 'cmdorctrl' || lower === 'commandorcontrol') return 'CommandOrControl';
       if (lower === 'cmd' || lower === 'command') return 'Cmd';
-      if (lower === 'option') return 'Alt';
+      if (lower === 'option' || lower === 'alt') return 'Alt';
       if (lower === 'arrowup') return 'Up';
       if (lower === 'arrowdown') return 'Down';
       if (lower === 'arrowleft') return 'Left';
@@ -51,7 +52,8 @@ function isValidShortcut(shortcut) {
   if (!normalized || normalized.length > 50) return false;
   if (FORBIDDEN_SHORTCUTS.has(normalized)) return false;
   if (SPECIAL_PAUSE_SHORTCUTS.has(normalized)) return true;
-  return /^(Ctrl|CommandOrControl|Cmd|Alt|Shift|Super)\+([A-Z0-9]|F\d{1,2})(\+([A-Z0-9]|F\d{1,2}))*$/i.test(normalized);
+  // Uno o mas modificadores (Ctrl+Shift+F5 incluido) y una sola tecla al final.
+  return /^((Ctrl|CommandOrControl|Cmd|Alt|Shift|Super)\+)+([A-Z0-9]|F\d{1,2})$/i.test(normalized);
 }
 
 /**
@@ -256,51 +258,64 @@ function attachIpcBridge({ app, bus, logger, getMainWindow, globalShortcut }) {
   // ── Atajos por escena — cambian la "escena activa" para la URL dinámica de OBS ──
   const sceneShortcuts = new Map(); // escenaId -> normalizedShortcut
 
+  const quitarAtajoDeEscena = (escenaId, atajo) => {
+    if (isUiohookActive()) unregisterUiohookShortcut(`escena:${escenaId}`);
+    else { try { globalShortcut.unregister(atajo); } catch (_) { /* best-effort */ } }
+    sceneShortcuts.delete(escenaId);
+  };
+
+  // Registra `atajo` para la escena; devuelve null si quedo registrado o el motivo si no.
+  const ponerAtajoDeEscena = (escenaId, atajo) => {
+    const alActivar = () => {
+      const win = getMainWindow();
+      const entregado = !!win && !win.isDestroyed();
+      if (entregado) win.webContents.send('scene-shortcut', escenaId);
+      logger?.log(entregado ? 'info' : 'warn', 'electron-shell', 'electron-shell/ipc-bridge.js#scene-shortcut', 'electron_shell.atajo_escena.activado', entregado ? 'Atajo de escena activado' : 'Atajo de escena activado sin ventana principal', { escenaId, shortcut: atajo, entregado });
+    };
+    if (isUiohookActive()) return registerUiohookShortcut(`escena:${escenaId}`, atajo, alActivar) ? null : 'Atajo no soportado por uiohook';
+    try { return globalShortcut.register(atajo, alActivar) ? null : 'Windows no permitió registrar este atajo'; } catch (error) { return error.message; }
+  };
+
   ipcMain.handle('register-scene-shortcut', (_event, { escenaId, shortcut }) => {
     if (!escenaId) return { ok: false, error: 'escenaId requerido' };
+    const fallo = (error) => {
+      logger?.log('warn', 'electron-shell', 'electron-shell/ipc-bridge.js#register-scene-shortcut', 'electron_shell.atajo_escena.no_registrado', `Atajo de escena no registrado: ${error}`, { escenaId, shortcut, error });
+      return { ok: false, error };
+    };
 
-    const prev = sceneShortcuts.get(escenaId);
-    if (prev) {
-      if (isUiohookActive()) unregisterUiohookShortcut(`escena:${escenaId}`);
-      else { try { globalShortcut.unregister(prev); } catch (_) { /* best-effort */ } }
-      sceneShortcuts.delete(escenaId);
+    const anterior = sceneShortcuts.get(escenaId);
+    if (!shortcut) {
+      if (anterior) quitarAtajoDeEscena(escenaId, anterior);
+      return { ok: true, shortcut: null };
     }
 
-    if (!shortcut) return { ok: true, shortcut: null };
-
+    // Todo lo que puede fallar se comprueba ANTES de tocar el atajo anterior: un cambio rechazado lo deja funcionando.
     const normalized = normalizeShortcut(shortcut);
-    if (!isValidShortcut(normalized)) return { ok: false, error: 'Atajo inválido o reservado por el sistema' };
+    if (!isValidShortcut(normalized)) return fallo('Atajo inválido o reservado por el sistema');
 
     // Conflictos: contra otras escenas, sonidos, atajos de TTS y el atajo global de clip.
     for (const [otherId, sc] of sceneShortcuts) {
-      if (otherId !== escenaId && sc === normalized) return { ok: false, error: 'conflict' };
+      if (otherId !== escenaId && sc === normalized) return fallo('conflict');
     }
     for (const sc of soundpadShortcuts.values()) {
-      if (sc === normalized) return { ok: false, error: 'conflict' };
+      if (sc === normalized) return fallo('conflict');
     }
     for (const sc of ttsShortcuts.values()) {
-      if (sc === normalized) return { ok: false, error: 'conflict' };
+      if (sc === normalized) return fallo('conflict');
     }
-    if (normalizeShortcut('CommandOrControl+Shift+M') === normalized) return { ok: false, error: 'conflict' };
+    if (normalizeShortcut('CommandOrControl+Shift+M') === normalized) return fallo('conflict');
 
-    const activateCallback = () => {
-      const win = getMainWindow();
-      if (win && !win.isDestroyed()) win.webContents.send('scene-shortcut', escenaId);
-    };
-
-    if (isUiohookActive()) {
-      const ok = registerUiohookShortcut(`escena:${escenaId}`, normalized, activateCallback);
-      if (!ok) return { ok: false, error: 'Atajo no soportado por uiohook' };
-    } else {
-      try {
-        const registered = globalShortcut.register(normalized, activateCallback);
-        if (!registered) return { ok: false, error: 'Windows no permitió registrar este atajo' };
-      } catch (error) {
-        return { ok: false, error: error.message };
+    // El nuevo se registra primero; con uiohook reemplaza al anterior (mismo id), con globalShortcut el anterior se suelta despues.
+    if (anterior !== normalized || isUiohookActive()) {
+      const error = ponerAtajoDeEscena(escenaId, normalized);
+      if (error) return fallo(error);
+      if (anterior && anterior !== normalized && !isUiohookActive()) {
+        try { globalShortcut.unregister(anterior); } catch (_) { /* best-effort */ }
       }
     }
 
     sceneShortcuts.set(escenaId, normalized);
+    logger?.log('info', 'electron-shell', 'electron-shell/ipc-bridge.js#register-scene-shortcut', 'electron_shell.atajo_escena.registrado', 'Atajo de escena registrado', { escenaId, shortcut: normalized, uiohook: isUiohookActive() });
     return { ok: true, shortcut: normalized };
   });
 

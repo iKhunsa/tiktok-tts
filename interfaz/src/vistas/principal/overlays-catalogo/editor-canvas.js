@@ -19,6 +19,7 @@ import { DEFAULTS_GIF, esCapaGif } from '../../../../compartido/estilo/campos-gi
 import { idCapaGif, prepararCapaGif } from './gif-capas.js';
 import { montarSeccionEpik } from '../epik/seccion.js';
 import { crearSelectorSkin } from '../selector-skin.js';
+import { iniciarPanelTransiciones, refrescarPanelTransiciones } from './transiciones-panel.js';
 import { showToast } from '../../../componentes/toast.js';
 import { abrirPopupPro } from '../../../componentes/popup-pro.js';
 import { almacenSesion, tieneAccesoPro } from '../../../nucleo/estado/sesion.js';
@@ -592,15 +593,6 @@ function pintar() {
   pintarBiblioteca();
 }
 
-/** Re-registra en el proceso principal los atajos de escena guardados, una vez que electronAPI esta listo (al
- * arrancar los atajos solo viven en appSettings — el Map del main process se vacia en cada reinicio). */
-export function restaurarAtajosEscenas() {
-  if (!window.electronAPI?.registerSceneShortcut) return;
-  for (const e of appSettings.escenas ?? []) {
-    if (e.shortcut) window.electronAPI.registerSceneShortcut(e.id, e.shortcut);
-  }
-}
-
 export function abrirEditorCanvas() {
   // Todo el editor es Pro. Es el unico punto de entrada: lo usan los botones y tambien la restauracion tras una
   // recarga (barra-titulo hace clic en #ovlEditorUnificado). Sin acceso no se entra y no se recuerda como abierto.
@@ -618,6 +610,7 @@ export function abrirEditorCanvas() {
     guardar: (id, parcial) => { const e = escena(); e.ajustes ??= {}; e.ajustes[id] = { ...e.ajustes[id], ...parcial }; },
   });
   $('ovlEditor').hidden = false;
+  refrescarPanelTransiciones();
   document.body.classList.add('edi-abierto');
   // Las escenas eran listas de ids: se pasan al formato { nombre, ids, nombres }.
   if (!Array.isArray(appSettings.escenas) || !appSettings.escenas.length) appSettings.escenas = [nuevaEscena()];
@@ -743,6 +736,7 @@ export function iniciarEditorCanvas() {
   const editor = $('ovlEditor');
   media = crearMedia();
   crearCategorias();
+  iniciarPanelTransiciones();
   crearSecciones();
   iniciarGifBuscador($('ovlEditorGif'));
   iniciarSonidosBuscador($('ovlEditorSonido'));

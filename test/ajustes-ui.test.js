@@ -49,15 +49,37 @@ test('rechaza un respaldo sin marca de tiempo o sin objeto de datos', async () =
 });
 
 
+const SIN_TRANSICION = { tipo: 'ninguna', duracion: 600, invertir: false, color: '#000000', stinger: { src: '', punto: 50 } };
+
 test('escenas OBS se bloquean al perder Pro sin borrar el respaldo y vuelven al renovar', async () => {
   const datos = { escenaActivaId: 'a', escenas: [{ id: 'a', urls: ['/overlay-chat.html?skin=terminal', 'https://externo/', '/overlay-escena.html?e=a'] }] };
   await pedir('PUT', { guardado: 234, datos });
-  const escena = () => fetch(`${base}/api/overlays/escena?e=dinamica`);
+  const escena = () => fetch(`${base}/api/overlays/escena?e=dinamica&v=2`);
+  const sinBuild = async (respuesta) => { const json = await respuesta.json(); delete json.build; return json; };
   conPro = true;
-  assert.deepEqual(await (await escena()).json(), { urls: ['/overlay-chat.html?skin=terminal'] });
+  assert.deepEqual(await sinBuild(await escena()), { urls: ['/overlay-chat.html?skin=terminal'], escenaId: 'a', transicion: SIN_TRANSICION });
   conPro = false;
   assert.equal((await escena()).status, 403);
   assert.deepEqual((await pedir('GET')).json.datos, datos);
   conPro = true;
-  assert.deepEqual(await (await escena()).json(), { urls: ['/overlay-chat.html?skin=terminal'] });
+  assert.deepEqual(await sinBuild(await escena()), { urls: ['/overlay-chat.html?skin=terminal'], escenaId: 'a', transicion: SIN_TRANSICION });
+});
+
+test('la escena dinamica devuelve la transicion elegida y descarta valores raros', async () => {
+  conPro = true;
+  const leer = async (transicionEscena) => {
+    await pedir('PUT', { guardado: 345, datos: { escenaActivaId: 'a', escenas: [{ id: 'a', urls: [] }], transicionEscena } });
+    return (await (await fetch(`${base}/api/overlays/escena?e=dinamica&v=2`)).json()).transicion;
+  };
+  assert.deepEqual(await leer({ tipo: 'cortina-izquierda', duracion: 900 }), { ...SIN_TRANSICION, tipo: 'cortina-izquierda', duracion: 900 });
+  assert.deepEqual(await leer({ tipo: '../x', duracion: 'mucho' }), SIN_TRANSICION);
+  assert.deepEqual(await leer({ tipo: 'fundido', duracion: 99999 }), { ...SIN_TRANSICION, tipo: 'fundido', duracion: 3000 });
+  assert.deepEqual(await leer({ tipo: 'stinger', invertir: true, color: '#ff0000', stinger: { src: '/imagenes/a.png', punto: 70 } }), { ...SIN_TRANSICION, tipo: 'stinger', invertir: true, color: '#ff0000', stinger: { src: '/imagenes/a.png', punto: 70 } });
+  assert.deepEqual((await leer({ tipo: 'stinger', color: 'rojo', stinger: { src: 'javascript:alert(1)', punto: 500 } })), { ...SIN_TRANSICION, tipo: 'stinger', stinger: { src: '', punto: 90 } });
+});
+
+test('las paginas de escena anteriores (sin v=2) reciben una escena que las recarga', async () => {
+  conPro = true;
+  const respuesta = await fetch(`${base}/api/overlays/escena?e=dinamica`);
+  assert.deepEqual(await respuesta.json(), { urls: ['/overlay-recarga.html'] });
 });

@@ -1,24 +1,11 @@
 import { t, aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
 import { showToast } from '../../../componentes/toast.js';
+import { avisarErrorMedia as avisarError, listarMedia, pedirMedia as pedir, subirMedia } from './media-api.js';
 import { idCapaGif } from './gif-capas.js';
 import { botonEliminar, botonIcono, elemento } from '../gif-buscador/biblioteca.js';
 
 // Pestana Media del editor de canvas: biblioteca de imagenes que sube el usuario (PNG, JPEG, WebP, GIF), por cuenta.
 // Los textos que vienen del servidor (nombres) entran con textContent, nunca como HTML.
-
-async function pedir(metodo, cuerpo, ruta = '') {
-  const respuesta = await fetch(`/api/imagenes${ruta}`, {
-    method: metodo,
-    headers: cuerpo && !(cuerpo instanceof FormData) ? { 'Content-Type': 'application/json' } : undefined,
-    body: cuerpo instanceof FormData || !cuerpo ? cuerpo : JSON.stringify(cuerpo),
-  });
-  const datos = await respuesta.json().catch(() => ({}));
-  if (!respuesta.ok) throw Object.assign(new Error(datos.error || 'error'), { codigo: datos.codigo });
-  return datos;
-}
-
-const CODIGOS = { muy_grande: 'mediaErrorTamano', formato_invalido: 'mediaErrorFormato', biblioteca_llena: 'mediaErrorLlena' };
-const avisarError = (codigo) => showToast(t(`overlayCat.editor.${CODIGOS[codigo] || 'mediaError'}`), 'error');
 
 export function crearMedia() {
   const raiz = elemento('div', 'edi-media');
@@ -95,20 +82,15 @@ export function crearMedia() {
   }
 
   async function recargar() {
-    try { items = (await pedir('GET')).items; } catch (error) { avisarError(error.codigo); return; }
+    try { items = await listarMedia(); } catch (error) { avisarError(error.codigo); return; }
     pintar();
   }
 
   entrada.addEventListener('change', async () => {
-    const formulario = new FormData();
-    [...entrada.files].forEach((archivo) => formulario.append('imagenes', archivo));
+    const archivos = [...entrada.files];
     entrada.value = '';
-    if (![...formulario.keys()].length) return;
-    try {
-      const { rechazos } = await pedir('POST', formulario);
-      if (rechazos.length) avisarError(rechazos[0]);
-      else showToast(t('overlayCat.editor.mediaSubido'), 'success');
-    } catch (error) { avisarError(error.codigo); }
+    if (!archivos.length) return;
+    try { await subirMedia(archivos); } catch (error) { avisarError(error.codigo); }
     recargar();
   });
 
