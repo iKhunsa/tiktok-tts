@@ -16,6 +16,7 @@ const REQUIRED = [
   'advanced.html',
   'mobile.html',
   'chat-ventana.html',
+  'temporada.html',
   'overlay-alertas.html',
   'overlay-alertas-social.html',
   'overlay-chat.html',

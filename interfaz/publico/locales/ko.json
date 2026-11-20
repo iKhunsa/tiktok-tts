@@ -2541,5 +2541,73 @@
       "carpeta_invalida": "해당 폴더가 없습니다.",
       "no_encontrado": "해당 GIF 또는 폴더를 찾을 수 없습니다. 이미 삭제되었을 수 있습니다."
     }
+  },
+  "temporada": {
+    "ahoraNo": "나중에",
+    "proximamente": "곧 공개",
+    "siguiente": "다음 섹션",
+    "pestana": {
+      "inicio": "Winter Season",
+      "luckyDrop": "Lucky Drop",
+      "pase": "Pass",
+      "tienda": "Shop"
+    },
+    "winter": {
+      "nombre": "Winter Season",
+      "abrir": "Winter Season 열기",
+      "titulo1": "Winter Season",
+      "titulo2": "이(가) TikLiveTTS에 찾아왔어요!",
+      "descubre": "자세히 보기",
+      "descripcion": "겨울에는 보상이 가득해요! Lucky Drop으로 특별한 상품을 받고, <strong>12월 1일~30일</strong> 시즌 패스에서 미션을 완료하고, 다시는 만날 수 없는 한정 오버레이가 있는 전용 상점을 둘러보세요.",
+      "guia": "Winter Season으로 돌아오고 싶을 때는 이 버튼을 누르세요. Lucky Drop, Pass, Shop이 여기에서 기다립니다."
+    },
+    "pendiente": {
+      "cofre": "상자",
+      "maquina": "크레인 게임기",
+      "overlay": "오버레이",
+      "icono": "아이콘",
+      "monedas": "코인"
+    },
+    "saldo": {
+      "titulo": "코인",
+      "mas": "코인 받기"
+    },
+    "pase": {
+      "descripcion": "설명",
+      "desbloquear": "잠금 해제",
+      "paso1": "공식 TikTok 계정을 팔로우하고 모험에 함께하세요.",
+      "proximo": "이 보상은 곧 공개됩니다.",
+      "anterior": "이전 보상",
+      "siguiente": "다음 보상",
+      "recompensa": "보상 {n}"
+    },
+    "luckyDrop": {
+      "premios": "상품",
+      "alternar": "상품 표시/숨기기",
+      "coins": {
+        "nombre": "Coins",
+        "descripcion": "코인을 모아 TikLiveTTS의 전용 보상을 잠금 해제하세요."
+      },
+      "mysteryBall": {
+        "nombre": "Mystery Ball",
+        "descripcion": "미스터리 보상. 열어보고 어떤 깜짝 선물이 기다리는지 확인하세요!"
+      },
+      "proUnlock": {
+        "nombre": "Pro Unlock",
+        "descripcion": "Pro 요금제의 모든 혜택을 한 달간 무료로 잠금 해제하세요!"
+      },
+      "ultimatePro": {
+        "nombre": "Ultimate Pro",
+        "descripcion": "대상! TikLiveTTS Pro를 12개월 동안 무료로 즐기세요."
+      }
+    },
+    "banco": {
+      "titulo": "Coin Bank",
+      "volver": "뒤로"
+    },
+    "guia": {
+      "titulo": "시즌 이벤트, 언제든 바로 열기",
+      "entendido": "확인"
+    }
   }
 }

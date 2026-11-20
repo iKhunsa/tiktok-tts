@@ -1,0 +1,276 @@
+/* Temporadas (Winter Season): pantalla de bienvenida en la ventana de la app, boton de la barra de titulo y ventana propia.
+   Movimiento con criterio: lo que se ve una sola vez (la bienvenida) entra escalonado con una curva de salida fuerte; todo
+   usa transform y opacity; con movimiento reducido (sistema o ajuste de accesibilidad) solo queda un fundido. */
+
+/* La ventana propia no carga los tokens de la app: los mismos valores, acotados a su <body>. */
+.temporada-ventana {
+  --brand: #F0213A;
+  --brand-hover: #d81830;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --noche: #060b1d;
+  margin: 0;
+  background: var(--noche);
+  color: #fff;
+  font-family: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+  overflow: hidden;
+}
+
+/* ───────── Escena: cielo de noche + ilustracion a la derecha + nieve ───────── */
+.temporada-fondo, .temporada-anuncio {
+  background:
+    radial-gradient(110% 90% at 72% 62%, #1d2c5e 0%, #0e1838 46%, #060b1d 100%);
+}
+.temporada-fondo { position: fixed; inset: 0; overflow: hidden; }
+.temporada-escena {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  height: min(92%, 880px);
+  width: auto;
+  pointer-events: none;
+  user-select: none;
+  /* La ilustracion se funde con el cielo por la izquierda y por arriba, sin cortes. */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 34%), linear-gradient(180deg, transparent 0%, #000 16%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 34%), linear-gradient(180deg, transparent 0%, #000 16%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+.temporada-fondo::after, .temporada-anuncio::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(6, 11, 29, 0.55) 0%, rgba(6, 11, 29, 0) 58%);
+}
+
+.temporada-nieve { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 1; }
+.temporada-nieve span {
+  position: absolute;
+  top: 0;
+  left: var(--x);
+  width: var(--t);
+  height: var(--t);
+  border-radius: 50%;
+  background: #fff;
+  opacity: var(--o);
+  will-change: transform;
+  animation: temporada-cae var(--d) linear var(--r) infinite;
+}
+@keyframes temporada-cae {
+  from { transform: translate3d(0, -6vh, 0); }
+  to { transform: translate3d(var(--v), 106vh, 0); }
+}
+
+/* ───────── Texto y boton del anuncio (se repite en la pestana de inicio de la ventana) ───────── */
+.temporada-contenido {
+  position: absolute;
+  z-index: 2;
+  left: clamp(32px, 13vw, 190px);
+  top: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  max-width: min(600px, 54vw);
+  transform: translateY(-46%);
+}
+.temporada-titulo { margin: 0; display: flex; flex-direction: column; gap: 4px; font-weight: 900; line-height: 0.98; letter-spacing: -0.02em; text-shadow: 0 4px 28px rgba(0, 0, 0, 0.4); }
+.temporada-titulo-1 { font-size: clamp(40px, 5.6vw, 80px); color: var(--brand); white-space: nowrap; }
+.temporada-titulo-2 { font-size: clamp(24px, 3.3vw, 46px); color: #fff; letter-spacing: -0.01em; }
+.temporada-texto { margin: 0; max-width: 520px; font-size: 15px; font-weight: 500; line-height: 1.55; color: rgba(255, 255, 255, 0.92); text-shadow: 0 1px 12px rgba(0, 0, 0, 0.45); }
+.temporada-texto strong { font-weight: 800; color: #fff; }
+
+.temporada-cta {
+  margin-top: 8px;
+  padding: 15px 26px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--brand);
+  color: #fff;
+  font: 800 14px/1 'Inter', sans-serif;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 12px 32px rgba(240, 33, 58, 0.38);
+  transition: background-color 150ms var(--ease-out), transform 130ms var(--ease-out), box-shadow 200ms var(--ease-out);
+}
+.temporada-cta:active { transform: scale(0.97); }
+.temporada-cta:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) {
+  .temporada-cta:hover { background: var(--brand-hover); transform: translateY(-1px); box-shadow: 0 16px 38px rgba(240, 33, 58, 0.5); }
+  .temporada-cta:active { transform: scale(0.97); }
+}
+
+/* "Ahora no": discreto a proposito (el boton grande es el unico llamado), pero con area de toque comoda. */
+.temporada-ahora-no {
+  margin: -6px 0 0 6px;
+  padding: 10px 8px;
+  border: 0;
+  background: none;
+  color: rgba(255, 255, 255, 0.62);
+  font: 500 13px/1 'Inter', sans-serif;
+  cursor: pointer;
+  transition: color 150ms var(--ease-out);
+}
+.temporada-ahora-no:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.8); outline-offset: 2px; border-radius: 6px; }
+@media (hover: hover) and (pointer: fine) { .temporada-ahora-no:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px; } }
+
+/* ───────── Bienvenida a ventana completa (ventana de la app) ───────── */
+.temporada-anuncio:focus { outline: none; }
+.temporada-anuncio { z-index: 2500; display: flex; backdrop-filter: none; overflow: hidden; animation: temporada-fondo-entra 320ms ease-out both; }
+.temporada-anuncio .temporada-escena { animation: temporada-escena-entra 950ms var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)) 140ms both; }
+.temporada-anuncio .temporada-contenido > *, .temporada-hero .temporada-contenido > * {
+  animation: temporada-sube 560ms cubic-bezier(0.23, 1, 0.32, 1) both;
+  animation-delay: calc(200ms + var(--i, 0) * 75ms);
+}
+.temporada-contenido > :nth-child(1) { --i: 0; }
+.temporada-contenido > :nth-child(2) { --i: 1; }
+.temporada-contenido > :nth-child(3) { --i: 2; }
+.temporada-contenido > :nth-child(4) { --i: 3; }
+.temporada-anuncio { transition: opacity 220ms ease-out, transform 220ms cubic-bezier(0.23, 1, 0.32, 1); }
+.temporada-anuncio.is-saliendo { opacity: 0; transform: scale(1.015); pointer-events: none; }
+
+@keyframes temporada-fondo-entra { from { opacity: 0; } }
+@keyframes temporada-escena-entra { from { opacity: 0; transform: translateX(36px) scale(0.98); } }
+@keyframes temporada-sube { from { opacity: 0; transform: translateY(14px); filter: blur(4px); } }
+
+/* ───────── Boton de la barra de titulo (junto a Novedades) ───────── */
+.titlebar-season { position: relative; }
+.titlebar-season-label {
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  font-weight: 700;
+  transition: max-width var(--dur-3) var(--ease-out), opacity var(--dur-2) var(--ease-out);
+}
+.titlebar-season .icon-inline { opacity: 1; }
+/* Compacto en reposo; al pasar el cursor o enfocarlo con teclado se abre y dice su nombre. */
+.titlebar-season:hover:not(:disabled), .titlebar-season:focus-visible, .titlebar-season.is-abierto {
+  padding: 0 10px 0 7px;
+  color: var(--text);
+  background: color-mix(in srgb, var(--brand) 22%, transparent);
+}
+.titlebar-season:hover .titlebar-season-label, .titlebar-season:focus-visible .titlebar-season-label, .titlebar-season.is-abierto .titlebar-season-label { max-width: 120px; opacity: 1; }
+.titlebar-season-punto {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--brand);
+  box-shadow: 0 0 0 2px var(--bg);
+}
+.titlebar-season-punto[hidden] { display: none; }
+/* Tras "Ahora no": dos latidos para que sepan donde queda. */
+.titlebar-season.is-sugerido { animation: temporada-latido 700ms var(--ease-out) 2; }
+@keyframes temporada-latido {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand) 55%, transparent); }
+  100% { box-shadow: 0 0 0 12px transparent; }
+}
+
+/* ───────── Ventana de la temporada ───────── */
+.temporada-barra {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  padding: 14px 150px 0; /* deja libres los botones nativos de la ventana a la derecha */
+  -webkit-app-region: drag;
+}
+.temporada-pestanas {
+  display: flex;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 14px;
+  background: rgba(8, 10, 18, 0.74);
+  backdrop-filter: blur(10px);
+  -webkit-app-region: no-drag;
+}
+.temporada-pestana {
+  padding: 11px 17px;
+  border: 0;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font: 800 14px/1 'Inter', sans-serif;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 150ms var(--ease-out), color 150ms var(--ease-out), transform 130ms var(--ease-out);
+}
+.temporada-pestana[aria-selected="true"] { color: var(--brand); background: rgba(255, 255, 255, 0.09); }
+.temporada-pestana:active { transform: scale(0.97); }
+.temporada-pestana:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) { .temporada-pestana:not([aria-selected="true"]):hover { background: rgba(255, 255, 255, 0.12); } }
+
+.temporada-paneles { position: fixed; inset: 0; z-index: 2; }
+.temporada-panel { position: absolute; inset: 0; animation: temporada-panel-entra 300ms cubic-bezier(0.23, 1, 0.32, 1) both; }
+.temporada-panel[hidden] { display: none; }
+@keyframes temporada-panel-entra { from { opacity: 0; transform: translateX(14px); } }
+.temporada-hero .temporada-contenido { transform: translateY(-46%); }
+
+/* Pestanas sin diseno todavia. */
+.temporada-proximamente {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 36px 44px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  background: rgba(10, 14, 28, 0.58);
+  backdrop-filter: blur(14px);
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+.temporada-proximamente h2 { margin: 0; font-size: 26px; font-weight: 900; letter-spacing: -0.01em; }
+.temporada-proximamente p { margin: 0; font-size: 14px; color: rgba(255, 255, 255, 0.7); }
+.temporada-proximamente img { display: none; }
+.temporada-proximamente::before { content: ''; width: 34px; height: 34px; background: rgba(255, 255, 255, 0.85); -webkit-mask: url('/icons/ac_unit.svg') center / contain no-repeat; mask: url('/icons/ac_unit.svg') center / contain no-repeat; }
+
+/* Flechas laterales: pasar de una seccion a otra, como un carrusel. */
+.temporada-flecha {
+  position: fixed;
+  top: 50%;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(8, 10, 18, 0.45);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: background-color 150ms var(--ease-out), opacity 150ms var(--ease-out), transform 130ms var(--ease-out);
+}
+.temporada-flecha img { display: none; }
+.temporada-flecha::before { content: ''; width: 22px; height: 22px; background: #fff; -webkit-mask: url('/icons/arrow_forward_ios.svg') center / contain no-repeat; mask: url('/icons/arrow_forward_ios.svg') center / contain no-repeat; }
+.temporada-flecha-sig { right: 18px; }
+.temporada-flecha[hidden] { display: none; }
+.temporada-flecha:active { transform: translateY(-50%) scale(0.94); }
+.temporada-flecha:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) { .temporada-flecha:hover { background: rgba(240, 33, 58, 0.75); } }
+
+/* ───────── Movimiento reducido: sin nieve, sin desplazamientos; solo fundidos ───────── */
+@media (prefers-reduced-motion: reduce) {
+  .temporada-nieve { display: none; }
+  .temporada-anuncio, .temporada-anuncio .temporada-escena, .temporada-anuncio .temporada-contenido > *,
+  .temporada-hero .temporada-contenido > *, .temporada-panel { animation: temporada-fondo-entra 200ms ease-out both; }
+  .temporada-anuncio.is-saliendo { transform: none; }
+  .titlebar-season.is-sugerido { animation: none; }
+  .titlebar-season-label { transition: opacity 150ms ease-out; }
+}
+body.reduce-motion .temporada-nieve { display: none; }
+body.reduce-motion .temporada-anuncio, body.reduce-motion .temporada-anuncio .temporada-escena,
+body.reduce-motion .temporada-anuncio .temporada-contenido > * { animation: temporada-fondo-entra 200ms ease-out both; }
+body.reduce-motion .titlebar-season.is-sugerido { animation: none; }

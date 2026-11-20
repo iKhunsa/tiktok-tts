@@ -2541,5 +2541,73 @@
       "carpeta_invalida": "そのフォルダは存在しません。",
       "no_encontrado": "その GIF またはフォルダーが見つかりません。すでに削除された可能性があります。"
     }
+  },
+  "temporada": {
+    "ahoraNo": "今はしない",
+    "proximamente": "近日公開",
+    "siguiente": "次のセクション",
+    "pestana": {
+      "inicio": "Winter Season",
+      "luckyDrop": "Lucky Drop",
+      "pase": "Pass",
+      "tienda": "Shop"
+    },
+    "winter": {
+      "nombre": "Winter Season",
+      "abrir": "Winter Season を開く",
+      "titulo1": "Winter Season",
+      "titulo2": "が TikLiveTTS にやってきた！",
+      "descubre": "もっと見る",
+      "descripcion": "冬は報酬がいっぱい！Lucky Drop で特別な賞品をゲットし、<strong>12 月 1 日〜30 日</strong>のシーズンパスでミッションに挑戦し、二度と手に入らない限定オーバーレイが並ぶ専用ショップをのぞいてみよう。",
+      "guia": "Winter Season に戻りたいときは、このボタンから：Lucky Drop、Pass、Shop がここで待っています。"
+    },
+    "pendiente": {
+      "cofre": "宝箱",
+      "maquina": "クレーンゲーム",
+      "overlay": "オーバーレイ",
+      "icono": "アイコン",
+      "monedas": "コイン"
+    },
+    "saldo": {
+      "titulo": "コイン",
+      "mas": "コインを入手"
+    },
+    "pase": {
+      "descripcion": "説明",
+      "desbloquear": "アンロック",
+      "paso1": "公式 TikTok アカウントをフォローして、冒険に加わろう。",
+      "proximo": "この報酬はまもなく公開されます。",
+      "anterior": "前の報酬",
+      "siguiente": "次の報酬",
+      "recompensa": "報酬 {n}"
+    },
+    "luckyDrop": {
+      "premios": "賞品",
+      "alternar": "賞品の表示/非表示",
+      "coins": {
+        "nombre": "Coins",
+        "descripcion": "コインを集めて、TikLiveTTS 内の限定報酬をアンロックしよう。"
+      },
+      "mysteryBall": {
+        "nombre": "Mystery Ball",
+        "descripcion": "謎の報酬。開けて、どんなサプライズが待っているか確かめよう！"
+      },
+      "proUnlock": {
+        "nombre": "Pro Unlock",
+        "descripcion": "Pro プランの特典をすべて 1 か月間無料でアンロック！"
+      },
+      "ultimatePro": {
+        "nombre": "Ultimate Pro",
+        "descripcion": "最大の賞品！TikLiveTTS Pro を 12 か月間無料でお楽しみください。"
+      }
+    },
+    "banco": {
+      "titulo": "Coin Bank",
+      "volver": "戻る"
+    },
+    "guia": {
+      "titulo": "シーズンイベントにいつでもアクセス",
+      "entendido": "わかりました"
+    }
   }
 }

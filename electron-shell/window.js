@@ -30,6 +30,32 @@ function isPolarUrl(url) {
   }
 }
 
+// Ventana de una temporada (Winter Season...): del tamano de la ventana de la app cuando no esta maximizada, centrada
+// y con la barra de titulo propia (los botones nativos quedan sobre el cielo de la escena).
+function opcionesVentanaTemporada(win, iconPath) {
+  const { width, height } = win.getNormalBounds();
+  return {
+    width,
+    height,
+    minWidth: 900,
+    minHeight: 600,
+    center: true,
+    title: 'TikLiveTTS',
+    icon: iconPath,
+    backgroundColor: '#060b1d',
+    autoHideMenuBar: true,
+    titleBarStyle: 'hidden',
+    titleBarOverlay: { color: '#060b1d', symbolColor: '#ffffff', height: 36 },
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+      sandbox: true,
+      webSecurity: true,
+      preload: path.join(__dirname, '..', 'preload.js'),
+    },
+  };
+}
+
 function waitForServer(cb, onFailure, attempts = 0) {
   http.get(`http://127.0.0.1:${PORT}/api/status`, (res) => {
     let body = '';
@@ -92,13 +118,18 @@ function createWindow({ iconPath, onClose, bus }) {
     },
   });
 
-  win.loadURL(`http://127.0.0.1:${PORT}`);
+  // Solo desarrollo: TEMPORADA_FORZADA=winter (npm run electron:winter) muestra la temporada fuera de sus fechas.
+  const temporadaForzada = app.isPackaged ? '' : process.env.TEMPORADA_FORZADA;
+  win.loadURL(`http://127.0.0.1:${PORT}${temporadaForzada ? `/?temporada=${encodeURIComponent(temporadaForzada)}` : ''}`);
   win.removeMenu();
   if (!app.isPackaged) watchFront(win);
 
   // URLs localhost (overlays) y el checkout de Polar abren en una ventana
   // Electron nueva; el resto de URLs externas van al navegador del sistema.
   win.webContents.setWindowOpenHandler(({ url }) => {
+    if (isAppUrl(url) && new URL(url).pathname === '/temporada.html') {
+      return { action: 'allow', overrideBrowserWindowOptions: opcionesVentanaTemporada(win, iconPath) };
+    }
     if (isAppUrl(url)) {
       const esChat = new URL(url).pathname === '/chat-ventana.html';
       return {

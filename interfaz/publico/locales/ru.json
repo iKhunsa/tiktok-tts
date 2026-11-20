@@ -2541,5 +2541,73 @@
       "carpeta_invalida": "Такой папки нет.",
       "no_encontrado": "Этот GIF или папка не найдены. Возможно, они уже удалены."
     }
+  },
+  "temporada": {
+    "ahoraNo": "Не сейчас",
+    "proximamente": "Скоро",
+    "siguiente": "Следующий раздел",
+    "pestana": {
+      "inicio": "Winter Season",
+      "luckyDrop": "Lucky Drop",
+      "pase": "Pass",
+      "tienda": "Shop"
+    },
+    "winter": {
+      "nombre": "Winter Season",
+      "abrir": "Открыть Winter Season",
+      "titulo1": "Winter Season",
+      "titulo2": "пришёл в TikLiveTTS!",
+      "descubre": "Узнать больше",
+      "descripcion": "Зима приносит море наград! Испытайте наш Lucky Drop и получайте особые призы, выполняйте задания в Сезонном пропуске с <strong>1 по 30 декабря</strong> и загляните в эксклюзивный магазин с уникальными оверлеями, которых больше не будет.",
+      "guia": "Чтобы вернуться в Winter Season, нажмите эту кнопку: здесь вас ждут Lucky Drop, Pass и Shop."
+    },
+    "pendiente": {
+      "cofre": "Сундук",
+      "maquina": "Автомат с клешнёй",
+      "overlay": "Оверлей",
+      "icono": "Значок",
+      "monedas": "Монеты"
+    },
+    "saldo": {
+      "titulo": "Монеты",
+      "mas": "Получить монеты"
+    },
+    "pase": {
+      "descripcion": "Описание",
+      "desbloquear": "Разблокировать",
+      "paso1": "Подпишитесь на наш официальный аккаунт TikTok и присоединяйтесь к приключению.",
+      "proximo": "Эта награда скоро будет раскрыта.",
+      "anterior": "Предыдущая награда",
+      "siguiente": "Следующая награда",
+      "recompensa": "Награда {n}"
+    },
+    "luckyDrop": {
+      "premios": "Призы",
+      "alternar": "Показать или скрыть призы",
+      "coins": {
+        "nombre": "Coins",
+        "descripcion": "Зарабатывайте коины и открывайте эксклюзивные награды внутри TikLiveTTS."
+      },
+      "mysteryBall": {
+        "nombre": "Mystery Ball",
+        "descripcion": "Загадочные награды. Откройте их и узнайте, какие сюрпризы вас ждут!"
+      },
+      "proUnlock": {
+        "nombre": "Pro Unlock",
+        "descripcion": "Откройте все преимущества тарифа Pro — бесплатно на месяц!"
+      },
+      "ultimatePro": {
+        "nombre": "Ultimate Pro",
+        "descripcion": "Главный приз! 12 месяцев TikLiveTTS Pro без оплаты."
+      }
+    },
+    "banco": {
+      "titulo": "Coin Bank",
+      "volver": "Назад"
+    },
+    "guia": {
+      "titulo": "Ваш сезон всегда под рукой",
+      "entendido": "Понятно"
+    }
   }
 }

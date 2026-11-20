@@ -1,0 +1,289 @@
+/* Ventana de la temporada: Lucky Drop, Pass y Shop. El diseno es de 1280x800; todo se mide en "u" (1u = 1px de ese diseno,
+   escalado al tamano de la ventana) para que las piezas conserven sus proporciones al redimensionar. Lo que todavia no
+   tiene arte se dibuja como recuadro gris (.temporada-pendiente) del tamano final. */
+
+.temporada-ventana { --u: min(calc(100vw / 1280), calc(100vh / 800)); }
+
+/* ───────── Cielo: cambia de tono segun la seccion ───────── */
+.temporada-fondo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: var(--tinte, none);
+  transition: opacity 420ms ease-out;
+}
+body[data-pestana="luckyDrop"] .temporada-fondo::before { --tinte: radial-gradient(75% 65% at 50% 24%, #2c7ca8 0%, #134a72 46%, #08213d 100%); opacity: 1; }
+body[data-pestana="pase"] .temporada-fondo::before { --tinte: radial-gradient(80% 70% at 50% 38%, #163a66 0%, #0a1c38 56%, #050c1d 100%); opacity: 1; }
+body[data-pestana="tienda"] .temporada-fondo::before { --tinte: radial-gradient(80% 60% at 50% 0%, #12273f 0%, #08121f 62%, #050912 100%); opacity: 1; }
+
+/* ───────── Recuadro gris: arte pendiente ───────── */
+.temporada-pendiente {
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border-radius: inherit;
+  background: linear-gradient(145deg, #4b4e56, #34363c);
+  color: rgba(255, 255, 255, 0.58);
+  font: 700 calc(var(--u) * 12) 'Inter', sans-serif;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* ───────── Saldo de monedas ───────── */
+.temporada-saldo {
+  position: fixed;
+  top: 14px;
+  right: 150px; /* deja libres los botones nativos de la ventana */
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 12px 7px 9px;
+  border-radius: 14px;
+  background: rgba(20, 22, 28, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-app-region: no-drag;
+}
+.temporada-saldo[hidden] { display: none; }
+.temporada-moneda { flex: none; width: 34px; height: 34px; background: url('/img/eventos/winter/moneda.webp') center / contain no-repeat; filter: drop-shadow(0 2px 6px rgba(240, 33, 58, 0.35)); }
+.temporada-saldo-cifra { min-width: 2.2ch; font-size: 28px; font-weight: 900; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.temporada-saldo-mas {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: linear-gradient(#fff, #fff) center / 12px 2.5px no-repeat, linear-gradient(#fff, #fff) center / 2.5px 12px no-repeat, var(--brand);
+  cursor: pointer;
+  transition: background-color 150ms var(--ease-out), transform 130ms var(--ease-out);
+}
+.temporada-saldo-mas:active { transform: scale(0.92); }
+.temporada-saldo-mas:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) { .temporada-saldo-mas:hover { filter: brightness(1.12); } }
+
+/* ───────── Shop: cartas de overlays exclusivos ───────── */
+.temporada-cartas { position: absolute; left: 0; right: 0; top: calc(var(--u) * 167); display: flex; justify-content: center; gap: calc(var(--u) * 32); }
+.temporada-carta {
+  width: calc(var(--u) * 263);
+  height: calc(var(--u) * 466);
+  border-radius: calc(var(--u) * 18);
+  overflow: hidden;
+  box-shadow: 0 calc(var(--u) * 18) calc(var(--u) * 40) rgba(0, 0, 0, 0.45);
+  animation: temporada-sube 520ms cubic-bezier(0.23, 1, 0.32, 1) both;
+  animation-delay: calc(60ms + var(--i, 0) * 70ms);
+  transition: transform 220ms var(--ease-out), box-shadow 220ms var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .temporada-carta:hover { transform: translateY(-5px); box-shadow: 0 calc(var(--u) * 26) calc(var(--u) * 50) rgba(0, 0, 0, 0.55); }
+}
+
+/* ───────── Pass: cofre, descripcion y fila de recompensas ───────── */
+.temporada-cofre { position: absolute; left: 50%; top: calc(var(--u) * 150); width: calc(var(--u) * 340); height: calc(var(--u) * 410); border-radius: calc(var(--u) * 26); transform: translateX(-50%); }
+.temporada-descripcion {
+  position: absolute;
+  left: calc(var(--u) * 882);
+  top: calc(var(--u) * 159);
+  width: calc(var(--u) * 293);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--u) * 14);
+  padding: calc(var(--u) * 20) calc(var(--u) * 18) calc(var(--u) * 22);
+  border-radius: calc(var(--u) * 10);
+  background: rgba(31, 32, 35, 0.92);
+  text-align: center;
+}
+.temporada-descripcion h2 { margin: 0; font-size: calc(var(--u) * 17); font-weight: 900; letter-spacing: 0.02em; text-transform: uppercase; }
+.temporada-descripcion p { margin: 0; min-height: 3em; font-size: calc(var(--u) * 12.5); line-height: 1.5; color: rgba(255, 255, 255, 0.64); }
+.temporada-cta-chico { margin: 0; padding: calc(var(--u) * 11) calc(var(--u) * 20); border-radius: calc(var(--u) * 8); font-size: calc(var(--u) * 13); box-shadow: none; }
+
+.temporada-pasos { position: absolute; left: calc(var(--u) * 104); right: calc(var(--u) * 105); top: calc(var(--u) * 600); height: calc(var(--u) * 123); display: flex; gap: calc(var(--u) * 5); }
+.temporada-paso {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: calc(var(--u) * 14);
+  background: #202124;
+  cursor: pointer;
+  overflow: hidden;
+  transition: flex-grow 260ms var(--ease-out), box-shadow 200ms var(--ease-out), transform 130ms var(--ease-out);
+}
+.temporada-paso.is-activo { flex-grow: 2; box-shadow: inset 0 0 0 2px var(--brand); }
+.temporada-paso:active { transform: scale(0.97); }
+.temporada-paso:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.temporada-paso .temporada-pendiente { border: 0; background: transparent; font-size: calc(var(--u) * 10); }
+@media (hover: hover) and (pointer: fine) { .temporada-paso:not(.is-activo):hover { background: #2a2c30; } }
+
+.temporada-paginador { position: absolute; left: 50%; top: calc(var(--u) * 736); display: flex; align-items: center; gap: calc(var(--u) * 14); transform: translateX(-50%); }
+.temporada-pagina-cuenta { min-width: 3.4ch; text-align: center; font-size: calc(var(--u) * 26); font-weight: 900; font-variant-numeric: tabular-nums; }
+.temporada-pagina-flecha {
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 36);
+  height: calc(var(--u) * 36);
+  padding: 0;
+  border: 0;
+  border-radius: calc(var(--u) * 8);
+  background: #202124;
+  cursor: pointer;
+  transition: background-color 150ms var(--ease-out), transform 130ms var(--ease-out);
+}
+.temporada-pagina-flecha::before { content: ''; width: 55%; height: 55%; background: #fff; -webkit-mask: url('/icons/arrow_forward_ios.svg') center / contain no-repeat; mask: url('/icons/arrow_forward_ios.svg') center / contain no-repeat; transform: rotate(180deg); }
+.temporada-pagina-sig::before { transform: none; }
+.temporada-pagina-flecha:active { transform: scale(0.94); }
+.temporada-pagina-flecha:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) { .temporada-pagina-flecha:hover { background: var(--brand); } }
+
+/* ───────── Lucky Drop: escenario y premios ───────── */
+.temporada-maquina { position: absolute; left: 50%; top: calc(var(--u) * 130); width: calc(var(--u) * 540); height: calc(var(--u) * 470); border-radius: calc(var(--u) * 28); transform: translateX(-50%); }
+.temporada-premios {
+  position: absolute;
+  right: 0;
+  top: calc(var(--u) * 268);
+  width: calc(var(--u) * 292);
+  box-sizing: border-box;
+  padding: calc(var(--u) * 10) calc(var(--u) * 10) calc(var(--u) * 14);
+  border-radius: calc(var(--u) * 12) 0 0 calc(var(--u) * 12);
+  background: rgba(31, 32, 35, 0.94);
+  transition: transform 320ms var(--ease-out);
+}
+.temporada-premios.is-plegado { transform: translateX(100%); }
+.temporada-premios h2 { margin: 0 0 calc(var(--u) * 14); padding: calc(var(--u) * 11) 0; border-radius: calc(var(--u) * 9); background: #34363b; text-align: center; font-size: calc(var(--u) * 17); font-weight: 900; letter-spacing: 0.02em; text-transform: uppercase; }
+.temporada-premios ul { display: flex; flex-direction: column; gap: calc(var(--u) * 16); margin: 0; padding: 0 calc(var(--u) * 6); list-style: none; }
+.temporada-premio { display: grid; grid-template-columns: calc(var(--u) * 34) calc(var(--u) * 72) 1fr; align-items: center; gap: 0 calc(var(--u) * 10); }
+.temporada-premio-icono { width: calc(var(--u) * 34); height: calc(var(--u) * 34); border-radius: calc(var(--u) * 9); }
+.temporada-premio-icono span { display: none; }
+.temporada-premio-moneda { width: calc(var(--u) * 34); height: calc(var(--u) * 34); }
+.temporada-premio strong { font-size: calc(var(--u) * 12.5); font-weight: 900; letter-spacing: 0.02em; line-height: 1.15; text-transform: uppercase; }
+.temporada-premio > span { font-size: calc(var(--u) * 11); line-height: 1.4; color: rgba(255, 255, 255, 0.6); }
+.temporada-premios-alternar {
+  position: absolute;
+  left: calc(var(--u) * -28);
+  top: 50%;
+  width: calc(var(--u) * 28);
+  height: calc(var(--u) * 38);
+  padding: 0;
+  border: 0;
+  border-radius: calc(var(--u) * 9) 0 0 calc(var(--u) * 9);
+  background: rgba(31, 32, 35, 0.94);
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+.temporada-premios-alternar::before { content: ''; display: block; width: 55%; height: 55%; margin: 0 auto; background: var(--brand); -webkit-mask: url('/icons/arrow_forward_ios.svg') center / contain no-repeat; mask: url('/icons/arrow_forward_ios.svg') center / contain no-repeat; transition: transform 320ms var(--ease-out); }
+.temporada-premios.is-plegado .temporada-premios-alternar::before { transform: rotate(180deg); }
+.temporada-premios-alternar:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+/* ───────── Coin Bank: ventana emergente con los paquetes de monedas ───────── */
+.temporada-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  background: rgba(3, 6, 14, 0.74);
+  animation: temporada-fondo-entra 200ms ease-out both;
+  transition: opacity 180ms ease-out;
+}
+.temporada-modal.is-saliendo { opacity: 0; pointer-events: none; }
+.temporada-banco {
+  position: relative;
+  box-sizing: border-box;
+  width: calc(var(--u) * 1034);
+  height: calc(var(--u) * 640);
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--u) * 32) calc(var(--u) * 34) calc(var(--u) * 34);
+  border-radius: calc(var(--u) * 14);
+  background: #1f1f1f;
+  box-shadow: 0 calc(var(--u) * 30) calc(var(--u) * 80) rgba(0, 0, 0, 0.6);
+  animation: temporada-banco-entra 300ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+.temporada-banco:focus { outline: none; }
+.temporada-modal.is-saliendo .temporada-banco { transform: scale(0.97); transition: transform 180ms ease-out; }
+@keyframes temporada-banco-entra { from { opacity: 0; transform: translateY(10px) scale(0.96); } }
+
+.temporada-banco-cabecera { display: flex; align-items: center; gap: calc(var(--u) * 12); height: calc(var(--u) * 64); }
+.temporada-banco-cabecera h2 { margin: 0; flex: 1; font-size: calc(var(--u) * 42); font-weight: 900; letter-spacing: -0.01em; text-transform: uppercase; }
+.temporada-banco-volver {
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 40);
+  height: calc(var(--u) * 48);
+  padding: 0;
+  border: 0;
+  border-radius: calc(var(--u) * 10);
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 150ms var(--ease-out), transform 130ms var(--ease-out);
+}
+.temporada-banco-volver::before { content: ''; width: 70%; height: 70%; background: #fff; -webkit-mask: url('/icons/arrow_forward_ios.svg') center / contain no-repeat; mask: url('/icons/arrow_forward_ios.svg') center / contain no-repeat; transform: rotate(180deg); }
+.temporada-banco-volver:active { transform: scale(0.92); }
+.temporada-banco-volver:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) { .temporada-banco-volver:hover { background: rgba(255, 255, 255, 0.1); } }
+.temporada-banco-saldo { display: flex; align-items: center; gap: calc(var(--u) * 12); padding: calc(var(--u) * 7) calc(var(--u) * 30) calc(var(--u) * 7) calc(var(--u) * 9); border-radius: calc(var(--u) * 10); background: #2c2c2e; }
+.temporada-banco-saldo .temporada-moneda { width: calc(var(--u) * 32); height: calc(var(--u) * 32); }
+.temporada-banco-saldo strong { font-size: calc(var(--u) * 22); font-weight: 900; font-variant-numeric: tabular-nums; }
+
+.temporada-paquetes {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2.04fr;
+  grid-template-rows: 1fr 1fr;
+  gap: calc(var(--u) * 10);
+  flex: 1;
+  min-height: 0;
+  margin-top: calc(var(--u) * 26);
+}
+.temporada-paquete-chico-1 { grid-column: 1; grid-row: 1; }
+.temporada-paquete-chico-2 { grid-column: 2; grid-row: 1; }
+.temporada-paquete-ancho { grid-column: 1 / span 2; grid-row: 2; }
+.temporada-paquete-alto { grid-column: 3; grid-row: 1 / span 2; }
+.temporada-paquete {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-height: 0;
+  padding: calc(var(--u) * 12) calc(var(--u) * 14) calc(var(--u) * 12);
+  border: 0;
+  border-radius: calc(var(--u) * 12);
+  background: #272728;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  animation: temporada-sube 480ms cubic-bezier(0.23, 1, 0.32, 1) both;
+  transition: background-color 180ms var(--ease-out), transform 130ms var(--ease-out);
+}
+.temporada-paquete:nth-child(1) { animation-delay: 120ms; }
+.temporada-paquete:nth-child(2) { animation-delay: 170ms; }
+.temporada-paquete:nth-child(3) { animation-delay: 220ms; }
+.temporada-paquete:nth-child(4) { animation-delay: 270ms; }
+.temporada-paquete:active { transform: scale(0.985); }
+.temporada-paquete:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) { .temporada-paquete:hover { background: #303032; } }
+.temporada-paquete-cantidad { align-self: flex-end; font-size: calc(var(--u) * 34); font-weight: 900; letter-spacing: -0.01em; line-height: 1; }
+.temporada-paquete-arte { position: relative; flex: 1; min-height: 0; margin: calc(var(--u) * 6) 0; }
+/* La imagen no pesa en la grilla (absoluta): se ajusta al espacio sin deformar la tarjeta. */
+.temporada-paquete-arte img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; pointer-events: none; transition: transform 260ms var(--ease-out); }
+/* El arte es PNG con transparencia: se apoya en la tarjeta con una sombra de contacto suave debajo, sin fondo ni mezclas. */
+.temporada-paquete-arte::before { content: ''; position: absolute; left: 14%; right: 14%; bottom: 3%; height: 15%; border-radius: 50%; background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 70%); }
+.temporada-paquete-arte img { z-index: 1; }
+@media (hover: hover) and (pointer: fine) { .temporada-paquete:hover .temporada-paquete-arte img { transform: scale(1.04); } }
+/* El precio se enciende en rojo al pasar el cursor por el paquete (o al enfocarlo con teclado): es el boton de comprar. */
+.temporada-paquete:focus-visible .temporada-paquete-precio { background: var(--brand); color: #fff; box-shadow: 0 0 22px rgba(240, 33, 58, 0.6); }
+.temporada-paquete:active .temporada-paquete-precio { transform: scale(0.96); }
+@media (hover: hover) and (pointer: fine) { .temporada-paquete:hover .temporada-paquete-precio { background: var(--brand); color: #fff; box-shadow: 0 0 22px rgba(240, 33, 58, 0.6); } }
+.temporada-paquete-precio { align-self: center; min-width: 54%; padding: calc(var(--u) * 7) calc(var(--u) * 14); border-radius: calc(var(--u) * 8); background: #353537; font-size: calc(var(--u) * 14); font-weight: 900; letter-spacing: 0.02em; text-align: center; text-transform: uppercase; transition: background-color 150ms var(--ease-out), color 150ms var(--ease-out), box-shadow 200ms var(--ease-out), transform 130ms var(--ease-out); }
+.temporada-paquete-chico-1 .temporada-paquete-precio, .temporada-paquete-chico-2 .temporada-paquete-precio { align-self: stretch; }
+
+@media (prefers-reduced-motion: reduce) {
+  .temporada-carta { animation: temporada-fondo-entra 200ms ease-out both; transition: none; }
+  .temporada-paso, .temporada-premios, .temporada-fondo::before { transition: none; }
+  .temporada-banco, .temporada-paquete { animation: temporada-fondo-entra 200ms ease-out both; }
+}

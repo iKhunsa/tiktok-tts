@@ -19,6 +19,7 @@ export default defineConfig({
         advanced: entry('advanced.html'),
         mobile: entry('mobile.html'),
         'chat-ventana': entry('chat-ventana.html'),
+        temporada: entry('temporada.html'),
         'overlay-alertas': entry('overlay-alertas.html'),
         'overlay-alertas-social': entry('overlay-alertas-social.html'),
         'overlay-chat': entry('overlay-chat.html'),

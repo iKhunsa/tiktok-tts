@@ -6,7 +6,7 @@
   <title>TikLiveTTS</title>
   <link rel="icon" type="image/svg+xml" href="logo-icon.svg" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800;900&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="vendor/driver.css" />
   <link rel="stylesheet" href="plugin-store/grid.css" />
   <link rel="stylesheet" href="plugin-store/detail.css" />
@@ -66,6 +66,11 @@
     <button id="titlebarForward" class="titlebar-btn" disabled data-i18n-title="titlebar.forward" data-i18n-aria-label="titlebar.forward"><img class="icon-inline" src="icons/arrow_forward.svg" alt=""></button>
   </div>
   <div class="titlebar-actions">
+    <button id="titlebarSeason" class="titlebar-btn titlebar-season" hidden data-i18n-title="temporada.winter.abrir" data-i18n-aria-label="temporada.winter.abrir">
+      <img class="icon-inline" src="icons/ac_unit.svg" alt="">
+      <span class="titlebar-season-label" data-i18n="temporada.winter.nombre">Winter Season</span>
+      <span class="titlebar-season-punto" hidden></span>
+    </button>
     <button id="titlebarNews" class="titlebar-btn titlebar-news" data-i18n-title="titlebar.news" data-i18n-aria-label="titlebar.news">
       <img class="icon-inline" src="icons/newspaper.svg" alt="">
       <span class="titlebar-news-label" data-i18n="titlebar.news">Novedades</span>

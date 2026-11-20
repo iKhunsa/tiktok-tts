@@ -2541,5 +2541,73 @@
       "carpeta_invalida": "该文件夹不存在。",
       "no_encontrado": "找不到该 GIF 或文件夹，可能已被删除。"
     }
+  },
+  "temporada": {
+    "ahoraNo": "稍后再说",
+    "proximamente": "敬请期待",
+    "siguiente": "下一部分",
+    "pestana": {
+      "inicio": "Winter Season",
+      "luckyDrop": "Lucky Drop",
+      "pase": "Pass",
+      "tienda": "Shop"
+    },
+    "winter": {
+      "nombre": "Winter Season",
+      "abrir": "打开 Winter Season",
+      "titulo1": "Winter Season",
+      "titulo2": "来到 TikLiveTTS 啦！",
+      "descubre": "了解更多",
+      "descripcion": "冬天带来满满奖励！体验我们的 Lucky Drop 领取特别奖品，在 <strong>12 月 1 日至 30 日</strong> 的赛季通行证中完成任务，并逛逛独家商店里再也不会上架的限定 Overlay。",
+      "guia": "想回到 Winter Season 时，点击这个按钮：Lucky Drop、Pass 和 Shop 都在这里等你。"
+    },
+    "pendiente": {
+      "cofre": "宝箱",
+      "maquina": "抓娃娃机",
+      "overlay": "Overlay",
+      "icono": "图标",
+      "monedas": "金币"
+    },
+    "saldo": {
+      "titulo": "金币",
+      "mas": "获取金币"
+    },
+    "pase": {
+      "descripcion": "说明",
+      "desbloquear": "解锁",
+      "paso1": "关注我们的 TikTok 官方账号，加入这场冒险。",
+      "proximo": "这份奖励即将揭晓。",
+      "anterior": "上一个奖励",
+      "siguiente": "下一个奖励",
+      "recompensa": "奖励 {n}"
+    },
+    "luckyDrop": {
+      "premios": "奖品",
+      "alternar": "显示或隐藏奖品",
+      "coins": {
+        "nombre": "Coins",
+        "descripcion": "赚取金币，解锁 TikLiveTTS 内的专属奖励。"
+      },
+      "mysteryBall": {
+        "nombre": "Mystery Ball",
+        "descripcion": "神秘奖励。打开它们，看看有什么惊喜等着你！"
+      },
+      "proUnlock": {
+        "nombre": "Pro Unlock",
+        "descripcion": "免费解锁 Pro 计划的全部特权，为期一个月！"
+      },
+      "ultimatePro": {
+        "nombre": "Ultimate Pro",
+        "descripcion": "终极大奖！免费畅享 12 个月 TikLiveTTS Pro。"
+      }
+    },
+    "banco": {
+      "titulo": "Coin Bank",
+      "volver": "返回"
+    },
+    "guia": {
+      "titulo": "赛季活动，随时可查",
+      "entendido": "知道了"
+    }
   }
 }

@@ -2541,5 +2541,73 @@
       "carpeta_invalida": "Dieser Ordner existiert nicht.",
       "no_encontrado": "Dieses GIF oder dieser Ordner wurde nicht gefunden. Möglicherweise wurde er schon gelöscht."
     }
+  },
+  "temporada": {
+    "ahoraNo": "Jetzt nicht",
+    "proximamente": "Demnächst",
+    "siguiente": "Nächster Bereich",
+    "pestana": {
+      "inicio": "Winter Season",
+      "luckyDrop": "Lucky Drop",
+      "pase": "Pass",
+      "tienda": "Shop"
+    },
+    "winter": {
+      "nombre": "Winter Season",
+      "abrir": "Winter Season öffnen",
+      "titulo1": "Winter Season",
+      "titulo2": "ist bei TikLiveTTS angekommen!",
+      "descubre": "Mehr entdecken",
+      "descripcion": "Der Winter bringt jede Menge Belohnungen! Entdecke unseren Lucky Drop für besondere Preise, erfülle Missionen im Saisonpass vom <strong>1. bis 30. Dezember</strong> und stöbere im exklusiven Shop mit einzigartigen Overlays, die nie wieder verfügbar sein werden.",
+      "guia": "Wenn du zur Winter Season zurückkehren willst, nutze diese Schaltfläche: Lucky Drop, Pass und Shop warten hier auf dich."
+    },
+    "pendiente": {
+      "cofre": "Truhe",
+      "maquina": "Greifautomat",
+      "overlay": "Overlay",
+      "icono": "Symbol",
+      "monedas": "Münzen"
+    },
+    "saldo": {
+      "titulo": "Münzen",
+      "mas": "Münzen holen"
+    },
+    "pase": {
+      "descripcion": "Beschreibung",
+      "desbloquear": "Freischalten",
+      "paso1": "Folge unserem offiziellen TikTok-Konto und erlebe das Abenteuer mit.",
+      "proximo": "Diese Belohnung wird bald enthüllt.",
+      "anterior": "Vorherige Belohnung",
+      "siguiente": "Nächste Belohnung",
+      "recompensa": "Belohnung {n}"
+    },
+    "luckyDrop": {
+      "premios": "Preise",
+      "alternar": "Preise ein- oder ausblenden",
+      "coins": {
+        "nombre": "Coins",
+        "descripcion": "Sammle Coins, um exklusive Belohnungen in TikLiveTTS freizuschalten."
+      },
+      "mysteryBall": {
+        "nombre": "Mystery Ball",
+        "descripcion": "Geheimnisvolle Belohnungen. Öffne sie und entdecke, welche Überraschungen auf dich warten!"
+      },
+      "proUnlock": {
+        "nombre": "Pro Unlock",
+        "descripcion": "Schalte alle Vorteile des Pro-Plans frei, einen Monat kostenlos!"
+      },
+      "ultimatePro": {
+        "nombre": "Ultimate Pro",
+        "descripcion": "Der Hauptgewinn! Genieße 12 Monate TikLiveTTS Pro, ohne etwas zu bezahlen."
+      }
+    },
+    "banco": {
+      "titulo": "Coin Bank",
+      "volver": "Zurück"
+    },
+    "guia": {
+      "titulo": "Deine Saison, immer griffbereit",
+      "entendido": "Verstanden"
+    }
   }
 }

@@ -29,6 +29,7 @@ import { t, tErr } from '../../nucleo/i18n/i18n.js';
 import { iniciarI18nApp, pickLanguage, setLanguage } from './i18n-app.js';
 import { switchView } from './vistas-router.js';
 import { iniciarBarraTitulo } from './barra-titulo/index.js';
+import { iniciarTemporada } from '../../componentes/temporada/index.js';
 import { abrirCuentaDesdeSidebar, cargarSesion, almacenSesion, appBloqueada } from '../../nucleo/estado/sesion.js';
 import { aplicarBloqueoVista } from '../../nucleo/estado/vista-bloqueada.js';
 import { iniciarCuenta } from './cuenta/index.js';
@@ -265,7 +266,7 @@ function iniciarArranque() {
   window.__sesionActual = () => almacenSesion.getState();
   almacenSesion.subscribe(() => window.renderPluginStore?.());
   almacenSesion.subscribe(aplicarBloqueoApp);
-  cargarSesion();
+  cargarSesion().then(iniciarTemporada); // la cuenta decide si ya vio el anuncio: se evalua con la sesion leida
   const eventoForzado = new URLSearchParams(window.location.search).get('evento');
   if (eventoForzado) reproducirEvento(eventoForzado); // prueba manual: ?evento=halloween
   renderShortcutDisplay();

@@ -11,6 +11,7 @@
     "test": "node --test test/*.test.js",
     "preelectron": "npm run build:front",
     "electron": "electron .",
+    "electron:winter": "npm run build:front && set TEMPORADA_FORZADA=winter&& electron .",
     "make-icon": "electron scripts/make-app-icon.js && python scripts/make-app-icon.py",
     "dev:front": "vite --config interfaz/vite.config.js",
     "dev:build-watch": "vite build --config interfaz/vite.config.js --watch",
