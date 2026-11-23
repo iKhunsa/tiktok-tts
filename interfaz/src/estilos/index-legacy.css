@@ -1659,7 +1659,6 @@
     }
 
     .cfg-btn:hover { border-color: var(--text-bright-a30); color: var(--text-bright); background: var(--surface-raised); }
-    .cfg-btn.active { border-color: var(--text-bright-a30); color: var(--text-bright); background: var(--surface-raised); }
     .cfg-btn:active { transform: scale(0.97); }
 
     /* Banderas del selector de idioma: SVG servido, no emoji (Windows no

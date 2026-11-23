@@ -1385,7 +1385,8 @@
       "mobile": "Remote panel to control the TTS from your phone.",
       "bot": "Music bot: chat requests songs with !p.",
       "moderacion": "Viewer history, mute/ban, followers.",
-      "mcp": "Connect an AI agent (Claude) to operate the app."
+      "mcp": "Connect an AI agent (Claude) to operate the app.",
+      "portal": "Browse the web inside the app, without leaving TikLiveTTS."
     },
     "aboutLabel": "About",
     "about": {
@@ -1395,7 +1396,8 @@
       "mobile": "A lightweight panel you open from your phone on the same WiFi network as your PC. Pause the TTS, skip messages and control the essentials without going back to the computer.",
       "bot": "Chat requests songs by typing !p followed by a name or a YouTube link. Your own playlist plays in the background when there are no requests. Configurable with a cooldown and queue limit.",
       "moderacion": "Keeps a local history of every viewer who chatted or followed you, with the option to mute them (message shows but isn't read aloud) or ban them (message never shows). It doesn't touch their account on the real platform.",
-      "mcp": "MCP (Model Context Protocol) exposes the app’s features as tools for an AI agent. With Claude Code or Claude Desktop connected, the agent can read chat, moderate viewers, control music and check stream state. The endpoint only works from this computer, and destructive actions (ban, disconnect) sit behind a separate permission."
+      "mcp": "MCP (Model Context Protocol) exposes the app’s features as tools for an AI agent. With Claude Code or Claude Desktop connected, the agent can read chat, moderate viewers, control music and check stream state. The endpoint only works from this computer, and destructive actions (ban, disconnect) sit behind a separate permission.",
+      "portal": "Opens a built-in browser in a side panel of the app, with tabs and downloads. Keep your TikTok Live dashboard, a board or any page at hand while streaming, without switching windows."
     },
     "backToGrid": "Back to store",
     "hiddenBadge": "Hidden",

@@ -1342,7 +1342,8 @@
       "mobile": "Panel remoto para controlar el TTS desde el celular.",
       "bot": "Bot musical: el chat pide canciones con !p.",
       "moderacion": "Historial de espectadores, silenciar/banear, seguidores.",
-      "mcp": "Conectá un agente de IA (Claude) para que opere la app."
+      "mcp": "Conectá un agente de IA (Claude) para que opere la app.",
+      "portal": "Navega por la web dentro de la app, sin salir de TikLiveTTS."
     },
     "aboutLabel": "Acerca de",
     "about": {
@@ -1352,7 +1353,8 @@
       "mobile": "Un panel liviano que se abre desde el celular, en la misma red WiFi que la PC. Permite pausar el TTS, saltar mensajes y controlar lo esencial sin volver a la computadora.",
       "bot": "El chat pide canciones escribiendo !p seguido del nombre o un link de YouTube. Mientras no hay pedidos, suena tu propia playlist de fondo. Configurable con cooldown y límite de cola.",
       "moderacion": "Guarda un historial local de cada espectador que escribió o te siguió, con la posibilidad de silenciarlo (el mensaje se ve pero no se lee) o banearlo (ni se muestra). No afecta la cuenta en la plataforma real.",
-      "mcp": "MCP (Model Context Protocol) expone las funciones de la app como herramientas para un agente de IA. Con Claude Code o Claude Desktop conectado, el agente puede leer el chat, moderar espectadores, controlar la música y consultar el estado del stream. El endpoint solo funciona desde esta computadora y las acciones destructivas (banear, desconectar) van detrás de un permiso aparte."
+      "mcp": "MCP (Model Context Protocol) expone las funciones de la app como herramientas para un agente de IA. Con Claude Code o Claude Desktop conectado, el agente puede leer el chat, moderar espectadores, controlar la música y consultar el estado del stream. El endpoint solo funciona desde esta computadora y las acciones destructivas (banear, desconectar) van detrás de un permiso aparte.",
+      "portal": "Abre un navegador integrado en un panel lateral de la app, con pestañas y descargas. Úsalo para tener a mano tu panel de TikTok Live, un tablero o cualquier página mientras transmites, sin cambiar de ventana."
     },
     "backToGrid": "Volver a la tienda",
     "hiddenBadge": "Oculta",

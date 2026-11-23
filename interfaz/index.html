@@ -129,6 +129,10 @@
         <img class="sidebar-icon icon-inline" src="icons/extension.svg" alt="">
         <span data-i18n="nav.mcp">Agente MCP</span>
       </button>
+      <button class="sidebar-item" data-view="portal" onclick="togglePortalView()" style="display:none">
+        <img class="sidebar-icon icon-inline" src="icons/public.svg" alt="">
+        <span data-i18n="footer.portalView">Navegador</span>
+      </button>
       <button id="navMoreToolsBtn" class="sidebar-item" data-view="tools" onclick="switchView('tools')">
         <img class="sidebar-icon icon-inline" src="icons/inventory.svg" alt="">
         <span data-i18n="nav.moreTools">Más herramientas</span>
@@ -191,7 +195,6 @@
         </button>
         <button class="cfg-btn" onclick="skipCurrentTTS()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> <span data-i18n="btn.skipCurrent">Saltar actual</span></button>
         <button class="cfg-btn danger" onclick="clearChatAndQueue()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="btn.clearChatAndQueue">Limpiar chat y cola</span></button>
-        <button class="cfg-btn" id="chatPortalViewBtn" onclick="togglePortalView()"><img class="icon-inline" src="icons/public.svg" alt=""> <span data-i18n="footer.portalView">Navegador</span></button>
         <button class="cfg-btn icon-only warn" onclick="enableEmergencyTTSMode()" data-i18n-title="btn.emergency" title="Modo emergencia"><img class="icon-inline" src="icons/warning-amber.svg" alt=""></button>
         <button class="cfg-btn icon-only" id="btnBlockedWordsShortcut" onclick="openBlockWordModal()" data-i18n-title="btn.blockedWordsShortcut" title="Palabras bloqueadas"><img class="icon-inline" src="icons/filter_none.svg" alt=""></button>
         <button class="cfg-btn" id="btnEventEffects" hidden aria-pressed="true" data-i18n-title="eventFx.on" title="Animaciones y sonidos de temporada: activados. Clic para desactivar"><img class="icon-inline" src="icons/flare.svg" alt=""> <span data-i18n="eventFx.label">Efectos de evento</span><span class="fx-switch" aria-hidden="true"></span></button>
