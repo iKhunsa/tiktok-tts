@@ -26,6 +26,7 @@ import { almacenSesion, tieneAccesoPro } from '../../../nucleo/estado/sesion.js'
 import { crearMedia } from './media.js';
 import { deshacer, rehacer, registrarCambio, reiniciarHistorial } from './editor-historial.js';
 import { renderizarTodosLosCamposOverlay } from '../campos-overlay/index.js';
+import { fijarDisposicion } from '../campos-overlay/disposicion.js';
 import { ajustesOverlay, fijarValorOverlay, usarAjustesPropios, valorOverlay } from './posicion-escena.js';
 import { exportarEscenas, importarArchivo } from './exportar-importar.js';
 import { abrirModalExportar } from './exportar-modal.js';
@@ -220,7 +221,10 @@ function quitar(id) {
 function devolverInspector() {
   const panel = $('ovlEditorPanelCuerpo').querySelector('.ovl-inspector:not(.edi-gif-alerta)');
   panel?.querySelectorAll('.edi-gif-alerta').forEach((seccion) => seccion.remove()); // los acordeones de GIF y sonido son del editor, no de la tarjeta
-  if (panel && seleccionado) tarjetaDe(seleccionado).append(panel);
+  if (panel && seleccionado) {
+    fijarDisposicion(seleccionado, 'tarjeta');
+    tarjetaDe(seleccionado).append(panel);
+  }
 }
 
 // Boton "Cambiar skin" del overlay seleccionado, flotando sobre el lienzo como en la vista de un solo overlay. Se crea
@@ -239,6 +243,7 @@ function mostrarSelectorSkin(id) {
 function seleccionar(id) {
   devolverInspector();
   seleccionado = id;
+  if (id) fijarDisposicion(id, 'clasico'); // el inspector se ve en el editor como antes de los acordeones y el modo basico
   guardarEstadoUi({ capa: id });
   const inspector = id && tarjetaDe(id).querySelector('.ovl-inspector');
   // Las alertas llevan sus acordeones de GIF y de sonido (solo existen en este editor) justo despues de Formato y General.

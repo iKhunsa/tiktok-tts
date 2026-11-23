@@ -281,13 +281,40 @@ body.reduce-motion .selector-color { animation: none; }
   .cfg-acordeon-toggle, .cfg-acordeon-toggle::after { transition: none; }
 }
 
-/* En el inspector: tarjetas separadas en vez de filas con linea; el panel de acordeones las apila. */
-.ovl-inspector > .cfg-acordeon, .ovl-inspector > .cfg-personalizar { margin: 12px 12px 0; border-top-width: 1px; }
-.ovl-inspector > .cfg-personalizar { display: grid; gap: 12px; border-top: 0; }
-.ovl-inspector > .cfg-personalizar:empty { display: none; }
-.ovl-inspector > .cfg-personalizar > .cfg-epik { border: 1px solid var(--border); border-radius: 10px; }
-.ovl-inspector > .cfg-acordeon:last-child, .ovl-inspector > .cfg-personalizar:last-child { margin-bottom: 12px; }
+/* En el inspector de la tarjeta: tarjetas separadas en vez de filas con linea; el panel de acordeones las apila.
+   El editor unificado (disposicion "clasico") conserva su aspecto de siempre. */
+.ovl-inspector[data-disposicion="tarjeta"] > .cfg-acordeon, .ovl-inspector[data-disposicion="tarjeta"] > .cfg-personalizar { margin: 12px 12px 0; border-top-width: 1px; }
+.ovl-inspector[data-disposicion="tarjeta"] > .cfg-personalizar { display: grid; gap: 12px; border-top: 0; }
+.ovl-inspector[data-disposicion="tarjeta"] > .cfg-personalizar:empty { display: none; }
+.ovl-inspector[data-disposicion="tarjeta"] > .cfg-personalizar > .cfg-epik { border: 1px solid var(--border); border-radius: 10px; }
+.ovl-inspector[data-disposicion="tarjeta"] > .cfg-acordeon:last-child, .ovl-inspector[data-disposicion="tarjeta"] > .cfg-personalizar:last-child { margin-bottom: 12px; }
 @media (max-width: 600px) {
   .cfg-acordeon-toggle { padding: 0 12px; }
   .cfg-acordeon-cuerpo { padding: 2px 12px 12px; }
 }
+
+/* Modo Basico / Avanzado: el interruptor queda fijo arriba del panel; el basico es una lista simple con los mismos campos. */
+.cfg-modo { position: sticky; top: 0; z-index: 2; padding: 12px; border-bottom: 1px solid var(--border); background: var(--surface); }
+.cfg-modo .cfg-botones { height: 40px; }
+.cfg-modo .cfg-boton { font-size: var(--text-sm); font-weight: 500; }
+.cfg-modo .cfg-boton:active { transform: scale(0.97); }
+.cfg-modo .cfg-boton[aria-checked="true"] { background: var(--surface-raised); color: var(--text); }
+.cfg-modo .cfg-boton { transition: background-color var(--dur-1) ease-out, color var(--dur-1) ease-out, transform var(--dur-press) ease-out; }
+.ovl-inspector[data-modo="basico"] > :is([data-grupo="general"], .cfg-personalizar, .cfg-modo-volver),
+.ovl-inspector[data-modo="avanzado"] > .cfg-basico { display: none; }
+.ovl-inspector .cfg-basico { padding: 20px; }
+.ovl-inspector[data-modo="basico"] > .cfg-basico, .ovl-inspector[data-modo="avanzado"] > :is([data-grupo="general"], .cfg-personalizar, .cfg-modo-volver) { animation: cfg-modo-entra var(--dur-2) var(--ease-out); }
+@keyframes cfg-modo-entra { from { opacity: 0; } }
+.cfg-modo-tarjeta { margin-top: 8px; padding: 16px; border: 1px solid var(--border); border-radius: 10px; }
+.cfg-modo-tarjeta-titulo { font-size: var(--text-base); font-weight: 600; color: var(--text); }
+.cfg-modo-tarjeta-texto { margin: 4px 0 12px; font-size: var(--text-sm); color: var(--text-secondary); }
+.cfg-modo-volver { padding: 12px; }
+.cfg-modo-volver-boton { width: 100%; justify-content: center; min-height: 40px; }
+@media (max-width: 600px) {
+  .ovl-inspector .cfg-basico { padding: 16px 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ovl-inspector[data-modo] > * { animation: none; }
+  .cfg-modo .cfg-boton { transition: none; }
+}
+body.reduce-motion .ovl-inspector[data-modo] > *, body.reduce-motion .cfg-modo .cfg-boton { animation: none; transition: none; }

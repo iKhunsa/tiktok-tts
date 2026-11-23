@@ -820,6 +820,15 @@
       "bordes": "枠線",
       "texto": "テキスト変換",
       "efectos": "特殊効果"
+    },
+    "modo": {
+      "etiqueta": "エディターのモード",
+      "basico": "基本",
+      "avanzado": "詳細",
+      "masControl": "もっと細かく調整しますか？",
+      "masControlTexto": "詳細モードでは、色・アニメーション・位置など、すべての設定を使えます。",
+      "pasarAvanzado": "詳細モードに切り替える",
+      "volverBasico": "基本モードに戻る"
     }
   },
   "overlayStr": {

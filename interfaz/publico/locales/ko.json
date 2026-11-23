@@ -820,6 +820,15 @@
       "bordes": "테두리",
       "texto": "텍스트 변환",
       "efectos": "특수 효과"
+    },
+    "modo": {
+      "etiqueta": "편집기 모드",
+      "basico": "기본",
+      "avanzado": "고급",
+      "masControl": "더 세밀하게 조정하고 싶으세요?",
+      "masControlTexto": "고급 모드에서는 색상, 애니메이션, 위치 등 모든 설정을 사용할 수 있어요.",
+      "pasarAvanzado": "고급 모드로 전환",
+      "volverBasico": "기본 모드로 돌아가기"
     }
   },
   "overlayStr": {

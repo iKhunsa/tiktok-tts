@@ -102,7 +102,7 @@ export function aplicarSkin(skin) {
   });
 }
 
-function renderizarCamposOverlay(overlay) {
+export function renderizarCamposOverlay(overlay) {
   montarCamposOverlay(overlay);
   montarSeccionEpik(overlay);
   sincronizarCamposOverlay(overlay);

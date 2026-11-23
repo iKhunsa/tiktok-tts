@@ -5,6 +5,7 @@ import { crearAcordeon, estadoAcordeones } from './acordeon.js';
 import { CATEGORIAS, GRUPOS_DE_EFECTOS, SUBGRUPOS_AVANZADO, categoriaDe } from './categorias.js';
 import { crearCampo } from './crear-campo.js';
 import { tituloGrupo, tituloSubgrupo } from './etiquetas.js';
+import { montarModo } from './montar-modo.js';
 
 // Lo propio de cada overlay primero (lo que mas se toca), despues el aspecto del texto y al final posicion y movimiento.
 const ORDEN_GRUPOS = ['cancion', 'ranking', 'comportamiento', 'tipografia', 'usuario', 'viewer', 'moderador', 'suscriptor', 'alineacion', 'animacion'];
@@ -129,15 +130,18 @@ export function montarCamposOverlay(overlay) {
   const grupos = agruparPorGrupo(ESQUEMAS[overlay]);
   const base = document.querySelector(`[data-campos-base="${overlay}"]`);
   const panel = document.querySelector(`[data-campos-panel="${overlay}"]`);
-  // Las capas GIF del editor de canvas conservan su panel de siempre.
-  if (panel && !esCapaGif(overlay)) return montarPorCategorias(overlay, base, panel);
+  // Las capas GIF y el inspector prestado al editor de canvas conservan su panel de siempre (disposicion.js).
+  if (panel && !esCapaGif(overlay) && base.closest('.ovl-inspector')?.dataset.disposicion !== 'clasico') {
+    montarPorCategorias(overlay, base, panel);
+    return montarModo(overlay);
+  }
 
   // [data-campos-fijo]: datos que no son ajustes (ej. seguidores actuales); se conservan al redibujar.
   base.replaceChildren(...grupos.get('base').filter(({ ui }) => ui !== 'oculto').map((campo) => crearCampo(overlay, campo)), ...base.querySelectorAll(':scope > [data-campos-fijo]'));
   grupos.delete('base');
 
   if (!panel) return;
-  panel.querySelectorAll('.cfg-grupo').forEach((grupo) => grupo.remove());
+  panel.querySelectorAll('.cfg-grupo, .cfg-acordeon').forEach((grupo) => grupo.remove());
   const ordenados = [...grupos].sort(([a], [b]) => posicionGrupo(a) - posicionGrupo(b));
   for (const [grupo, campos] of ordenados) {
     if (campos.some(({ ui }) => ui !== 'oculto')) panel.appendChild(crearGrupo(overlay, grupo, campos));
