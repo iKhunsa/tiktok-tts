@@ -18,6 +18,7 @@ export function iniciarTabs(lista) {
     });
     panels.forEach((panel) => { panel.hidden = panel.id !== panelId; });
     if (moveFocus) tab.focus();
+    else tab.scrollIntoView({ inline: 'nearest', block: 'nearest' });
   }
 
   tabs.forEach((tab, index) => {
