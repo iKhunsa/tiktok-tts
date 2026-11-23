@@ -1062,10 +1062,7 @@
     "testOverlaySent": "Test enviado al overlay"
   },
   "dictLang": {
-    "title": "Idiomas permitidos",
-    "desc": "Además del idioma de la voz, permitir mensajes en:",
-    "voiceAlways": "(idioma de la voz — siempre permitido)",
-    "notApplicable": "Este filtro solo aplica a voces con alfabeto latino."
+    "title": "Idiomas permitidos"
   },
   "mod": {
     "note": "YouTube no envía eventos de follow: a esos espectadores marcalos como seguidores a mano.",
@@ -1250,7 +1247,7 @@
     "wordFilterTitle": "Filtrar por idioma (palabras)",
     "wordFilterDesc": "Filtro más fino basado en diccionario: solo lee mensajes escritos en el idioma de la voz activa, más los idiomas extra que elijas acá abajo. Nombres o typos no bloquean el mensaje.",
     "dictModalTitle": "Idiomas permitidos",
-    "dictModalDesc": "Elegí qué idiomas extra, además del de tu voz, están permitidos para que el TTS los lea. Cerrá esta ventana para seguir con el tutorial."
+    "dictModalDesc": "Elegí qué idiomas extra, además del de tu voz, están permitidos para que el TTS los lea."
   },
   "shortcutsTour": {
     "introTitle": "Atajos de teclado",
@@ -2624,13 +2621,12 @@
     }
   },
   "filtrosIdioma": {
-    "activeVoice": "Voz activa",
-    "on": "Activado",
-    "off": "Desactivado",
+    "voiceLanguage": "Idioma de tu voz",
     "edit": "Editar",
+    "done": "Listo",
     "alwaysAllowed": "Siempre permitido",
     "noExtras": "Sin idiomas adicionales",
     "unavailable": "Este filtro no está disponible para esta voz",
-    "together": "Los filtros pueden usarse juntos. Si bloquean un mensaje, no se lee."
+    "together": "Los filtros pueden usarse juntos. Si bloquean un mensaje, no se lee. La detección por palabras no es perfecta."
   }
 }

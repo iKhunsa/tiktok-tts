@@ -1026,10 +1026,7 @@
     "testOverlaySent": "Teste enviado ao overlay"
   },
   "dictLang": {
-    "title": "Idiomas permitidos",
-    "desc": "Além do idioma da voz, permitir mensagens em:",
-    "voiceAlways": "(idioma da voz — sempre permitido)",
-    "notApplicable": "Este filtro só se aplica a vozes com alfabeto latino."
+    "title": "Idiomas permitidos"
   },
   "tour": {
     "next": "Próximo",
@@ -1230,7 +1227,7 @@
     "wordFilterTitle": "Filtrar por idioma (palavras)",
     "wordFilterDesc": "Filtro mais fino baseado em dicionário: lê apenas mensagens escritas no idioma da voz ativa, mais os idiomas extras que você permitir abaixo. Nomes ou erros de digitação não bloqueiam a mensagem.",
     "dictModalTitle": "Idiomas permitidos",
-    "dictModalDesc": "Escolha quais idiomas extras, além do da sua voz, são permitidos para o TTS ler. Feche esta janela para continuar o tutorial."
+    "dictModalDesc": "Escolha quais idiomas extras, além do da sua voz, são permitidos para o TTS ler."
   },
   "shortcutsTour": {
     "introTitle": "Atalhos de teclado",
@@ -2624,13 +2621,12 @@
     }
   },
   "filtrosIdioma": {
-    "activeVoice": "Voz ativa",
-    "on": "Ativado",
-    "off": "Desativado",
+    "voiceLanguage": "Idioma da sua voz",
     "edit": "Editar",
+    "done": "Concluído",
     "alwaysAllowed": "Sempre permitido",
     "noExtras": "Sem idiomas adicionais",
     "unavailable": "Este filtro não está disponível para esta voz",
-    "together": "Os filtros podem ser usados juntos. Se bloquearem uma mensagem, ela não é lida."
+    "together": "Os filtros podem ser usados juntos. Se bloquearem uma mensagem, ela não é lida. A detecção por palavras não é perfeita."
   }
 }

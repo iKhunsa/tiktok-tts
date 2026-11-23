@@ -8,7 +8,7 @@ import { driverTourDefaults as sharedDriverTourDefaults } from '../../../nucleo/
 import { switchView } from '../vistas-router.js';
 import { mostrarPanelAjustes } from '../tabs-ajustes.js';
 import { expandChatToggles } from '../toggles-chat.js';
-import { closeDictLangModal, openDictLangModal } from '../modales-avisos.js';
+import { closeDictLangModal, openDictLangModal } from '../filtros-idioma-ui.js';
 import { trackUi } from '../../../nucleo/telemetria-ui.js';
 
 export { startBotTour } from './music-bot-tour.js';
@@ -62,7 +62,7 @@ export function startVoiceTour() {
       { element: '#voiceVolGroup', popover: { title: t('voiceTour.volTitle'), description: t('voiceTour.volDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inPanel('settingsSectionVoice') },
       { element: '#voiceDictFilterGroup', popover: { title: t('voiceTour.wordFilterTitle'), description: t('voiceTour.wordFilterDesc'), side: 'top', align: 'start' }, onHighlightStarted: inPanel('ajustesPanelFiltros') },
       { element: '#announceTplFields', popover: { title: t('tour.announceTitle'), description: t('tour.announceDesc'), side: 'top', align: 'start' }, onHighlightStarted: inPanel('ajustesPanelAvisos') },
-      { element: '#dictLangModal .modal-content', popover: { title: t('voiceTour.dictModalTitle'), description: t('voiceTour.dictModalDesc'), side: 'left', align: 'start' }, onHighlightStarted: () => { inPanel('ajustesPanelFiltros')(); openDictLangModal(); } },
+      { element: '#filtroPermitidos', popover: { title: t('voiceTour.dictModalTitle'), description: t('voiceTour.dictModalDesc'), side: 'top', align: 'start' }, onHighlightStarted: () => { inPanel('ajustesPanelFiltros')(); openDictLangModal(); } },
     ],
   }).drive();
 }

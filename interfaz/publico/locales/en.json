@@ -1089,10 +1089,7 @@
     "epikIntegrado": "The test template can't be deleted or replaced."
   },
   "dictLang": {
-    "title": "Allowed languages",
-    "desc": "Besides the voice language, also allow messages in:",
-    "voiceAlways": "(voice language — always allowed)",
-    "notApplicable": "This filter only applies to voices using the Latin alphabet."
+    "title": "Allowed languages"
   },
   "tour": {
     "next": "Next",
@@ -1293,7 +1290,7 @@
     "wordFilterTitle": "Filter by language (words)",
     "wordFilterDesc": "Finer dictionary-based filter: only reads messages written in the active voice's language, plus any extra languages you allow below. Names or typos don't block the message.",
     "dictModalTitle": "Allowed languages",
-    "dictModalDesc": "Choose which extra languages, besides your voice's, are allowed for the TTS to read. Close this window to continue the tutorial."
+    "dictModalDesc": "Choose which extra languages, besides your voice's, are allowed for the TTS to read."
   },
   "shortcutsTour": {
     "introTitle": "Keyboard shortcuts",
@@ -2624,13 +2621,12 @@
     }
   },
   "filtrosIdioma": {
-    "activeVoice": "Active voice",
-    "on": "On",
-    "off": "Off",
+    "voiceLanguage": "Your voice language",
     "edit": "Edit",
+    "done": "Done",
     "alwaysAllowed": "Always allowed",
     "noExtras": "No extra languages",
     "unavailable": "This filter is not available for this voice",
-    "together": "Filters can be used together. If they block a message, it is not read."
+    "together": "Filters can be used together. If they block a message, it is not read. Word-based detection is not perfect."
   }
 }
