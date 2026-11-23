@@ -276,7 +276,7 @@
 .ovl-inspector .cfg-grupo { padding: 20px; }
 .ovl-inspector .cfg-fields { grid-template-columns: minmax(0, 1fr); gap: 12px; margin: 0; }
 .ovl-inspector .cfg-field.full { grid-column: auto; }
-:is(.ovl-inspector, .voz-audio-card) .cfg-field:has(> label + :is(input, select, .cfg-botones, .cfg-rejilla)) { display: grid; grid-template-columns: minmax(0, 1fr) 151px; align-items: center; gap: 10px; }
+.ovl-inspector .cfg-field:has(> label + :is(input, select, .cfg-botones, .cfg-rejilla)) { display: grid; grid-template-columns: minmax(0, 1fr) 151px; align-items: center; gap: 10px; }
 /* Texto y posicion: botones con icono y rejilla que representa la fuente de OBS */
 .cfg-botones { display: flex; height: 36px; padding: 2px; border: 1px solid var(--border); border-radius: 8px; }
 .cfg-boton { flex: 1; min-width: 0; padding: 0 2px; border: 0; border-radius: 6px; background: transparent; color: var(--text-secondary); font: inherit; font-size: var(--text-3xs); cursor: pointer; transition: background-color var(--dur-1) ease-out, color var(--dur-1) ease-out; }
@@ -299,14 +299,12 @@
 .ovl-inspector .cfg-field:not(.full) > .toggle-chip input:checked { background: var(--brand); }
 .ovl-inspector .cfg-field:not(.full) > .toggle-chip input:checked::after { transform: translateX(14px); }
 .ovl-inspector .cfg-field:not(.full) > .toggle-chip input:focus-visible { outline: 2px solid var(--text-muted); outline-offset: 2px; }
-:is(.ovl-inspector, .voz-audio-card) .cfg-field label { font-size: var(--text-sm); font-weight: 400; }
-:is(.ovl-inspector, .voz-audio-card) .cfg-field :is(input[type="text"], input[type="number"], input[type="color"], select) { width: 100%; height: 36px; border-color: var(--border); border-radius: 8px; background: var(--surface); }
-:is(.ovl-inspector, .voz-audio-card) .cfg-field input[type="range"] { margin: 0; }
-:is(.ovl-inspector, .voz-audio-card) .cfg-field input[type="range"]::-webkit-slider-runnable-track { height: 5px; background: linear-gradient(var(--brand), var(--brand)) no-repeat 0 0 / var(--range-pct) 100%, var(--border-strong); }
-:is(.ovl-inspector, .voz-audio-card) .cfg-field input[type="range"]::-webkit-slider-thumb { width: 12px; height: 12px; margin-top: -3.5px; border-radius: 50%; }
-:is(.ovl-inspector, .voz-audio-card) .cfg-field input[type="range"]:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--text-muted); outline-offset: 2px; }
-/* Ajustes de voz: los extremos del slider (Lento/Rapido) van bajo el control, en su columna */
-.voz-audio-card .cfg-field > .range-labels { grid-column: 2; margin-top: -6px; }
+.ovl-inspector .cfg-field label { font-size: var(--text-sm); font-weight: 400; }
+.ovl-inspector .cfg-field :is(input[type="text"], input[type="number"], input[type="color"], select) { width: 100%; height: 36px; border-color: var(--border); border-radius: 8px; background: var(--surface); }
+.ovl-inspector .cfg-field input[type="range"] { margin: 0; }
+.ovl-inspector .cfg-field input[type="range"]::-webkit-slider-runnable-track { height: 5px; background: linear-gradient(var(--brand), var(--brand)) no-repeat 0 0 / var(--range-pct) 100%, var(--border-strong); }
+.ovl-inspector .cfg-field input[type="range"]::-webkit-slider-thumb { width: 12px; height: 12px; margin-top: -3.5px; border-radius: 50%; }
+.ovl-inspector .cfg-field input[type="range"]:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--text-muted); outline-offset: 2px; }
 
 /* Entrada escalonada, igual que la tienda de plugins: se dispara sola al pasar de oculto a visible.
    backwards y no both: al terminar no debe pisar el transform de :active ni crear contexto de apilado. */
