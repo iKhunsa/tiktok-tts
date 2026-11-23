@@ -840,7 +840,6 @@
 
     .voz-audio-card .voice-dropdown-trigger,
     .voz-audio-card input[type="text"],
-    .voz-audio-card input[type="range"],
     .voz-audio-card .toggle-chip,
     .voz-audio-card button { min-height: 40px; }
 
@@ -867,7 +866,7 @@
 
     @media (max-width: 520px) {
       .voz-audio-card { padding: var(--space-4); }
-      #voiceTestGroup .btn-test { width: 100%; }
+      #voiceTestGroup .cfg-btn { width: 100%; justify-content: center; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1582,8 +1581,7 @@
     /* Slider estilo "barra de volumen": tramo lleno = barras sólidas,
        tramo vacío = puntos. El % de llenado lo pinta paintRangeFill()
        vía la custom prop --range-pct. Solo Chromium (la app es Electron). */
-    .cfg-field input[type="range"],
-    #rateRange, #volRange, #announceVolRange, #pitchRange {
+    .cfg-field input[type="range"] {
       -webkit-appearance: none;
       appearance: none;
       width: 100%;
@@ -1593,11 +1591,7 @@
       cursor: pointer;
       --range-pct: 50%;
     }
-    .cfg-field input[type="range"]::-webkit-slider-runnable-track,
-    #rateRange::-webkit-slider-runnable-track,
-    #volRange::-webkit-slider-runnable-track,
-    #announceVolRange::-webkit-slider-runnable-track,
-    #pitchRange::-webkit-slider-runnable-track {
+    .cfg-field input[type="range"]::-webkit-slider-runnable-track {
       height: 24px;
       border-radius: 3px;
       background-image:
@@ -1607,11 +1601,7 @@
       background-size: var(--range-pct) 100%, 11px 62%;
       background-position: left center, left center;
     }
-    .cfg-field input[type="range"]::-webkit-slider-thumb,
-    #rateRange::-webkit-slider-thumb,
-    #volRange::-webkit-slider-thumb,
-    #announceVolRange::-webkit-slider-thumb,
-    #pitchRange::-webkit-slider-thumb {
+    .cfg-field input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
       width: 4px;
@@ -1620,8 +1610,7 @@
       border-radius: 2px;
       background: #ffffff;
     }
-    .cfg-field input[type="range"]:focus,
-    #rateRange:focus, #volRange:focus, #announceVolRange:focus, #pitchRange:focus { outline: none; }
+    .cfg-field input[type="range"]:focus { outline: none; }
 
     .cfg-field .range-hint {
       font-size: var(--text-3xs);

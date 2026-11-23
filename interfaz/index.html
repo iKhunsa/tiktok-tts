@@ -819,24 +819,24 @@
               </div>
               <input type="hidden" id="voiceSelect" />
             </div>
-            <div class="setting-group" id="voiceTestGroup">
+            <div class="setting-group cfg-field" id="voiceTestGroup">
               <label><img class="icon-inline" src="icons/science.svg" alt=""> <span data-i18n="label.testVoice">Probar voz</span></label>
               <div class="settings-row-flex">
                 <input type="text" id="testVoiceInput" data-i18n-placeholder="label.testVoicePlaceholder" placeholder="Escribe algo para probar..." />
-                <button id="btnTestVoice" class="btn-test" onclick="testVoice()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Probar</button>
+                <button id="btnTestVoice" class="cfg-btn" onclick="testVoice()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> Probar</button>
               </div>
             </div>
-            <div class="setting-group" id="voiceRateGroup">
+            <div class="setting-group cfg-field" id="voiceRateGroup">
               <label><img class="icon-inline" src="icons/flash_on.svg" alt=""> Velocidad — <span id="rateVal">1.0</span>x</label>
               <input type="range" id="rateRange" min="0.5" max="2" step="0.1" value="1" oninput="updateRate(this.value)" />
               <div class="range-labels"><span data-i18n="label.slow">Lento</span><span data-i18n="label.fast">Rápido</span></div>
             </div>
-            <div class="setting-group" id="voicePitchGroup">
+            <div class="setting-group cfg-field" id="voicePitchGroup">
               <label><img class="icon-inline" src="icons/graphic_eq.svg" alt=""> <span data-i18n="label.pitch">Tono</span> — <span id="pitchVal">1.00</span>x</label>
               <input type="range" id="pitchRange" min="0.7" max="1.4" step="0.05" value="1" oninput="updatePitch(this.value)" />
               <div class="range-labels"><span data-i18n="label.pitchLow">Grave</span><span data-i18n="label.pitchHigh">Agudo</span></div>
             </div>
-            <div class="setting-group" id="voiceVolGroup">
+            <div class="setting-group cfg-field" id="voiceVolGroup">
               <label><img class="icon-inline" src="icons/volume_up.svg" alt=""> Volumen — <span id="volVal">100</span>%</label>
               <input type="range" id="volRange" min="0" max="1" step="0.05" value="1" oninput="updateVol(this.value)" />
               <div class="range-labels"><span data-i18n="label.mute">Mute</span><span data-i18n="label.max">Máx</span></div>
@@ -873,7 +873,7 @@
             </div>
             <div class="voz-audio-card">
               <div class="voz-audio-eyebrow" data-i18n="settings.announceVolEyebrow">Volumen de los anuncios</div>
-              <div class="setting-group" id="voiceAnnounceVolGroup">
+              <div class="setting-group cfg-field" id="voiceAnnounceVolGroup">
                 <label><img class="icon-inline" src="icons/volume_up.svg" alt=""> <span data-i18n="settings.announceVolTitle">Volumen de los anuncios</span> — <span id="announceVolVal">100</span>%</label>
                 <div class="voz-audio-hint" data-i18n="settings.announceVolDesc">Regalos, entradas, follows, likes y shares suenan a este volumen, relativo al del TTS. Bájalo para que sean un sonido de fondo mientras el chat se lee fuerte.</div>
                 <input type="range" id="announceVolRange" min="0" max="1" step="0.05" value="1" oninput="updateAnnounceVol(this.value)" />
