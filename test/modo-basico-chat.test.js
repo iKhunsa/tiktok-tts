@@ -11,22 +11,29 @@ const CAMPOS = 'interfaz/src/vistas/principal/campos-overlay';
 const CHATS = ['chat', 'chat-tiktok', 'chat-twitch', 'chat-youtube', 'chat-kick'];
 const BASICOS = ['escala', 'fuente', 'tamano', 'bg', 'maxmsgs', 'mostrarAvatares'];
 
-test('el modo basico solo existe en los 5 chats y muestra los 6 campos acordados', async () => {
-  const { BASICOS_POR_OVERLAY, tieneModos } = await importar(`${CAMPOS}/modos.js`);
-  assert.deepEqual(Object.keys(BASICOS_POR_OVERLAY), CHATS);
-  const { ESQUEMAS } = await importar('interfaz/compartido/estilo/esquemas.js');
-  for (const id of CHATS) {
-    assert.deepEqual(BASICOS_POR_OVERLAY[id], BASICOS, id);
-    const claves = ESQUEMAS[id].map(({ clave }) => clave);
-    for (const clave of BASICOS) assert.ok(claves.includes(clave), `${id} sin ${clave}`);
-  }
-  for (const id of Object.keys(ESQUEMAS).filter((otro) => !CHATS.includes(otro))) assert.equal(tieneModos(id), false, id);
+test('los chats mantienen sus 6 campos basicos acordados', async () => {
+  const { BASICOS_POR_OVERLAY } = await importar(`${CAMPOS}/modos.js`);
+  for (const id of CHATS) assert.deepEqual(BASICOS_POR_OVERLAY[id], BASICOS, id);
 });
 
-test('cada clave visible del esquema de chat sigue montada en alguna categoria (nada se pierde por el modo basico)', async () => {
+test('cada overlay con modo basico usa 4-7 claves visibles que existen en su esquema, sin repetir', async () => {
+  const { BASICOS_POR_OVERLAY, tieneModos } = await importar(`${CAMPOS}/modos.js`);
+  const { ESQUEMAS } = await importar('interfaz/compartido/estilo/esquemas.js');
+  for (const [id, basicos] of Object.entries(BASICOS_POR_OVERLAY)) {
+    assert.ok(ESQUEMAS[id], `${id} no esta en el esquema`);
+    assert.ok(basicos.length >= 4 && basicos.length <= 7, `${id}: ${basicos.length} controles`);
+    assert.equal(new Set(basicos).size, basicos.length, `${id} repite claves`);
+    const visibles = ESQUEMAS[id].filter(({ ui }) => ui !== 'oculto').map(({ clave }) => clave);
+    for (const clave of basicos) assert.ok(visibles.includes(clave), `${id} sin ${clave}`);
+  }
+  for (const id of Object.keys(ESQUEMAS).filter((otro) => !(otro in BASICOS_POR_OVERLAY))) assert.equal(tieneModos(id), false, id);
+});
+
+test('cada clave visible del esquema de un overlay con modos sigue montada en alguna categoria (nada se pierde)', async () => {
+  const { BASICOS_POR_OVERLAY } = await importar(`${CAMPOS}/modos.js`);
   const { ESQUEMAS } = await importar('interfaz/compartido/estilo/esquemas.js');
   const { CATEGORIAS, categoriaDe } = await importar(`${CAMPOS}/categorias.js`);
-  for (const id of CHATS) {
+  for (const id of Object.keys(BASICOS_POR_OVERLAY)) {
     const visibles = ESQUEMAS[id].filter(({ ui, grupo }) => ui !== 'oculto' && grupo !== 'skin');
     for (const campo of visibles) assert.ok(CATEGORIAS.includes(categoriaDe(campo)?.categoria), `${id}.${campo.clave} sin categoria`);
   }

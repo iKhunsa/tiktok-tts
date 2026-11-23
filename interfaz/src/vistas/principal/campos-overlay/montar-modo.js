@@ -4,7 +4,8 @@ import { crearInterruptorModo, marcarModo } from './interruptor-modo.js';
 import { BASICOS_POR_OVERLAY, guardarModo, leerModo, tieneModos } from './modos.js';
 
 const inspectorDe = (overlay) => document.querySelector(`[data-campos-base="${overlay}"]`)?.closest('.ovl-inspector');
-const campoDe = (overlay, clave) => document.querySelector(`[data-cfg-overlay="${overlay}"][data-cfg-clave="${clave}"]:not([data-cfg-plataforma])`)?.closest('.cfg-field');
+// Un campo es su entrada (`data-cfg-clave`) o, si son botones, el primero que fija esa clave (`data-cfg-fija`).
+const campoDe = (overlay, clave) => document.querySelector(`[data-cfg-overlay="${overlay}"]:is([data-cfg-clave="${clave}"]:not([data-cfg-plataforma]), [data-cfg-fija^='{"${clave}":'])`)?.closest('.cfg-field');
 
 // Donde estaba cada campo antes de pasar a la lista basica, para devolverlo a su sitio en el avanzado.
 const huecos = new WeakMap();
