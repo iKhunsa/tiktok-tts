@@ -789,12 +789,6 @@
         column-gap: var(--space-6);
       }
       .voz-audio-card-filtros > .voz-audio-eyebrow { grid-column: 1 / -1; }
-      .voz-audio-card-filtros > .setting-group + .setting-group {
-        padding-top: 0;
-        border-top: 0;
-        padding-left: var(--space-6);
-        border-left: 1px solid var(--divider);
-      }
     }
 
     .voz-audio-card {
@@ -815,7 +809,7 @@
       text-transform: uppercase;
     }
 
-    .voz-audio-card > .setting-group + .setting-group,
+    .voz-audio-card:not(.voz-audio-card-filtros) > .setting-group + .setting-group,
     #announceTplFields .setting-group + .setting-group {
       padding-top: var(--space-4);
       border-top: 1px solid var(--divider);
