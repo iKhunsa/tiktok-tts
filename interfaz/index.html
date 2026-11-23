@@ -191,6 +191,7 @@
         </button>
         <button class="cfg-btn" onclick="skipCurrentTTS()"><img class="icon-inline" src="icons/play_arrow.svg" alt=""> <span data-i18n="btn.skipCurrent">Saltar actual</span></button>
         <button class="cfg-btn danger" onclick="clearChatAndQueue()"><img class="icon-inline" src="icons/delete.svg" alt=""> <span data-i18n="btn.clearChatAndQueue">Limpiar chat y cola</span></button>
+        <button class="cfg-btn icon-only warn" onclick="enableEmergencyTTSMode()" data-i18n-title="btn.emergency" title="Modo emergencia"><img class="icon-inline" src="icons/warning-amber.svg" alt=""></button>
         <button class="cfg-btn icon-only" id="btnBlockedWordsShortcut" onclick="openBlockWordModal()" data-i18n-title="btn.blockedWordsShortcut" title="Palabras bloqueadas"><img class="icon-inline" src="icons/filter_none.svg" alt=""></button>
         <button class="cfg-btn" id="btnEventEffects" hidden aria-pressed="true" data-i18n-title="eventFx.on" title="Animaciones y sonidos de temporada: activados. Clic para desactivar"><img class="icon-inline" src="icons/flare.svg" alt=""> <span data-i18n="eventFx.label">Efectos de evento</span><span class="fx-switch" aria-hidden="true"></span></button>
       </div>
@@ -252,10 +253,10 @@
       <div class="pro-banner" id="proBanner" hidden>
         <button type="button" class="pro-banner-main" id="proBannerOpen">
           <img class="icon-inline pro-banner-icon" src="icons/workspace_premium-gold.svg" alt="">
-          <span class="pro-banner-title" data-i18n="pro.bannerTitle">Mejora tu plan a Pro</span>
-          <span class="pro-banner-badge" data-i18n="pro.bannerBadge">Desde US$3/mes</span>
-          <span class="pro-banner-sub" data-i18n="pro.bannerSub">para desbloquear bot musical, soundpad, clips y más.</span>
-          <img class="icon-inline pro-banner-chevron" src="icons/chevron_right.svg" alt="">
+          <span class="pro-banner-title" data-i18n="pro.bannerTitle">Potenciá tu stream con Pro</span>
+          <span class="pro-banner-badge"><span class="pro-banner-amount"></span><span data-i18n="planesPopup.perMonth">/mes</span></span>
+          <span class="pro-banner-sub" data-i18n="pro.bannerSub">Música, efectos, overlays y más control.</span>
+          <span class="pro-banner-cta" data-i18n="pro.bannerCta">Explorar Pro</span>
         </button>
         <button type="button" class="pro-banner-close" id="proBannerClose" data-i18n-aria-label="pro.bannerClose" aria-label="Cerrar"><img class="icon-inline" src="icons/close.svg" alt=""></button>
       </div>

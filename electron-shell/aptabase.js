@@ -54,6 +54,8 @@ const VISTAS = new Set([
 const OVERLAYS = new Set([
   'chat', 'viewers', 'likes', 'donadores', 'alertas', 'alertas-social', 'creditos', 'social',
 ]);
+// Desde dónde se abrió el popup de planes; lo que no esté aquí cuenta como 'otro'.
+const ORIGENES_PLANES = new Set(['banner']);
 const TOURS = new Set([
   'overlays', 'chat_actions', 'voice', 'shortcuts', 'soundpad', 'clips', 'moderacion', 'plugin_store', 'channels', 'music_bot',
 ]);
@@ -71,7 +73,7 @@ const EVENTOS_UI = [
   ['ui:promo-code-copied', 'promo_code_copied'],
   ['ui:promo-plans-clicked', 'promo_plans_clicked'],
   ['ui:tiktok-banner-clicked', 'tiktok_banner_clicked'],
-  ['ui:plans-opened', 'plans_opened'],
+  ['ui:plans-opened', 'plans_opened', 'source', ORIGENES_PLANES, 'otro'],
   ['ui:news-opened', 'news_opened'],
   ['ui:donations-opened', 'donations_opened'],
   ['ui:portalview-opened', 'portalview_opened'],

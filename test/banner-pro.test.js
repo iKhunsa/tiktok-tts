@@ -21,7 +21,7 @@ test('el banner va bajo la barra "Se lee" y antes del chat, oculto de inicio', (
 test('las claves del banner existen en los 10 idiomas', () => {
   for (const lang of ['es', 'en', 'it', 'pt', 'fr', 'de', 'zh', 'ja', 'ko', 'ru']) {
     const { pro } = JSON.parse(readFileSync(resolve(raiz, `interfaz/publico/locales/${lang}.json`), 'utf8'));
-    for (const key of ['bannerTitle', 'bannerSub', 'bannerBadge', 'bannerClose']) assert.ok(pro[key], `${lang}: falta pro.${key}`);
+    for (const key of ['bannerTitle', 'bannerSub', 'bannerCta', 'bannerClose']) assert.ok(pro[key], `${lang}: falta pro.${key}`);
   }
 });
 
@@ -34,7 +34,8 @@ async function montar({ memoria = new Map(), version = 1 } = {}) {
     querySelector(selector) { return botones[selector] ||= crearBoton(); },
   };
   const originales = { document: global.document, localStorage: global.localStorage, window: global.window };
-  global.window = {}; // datos-por-cuenta.js publica un puente en window al importarse
+  const eventos = [];
+  global.window = { electronAPI: { trackEvent: (...args) => eventos.push(args) } }; // datos-por-cuenta.js publica un puente en window al importarse
   // Los módulos de la cadena de imports tocan el DOM al cargarse: lo que no es el banner responde con un no-op.
   const inerte = () => new Proxy(function () {}, { get: (_, p) => (p === Symbol.toPrimitive ? () => '' : inerte()), apply: () => inerte() });
   global.document = new Proxy({ getElementById: (id) => (id === 'proBanner' ? banner : null) }, { get: (t, p) => (p in t ? t[p] : inerte()) });
@@ -44,10 +45,29 @@ async function montar({ memoria = new Map(), version = 1 } = {}) {
   const { iniciarBannerPro } = await importar(`interfaz/src/vistas/principal/banner-pro.js?v=${version}`);
   iniciarBannerPro();
   return {
-    banner, botones, almacenSesion, memoria,
+    banner, botones, almacenSesion, memoria, eventos,
     restaurar() { global.document = originales.document; global.localStorage = originales.localStorage; global.window = originales.window; },
   };
 }
+
+test('el banner muestra el beneficio, el precio de Pro desde PLANES y un botón visible', async () => {
+  const banner = html.slice(html.indexOf('id="proBanner"'), html.indexOf('<div class="chat-section">'));
+  assert.match(banner, /pro-banner-cta/);
+  assert.doesNotMatch(banner, /US$/, 'el precio no va escrito a mano en el markup');
+  const m = await montar({ version: 3 });
+  try {
+    const { precioMensualPro } = await importar('interfaz/src/componentes/popup-planes.js');
+    assert.equal(m.botones['.pro-banner-amount'].textContent, precioMensualPro());
+  } finally { m.restaurar(); }
+});
+
+test('abrir el popup desde el banner lo registra con origen "banner"', async () => {
+  const m = await montar({ version: 4 });
+  try {
+    m.botones['#proBannerOpen'].click();
+    assert.deepEqual(m.eventos[0], ['ui:plans-opened', 'banner']);
+  } finally { m.restaurar(); }
+});
 
 test('solo se muestra con plan Free y cuentas activas', async () => {
   const m = await montar();

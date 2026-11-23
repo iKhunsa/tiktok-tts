@@ -1,5 +1,5 @@
 import { almacenSesion } from '../../nucleo/estado/sesion.js';
-import { abrirPopupPlanes } from '../../componentes/popup-planes.js';
+import { abrirPopupPlanes, precioMensualPro } from '../../componentes/popup-planes.js';
 
 // Solo para quien puede mejorar: plan Free con el sistema de cuentas activo.
 // Sin Promos y Pro no lo ven. La X lo oculta solo mientras la app sigue abierta:
@@ -12,7 +12,8 @@ export function iniciarBannerPro() {
     const { activo, plan } = almacenSesion.getState();
     banner.hidden = !activo || plan !== 'free' || cerrado;
   };
-  banner.querySelector('#proBannerOpen').addEventListener('click', abrirPopupPlanes);
+  banner.querySelector('.pro-banner-amount').textContent = precioMensualPro();
+  banner.querySelector('#proBannerOpen').addEventListener('click', () => abrirPopupPlanes('banner'));
   banner.querySelector('#proBannerClose').addEventListener('click', () => {
     cerrado = true;
     pintar();
