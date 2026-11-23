@@ -837,7 +837,7 @@
     .filtros-idioma { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }
     .filtro-voz, .filtro-tarjeta {
       display: flex; min-width: 0; padding: var(--space-3) var(--space-4);
-      background: var(--card-bg); border: var(--card-border); border-radius: var(--radius-sm);
+      background: transparent; border: var(--card-border); border-radius: var(--radius-sm);
     }
     .filtro-voz { align-items: center; gap: var(--space-3); }
     .filtro-voz-texto { flex: 1; display: flex; flex-direction: column; min-width: 0; gap: 2px; }
