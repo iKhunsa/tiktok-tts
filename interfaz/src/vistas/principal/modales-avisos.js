@@ -1,5 +1,4 @@
 import { appSettings } from '../../nucleo/estado/ajustes-app.js';
-import { allowedExtraLangs, setAllowedExtraLang as setAllowedExtraLangRemoto } from '../../nucleo/estado/config-runtime.js';
 import { t } from '../../nucleo/i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
 import { switchView } from './vistas-router.js';
@@ -102,7 +101,7 @@ export function getSayUsernameConnector() {
   return SAY_USERNAME_CONNECTOR_WORD[appSettings.voice] || DEFAULT_CONNECTOR_WORD;
 }
 
-// Modal "Idiomas permitidos" (filtro por diccionario de palabras). Espejo
+// "Idiomas permitidos" (filtro por diccionario de palabras). Espejo
 // del VOICE_TO_DICT_LANG del servidor: voces ru/ja/zh/ko no aplican.
 export const VOICE_TO_DICT_LANG_UI = {
   'es-MX': 'es', en: 'en', 'en-GB': 'en', pt: 'pt', 'pt-PT': 'pt', fr: 'fr', de: 'de', it: 'it',
@@ -110,48 +109,6 @@ export const VOICE_TO_DICT_LANG_UI = {
 export const DICT_LANG_NAMES = { es: 'Español', en: 'English', pt: 'Português', fr: 'Français', de: 'Deutsch', it: 'Italiano' };
 // Banderas de interfaz/publico/flags/ que representan cada idioma del diccionario (solo visual).
 export const DICT_LANG_FLAG = { es: 'ES', en: 'US', pt: 'BR', fr: 'FR', de: 'DE', it: 'IT' };
-
-export function openDictLangModal() {
-  renderDictLangModal();
-  document.getElementById('dictLangModal').classList.add('show');
-}
-export function closeDictLangModal(e) {
-  if (e && e.target.id !== 'dictLangModal') return;
-  document.getElementById('dictLangModal').classList.remove('show');
-}
-
-function renderDictLangModal() {
-  const voiceLang = VOICE_TO_DICT_LANG_UI[appSettings.voice] || null;
-  const list = document.getElementById('dictLangList');
-  const na = document.getElementById('dictLangNA');
-  list.innerHTML = '';
-  na.style.display = voiceLang ? 'none' : 'block';
-  if (!voiceLang) return;
-  for (const lang of Object.keys(DICT_LANG_NAMES)) {
-    const isVoice = lang === voiceLang;
-    const label = document.createElement('label');
-    label.style.cssText = 'display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;background:rgba(255,255,255,0.05);cursor:pointer;margin-bottom:6px;font-size:14px;' + (isVoice ? 'opacity:0.6;cursor:default;' : '');
-    const cb = document.createElement('input');
-    cb.type = 'checkbox';
-    cb.checked = isVoice || allowedExtraLangs.includes(lang);
-    cb.disabled = isVoice;
-    if (!isVoice) cb.onchange = () => setAllowedExtraLang(lang, cb.checked);
-    const flag = document.createElement('img');
-    flag.className = 'flag-icon';
-    flag.src = 'flags/' + DICT_LANG_FLAG[lang] + '.svg';
-    flag.alt = '';
-    const span = document.createElement('span');
-    span.textContent = DICT_LANG_NAMES[lang] + (isVoice ? ' ' + t('dictLang.voiceAlways') : '');
-    label.append(cb, flag, span);
-    list.appendChild(label);
-  }
-}
-
-// allowedExtraLangs ya no pasa por appSettings/localStorage (fase-05):
-// config-runtime.js es el unico dueño, ver nucleo/estado/config-runtime.js.
-function setAllowedExtraLang(lang, enabled) {
-  setAllowedExtraLangRemoto(lang, enabled);
-}
 
 // ─── Onboarding: tutorial guiado para usuarios que nunca usaron la app ──
 export function closeOnboardingWelcome(e) {

@@ -1026,10 +1026,7 @@
     "testOverlaySent": "测试已发送到叠加层"
   },
   "dictLang": {
-    "title": "允许的语言",
-    "desc": "除语音语言外，还允许以下语言的消息：",
-    "voiceAlways": "（语音语言 — 始终允许）",
-    "notApplicable": "此过滤器仅适用于拉丁字母语音。"
+    "title": "允许的语言"
   },
   "tour": {
     "next": "下一步",
@@ -1230,7 +1227,7 @@
     "wordFilterTitle": "按语言过滤（单词）",
     "wordFilterDesc": "基于词典的更精细过滤：只朗读当前语音语言的消息，以及你在下方允许的其他语言。人名或拼写错误不会阻止朗读。",
     "dictModalTitle": "允许的语言",
-    "dictModalDesc": "选择除你的语音语言外，还允许 TTS 朗读哪些语言。关闭此窗口继续教程。"
+    "dictModalDesc": "选择除你的语音语言外，还允许 TTS 朗读哪些语言。"
   },
   "shortcutsTour": {
     "introTitle": "键盘快捷键",
@@ -2624,13 +2621,12 @@
     }
   },
   "filtrosIdioma": {
-    "activeVoice": "当前语音",
-    "on": "已开启",
-    "off": "已关闭",
+    "voiceLanguage": "你的语音语言",
     "edit": "编辑",
+    "done": "完成",
     "alwaysAllowed": "始终允许",
     "noExtras": "没有额外语言",
     "unavailable": "此过滤器不适用于该语音",
-    "together": "过滤器可以同时使用。如果消息被拦截，则不会朗读。"
+    "together": "过滤器可以同时使用。如果消息被拦截，则不会朗读。基于词语的检测并不完美。"
   }
 }

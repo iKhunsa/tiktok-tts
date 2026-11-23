@@ -1026,10 +1026,7 @@
     "testOverlaySent": "오버레이에 테스트를 보냈습니다"
   },
   "dictLang": {
-    "title": "허용 언어",
-    "desc": "음성 언어 외에 다음 언어의 메시지도 허용:",
-    "voiceAlways": "(음성 언어 — 항상 허용)",
-    "notApplicable": "이 필터는 라틴 문자 음성에만 적용됩니다."
+    "title": "허용 언어"
   },
   "tour": {
     "next": "다음",
@@ -1230,7 +1227,7 @@
     "wordFilterTitle": "언어별 필터링(단어)",
     "wordFilterDesc": "사전 기반의 더 정밀한 필터: 현재 음성 언어로 쓰인 메시지와 아래에서 허용한 추가 언어만 읽습니다. 이름이나 오타는 메시지를 막지 않습니다.",
     "dictModalTitle": "허용된 언어",
-    "dictModalDesc": "내 음성 언어 외에 TTS가 읽을 수 있도록 허용할 추가 언어를 선택하세요. 이 창을 닫으면 튜토리얼이 계속됩니다."
+    "dictModalDesc": "내 음성 언어 외에 TTS가 읽을 수 있도록 허용할 추가 언어를 선택하세요."
   },
   "shortcutsTour": {
     "introTitle": "키보드 단축키",
@@ -2624,13 +2621,12 @@
     }
   },
   "filtrosIdioma": {
-    "activeVoice": "사용 중인 음성",
-    "on": "켜짐",
-    "off": "꺼짐",
+    "voiceLanguage": "내 음성 언어",
     "edit": "편집",
+    "done": "완료",
     "alwaysAllowed": "항상 허용",
     "noExtras": "추가 언어 없음",
     "unavailable": "이 필터는 이 음성에서 사용할 수 없습니다",
-    "together": "필터는 함께 사용할 수 있습니다. 메시지가 차단되면 읽지 않습니다."
+    "together": "필터는 함께 사용할 수 있습니다. 메시지가 차단되면 읽지 않습니다. 단어 기반 감지는 완벽하지 않습니다."
   }
 }

@@ -64,7 +64,7 @@ import {
 } from './atajos-teclado.js';
 import { iniciarTabsAtajos } from './tabs-atajos.js';
 import { iniciarTabsAjustes } from './tabs-ajustes.js';
-import { iniciarFiltrosIdioma } from './filtros-idioma-ui.js';
+import { iniciarFiltrosIdioma, openDictLangModal } from './filtros-idioma-ui.js';
 import {
   toggleVoiceDropdown, patchConfigSetting, syncTtsVoiceLang, toggleLangFilter,
   toggleDictFilter, toggleSayUsernameConnector, updateConnectorChipState, selectVoice,
@@ -74,8 +74,7 @@ import { escapeHtml, initChatScrollFollow, initSpeakingGoto, clearChatAndQueue }
 import { iniciarVistaChat } from './chat-vista.js';
 import {
   openDonationsModal, closeDonationsModal, openDiscordModal, closeDiscordModal,
-  openBugReportModal, closeBugReportModal, submitBugReport, openDictLangModal,
-  closeDictLangModal,
+  openBugReportModal, closeBugReportModal, submitBugReport,
   closeOnboardingWelcome, closeOnboardingComplete, startOnboardingTour,
   iniciarModalesYAvisos, arrancarAvisosOnboarding,
 } from './modales-avisos.js';
@@ -146,7 +145,6 @@ Object.assign(window, {
   openDonationsModal, closeDonationsModal, openDiscordModal, closeDiscordModal,
   openBugReportModal, closeBugReportModal, submitBugReport, openDictLangModal,
   openIdeaModal, closeIdeaModal, submitIdea, submitOverlayIdea, quitarImagenOverlay,
-  closeDictLangModal,
   closeOnboardingWelcome, closeOnboardingComplete, startOnboardingTour,
   // movil remoto
   copyMobileURL, refreshMobileQR, showMobileQRPlaceholder,
