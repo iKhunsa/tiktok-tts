@@ -195,10 +195,6 @@ function aplicarBloqueoApp() {
     musicInit();
   }
   _estabaBloqueada = bloq;
-  // Onboarding + popups: recién con la app desbloqueada (logueado o sistema de
-  // cuentas apagado), nunca en la pantalla de login. arrancarAvisosOnboarding
-  // es idempotente.
-  if (!bloq) arrancarAvisosOnboarding();
   // Evento de temporada (Halloween...): una vez por carga, ya desbloqueada la app.
   if (!bloq) reproducirEventoActivo();
   // Vistas Pro enteras (Sonidos/Bot/MCP/Panel movil/Clips): re-evaluar el aviso
@@ -268,7 +264,9 @@ function iniciarArranque() {
   window.__sesionActual = () => almacenSesion.getState();
   almacenSesion.subscribe(() => window.renderPluginStore?.());
   almacenSesion.subscribe(aplicarBloqueoApp);
-  cargarSesion().then(iniciarTemporada); // la cuenta decide si ya vio el anuncio: se evalua con la sesion leida
+  // Con la sesion ya leida: la cuenta decide si ya vio el anuncio de temporada, y el onboarding arranca solo si la
+  // app esta desbloqueada (tras login/registro la app se recarga y pasa por aqui con la sesion iniciada).
+  cargarSesion().then(() => { iniciarTemporada(); arrancarAvisosOnboarding(); });
   const eventoForzado = new URLSearchParams(window.location.search).get('evento');
   if (eventoForzado) reproducirEvento(eventoForzado); // prueba manual: ?evento=halloween
   renderShortcutDisplay();

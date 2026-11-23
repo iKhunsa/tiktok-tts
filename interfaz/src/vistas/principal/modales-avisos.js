@@ -5,6 +5,7 @@ import { switchView } from './vistas-router.js';
 import { driverTourDefaults } from './tours/index.js';
 import { spCancelCapture, spResetDeleteBtn } from './soundpad.js';
 import { trackUi } from '../../nucleo/telemetria-ui.js';
+import { appBloqueada } from '../../nucleo/estado/sesion.js';
 
 export function setStatus(type, text) {
   const dot = document.getElementById('statusDot');
@@ -164,19 +165,17 @@ export function startOnboardingTour() {
 const ONBOARDING_KEY = 'tikliveTTS_onboardingSeen_v1';
 function maybeShowOnboarding() {
   if (localStorage.getItem(ONBOARDING_KEY)) return;
-  localStorage.setItem(ONBOARDING_KEY, '1');
-  setTimeout(() => document.getElementById('onboardingWelcomeModal').classList.add('show'), 900);
+  setTimeout(() => {
+    localStorage.setItem(ONBOARDING_KEY, '1'); // se marca al mostrarse, no antes
+    document.getElementById('onboardingWelcomeModal').classList.add('show');
+  }, 900);
 }
 
-// Onboarding (bienvenida + tour). Lo dispara index.js recien
-// cuando la app deja de estar bloqueada por el muro de login — no en la
-// pantalla de login. Idempotente: corre una sola vez.
-let _avisosArrancados = false;
+// Onboarding (bienvenida + tour). Lo dispara index.js con la sesion ya leida; en la pantalla de login no hace nada:
+// tras registrarse o iniciar sesion la app se recarga y arranca aqui. Independiente del idioma (no espera __langReady).
 export function arrancarAvisosOnboarding() {
-  if (_avisosArrancados) return;
-  _avisosArrancados = true;
-  // Espera a que el idioma este definido para que todo aparezca traducido.
-  Promise.resolve(window.__langReady).then(maybeShowOnboarding);
+  if (appBloqueada()) return;
+  maybeShowOnboarding();
 }
 
 export function iniciarModalesYAvisos() {
