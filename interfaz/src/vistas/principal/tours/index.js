@@ -6,6 +6,7 @@
 import { t } from '../../../nucleo/i18n/i18n.js';
 import { driverTourDefaults as sharedDriverTourDefaults } from '../../../nucleo/tours/driver.js';
 import { switchView } from '../vistas-router.js';
+import { mostrarPanelAjustes } from '../tabs-ajustes.js';
 import { expandChatToggles } from '../toggles-chat.js';
 import { closeDictLangModal, openDictLangModal } from '../modales-avisos.js';
 import { trackUi } from '../../../nucleo/telemetria-ui.js';
@@ -45,7 +46,7 @@ export function startChatActionsTour() {
 export function startVoiceTour() {
   trackUi('ui:tour-started', 'voice');
   if (!(window.driver && window.driver.js)) return;
-  const inSettings = () => switchView('settings');
+  const inPanel = (panelId) => () => { switchView('settings'); mostrarPanelAjustes(panelId); };
 
   window.driver.js.driver({
     ...driverTourDefaults(),
@@ -54,14 +55,14 @@ export function startVoiceTour() {
       opts.driver.destroy();
     },
     steps: [
-      { element: '#settingsSectionVoice .settings-section-title', popover: { title: t('voiceTour.introTitle'), description: t('voiceTour.introDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inSettings },
-      { element: '#voiceSelectGroup', popover: { title: t('voiceTour.voiceTitle'), description: t('voiceTour.voiceDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inSettings },
-      { element: '#voiceTestGroup', popover: { title: t('voiceTour.testTitle'), description: t('voiceTour.testDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inSettings },
-      { element: '#voiceRateGroup', popover: { title: t('voiceTour.rateTitle'), description: t('voiceTour.rateDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inSettings },
-      { element: '#voiceVolGroup', popover: { title: t('voiceTour.volTitle'), description: t('voiceTour.volDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inSettings },
-      { element: '#voiceDictFilterGroup', popover: { title: t('voiceTour.wordFilterTitle'), description: t('voiceTour.wordFilterDesc'), side: 'top', align: 'start' }, onHighlightStarted: inSettings },
-      { element: '#announceTplFields', popover: { title: t('tour.announceTitle'), description: t('tour.announceDesc'), side: 'top', align: 'start' }, onHighlightStarted: inSettings },
-      { element: '#dictLangModal .modal-content', popover: { title: t('voiceTour.dictModalTitle'), description: t('voiceTour.dictModalDesc'), side: 'left', align: 'start' }, onHighlightStarted: () => { inSettings(); openDictLangModal(); } },
+      { element: '#settingsSectionVoice .settings-section-title', popover: { title: t('voiceTour.introTitle'), description: t('voiceTour.introDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inPanel('settingsSectionVoice') },
+      { element: '#voiceSelectGroup', popover: { title: t('voiceTour.voiceTitle'), description: t('voiceTour.voiceDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inPanel('settingsSectionVoice') },
+      { element: '#voiceTestGroup', popover: { title: t('voiceTour.testTitle'), description: t('voiceTour.testDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inPanel('settingsSectionVoice') },
+      { element: '#voiceRateGroup', popover: { title: t('voiceTour.rateTitle'), description: t('voiceTour.rateDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inPanel('settingsSectionVoice') },
+      { element: '#voiceVolGroup', popover: { title: t('voiceTour.volTitle'), description: t('voiceTour.volDesc'), side: 'bottom', align: 'start' }, onHighlightStarted: inPanel('settingsSectionVoice') },
+      { element: '#voiceDictFilterGroup', popover: { title: t('voiceTour.wordFilterTitle'), description: t('voiceTour.wordFilterDesc'), side: 'top', align: 'start' }, onHighlightStarted: inPanel('ajustesPanelFiltros') },
+      { element: '#announceTplFields', popover: { title: t('tour.announceTitle'), description: t('tour.announceDesc'), side: 'top', align: 'start' }, onHighlightStarted: inPanel('ajustesPanelAvisos') },
+      { element: '#dictLangModal .modal-content', popover: { title: t('voiceTour.dictModalTitle'), description: t('voiceTour.dictModalDesc'), side: 'left', align: 'start' }, onHighlightStarted: () => { inPanel('ajustesPanelFiltros')(); openDictLangModal(); } },
     ],
   }).drive();
 }
@@ -69,7 +70,7 @@ export function startVoiceTour() {
 export function startShortcutsTour() {
   trackUi('ui:tour-started', 'shortcuts');
   if (!(window.driver && window.driver.js)) return;
-  const inSettings = () => switchView('settings');
+  const inSettings = () => { switchView('settings'); mostrarPanelAjustes('settingsSectionShortcuts'); };
 
   window.driver.js.driver({
     ...driverTourDefaults(),
