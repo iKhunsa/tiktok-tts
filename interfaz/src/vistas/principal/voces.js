@@ -1,5 +1,5 @@
 import { appSettings, saveSettings } from '../../nucleo/estado/ajustes-app.js';
-import { setLangFilterEnabled, setDictFilterEnabled } from '../../nucleo/estado/config-runtime.js';
+import { setLangFilterEnabled, setDictFilterEnabled, avisarCambioFiltroIdioma } from '../../nucleo/estado/config-runtime.js';
 import { t, tErr } from '../../nucleo/i18n/i18n.js';
 import { showToast } from '../../componentes/toast.js';
 import { playAudioBlob } from '../../nucleo/tts/cola-tts.js';
@@ -19,6 +19,7 @@ function updateVoiceDisplay(voiceObj) {
   voiceDropdownFlag.src = 'flags/' + voiceObj.flag + '.svg';
   voiceDropdownFlag.alt = voiceObj.name;
   voiceDropdownText.textContent = voiceObj.name;
+  avisarCambioFiltroIdioma();
 }
 
 export function toggleVoiceDropdown() {
@@ -141,6 +142,7 @@ export async function loadVoices() {
         // el valor legacy para siempre en localStorage.
         appSettings.voice = firstEs.id;
         saveSettings();
+        avisarCambioFiltroIdioma();
       }
     }
     if (selectedVoice) syncTtsVoiceLang(selectedVoice);

@@ -104,10 +104,10 @@
     "readShares": "Announce shares",
     "sayUsername": "Say username",
     "sayUsernameConnector": "Say \"says\"",
-    "langFilter": "Filter characters from other languages",
-    "langFilterHint": "Ignores chat messages with characters that don't match the active voice's language (e.g. blocks Chinese/Japanese if your voice is Spanish, and vice versa).",
-    "dictFilter": "Filter by language (words)",
-    "dictFilterHint": "Only reads messages written in the active voice language or in the extra languages you allow. Unknown words (names, typos) never block.",
+    "langFilter": "Block other alphabets",
+    "langFilterHint": "Skips messages with letters from other alphabets, like Chinese or Russian",
+    "dictFilter": "Filter other languages",
+    "dictFilterHint": "Tries to detect other languages that use Latin letters",
     "closeToTray": "Minimize to tray on close",
     "closeToTrayHint": "The X keeps the app running in the system tray. To quit completely: right-click the tray icon → Exit.",
     "openAtLogin": "Open when Windows starts",
@@ -2622,5 +2622,15 @@
       "titulo": "Your season, always at hand",
       "entendido": "Got it"
     }
+  },
+  "filtrosIdioma": {
+    "activeVoice": "Active voice",
+    "on": "On",
+    "off": "Off",
+    "edit": "Edit",
+    "alwaysAllowed": "Always allowed",
+    "noExtras": "No extra languages",
+    "unavailable": "This filter is not available for this voice",
+    "together": "Filters can be used together. If they block a message, it is not read."
   }
 }

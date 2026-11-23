@@ -893,23 +893,48 @@
         <div class="voz-audio-layout">
           <div class="voz-audio-card voz-audio-card-filtros">
             <div class="voz-audio-eyebrow" data-i18n="settings.languageFilters">Filtros de idioma</div>
-            <div class="setting-group" id="voiceLangFilterGroup">
-              <label class="toggle-chip">
-                <input type="checkbox" id="langFilterToggle" onchange="toggleLangFilter(this)" />
-                <span data-i18n="toggle.langFilter">Filtrar caracteres de otros idiomas</span>
-              </label>
-              <div class="voz-audio-hint" data-i18n="toggle.langFilterHint">Ignora mensajes de chat con caracteres que no correspondan al idioma de la voz activa (ej: bloquea chino/japonés si tu voz está en Español, y viceversa).</div>
+            <div class="filtro-voz" id="filtroVozActiva">
+              <img class="flag-icon" id="filtroVozFlag" src="flags/ES.svg" alt="">
+              <div class="filtro-voz-texto">
+                <span class="filtro-etiqueta" data-i18n="filtrosIdioma.activeVoice">Voz activa</span>
+                <strong id="filtroVozNombre"></strong>
+              </div>
             </div>
-            <div class="setting-group" id="voiceDictFilterGroup">
-              <label class="toggle-chip">
-                <input type="checkbox" id="dictFilterToggle" onchange="toggleDictFilter(this)" />
-                <span data-i18n="toggle.dictFilter">Filtrar por idioma (palabras)</span>
-              </label>
-              <button class="cfg-btn voz-audio-language-button" onclick="openDictLangModal()" id="btnOpenDictLangModal">
-                <img class="icon-inline" src="icons/settings.svg" alt=""> <span data-i18n="dictLang.title">Idiomas permitidos</span>
-              </button>
-              <div class="voz-audio-hint" data-i18n="toggle.dictFilterHint">Solo lee mensajes escritos en el idioma de la voz activa o en los idiomas extra que permitas. Las palabras desconocidas (nombres, typos) no bloquean.</div>
+            <div class="setting-group filtro-fila" id="voiceLangFilterGroup">
+              <div class="filtro-fila-cab">
+                <span class="filtro-titulo" id="langFilterTitulo" data-i18n="toggle.langFilter">Bloquear otros alfabetos</span>
+                <span class="filtro-estado" id="langFilterEstado"></span>
+                <label class="switch">
+                  <input type="checkbox" id="langFilterToggle" onchange="toggleLangFilter(this)" aria-labelledby="langFilterTitulo" />
+                  <span class="switch-track"></span>
+                </label>
+              </div>
+              <div class="voz-audio-hint" data-i18n="toggle.langFilterHint">Evita mensajes con letras de otros alfabetos, como chino o ruso</div>
             </div>
+            <div class="setting-group filtro-fila" id="voiceDictFilterGroup">
+              <div class="filtro-fila-cab">
+                <span class="filtro-titulo" id="dictFilterTitulo" data-i18n="toggle.dictFilter">Filtrar otros idiomas</span>
+                <span class="filtro-estado" id="dictFilterEstado"></span>
+                <label class="switch">
+                  <input type="checkbox" id="dictFilterToggle" onchange="toggleDictFilter(this)" aria-labelledby="dictFilterTitulo" />
+                  <span class="switch-track"></span>
+                </label>
+              </div>
+              <div class="voz-audio-hint" data-i18n="toggle.dictFilterHint">Intenta detectar otros idiomas que usan letras latinas</div>
+              <div class="filtro-aviso" id="dictFilterNA" hidden>
+                <img class="icon-inline" src="icons/info.svg" alt=""> <span data-i18n="filtrosIdioma.unavailable">Este filtro no está disponible para esta voz</span>
+              </div>
+              <div class="filtro-permitidos" id="filtroPermitidos" hidden>
+                <div class="filtro-fila-cab">
+                  <span class="filtro-titulo" data-i18n="dictLang.title">Idiomas permitidos</span>
+                  <button class="cfg-btn voz-audio-language-button" onclick="openDictLangModal()" id="btnOpenDictLangModal">
+                    <img class="icon-inline" src="icons/edit.svg" alt=""> <span data-i18n="filtrosIdioma.edit">Editar</span>
+                  </button>
+                </div>
+                <div class="filtro-chips" id="filtroChips"></div>
+              </div>
+            </div>
+            <p class="filtro-nota"><img class="icon-inline" src="icons/info.svg" alt=""> <span data-i18n="filtrosIdioma.together">Los filtros pueden usarse juntos. Si bloquean un mensaje, no se lee.</span></p>
           </div>
         </div>
         <!-- Redireccion: el filtro de mensajes vive en Moderacion (moderacion.js#openChatGuard) -->

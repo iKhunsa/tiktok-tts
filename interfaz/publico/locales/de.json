@@ -104,10 +104,10 @@
     "readShares": "Shares ansagen",
     "sayUsername": "Name sagen",
     "sayUsernameConnector": "Verbindungswort sagen",
-    "langFilter": "Zeichen anderer Sprachen filtern",
-    "langFilterHint": "Ignoriert Chat-Nachrichten mit Zeichen, die nicht zur Sprache der aktiven Stimme passen (z. B. Chinesisch/Japanisch blockieren, wenn die Stimme Spanisch ist, und umgekehrt).",
-    "dictFilter": "Nach Sprache filtern (Wörter)",
-    "dictFilterHint": "Liest nur Nachrichten in der Sprache der aktiven Stimme oder in den zusätzlich erlaubten Sprachen. Unbekannte Wörter (Namen, Tippfehler) blockieren nicht.",
+    "langFilter": "Andere Alphabete blockieren",
+    "langFilterHint": "Vermeidet Nachrichten mit Buchstaben anderer Alphabete, z. B. Chinesisch oder Russisch",
+    "dictFilter": "Andere Sprachen filtern",
+    "dictFilterHint": "Versucht, andere Sprachen mit lateinischen Buchstaben zu erkennen",
     "closeToTray": "Beim Schließen in den Infobereich minimieren",
     "closeToTrayHint": "Mit dem X läuft die App im Infobereich weiter. Zum vollständigen Beenden: Rechtsklick auf das Symbol → Beenden.",
     "openAtLogin": "Beim Windows-Start öffnen",
@@ -2622,5 +2622,15 @@
       "titulo": "Deine Saison, immer griffbereit",
       "entendido": "Verstanden"
     }
+  },
+  "filtrosIdioma": {
+    "activeVoice": "Aktive Stimme",
+    "on": "Ein",
+    "off": "Aus",
+    "edit": "Bearbeiten",
+    "alwaysAllowed": "Immer erlaubt",
+    "noExtras": "Keine zusätzlichen Sprachen",
+    "unavailable": "Dieser Filter ist für diese Stimme nicht verfügbar",
+    "together": "Die Filter können zusammen verwendet werden. Blockieren sie eine Nachricht, wird sie nicht vorgelesen."
   }
 }

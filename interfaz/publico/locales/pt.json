@@ -104,10 +104,10 @@
     "readShares": "Anunciar compartilhamentos",
     "sayUsername": "Dizer nome",
     "sayUsernameConnector": "Dizer \"diz\"",
-    "langFilter": "Filtrar caracteres de outros idiomas",
-    "langFilterHint": "Ignora mensagens de chat com caracteres que não correspondem ao idioma da voz ativa (ex: bloqueia chinês/japonês se a voz estiver em espanhol, e vice-versa).",
-    "dictFilter": "Filtrar por idioma (palavras)",
-    "dictFilterHint": "Só lê mensagens escritas no idioma da voz ativa ou nos idiomas extras que você permitir. Palavras desconhecidas (nomes, erros de digitação) não bloqueiam.",
+    "langFilter": "Bloquear outros alfabetos",
+    "langFilterHint": "Evita mensagens com letras de outros alfabetos, como chinês ou russo",
+    "dictFilter": "Filtrar outros idiomas",
+    "dictFilterHint": "Tenta detectar outros idiomas que usam letras latinas",
     "closeToTray": "Minimizar para a bandeja ao fechar",
     "closeToTrayHint": "Com o X o app continua funcionando na bandeja do sistema. Para fechar de vez: clique direito no ícone da bandeja → Sair.",
     "openAtLogin": "Abrir ao iniciar o Windows",
@@ -2622,5 +2622,15 @@
       "titulo": "Sua temporada, sempre à mão",
       "entendido": "Entendi"
     }
+  },
+  "filtrosIdioma": {
+    "activeVoice": "Voz ativa",
+    "on": "Ativado",
+    "off": "Desativado",
+    "edit": "Editar",
+    "alwaysAllowed": "Sempre permitido",
+    "noExtras": "Sem idiomas adicionais",
+    "unavailable": "Este filtro não está disponível para esta voz",
+    "together": "Os filtros podem ser usados juntos. Se bloquearem uma mensagem, ela não é lida."
   }
 }

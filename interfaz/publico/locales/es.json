@@ -140,10 +140,10 @@
     "readShares": "Anunciar compartidos",
     "sayUsername": "Decir nombre",
     "sayUsernameConnector": "Decir \"dice\"",
-    "langFilter": "Filtrar caracteres de otros idiomas",
-    "langFilterHint": "Ignora mensajes de chat con caracteres que no correspondan al idioma de la voz activa (ej: bloquea chino/japonés si tu voz está en Español, y viceversa).",
-    "dictFilter": "Filtrar por idioma (palabras)",
-    "dictFilterHint": "Solo lee mensajes escritos en el idioma de la voz activa o en los idiomas extra que permitas. Las palabras desconocidas (nombres, typos) no bloquean.",
+    "langFilter": "Bloquear otros alfabetos",
+    "langFilterHint": "Evita mensajes con letras de otros alfabetos, como chino o ruso",
+    "dictFilter": "Filtrar otros idiomas",
+    "dictFilterHint": "Intenta detectar otros idiomas que usan letras latinas",
     "closeToTray": "Minimizar a la bandeja al cerrar",
     "closeToTrayHint": "Con la X la app sigue funcionando en la bandeja del sistema. Para cerrarla del todo: clic derecho en el ícono de la bandeja → Salir.",
     "openAtLogin": "Abrir al iniciar Windows",
@@ -2622,5 +2622,15 @@
       "titulo": "Tu temporada, siempre a mano",
       "entendido": "Entendido"
     }
+  },
+  "filtrosIdioma": {
+    "activeVoice": "Voz activa",
+    "on": "Activado",
+    "off": "Desactivado",
+    "edit": "Editar",
+    "alwaysAllowed": "Siempre permitido",
+    "noExtras": "Sin idiomas adicionales",
+    "unavailable": "Este filtro no está disponible para esta voz",
+    "together": "Los filtros pueden usarse juntos. Si bloquean un mensaje, no se lee."
   }
 }
