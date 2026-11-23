@@ -63,7 +63,6 @@ import {
   applyTtsShortcutPreset, iniciarAtajosTeclado, TTS_SHORTCUT_ACTIONS_KEYS,
 } from './atajos-teclado.js';
 import { iniciarTabsAtajos } from './tabs-atajos.js';
-import { iniciarTabsAjustes } from './tabs-ajustes.js';
 import {
   toggleVoiceDropdown, patchConfigSetting, syncTtsVoiceLang, toggleLangFilter,
   toggleDictFilter, toggleSayUsernameConnector, updateConnectorChipState, selectVoice,
@@ -233,7 +232,6 @@ function iniciarArranque() {
   iniciarObservadorTogglesChat();
   iniciarAtajosTeclado();
   iniciarTabsAtajos();
-  iniciarTabsAjustes();
   iniciarCierreDropdownVoces();
   iniciarPintadoDeRangos();
   iniciarCamposOverlay();

@@ -803,25 +803,7 @@
         <p data-i18n="view.settings.desc">Ajusta la voz, velocidad y comportamientos. Todo se guarda automáticamente.</p>
       </div>
 
-      <div class="seg-control atajos-tabs ajustes-tabs" id="ajustesTabs" role="tablist" aria-label="Ajustes de voz" data-i18n-aria-label="view.settings.title">
-        <button type="button" class="seg-btn active" id="ajustesTabVoz" role="tab" aria-selected="true" aria-controls="settingsSectionVoice" tabindex="0">
-          <img class="icon-inline" src="icons/mic.svg" alt=""> <span data-i18n="settings.tabVoice">Voz</span>
-        </button>
-        <button type="button" class="seg-btn" id="ajustesTabAvisos" role="tab" aria-selected="false" aria-controls="ajustesPanelAvisos" tabindex="-1">
-          <img class="icon-inline" src="icons/chat.svg" alt=""> <span data-i18n="settings.tabAnnouncements">Avisos y frases</span>
-        </button>
-        <button type="button" class="seg-btn" id="ajustesTabFiltros" role="tab" aria-selected="false" aria-controls="ajustesPanelFiltros" tabindex="-1">
-          <img class="icon-inline" src="icons/tune.svg" alt=""> <span data-i18n="settings.tabFilters">Filtros</span>
-        </button>
-        <button type="button" class="seg-btn" id="ajustesTabAtajos" role="tab" aria-selected="false" aria-controls="settingsSectionShortcuts" tabindex="-1">
-          <img class="icon-inline" src="icons/keyboard.svg" alt=""> <span data-i18n="settings.tabShortcuts">Atajos</span>
-        </button>
-        <button type="button" class="seg-btn" id="ajustesTabDonaciones" role="tab" aria-selected="false" aria-controls="giftGatePanel" tabindex="-1">
-          <img class="icon-inline" src="icons/card_giftcard.svg" alt=""> <span data-i18n="settings.tabDonations">Donaciones</span>
-        </button>
-      </div>
-
-      <div class="settings-section ajustes-panel voz-audio-seccion" id="settingsSectionVoice" role="tabpanel" aria-labelledby="ajustesTabVoz">
+      <div class="settings-section" id="settingsSectionVoice">
         <div class="settings-section-title settings-row-flex settings-title-split">
           <span class="voz-audio-heading"><img class="icon-inline" src="icons/mic.svg" alt=""> <span data-i18n="settings.voice">Voz y audio</span></span>
           <button class="cfg-btn" id="btnVoiceTour" onclick="startVoiceTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
@@ -864,67 +846,60 @@
               <div class="range-labels"><span data-i18n="label.mute">Mute</span><span data-i18n="label.max">Máx</span></div>
             </div>
           </div>
+          <div class="voz-audio-column">
+            <div class="voz-audio-card">
+              <div class="voz-audio-eyebrow" data-i18n="settings.languageFilters">Filtros de idioma</div>
+              <div class="setting-group" id="voiceLangFilterGroup">
+                <label class="toggle-chip">
+                  <input type="checkbox" id="langFilterToggle" onchange="toggleLangFilter(this)" />
+                  <span data-i18n="toggle.langFilter">Filtrar caracteres de otros idiomas</span>
+                </label>
+                <div class="voz-audio-hint" data-i18n="toggle.langFilterHint">Ignora mensajes de chat con caracteres que no correspondan al idioma de la voz activa (ej: bloquea chino/japonés si tu voz está en Español, y viceversa).</div>
+              </div>
+              <div class="setting-group" id="voiceDictFilterGroup">
+                <label class="toggle-chip">
+                  <input type="checkbox" id="dictFilterToggle" onchange="toggleDictFilter(this)" />
+                  <span data-i18n="toggle.dictFilter">Filtrar por idioma (palabras)</span>
+                </label>
+                <button class="cfg-btn voz-audio-language-button" onclick="openDictLangModal()" id="btnOpenDictLangModal">
+                  <img class="icon-inline" src="icons/settings.svg" alt=""> <span data-i18n="dictLang.title">Idiomas permitidos</span>
+                </button>
+                <div class="voz-audio-hint" data-i18n="toggle.dictFilterHint">Solo lee mensajes escritos en el idioma de la voz activa o en los idiomas extra que permitas. Las palabras desconocidas (nombres, typos) no bloquean.</div>
+              </div>
+            </div>
+            <div class="voz-audio-card">
+              <div class="voz-audio-eyebrow" data-i18n="settings.announcementEndings">Finales de anuncios</div>
+              <div class="setting-group" id="voiceAnnounceGroup">
+                <label><img class="icon-inline" src="icons/chat.svg" alt=""> <span data-i18n="settings.announceTplTitle">Personaliza el final de los anuncios</span></label>
+                <div class="voz-audio-hint" data-i18n="settings.announceTplDesc">Opcional: escribe lo que va después del nombre. Los datos se añaden solos; si lo dejas vacío, se usa el texto estándar.</div>
+                <div id="announceTplFields"></div>
+              </div>
+            </div>
+            <div class="voz-audio-card">
+              <div class="voz-audio-eyebrow" data-i18n="settings.announceVolEyebrow">Volumen de los anuncios</div>
+              <div class="setting-group" id="voiceAnnounceVolGroup">
+                <label><img class="icon-inline" src="icons/volume_up.svg" alt=""> <span data-i18n="settings.announceVolTitle">Volumen de los anuncios</span> — <span id="announceVolVal">100</span>%</label>
+                <div class="voz-audio-hint" data-i18n="settings.announceVolDesc">Regalos, entradas, follows, likes y shares suenan a este volumen, relativo al del TTS. Bájalo para que sean un sonido de fondo mientras el chat se lee fuerte.</div>
+                <input type="range" id="announceVolRange" min="0" max="1" step="0.05" value="1" oninput="updateAnnounceVol(this.value)" />
+                <div class="range-labels"><span data-i18n="label.mute">Mute</span><span data-i18n="label.max">Máx</span></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-<div class="settings-section ajustes-panel voz-audio-seccion" id="ajustesPanelAvisos" role="tabpanel" aria-labelledby="ajustesTabAvisos" hidden>
-        <div class="voz-audio-layout">
-          <div class="voz-audio-card">
-            <div class="voz-audio-eyebrow" data-i18n="settings.announcementEndings">Finales de anuncios</div>
-            <div class="setting-group" id="voiceAnnounceGroup">
-              <label><img class="icon-inline" src="icons/chat.svg" alt=""> <span data-i18n="settings.announceTplTitle">Personaliza el final de los anuncios</span></label>
-              <div class="voz-audio-hint" data-i18n="settings.announceTplDesc">Opcional: escribe lo que va después del nombre. Los datos se añaden solos; si lo dejas vacío, se usa el texto estándar.</div>
-              <div id="announceTplFields"></div>
-            </div>
-          </div>
-          <div class="voz-audio-card">
-            <div class="voz-audio-eyebrow" data-i18n="settings.announceVolEyebrow">Volumen de los anuncios</div>
-            <div class="setting-group" id="voiceAnnounceVolGroup">
-              <label><img class="icon-inline" src="icons/volume_up.svg" alt=""> <span data-i18n="settings.announceVolTitle">Volumen de los anuncios</span> — <span id="announceVolVal">100</span>%</label>
-              <div class="voz-audio-hint" data-i18n="settings.announceVolDesc">Regalos, entradas, follows, likes y shares suenan a este volumen, relativo al del TTS. Bájalo para que sean un sonido de fondo mientras el chat se lee fuerte.</div>
-              <input type="range" id="announceVolRange" min="0" max="1" step="0.05" value="1" oninput="updateAnnounceVol(this.value)" />
-              <div class="range-labels"><span data-i18n="label.mute">Mute</span><span data-i18n="label.max">Máx</span></div>
-            </div>
-          </div>
+      <!-- Redireccion: el filtro de mensajes vive en Moderacion (moderacion.js#openChatGuard) -->
+      <div class="settings-section ajustes-filtro">
+        <img class="ajustes-filtro-icono" src="icons/security.svg" alt="">
+        <div class="ajustes-filtro-texto">
+          <div class="ajustes-filtro-titulo" data-i18n="chatGuard.title">Moderación del chat</div>
+          <p class="ajustes-filtro-desc" data-i18n="settings.chatFilterDesc">¿Querés que el TTS no lea insultos o ciertas palabras? El filtro de mensajes está en Moderación.</p>
         </div>
-</div>
-
-<div class="settings-section ajustes-panel voz-audio-seccion" id="ajustesPanelFiltros" role="tabpanel" aria-labelledby="ajustesTabFiltros" hidden>
-        <div class="voz-audio-layout">
-          <div class="voz-audio-card voz-audio-card-filtros">
-            <div class="voz-audio-eyebrow" data-i18n="settings.languageFilters">Filtros de idioma</div>
-            <div class="setting-group" id="voiceLangFilterGroup">
-              <label class="toggle-chip">
-                <input type="checkbox" id="langFilterToggle" onchange="toggleLangFilter(this)" />
-                <span data-i18n="toggle.langFilter">Filtrar caracteres de otros idiomas</span>
-              </label>
-              <div class="voz-audio-hint" data-i18n="toggle.langFilterHint">Ignora mensajes de chat con caracteres que no correspondan al idioma de la voz activa (ej: bloquea chino/japonés si tu voz está en Español, y viceversa).</div>
-            </div>
-            <div class="setting-group" id="voiceDictFilterGroup">
-              <label class="toggle-chip">
-                <input type="checkbox" id="dictFilterToggle" onchange="toggleDictFilter(this)" />
-                <span data-i18n="toggle.dictFilter">Filtrar por idioma (palabras)</span>
-              </label>
-              <button class="cfg-btn voz-audio-language-button" onclick="openDictLangModal()" id="btnOpenDictLangModal">
-                <img class="icon-inline" src="icons/settings.svg" alt=""> <span data-i18n="dictLang.title">Idiomas permitidos</span>
-              </button>
-              <div class="voz-audio-hint" data-i18n="toggle.dictFilterHint">Solo lee mensajes escritos en el idioma de la voz activa o en los idiomas extra que permitas. Las palabras desconocidas (nombres, typos) no bloquean.</div>
-            </div>
-          </div>
-        </div>
-        <!-- Redireccion: el filtro de mensajes vive en Moderacion (moderacion.js#openChatGuard) -->
-        <div class="settings-section ajustes-filtro">
-          <img class="ajustes-filtro-icono" src="icons/security.svg" alt="">
-          <div class="ajustes-filtro-texto">
-            <div class="ajustes-filtro-titulo" data-i18n="chatGuard.title">Moderación del chat</div>
-            <p class="ajustes-filtro-desc" data-i18n="settings.chatFilterDesc">¿Querés que el TTS no lea insultos o ciertas palabras? El filtro de mensajes está en Moderación.</p>
-          </div>
-          <button type="button" class="btn-supabase-primary ajustes-filtro-btn" onclick="openChatGuard()"><span data-i18n="settings.chatFilterGo">Ir a Moderación del chat</span> <img class="icon-inline" src="icons/arrow_forward.svg" alt=""></button>
-        </div>
-</div>
+        <button type="button" class="btn-supabase-primary ajustes-filtro-btn" onclick="openChatGuard()"><span data-i18n="settings.chatFilterGo">Ir a Moderación del chat</span> <img class="icon-inline" src="icons/arrow_forward.svg" alt=""></button>
+      </div>
 
       <!-- KEYBOARD SHORTCUTS SECTION -->
-      <div class="settings-section ajustes-panel" id="settingsSectionShortcuts" role="tabpanel" aria-labelledby="ajustesTabAtajos" hidden>
+      <div class="settings-section" id="settingsSectionShortcuts">
         <div class="settings-section-title settings-row-flex settings-title-split">
           <span class="atajos-section-heading"><img class="icon-inline" src="icons/keyboard.svg" alt=""> <span data-i18n="settings.shortcuts">Atajos de teclado (TTS)</span></span>
           <button class="cfg-btn" id="btnShortcutsTour" onclick="startShortcutsTour()"><img class="icon-inline" src="icons/help_outline.svg" alt=""> <span data-i18n="tour.viewTutorial">Ver tutorial</span></button>
@@ -1060,7 +1035,7 @@
         </div>
       </div>
 
-      <div class="settings-section ajustes-panel" id="giftGatePanel" role="tabpanel" aria-labelledby="ajustesTabDonaciones" hidden><!-- interfaz/src/vistas/principal/gift-gate/ la llena --></div>
+      <div class="settings-section" id="giftGatePanel"><!-- interfaz/src/vistas/principal/gift-gate/ la llena --></div>
     </div>
 
     <!-- ── VIEW: Clips ─────────────────────────────────── -->
