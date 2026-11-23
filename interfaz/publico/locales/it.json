@@ -1322,7 +1322,8 @@
       "mobile": "Pannello remoto per controllare il TTS dal telefono.",
       "bot": "Bot musicale: la chat richiede canzoni con !p.",
       "moderacion": "Cronologia spettatori, muto/ban, follower.",
-      "mcp": "Collega un agente IA (Claude) per operare l’app."
+      "mcp": "Collega un agente IA (Claude) per operare l’app.",
+      "portal": "Naviga sul web dentro l'app, senza uscire da TikLiveTTS."
     },
     "aboutLabel": "Informazioni",
     "about": {
@@ -1332,7 +1333,8 @@
       "mobile": "Un pannello leggero che apri dal telefono, sulla stessa rete WiFi del PC. Metti in pausa il TTS, salta i messaggi e controlla l'essenziale senza tornare al computer.",
       "bot": "La chat richiede canzoni scrivendo !p seguito da un nome o un link YouTube. Quando non ci sono richieste suona la tua playlist di sottofondo. Configurabile con tempo di attesa e limite di coda.",
       "moderacion": "Mantiene una cronologia locale di ogni spettatore che ha scritto o seguito, con la possibilità di metterlo in muto (il messaggio si vede ma non viene letto) o bannarlo (non appare mai). Non tocca il suo account sulla piattaforma reale.",
-      "mcp": "MCP (Model Context Protocol) espone le funzioni dell’app come strumenti per un agente IA. Con Claude Code o Claude Desktop collegato, l’agente può leggere la chat, moderare gli spettatori, controllare la musica e consultare lo stato dello stream. L’endpoint funziona solo da questo computer e le azioni distruttive (ban, disconnessione) hanno un permesso separato."
+      "mcp": "MCP (Model Context Protocol) espone le funzioni dell’app come strumenti per un agente IA. Con Claude Code o Claude Desktop collegato, l’agente può leggere la chat, moderare gli spettatori, controllare la musica e consultare lo stato dello stream. L’endpoint funziona solo da questo computer e le azioni distruttive (ban, disconnessione) hanno un permesso separato.",
+      "portal": "Apre un browser integrato in un pannello laterale dell'app, con schede e download. Tieni a portata di mano la dashboard di TikTok Live o qualsiasi pagina durante la diretta, senza cambiare finestra."
     },
     "backToGrid": "Torna al negozio",
     "hiddenBadge": "Nascosto",

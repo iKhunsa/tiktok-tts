@@ -13,9 +13,8 @@ function handleDownloadEvent({ phase, filename }) {
 }
 
 function renderPortalView(state) {
-  for (const id of ['sidebarPortalViewBtn', 'chatPortalViewBtn']) {
-    document.getElementById(id)?.classList.toggle('active', !!state.open);
-  }
+  const btn = document.getElementById('sidebarPortalViewBtn');
+  if (btn) btn.classList.toggle('active', !!state.open);
   if (state.open) mostrarPanelPortalView();
   else ocultarPanelPortalView();
   actualizarPanelPortalView();

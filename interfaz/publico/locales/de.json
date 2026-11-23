@@ -1322,7 +1322,8 @@
       "mobile": "Fernbedienung, um die TTS vom Handy aus zu steuern.",
       "bot": "Musik-Bot: Der Chat fordert Songs mit !p an.",
       "moderacion": "Zuschauerverlauf, Stummschalten/Bannen, Follower.",
-      "mcp": "Verbinde einen KI-Agenten (Claude), der die App bedient."
+      "mcp": "Verbinde einen KI-Agenten (Claude), der die App bedient.",
+      "portal": "Im Web surfen, ohne TikLiveTTS zu verlassen."
     },
     "aboutLabel": "Über",
     "about": {
@@ -1332,7 +1333,8 @@
       "mobile": "Ein schlankes Panel, das du vom Handy aus im selben WLAN wie dein PC öffnest. Pausiere die TTS, überspringe Nachrichten und steuere das Wichtigste, ohne zum Computer zurückzukehren.",
       "bot": "Der Chat fordert Songs an, indem er !p gefolgt von einem Namen oder YouTube-Link schreibt. Ohne Anfragen läuft deine eigene Playlist im Hintergrund. Konfigurierbar mit Abklingzeit und Warteschlangenlimit.",
       "moderacion": "Speichert einen lokalen Verlauf jedes Zuschauers, der geschrieben oder dir gefolgt ist, mit der Möglichkeit, ihn stummzuschalten (Nachricht sichtbar, aber nicht vorgelesen) oder zu bannen (Nachricht erscheint nie). Der echte Plattform-Account bleibt unberührt.",
-      "mcp": "MCP (Model Context Protocol) stellt die Funktionen der App als Werkzeuge für einen KI-Agenten bereit. Mit verbundenem Claude Code oder Claude Desktop kann der Agent den Chat lesen, Zuschauer moderieren, die Musik steuern und den Stream-Status abfragen. Der Endpoint funktioniert nur von diesem Rechner und destruktive Aktionen (bannen, trennen) haben eine eigene Berechtigung."
+      "mcp": "MCP (Model Context Protocol) stellt die Funktionen der App als Werkzeuge für einen KI-Agenten bereit. Mit verbundenem Claude Code oder Claude Desktop kann der Agent den Chat lesen, Zuschauer moderieren, die Musik steuern und den Stream-Status abfragen. Der Endpoint funktioniert nur von diesem Rechner und destruktive Aktionen (bannen, trennen) haben eine eigene Berechtigung.",
+      "portal": "Öffnet einen integrierten Browser in einem Seitenpanel der App, mit Tabs und Downloads. Behalte dein TikTok-Live-Dashboard oder jede andere Seite während des Streams im Blick, ohne das Fenster zu wechseln."
     },
     "backToGrid": "Zurück zum Store",
     "hiddenBadge": "Ausgeblendet",

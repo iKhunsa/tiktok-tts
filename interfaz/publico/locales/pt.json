@@ -1322,7 +1322,8 @@
       "mobile": "Painel remoto para controlar o TTS pelo celular.",
       "bot": "Bot musical: o chat pede músicas com !p.",
       "moderacion": "Histórico de espectadores, silenciar/banir, seguidores.",
-      "mcp": "Conecte um agente de IA (Claude) para operar o app."
+      "mcp": "Conecte um agente de IA (Claude) para operar o app.",
+      "portal": "Navegue na web dentro do app, sem sair do TikLiveTTS."
     },
     "aboutLabel": "Sobre",
     "about": {
@@ -1332,7 +1333,8 @@
       "mobile": "Um painel leve que você abre pelo celular, na mesma rede WiFi do PC. Pause o TTS, pule mensagens e controle o essencial sem voltar ao computador.",
       "bot": "O chat pede músicas escrevendo !p seguido do nome ou de um link do YouTube. Quando não há pedidos, sua própria playlist toca de fundo. Configurável com tempo de espera e limite de fila.",
       "moderacion": "Guarda um histórico local de cada espectador que escreveu ou seguiu, com a opção de silenciá-lo (a mensagem aparece mas não é lida) ou banir (a mensagem nunca aparece). Não afeta a conta dele na plataforma real.",
-      "mcp": "MCP (Model Context Protocol) expõe as funções do app como ferramentas para um agente de IA. Com Claude Code ou Claude Desktop conectado, o agente pode ler o chat, moderar espectadores, controlar a música e consultar o estado da transmissão. O endpoint só funciona neste computador e as ações destrutivas (banir, desconectar) ficam atrás de uma permissão separada."
+      "mcp": "MCP (Model Context Protocol) expõe as funções do app como ferramentas para um agente de IA. Com Claude Code ou Claude Desktop conectado, o agente pode ler o chat, moderar espectadores, controlar a música e consultar o estado da transmissão. O endpoint só funciona neste computador e as ações destrutivas (banir, desconectar) ficam atrás de uma permissão separada.",
+      "portal": "Abre um navegador integrado em um painel lateral do app, com abas e downloads. Mantenha seu painel do TikTok Live ou qualquer página à mão durante a transmissão, sem trocar de janela."
     },
     "backToGrid": "Voltar à loja",
     "hiddenBadge": "Oculto",

@@ -49,7 +49,7 @@ function renderPluginDetail(id) {
         <p>${t(tool.descKey)}</p>
       </div>
       <div class="store-detail-actions">
-        <button class="store-detail-open" onclick="switchView('${id}')">
+        <button class="store-detail-open" onclick="${tool.openCall || `switchView('${id}')`}">
           ${t('store.open')}
         </button>
         <button class="btn-supabase-primary store-detail-cta" onclick="toggleSidebarTool('${id}', ${isHidden})"${menuLleno ? ' disabled' : ''}>

@@ -1322,7 +1322,8 @@
       "mobile": "Panneau à distance pour contrôler le TTS depuis votre téléphone.",
       "bot": "Bot musical : le chat demande des chansons avec !p.",
       "moderacion": "Historique des spectateurs, mute/ban, abonnés.",
-      "mcp": "Connectez un agent IA (Claude) pour piloter l’app."
+      "mcp": "Connectez un agent IA (Claude) pour piloter l’app.",
+      "portal": "Naviguez sur le web dans l'app, sans quitter TikLiveTTS."
     },
     "aboutLabel": "À propos",
     "about": {
@@ -1332,7 +1333,8 @@
       "mobile": "Un panneau léger accessible depuis votre téléphone, sur le même réseau WiFi que le PC. Mettez le TTS en pause, passez des messages et contrôlez l'essentiel sans revenir à l'ordinateur.",
       "bot": "Le chat demande des chansons en écrivant !p suivi d'un nom ou d'un lien YouTube. Votre propre playlist joue en fond quand il n'y a pas de demandes. Configurable avec un délai et une limite de file.",
       "moderacion": "Conserve un historique local de chaque spectateur ayant écrit ou suivi, avec la possibilité de le rendre muet (message visible mais non lu) ou de le bannir (message jamais affiché). N'affecte pas son compte sur la vraie plateforme.",
-      "mcp": "MCP (Model Context Protocol) expose les fonctions de l’app comme des outils pour un agent IA. Avec Claude Code ou Claude Desktop connecté, l’agent peut lire le chat, modérer les spectateurs, contrôler la musique et consulter l’état du stream. L’endpoint ne fonctionne que depuis cet ordinateur et les actions destructrices (bannir, déconnecter) ont une permission séparée."
+      "mcp": "MCP (Model Context Protocol) expose les fonctions de l’app comme des outils pour un agent IA. Avec Claude Code ou Claude Desktop connecté, l’agent peut lire le chat, modérer les spectateurs, contrôler la musique et consulter l’état du stream. L’endpoint ne fonctionne que depuis cet ordinateur et les actions destructrices (bannir, déconnecter) ont une permission séparée.",
+      "portal": "Ouvre un navigateur intégré dans un panneau latéral de l'app, avec onglets et téléchargements. Gardez votre tableau de bord TikTok Live ou n'importe quelle page à portée de main pendant le live, sans changer de fenêtre."
     },
     "backToGrid": "Retour à la boutique",
     "hiddenBadge": "Masqué",

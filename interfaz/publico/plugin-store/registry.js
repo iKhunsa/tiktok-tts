@@ -18,6 +18,8 @@ const SIDEBAR_TOOLS = [
   { id: 'bot',        icon: 'icons/music_note.svg', labelKey: 'nav.bot',        descKey: 'store.desc.bot',        pinned: false, media: 'plugin-store/media/bot.jpg',        aboutKey: 'store.about.bot', proFeature: null },
   { id: 'moderacion', icon: 'icons/people.svg',     labelKey: 'nav.moderation', descKey: 'store.desc.moderacion', pinned: false, media: 'plugin-store/media/moderacion.jpg', aboutKey: 'store.about.moderacion', proFeature: null },
   { id: 'mcp',        icon: 'icons/extension.svg',  labelKey: 'nav.mcp',        descKey: 'store.desc.mcp',        pinned: false, media: 'plugin-store/media/mcp.jpg',        aboutKey: 'store.about.mcp', proFeature: 'mcp-agente' },
+  // `openCall`: la tool no es una <div class="view"> sino un panel (PortalView): se abre con esa llamada en vez de switchView.
+  { id: 'portal',     icon: 'icons/public.svg',     labelKey: 'footer.portalView', descKey: 'store.desc.portal',  pinned: false, media: null, aboutKey: 'store.about.portal', proFeature: null, openCall: 'togglePortalView()' },
   { id: 'settings',   icon: 'icons/settings.svg',   labelKey: 'nav.settings',   descKey: 'store.desc.settings',   pinned: true,  media: null, proFeature: null },
 ];
 // Tools visibles por defecto la primera vez que arranca la app (sin prefs
