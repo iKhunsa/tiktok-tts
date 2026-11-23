@@ -803,6 +803,18 @@
       "eliminado": "“{nombre}” was deleted",
       "quitarFavorito": "Remove from favorites",
       "agregarFavorito": "Add to favorites"
+    },
+    "categoria": {
+      "apariencia": "Appearance",
+      "animaciones": "Animations",
+      "posicion": "Position",
+      "avanzado": "Advanced"
+    },
+    "avanzado": {
+      "espaciado": "Spacing",
+      "bordes": "Borders",
+      "texto": "Text transform",
+      "efectos": "Special effects"
     }
   },
   "overlayStr": {

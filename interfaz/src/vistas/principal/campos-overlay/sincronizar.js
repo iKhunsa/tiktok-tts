@@ -4,6 +4,7 @@ import { ESQUEMAS } from '../../../../compartido/estilo/esquemas.js';
 import { construirQuery } from '../../../../compartido/estilo/query.js';
 import { paintRangeFill } from '../../../componentes/campos-formulario.js';
 import { ajustesOverlay } from '../overlays-catalogo/posicion-escena.js';
+import { CATEGORIAS, categoriaDe } from './categorias.js';
 import { enInterfaz, textoValor } from './etiquetas.js';
 
 function entradaDe(overlay, clave, plataforma) {
@@ -51,7 +52,8 @@ export function pintarDependientes(overlay) {
   });
 }
 
-export const camposDeGrupo = (overlay, grupo) => ESQUEMAS[overlay].filter((campo) => campo.grupo === grupo);
+// `grupo` es una categoria (General, Apariencia...) o, en las capas GIF, un grupo del esquema.
+export const camposDeGrupo = (overlay, grupo) => ESQUEMAS[overlay].filter((campo) => (CATEGORIAS.includes(grupo) ? categoriaDe(campo)?.categoria === grupo : campo.grupo === grupo));
 
 /** El boton de restablecer de un acordeon solo se ve si algo suyo difiere de fabrica. */
 export function pintarRestablecer(overlay) {

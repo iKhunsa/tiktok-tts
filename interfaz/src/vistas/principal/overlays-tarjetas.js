@@ -1,6 +1,6 @@
-import { aplicarTraducciones } from '../../nucleo/i18n/i18n.js';
 import { crearEscenario, crearSeccionLienzo, crearSeccionNiveles, pintarLienzos } from './lienzo-overlay.js';
 import { EVENTOS_ALERTA } from '../../../compartido/eventos-alerta.js';
+import { crearAcordeon } from './campos-overlay/acordeon.js';
 import { crearBotonRestablecer } from './campos-overlay/montar.js';
 import { alAbrirTarjetaOverlay, alCerrarTarjetaOverlay } from './configurador-overlays.js';
 
@@ -18,17 +18,11 @@ export function abrirTarjetasOverlays(tipos) {
   tipos.forEach((tipo) => fijarAbierta(document.querySelector(`[data-preview="${tipo}"]`).closest('.cfg-card'), true));
 }
 
-// Los ajustes basicos son la unica seccion que empieza abierta: sin ellos el panel se veria vacio.
+// General es la unica seccion de ajustes abierta desde el principio (junto a Apariencia, que monta campos-overlay): sin ella el panel se veria vacio.
 function crearSeccionGeneral(campos) {
-  const seccion = document.createElement('details');
-  seccion.className = 'cfg-grupo';
+  const overlay = campos.dataset.camposBase;
+  const seccion = crearAcordeon({ overlay, clave: 'general', tituloI18n: 'overlayCfg.grupo.general', abierto: true, cuerpo: campos, reset: overlay && crearBotonRestablecer(overlay, 'general') });
   seccion.dataset.grupo = 'general'; // el editor de canvas coloca despues su acordeon de GIF
-  seccion.open = true;
-  // El titulo va en un span: traducir el summary entero borraria el boton de restablecer.
-  seccion.innerHTML = '<summary class="cfg-grupo-titulo"><span data-i18n="overlayCfg.grupo.general"></span></summary>';
-  if (campos.dataset.camposBase) seccion.firstElementChild.append(crearBotonRestablecer(campos.dataset.camposBase, 'base'));
-  seccion.append(campos);
-  aplicarTraducciones(seccion);
   return seccion;
 }
 
