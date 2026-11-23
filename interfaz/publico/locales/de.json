@@ -820,6 +820,15 @@
       "bordes": "Rahmen",
       "texto": "Texttransformation",
       "efectos": "Spezialeffekte"
+    },
+    "modo": {
+      "etiqueta": "Editor-Modus",
+      "basico": "Einfach",
+      "avanzado": "Erweitert",
+      "masControl": "Mehr Kontrolle gewünscht?",
+      "masControlTexto": "Der erweiterte Modus enthält alle Einstellungen: Farben, Animationen, Position und mehr.",
+      "pasarAvanzado": "Zum erweiterten Modus wechseln",
+      "volverBasico": "Zurück zum einfachen Modus"
     }
   },
   "overlayStr": {

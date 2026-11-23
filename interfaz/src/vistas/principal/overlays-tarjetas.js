@@ -1,7 +1,6 @@
 import { crearEscenario, crearSeccionLienzo, crearSeccionNiveles, pintarLienzos } from './lienzo-overlay.js';
 import { EVENTOS_ALERTA } from '../../../compartido/eventos-alerta.js';
-import { crearAcordeon } from './campos-overlay/acordeon.js';
-import { crearBotonRestablecer } from './campos-overlay/montar.js';
+import { crearSeccionGeneral } from './campos-overlay/seccion-general.js';
 import { alAbrirTarjetaOverlay, alCerrarTarjetaOverlay } from './configurador-overlays.js';
 
 export function fijarAbierta(tarjeta, abierta) {
@@ -18,14 +17,6 @@ export function abrirTarjetasOverlays(tipos) {
   tipos.forEach((tipo) => fijarAbierta(document.querySelector(`[data-preview="${tipo}"]`).closest('.cfg-card'), true));
 }
 
-// General es la unica seccion de ajustes abierta desde el principio (junto a Apariencia, que monta campos-overlay): sin ella el panel se veria vacio.
-function crearSeccionGeneral(campos) {
-  const overlay = campos.dataset.camposBase;
-  const seccion = crearAcordeon({ overlay, clave: 'general', tituloI18n: 'overlayCfg.grupo.general', abierto: true, cuerpo: campos, reset: overlay && crearBotonRestablecer(overlay, 'general') });
-  seccion.dataset.grupo = 'general'; // el editor de canvas coloca despues su acordeon de GIF
-  return seccion;
-}
-
 // Pagina del overlay: vista previa y URL a la izquierda, ajustes a la derecha.
 function separarLienzoEInspector(tarjeta) {
   const lienzo = document.createElement('div');
@@ -33,9 +24,10 @@ function separarLienzoEInspector(tarjeta) {
   lienzo.append(crearEscenario(tarjeta.querySelector('.cfg-preview')), tarjeta.querySelector('.cfg-url-row'));
   const inspector = document.createElement('div');
   inspector.className = 'ovl-inspector';
+  inspector.dataset.disposicion = 'tarjeta'; // el editor unificado la cambia a 'clasico' mientras lo tiene prestado
   inspector.append(...[...tarjeta.children]
     .filter((hijo) => !hijo.matches('.cfg-header'))
-    .map((hijo) => (hijo.matches('.cfg-fields') ? crearSeccionGeneral(hijo) : hijo)));
+    .map((hijo) => (hijo.matches('.cfg-fields') ? crearSeccionGeneral(hijo, 'tarjeta') : hijo)));
   const preview = lienzo.querySelector('.cfg-preview');
   const alerta = EVENTOS_ALERTA[preview.dataset.preview];
   if (alerta?.muestras) inspector.prepend(crearSeccionNiveles(preview, alerta));

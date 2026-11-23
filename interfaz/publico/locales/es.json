@@ -856,6 +856,15 @@
       "bordes": "Bordes",
       "texto": "Transformación del texto",
       "efectos": "Efectos especiales"
+    },
+    "modo": {
+      "etiqueta": "Modo del editor",
+      "basico": "Básico",
+      "avanzado": "Avanzado",
+      "masControl": "¿Quieres más control?",
+      "masControlTexto": "El modo avanzado reúne todos los ajustes: colores, animaciones, posición y más.",
+      "pasarAvanzado": "Pasar a modo avanzado",
+      "volverBasico": "Volver a modo básico"
     }
   },
   "overlayStr": {

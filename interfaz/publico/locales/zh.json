@@ -820,6 +820,15 @@
       "bordes": "边框",
       "texto": "文字转换",
       "efectos": "特效"
+    },
+    "modo": {
+      "etiqueta": "编辑器模式",
+      "basico": "基础",
+      "avanzado": "高级",
+      "masControl": "想要更多控制？",
+      "masControlTexto": "高级模式包含所有设置：颜色、动画、位置等。",
+      "pasarAvanzado": "切换到高级模式",
+      "volverBasico": "返回基础模式"
     }
   },
   "overlayStr": {
