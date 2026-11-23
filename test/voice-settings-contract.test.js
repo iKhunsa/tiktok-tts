@@ -4,8 +4,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const html = fs.readFileSync(path.join(__dirname, '..', 'interfaz', 'index.html'), 'utf8');
-const sectionStart = html.indexOf('<div class="settings-section" id="settingsSectionVoice">');
-// Despues de Voz y audio va el banner que redirige al filtro de Moderacion.
+// Voz y audio quedo repartido en pestañas (Voz / Avisos / Filtros): se valida
+// la vista de Ajustes completa, hasta el banner que redirige a Moderacion.
+const sectionStart = html.indexOf('<div class="view" id="view-settings">');
 const sectionEnd = html.indexOf('<div class="settings-section ajustes-filtro">', sectionStart);
 const voiceSection = html.slice(sectionStart, sectionEnd);
 
@@ -14,9 +15,9 @@ const expectedIds = [
   'voiceDropdownTrigger', 'voiceDropdownFlag', 'voiceDropdownText', 'voiceDropdownMenu',
   'voiceSelect', 'voiceTestGroup', 'testVoiceInput', 'btnTestVoice', 'voiceRateGroup',
   'rateVal', 'rateRange', 'voicePitchGroup', 'pitchVal', 'pitchRange', 'voiceVolGroup',
-  'volVal', 'volRange', 'voiceLangFilterGroup',
-  'langFilterToggle', 'voiceDictFilterGroup', 'dictFilterToggle', 'btnOpenDictLangModal',
+  'volVal', 'volRange',
   'voiceAnnounceGroup', 'announceTplFields', 'voiceAnnounceVolGroup', 'announceVolVal', 'announceVolRange',
+  'voiceLangFilterGroup', 'langFilterToggle', 'voiceDictFilterGroup', 'dictFilterToggle', 'btnOpenDictLangModal',
 ];
 
 const expectedHandlers = [
@@ -26,10 +27,10 @@ const expectedHandlers = [
   'oninput="updateRate(this.value)"',
   'oninput="updatePitch(this.value)"',
   'oninput="updateVol(this.value)"',
+  'oninput="updateAnnounceVol(this.value)"',
   'onchange="toggleLangFilter(this)"',
   'onchange="toggleDictFilter(this)"',
   'onclick="openDictLangModal()"',
-  'oninput="updateAnnounceVol(this.value)"',
 ];
 
 const expectedI18n = [
@@ -60,7 +61,8 @@ test('Voz y audio conserva ids, handlers y contratos i18n', () => {
   assert.notEqual(sectionEnd, -1, 'falta el limite de la seccion Voz y audio');
 
   const ids = [...voiceSection.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
-  assert.deepEqual(ids, expectedIds);
+  // Las pestañas intercalan ids propios: se exige que esten todos los esperados, en orden.
+  assert.deepEqual(ids.filter((id) => expectedIds.includes(id)), expectedIds);
 
   const handlers = [...voiceSection.matchAll(/\b(?:onclick|oninput|onchange)="[^"]+"/g)].map((match) => match[0]);
   assert.deepEqual(handlers, expectedHandlers);

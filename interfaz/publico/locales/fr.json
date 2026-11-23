@@ -104,10 +104,10 @@
     "readShares": "Annoncer partages",
     "sayUsername": "Dire le nom",
     "sayUsernameConnector": "Dire le mot de liaison",
-    "langFilter": "Filtrer les caractères d'autres langues",
-    "langFilterHint": "Ignore les messages du chat contenant des caractères ne correspondant pas à la langue de la voix active (ex : bloque le chinois/japonais si votre voix est en espagnol, et inversement).",
-    "dictFilter": "Filtrer par langue (mots)",
-    "dictFilterHint": "Ne lit que les messages écrits dans la langue de la voix active ou dans les langues supplémentaires autorisées. Les mots inconnus (noms, fautes de frappe) ne bloquent pas.",
+    "langFilter": "Bloquer les autres alphabets",
+    "langFilterHint": "Évite les messages contenant des lettres d’autres alphabets, comme le chinois ou le russe",
+    "dictFilter": "Filtrer les autres langues",
+    "dictFilterHint": "Essaie de détecter d’autres langues qui utilisent l’alphabet latin",
     "closeToTray": "Réduire dans la zone de notification à la fermeture",
     "closeToTrayHint": "Avec le X, l'app continue de tourner dans la zone de notification. Pour la quitter : clic droit sur l'icône → Quitter.",
     "openAtLogin": "Ouvrir au démarrage de Windows",
@@ -2622,5 +2622,15 @@
       "titulo": "Votre saison, toujours à portée de main",
       "entendido": "Compris"
     }
+  },
+  "filtrosIdioma": {
+    "activeVoice": "Voix active",
+    "on": "Activé",
+    "off": "Désactivé",
+    "edit": "Modifier",
+    "alwaysAllowed": "Toujours autorisée",
+    "noExtras": "Aucune langue supplémentaire",
+    "unavailable": "Ce filtre n’est pas disponible pour cette voix",
+    "together": "Les filtres peuvent être utilisés ensemble. S’ils bloquent un message, il n’est pas lu."
   }
 }

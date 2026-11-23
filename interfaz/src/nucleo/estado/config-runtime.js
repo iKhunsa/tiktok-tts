@@ -99,7 +99,13 @@ export function applyFiltroIdiomaConfig(cfg) {
     dictFilterCb.checked = dictFilterEnabled;
     dictFilterCb.closest('.toggle-chip')?.classList.toggle('active', dictFilterEnabled);
   }
+  avisarCambioFiltroIdioma();
 }
+
+/** La pestaña Filtros (vistas/principal/filtros-idioma-ui.js) se suscribe aca para repintar; el nucleo no importa vistas. */
+const oyentesFiltroIdioma = [];
+export function alCambiarFiltroIdioma(fn) { oyentesFiltroIdioma.push(fn); }
+export function avisarCambioFiltroIdioma() { oyentesFiltroIdioma.forEach((fn) => fn()); }
 
 function patchFiltroIdioma(patch) {
   return fetch('/api/config', {
@@ -110,11 +116,13 @@ function patchFiltroIdioma(patch) {
 export function setLangFilterEnabled(enabled) {
   langFilterEnabled = !!enabled;
   patchFiltroIdioma({ langFilterEnabled });
+  avisarCambioFiltroIdioma();
 }
 
 export function setDictFilterEnabled(enabled) {
   dictFilterEnabled = !!enabled;
   patchFiltroIdioma({ dictFilterEnabled });
+  avisarCambioFiltroIdioma();
 }
 
 export function setAllowedExtraLang(lang, enabled) {
@@ -122,6 +130,7 @@ export function setAllowedExtraLang(lang, enabled) {
   if (enabled) langs.add(lang); else langs.delete(lang);
   allowedExtraLangs = [...langs];
   patchFiltroIdioma({ allowedExtraLangs });
+  avisarCambioFiltroIdioma();
 }
 
 export function applyA11yConfig(cfg) {

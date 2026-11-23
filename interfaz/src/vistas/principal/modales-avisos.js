@@ -104,10 +104,12 @@ export function getSayUsernameConnector() {
 
 // Modal "Idiomas permitidos" (filtro por diccionario de palabras). Espejo
 // del VOICE_TO_DICT_LANG del servidor: voces ru/ja/zh/ko no aplican.
-const VOICE_TO_DICT_LANG_UI = {
+export const VOICE_TO_DICT_LANG_UI = {
   'es-MX': 'es', en: 'en', 'en-GB': 'en', pt: 'pt', 'pt-PT': 'pt', fr: 'fr', de: 'de', it: 'it',
 };
-const DICT_LANG_NAMES = { es: 'Español', en: 'English', pt: 'Português', fr: 'Français', de: 'Deutsch', it: 'Italiano' };
+export const DICT_LANG_NAMES = { es: 'Español', en: 'English', pt: 'Português', fr: 'Français', de: 'Deutsch', it: 'Italiano' };
+// Banderas de interfaz/publico/flags/ que representan cada idioma del diccionario (solo visual).
+export const DICT_LANG_FLAG = { es: 'ES', en: 'US', pt: 'BR', fr: 'FR', de: 'DE', it: 'IT' };
 
 export function openDictLangModal() {
   renderDictLangModal();
@@ -134,9 +136,13 @@ function renderDictLangModal() {
     cb.checked = isVoice || allowedExtraLangs.includes(lang);
     cb.disabled = isVoice;
     if (!isVoice) cb.onchange = () => setAllowedExtraLang(lang, cb.checked);
+    const flag = document.createElement('img');
+    flag.className = 'flag-icon';
+    flag.src = 'flags/' + DICT_LANG_FLAG[lang] + '.svg';
+    flag.alt = '';
     const span = document.createElement('span');
     span.textContent = DICT_LANG_NAMES[lang] + (isVoice ? ' ' + t('dictLang.voiceAlways') : '');
-    label.append(cb, span);
+    label.append(cb, flag, span);
     list.appendChild(label);
   }
 }

@@ -64,6 +64,7 @@ import {
 } from './atajos-teclado.js';
 import { iniciarTabsAtajos } from './tabs-atajos.js';
 import { iniciarTabsAjustes } from './tabs-ajustes.js';
+import { iniciarFiltrosIdioma } from './filtros-idioma-ui.js';
 import {
   toggleVoiceDropdown, patchConfigSetting, syncTtsVoiceLang, toggleLangFilter,
   toggleDictFilter, toggleSayUsernameConnector, updateConnectorChipState, selectVoice,
@@ -234,6 +235,7 @@ function iniciarArranque() {
   iniciarAtajosTeclado();
   iniciarTabsAtajos();
   iniciarTabsAjustes();
+  iniciarFiltrosIdioma();
   iniciarCierreDropdownVoces();
   iniciarPintadoDeRangos();
   iniciarCamposOverlay();
