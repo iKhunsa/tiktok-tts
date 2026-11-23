@@ -772,7 +772,7 @@
     .voz-audio-heading { display: inline-flex; align-items: center; gap: var(--space-2); }
     .voz-audio-heading .icon-inline { width: 16px; height: 16px; filter: brightness(0) invert(1); opacity: 0.72; }
 
-    #settingsSectionVoice { container: voz-audio / inline-size; }
+    .voz-audio-seccion { container: voz-audio / inline-size; }
 
     .voz-audio-layout {
       display: grid;
@@ -781,24 +781,15 @@
       min-width: 0;
     }
 
-    .voz-audio-column { display: contents; }
-
-    /* Ancho suficiente: Voz y Finales arriba lado a lado (alto de su contenido),
-       Volumen de anuncios a todo el ancho debajo, Filtros abajo del todo a todo el ancho con sus dos grupos en fila. */
+    /* Ancho suficiente: los dos grupos del card de filtros van en fila. */
     @container voz-audio (min-width: 740px) {
-      .voz-audio-layout { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .voz-audio-layout > .voz-audio-card { grid-column: 1; grid-row: 1; }
-      .voz-audio-column > .voz-audio-card:nth-child(2) { grid-column: 2; grid-row: 1; }
-      .voz-audio-column > .voz-audio-card:nth-child(3) { grid-column: 1 / -1; grid-row: 2; }
-      .voz-audio-column > .voz-audio-card:first-child {
-        grid-column: 1 / -1;
-        grid-row: 3;
+      .voz-audio-card-filtros {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         column-gap: var(--space-6);
       }
-      .voz-audio-column > .voz-audio-card:first-child > .voz-audio-eyebrow { grid-column: 1 / -1; }
-      .voz-audio-column > .voz-audio-card:first-child > .setting-group + .setting-group {
+      .voz-audio-card-filtros > .voz-audio-eyebrow { grid-column: 1 / -1; }
+      .voz-audio-card-filtros > .setting-group + .setting-group {
         padding-top: 0;
         border-top: 0;
         padding-left: var(--space-6);
@@ -849,18 +840,18 @@
     .voz-audio-language-button { align-self: flex-start; gap: var(--space-1-5); margin-top: var(--space-1-5); }
 
     .voz-audio-language-button,
-    #settingsSectionVoice .voice-dropdown-trigger {
+    .voz-audio-seccion .voice-dropdown-trigger {
       transition: border-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out),
                   background var(--dur-2) var(--ease-out), transform var(--dur-press) var(--ease-out);
     }
 
 
     .voz-audio-language-button:active,
-    #settingsSectionVoice .voice-dropdown-trigger:active { transform: scale(0.97); }
+    .voz-audio-seccion .voice-dropdown-trigger:active { transform: scale(0.97); }
 
-    #settingsSectionVoice button:focus-visible,
-    #settingsSectionVoice input:focus-visible,
-    #settingsSectionVoice .voice-dropdown-trigger:focus-visible {
+    .voz-audio-seccion button:focus-visible,
+    .voz-audio-seccion input:focus-visible,
+    .voz-audio-seccion .voice-dropdown-trigger:focus-visible {
       outline: 2px solid var(--accent);
       outline-offset: 2px;
     }
@@ -872,7 +863,7 @@
 
     @media (prefers-reduced-motion: reduce) {
       .voz-audio-language-button,
-      #settingsSectionVoice .voice-dropdown-trigger { transition: none; }
+      .voz-audio-seccion .voice-dropdown-trigger { transition: none; }
     }
 
     .setting-group { display: flex; flex-direction: column; min-width: 0; gap: 8px; }
@@ -2007,6 +1998,7 @@
     .ajustes-filtro-titulo { font-size: 14px; font-weight: 600; color: var(--text); }
     .ajustes-filtro-desc { font-size: 12px; color: #b4b4b4; line-height: 1.5; margin: 0; }
     .ajustes-filtro-btn { white-space: nowrap; }
+    .voz-audio-layout + .ajustes-filtro { margin-top: var(--space-4); }
 
     .btn-test {
       background: transparent;
@@ -3543,3 +3535,9 @@ input[type="number"]:hover::-webkit-inner-spin-button, input[type="number"]:focu
 .music-seek-pista { height: 4px; border-radius: 4px; overflow: hidden; background: var(--surface); transition: height var(--dur-1, 150ms) ease-out; }
 .music-seek:hover .music-seek-pista, .music-seek:focus-visible .music-seek-pista, .music-seek:active .music-seek-pista { height: 6px; }
 .music-seek:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+/* Pestanas de Ajustes de voz: mismo control segmentado de Atajos, con scroll horizontal en pantallas chicas. */
+.ajustes-tabs { display: flex; overflow-x: auto; scrollbar-width: none; }
+.ajustes-tabs::-webkit-scrollbar { display: none; }
+.ajustes-tabs .seg-btn { flex: 1 0 auto; white-space: nowrap; }
+.ajustes-panel[hidden] { display: none; }
