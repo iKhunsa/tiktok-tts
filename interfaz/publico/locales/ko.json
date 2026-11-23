@@ -808,6 +808,18 @@
       "eliminado": "'{nombre}'을(를) 삭제했어요",
       "quitarFavorito": "즐겨찾기에서 제거",
       "agregarFavorito": "즐겨찾기에 추가"
+    },
+    "categoria": {
+      "apariencia": "모양",
+      "animaciones": "애니메이션",
+      "posicion": "위치",
+      "avanzado": "고급"
+    },
+    "avanzado": {
+      "espaciado": "간격",
+      "bordes": "테두리",
+      "texto": "텍스트 변환",
+      "efectos": "특수 효과"
     }
   },
   "overlayStr": {

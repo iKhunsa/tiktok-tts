@@ -808,6 +808,18 @@
       "eliminado": "已删除「{nombre}」",
       "quitarFavorito": "从收藏中移除",
       "agregarFavorito": "加入收藏"
+    },
+    "categoria": {
+      "apariencia": "外观",
+      "animaciones": "动画",
+      "posicion": "位置",
+      "avanzado": "高级"
+    },
+    "avanzado": {
+      "espaciado": "间距",
+      "bordes": "边框",
+      "texto": "文字转换",
+      "efectos": "特效"
     }
   },
   "overlayStr": {

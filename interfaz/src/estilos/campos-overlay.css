@@ -235,3 +235,59 @@ body.reduce-motion .selector-color { animation: none; }
   white-space: nowrap;
 }
 .epik-eliminar:disabled { opacity: 0.5; cursor: progress; }
+
+/* Acordeones de ajustes (General, Apariencia, ... Avanzado): tarjeta con borde; el cuerpo se oculta con `hidden`. */
+.cfg-acordeon { border: 1px solid var(--border); border-radius: 10px; }
+.cfg-acordeon-cab { display: flex; align-items: center; }
+.cfg-acordeon-toggle {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: var(--text-base);
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: transform var(--dur-1) ease-out;
+}
+.cfg-acordeon-toggle:active { transform: scale(0.97); }
+.cfg-acordeon-toggle:focus-visible { outline: 2px solid var(--text-muted); outline-offset: -2px; }
+.cfg-acordeon-toggle::after {
+  content: '';
+  width: 7px;
+  height: 7px;
+  margin-right: 3px;
+  border-right: 1.5px solid var(--text-secondary);
+  border-bottom: 1.5px solid var(--text-secondary);
+  transform: rotate(45deg);
+  transition: transform var(--dur-2) var(--ease-out);
+}
+.cfg-acordeon-toggle[aria-expanded="true"]::after { transform: rotate(-135deg); }
+.cfg-acordeon-cuerpo { padding: 4px 16px 16px; }
+.cfg-acordeon-cuerpo[hidden] { display: none; }
+.cfg-acordeon-cuerpo.cfg-avanzado { display: grid; gap: 8px; }
+.cfg-acordeon-cuerpo.cfg-avanzado[hidden] { display: none; }
+/* Acordeones internos de Avanzado: mas discretos que los de primer nivel */
+.cfg-acordeon .cfg-acordeon { border-color: var(--border-subtle); border-radius: 8px; }
+.cfg-acordeon .cfg-acordeon-toggle { min-height: 40px; border-radius: 8px; font-size: var(--text-sm); font-weight: 500; }
+@media (prefers-reduced-motion: reduce) {
+  .cfg-acordeon-toggle, .cfg-acordeon-toggle::after { transition: none; }
+}
+
+/* En el inspector: tarjetas separadas en vez de filas con linea; el panel de acordeones las apila. */
+.ovl-inspector > .cfg-acordeon, .ovl-inspector > .cfg-personalizar { margin: 12px 12px 0; border-top-width: 1px; }
+.ovl-inspector > .cfg-personalizar { display: grid; gap: 12px; border-top: 0; }
+.ovl-inspector > .cfg-personalizar:empty { display: none; }
+.ovl-inspector > .cfg-personalizar > .cfg-epik { border: 1px solid var(--border); border-radius: 10px; }
+.ovl-inspector > .cfg-acordeon:last-child, .ovl-inspector > .cfg-personalizar:last-child { margin-bottom: 12px; }
+@media (max-width: 600px) {
+  .cfg-acordeon-toggle { padding: 0 12px; }
+  .cfg-acordeon-cuerpo { padding: 2px 12px 12px; }
+}

@@ -808,6 +808,18 @@
       "eliminado": "«{nombre}» удалён",
       "quitarFavorito": "Убрать из избранного",
       "agregarFavorito": "Добавить в избранное"
+    },
+    "categoria": {
+      "apariencia": "Внешний вид",
+      "animaciones": "Анимации",
+      "posicion": "Положение",
+      "avanzado": "Дополнительно"
+    },
+    "avanzado": {
+      "espaciado": "Интервалы",
+      "bordes": "Границы",
+      "texto": "Преобразование текста",
+      "efectos": "Спецэффекты"
     }
   },
   "overlayStr": {

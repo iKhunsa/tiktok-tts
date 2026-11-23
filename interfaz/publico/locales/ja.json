@@ -808,6 +808,18 @@
       "eliminado": "「{nombre}」を削除しました",
       "quitarFavorito": "お気に入りから外す",
       "agregarFavorito": "お気に入りに追加"
+    },
+    "categoria": {
+      "apariencia": "外観",
+      "animaciones": "アニメーション",
+      "posicion": "位置",
+      "avanzado": "詳細設定"
+    },
+    "avanzado": {
+      "espaciado": "間隔",
+      "bordes": "枠線",
+      "texto": "テキスト変換",
+      "efectos": "特殊効果"
     }
   },
   "overlayStr": {

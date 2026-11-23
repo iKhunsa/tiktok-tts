@@ -808,6 +808,18 @@
       "eliminado": "«{nombre}» foi excluído",
       "quitarFavorito": "Remover dos favoritos",
       "agregarFavorito": "Adicionar aos favoritos"
+    },
+    "categoria": {
+      "apariencia": "Aparência",
+      "animaciones": "Animações",
+      "posicion": "Posição",
+      "avanzado": "Avançado"
+    },
+    "avanzado": {
+      "espaciado": "Espaçamento",
+      "bordes": "Bordas",
+      "texto": "Transformação do texto",
+      "efectos": "Efeitos especiais"
     }
   },
   "overlayStr": {
