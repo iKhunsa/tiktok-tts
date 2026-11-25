@@ -25,6 +25,12 @@ const runtime = {
   platformsUsed: new Set(),
   bus: null,
   logger: null,
+  // user.id real de servicio-cuentas (no el machineId anonimo de abajo).
+  // Aparte de `identity` (que es fija por proceso) porque esto cambia en
+  // caliente con el login/logout — se puede setear antes de init() (el
+  // listener de auth/index.js en /telemetria se engancha temprano, igual que
+  // el resto de conectores) y Transport la lee fresca en cada envio.
+  accountId: null,
 };
 
 function track(connector, name, props = {}) {
@@ -42,6 +48,15 @@ function platformsUsed() {
 
 function markPlatform(platform) {
   if (platform) runtime.platformsUsed.add(platform);
+}
+
+// 'anonymous' (convencion de core/account-data-path.js) equivale a sin sesion.
+function setAccountId(id) {
+  runtime.accountId = id && id !== 'anonymous' ? String(id) : null;
+}
+
+function getAccountId() {
+  return runtime.accountId;
 }
 
 function sessionMinutes() {
@@ -74,7 +89,7 @@ function init({ url, token, appVersion, dataDir, creatorDataDir = dataDir, bus, 
     runtime.creators = new CreatorCache(creatorDataDir, logger);
     runtime.transport = new Transport({
       url, token, buffer: runtime.buffer, identity: runtime.identity, appVersion,
-      onDirectives: handleDirectives, logger,
+      getAccountId, onDirectives: handleDirectives, logger,
     });
     runtime.enabled = true;
     // Fire-and-forget: si falla, el envio sigue con el token compartido y se
@@ -136,6 +151,8 @@ module.exports = {
   platformsUsed,
   sessionMinutes,
   switchCreatorDataDir,
+  setAccountId,
+  getAccountId,
   get enabled() { return runtime.enabled; },
   get identity() { return runtime.identity; },
 };

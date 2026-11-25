@@ -10,12 +10,15 @@ const BATCH_SIZE = 50;
 const RETRY_DELAYS = [1000, 4000, 15000];
 
 class Transport {
-  constructor({ url, token, buffer, identity, appVersion, onDirectives, logger }) {
+  constructor({ url, token, buffer, identity, appVersion, getAccountId, onDirectives, logger }) {
     this.url = url;
     this.token = token;
     this.buffer = buffer;
     this.identity = identity;
     this.appVersion = appVersion;
+    // Funcion, no un valor fijo: la cuenta puede cambiar (login/logout) entre
+    // un batch y el siguiente, a diferencia de machineId/sessionId.
+    this.getAccountId = getAccountId || (() => null);
     this.onDirectives = onDirectives || (() => {});
     this.logger = logger;
     this.sending = false;
@@ -69,6 +72,7 @@ class Transport {
             schema: 2,
             machine_id: this.identity.machineId,
             session_id: this.identity.sessionId,
+            account_id: this.getAccountId(),
             app_version: this.appVersion,
             os: this.identity.os,
             events,
