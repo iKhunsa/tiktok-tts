@@ -34,10 +34,16 @@ function crearRefresh({ cliente, bus, logger }) {
         'Token rechazado por servicio-cuentas, sesion cerrada', {});
       return;
     }
-    if (!r.ok) {
+    // Un 200 sin `user` es el servicio devolviendo un cuerpo vacio/corrupto
+    // (proxy/CDN que corta la respuesta, race del lado del servicio), no una
+    // sesion real: un token valido jamas da 200 sin usuario. Tratarlo como
+    // "no respondio" en vez de dejar que normalizar() lo lea como deslogueado
+    // evita un logout fantasma (ver bug: `aplicarSesion` dispara reload +
+    // cambia la cuenta activa de datos por cuenta ante esto).
+    if (!r.ok || !r.body || !r.body.user) {
       estado.marcarDegradado();
       logger.log('warn', 'auth', 'auth/refresh.js#tick', 'auth.servicio.sin_respuesta',
-        'servicio-cuentas no respondio en el refresh', { status: r.status });
+        'servicio-cuentas no respondio (o respondio sin usuario) en el refresh', { status: r.status, sinUsuario: r.ok && !!r.body && !r.body.user });
       emitirCambio(antes, estado.getSesion());
       return;
     }

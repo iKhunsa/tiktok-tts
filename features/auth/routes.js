@@ -53,6 +53,37 @@ function logVinculo(logger, accion, plataforma, r) {
 // Cualquier valor distinto de 'month' cae al default del contrato: anual.
 const intervaloValido = (v) => (v === 'month' ? 'month' : 'year');
 
+// Freno local de intentos de login, por email, en memoria (se reinicia con la
+// app: alcanza, el objetivo es solo frenar reintentos manuales seguidos, no
+// un ataque serio). Sin esto, 5+ contraseñas mal tipeadas seguidas no
+// avisaban nada especial y, si encima el servicio andaba lento, el usuario
+// veia "Servicio de cuentas no disponible" (el error de un timeout) en vez
+// de enterarse que el problema era la contraseña.
+const MAX_INTENTOS_LOGIN = 5;
+const VENTANA_INTENTOS_LOGIN_MS = 5 * 60 * 1000;
+const intentosLogin = new Map(); // email normalizado -> { fallos, desde }
+
+const normalizarEmailLogin = (email) => String(email || '').trim().toLowerCase();
+
+function loginBloqueado(email) {
+  const registro = intentosLogin.get(email);
+  if (!registro) return false;
+  if (Date.now() - registro.desde > VENTANA_INTENTOS_LOGIN_MS) {
+    intentosLogin.delete(email);
+    return false;
+  }
+  return registro.fallos >= MAX_INTENTOS_LOGIN;
+}
+
+function registrarFalloLogin(email) {
+  const registro = intentosLogin.get(email);
+  if (!registro || Date.now() - registro.desde > VENTANA_INTENTOS_LOGIN_MS) {
+    intentosLogin.set(email, { fallos: 1, desde: Date.now() });
+  } else {
+    registro.fallos += 1;
+  }
+}
+
 function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
   // La respuesta de login/registro puede no traer foto ni banner: se pide la sesion completa
   // despues de responder (el servicio puede tardar) y, si cambia el perfil, la UI se entera por WS.
@@ -73,9 +104,21 @@ function montar({ app, cliente, logger, subscriptionsEnabled, refresh }) {
 
   app.post('/api/auth/login', guard, async (req, res) => {
     const { email, password } = req.body || {};
+    const correo = normalizarEmailLogin(email);
+    if (correo && loginBloqueado(correo)) {
+      logger.log('info', 'auth', 'auth/routes.js#login', 'auth.login.limitado',
+        'Login bloqueado por intentos seguidos', {});
+      return res.status(429).json({ error: 'Demasiados intentos. Prueba en unos minutos.', errorKey: 'errors.rateLimited' });
+    }
     const antes = estado.getSesion();
     const r = await cliente.login({ email, password });
-    if (!r.ok) return propagarError(res, r, logger);
+    if (!r.ok) {
+      // Solo cuenta credenciales rechazadas (4xx de servicio-cuentas): un timeout o un
+      // 5xx no es culpa del usuario y no deberia consumirle intentos.
+      if (correo && r.status >= 400 && r.status < 500) registrarFalloLogin(correo);
+      return propagarError(res, r, logger);
+    }
+    if (correo) intentosLogin.delete(correo);
     estado.aplicar({ token: r.body.token, session: r.body }, logger);
     logger.log('info', 'auth', 'auth/routes.js#login', 'auth.sesion.iniciada', 'Login OK', { via: 'login' });
     refresh.emitirCambio(antes, estado.getSesion());

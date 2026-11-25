@@ -5,7 +5,9 @@
 // molesta). Las acciones del usuario (login/register/...) van one-shot: si
 // falla, re-clickea. Devuelve { ok, status, body }.
 
-const TIMEOUT_MS = 8000;
+// 8s se quedaba corto con el servicio bajo carga/latencia alta (brownout: responde,
+// pero lento) y el timeout se veia igual que un "servicio no disponible" de verdad.
+const TIMEOUT_MS = 15000;
 
 function crearCliente(baseUrl) {
   async function pedir(pathRel, { method = 'GET', body, token, reintentos = 0 } = {}) {
