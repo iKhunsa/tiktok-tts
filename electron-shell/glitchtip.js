@@ -230,6 +230,13 @@ const WARN_PROMOVIDOS = new Set([
   'electron_shell.atajo_clip_fallido',
   'auth.plataforma.vinculacion_fallida',
   'auth.plataforma.desvinculacion_fallida',
+  // El usuario no puede loguearse/usar la cuenta y el error que ve es el
+  // generico "Servicio de cuentas no disponible" (sin la causa real). Sin
+  // esto no quedaba ningun rastro en GlitchTip — el mapeo a
+  // error_auth_servicio ya existia en EVENTO_A_TIPO pero nunca se usaba
+  // porque faltaba la promocion.
+  'auth.servicio.error',
+  'auth.servicio.sin_respuesta',
   'idioma.dict.carga_fallida',
   'moderacion.rust.no_disponible', // solo se loguea con rustGuardEnabled=true
 ]);
