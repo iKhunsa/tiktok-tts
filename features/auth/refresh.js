@@ -43,7 +43,14 @@ function crearRefresh({ cliente, bus, logger }) {
     if (!r.ok || !r.body || !r.body.user) {
       estado.marcarDegradado();
       logger.log('warn', 'auth', 'auth/refresh.js#tick', 'auth.servicio.sin_respuesta',
-        'servicio-cuentas no respondio (o respondio sin usuario) en el refresh', { status: r.status, sinUsuario: r.ok && !!r.body && !r.body.user });
+        'servicio-cuentas no respondio (o respondio sin usuario) en el refresh', {
+          status: r.status,
+          sinUsuario: r.ok && !!r.body && !r.body.user,
+          // Mismo shape que propagarError (routes.js): /telemetria lo usa para
+          // distinguir DNS/bloqueo de red (señal de ISP) de un timeout propio
+          // o un 5xx real del servicio.
+          causa: r.error && ((r.error.cause && r.error.cause.code) || r.error.message),
+        });
       emitirCambio(antes, estado.getSesion());
       return;
     }
