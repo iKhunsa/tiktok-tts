@@ -5,8 +5,9 @@
  *             apagado (opcional: true lo saca de la fecha, solo se ve forzado) }  // anclas: ver anclas.js
  */
 import { halloween } from './halloween/index.js';
+import { navidad } from './navidad/index.js';
 
-export const EVENTOS = [halloween];
+export const EVENTOS = [halloween, navidad];
 
 const aMesDia = (fecha) => `${String(fecha.getMonth() + 1).padStart(2, '0')}-${String(fecha.getDate()).padStart(2, '0')}`;
 

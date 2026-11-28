@@ -2592,27 +2592,65 @@
       "descripcion": "Зима приносит море наград! Испытайте наш Lucky Drop и получайте особые призы, выполняйте задания в Сезонном пропуске с <strong>1 по 30 декабря</strong> и загляните в эксклюзивный магазин с уникальными оверлеями, которых больше не будет.",
       "guia": "Чтобы вернуться в Winter Season, нажмите эту кнопку: здесь вас ждут Lucky Drop, Pass и Shop."
     },
-    "pendiente": {
-      "cofre": "Сундук",
-      "maquina": "Автомат с клешнёй",
-      "overlay": "Оверлей",
-      "icono": "Значок",
-      "monedas": "Монеты"
-    },
     "saldo": {
       "titulo": "Монеты",
       "mas": "Получить монеты"
     },
     "pase": {
-      "descripcion": "Описание",
       "desbloquear": "Разблокировать",
-      "paso1": "Подпишитесь на наш официальный аккаунт TikTok и присоединяйтесь к приключению.",
-      "proximo": "Эта награда скоро будет раскрыта.",
       "anterior": "Предыдущая награда",
       "siguiente": "Следующая награда",
-      "recompensa": "Награда {n}"
+      "misiones": {
+        "nuevoSeguidor": {
+          "titulo": "Новый подписчик",
+          "descripcion": "Подпишитесь на наш официальный аккаунт TikTok и станьте частью приключения."
+        },
+        "daleAlPlay": {
+          "titulo": "Жми play",
+          "descripcion": "Подпишитесь на наш официальный YouTube-канал и узнавайте все новости."
+        },
+        "uneteAlClan": {
+          "titulo": "Вступайте в клан",
+          "descripcion": "Присоединяйтесь к нашему официальному сообществу в Discord."
+        },
+        "calentandoMotores": {
+          "titulo": "Разогрев",
+          "descripcion": "Наберите 4 часа стримов с TikLiveTTS за сезон."
+        },
+        "modoImparable": {
+          "titulo": "Не остановить",
+          "descripcion": "Наберите 8 часов стримов с TikLiveTTS за сезон."
+        },
+        "cambioDeLook": {
+          "titulo": "Новый образ",
+          "descripcion": "Используйте 3 разных оверлея TikLiveTTS на своих стримах."
+        },
+        "sinFronteras": {
+          "titulo": "Без границ",
+          "descripcion": "Стримьте одновременно минимум на 2 платформах через Multistream."
+        },
+        "chatEnLlamas": {
+          "titulo": "Чат в огне",
+          "descripcion": "Пусть TTS прочитает 100 сообщений чата за один стрим."
+        },
+        "djDelDirecto": {
+          "titulo": "Диджей стрима",
+          "descripcion": "Включите 15 песен через функцию голосового чата."
+        }
+      },
+      "recompensa": "Награда",
+      "verificando": "Проверяем…",
+      "completada": "Выполнено",
+      "total": "Получите до {total} монет",
+      "llevas": "У вас {ganadas} из {total}"
     },
     "luckyDrop": {
+      "girar": "Крутить",
+      "girando": "Крутится…",
+      "listo": {
+        "nombre": "Крутите колесо",
+        "descripcion": "Испытайте удачу и узнайте, какой приз достанется вам."
+      },
       "premios": "Призы",
       "alternar": "Показать или скрыть призы",
       "coins": {
@@ -2630,15 +2668,62 @@
       "ultimatePro": {
         "nombre": "Ultimate Pro",
         "descripcion": "Главный приз! 12 месяцев TikLiveTTS Pro без оплаты."
-      }
+      },
+      "abrir": "Открыть",
+      "coste": "Вращение",
+      "oPulsa": "или нажмите",
+      "espacio": "Пробел"
     },
     "banco": {
       "titulo": "Coin Bank",
-      "volver": "Назад"
+      "volver": "Назад",
+      "procesando": "Обработка…"
     },
     "guia": {
       "titulo": "Ваш сезон всегда под рукой",
       "entendido": "Понятно"
+    },
+    "mysteryBall": {
+      "titulo": "Mystery Ball",
+      "continuar": "Продолжить",
+      "rareza": {
+        "comun": "Обычный",
+        "raro": "Редкий",
+        "epico": "Эпический"
+      },
+      "meme": {
+        "nombre": "Мем",
+        "descripcion": "В этот раз без приза, только мем. Повезёт в следующий раз!"
+      },
+      "wallpaper": {
+        "nombre": "Эксклюзивные обои",
+        "descripcion": "Обои Winter Season только для вас."
+      },
+      "sinAds": {
+        "nombre": "Месяц без рекламы",
+        "descripcion": "Пользуйтесь TikLiveTTS без рекламы целый месяц."
+      },
+      "overlay": {
+        "nombre": "Оверлей Winter Season",
+        "descripcion": "Эксклюзивный сезонный оверлей для вашего стрима."
+      }
+    },
+    "aviso": {
+      "sinMonedasTitulo": "Недостаточно монет",
+      "sinMonedasTexto": "Одно вращение стоит {precio} монет, а у вас {saldo}. Заработайте их в заданиях Pass или получите в Coin Bank.",
+      "conseguir": "Получить монеты",
+      "verMisiones": "К заданиям",
+      "sinMonedasOverlay": "Этот оверлей стоит {precio} монет, а у вас {saldo}. Заработайте их в заданиях Pass или получите в Coin Bank."
+    },
+    "tienda": {
+      "anterior": "Предыдущая категория",
+      "siguiente": "Следующая категория",
+      "comprar": "Купить",
+      "adquirido": "Куплено",
+      "compradoTitulo": "Оверлей получен!",
+      "compradoTexto": "{skin} добавлен в избранное категории «{categoria}». Он есть в разделе Overlays, в «Сменить скин».",
+      "listo": "Понятно",
+      "agregado": "{skin} добавлен в избранные скины"
     }
   },
   "filtrosIdioma": {

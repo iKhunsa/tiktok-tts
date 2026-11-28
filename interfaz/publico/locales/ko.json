@@ -2592,27 +2592,65 @@
       "descripcion": "겨울에는 보상이 가득해요! Lucky Drop으로 특별한 상품을 받고, <strong>12월 1일~30일</strong> 시즌 패스에서 미션을 완료하고, 다시는 만날 수 없는 한정 오버레이가 있는 전용 상점을 둘러보세요.",
       "guia": "Winter Season으로 돌아오고 싶을 때는 이 버튼을 누르세요. Lucky Drop, Pass, Shop이 여기에서 기다립니다."
     },
-    "pendiente": {
-      "cofre": "상자",
-      "maquina": "크레인 게임기",
-      "overlay": "오버레이",
-      "icono": "아이콘",
-      "monedas": "코인"
-    },
     "saldo": {
       "titulo": "코인",
       "mas": "코인 받기"
     },
     "pase": {
-      "descripcion": "설명",
       "desbloquear": "잠금 해제",
-      "paso1": "공식 TikTok 계정을 팔로우하고 모험에 함께하세요.",
-      "proximo": "이 보상은 곧 공개됩니다.",
       "anterior": "이전 보상",
       "siguiente": "다음 보상",
-      "recompensa": "보상 {n}"
+      "misiones": {
+        "nuevoSeguidor": {
+          "titulo": "새 팔로워",
+          "descripcion": "공식 TikTok 계정을 팔로우하고 모험에 함께하세요."
+        },
+        "daleAlPlay": {
+          "titulo": "재생 버튼",
+          "descripcion": "공식 YouTube 채널을 구독하고 새로운 소식을 확인하세요."
+        },
+        "uneteAlClan": {
+          "titulo": "클랜 가입",
+          "descripcion": "공식 Discord 커뮤니티에 참여하세요."
+        },
+        "calentandoMotores": {
+          "titulo": "예열 중",
+          "descripcion": "시즌 동안 TikLiveTTS로 총 4시간 방송하세요."
+        },
+        "modoImparable": {
+          "titulo": "멈출 수 없는 모드",
+          "descripcion": "시즌 동안 TikLiveTTS로 총 8시간 방송하세요."
+        },
+        "cambioDeLook": {
+          "titulo": "스타일 변신",
+          "descripcion": "방송에서 서로 다른 TikLiveTTS 오버레이 3개를 사용하세요."
+        },
+        "sinFronteras": {
+          "titulo": "경계 없이",
+          "descripcion": "Multistream으로 2개 이상의 플랫폼에서 동시에 방송하세요."
+        },
+        "chatEnLlamas": {
+          "titulo": "불타는 채팅",
+          "descripcion": "한 번의 방송에서 TTS가 채팅 메시지 100개를 읽게 하세요."
+        },
+        "djDelDirecto": {
+          "titulo": "방송 DJ",
+          "descripcion": "음성 채팅 기능으로 노래 15곡을 재생하세요."
+        }
+      },
+      "recompensa": "보상",
+      "verificando": "확인 중…",
+      "completada": "완료",
+      "total": "최대 {total} 코인 획득",
+      "llevas": "획득 {ganadas} / {total}"
     },
     "luckyDrop": {
+      "girar": "돌리기",
+      "girando": "도는 중…",
+      "listo": {
+        "nombre": "룰렛을 돌려 보세요",
+        "descripcion": "행운을 시험하고 어떤 상품이 나올지 확인하세요."
+      },
       "premios": "상품",
       "alternar": "상품 표시/숨기기",
       "coins": {
@@ -2630,15 +2668,62 @@
       "ultimatePro": {
         "nombre": "Ultimate Pro",
         "descripcion": "대상! TikLiveTTS Pro를 12개월 동안 무료로 즐기세요."
-      }
+      },
+      "abrir": "열기",
+      "coste": "1회",
+      "oPulsa": "또는",
+      "espacio": "스페이스바"
     },
     "banco": {
       "titulo": "Coin Bank",
-      "volver": "뒤로"
+      "volver": "뒤로",
+      "procesando": "처리 중…"
     },
     "guia": {
       "titulo": "시즌 이벤트, 언제든 바로 열기",
       "entendido": "확인"
+    },
+    "mysteryBall": {
+      "titulo": "Mystery Ball",
+      "continuar": "계속",
+      "rareza": {
+        "comun": "일반",
+        "raro": "희귀",
+        "epico": "에픽"
+      },
+      "meme": {
+        "nombre": "밈",
+        "descripcion": "이번엔 상품 없이 밈만 나왔어요. 다음 기회를 노려보세요!"
+      },
+      "wallpaper": {
+        "nombre": "독점 배경화면",
+        "descripcion": "당신만을 위한 Winter Season 배경화면입니다."
+      },
+      "sinAds": {
+        "nombre": "1개월 광고 없음",
+        "descripcion": "한 달 동안 광고 없이 TikLiveTTS를 즐기세요."
+      },
+      "overlay": {
+        "nombre": "Winter Season 오버레이",
+        "descripcion": "방송에 쓸 수 있는 시즌 한정 오버레이입니다."
+      }
+    },
+    "aviso": {
+      "sinMonedasTitulo": "코인이 부족합니다",
+      "sinMonedasTexto": "한 번 돌리는 데 {precio} 코인이 필요하며 현재 {saldo} 코인이 있습니다. Pass 미션으로 모으거나 Coin Bank에서 받으세요.",
+      "conseguir": "코인 받기",
+      "verMisiones": "미션 보기",
+      "sinMonedasOverlay": "이 오버레이는 {precio} 코인이 필요하며 현재 {saldo} 코인이 있습니다. Pass 미션으로 모으거나 Coin Bank에서 받으세요."
+    },
+    "tienda": {
+      "anterior": "이전 카테고리",
+      "siguiente": "다음 카테고리",
+      "comprar": "구매",
+      "adquirido": "보유 중",
+      "compradoTitulo": "오버레이를 획득했습니다!",
+      "compradoTexto": "{skin}이(가) {categoria} 즐겨찾기에 추가되었습니다. Overlays의 “스킨 변경”에서 찾을 수 있습니다.",
+      "listo": "확인",
+      "agregado": "{skin}이(가) 즐겨찾는 스킨에 추가되었습니다"
     }
   },
   "filtrosIdioma": {

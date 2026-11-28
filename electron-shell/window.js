@@ -118,9 +118,11 @@ function createWindow({ iconPath, onClose, bus }) {
     },
   });
 
-  // Solo desarrollo: TEMPORADA_FORZADA=winter (npm run electron:winter) muestra la temporada fuera de sus fechas.
-  const temporadaForzada = app.isPackaged ? '' : process.env.TEMPORADA_FORZADA;
-  win.loadURL(`http://127.0.0.1:${PORT}${temporadaForzada ? `/?temporada=${encodeURIComponent(temporadaForzada)}` : ''}`);
+  // Solo desarrollo: TEMPORADA_FORZADA=winter (npm run electron:winter) muestra la temporada fuera de sus fechas y
+  // EVENTO_FORZADO=navidad (npm run electron:navidad) reproduce ese evento al abrir.
+  const forzados = app.isPackaged ? [] : [['temporada', process.env.TEMPORADA_FORZADA], ['evento', process.env.EVENTO_FORZADO]];
+  const consulta = new URLSearchParams(forzados.filter(([, valor]) => valor)).toString();
+  win.loadURL(`http://127.0.0.1:${PORT}${consulta ? `/?${consulta}` : ''}`);
   win.removeMenu();
   if (!app.isPackaged) watchFront(win);
 

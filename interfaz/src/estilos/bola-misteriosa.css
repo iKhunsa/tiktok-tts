@@ -1,0 +1,102 @@
+/* Apertura de la Mystery Ball: dialogo a ventana completa sobre el diseno de 1280x800 (`--u`). Antes de abrirse muestra
+   la bola y los cuatro premios posibles; al revelar, los cambia por el premio ganado. */
+
+.apertura {
+  box-sizing: border-box;
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: radial-gradient(80% 70% at 50% 38%, rgba(22, 58, 102, 0.97) 0%, rgba(10, 28, 56, 0.98) 56%, #050c1d 100%);
+  color: #fafafa;
+  font-family: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+  -webkit-app-region: no-drag;
+  animation: temporada-fondo-entra 220ms ease-out both;
+  transition: opacity 180ms ease-out;
+}
+.apertura[open] { display: grid; place-items: center; }
+.apertura::backdrop { background: transparent; }
+.apertura:focus { outline: none; }
+.apertura.is-saliendo { opacity: 0; }
+.apertura-marco { position: relative; width: calc(var(--u) * 1280); height: calc(var(--u) * 800); }
+.apertura h2 { position: absolute; left: 0; right: 0; top: calc(var(--u) * 62); margin: 0; font-size: calc(var(--u) * 34); font-weight: 900; text-align: center; text-transform: uppercase; }
+
+/* ───────── Escena: la bola y, despues, el premio ───────── */
+.apertura-escena { position: absolute; left: calc(var(--u) * 480); top: calc(var(--u) * 140); width: calc(var(--u) * 320); height: calc(var(--u) * 360); }
+.apertura-bola {
+  position: absolute;
+  left: calc(var(--u) * 10);
+  top: calc(var(--u) * 30);
+  width: calc(var(--u) * 300);
+  height: calc(var(--u) * 300);
+  filter: drop-shadow(0 calc(var(--u) * 24) calc(var(--u) * 22) rgba(0, 0, 0, 0.5));
+  transition: opacity 180ms ease-out, scale 260ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.apertura.is-revelado .apertura-bola { opacity: 0; scale: 1.35; pointer-events: none; }
+
+.apertura-destello { position: absolute; inset: calc(var(--u) * -120); border-radius: 50%; background: radial-gradient(closest-side, #fafafa 0%, var(--rareza) 38%, transparent 100%); opacity: 0; pointer-events: none; }
+.apertura.is-revelado .apertura-destello { z-index: 1; animation: apertura-destello 560ms ease-out; }
+@keyframes apertura-destello { from { opacity: 0; transform: scale(0.4); } 25% { opacity: 0.85; } to { opacity: 0; transform: scale(1.2); } }
+.apertura .ruleta-rayos { top: calc(var(--u) * 115); }
+.apertura.is-revelado:not(.sin-premio) .ruleta-rayos { opacity: 1; transform: none; animation: ruleta-rayos 24s linear infinite; }
+
+.apertura-resultado { position: absolute; left: calc(var(--u) * -80); right: calc(var(--u) * -80); top: calc(var(--u) * 20); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: calc(var(--u) * 14); text-align: center; animation: apertura-premio 520ms cubic-bezier(0.34, 1.4, 0.64, 1) 140ms both; }
+.apertura-resultado[hidden] { display: none; }
+@keyframes apertura-premio { from { opacity: 0; transform: translateY(calc(var(--u) * 20)) scale(0.8); } }
+.apertura-resultado .apertura-medalla { width: calc(var(--u) * 190); height: calc(var(--u) * 190); border-width: calc(var(--u) * 6); }
+.apertura-resultado .apertura-rareza { font-size: calc(var(--u) * 14); }
+.apertura-resultado strong { font-size: calc(var(--u) * 32); font-weight: 900; line-height: 1.1; text-transform: uppercase; }
+.apertura-resultado p { margin: 0; max-width: calc(var(--u) * 420); font-size: calc(var(--u) * 15); line-height: 1.45; color: rgba(250, 250, 250, 0.78); }
+
+/* El meme sale en grande, como una foto que se abre; se sacude mientras suena. */
+.apertura.es-meme .apertura-resultado { top: calc(var(--u) * -15); }
+.apertura.es-meme .apertura-continuar { top: calc(var(--u) * 600); }
+.apertura-meme { box-sizing: border-box; width: calc(var(--u) * 480); height: calc(var(--u) * 300); object-fit: cover; border: calc(var(--u) * 5) solid #fafafa; border-radius: calc(var(--u) * 18); box-shadow: 0 calc(var(--u) * 24) calc(var(--u) * 50) rgba(0, 0, 0, 0.55); }
+.apertura-meme.is-sonando { animation: apertura-carcajada 150ms ease-in-out infinite alternate; }
+@keyframes apertura-carcajada { from { transform: translateY(calc(var(--u) * -3)) rotate(-0.8deg); } to { transform: translateY(calc(var(--u) * 3)) rotate(0.8deg); } }
+
+/* ───────── Rareza: color y texto (nunca solo color) ───────── */
+.rareza-comun { --rareza: #c3cee0; }
+.rareza-raro { --rareza: #3ba7ff; }
+.rareza-epico { --rareza: #b56bff; }
+.apertura-medalla { box-sizing: border-box; display: grid; place-items: center; width: calc(var(--u) * 66); height: calc(var(--u) * 66); border: calc(var(--u) * 3) solid var(--rareza); border-radius: 50%; background: radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--rareza) 45%, #2e2e2e), #171717 72%); }
+.apertura-medalla i { width: 56%; height: 56%; background: #fafafa; -webkit-mask: var(--icono) center / contain no-repeat; mask: var(--icono) center / contain no-repeat; }
+.apertura-rareza { padding: calc(var(--u) * 3) calc(var(--u) * 10); border-radius: calc(var(--u) * 20); background: color-mix(in srgb, var(--rareza) 20%, transparent); color: var(--rareza); font-size: calc(var(--u) * 11); font-style: normal; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* ───────── Premios posibles ───────── */
+.apertura-opciones { position: absolute; left: 0; right: 0; top: calc(var(--u) * 548); display: flex; justify-content: center; gap: calc(var(--u) * 18); margin: 0; padding: 0; list-style: none; transition: opacity 200ms ease-out, translate 200ms ease-out; }
+.apertura.is-revelado .apertura-opciones { opacity: 0; translate: 0 calc(var(--u) * 24); pointer-events: none; }
+.apertura-opcion {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--u) * 10);
+  width: calc(var(--u) * 210);
+  padding: calc(var(--u) * 18) calc(var(--u) * 12) calc(var(--u) * 14);
+  border: calc(var(--u) * 3) solid rgba(250, 250, 250, 0.1);
+  border-radius: calc(var(--u) * 18);
+  background: linear-gradient(180deg, #2e2e2e, #171717);
+  text-align: center;
+  animation: apertura-carta 420ms cubic-bezier(0.23, 1, 0.32, 1) calc(120ms + var(--i) * 60ms) backwards;
+  transition: transform 120ms cubic-bezier(0.23, 1, 0.32, 1), border-color 120ms ease-out, box-shadow 120ms ease-out;
+}
+.apertura-opcion strong { display: grid; place-items: center; min-height: 2.4em; font-size: calc(var(--u) * 14); font-weight: 800; line-height: 1.2; }
+.apertura-opcion.is-marcada { border-color: var(--rareza); box-shadow: 0 calc(var(--u) * 14) calc(var(--u) * 30) color-mix(in srgb, var(--rareza) 35%, transparent); transform: translateY(calc(var(--u) * -12)) scale(1.05); }
+@keyframes apertura-carta { from { opacity: 0; transform: translateY(calc(var(--u) * 28)); } }
+
+/* Dos clases: gana a `.ruleta-girar`, que es position: relative. */
+.apertura .apertura-continuar { position: absolute; left: 50%; top: calc(var(--u) * 565); min-width: calc(var(--u) * 220); translate: -50% 0; animation: temporada-fondo-entra 240ms ease-out 360ms backwards; }
+.apertura .apertura-continuar[hidden] { display: none; }
+
+/* Movimiento reducido (sistema o ajuste de la app): solo fundidos. */
+.apertura.is-quieto .apertura-destello { display: none; }
+.apertura.is-quieto .apertura-meme { animation: none; }
+.apertura.is-quieto .apertura-bola { scale: 1; transition: opacity 180ms ease-out; }
+.apertura.is-quieto .apertura-opcion, .apertura.is-quieto .apertura-resultado { animation: temporada-fondo-entra 200ms ease-out both; transition: none; }
+.apertura.is-quieto .apertura-opciones { translate: none; }
+.apertura.is-quieto.is-revelado .ruleta-rayos { animation: none; }

@@ -6,11 +6,13 @@
  */
 import { EVENTOS, elegirEvento } from './catalogo.js';
 import { reproducir, detener } from './reproducir.js';
+import { eventoDePrueba } from './evento-de-prueba.js';
 import { appSettings } from '../../nucleo/estado/ajustes-app.js';
 
 let eventoActivoReproducido = false;
 
-const eventoDeHoy = () => elegirEvento(EVENTOS, new Date());
+// `?evento=<id>` (pruebas) cuenta como el evento de hoy, con su boton y su apagado.
+const eventoDeHoy = () => elegirEvento(EVENTOS, new Date(), eventoDePrueba());
 
 export const efectosActivados = () => appSettings.eventEffects !== false;
 
@@ -37,9 +39,3 @@ export function previsualizarEventoActivo() {
 
 /** Corta lo que este en pantalla (al desactivar los efectos). */
 export const detenerEvento = detener;
-
-/** Fuerza un evento por id, ignorando fecha, ajuste y guard (pruebas: `?evento=halloween`). */
-export function reproducirEvento(id) {
-  const evento = elegirEvento(EVENTOS, new Date(), id);
-  if (evento) reproducir(evento);
-}

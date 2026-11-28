@@ -2592,27 +2592,65 @@
       "descripcion": "L'inverno è pieno di ricompense! Scopri il nostro Lucky Drop per riscattare premi speciali, completa le missioni del Pass Stagionale dal <strong>1° al 30 dicembre</strong> ed esplora il negozio esclusivo con Overlay unici che non torneranno più disponibili.",
       "guia": "Quando vuoi tornare a Winter Season, usa questo pulsante: Lucky Drop, Pass e Shop ti aspettano qui."
     },
-    "pendiente": {
-      "cofre": "Forziere",
-      "maquina": "Gru con artiglio",
-      "overlay": "Overlay",
-      "icono": "Icona",
-      "monedas": "Monete"
-    },
     "saldo": {
       "titulo": "Monete",
       "mas": "Ottieni monete"
     },
     "pase": {
-      "descripcion": "Descrizione",
       "desbloquear": "Sblocca",
-      "paso1": "Segui il nostro account TikTok ufficiale e unisciti all'avventura.",
-      "proximo": "Questa ricompensa sarà svelata presto.",
       "anterior": "Ricompensa precedente",
       "siguiente": "Ricompensa successiva",
-      "recompensa": "Ricompensa {n}"
+      "misiones": {
+        "nuevoSeguidor": {
+          "titulo": "Nuovo follower",
+          "descripcion": "Segui il nostro account ufficiale TikTok e unisciti all’avventura."
+        },
+        "daleAlPlay": {
+          "titulo": "Premi play",
+          "descripcion": "Iscriviti al nostro canale YouTube ufficiale e scopri tutte le novità."
+        },
+        "uneteAlClan": {
+          "titulo": "Unisciti al clan",
+          "descripcion": "Unisciti alla nostra community ufficiale su Discord."
+        },
+        "calentandoMotores": {
+          "titulo": "Motori in riscaldamento",
+          "descripcion": "Accumula 4 ore di streaming con TikLiveTTS durante la stagione."
+        },
+        "modoImparable": {
+          "titulo": "Modalità inarrestabile",
+          "descripcion": "Accumula 8 ore di streaming con TikLiveTTS durante la stagione."
+        },
+        "cambioDeLook": {
+          "titulo": "Cambio di look",
+          "descripcion": "Usa 3 overlay diversi di TikLiveTTS nelle tue dirette."
+        },
+        "sinFronteras": {
+          "titulo": "Senza confini",
+          "descripcion": "Trasmetti su almeno 2 piattaforme contemporaneamente con Multistream."
+        },
+        "chatEnLlamas": {
+          "titulo": "Chat in fiamme",
+          "descripcion": "Fai leggere al TTS 100 messaggi della chat in una sola diretta."
+        },
+        "djDelDirecto": {
+          "titulo": "DJ della diretta",
+          "descripcion": "Riproduci 15 canzoni con la funzione di chat vocale."
+        }
+      },
+      "recompensa": "Ricompensa",
+      "verificando": "Verifica…",
+      "completada": "Completata",
+      "total": "Guadagna fino a {total} monete",
+      "llevas": "Ne hai {ganadas} su {total}"
     },
     "luckyDrop": {
+      "girar": "Gira",
+      "girando": "In corso…",
+      "listo": {
+        "nombre": "Gira la ruota",
+        "descripcion": "Tenta la fortuna e scopri quale premio ti tocca."
+      },
       "premios": "Premi",
       "alternar": "Mostra o nascondi i premi",
       "coins": {
@@ -2630,15 +2668,62 @@
       "ultimatePro": {
         "nombre": "Ultimate Pro",
         "descripcion": "Il premio più grande! Goditi 12 mesi di TikLiveTTS Pro senza pagare nulla."
-      }
+      },
+      "abrir": "Apri",
+      "coste": "Ogni giro",
+      "oPulsa": "o premi",
+      "espacio": "Spazio"
     },
     "banco": {
       "titulo": "Coin Bank",
-      "volver": "Indietro"
+      "volver": "Indietro",
+      "procesando": "Elaborazione…"
     },
     "guia": {
       "titulo": "La tua stagione, sempre a portata di mano",
       "entendido": "Ho capito"
+    },
+    "mysteryBall": {
+      "titulo": "Mystery Ball",
+      "continuar": "Continua",
+      "rareza": {
+        "comun": "Comune",
+        "raro": "Raro",
+        "epico": "Epico"
+      },
+      "meme": {
+        "nombre": "Meme",
+        "descripcion": "Stavolta niente premio, solo un meme. Andrà meglio la prossima!"
+      },
+      "wallpaper": {
+        "nombre": "Sfondo esclusivo",
+        "descripcion": "Uno sfondo Winter Season tutto per te."
+      },
+      "sinAds": {
+        "nombre": "1 mese senza annunci",
+        "descripcion": "Goditi TikLiveTTS senza annunci per un mese."
+      },
+      "overlay": {
+        "nombre": "Overlay Winter Season",
+        "descripcion": "Un overlay esclusivo di stagione per la tua diretta."
+      }
+    },
+    "aviso": {
+      "sinMonedasTitulo": "Monete insufficienti",
+      "sinMonedasTexto": "Ogni giro costa {precio} monete e ne hai {saldo}. Guadagnale con le missioni del Pass o prendile nel Coin Bank.",
+      "conseguir": "Ottieni monete",
+      "verMisiones": "Vedi missioni",
+      "sinMonedasOverlay": "Questo overlay costa {precio} monete e ne hai {saldo}. Guadagnale con le missioni del Pass o prendile nel Coin Bank."
+    },
+    "tienda": {
+      "anterior": "Categoria precedente",
+      "siguiente": "Categoria successiva",
+      "comprar": "Acquista",
+      "adquirido": "Acquistato",
+      "compradoTitulo": "Overlay sbloccato!",
+      "compradoTexto": "{skin} è ora tra i tuoi preferiti di {categoria}. Lo trovi in Overlays, in «Cambia skin».",
+      "listo": "Ho capito",
+      "agregado": "{skin} è stato aggiunto alle tue skin preferite"
     }
   },
   "filtrosIdioma": {

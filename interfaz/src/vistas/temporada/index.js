@@ -1,5 +1,9 @@
+import '../../estilos/overlays-catalogo.css'; // por las miniaturas de los overlays en Shop
 import '../../estilos/temporada.css';
 import '../../estilos/temporada-paneles.css';
+import '../../estilos/ruleta.css';
+import '../../estilos/bola-misteriosa.css';
+import '../../estilos/temporada-aviso.css';
 import { cargarIdioma, idiomaGuardado, aplicarTraducciones, t } from '../../nucleo/i18n/i18n.js';
 import { TEMPORADAS } from '../../componentes/temporada/catalogo.js';
 import { crearNieve } from '../../componentes/temporada/nieve.js';
@@ -8,6 +12,7 @@ import { crearPanelLuckyDrop } from './paneles/lucky-drop.js';
 import { crearPanelPase } from './paneles/pase.js';
 import { crearPanelTienda } from './paneles/tienda.js';
 import { crearSaldo } from './saldo.js';
+import { identificarCuenta } from './identificar-cuenta.js';
 import { abrirBancoMonedas, bancoAbierto, cerrarBancoMonedas } from './banco-monedas.js';
 
 // Ventana de una temporada (se abre desde el boton de la barra de titulo): pestanas arriba, una seccion a la vez, flechas
@@ -49,7 +54,7 @@ function montar() {
     paneles.append(panel);
   });
   saldo = crearSaldo();
-  saldo.querySelector('.temporada-saldo-mas').addEventListener('click', abrirBancoMonedas);
+  saldo.addEventListener('click', abrirBancoMonedas); // todo el recuadro; el "+" es su control de teclado
   $('.temporada-barra').after(saldo);
   crearNieve($('.temporada-fondo'));
   aplicarTraducciones(document);
@@ -72,13 +77,14 @@ function pintar() {
     boton.tabIndex = seleccionada ? 0 : -1;
     $(`#temporadaPanel-${pestana.id}`).hidden = !seleccionada;
   });
-  document.body.dataset.pestana = pestanas[activa].id; // el cielo cambia de tono segun la seccion (temporada-paneles.css)
   saldo.hidden = !pestanas[activa].saldo;
   $('#temporadaSiguiente').hidden = activa !== 0; // la flecha lateral solo invita a salir de la bienvenida; despues mandan las pestanas
 }
 
 function iniciarTeclado() {
   document.addEventListener('keydown', (evento) => {
+    // Con un dialogo abierto las teclas son suyas, aunque el foco se haya quedado fuera (Esc cerraria la ventana).
+    if (document.querySelector('dialog[open]')) return;
     if (evento.key === 'Escape') { if (bancoAbierto()) cerrarBancoMonedas(); else window.close(); }
     else if (evento.target.closest?.('.temporada-pasos, input')) return; // las flechas de la fila de recompensas son suyas
     else if (evento.key === 'ArrowRight') { seleccionar(1); $(`#temporadaPestana-${pestanas[activa].id}`).focus(); }
@@ -88,7 +94,7 @@ function iniciarTeclado() {
 }
 
 async function iniciar() {
-  await cargarIdioma(idiomaGuardado() || 'es');
+  await Promise.all([cargarIdioma(idiomaGuardado() || 'es'), identificarCuenta()]); // la cuenta, antes de leer lo suyo
   montar();
   iniciarTeclado();
 }

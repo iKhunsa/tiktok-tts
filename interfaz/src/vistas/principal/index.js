@@ -36,7 +36,7 @@ import { iniciarCuenta } from './cuenta/index.js';
 import { initModeracionContenido } from './moderacion-contenido/index.js';
 import { initGiftGate } from './gift-gate/index.js';
 import { initModerationPopup } from './moderacion-popup/index.js';
-import { reproducirEventoActivo, reproducirEvento } from '../../componentes/eventos/index.js';
+import { reproducirEventoActivo } from '../../componentes/eventos/index.js';
 import { iniciarBotonEfectosEvento } from './efectos-evento.js';
 import { iniciarAvisoConexionFallida } from './aviso-conexion-fallida.js';
 import { iniciarAvisoCodigoDescuento } from './aviso-codigo-descuento.js';
@@ -49,6 +49,7 @@ import {
   testTopLikers, testTopDonors, testViewers,
 } from './configurador-overlays.js';
 import { iniciarCamposOverlay } from './campos-overlay/index.js';
+import { iniciarComprasTemporada } from './aplicar-compras-temporada.js';
 import { initTecladoBindings } from './teclado-keys-ui.js';
 import { iniciarEpik } from './epik/seccion.js';
 import { iniciarSelectorColor } from '../../componentes/selector-color/index.js';
@@ -266,9 +267,7 @@ function iniciarArranque() {
   almacenSesion.subscribe(aplicarBloqueoApp);
   // Con la sesion ya leida: la cuenta decide si ya vio el anuncio de temporada, y el onboarding arranca solo si la
   // app esta desbloqueada (tras login/registro la app se recarga y pasa por aqui con la sesion iniciada).
-  cargarSesion().then(() => { iniciarTemporada(); arrancarAvisosOnboarding(); });
-  const eventoForzado = new URLSearchParams(window.location.search).get('evento');
-  if (eventoForzado) reproducirEvento(eventoForzado); // prueba manual: ?evento=halloween
+  cargarSesion().then(() => { iniciarTemporada(); iniciarComprasTemporada(); arrancarAvisosOnboarding(); });
   renderShortcutDisplay();
   if (window.electronAPI?.registerTtsShortcut) {
     for (const action of TTS_SHORTCUT_ACTIONS_KEYS) {

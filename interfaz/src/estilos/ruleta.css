@@ -1,0 +1,162 @@
+/* Ruleta de premios. Usa la unidad `--u` de la ventana de temporada (1u = 1px del diseno de 1280x800). El centro de la
+   rueda esta en (640, 770): solo se ve la mitad superior y un degradado la funde con el fondo. */
+
+.ruleta { position: absolute; z-index: 1; left: 50%; top: 0; width: calc(var(--u) * 1280); height: calc(var(--u) * 800); transform: translateX(-50%); }
+.ruleta-aro {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-image: linear-gradient(180deg, #000 66%, transparent 97%);
+  mask-image: linear-gradient(180deg, #000 66%, transparent 97%);
+}
+.ruleta-disco, .ruleta-luz {
+  position: absolute;
+  left: calc(var(--u) * 40);
+  top: calc(var(--u) * 170);
+  width: calc(var(--u) * 1200);
+  height: calc(var(--u) * 1200);
+}
+.ruleta-disco { border-radius: 50%; box-shadow: 0 0 calc(var(--u) * 70) rgba(0, 0, 0, 0.5); }
+.ruleta.is-girando .ruleta-disco { will-change: transform; }
+.ruleta-disco svg, .ruleta-luz svg { display: block; width: 100%; height: 100%; }
+.ruleta-luz { pointer-events: none; }
+
+.ruleta-ganador { fill: none; stroke: #fafafa; stroke-width: 9; stroke-linejoin: round; filter: drop-shadow(0 0 14px #fafafa) drop-shadow(0 0 34px #f0213a); opacity: 0; transition: opacity 180ms ease-out; }
+.ruleta.is-ganador .ruleta-ganador { opacity: 1; animation: ruleta-destello 900ms ease-in-out 3; }
+@keyframes ruleta-destello { 50% { opacity: 0.45; } }
+
+.ruleta-indicador { position: absolute; left: calc(var(--u) * 605); top: calc(var(--u) * 146); width: calc(var(--u) * 70); height: calc(var(--u) * 92); filter: drop-shadow(0 calc(var(--u) * 8) calc(var(--u) * 10) rgba(0, 0, 0, 0.55)); }
+.ruleta-indicador svg { display: block; width: 100%; height: 100%; transform-origin: 50% 36%; }
+
+/* ───────── Centro: no gira y queda vacio hasta que sale el premio. ───────── */
+.ruleta-centro { position: absolute; left: calc(var(--u) * 480); top: calc(var(--u) * 332); width: calc(var(--u) * 320); height: calc(var(--u) * 310); }
+.ruleta-centro img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 calc(var(--u) * 20) calc(var(--u) * 18) rgba(0, 0, 0, 0.5));
+  transition: opacity 220ms ease-out, transform 520ms cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+.ruleta-centro .ruleta-premio { top: 20%; height: 72%; opacity: 0; transform: translateY(8%) scale(0.85); }
+.ruleta-centro .ruleta-premio:not([src]) { visibility: hidden; }
+.ruleta.is-ganador .ruleta-premio { opacity: 1; transform: none; }
+
+/* ───────── Chispas ───────── */
+.ruleta-chispas { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.ruleta-chispas span {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: calc(var(--u) * var(--t));
+  height: calc(var(--u) * var(--t));
+  border-radius: 50%;
+  background: #fafafa;
+  box-shadow: 0 0 calc(var(--u) * 12) calc(var(--u) * 3) rgba(240, 33, 58, 0.85);
+  opacity: 0;
+  animation: ruleta-sube var(--d) linear var(--r) infinite;
+}
+@keyframes ruleta-sube {
+  from { transform: translate3d(0, 0, 0); opacity: 0; }
+  30% { opacity: 0.85; }
+  to { transform: translate3d(0, calc(var(--u) * -150), 0); opacity: 0; }
+}
+
+/* ───────── Pie: la informacion a la izquierda y, aparte, el boton ───────── */
+.ruleta-pie { display: contents; }
+.ruleta-tarjeta, .ruleta-acciones {
+  position: absolute;
+  top: calc(var(--u) * 628);
+  box-sizing: border-box;
+  min-height: calc(var(--u) * 134); /* la misma altura para las dos piezas */
+  border: 1px solid rgba(250, 250, 250, 0.1);
+  border-radius: calc(var(--u) * 22);
+  background: linear-gradient(180deg, #2e2e2e, #171717);
+  color: #fafafa;
+  box-shadow: inset 0 1px 0 rgba(250, 250, 250, 0.1), 0 calc(var(--u) * 24) calc(var(--u) * 50) rgba(0, 0, 0, 0.55);
+}
+.ruleta-tarjeta { left: calc(var(--u) * 293); width: calc(var(--u) * 476); display: grid; grid-template-columns: auto 1fr; align-items: center; gap: calc(var(--u) * 18); padding: calc(var(--u) * 16); }
+.ruleta-acciones { left: calc(var(--u) * 787); width: calc(var(--u) * 200); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: calc(var(--u) * 7); padding: calc(var(--u) * 12); }
+.ruleta-acciones .ruleta-girar { width: 100%; min-height: calc(var(--u) * 52); margin-bottom: calc(var(--u) * 3); font-size: calc(var(--u) * 19); }
+.ruleta-precio, .ruleta-atajo { display: flex; align-items: center; justify-content: center; gap: calc(var(--u) * 6); line-height: 1.2; white-space: nowrap; }
+.ruleta-precio { font-size: calc(var(--u) * 13); font-weight: 800; font-variant-numeric: tabular-nums; }
+.ruleta-precio[hidden] { display: none; }
+.ruleta-precio .temporada-moneda { width: calc(var(--u) * 18); height: calc(var(--u) * 18); }
+.ruleta-atajo { font-size: calc(var(--u) * 11); color: rgba(250, 250, 250, 0.66); }
+.ruleta-atajo kbd { padding: calc(var(--u) * 1) calc(var(--u) * 8); border: 1px solid rgba(250, 250, 250, 0.32); border-bottom-width: 2px; border-radius: calc(var(--u) * 5); color: #fafafa; font: 700 calc(var(--u) * 11) 'Inter', sans-serif; }
+.ruleta-tarjeta-sello { display: grid; place-items: center; width: calc(var(--u) * 80); height: calc(var(--u) * 80); border-radius: calc(var(--u) * 14); background: linear-gradient(160deg, #fafafa, #cfcacc); }
+.ruleta-tarjeta-sello img { width: 82%; height: 82%; object-fit: contain; }
+.ruleta-tarjeta-sello img.is-simbolo { width: 56%; height: 56%; filter: brightness(0); }
+.ruleta-tarjeta.sin-sello { grid-template-columns: 1fr auto; padding-left: calc(var(--u) * 26); }
+.ruleta-tarjeta.sin-sello .ruleta-tarjeta-sello { display: none; }
+.ruleta-tarjeta-texto strong { display: block; font-size: calc(var(--u) * 22); font-weight: 900; letter-spacing: 0.01em; line-height: 1.15; text-transform: uppercase; }
+.ruleta-tarjeta-texto p { margin: calc(var(--u) * 5) 0 0; font-size: calc(var(--u) * 13); line-height: 1.4; color: rgba(250, 250, 250, 0.72); }
+.ruleta-girar {
+  min-width: calc(var(--u) * 128);
+  min-height: calc(var(--u) * 56);
+  padding: 0 calc(var(--u) * 20);
+  border: 0;
+  border-radius: calc(var(--u) * 14);
+  background: #f0213a;
+  color: #fafafa;
+  font: 900 calc(var(--u) * 17) 'Inter', sans-serif;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  box-shadow: 0 calc(var(--u) * 5) 0 #8f1022, 0 calc(var(--u) * 8) calc(var(--u) * 24) rgba(240, 33, 58, 0.45);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 130ms var(--ease-out), box-shadow 130ms var(--ease-out), filter 150ms ease, opacity 150ms ease;
+}
+.ruleta-girar:active:enabled { transform: translateY(calc(var(--u) * 4)) scale(0.98); box-shadow: 0 calc(var(--u) * 1) 0 #8f1022; }
+.ruleta-girar:disabled { cursor: default; opacity: 0.55; }
+.ruleta-girar:focus-visible { outline: 2px solid #fafafa; outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) { .ruleta-girar:hover:enabled { filter: brightness(1.1); } }
+
+/* ───────── Entrada: cada vez que se abre la pestana, la rueda se asienta y las piezas llegan en cascada ───────── */
+.ruleta-aro { transform-origin: calc(var(--u) * 640) calc(var(--u) * 770); animation: ruleta-entra-aro 760ms cubic-bezier(0.23, 1, 0.32, 1) both; }
+.ruleta-indicador { animation: ruleta-entra-indicador 420ms cubic-bezier(0.34, 1.5, 0.64, 1) 260ms both; }
+.ruleta-centro { animation: ruleta-entra-pieza 480ms cubic-bezier(0.23, 1, 0.32, 1) 120ms both; }
+.ruleta-tarjeta { animation: ruleta-entra-pieza 480ms cubic-bezier(0.23, 1, 0.32, 1) 190ms both; }
+.ruleta-acciones { animation: ruleta-entra-pieza 480ms cubic-bezier(0.23, 1, 0.32, 1) 250ms both; }
+@keyframes ruleta-entra-aro { from { opacity: 0; transform: rotate(-24deg) scale(0.95); } }
+@keyframes ruleta-entra-indicador { from { opacity: 0; transform: translateY(-36%); } }
+@keyframes ruleta-entra-pieza { from { opacity: 0; transform: translateY(calc(var(--u) * 26)) scale(0.96); } }
+
+/* ───────── Vida en reposo: el centro flota y el boton lanza un reflejo (`translate` no pisa las transiciones de `transform`) ───────── */
+.ruleta-centro img { animation: ruleta-flota 4s ease-in-out infinite alternate; }
+@keyframes ruleta-flota { from { translate: 0 calc(var(--u) * -4); } to { translate: 0 calc(var(--u) * 5); } }
+.ruleta-girar::after { content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 45%; background: linear-gradient(105deg, transparent 20%, rgba(250, 250, 250, 0.38) 50%, transparent 80%); transform: translateX(-110%); pointer-events: none; }
+.ruleta-girar:enabled::after { animation: ruleta-reflejo 3.6s ease-in-out 1.2s infinite; }
+@keyframes ruleta-reflejo { 0% { transform: translateX(-110%); } 28%, 100% { transform: translateX(240%); } }
+
+/* ───────── Victoria: rayos detras del premio y confeti ───────── */
+.ruleta-rayos {
+  position: absolute;
+  left: 50%;
+  top: 55%;
+  width: calc(var(--u) * 460);
+  height: calc(var(--u) * 460);
+  margin: calc(var(--u) * -230) 0 0 calc(var(--u) * -230);
+  border-radius: 50%;
+  background: repeating-conic-gradient(rgba(250, 250, 250, 0.2) 0deg 9deg, transparent 9deg 24deg);
+  -webkit-mask-image: radial-gradient(closest-side, #000 20%, transparent 78%);
+  mask-image: radial-gradient(closest-side, #000 20%, transparent 78%);
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 300ms ease-out, transform 600ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.ruleta.is-ganador .ruleta-rayos { opacity: 1; transform: none; animation: ruleta-rayos 24s linear infinite; }
+@keyframes ruleta-rayos { to { rotate: 360deg; } }
+.ruleta-confeti { position: absolute; left: 50%; top: 55%; width: calc(var(--u) * 9); height: calc(var(--u) * 15); border-radius: calc(var(--u) * 3); pointer-events: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ruleta-aro, .ruleta-indicador, .ruleta-centro, .ruleta-tarjeta, .ruleta-acciones { animation: temporada-fondo-entra 200ms ease-out both; }
+  .ruleta-centro img, .ruleta-girar:enabled::after, .ruleta.is-ganador .ruleta-rayos { animation: none; }
+  .ruleta-rayos { transform: none; }
+  .ruleta-chispas { display: none; }
+  .ruleta-centro img { transition: opacity 220ms ease-out; }
+  .ruleta-centro .ruleta-premio { transform: none; }
+  .ruleta.is-ganador .ruleta-ganador { animation: none; }
+  .ruleta-girar { transition: none; }
+}

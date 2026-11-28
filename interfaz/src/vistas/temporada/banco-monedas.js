@@ -1,5 +1,6 @@
-import { aplicarTraducciones } from '../../nucleo/i18n/i18n.js';
-import { leerSaldo } from './saldo.js';
+import { aplicarTraducciones, t } from '../../nucleo/i18n/i18n.js';
+import { abonarMonedas, leerSaldo } from './saldo.js';
+import { procesarCompra } from './procesar-compra.js';
 
 // Paquetes de monedas (datos de ejemplo hasta tener los reales). `forma` decide su lugar en la grilla: dos chicos arriba,
 // uno ancho debajo y el grande, alto, a la derecha.
@@ -23,9 +24,26 @@ export function cerrarBancoMonedas() {
   abierto?.cerrar();
 }
 
+/** Avisa de la compra, la procesa y, si se paga, las monedas vuelan desde el paquete hasta el saldo. */
+async function comprar(overlay, boton) {
+  const { id, monedas, usd } = PAQUETES.find((candidato) => candidato.id === boton.dataset.paquete);
+  window.dispatchEvent(new window.CustomEvent('temporada:comprar-monedas', { detail: { id, monedas, usd } }));
+  const precio = boton.querySelector('.temporada-paquete-precio');
+  const textoPrecio = precio.textContent;
+  boton.disabled = true; // sin compras dobles mientras se procesa
+  precio.textContent = t('temporada.banco.procesando');
+  const pagado = await procesarCompra({ id, monedas, usd }).finally(() => {
+    boton.disabled = false;
+    precio.textContent = textoPrecio;
+  });
+  if (!pagado) return;
+  const cerrado = overlay.classList.contains('is-saliendo');
+  abonarMonedas(monedas, boton.querySelector('img'), cerrado ? undefined : overlay.querySelector('.temporada-banco-saldo'));
+}
+
 /**
  * "Coin Bank": ventana emergente encima de la ventana de la temporada con los paquetes de monedas. Elegir un paquete avisa
- * con el evento `temporada:comprar-monedas` ({ detail: { id, monedas, usd } }); el pago lo conecta quien tenga la economia.
+ * con el evento `temporada:comprar-monedas` ({ detail: { id, monedas, usd } }); el pago esta simulado (procesar-compra.js).
  */
 export function abrirBancoMonedas() {
   if (abierto) return;
@@ -37,7 +55,7 @@ export function abrirBancoMonedas() {
       <header class="temporada-banco-cabecera">
         <button type="button" class="temporada-banco-volver" data-volver data-i18n-aria-label="temporada.banco.volver"></button>
         <h2 id="temporadaBancoTitulo" data-i18n="temporada.banco.titulo"></h2>
-        <div class="temporada-banco-saldo"><span class="temporada-moneda" aria-hidden="true"></span><strong>${leerSaldo()}</strong></div>
+        <div class="temporada-banco-saldo"><span class="temporada-moneda" aria-hidden="true"></span><strong data-cifra>${leerSaldo()}</strong></div>
       </header>
       <div class="temporada-paquetes">
         ${PAQUETES.map(({ id, monedas, usd, forma, arte }) => `
@@ -64,9 +82,7 @@ export function abrirBancoMonedas() {
   overlay.addEventListener('click', (evento) => {
     if (evento.target === overlay || evento.target.closest('[data-volver]')) { cerrar(); return; }
     const paquete = evento.target.closest('[data-paquete]');
-    if (!paquete) return;
-    const { id, monedas, usd } = PAQUETES.find((candidato) => candidato.id === paquete.dataset.paquete);
-    window.dispatchEvent(new window.CustomEvent('temporada:comprar-monedas', { detail: { id, monedas, usd } }));
+    if (paquete) comprar(overlay, paquete);
   });
   const dialogo = overlay.querySelector('.temporada-banco');
   dialogo.tabIndex = -1; // el foco entra al dialogo sin marcar ningun boton: Tab llega primero a "volver"

@@ -1,8 +1,8 @@
-import { t, aplicarTraducciones } from '../../../nucleo/i18n/i18n.js';
-import { urlConVistaPrevia } from '../../../../compartido/vista-previa.js';
-import { ESQUEMAS } from '../../../../compartido/estilo/esquemas.js';
-import { construirQuery } from '../../../../compartido/estilo/query.js';
-import { MUESTRAS_MUSICA } from '../../../../compartido/muestras-vista-previa.js';
+import { t, aplicarTraducciones } from '../nucleo/i18n/i18n.js';
+import { urlConVistaPrevia } from '../../compartido/vista-previa.js';
+import { ESQUEMAS } from '../../compartido/estilo/esquemas.js';
+import { construirQuery } from '../../compartido/estilo/query.js';
+import { MUESTRAS_MUSICA } from '../../compartido/muestras-vista-previa.js';
 import { arteSkin } from './arte-skin.js';
 
 // Ajustes de fabrica + la skin, centrado en la escena: los del usuario (posicion, ancho) estan pensados para 1920 px y aqui se cortan.
@@ -61,7 +61,7 @@ function crearReproductor(iframe) {
 }
 
 /** Popup al estilo de la tienda de Discord: ficha a la izquierda, overlay en vivo a la derecha. */
-export function abrirVistaPrevia(producto, { claveAccion, clavePrecio, alAccionar, alIrAOverlay }) {
+export function abrirVistaPrevia(producto, { claveAccion, clavePrecio, alAccionar, alIrAOverlay }) { // sin alIrAOverlay no hay atajo
   const dialogo = document.createElement('dialog');
   dialogo.className = 'ovl-vista';
   dialogo.setAttribute('aria-labelledby', 'ovlVistaNombre');
@@ -93,7 +93,9 @@ export function abrirVistaPrevia(producto, { claveAccion, clavePrecio, alAcciona
     cerrar();
   });
   // Atajo al overlay donde vive la skin, para ajustarla alli.
-  dialogo.querySelector('.ovl-vista-atajo').addEventListener('click', () => {
+  const atajo = dialogo.querySelector('.ovl-vista-atajo');
+  if (!alIrAOverlay) atajo.remove();
+  atajo.addEventListener('click', () => {
     cerrar();
     alIrAOverlay(producto.overlay);
   });
@@ -104,4 +106,5 @@ export function abrirVistaPrevia(producto, { claveAccion, clavePrecio, alAcciona
   });
   document.body.append(dialogo);
   dialogo.showModal();
+  return dialogo;
 }

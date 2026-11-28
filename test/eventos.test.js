@@ -84,3 +84,41 @@ test('generarParvada: mitad por lado, rangos respetados y tamanos multiplos de 1
   }
   assert.notDeepEqual(generarParvada(azar, 4), generarParvada(azar, 4), 'dos parvadas difieren (aleatoriedad)');
 });
+
+test('catalogo: cada evento tiene su contrato y sus recursos existen; navidad sale en sus fechas', async () => {
+  const { EVENTOS, elegirEvento } = await modulo('catalogo.js');
+  const fs = require('node:fs');
+
+  for (const { id, ventana, recursos, duracionMs, montar } of EVENTOS) {
+    assert.ok(id && ventana.desde && ventana.hasta && duracionMs > 0 && typeof montar === 'function', id);
+    for (const ruta of recursos) assert.ok(fs.existsSync(path.join(__dirname, '..', 'interfaz', 'publico', ruta)), `${id}: falta ${ruta}`);
+  }
+  assert.equal(elegirEvento(EVENTOS, dia(12, 25))?.id, 'navidad');
+  assert.equal(elegirEvento(EVENTOS, dia(11, 28)), null);
+  assert.equal(elegirEvento(EVENTOS, dia(11, 28), 'navidad')?.id, 'navidad');
+});
+
+test('generarRuta: sale en los cuatro sentidos y siempre entra y sale por completo de la ventana', async () => {
+  const { generarRuta, SENTIDOS } = await modulo('navidad/ruta-trineo.js');
+  const vista = { width: 1280, height: 800 };
+  const trineo = { ancho: 216, alto: 102 };
+  let semilla = 11;
+  const azar = () => { semilla = (semilla * 16807) % 2147483647; return semilla / 2147483647; };
+  const vistos = new Set();
+
+  for (let i = 0; i < 60; i++) {
+    const { sentido, desde, hasta } = generarRuta(vista, trineo, azar);
+    vistos.add(sentido);
+    // Caja que ocupa en pantalla: girado 90 grados intercambia ancho y alto alrededor de su centro.
+    const horizontal = sentido === 'derecha' || sentido === 'izquierda';
+    for (const punto of [desde, hasta]) {
+      const fuera = horizontal
+        ? punto.x + trineo.ancho <= 0 || punto.x >= vista.width
+        : punto.y + trineo.alto / 2 + trineo.ancho / 2 <= 0 || punto.y + trineo.alto / 2 - trineo.ancho / 2 >= vista.height;
+      assert.ok(fuera, `${sentido}: ${JSON.stringify(punto)} deberia estar fuera`);
+    }
+    const avance = { derecha: hasta.x - desde.x, izquierda: desde.x - hasta.x, abajo: hasta.y - desde.y, arriba: desde.y - hasta.y };
+    assert.ok(avance[sentido] > 0, sentido);
+  }
+  assert.deepEqual([...vistos].sort(), [...SENTIDOS].sort());
+});

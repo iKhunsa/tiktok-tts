@@ -2592,27 +2592,65 @@
       "descripcion": "冬天带来满满奖励！体验我们的 Lucky Drop 领取特别奖品，在 <strong>12 月 1 日至 30 日</strong> 的赛季通行证中完成任务，并逛逛独家商店里再也不会上架的限定 Overlay。",
       "guia": "想回到 Winter Season 时，点击这个按钮：Lucky Drop、Pass 和 Shop 都在这里等你。"
     },
-    "pendiente": {
-      "cofre": "宝箱",
-      "maquina": "抓娃娃机",
-      "overlay": "Overlay",
-      "icono": "图标",
-      "monedas": "金币"
-    },
     "saldo": {
       "titulo": "金币",
       "mas": "获取金币"
     },
     "pase": {
-      "descripcion": "说明",
       "desbloquear": "解锁",
-      "paso1": "关注我们的 TikTok 官方账号，加入这场冒险。",
-      "proximo": "这份奖励即将揭晓。",
       "anterior": "上一个奖励",
       "siguiente": "下一个奖励",
-      "recompensa": "奖励 {n}"
+      "misiones": {
+        "nuevoSeguidor": {
+          "titulo": "新粉丝",
+          "descripcion": "关注我们的 TikTok 官方账号，加入这场冒险。"
+        },
+        "daleAlPlay": {
+          "titulo": "点击播放",
+          "descripcion": "订阅我们的 YouTube 官方频道，了解所有最新动态。"
+        },
+        "uneteAlClan": {
+          "titulo": "加入战队",
+          "descripcion": "加入我们的 Discord 官方社区。"
+        },
+        "calentandoMotores": {
+          "titulo": "热身开始",
+          "descripcion": "在赛季期间使用 TikLiveTTS 累计直播 4 小时。"
+        },
+        "modoImparable": {
+          "titulo": "势不可挡",
+          "descripcion": "在赛季期间使用 TikLiveTTS 累计直播 8 小时。"
+        },
+        "cambioDeLook": {
+          "titulo": "换个造型",
+          "descripcion": "在直播中使用 3 个不同的 TikLiveTTS 叠加层。"
+        },
+        "sinFronteras": {
+          "titulo": "跨越边界",
+          "descripcion": "使用 Multistream 同时在至少 2 个平台直播。"
+        },
+        "chatEnLlamas": {
+          "titulo": "聊天火热",
+          "descripcion": "在单场直播中让 TTS 朗读 100 条聊天消息。"
+        },
+        "djDelDirecto": {
+          "titulo": "直播 DJ",
+          "descripcion": "通过语音聊天功能播放 15 首歌曲。"
+        }
+      },
+      "recompensa": "奖励",
+      "verificando": "验证中…",
+      "completada": "已完成",
+      "total": "最多可获得 {total} 金币",
+      "llevas": "已获得 {ganadas} / {total}"
     },
     "luckyDrop": {
+      "girar": "转动",
+      "girando": "转动中…",
+      "listo": {
+        "nombre": "转动转盘",
+        "descripcion": "试试手气，看看你能赢得什么奖品。"
+      },
       "premios": "奖品",
       "alternar": "显示或隐藏奖品",
       "coins": {
@@ -2630,15 +2668,62 @@
       "ultimatePro": {
         "nombre": "Ultimate Pro",
         "descripcion": "终极大奖！免费畅享 12 个月 TikLiveTTS Pro。"
-      }
+      },
+      "abrir": "开启",
+      "coste": "每次转动",
+      "oPulsa": "或按",
+      "espacio": "空格键"
     },
     "banco": {
       "titulo": "Coin Bank",
-      "volver": "返回"
+      "volver": "返回",
+      "procesando": "处理中…"
     },
     "guia": {
       "titulo": "赛季活动，随时可查",
       "entendido": "知道了"
+    },
+    "mysteryBall": {
+      "titulo": "Mystery Ball",
+      "continuar": "继续",
+      "rareza": {
+        "comun": "普通",
+        "raro": "稀有",
+        "epico": "史诗"
+      },
+      "meme": {
+        "nombre": "表情包",
+        "descripcion": "这次没有奖品，只有一张表情包。祝你下次好运！"
+      },
+      "wallpaper": {
+        "nombre": "专属壁纸",
+        "descripcion": "专为你准备的 Winter Season 壁纸。"
+      },
+      "sinAds": {
+        "nombre": "免广告 1 个月",
+        "descripcion": "一个月内无广告使用 TikLiveTTS。"
+      },
+      "overlay": {
+        "nombre": "Winter Season 叠加层",
+        "descripcion": "适用于你直播的赛季专属叠加层。"
+      }
+    },
+    "aviso": {
+      "sinMonedasTitulo": "金币不足",
+      "sinMonedasTexto": "每次转动需要 {precio} 金币，你现在有 {saldo}。完成 Pass 任务赚取，或在 Coin Bank 获取。",
+      "conseguir": "获取金币",
+      "verMisiones": "查看任务",
+      "sinMonedasOverlay": "该叠加层需要 {precio} 金币，你现在有 {saldo}。完成 Pass 任务赚取，或在 Coin Bank 获取。"
+    },
+    "tienda": {
+      "anterior": "上一个分类",
+      "siguiente": "下一个分类",
+      "comprar": "购买",
+      "adquirido": "已拥有",
+      "compradoTitulo": "叠加层已解锁！",
+      "compradoTexto": "{skin} 已加入你的 {categoria} 收藏。可在 Overlays 的“更换皮肤”中找到。",
+      "listo": "知道了",
+      "agregado": "{skin} 已添加到你收藏的皮肤"
     }
   },
   "filtrosIdioma": {

@@ -15,7 +15,7 @@
   overflow: hidden;
 }
 
-/* ───────── Escena: cielo de noche + ilustracion a la derecha + nieve ───────── */
+/* ───────── Escena: ilustracion a ventana completa (bienvenida) o cielo de noche (resto de secciones) + nieve ───────── */
 .temporada-fondo, .temporada-anuncio {
   background:
     radial-gradient(110% 90% at 72% 62%, #1d2c5e 0%, #0e1838 46%, #060b1d 100%);
@@ -23,19 +23,15 @@
 .temporada-fondo { position: fixed; inset: 0; overflow: hidden; }
 .temporada-escena {
   position: absolute;
-  right: 0;
-  bottom: 0;
-  height: min(92%, 880px);
-  width: auto;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 80% 50%; /* al recortar los lados conserva al gato; el hueco izquierdo es para el texto */
   pointer-events: none;
   user-select: none;
-  /* La ilustracion se funde con el cielo por la izquierda y por arriba, sin cortes. */
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 34%), linear-gradient(180deg, transparent 0%, #000 16%);
-  mask-image: linear-gradient(90deg, transparent 0%, #000 34%), linear-gradient(180deg, transparent 0%, #000 16%);
-  -webkit-mask-composite: source-in;
-  mask-composite: intersect;
 }
-.temporada-fondo::after, .temporada-anuncio::after {
+.temporada-fondo::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -131,7 +127,7 @@
 .temporada-anuncio.is-saliendo { opacity: 0; transform: scale(1.015); pointer-events: none; }
 
 @keyframes temporada-fondo-entra { from { opacity: 0; } }
-@keyframes temporada-escena-entra { from { opacity: 0; transform: translateX(36px) scale(0.98); } }
+@keyframes temporada-escena-entra { from { opacity: 0; transform: scale(1.05); } }
 @keyframes temporada-sube { from { opacity: 0; transform: translateY(14px); filter: blur(4px); } }
 
 /* ───────── Boton de la barra de titulo (junto a Novedades) ───────── */
@@ -212,6 +208,11 @@
 .temporada-panel { position: absolute; inset: 0; animation: temporada-panel-entra 300ms cubic-bezier(0.23, 1, 0.32, 1) both; }
 .temporada-panel[hidden] { display: none; }
 @keyframes temporada-panel-entra { from { opacity: 0; transform: translateX(14px); } }
+.temporada-hero, .temporada-con-fondo { animation-name: temporada-fondo-entra; } /* sin desplazamiento: la ilustracion cubre la ventana */
+.temporada-escena-centrada { object-position: 50% 50%; } /* paisaje simetrico: se recorta por igual a los lados */
+.temporada-pase .temporada-escena-centrada { object-position: 15% 50%; } /* aqui lo importante (luna, farol) esta a la izquierda */
+/* Las piezas del panel van por encima de su nieve. */
+.temporada-escena-centrada ~ :not(.temporada-nieve) { z-index: 1; }
 .temporada-hero .temporada-contenido { transform: translateY(-46%); }
 
 /* Pestanas sin diseno todavia. */

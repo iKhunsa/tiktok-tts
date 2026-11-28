@@ -2592,27 +2592,65 @@
       "descripcion": "冬は報酬がいっぱい！Lucky Drop で特別な賞品をゲットし、<strong>12 月 1 日〜30 日</strong>のシーズンパスでミッションに挑戦し、二度と手に入らない限定オーバーレイが並ぶ専用ショップをのぞいてみよう。",
       "guia": "Winter Season に戻りたいときは、このボタンから：Lucky Drop、Pass、Shop がここで待っています。"
     },
-    "pendiente": {
-      "cofre": "宝箱",
-      "maquina": "クレーンゲーム",
-      "overlay": "オーバーレイ",
-      "icono": "アイコン",
-      "monedas": "コイン"
-    },
     "saldo": {
       "titulo": "コイン",
       "mas": "コインを入手"
     },
     "pase": {
-      "descripcion": "説明",
       "desbloquear": "アンロック",
-      "paso1": "公式 TikTok アカウントをフォローして、冒険に加わろう。",
-      "proximo": "この報酬はまもなく公開されます。",
       "anterior": "前の報酬",
       "siguiente": "次の報酬",
-      "recompensa": "報酬 {n}"
+      "misiones": {
+        "nuevoSeguidor": {
+          "titulo": "新しいフォロワー",
+          "descripcion": "公式 TikTok アカウントをフォローして、冒険に参加しよう。"
+        },
+        "daleAlPlay": {
+          "titulo": "再生ボタンを押そう",
+          "descripcion": "公式 YouTube チャンネルに登録して、最新情報をチェックしよう。"
+        },
+        "uneteAlClan": {
+          "titulo": "クランに参加",
+          "descripcion": "公式 Discord コミュニティに参加しよう。"
+        },
+        "calentandoMotores": {
+          "titulo": "ウォーミングアップ",
+          "descripcion": "シーズン中に TikLiveTTS を使って合計 4 時間配信しよう。"
+        },
+        "modoImparable": {
+          "titulo": "止まらないモード",
+          "descripcion": "シーズン中に TikLiveTTS を使って合計 8 時間配信しよう。"
+        },
+        "cambioDeLook": {
+          "titulo": "イメージチェンジ",
+          "descripcion": "配信で TikLiveTTS のオーバーレイを 3 種類使おう。"
+        },
+        "sinFronteras": {
+          "titulo": "国境なし",
+          "descripcion": "Multistream で 2 つ以上のプラットフォームに同時配信しよう。"
+        },
+        "chatEnLlamas": {
+          "titulo": "チャット炎上中",
+          "descripcion": "1 回の配信で TTS にチャットを 100 件読み上げさせよう。"
+        },
+        "djDelDirecto": {
+          "titulo": "配信 DJ",
+          "descripcion": "ボイスチャット機能で曲を 15 曲再生しよう。"
+        }
+      },
+      "recompensa": "報酬",
+      "verificando": "確認中…",
+      "completada": "達成済み",
+      "total": "最大 {total} コイン獲得できます",
+      "llevas": "獲得済み {ganadas} / {total}"
     },
     "luckyDrop": {
+      "girar": "回す",
+      "girando": "回転中…",
+      "listo": {
+        "nombre": "ルーレットを回そう",
+        "descripcion": "運試しをして、どの賞品が当たるか確かめよう。"
+      },
       "premios": "賞品",
       "alternar": "賞品の表示/非表示",
       "coins": {
@@ -2630,15 +2668,62 @@
       "ultimatePro": {
         "nombre": "Ultimate Pro",
         "descripcion": "最大の賞品！TikLiveTTS Pro を 12 か月間無料でお楽しみください。"
-      }
+      },
+      "abrir": "開ける",
+      "coste": "1回",
+      "oPulsa": "または",
+      "espacio": "スペースキー"
     },
     "banco": {
       "titulo": "Coin Bank",
-      "volver": "戻る"
+      "volver": "戻る",
+      "procesando": "処理中…"
     },
     "guia": {
       "titulo": "シーズンイベントにいつでもアクセス",
       "entendido": "わかりました"
+    },
+    "mysteryBall": {
+      "titulo": "Mystery Ball",
+      "continuar": "続ける",
+      "rareza": {
+        "comun": "コモン",
+        "raro": "レア",
+        "epico": "エピック"
+      },
+      "meme": {
+        "nombre": "ミーム",
+        "descripcion": "今回は賞品なし、ミームだけです。次回に期待！"
+      },
+      "wallpaper": {
+        "nombre": "限定壁紙",
+        "descripcion": "あなただけの Winter Season 壁紙です。"
+      },
+      "sinAds": {
+        "nombre": "1か月広告なし",
+        "descripcion": "TikLiveTTS を1か月間、広告なしで楽しめます。"
+      },
+      "overlay": {
+        "nombre": "Winter Season オーバーレイ",
+        "descripcion": "配信で使えるシーズン限定オーバーレイです。"
+      }
+    },
+    "aviso": {
+      "sinMonedasTitulo": "コインが足りません",
+      "sinMonedasTexto": "1回のスピンには {precio} コイン必要です。現在の所持数は {saldo} です。Pass のミッションで獲得するか、Coin Bank で入手してください。",
+      "conseguir": "コインを入手",
+      "verMisiones": "ミッションを見る",
+      "sinMonedasOverlay": "このオーバーレイは {precio} コイン必要です。現在の所持数は {saldo} です。Pass のミッションで獲得するか、Coin Bank で入手してください。"
+    },
+    "tienda": {
+      "anterior": "前のカテゴリー",
+      "siguiente": "次のカテゴリー",
+      "comprar": "購入",
+      "adquirido": "入手済み",
+      "compradoTitulo": "オーバーレイを入手しました！",
+      "compradoTexto": "{skin} を {categoria} のお気に入りに追加しました。Overlays の「スキンを変更」から選べます。",
+      "listo": "OK",
+      "agregado": "{skin} をお気に入りスキンに追加しました"
     }
   },
   "filtrosIdioma": {

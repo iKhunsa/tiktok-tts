@@ -10,8 +10,8 @@ import { MAX_FAVORITAS, SKINS_PREMIUM, alternarFavorita } from '../../../../comp
 import { SKINS_RANKING_PREMIUM } from '../../../../compartido/estilo/campos-ranking.js';
 import { SKINS_MUSICA_PREMIUM } from '../../../../compartido/estilo/campos-musica.js';
 import { aplicarSkin } from '../campos-overlay/index.js';
-import { abrirVistaPrevia } from './vista-previa-producto.js';
-import { arteSkin } from './arte-skin.js';
+import { abrirVistaPrevia } from '../../../componentes/vista-previa-producto.js';
+import { arteSkin } from '../../../componentes/arte-skin.js';
 
 // overlay = donde se ve la skin en la vista previa.
 const productos = (delTipo, overlay, seccion) => delTipo.map((skin) => ({ skin, delTipo, overlay, seccion }));
