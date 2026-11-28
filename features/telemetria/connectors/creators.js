@@ -10,7 +10,7 @@
 function attach(bus, track, { creatorCache, markPlatform }) {
   bus.on('canal:estado', (payload) => {
     if (!payload || payload.state !== 'conectado' || !payload.channel) return;
-    if (!['tiktok', 'twitch', 'youtube'].includes(payload.platform)) return;
+    if (!['tiktok', 'twitch', 'youtube', 'kick'].includes(payload.platform)) return;
     markPlatform(payload.platform);
 
     // creatorCache() devuelve null si telemetria no se inicializo (sin

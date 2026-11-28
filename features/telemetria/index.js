@@ -13,8 +13,9 @@ module.exports = {
   name: 'telemetria',
 
   register({ bus, logger }) {
-    bus.on('account:changed', () => {
+    bus.on('account:changed', ({ current } = {}) => {
       require('./runtime').switchCreatorDataDir(accountDataDir());
+      require('./runtime').setAccountId(current);
     }, 'telemetria');
     let attached = 0;
     for (const connector of connectors) {

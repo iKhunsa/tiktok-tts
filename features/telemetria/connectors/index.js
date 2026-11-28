@@ -12,4 +12,5 @@ module.exports = [
   require('./updates'),
   require('./settings'),
   require('./blocked-words'),
+  require('./auth'),
 ];
